@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
+import eu.europa.esig.dss.policy.jaxb.EvidenceRecordConstraints;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
@@ -273,6 +274,13 @@ public interface ValidationPolicy {
 	CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext);
 
 	/**
+	 * This method returns cryptographic constraints for validation of Evidence Record
+	 *
+	 * @return {@link CryptographicConstraint}
+	 */
+	CryptographicConstraint getEvidenceRecordCryptographicConstraint();
+
+	/**
 	 * Returns certificate CA constraint
 	 *
 	 * @param context {@link Context}
@@ -281,6 +289,16 @@ public interface ValidationPolicy {
 	 *         null otherwise.
 	 */
 	LevelConstraint getCertificateCAConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate IssuerName constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if IssuerName for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateIssuerNameConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns certificate MaxPathLength constraint
@@ -532,8 +550,30 @@ public interface ValidationPolicy {
 	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if trusted service type identifier for a given context element is present in
 	 *                                 the constraint file, null otherwise.
+	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceTypeIdentifierConstraint} method instead.
 	 */
+	@Deprecated
 	MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context);
+
+	/**
+	 * Returns trusted service type identifier constraint
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if trusted service type identifier for a given context element is present in
+	 *                                 the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getTrustServiceTypeIdentifierConstraint(Context context);
+
+	/**
+	 * Returns trusted service status constraint
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if trusted service status for a given context element is present in
+	 *                                 the constraint file, null otherwise.
+	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceTypeIdentifierConstraint} method instead.
+	 */
+	@Deprecated
+	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
 
 	/**
 	 * Returns trusted service status constraint
@@ -542,7 +582,7 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if trusted service status for a given context element is present in
 	 *                                 the constraint file, null otherwise.
 	 */
-	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
+	MultiValuesConstraint getTrustServiceStatusConstraint(Context context);
 
 	/**
 	 * Returns CertificatePolicyIds constraint if present in the policy, null otherwise
@@ -1017,6 +1057,28 @@ public interface ValidationPolicy {
 	LevelConstraint getRevocationTimeAgainstBestSignatureTimeConstraint();
 
 	/**
+	 * Returns whether the evidence record is valid (passed a complete evidence record validation process).
+	 * If EvidenceRecordValid element is absent within the constraint file then null is returned.
+	 *
+	 * @return {@code LevelConstraint} if EvidenceRecordValid element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getEvidenceRecordValidConstraint();
+
+	/**
+	 * Returns DataObjectExistence constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectExistence element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectExistenceConstraint();
+
+	/**
+	 * Returns DataObjectIntact constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectIntact element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectIntactConstraint();
+
+	/**
 	 * Returns CounterSignature constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}DiagnosticDataFacade
@@ -1344,7 +1406,6 @@ public interface ValidationPolicy {
 	 */
 	Model getValidationModel();
 
-
 	/**
 	 * Returns the constraint used for Signature validation
 	 *
@@ -1372,6 +1433,13 @@ public interface ValidationPolicy {
 	 * @return {@code RevocationConstraints}
 	 */
 	RevocationConstraints getRevocationConstraints();
+
+	/**
+	 * Returns the constraint used for Evidence Record validation
+	 *
+	 * @return {@link EvidenceRecordConstraints}
+	 */
+	EvidenceRecordConstraints getEvidenceRecordConstraints();
 
 	/**
 	 * Returns the constraint used for ASiC Container validation

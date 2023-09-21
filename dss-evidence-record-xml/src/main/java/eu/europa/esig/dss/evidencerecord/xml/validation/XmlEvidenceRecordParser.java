@@ -1,15 +1,17 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
-import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
-import eu.europa.esig.xmlers.definition.XMLERSAttribute;
-import eu.europa.esig.xmlers.definition.XMLERSPaths;
+import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformation;
+import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformationType;
+import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.xmlers.definition.XMLERSAttribute;
+import eu.europa.esig.xmlers.definition.XMLERSPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -48,7 +50,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
      */
     @Override
     public List<XmlArchiveTimeStampChainObject> parse() {
-        final NodeList archiveTimeStampSequenceList = DomUtils.getNodeList(evidenceRecordElement, XMLERSPaths.ARCHIVE_TIME_STAMP_CHAIN_PATH);
+        final NodeList archiveTimeStampSequenceList = DomUtils.getNodeList(evidenceRecordElement, XMLERSPath.ARCHIVE_TIME_STAMP_CHAIN_PATH);
         if (archiveTimeStampSequenceList != null && archiveTimeStampSequenceList.getLength() > 0) {
             XmlArchiveTimeStampChainObject[] result = new XmlArchiveTimeStampChainObject[archiveTimeStampSequenceList.getLength()];
             for (int i = 0; i < archiveTimeStampSequenceList.getLength(); i++) {
@@ -74,7 +76,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private List<? extends ArchiveTimeStampObject> getXmlArchiveTimeStamps(Element archiveTimeStampChain) {
-        final NodeList archiveTimeStampList = DomUtils.getNodeList(archiveTimeStampChain, XMLERSPaths.ARCHIVE_TIME_STAMP_PATH);
+        final NodeList archiveTimeStampList = DomUtils.getNodeList(archiveTimeStampChain, XMLERSPath.ARCHIVE_TIME_STAMP_PATH);
         if (archiveTimeStampList != null && archiveTimeStampList.getLength() > 0) {
             XmlArchiveTimeStampObject[] result = new XmlArchiveTimeStampObject[archiveTimeStampList.getLength()];
             for (int i = 0; i < archiveTimeStampList.getLength(); i++) {
@@ -92,12 +94,13 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
         XmlArchiveTimeStampObject archiveTimeStampObject = new XmlArchiveTimeStampObject(archiveTimeStampElement);
         archiveTimeStampObject.setHashTree(getHashTree(archiveTimeStampElement));
         archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStampElement));
+        archiveTimeStampObject.setCryptographicInformationList(getCryptographicInformationList(archiveTimeStampElement));
         archiveTimeStampObject.setOrder(getOrderAttributeValue(archiveTimeStampElement));
         return archiveTimeStampObject;
     }
 
     private TimestampToken getTimestampToken(Element archiveTimeStampElement) {
-        Element timeStampTokenElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPaths.TIME_STAMP_TOKEN_PATH);
+        Element timeStampTokenElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPath.TIME_STAMP_TOKEN_PATH);
         if (timeStampTokenElement == null) {
             throw new IllegalInputException("TimeStampToken shall be defined!");
         }
@@ -114,7 +117,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private List<XmlSequenceObject> getHashTree(Element archiveTimeStampElement) {
-        final NodeList hashTree = DomUtils.getNodeList(archiveTimeStampElement, XMLERSPaths.HASH_TREE_SEQUENCE_PATH);
+        final NodeList hashTree = DomUtils.getNodeList(archiveTimeStampElement, XMLERSPath.HASH_TREE_SEQUENCE_PATH);
         if (hashTree != null && hashTree.getLength() > 0) {
             XmlSequenceObject[] result = new XmlSequenceObject[hashTree.getLength()];
             for (int i = 0; i < hashTree.getLength(); i++) {
@@ -138,7 +141,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     private List<byte[]> getDigestValues(Element sequenceElement) {
         List<byte[]> result = new ArrayList<>();
 
-        final NodeList digestValueList = DomUtils.getNodeList(sequenceElement, XMLERSPaths.DIGEST_VALUE_PATH);
+        final NodeList digestValueList = DomUtils.getNodeList(sequenceElement, XMLERSPath.DIGEST_VALUE_PATH);
         for (int i = 0; i < digestValueList.getLength(); i++) {
             final Element digestValueElement = (Element) digestValueList.item(i);
 
@@ -161,7 +164,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private DigestAlgorithm getDigestAlgorithm(Element archiveTimeStampChainElement) {
-        Element digestMethod = DomUtils.getElement(archiveTimeStampChainElement, XMLERSPaths.DIGEST_METHOD_PATH);
+        Element digestMethod = DomUtils.getElement(archiveTimeStampChainElement, XMLERSPath.DIGEST_METHOD_PATH);
         if (digestMethod == null) {
             throw new IllegalInputException("The DigestMethod element shall be present!");
         }
@@ -173,7 +176,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private String getCanonicalizationMethod(Element archiveTimeStampChainElement) {
-        Element canonicalizationMethod = DomUtils.getElement(archiveTimeStampChainElement, XMLERSPaths.CANONICALIZATION_METHOD_PATH);
+        Element canonicalizationMethod = DomUtils.getElement(archiveTimeStampChainElement, XMLERSPath.CANONICALIZATION_METHOD_PATH);
         if (canonicalizationMethod == null) {
             throw new IllegalInputException("The CanonicalizationMethod element shall be present!");
         }
@@ -182,6 +185,35 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
             throw new IllegalInputException("The Algorithm attribute shall be defined!");
         }
         return canonicalizationAttribute;
+    }
+
+    private List<CryptographicInformation> getCryptographicInformationList(Element archiveTimeStampElement) {
+        NodeList cryptographicInformationNodeList = DomUtils.getNodeList(archiveTimeStampElement, XMLERSPath.CRYPTOGRAPHIC_INFORMATION_PATH);
+        if (cryptographicInformationNodeList == null || cryptographicInformationNodeList.getLength() == 0) {
+            return Collections.emptyList();
+        }
+
+        final List<CryptographicInformation> cryptographicInformationList = new ArrayList<>();
+        for (int i = 0; i < cryptographicInformationNodeList.getLength(); i++) {
+            Element cryptographicInformationElement = (Element) cryptographicInformationNodeList.item(i);
+            String type = cryptographicInformationElement.getAttribute(XMLERSAttribute.TYPE.getAttributeName());
+            if (Utils.isStringEmpty(type)) {
+                LOG.warn("Type attribute shall be defined within CryptographicInformation element! Element is skipped.");
+                continue;
+            }
+            CryptographicInformationType cryptographicInformationType = CryptographicInformationType.fromLabel(type);
+
+            String textContent = cryptographicInformationElement.getTextContent();
+            if (!Utils.isBase64Encoded(textContent)) {
+                LOG.warn("Value within CryptographicInformation element shall be base64-encoded! Element is skipped.");
+                continue;
+            }
+
+            cryptographicInformationList.add(
+                    new CryptographicInformation(Utils.fromBase64(textContent), cryptographicInformationType));
+        }
+
+        return cryptographicInformationList;
     }
 
 }

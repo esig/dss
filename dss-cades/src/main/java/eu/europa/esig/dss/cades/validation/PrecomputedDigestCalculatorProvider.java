@@ -72,7 +72,10 @@ public class PrecomputedDigestCalculatorProvider implements DigestCalculatorProv
 
 			@Override
 			public byte[] getDigest() {
-				return Utils.fromBase64(digestBase64);
+				if (Utils.isBase64Encoded(digestBase64)) {
+					return Utils.fromBase64(digestBase64);
+				}
+				throw new IllegalArgumentException("The DigestDocument digest value shall be base64-encoded!");
 			}
 
 			@Override

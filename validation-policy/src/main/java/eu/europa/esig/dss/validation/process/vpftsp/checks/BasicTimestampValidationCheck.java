@@ -22,7 +22,8 @@ package eu.europa.esig.dss.validation.process.vpftsp.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -30,7 +31,6 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Checks whether the validation result of EN 319 102-1 ch. "5.4 Time-stamp validation building block" process is valid
@@ -40,10 +40,10 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 public class BasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** The timestamp to check */
-    private final TimestampWrapper timestamp;
+    protected final TimestampWrapper timestamp;
 
     /** Timestamp validation result */
-    private final XmlValidationProcessTimestamp timestampValidationResult;
+    private final XmlValidationProcessBasicTimestamp timestampValidationResult;
 
     /**
      * Default constructor
@@ -51,13 +51,27 @@ public class BasicTimestampValidationCheck<T extends XmlConstraintsConclusion> e
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link T}
      * @param timestamp {@link TimestampWrapper}
-     * @param timestampValidationResult {@link XmlValidationProcessTimestamp}
+     * @param timestampValidationResult {@link XmlValidationProcessBasicTimestamp}
      * @param constraint {@link LevelConstraint}
      */
     public BasicTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
-                                         XmlValidationProcessTimestamp timestampValidationResult,
+                                         XmlValidationProcessBasicTimestamp timestampValidationResult,
                                          LevelConstraint constraint) {
-        super(i18nProvider, result, constraint, timestamp.getId());
+        this(i18nProvider, result, timestamp, timestampValidationResult, constraint, null);
+    }
+
+    /**
+     * Constructor to instantiate check with Id provided
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlSAV}
+     * @param timestamp {@link TimestampWrapper}
+     * @param constraint {@link LevelConstraint}
+     */
+    protected BasicTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
+                                           XmlValidationProcessBasicTimestamp timestampValidationResult,
+                                           LevelConstraint constraint, String bbbId) {
+        super(i18nProvider, result, constraint, bbbId);
         this.timestamp = timestamp;
         this.timestampValidationResult = timestampValidationResult;
     }
@@ -70,13 +84,6 @@ public class BasicTimestampValidationCheck<T extends XmlConstraintsConclusion> e
     @Override
     protected boolean process() {
         return isValid(timestampValidationResult);
-    }
-
-    @Override
-    protected String buildAdditionalInfo() {
-        String date = ValidationProcessUtils.getFormattedDate(timestamp.getProductionTime());
-        return i18nProvider.getMessage(MessageTag.TIMESTAMP_VALIDATION,
-                ValidationProcessUtils.getTimestampTypeMessageTag(timestamp.getType()), timestamp.getId(), date);
     }
 
     @Override

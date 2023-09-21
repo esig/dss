@@ -52,7 +52,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ValidationDataRefsOnlyTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ValidationDataTimeStampCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintWithIdCheck;
 
 import java.util.Date;
 
@@ -255,7 +255,7 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 
 	private ChainItem<XmlSAV> contentTimestampMessageImprint(TimestampWrapper contentTimestamp) {
 		LevelConstraint constraint = validationPolicy.getContentTimeStampMessageImprintConstraint(context);
-		return new TimestampMessageImprintCheck<>(i18nProvider, result, contentTimestamp, constraint);
+		return new TimestampMessageImprintWithIdCheck<>(i18nProvider, result, contentTimestamp, constraint);
 	}
 
 	private ChainItem<XmlSAV> claimedRoles() {

@@ -28,6 +28,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidatorFactory;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -115,7 +116,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	public boolean isSupported(DSSDocument dssDocument) {
 		byte firstByte = DSSUtils.readFirstByte(dssDocument);
 		if (DSSASN1Utils.isASN1SequenceTag(firstByte)) {
-			return !DSSUtils.isTimestampToken(dssDocument);
+			return !DSSUtils.isTimestampToken(dssDocument) && !EvidenceRecordValidatorFactory.isSupportedDocument(dssDocument);
 		}
 		return false;
 	}

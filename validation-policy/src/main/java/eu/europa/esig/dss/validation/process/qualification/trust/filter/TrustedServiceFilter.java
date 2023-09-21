@@ -1,41 +1,25 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 
 import java.util.List;
 
 /**
  * Used to filter acceptable Trusted Services to be used during qualification determination process
  *
+ * @deprecated since DSS 5.13.
+ *      Use {@code eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter} instead
  */
+@Deprecated
 public interface TrustedServiceFilter {
 
-	/**
-	 * Filters a list of {@code TrustedServiceWrapper}s
-	 *
-	 * @param trustedServices a list of {@link TrustedServiceWrapper}s to filter
-	 * @return filtered list of {@link TrustedServiceWrapper}s
-	 */
-	List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustedServices);
+    /**
+     * Filters a list of {@code TrustServiceWrapper}s
+     *
+     * @param trustServices a list of {@link TrustServiceWrapper}s to filter
+     * @return filtered list of {@link TrustServiceWrapper}s
+     */
+    @Deprecated
+    List<TrustServiceWrapper> filter(List<TrustServiceWrapper> trustServices);
 
 }

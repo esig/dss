@@ -21,14 +21,14 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustedServiceChecker;
+import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustServiceChecker;
 
 /**
  * Checks if the Trusted Service is consistent
@@ -37,7 +37,7 @@ import eu.europa.esig.dss.validation.process.qualification.trust.consistency.Tru
 public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	/** Trusted Service to check */
-	private final TrustedServiceWrapper trustedService;
+	private final TrustServiceWrapper trustService;
 
 	/** Internal cached error message, if applicable */
 	private MessageTag errorMessage;
@@ -47,62 +47,72 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationCertificateQualification}
-	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param trustService {@link TrustServiceWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public ServiceConsistencyCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, 
-			TrustedServiceWrapper trustedService, LevelConstraint constraint) {
+			TrustServiceWrapper trustService, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
-		this.trustedService = trustedService;
+		this.trustService = trustService;
 	}
 
 	@Override
 	protected boolean process() {
 
-		if (trustedService == null) {
+		if (trustService == null) {
 
 			errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS0;
 			return false;
 
 		} else {
 
-			if (!TrustedServiceChecker.isQCStatementConsistent(trustedService)) {
+			if (!TrustServiceChecker.isQCStatementConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS1;
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isLegalPersonConsistent(trustedService)) {
+			if (!TrustServiceChecker.isLegalPersonConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS2;
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isQSCDConsistent(trustedService)) {
+			if (!TrustServiceChecker.isQSCDConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3;
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isQSCDStatusAsInCertConsistent(trustedService)) {
+			if (!TrustServiceChecker.isQSCDStatusAsInCertConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3A;
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isUsageConsistent(trustedService)) {
+			if (!TrustServiceChecker.isPostEIDASQSCDConsistent(trustService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3B;
+				return false;
+			}
+
+			if (!TrustServiceChecker.isQualifiersListKnownConsistent(trustService)) {
+				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3C;
+				return false;
+			}
+
+			if (!TrustServiceChecker.isUsageConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS4;
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isPreEIDASStatusConsistent(trustedService)) {
+			if (!TrustServiceChecker.isPreEIDASStatusConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS5;
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isPreEIDASQualifierAndAdditionalServiceInfoConsistent(trustedService)) {
+			if (!TrustServiceChecker.isPreEIDASQualifierAndAdditionalServiceInfoConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS6;
 				return false;
 			}
 
-			if (!TrustedServiceChecker.isQualifierAndAdditionalServiceInfoConsistent(trustedService)) {
+			if (!TrustServiceChecker.isQualifierAndAdditionalServiceInfoConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS7;
 				return false;
 			}
@@ -123,8 +133,8 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 
 	@Override
 	protected String buildAdditionalInfo() {
-		if (trustedService != null) {
-			return i18nProvider.getMessage(MessageTag.TRUST_SERVICE_NAME, trustedService.getServiceNames().get(0));
+		if (trustService != null) {
+			return i18nProvider.getMessage(MessageTag.TRUST_SERVICE_NAME, trustService.getServiceNames().get(0));
 		}
 		return null;
 	}

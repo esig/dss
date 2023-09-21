@@ -22,62 +22,62 @@ package eu.europa.esig.dss.xades.definition;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPaths;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 
 public class PathsTest {
 	
 	@Test
 	public void objectPath() {
-		assertEquals("./ds:Object", XMLDSigPaths.OBJECT_PATH);
+		assertEquals("./ds:Object", XMLDSigPath.OBJECT_PATH);
 	}
 
 	@Test
 	public void objectWithId() {
-		String objectById = XMLDSigPaths.OBJECT_PATH + DomUtils.getXPathByIdAttribute("bla");
+		String objectById = XMLDSigPath.OBJECT_PATH + DomUtils.getXPathByIdAttribute("bla");
 		assertEquals("./ds:Object[@Id='bla' or @id='bla' or @ID='bla']", objectById);
 	}
 
 	@Test
 	public void manifestPath() {
-		assertEquals("./ds:Object/ds:Manifest", XMLDSigPaths.MANIFEST_PATH);
+		assertEquals("./ds:Object/ds:Manifest", XMLDSigPath.MANIFEST_PATH);
 	}
 
 	@Test
 	public void getSignedDataObjectPropertiesPath() {
-		XAdESPaths paths = new XAdES132Paths();
+		XAdESPath paths = new XAdES132Path();
 		assertEquals("./ds:Object/xades132:QualifyingProperties/xades132:SignedProperties/xades132:SignedDataObjectProperties",
 				paths.getSignedDataObjectPropertiesPath());
 	}
 
 	@Test
 	public void allTimestamps() {
-		XAdESPaths paths = new XAdES132Paths();
+		XAdESPath paths = new XAdES132Path();
 		String path = paths.getCurrentEncapsulatedTimestamp();
 		assertEquals("./xades132:EncapsulatedTimeStamp", path);
 	}
 
 	@Test
 	public void fromCurrentPosition() {
-		XAdESPaths paths = new XAdES132Paths();
+		XAdESPath paths = new XAdES132Path();
 		String path = paths.getCurrentOCSPRefsChildren();
 		assertEquals("./xades132:OCSPRefs/xades132:OCSPRef", path);
 	}
 
 	@Test
 	public void notParentOf() {
-		assertEquals("//ds:Signature[not(parent::xades132:CounterSignature)]", XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
+		assertEquals("//ds:Signature[not(parent::xades132:CounterSignature)]", XAdES132Path.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
 	}
 
 	@Test
 	public void allFromCurrentPosition() {
-		assertEquals(".//xades132:UnsignedProperties", AbstractPaths.allFromCurrentPosition(XAdES132Element.UNSIGNED_PROPERTIES));
+		assertEquals(".//xades132:UnsignedProperties", AbstractPath.allFromCurrentPosition(XAdES132Element.UNSIGNED_PROPERTIES));
 	}
 
 }

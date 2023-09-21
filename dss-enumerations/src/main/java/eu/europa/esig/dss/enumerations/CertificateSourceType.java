@@ -46,6 +46,9 @@ public enum CertificateSourceType {
 	/** Certificate source extracted from a timestamp */
 	TIMESTAMP,
 
+	/** Certificate source extracted from an Evidence record */
+	EVIDENCE_RECORD,
+
 	/** The unknown origin of a certificate source */
 	UNKNOWN;
 

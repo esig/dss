@@ -51,6 +51,11 @@
 					<xsd:documentation>Constraints related to the revocation data</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="EvidenceRecord" type="EvidenceRecordConstraints" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Constraints on the timestamps</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Global constraints about cryptographic usage (encryption, digest, key length, algorithm deprecation,...). If no specific constraints is added in Signature/Timestamp/... elements, this configuration will be used.</xsd:documentation>
@@ -464,6 +469,39 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 
+
+	<xsd:complexType name="EvidenceRecordConstraints">
+		<xsd:annotation>
+			<xsd:documentation>Group of constraints on the evidence record</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="LevelConstraint">
+				<xsd:sequence>
+					<xsd:element name="EvidenceRecordValid" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if validation of evidence record per "5.6.3 Validation Process for Signatures providing Long Term Availability and Integrity of Validation Material" returns a PASSED indication</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="DataObjectExistence" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks the existence of the archival data object</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="DataObjectIntact" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks if the digest match the archival data object</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Group of cryptographic checks to operate on the certificate</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
 	<xsd:complexType name="BasicSignatureConstraints">
 		<xsd:annotation>
 			<xsd:documentation>Group of common checks for any kind of signed token (signature, timestamp or revocation data)</xsd:documentation>
@@ -564,12 +602,12 @@
 					<xsd:documentation>Verifies whether the document does not contain undefined changes after the signature revision</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TrustedServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="TrustServiceTypeIdentifier" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the related trust service type identifier is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TrustedServiceStatus" type="MultiValuesConstraint" minOccurs="0">
+			<xsd:element name="TrustServiceStatus" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the related trust service status is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
@@ -690,6 +728,11 @@
 			<xsd:element name="ForbiddenExtensions" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks if the certificate does not contain any of the extensions defined in the list (e.g. ocsp-noCheck for end-entity certificate), whether critical or not</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="IssuerName" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's issuer distinguished name matches the subject distinguished name of the issuer certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Surname" type="MultiValuesConstraint" minOccurs="0">

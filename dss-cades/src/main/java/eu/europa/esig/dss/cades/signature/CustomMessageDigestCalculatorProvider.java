@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 
 /**
  * Represents a {@code DigestCalculatorProvider} for a message-digest calculation
@@ -55,6 +56,11 @@ public class CustomMessageDigestCalculatorProvider implements DigestCalculatorPr
 	 * @param messageDigestValueBase64 {@link String} base64 encoded message-digest value
 	 */
 	public CustomMessageDigestCalculatorProvider(DigestAlgorithm messageDigestAlgo, String messageDigestValueBase64) {
+		Objects.requireNonNull(messageDigestAlgo, "DigestAlgorithm shall be defined!");
+		Objects.requireNonNull(messageDigestValueBase64, "Digest value shall be defined!");
+		if (!Utils.isBase64Encoded(messageDigestValueBase64)) {
+			throw new IllegalArgumentException("Digest value shall be represented by a base64-encoded String!");
+		}
 		this.messageDigestAlgo = messageDigestAlgo;
 		this.messageDigestValueBase64 = messageDigestValueBase64;
 	}

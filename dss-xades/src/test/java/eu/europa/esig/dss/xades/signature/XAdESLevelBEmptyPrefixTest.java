@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 
 public class XAdESLevelBEmptyPrefixTest extends AbstractXAdESTestSignature {
 
@@ -49,7 +49,7 @@ public class XAdESLevelBEmptyPrefixTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 //		signatureParameters.setXmldsigNamespace(new DSSNamespace(XAdESNamespaces.XMLDSIG.getUri(), ""));
 //		signatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), ""));
-		signatureParameters.setXades141Namespace(new DSSNamespace(XAdESNamespaces.XADES_141.getUri(), ""));
+		signatureParameters.setXades141Namespace(new DSSNamespace(XAdESNamespace.XADES_141.getUri(), ""));
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

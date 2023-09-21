@@ -104,20 +104,20 @@
                <crlUrl>http://hide.eu/info/crl/RootCA.arl</crlUrl>
             </CRLDistributionPoints>
          </CertificateExtensions>
-         <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
+         <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
                <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-               <TrustedServices>
-                  <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+               <TrustServices>
+                  <TrustService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                      <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                      <StartDate>2016-10-03T22:00:00Z</StartDate>
-                  </TrustedService>
-               </TrustedServices>
-            </TrustedServiceProvider>
-         </TrustedServiceProviders>
+                  </TrustService>
+               </TrustServices>
+            </TrustServiceProvider>
+         </TrustServiceProviders>
          <Revocations/>
          <DigestAlgoAndValue>
             <DigestMethod>SHA1</DigestMethod>
@@ -161,22 +161,22 @@
             </ExtendedKeyUsages>
             <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
          </CertificateExtensions>
-         <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
+         <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
                <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-               <TrustedServices>
-                  <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+               <TrustServices>
+                  <TrustService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                      <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                      <StartDate>2016-10-03T22:00:00Z</StartDate>
                      <CapturedQualifiers/>
                      <AdditionalServiceInfoUris/>
-                  </TrustedService>
-               </TrustedServices>
-            </TrustedServiceProvider>
-         </TrustedServiceProviders>
+                  </TrustService>
+               </TrustServices>
+            </TrustServiceProvider>
+         </TrustServiceProviders>
          <Revocations/>
          <DigestAlgoAndValue>
             <DigestMethod>SHA1</DigestMethod>
@@ -217,7 +217,7 @@
                <certificatePolicy>2.5.29.32.0</certificatePolicy>
             </CertificatePolicies>
          </CertificateExtensions>
-         <TrustedServiceProviders/>
+         <TrustServiceProviders/>
          <Revocations/>
          <DigestAlgoAndValue>
             <DigestMethod>SHA1</DigestMethod>
@@ -270,22 +270,22 @@
                <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
             </ExtendedKeyUsages>
          </CertificateExtensions>
-         <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
+         <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-3D8F60692C4C3DD9280DFED6F6415BACD4250DBA6BB35EC4AFAAA4C9209E68A7">
 				<TSPNames><TSPName lang="en">C - European Commission Certification Authority</TSPName></TSPNames>
                <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>NTRBE-0949.383.342 </TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-               <TrustedServices>
-                  <TrustedService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
+               <TrustServices>
+                  <TrustService ServiceDigitalIdentifier="C-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672">
                      <ServiceNames><ServiceName lang="en">C - 2</ServiceName></ServiceNames>
                      <ServiceType>https://webgate.ec.europa.eu/esig/TrustedList/TrstSvc/ScvType/CA/EC/Internal</ServiceType>
                      <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
                      <StartDate>2016-10-03T22:00:00Z</StartDate>
                      <CapturedQualifiers/>
                      <AdditionalServiceInfoUris/>
-                  </TrustedService>
-               </TrustedServices>
-            </TrustedServiceProvider>
-         </TrustedServiceProviders>
+                  </TrustService>
+               </TrustServices>
+            </TrustServiceProvider>
+         </TrustServiceProviders>
          <Revocations>
             <CertificateRevocation Revocation="R-96de975c5d625eb6b23007402a12f7edc7240e6fc22888b9e6a47a23587183ccd44b3bc2cbfca258343153ddc0197a58e747bc1153f83d0fbcd1617bb9724a95">
                <Status>GOOD</Status>

@@ -20,20 +20,21 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidatorFactory;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
-import eu.europa.esig.xades.definition.XAdESPaths;
-import eu.europa.esig.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.xades.definition.xades122.XAdES122Paths;
-import eu.europa.esig.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.xades.definition.XAdESPath;
+import eu.europa.esig.xades.definition.xades111.XAdES111Path;
+import eu.europa.esig.xades.definition.xades122.XAdES122Path;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,7 +54,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 * This variable contains the list of {@code XAdESPaths} adapted to the specific
 	 * signature schema.
 	 */
-	protected List<XAdESPaths> xadesPathsHolders;
+	protected List<XAdESPath> xadesPathsHolders;
 
 	/** The root element of the document to validate */
 	protected Document rootElement;
@@ -86,9 +87,9 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 		this.rootElement = toDomDocument(dssDocument);
 
 		xadesPathsHolders = new ArrayList<>();
-		xadesPathsHolders.add(new XAdES111Paths());
-		xadesPathsHolders.add(new XAdES122Paths());
-		xadesPathsHolders.add(new XAdES132Paths());
+		xadesPathsHolders.add(new XAdES111Path());
+		xadesPathsHolders.add(new XAdES122Path());
+		xadesPathsHolders.add(new XAdES132Path());
 	}
 
 	private Document toDomDocument(DSSDocument document) {
@@ -101,7 +102,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		return DomUtils.startsWithXmlPreamble(dssDocument);
+		return DomUtils.startsWithXmlPreamble(dssDocument) && !EvidenceRecordValidatorFactory.isSupportedDocument(dssDocument);
 	}
 
 	/**
@@ -152,9 +153,9 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	/**
 	 * This getter returns the {@code XAdESPaths}
 	 *
-	 * @return a list of {@link XAdESPaths}
+	 * @return a list of {@link XAdESPath}
 	 */
-	public List<XAdESPaths> getXAdESPathsHolder() {
+	public List<XAdESPath> getXAdESPathsHolder() {
 		return xadesPathsHolders;
 	}
 
@@ -162,9 +163,9 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 	 * This adds a {@code XAdESPaths}. This is useful when the signature follows a
 	 * particular schema.
 	 *
-	 * @param xadesPathsHolder {@link XAdESPaths}
+	 * @param xadesPathsHolder {@link XAdESPath}
 	 */
-	public void addXAdESPathsHolder(final XAdESPaths xadesPathsHolder) {
+	public void addXAdESPathsHolder(final XAdESPath xadesPathsHolder) {
 		xadesPathsHolders.add(xadesPathsHolder);
 	}
 

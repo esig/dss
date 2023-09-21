@@ -35,7 +35,9 @@ import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,10 +118,17 @@ public final class XAdESSignatureUtils {
 		try {
 			if (reference.typeIsReferenceToObject() || Utils.isStringEmpty(reference.getType())) {
 				String objectId = DomUtils.getId(reference.getURI());
-				Node objectById = signature.getObjectById(objectId);
+				Node objectById = DSSXMLUtils.getObjectById(signature.getSignatureElement(), objectId);
 				if (objectById != null && objectById.hasChildNodes()) {
-					byte[] bytes = DomUtils.getNodeBytes(objectById.getFirstChild());
-					if (bytes != null) {
+					try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+						NodeList childNodes = objectById.getChildNodes();
+						for (int i = 0; i < childNodes.getLength(); i++) {
+							byte[] nodeBytes = DomUtils.getNodeBytes(childNodes.item(i));
+							if (nodeBytes != null) {
+								baos.write(nodeBytes);
+							}
+						}
+						byte[] bytes = baos.toByteArray();
 						return new InMemoryDocument(bytes, objectId, MimeTypeEnum.XML);
 					}
 				}
@@ -134,7 +143,7 @@ public final class XAdESSignatureUtils {
 		try {
 			if (reference.typeIsReferenceToManifest() || Utils.isStringEmpty(reference.getType())) {
 				String manifestId = DomUtils.getId(reference.getURI());
-				Node manifestById = signature.getManifestById(manifestId);
+				Node manifestById = DSSXMLUtils.getManifestById(signature.getSignatureElement(), manifestId);
 				if (manifestById != null) {
 					byte[] bytes = DomUtils.getNodeBytes(manifestById);
 					if (bytes != null) {

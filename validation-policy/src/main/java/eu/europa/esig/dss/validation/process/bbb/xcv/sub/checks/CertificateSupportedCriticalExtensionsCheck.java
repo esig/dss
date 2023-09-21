@@ -82,7 +82,7 @@ public class CertificateSupportedCriticalExtensionsCheck extends AbstractMultiVa
     private List<String> getUnsupportedCertificateExtensionsOids() {
         List<String> values = new ArrayList<>();
         for (XmlCertificateExtension certificateExtension : certificate.getCertificateExtensions()) {
-            if (certificateExtension.isCritical() && !processValueCheck(certificateExtension.getOID())) {
+            if (certificateExtension.isCritical() != null && certificateExtension.isCritical() && !processValueCheck(certificateExtension.getOID())) {
                 values.add(certificateExtension.getOID());
             }
         }

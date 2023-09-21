@@ -96,7 +96,7 @@
                     <certificatePolicy>2.16.56.9.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>n5dERjvhNxR1Tho77PmMCMwgXkqzICj04oMMShsndbg=</DigestValue>
@@ -144,7 +144,7 @@
                     <certificatePolicy>2.16.56.9.1.1.5</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-1808F9FD864971AD1CD004B9A8694D2EBF4C34983D74EBBDEE97C09C9510BEBB">
 	                <Status>GOOD</Status>
@@ -198,7 +198,7 @@
                     <QcCompliance present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>CvCVZ677LmuMdv5FnPLM4NUYKm0JPQG+ohxkI+3Ee0Y=</DigestValue>
@@ -249,7 +249,7 @@
                     <QcCompliance present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-6C13D713EA83632818CB6064EBEECCE5C71E00F6B5EBEFE4154C583322236A84">
 	                <Status>REVOKED</Status>

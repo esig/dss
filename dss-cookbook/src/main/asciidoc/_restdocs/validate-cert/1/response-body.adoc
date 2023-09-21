@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2023-02-06T07:49:55Z",
+    "ValidationDate" : "2023-08-11T09:32:16Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
@@ -37,20 +37,12 @@
       "Surname" : null,
       "Pseudonym" : null,
       "Email" : null,
-      "subjectAlternativeName" : null,
-      "aiaUrl" : [ ],
-      "crlUrl" : [ ],
-      "ocspServerUrl" : [ ],
       "Source" : [ "OTHER" ],
       "NotAfter" : "2047-07-04T07:57:24Z",
       "NotBefore" : "2017-06-08T11:26:01Z",
       "PublicKeySize" : 2048,
       "PublicKeyEncryptionAlgo" : "RSA",
       "EntityKey" : "PK-3CFCA257859E202BCC83864D02B267B08A997C357AB98D923BBC63F00607C7B6",
-      "KeyUsage" : [ "keyCertSign", "crlSign" ],
-      "extendedKeyUsagesOid" : [ ],
-      "IdPkixOcspNoCheck" : false,
-      "ValAssuredShortTermCertificate" : null,
       "BasicSignature" : {
         "EncryptionAlgoUsedToSignThisToken" : "RSA",
         "KeyLengthUsedToSignThisToken" : "?",
@@ -63,9 +55,16 @@
       "ChainItem" : [ ],
       "Trusted" : false,
       "SelfSigned" : false,
-      "certificatePolicy" : [ ],
-      "QcStatements" : null,
-      "TrustedServiceProvider" : [ ],
+      "certificateExtensions" : [ {
+        "KeyUsages" : {
+          "keyUsageBit" : [ "keyCertSign", "crlSign" ],
+          "octets" : null,
+          "OID" : "2.5.29.15",
+          "description" : null,
+          "critical" : true
+        }
+      } ],
+      "TrustServiceProvider" : [ ],
       "CertificateRevocation" : [ ],
       "Base64Encoded" : null,
       "DigestAlgoAndValue" : {
@@ -82,8 +81,8 @@
   },
   "simpleCertificateReport" : {
     "ValidationPolicy" : {
-      "PolicyName" : "QES AdESQC TL based",
-      "PolicyDescription" : "Validate electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a\n\t\tQualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes\n\t\tsigner's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).\n\t"
+      "PolicyName" : "Certificate policy TL based",
+      "PolicyDescription" : "Validates electronic certificates and indicates its qualification status at issuance and validation time.\n        All certificates and their related chains are validated against the EU Member State Trusted Lists (this includes\n        target certificate and certificates used to validate certificate validity status services - CRLs, OCSP).\n    "
     },
     "ChainItem" : [ {
       "id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
@@ -110,7 +109,9 @@
       "cpsUrl" : null,
       "pdsUrl" : null,
       "qualificationAtIssuance" : "N/A",
+      "qualificationDetailsAtIssuance" : null,
       "qualificationAtValidation" : "N/A",
+      "qualificationDetailsAtValidation" : null,
       "enactedMRA" : null,
       "revocation" : {
         "thisUpdate" : null,
@@ -119,9 +120,17 @@
       },
       "trustAnchor" : null,
       "Indication" : "INDETERMINATE",
-      "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND"
+      "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+      "X509ValidationDetails" : {
+        "Error" : [ {
+          "value" : "The certificate chain is not trusted, it does not contain a trust anchor.",
+          "Key" : "BBB_XCV_CCCBB_ANS"
+        } ],
+        "Warning" : [ ],
+        "Info" : [ ]
+      }
     } ],
-    "ValidationTime" : "2023-02-06T07:49:55Z"
+    "ValidationTime" : "2023-08-11T09:32:16Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrCertificate" : [ {

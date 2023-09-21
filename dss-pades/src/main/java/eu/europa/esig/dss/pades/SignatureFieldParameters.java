@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades;
 
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 import java.io.Serializable;
@@ -48,6 +49,11 @@ public class SignatureFieldParameters implements Serializable {
 
 	/** Signature field height */
 	private float height;
+
+	/**
+	 * Use rotation on the PDF page, where the signature field will be created
+	 */
+	private VisualSignatureRotation rotation;
 
 	/**
 	 * Default constructor instantiating object with null values
@@ -166,10 +172,34 @@ public class SignatureFieldParameters implements Serializable {
 		this.height = height;
 	}
 
+	/**
+	 * Returns rotation value for a signature field relatively the PDF page
+	 *
+	 * @return {@link VisualSignatureRotation}
+	 */
+	public VisualSignatureRotation getRotation() {
+		return rotation;
+	}
+
+	/**
+	 * Sets a rotation value for the signature field relatively the PDF page
+	 *
+	 * @param rotation
+	 *             {@link VisualSignatureRotation}. The following values can be used:
+	 *             NONE (DEFAULT value. No rotation is applied. The origin of coordinates begins from the top left corner of a page);
+	 *             AUTOMATIC (Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as a defined in a PDF page);
+	 *             ROTATE_90 (Rotates a signature field for a 90° clockwise. Coordinates' origin begins from top right page corner);
+	 *             ROTATE_180 (Rotates a signature field for a 180° clockwise. Coordinates' origin begins from the bottom right page corner);
+	 *             ROTATE_270 (Rotates a signature field for a 270° clockwise. Coordinates' origin begins from the bottom left page corner).
+	 */
+	public void setRotation(VisualSignatureRotation rotation) {
+		this.rotation = rotation;
+	}
+
 	@Override
 	public String toString() {
 		return "SignatureFieldParameters [name=" + fieldId + ", page=" + page + ", originX=" + originX + ", originY="
-				+ originY + ", width=" + width + ", height=" + height + "]";
+				+ originY + ", width=" + width + ", height=" + height + ", rotation=" + rotation + "]";
 	}
 
 }

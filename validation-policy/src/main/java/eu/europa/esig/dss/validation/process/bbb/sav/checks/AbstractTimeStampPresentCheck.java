@@ -4,7 +4,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -47,7 +47,7 @@ public abstract class AbstractTimeStampPresentCheck extends ChainItem<XmlValidat
     @Override
     protected boolean process() {
         for (TimestampWrapper timestamp : getTimestamps()) {
-            XmlValidationProcessTimestamp timestampBasicValidation = getTimestampBasicValidation(timestamp);
+            XmlValidationProcessBasicTimestamp timestampBasicValidation = getTimestampBasicValidation(timestamp);
             if (timestampBasicValidation != null && ValidationProcessUtils.isAllowedBasicTimestampValidation(timestampBasicValidation.getConclusion())) {
                 if (isValidConclusion(timestampBasicValidation.getConclusion())) {
                     return true;
@@ -68,10 +68,10 @@ public abstract class AbstractTimeStampPresentCheck extends ChainItem<XmlValidat
      */
     protected abstract Collection<TimestampWrapper> getTimestamps();
 
-    private XmlValidationProcessTimestamp getTimestampBasicValidation(TimestampWrapper timestamp) {
+    private XmlValidationProcessBasicTimestamp getTimestampBasicValidation(TimestampWrapper timestamp) {
         for (XmlTimestamp xmlTimestamp : xmlTimestamps) {
             if (timestamp.getId().equals(xmlTimestamp.getId())) {
-                return xmlTimestamp.getValidationProcessTimestamp();
+                return xmlTimestamp.getValidationProcessBasicTimestamp();
             }
         }
         return null;

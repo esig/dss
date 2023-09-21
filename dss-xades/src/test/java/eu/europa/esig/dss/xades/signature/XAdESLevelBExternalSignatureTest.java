@@ -33,7 +33,7 @@ import eu.europa.esig.dss.test.signature.ExternalXAdESSignatureResult;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,7 +172,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 		}
 
 		public byte[] getSerializedObject() {
-			Element objectDom = DomUtils.getElement(signatureDom, XMLDSigPaths.OBJECT_PATH);
+			Element objectDom = DomUtils.getElement(signatureDom, XMLDSigPath.OBJECT_PATH);
 			return DomUtils.serializeNode(objectDom);
 		}
 	}

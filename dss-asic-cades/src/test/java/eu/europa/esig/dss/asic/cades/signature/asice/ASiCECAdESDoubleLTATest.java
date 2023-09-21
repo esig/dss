@@ -23,9 +23,10 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -36,11 +37,11 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.model.ManifestEntry;
-import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
@@ -114,7 +116,8 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
         for (DSSDocument document : manifestDocuments) {
             boolean signedFileFound = false;
             boolean timestampedSignatureFound = false;
-            ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(document);
+            ManifestFile manifestFile = ASiCManifestParser.getManifestFile(document);
+            assertNotNull(manifestFile);
             for (ManifestEntry entry : manifestFile.getEntries()) {
                 if (originalDocument.getName().equals(entry.getFileName())) {
                     assertEquals(MimeTypeEnum.TEXT, entry.getMimeType());
@@ -167,7 +170,7 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
     }
 
     private void assertDoesNotContainRevocation(List<String> revocationDataIds, List<RelatedRevocationWrapper> revocationData) {
-        List<String> currentRevocationDataIds = revocationData.stream().map(r -> r.getId()).collect(Collectors.toList());
+        List<String> currentRevocationDataIds = revocationData.stream().map(RevocationWrapper::getId).collect(Collectors.toList());
         for (String revocationId : currentRevocationDataIds) {
             assertFalse(revocationDataIds.contains(revocationId));
             revocationDataIds.add(revocationId);

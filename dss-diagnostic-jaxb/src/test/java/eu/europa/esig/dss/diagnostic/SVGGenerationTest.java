@@ -55,4 +55,21 @@ public class SVGGenerationTest {
 		assertFalse(file.exists());
 	}
 
+	@Test
+	public void testER() throws JAXBException, XMLStreamException, IOException, SAXException, TransformerException {
+		DiagnosticDataFacade newFacade = DiagnosticDataFacade.newFacade();
+		XmlDiagnosticData diagnosticData = newFacade.unmarshall(new File("src/test/resources/er-diag-data.xml"));
+
+		try (FileOutputStream fos = new FileOutputStream("target/diag-data.svg")) {
+			Result result = new StreamResult(fos);
+			newFacade.generateSVG(diagnosticData, result);
+		}
+
+		File file = new File("target/diag-data.svg");
+		assertTrue(file.exists());
+		assertTrue(file.length() > 0);
+		assertTrue(file.delete(), "Cannot delete the SVG file");
+		assertFalse(file.exists());
+	}
+
 }

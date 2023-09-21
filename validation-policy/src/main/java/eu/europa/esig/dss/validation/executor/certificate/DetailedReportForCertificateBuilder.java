@@ -80,7 +80,7 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 
 		CertificateQualificationBlock cqb = new CertificateQualificationBlock(i18nProvider, basicBuildingBlocks.getConclusion(), currentTime, certificate,
 				detailedReport.getTLAnalysis());
-		detailedReport.getSignatureOrTimestampOrCertificate().add(cqb.execute());
+		detailedReport.getSignatureOrTimestampOrEvidenceRecord().add(cqb.execute());
 
 		return detailedReport;
 	}

@@ -92,7 +92,7 @@
                     <certificatePolicy>1.3.76.38.1.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>000aa60802dd3997a5a4d0fc79f27d1b25b63e1a</DigestValue>
@@ -137,7 +137,7 @@
                     <certificatePolicy>1.3.76.38.1.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>4efd78c478c7a6932d5a1d4c4cb5d06d42b5db00</DigestValue>
@@ -188,7 +188,7 @@
                     <QcSSCD present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-AC40244C9404372BD81970D28266FB99021557A64101DA5D92232BCF1A9E7326">
 	                <Status>GOOD</Status>

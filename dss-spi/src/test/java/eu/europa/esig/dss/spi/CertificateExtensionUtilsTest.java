@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
 import eu.europa.esig.dss.model.x509.extension.GeneralName;
+import eu.europa.esig.dss.model.x509.extension.GeneralSubtree;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.NameConstraints;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
@@ -253,6 +254,18 @@ public class CertificateExtensionUtilsTest {
         assertEquals("1.3.6.1.4.1.5734.1.1=#0c0c4d494755454c20414e47454c,1.3.6.1.4.1.5734.1.2=#0c064e4146524941,1.3.6.1.4.1.5734.1.3=#0c094c4153204845524153,1.3.6.1.4.1.5734.1.4=#0c09373238373432363858", subjectAlternativeNames.get(1).getValue());
 
         cert = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIIFQzCCAyugAwIBAgIIYgrumZXsDzcwDQYJKoZIhvcNAQELBQAwSjELMAkGA1UEBhMCRVMxEjAQBgNVBAcTCUJhcmNlbG9uYTEMMAoGA1UEChMDVVBDMRkwFwYDVQQDDBA0LjIuMS4xMF8xMV9DQTExMB4XDTIzMDQwMTIxMzkwMFoXDTI0MDQwMTIxMzkwMFowTTELMAkGA1UEBhMCRVMxEjAQBgNVBAcTCUJhcmNlbG9uYTEMMAoGA1UEChMDVVBDMRwwGgYDVQQDDBM0LjIuMS4xMF8xMV9DQTExX0VFMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAmpYkSbMZA7RighHHZD7TMeE3ZO/nbHnorUJotxQ0CUcLDpmF7EfC66IfunaFKas/q/LiU+xm+GCnqqO13nEBTZOOyCbq0w3+zl0e1iqPfaZDOFOLXS/z14Z29e56LFJPKKZS0na1/D0zcG8s8tYaQsldz6kgIONtKNSz5Tnf6Q5yohLdImL6KcP1JsfzP/GCMgnJb4UbcCtqtWRNmOCZcUtD37tFyvEIkDjFHa65WoPy6IbtGS7Hawx4ZZZLCCb3QOi5bmK1ZZL8zHllqnHWM85Fc6k/0R6en47/MlclDSci/OD+1IyBzAcru6HOcN7d96J/6QapXVUokmoRMqSpgeF8qi2d4phXzYipTDkvyZ+f0oTEb7MyH6zviFm+WTLlDD32OEoq1dwzdaup2NUp4MEKO+T3B4hn589io/FMHr5WpmbN/gxg0hgC2ONz/oX3DtSTClw8CEunbDJ5GVtQcIrI0ZBbAnRCi5WicXtrZBgbO0A5BeMitsuo3WNCkXLfyIO6/c0fFlEXWihrQ/OVcLHIHKxsiWcCRbEQzVRGiJoc3rx39AEtqwexn1Gfd33CKTGlDZMtpzhP96yxj1c+RwsOBZEq5ecCQTMFrCwfP9BbMJf9BdmUI6eGUxDsEUVUHiYESeNuMPUkwQMtVbdw26JvunRuwFGepODBlkCB73kCAwEAAaMqMCgwCwYDVR0PBAQDAgeAMBkGA1UdEQEB/wQPMA2GC3d3dy51cGMyLmVzMA0GCSqGSIb3DQEBCwUAA4ICAQAOSWXjnOjKJsBoQKSm8YlL69wBEGe2Xa5TWKxEddXBwoM+wwXZRjmmbE92Ebdve1a9RPDHkHmQ+9+rPUA73hV+KXOB0yLSyn5l+Z0+9RLSwDMXm+UQy5UtsdFIxGHapTu1R6PkvCkbvrGM58pjM8XmcAEAFveM8DBnDI17z1RKfmy63eyltb5OTUZGzVBWD/ZTp8rm2X9wZSUhuOp57Mm5OEilBtXKnHYoiqHbnrdHvKM7ea15WzE7AvF4STmT+zGd5EMkJGN+pmsyxH+HoOWqI6/OxTqvn/pcrKjLt9Eo8VIirEGcHUSdOfNlVivRvb6j2Bpt1hI0m9+B7pmolbSepkCVAvUxnMDZ7ufvNEsynm4avavj+Ifj1Xz8DLge0YHR/ff6oF5XdiBn74GuB9m4/m8LJuBYx+64UUeUkUNjF6cKd8MfHUEevHPvLgsb7/8pVhvG+Su2T+xP6yyHsMcUbpJkp/110AC1ZAqBV7Ne854Qk/3oc2BcLHWQKNHuTSqZcHFQnpeFtOfAInlhJetiVn38cn64gGEdlKxj8xOH/UPNfckZvZoEIoeFWnlzjEYhYQBpfXAWl9yW9Wk6Fb4AXpBKwiaxou027qE6XjJTnTm+APqL4IekI3Y4p+Yf9MlMjyC5cxUeNOeeq0V37DcIFessG3dU1DV50PiWEee8fw==");
+        assertNotNull(cert);
+
+        subjectAlternativeNamesExtension = CertificateExtensionsUtils.getSubjectAlternativeNames(cert);
+        assertNotNull(subjectAlternativeNamesExtension);
+        subjectAlternativeNames = subjectAlternativeNamesExtension.getGeneralNames();
+        assertNotNull(subjectAlternativeNames);
+        assertEquals(1, Utils.collectionSize(subjectAlternativeNames));
+        assertEquals(GeneralNameType.UNIFORM_RESOURCE_IDENTIFIER, subjectAlternativeNames.get(0).getGeneralNameType());
+        assertEquals("www.upc2.es", subjectAlternativeNames.get(0).getValue());
+
+        cert = DSSUtils.loadCertificateFromBase64EncodedString(
                 "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");
         assertNotNull(cert);
 
@@ -345,6 +358,7 @@ public class CertificateExtensionUtilsTest {
                 "coBMHK41VUG9g6VW2DAoCG3ajBCj48vN0Gd4dUwvsGAmmVuIwH0R/+2IBMp00341fpjIjUrMpxcxDFwe\n" +
                 "Ve3YFugTb2fMnETR7A==");
         NameConstraints nameConstraints = CertificateExtensionsUtils.getNameConstraints(certificate);
+        assertNotNull(nameConstraints);
         assertTrue(Utils.isCollectionNotEmpty(nameConstraints.getPermittedSubtrees()));
         assertFalse(Utils.isCollectionNotEmpty(nameConstraints.getExcludedSubtrees()));
 
@@ -353,6 +367,141 @@ public class CertificateExtensionUtilsTest {
         assertNotNull(nameConstraintsExt);
         assertEquals(nameConstraints.getPermittedSubtrees().size(), nameConstraintsExt.getPermittedSubtrees().size());
         assertEquals(nameConstraints.getExcludedSubtrees().size(), nameConstraintsExt.getExcludedSubtrees().size());
+
+        GeneralSubtree subtree = nameConstraintsExt.getPermittedSubtrees().get(0);
+        assertEquals(GeneralNameType.DIRECTORY_NAME, subtree.getGeneralNameType());
+        assertEquals("OU=permittedSubtree1,O=Test Certificates,C=US", subtree.getValue());
+    }
+
+    @Test
+    public void getNameConstraintsExcludedSubtrees() {
+        CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIIFpzCCA4+gAwIBAgIId8arl05fKxEwDQYJKoZIhvcNAQELBQAwSDELMAkGA1UEBhMCRVMxEjAQBgNV\n" +
+                        "BAcTCUJhcmNlbG9uYTEMMAoGA1UEChMDVVBDMRcwFQYDVQQDDA40LjIuMS4xMF8xMl9DQTAeFw0yMzA0\n" +
+                        "MDEyMTQ2MDBaFw0zMzAzMzAyMzA1MDBaMEoxCzAJBgNVBAYTAkVTMRIwEAYDVQQHEwlCYXJjZWxvbmEx\n" +
+                        "DDAKBgNVBAoTA1VQQzEZMBcGA1UEAwwQNC4yLjEuMTBfMTJfQ0ExMTCCAiIwDQYJKoZIhvcNAQEBBQAD\n" +
+                        "ggIPADCCAgoCggIBAOARmqOjGDupM+huE0ouSRCKYzTcoOR37i7XKAxzj6wBnPS9UQdeZT9Kr+Ds+mFL\n" +
+                        "SCHxDIRU8nZRDP2QKJKjJ+b9ccaPulQbT81R1lrWZjD2V+4px0SIJRE2BxlDmt9IObo2+YNrH1UMzyxO\n" +
+                        "M/UViG6LNCIKpgQfY5jCSnnUqhT0bq97H3wFFCnyUuvmkA/dpBHHitMESv0JcBaSU8t0wDZCYus2L1bT\n" +
+                        "/1AZg4yosH82tC/xbED+zAitj2K1YSkgD67Uq4x/p13EGioJR2reVxkD71XU6VDUprhyBZoml8BQxUSE\n" +
+                        "pBMfOMiHsxrTPpxyf2kzegCfZRkVqEbNV4AaDLyO1bG/VWntb3dlTQQCccS+nYjeAfedo44jap/v6gpD\n" +
+                        "xIJ6nn3lvKhazXd+gLzw1T8PzgQS8Jyziwo9R8wwANxElba7o3YV6svpaRDNest0fhjDEO3+qs/PSogG\n" +
+                        "d77gFhGiSAKiW1HWA+LxB/zHS5BfmYpiB/Z05e3SzYTLRKJrKj3Aaj577oRwWlKRSrBNuZYmjLZ7b3yB\n" +
+                        "Uemc4FmI/38ZnvBH7jUSpC92WSJqPrwFdMPtWMiTYU6foeniHbAHncxqqKQnSfautEwJdCqt/PZGs6JU\n" +
+                        "zHFNGVWmvdpJ86Ryr6G4/tzJsVIGl5tbo3d/A6bEPl4501huJSOq6CxuzSo3AgMBAAGjgZIwgY8wDwYD\n" +
+                        "VR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUTo5IYuq9ZDFeRix5XVs30YnYd4kwCwYDVR0PBAQDAgEGMB0G\n" +
+                        "A1UdHgEB/wQTMBGhDzANhgt3d3cudXBjLmVkdTARBglghkgBhvhCAQEEBAMCAAcwHgYJYIZIAYb4QgEN\n" +
+                        "BBEWD3hjYSBjZXJ0aWZpY2F0ZTANBgkqhkiG9w0BAQsFAAOCAgEAAm8O/awSiMqf2LhhaZTPdaGZAvIP\n" +
+                        "CkgaGRy1Q2pza0fvQSBSLZQrtZ+uPm8L0+EdOxitxvn1XxZcGR91YAtAkuO/WOOyk2OUAPpeeVwkKM7l\n" +
+                        "TPY8yidn/frdbouObbogTGUBYPm8ffaYJP1oL4CNWedprgUeoal6UojJUAVksZxIUTFsq8CYi6duxOaZ\n" +
+                        "SghufyECPbjF6rJyYT5pgz2bxMhmAwcyYbFIRubtvFQnzpO24i6uj3eBfm4N3jiIQ6SunLB2bFUfEZ6R\n" +
+                        "DzARARa2MEhT6Z0wOmXRHSFotiSjD5RHUO3gfiog3GRb17GVaOPFaGIVFDWLoz4lpn2Rau162JtPOJaY\n" +
+                        "0g9shTgtcjPvpxnX9QuMlRs+8GUCk/7A+Jav+OvODD+K1RVZADp9+ibxfJc8hXLUf+Wztr7dntVJ7Rqu\n" +
+                        "wrmeXnGojSDj43sHuw6WwZttavf6gDqOSwvwVUAHcByWyzC9EdWZmjtRGKjA1xiBV5FcDEpExW6JVEME\n" +
+                        "DgM7dZVkBZsofutnqNuw8s43Hh8dYZfO726HDjWEslx5tpj0Eez9nIooDQJKLfU6su8qQr2jBtVanLiD\n" +
+                        "6YjSrzMisSCHBST5PfO2Vc+sWCnAsCHwh04TPUsdEUJA6uxQysdt3xvL9rGLYAiAJkHOwCxRCasc9pSv\n" +
+                        "CTmr0rqyYtyxkfw===");
+        NameConstraints nameConstraints = CertificateExtensionsUtils.getNameConstraints(certificate);
+        assertNotNull(nameConstraints);
+        assertFalse(Utils.isCollectionNotEmpty(nameConstraints.getPermittedSubtrees()));
+        assertTrue(Utils.isCollectionNotEmpty(nameConstraints.getExcludedSubtrees()));
+
+        CertificateExtensions certificateExtensions = CertificateExtensionsUtils.getCertificateExtensions(certificate);
+        NameConstraints nameConstraintsExt = certificateExtensions.getNameConstraints();
+        assertNotNull(nameConstraintsExt);
+        assertEquals(nameConstraints.getPermittedSubtrees().size(), nameConstraintsExt.getPermittedSubtrees().size());
+        assertEquals(nameConstraints.getExcludedSubtrees().size(), nameConstraintsExt.getExcludedSubtrees().size());
+
+        GeneralSubtree subtree = nameConstraintsExt.getExcludedSubtrees().get(0);
+        assertEquals(GeneralNameType.UNIFORM_RESOURCE_IDENTIFIER, subtree.getGeneralNameType());
+        assertEquals("www.upc.edu", subtree.getValue());
+    }
+
+    @Test
+    public void getNameConstraintsPermittedSubtreeRFC822() {
+        CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIICqzCCAhSgAwIBAgIBQzANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
+                        "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
+                        "MTkxNDU3MjBaME4xCzAJBgNVBAYTAlVTMRowGAYDVQQKExFUZXN0IENlcnRpZmljYXRlczEjMCEGA1UE\n" +
+                        "AxMabmFtZUNvbnN0cmFpbnRzIFJGQzgyMiBDQTEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAOYG\n" +
+                        "d2HszTJIsVTazKriCUJ/ExxUo4U4HEZN9+/XVXsQVkZYIzWtyCTC3IFmSAyb9ZEDGu3jmF/evXpfNXmx\n" +
+                        "iURUu6W0bLEpIkZiVpPpTKqoJx2EHj+wXOfe31AD0OmKidXP66+LVgIJLWGMr3Msbzb4T3gpKb2ynQc2\n" +
+                        "/XnE3RkbAgMBAAGjgaYwgaMwHwYDVR0jBBgwFoAU+2zULYGeyid6ng2wPOqavIf/SeowHQYDVR0OBBYE\n" +
+                        "FON/hXqOojue7rgSHXkTqsS9LlmtMA4GA1UdDwEB/wQEAwIBBjAXBgNVHSAEEDAOMAwGCmCGSAFlAwIB\n" +
+                        "MAEwDwYDVR0TAQH/BAUwAwEB/zAnBgNVHR4BAf8EHTAboBkwF4EVLnRlc3RjZXJ0aWZpY2F0ZXMuZ292\n" +
+                        "MA0GCSqGSIb3DQEBBQUAA4GBAJjXEGmrQ1/Muud+NZwajR9xit/32SNVvHI+/O7bopout/RnhJudrmsd\n" +
+                        "qGlcSk0KXfcXI22cJOkAYe1M39znxgbaVitYYLxfsS+3O2pLpMgQMFCZuOJATfAQUlui+dVtPTaIam7j\n" +
+                        "imms5Qam2K2SuZ/teJ2J/rIDHCOrIGktQS8H");
+        NameConstraints nameConstraints = CertificateExtensionsUtils.getNameConstraints(certificate);
+        assertNotNull(nameConstraints);
+        assertTrue(Utils.isCollectionNotEmpty(nameConstraints.getPermittedSubtrees()));
+        assertFalse(Utils.isCollectionNotEmpty(nameConstraints.getExcludedSubtrees()));
+
+        CertificateExtensions certificateExtensions = CertificateExtensionsUtils.getCertificateExtensions(certificate);
+        NameConstraints nameConstraintsExt = certificateExtensions.getNameConstraints();
+        assertNotNull(nameConstraintsExt);
+        assertEquals(nameConstraints.getPermittedSubtrees().size(), nameConstraintsExt.getPermittedSubtrees().size());
+        assertEquals(nameConstraints.getExcludedSubtrees().size(), nameConstraintsExt.getExcludedSubtrees().size());
+
+        GeneralSubtree subtree = nameConstraintsExt.getPermittedSubtrees().get(0);
+        assertEquals(GeneralNameType.RFC822_NAME, subtree.getGeneralNameType());
+        assertEquals(".testcertificates.gov", subtree.getValue());
+    }
+
+    @Test
+    public void getNameConstraintsPermittedSubtreeDNS() {
+        CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIICpzCCAhCgAwIBAgIBRjANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
+                        "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
+                        "MTkxNDU3MjBaMEsxCzAJBgNVBAYTAlVTMRowGAYDVQQKExFUZXN0IENlcnRpZmljYXRlczEgMB4GA1UE\n" +
+                        "AxMXbmFtZUNvbnN0cmFpbnRzIEROUzEgQ0EwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKF4cGWB\n" +
+                        "eAaOHCGkAPlmkE9/9XtvEpanIGNf1g0ab0PBnZR8ffY+IK2+rwOeMVtfXmJbaxi/Z70teNn94XkPXH6P\n" +
+                        "mz/pL170Q96CasAsPU2uQC4AtNjkUSeFbSoY7Ul2NaBYqLrWyQ7O3jEXdX76KQWqYcihAq1Jw+AEruMq\n" +
+                        "98WrAgMBAAGjgaUwgaIwHwYDVR0jBBgwFoAU+2zULYGeyid6ng2wPOqavIf/SeowHQYDVR0OBBYEFHXn\n" +
+                        "Z0cYCavxiIjbno3VF1KO/HN4MA4GA1UdDwEB/wQEAwIBBjAXBgNVHSAEEDAOMAwGCmCGSAFlAwIBMAEw\n" +
+                        "DwYDVR0TAQH/BAUwAwEB/zAmBgNVHR4BAf8EHDAaoBgwFoIUdGVzdGNlcnRpZmljYXRlcy5nb3YwDQYJ\n" +
+                        "KoZIhvcNAQEFBQADgYEAzUV5anoiOD8wQQnetIFcg5wLnNlrdPixWje4q2JQcPnqZk3TW9O0GDtWHmZw\n" +
+                        "VoS3PixQlJPHZGvkliTKM9vO7a8J2FDl/ZFRNrm2rHFjZxygk+UTwj+SI4CO8kmtSesvV0ViWwNNyfOV\n" +
+                        "/nmvBjqy6pEbTnCDpax2/2P2ruVALCk===");
+        NameConstraints nameConstraints = CertificateExtensionsUtils.getNameConstraints(certificate);
+        assertNotNull(nameConstraints);
+        assertTrue(Utils.isCollectionNotEmpty(nameConstraints.getPermittedSubtrees()));
+        assertFalse(Utils.isCollectionNotEmpty(nameConstraints.getExcludedSubtrees()));
+
+        CertificateExtensions certificateExtensions = CertificateExtensionsUtils.getCertificateExtensions(certificate);
+        NameConstraints nameConstraintsExt = certificateExtensions.getNameConstraints();
+        assertNotNull(nameConstraintsExt);
+        assertEquals(nameConstraints.getPermittedSubtrees().size(), nameConstraintsExt.getPermittedSubtrees().size());
+        assertEquals(nameConstraints.getExcludedSubtrees().size(), nameConstraintsExt.getExcludedSubtrees().size());
+
+        GeneralSubtree subtree = nameConstraintsExt.getPermittedSubtrees().get(0);
+        assertEquals(GeneralNameType.DNS_NAME, subtree.getGeneralNameType());
+        assertEquals("testcertificates.gov", subtree.getValue());
+    }
+
+    @Test
+    public void getNameConstraintsExcludeedSubtreeIPAddresses() {
+        CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIIFojCCA4qgAwIBAgIJAOMWrsjU/s6/MA0GCSqGSIb3DQEBCwUAMD0xCzAJBgNVBAYTAkdCMQ8wDQYDVQQHDAZMb25kb24xEDAOBgNVBAoMB0RlbW8gQ0ExCzAJBgNVBAsMAklUMB4XDTE3MDUwNDE1NDQyM1oXDTM3MDQyOTE1NDQyM1owPTELMAkGA1UEBhMCR0IxDzANBgNVBAcMBkxvbmRvbjEQMA4GA1UECgwHRGVtbyBDQTELMAkGA1UECwwCSVQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCy6709MthSnIg6jl9+fgSdqdok56ElUVVaWiF0skZy17skS05zkdLXT15Su4Ffqs7kRawO4IHZvNVcoVGOkz4xnG4UT8w9dhtu10yUBbs/hi4/KWtdUFNvu2xU0vEzxuLjCZNyOmy5+rYBTfD6RIZ3eaElE5dZv0syZfG3WoVJMCYZt3KL7O0FtXSd6lCqUNE+bcbxEZ6Av4aJNMGMKK+3ML1lDwmyDalUnkOlcTkxlUt2mBt4MUHzc3fmjY4GgfjlyjKp1bzrBVU5sGrGGiZgH/kYvqABsUyaf3ejvg413YB66bAOr1sMvm1HGnqock8NpEYCJmWGDBox2s6o/nNO1i1+eE11Iyty24wx1Wwx1VMXd08CYDPpdhkkfN9LK+8yK7CpOViOy6/aXc2h7W0QHvWXCHGoEPDjGPKhSVzB2YR/+Nxlei9SjiI1cOE0ThTH1ikO3/3+S3yTKGZUJT8Mlra7IUBGfbwm63WRyEI9rlowhtGnA7bNtRPekiA95TqYmf5ZGYyksCsownYMU8Onm0JkDu5smeV+UGuqV5kXRiCOKoxdbGiJXWYZHNXEc1rnnDzN5TMJK3S2qLh0IpAJtQwhS++Oi0oTD3bjsyF9RPtDFnxYbxQJYGO/ig5WG1MQ97QMcUu94ll6vcjm8B14OUEkSzOVvxJtsaeldquRWQIDAQABo4GkMIGhMB0GA1UdDgQWBBQBMXxWPYExW1n/j0gJPuO7idEwQDAfBgNVHSMEGDAWgBQBMXxWPYExW1n/j0gJPuO7idEwQDAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjA+BgNVHR4BAf8ENDAyoTAwCocIAAAAAAAAAAAwIocgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwDQYJKoZIhvcNAQELBQADggIBAAxNFDaTK70DtoX5NkWpfiNau1yyFGryygqbcTQAwkm8U+qp3Ktwf59eQfCd6fwq0aZXHbF+oLTuJrF9SWrx7RG5maZjAHXQKC52x5c6jYoWxhBiWcBGf9nYMTs16PKi0gRr5MLWaGsDWG8hMxZPeDW7S7c8Z1UXEul36AyHKMON56lqB7i2/b1VB18eDW8g6Y7fyWvNhJBJx5tgAq+zgQNBaKfmmwP3XoRG2WZXN28+vX6rgpSG9oCei26A4/BYEp37tC2VMTaJ8rvAWaRr+B3jYes94a25E/q1Vp1/IZBY8nCMZgsz5tusROI+rQPdZPV8AJVSgQsfPZFmBY9V9vMYkuiuTTtnzNCovrVU5sQWau+oOKYz/nsip0A7Bq1ZKhcSs3Bzpn1sh870yLWL1ALOLQf2SGrK/lRK+jcPSifqcme7kUQqjX2+gSn9j0deM3UMoEEfVNt39jnzmDVlxyFzhszLCZFzE+X4sKuKSsrSCVZdzqC3SKgWrJLTEJajoI5I3pFf4hM9kuinlijOQXtQjPERWeBiUhEHBqFeLZOvDMcru4UPmaDe5G3J5vNDzk3jvNwc/w1hvESgb8/aiNZFYqNN0bL1RXAH7LknjK/MZvCZ+nBvjWQMfLhbn6TZqiRHSo55e3DCiCCtffEdGjiPOUdjWRPd97YEp0Oon62s");
+        NameConstraints nameConstraints = CertificateExtensionsUtils.getNameConstraints(certificate);
+        assertNotNull(nameConstraints);
+        assertFalse(Utils.isCollectionNotEmpty(nameConstraints.getPermittedSubtrees()));
+        assertTrue(Utils.isCollectionNotEmpty(nameConstraints.getExcludedSubtrees()));
+
+        CertificateExtensions certificateExtensions = CertificateExtensionsUtils.getCertificateExtensions(certificate);
+        NameConstraints nameConstraintsExt = certificateExtensions.getNameConstraints();
+        assertNotNull(nameConstraintsExt);
+        assertEquals(nameConstraints.getPermittedSubtrees().size(), nameConstraintsExt.getPermittedSubtrees().size());
+        assertEquals(nameConstraints.getExcludedSubtrees().size(), nameConstraintsExt.getExcludedSubtrees().size());
+
+        assertEquals(2, nameConstraintsExt.getExcludedSubtrees().size());
+        GeneralSubtree subtree = nameConstraintsExt.getExcludedSubtrees().get(0);
+        assertEquals(GeneralNameType.IP_ADDRESS, subtree.getGeneralNameType());
+        assertEquals("#0000000000000000", subtree.getValue());
+
+        subtree = nameConstraintsExt.getExcludedSubtrees().get(1);
+        assertEquals(GeneralNameType.IP_ADDRESS, subtree.getGeneralNameType());
+        assertEquals("#0000000000000000000000000000000000000000000000000000000000000000", subtree.getValue());
     }
 
 }

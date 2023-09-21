@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustedServiceChecker;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
+import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustServiceChecker;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Filters TrustedServices by QSCD consistency
+ * Filters TrustServices by QSCD consistency
  *
  */
-public class ConsistentServiceByQSCDFilter implements TrustedServiceFilter {
+public class ConsistentServiceByQSCDFilter implements TrustServiceFilter {
 
     /**
      * Default constructor
@@ -40,11 +40,12 @@ public class ConsistentServiceByQSCDFilter implements TrustedServiceFilter {
     }
 
     @Override
-    public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustedServices) {
-        List<TrustedServiceWrapper> result = new ArrayList<>();
-        for (TrustedServiceWrapper service : trustedServices) {
-            if (TrustedServiceChecker.isQSCDConsistent(service) &&
-                    TrustedServiceChecker.isQSCDStatusAsInCertConsistent(service)) {
+    public List<TrustServiceWrapper> filter(List<TrustServiceWrapper> trustServices) {
+        List<TrustServiceWrapper> result = new ArrayList<>();
+        for (TrustServiceWrapper service : trustServices) {
+            if (TrustServiceChecker.isQSCDConsistent(service) &&
+                    TrustServiceChecker.isQSCDStatusAsInCertConsistent(service) &&
+                    TrustServiceChecker.isPostEIDASQSCDConsistent(service)) {
                 result.add(service);
             }
         }

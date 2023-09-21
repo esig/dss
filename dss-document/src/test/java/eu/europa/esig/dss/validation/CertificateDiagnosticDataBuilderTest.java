@@ -32,13 +32,15 @@ import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -112,22 +114,28 @@ public class CertificateDiagnosticDataBuilderTest {
 		Set<CertificateToken> usedCertificates = new HashSet<>(Arrays.asList(sigCert, ocspCert, caToken, rootToken));
 
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
-		trustedCertSource.setSummary(new TLValidationJobSummary(new ArrayList<>(), new ArrayList<>()));
-		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
-		TrustServiceStatusAndInformationExtensionsBuilder builder = new TrustServiceStatusAndInformationExtensionsBuilder();
-		builder.setStatus("bla");
-		builder.setType("bla");
-		builder.setStartDate(new Date());
-		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(builder);
-		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.asList(serviceStatus);
-		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<>(srcList);
 
 		LOTLInfo lotlInfo = new LOTLInfo(null, null, null, "aaaa");
 		TLInfo tlInfo = new TLInfo(null, null, null, "bbb");
-		TrustProperties trustProperties = new TrustProperties(lotlInfo.getDSSId(), tlInfo.getDSSId(), trustServiceProvider, status);
+		trustedCertSource.setSummary(new TLValidationJobSummary(Collections.singletonList(lotlInfo), Collections.singletonList(tlInfo)));
+
+		TrustServiceProviderBuilder tspBuilder = new TrustServiceProviderBuilder();
+		tspBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TSP Name")); }} );
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider(tspBuilder);
+
+		TrustServiceStatusAndInformationExtensionsBuilder tsBuilder = new TrustServiceStatusAndInformationExtensionsBuilder();
+		tsBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TS Name")); }} );
+		tsBuilder.setStatus("bla");
+		tsBuilder.setType("bla");
+		tsBuilder.setStartDate(new Date());
+		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(tsBuilder);
+		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Collections.singletonList(serviceStatus);
+		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<>(srcList);
+
+		TrustProperties trustProperties = new TrustProperties(lotlInfo, tlInfo, trustServiceProvider, status);
 		
 		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<>();
-		hashMap.put(rootToken, Arrays.asList(trustProperties));
+		hashMap.put(rootToken, Collections.singletonList(trustProperties));
 		trustedCertSource.setTrustPropertiesByCertificates(hashMap);
 
 		DiagnosticDataBuilder ddb = new CertificateDiagnosticDataBuilder().usedCertificates(usedCertificates)
@@ -140,7 +148,7 @@ public class CertificateDiagnosticDataBuilderTest {
 		List<XmlCertificate> usedCertificatesDD = dd.getUsedCertificates();
 		boolean trusted = false;
 		for (XmlCertificate xmlCertificate : usedCertificatesDD) {
-			assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustedServiceProviders()));
+			assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustServiceProviders()));
 			
 			if (xmlCertificate.isTrusted()) {
 				trusted = true;
@@ -167,45 +175,52 @@ public class CertificateDiagnosticDataBuilderTest {
 
 		Set<CertificateToken> usedCertificates = new HashSet<>(Arrays.asList(sigCert, caToken, rootToken));
 
-		TrustedListsCertificateSource trustedCertSourceOne = new TrustedListsCertificateSource();
-		trustedCertSourceOne.setSummary(new TLValidationJobSummary(new ArrayList<>(), new ArrayList<>()));
-		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
-		TrustServiceStatusAndInformationExtensionsBuilder builder = new TrustServiceStatusAndInformationExtensionsBuilder();
-		builder.setStatus("bla");
-		builder.setType("bla");
-		builder.setStartDate(new Date());
-		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(builder);
-		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Arrays.asList(serviceStatus);
-		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<>(srcList);
-
 		LOTLInfo lotlInfo = new LOTLInfo(null, null, null, "aaaa");
 		TLInfo tlInfo = new TLInfo(null, null, null, "bbb");
-		TrustProperties trustProperties = new TrustProperties(lotlInfo.getDSSId(), tlInfo.getDSSId(), trustServiceProvider, status);
+
+		TrustedListsCertificateSource trustedCertSourceOne = new TrustedListsCertificateSource();
+		trustedCertSourceOne.setSummary(new TLValidationJobSummary(Collections.singletonList(lotlInfo), Collections.singletonList(tlInfo)));
+
+		TrustServiceProviderBuilder tspBuilder = new TrustServiceProviderBuilder();
+		tspBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TSP Name")); }} );
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider(tspBuilder);
+
+		TrustServiceStatusAndInformationExtensionsBuilder tsBuilder = new TrustServiceStatusAndInformationExtensionsBuilder();
+		tsBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TS Name")); }} );
+		tsBuilder.setStatus("bla");
+		tsBuilder.setType("bla");
+		tsBuilder.setStartDate(new Date());
+		TrustServiceStatusAndInformationExtensions serviceStatus = new TrustServiceStatusAndInformationExtensions(tsBuilder);
+		Iterable<TrustServiceStatusAndInformationExtensions> srcList = Collections.singletonList(serviceStatus);
+		TimeDependentValues<TrustServiceStatusAndInformationExtensions> status = new TimeDependentValues<>(srcList);
+		TrustProperties trustProperties = new TrustProperties(lotlInfo, tlInfo, trustServiceProvider, status);
 
 		HashMap<CertificateToken, List<TrustProperties>> hashMap = new HashMap<>();
-		hashMap.put(caToken, Arrays.asList(trustProperties));
+		hashMap.put(caToken, Collections.singletonList(trustProperties));
 		trustedCertSourceOne.setTrustPropertiesByCertificates(hashMap);
 
 		TrustedListsCertificateSource trustedCertSourceTwo = new TrustedListsCertificateSource();
-		trustedCertSourceTwo.setSummary(new TLValidationJobSummary(new ArrayList<>(), new ArrayList<>()));
-		builder = new TrustServiceStatusAndInformationExtensionsBuilder();
-		builder.setStatus("blabla");
-		builder.setType("blabla");
-		builder.setStartDate(new Date());
-		serviceStatus = new TrustServiceStatusAndInformationExtensions(builder);
-		srcList = Arrays.asList(serviceStatus);
+		trustedCertSourceTwo.setSummary(new TLValidationJobSummary(Collections.singletonList(lotlInfo), Collections.singletonList(tlInfo)));
+
+		tsBuilder = new TrustServiceStatusAndInformationExtensionsBuilder();
+		tsBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TS Name")); }} );
+		tsBuilder.setStatus("blabla");
+		tsBuilder.setType("blabla");
+		tsBuilder.setStartDate(new Date());
+		serviceStatus = new TrustServiceStatusAndInformationExtensions(tsBuilder);
+		srcList = Collections.singletonList(serviceStatus);
 		status = new TimeDependentValues<>(srcList);
 
 		lotlInfo = new LOTLInfo(null, null, null, "ccc");
 		tlInfo = new TLInfo(null, null, null, "dddd");
-		trustProperties = new TrustProperties(lotlInfo.getDSSId(), tlInfo.getDSSId(), trustServiceProvider, status);
+		trustProperties = new TrustProperties(lotlInfo, tlInfo, trustServiceProvider, status);
 
 		hashMap = new HashMap<>();
-		hashMap.put(caToken, Arrays.asList(trustProperties));
+		hashMap.put(caToken, Collections.singletonList(trustProperties));
 		trustedCertSourceTwo.setTrustPropertiesByCertificates(hashMap);
 
 		ListCertificateSource listCertificateSource = new ListCertificateSource();
-		listCertificateSource.add(new TrustedListsCertificateSource());
+		listCertificateSource.add(new CommonTrustedCertificateSource());
 		listCertificateSource.add(trustedCertSourceOne);
 		listCertificateSource.add(trustedCertSourceTwo);
 
@@ -220,9 +235,9 @@ public class CertificateDiagnosticDataBuilderTest {
 		boolean trusted = false;
 		for (XmlCertificate xmlCertificate : usedCertificatesDD) {
 			if (!xmlCertificate.isSelfSigned()) {
-				assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustedServiceProviders()));
-				assertEquals(1, xmlCertificate.getTrustedServiceProviders().size());
-				assertEquals(2, xmlCertificate.getTrustedServiceProviders().get(0).getTrustedServices().size());
+				assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustServiceProviders()));
+				assertEquals(1, xmlCertificate.getTrustServiceProviders().size());
+				assertEquals(2, xmlCertificate.getTrustServiceProviders().get(0).getTrustServices().size());
 				if (xmlCertificate.isTrusted()) {
 					trusted = true;
 				}

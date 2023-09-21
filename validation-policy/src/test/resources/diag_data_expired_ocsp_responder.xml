@@ -122,7 +122,7 @@
                     <ocspUrl>http://localhost:9999/pki-factory/ocsp/ocsp-skip-valid-ca</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-A490F4D57AF16788419404D2A6D4AEF045E415973B981DBF9A0D8C5B2E421B84">
                     <Status>GOOD</Status>

@@ -20,12 +20,10 @@
  */
 package eu.europa.esig.dss.enumerations;
 
-import java.io.Serializable;
-
 /**
  * Represents the CommitmentType qualifying property
  *
  */
-public interface CommitmentType extends ObjectIdentifier, Serializable {
+public interface CommitmentType extends ObjectIdentifier {
 
 }

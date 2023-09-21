@@ -18,6 +18,9 @@ public class ArchiveTimeStampObject implements EvidenceRecordObject {
     /** Time-stamp token */
     private TimestampToken timestampToken;
 
+    /** Contains validation information for the timestampToken */
+    private List<CryptographicInformation> cryptographicInformationList;
+
     /**
      * Default constructor
      */
@@ -59,6 +62,24 @@ public class ArchiveTimeStampObject implements EvidenceRecordObject {
      */
     public void setTimestampToken(TimestampToken timestampToken) {
         this.timestampToken = timestampToken;
+    }
+
+    /**
+     * Gets cryptographic information list
+     *
+     * @return a list of {@link CryptographicInformation}s
+     */
+    public List<CryptographicInformation> getCryptographicInformationList() {
+        return cryptographicInformationList;
+    }
+
+    /**
+     * Sets cryptographic information list
+     *
+     * @param cryptographicInformationList a list of {@link CryptographicInformation}s
+     */
+    public void setCryptographicInformationList(List<CryptographicInformation> cryptographicInformationList) {
+        this.cryptographicInformationList = cryptographicInformationList;
     }
 
 }

@@ -40,9 +40,11 @@ public enum Indication implements UriBasedEnum {
 	TOTAL_PASSED("urn:etsi:019102:mainindication:total-passed"),
 
 	/**
-	 * When the cryptographic checks of the signature (including checks of hashes of individual data
-	 * objects that have been signed indirectly) succeeded as well as all checks prescribed by the
-	 * signature validation policy have been passed.
+	 * The cryptographic checks of the signature failed (including checks of hashes of individual data
+	 * objects that have been signed indirectly), or it is proven that the signing certificate was invalid
+	 * at the time of generation of the signature, or because the signature is not conformant to one of
+	 * the base standards to the extent that the cryptographic verification building block is unable to
+	 * process it.
 	 */
 	TOTAL_FAILED("urn:etsi:019102:mainindication:total-failed"),
 

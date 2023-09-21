@@ -148,7 +148,7 @@
                     <ocspUrl>http://ocsp.pks.telesec.de/ocspr</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-7BB859CB9EB7F767827B99BF5EB441D24AEEA96B7948F9BE15CAD37E073BDE8F">
                     <Status>GOOD</Status>
@@ -207,7 +207,7 @@
                     <ocspUrl>http://ocsp.exceet.cloud/ocsp</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-AEB1958FE4517F52D8488F4E7DBE4A82E2DE0ADFE01B7BF11DEE0B53BFE12C55">
                     <Status>GOOD</Status>
@@ -268,7 +268,7 @@
                     <QcSSCD present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-883A3DDA88FB4A296DE0BCD4531EF6C105F62B530247224295BF1D8E0961F0B3">
                     <Status>GOOD</Status>
@@ -317,7 +317,7 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>L4IzaJxumnXi2ztcDQSrEk3GVJ/pzkzUinypytyEpfc=</DigestValue>
@@ -366,7 +366,7 @@
                     <ocspUrl>http://ocsp.exceet.cloud/ocsp</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>X0De+Q/YsJj7us4dKsHQb2XwTo+IXO+2FYQ7oSaTKwg=</DigestValue>
@@ -420,7 +420,7 @@
                     <ocspUrl>http://ocsp.exceet.cloud/ocsp</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>wO3Ak+9qDRYvmZ1prz5ip6qmqQfd+jBbBCvyBwKXwQ4=</DigestValue>
@@ -475,7 +475,7 @@
                     <crlUrl>http://tqrca1.pki.telesec.de/rl/TeleSec_qualified_Root_CA_1.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>zJ1NzM6oxpGqcoOSwtffsx+jE3Z8hEv10yd25/hUZNc=</DigestValue>
@@ -529,7 +529,7 @@
                     <ocspUrl>http://ocsp.pks.telesec.de/ocspr</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-6779870BA341124B5BE084F2970A492D798C29882F8F5832637FE237D3F095A0">
                     <Status>GOOD</Status>
@@ -589,7 +589,7 @@
                     <ocspUrl>http://ocsp.pks.telesec.de/ocspr</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-470D91719C6C2C8DCABA187313EAF16DBBD2E5FED5EA1828BE4FCB3B30C90F75">
                     <Status>GOOD</Status>

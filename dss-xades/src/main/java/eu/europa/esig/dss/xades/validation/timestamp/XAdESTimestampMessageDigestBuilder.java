@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.validation.timestamp;
 import eu.europa.esig.dss.xml.XMLCanonicalizer;
 import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -34,7 +34,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
@@ -77,7 +77,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private final Element signature;
 
 	/** The XAdES XPaths to use */
-	private final XAdESPaths xadesPaths;
+	private final XAdESPath xadesPaths;
 
 	/** The digest algorithm to be used for message-imprint digest computation */
 	private DigestAlgorithm digestAlgorithm;
@@ -311,7 +311,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	public DSSMessageDigest getSignatureTimestampMessageDigest() {
 		try {
 			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
-			byte[] canonicalizedValue = getCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
+			byte[] canonicalizedValue = getCanonicalizedValue(XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
 			digestCalculator.update(canonicalizedValue);
 
 			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
@@ -348,7 +348,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			/*
 			 * 1) The ds:SignatureValue element.
 			 */
-			byte[] canonicalizedValue = getCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
+			byte[] canonicalizedValue = getCanonicalizedValue(XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
 			digestCalculator.update(canonicalizedValue);
 
 			/*
@@ -547,13 +547,13 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			 * - The ds:SignatureValue element.<br>
 			 * - The ds:KeyInfo element, if present.
 			 */
-			bytes = getCanonicalizedValue(XMLDSigPaths.SIGNED_INFO_PATH, canonicalizationAlgorithm);
+			bytes = getCanonicalizedValue(XMLDSigPath.SIGNED_INFO_PATH, canonicalizationAlgorithm);
 			digestCalculator.update(bytes);
 
-			bytes = getCanonicalizedValue(XMLDSigPaths.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
+			bytes = getCanonicalizedValue(XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
 			digestCalculator.update(bytes);
 
-			bytes = getCanonicalizedValue(XMLDSigPaths.KEY_INFO_PATH, canonicalizationAlgorithm);
+			bytes = getCanonicalizedValue(XMLDSigPath.KEY_INFO_PATH, canonicalizationAlgorithm);
 			digestCalculator.update(bytes);
 			/*
 			 * 4) Take the unsigned signature properties that appear before the current xadesv141:ArchiveTimeStamp in
@@ -727,7 +727,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	 * @return {@link NodeList}
 	 */
 	private NodeList getObjects() {
-		return DomUtils.getNodeList(signature, XMLDSigPaths.OBJECT_PATH);
+		return DomUtils.getNodeList(signature, XMLDSigPath.OBJECT_PATH);
 	}
 	
 	private void writeObjectBytes(final DSSMessageDigestCalculator digestCalculator, final NodeList objects,

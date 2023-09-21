@@ -22,14 +22,23 @@
 		<SignedFilesPresent Level="FAIL" />
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
+	<PDFAConstraints>
+		<!-- PDF/A only -->
+		<!--		<AcceptablePDFAProfiles Level="WARN">-->
+		<!--			<Id>PDF/A-2A</Id>-->
+		<!--			<Id>PDF/A-2B</Id>-->
+		<!--			<Id>PDF/A-2U</Id>-->
+		<!--		</AcceptablePDFAProfiles>-->
+		<!--		<PDFACompliant Level="WARN" />-->
+	</PDFAConstraints>
 	<SignatureConstraints>
 		<StructuralValidation Level="WARN" />
 		<AcceptablePolicies Level="FAIL">
 			<Id>ANY_POLICY</Id>
 			<Id>NO_POLICY</Id>
 		</AcceptablePolicies>
-		<PolicyAvailable Level="FAIL" />
-		<PolicyHashMatch Level="FAIL" />
+		<PolicyAvailable Level="INFORM" />
+		<PolicyHashMatch Level="WARN" />
 		<AcceptableFormats Level="FAIL">
 			<Id>*</Id>
 		</AcceptableFormats>
@@ -51,16 +60,16 @@
 			<FieldMDP Level="WARN" />
 			<SigFieldLock Level="WARN" />
 			<UndefinedChanges Level="WARN" />
-<!--			<TrustedServiceTypeIdentifier Level="WARN"> -->
+<!--			<TrustServiceTypeIdentifier Level="WARN"> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
-<!--			</TrustedServiceTypeIdentifier> -->
-<!--			<TrustedServiceStatus Level="FAIL"> -->
+<!--			</TrustServiceTypeIdentifier> -->
+<!--			<TrustServiceStatus Level="FAIL"> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id> -->
-<!--			</TrustedServiceStatus> -->
+<!--			</TrustServiceStatus> -->
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -76,9 +85,23 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<SupportedCriticalExtensions Level="WARN">
+					<Id>2.5.29.15</Id> <!-- keyUsage -->
+					<Id>2.5.29.32</Id> <!-- certificatePolicies -->
+					<Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+					<Id>2.5.29.19</Id> <!-- basicConstraints -->
+					<Id>2.5.29.30</Id> <!-- nameConstraints -->
+					<Id>2.5.29.36</Id> <!-- policyConstraints -->
+					<Id>2.5.29.37</Id> <!-- extendedKeyUsage -->
+					<Id>2.5.29.31</Id> <!-- CRLDistributionPoints -->
+					<Id>2.5.29.54</Id> <!-- inhibitAnyPolicy -->
+					<Id>1.3.6.1.5.5.7.1.3</Id> <!-- QCStatements -->
+					<!-- policyMappings 2.5.29.33 not supported -->
+				</SupportedCriticalExtensions>
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
@@ -106,9 +129,23 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<SupportedCriticalExtensions Level="WARN">
+					<Id>2.5.29.15</Id> <!-- keyUsage -->
+					<Id>2.5.29.32</Id> <!-- certificatePolicies -->
+					<Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+					<Id>2.5.29.19</Id> <!-- basicConstraints -->
+					<Id>2.5.29.30</Id> <!-- nameConstraints -->
+					<Id>2.5.29.36</Id> <!-- policyConstraints -->
+					<Id>2.5.29.37</Id> <!-- extendedKeyUsage -->
+					<Id>2.5.29.31</Id> <!-- CRLDistributionPoints -->
+					<Id>2.5.29.54</Id> <!-- inhibitAnyPolicy -->
+					<Id>1.3.6.1.5.5.7.1.3</Id> <!-- QCStatements -->
+					<!-- policyMappings 2.5.29.33 not supported -->
+				</SupportedCriticalExtensions>
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -149,16 +186,16 @@
 			<SignatureIntact Level="FAIL" />
 			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
-<!--			<TrustedServiceTypeIdentifier Level="WARN"> -->
+<!--			<TrustServiceTypeIdentifier Level="WARN"> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
-<!--			</TrustedServiceTypeIdentifier> -->
-<!--			<TrustedServiceStatus Level="FAIL"> -->
+<!--			</TrustServiceTypeIdentifier> -->
+<!--			<TrustServiceStatus Level="FAIL"> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id> -->
 <!--				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id> -->
-<!--			</TrustedServiceStatus> -->
+<!--			</TrustServiceStatus> -->
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -174,18 +211,32 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<SupportedCriticalExtensions Level="WARN">
+					<Id>2.5.29.15</Id> <!-- keyUsage -->
+					<Id>2.5.29.32</Id> <!-- certificatePolicies -->
+					<Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+					<Id>2.5.29.19</Id> <!-- basicConstraints -->
+					<Id>2.5.29.30</Id> <!-- nameConstraints -->
+					<Id>2.5.29.36</Id> <!-- policyConstraints -->
+					<Id>2.5.29.37</Id> <!-- extendedKeyUsage -->
+					<Id>2.5.29.31</Id> <!-- CRLDistributionPoints -->
+					<Id>2.5.29.54</Id> <!-- inhibitAnyPolicy -->
+					<Id>1.3.6.1.5.5.7.1.3</Id> <!-- QCStatements -->
+					<!-- policyMappings 2.5.29.33 not supported -->
+				</SupportedCriticalExtensions>
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<SerialNumberPresent Level="WARN" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />
-<!--				<QcCompliance Level="WARN" /> -->
-<!--				<QcSSCD Level="WARN" /> -->
-<!--				<IssuedToNaturalPerson Level="INFORM" /> -->
-<!--				<IssuedToLegalPerson Level="INFORM" /> -->
-<!--				<UsePseudonym Level="INFORM" />-->
+				<!--				<QcCompliance Level="WARN" /> -->
+				<!--				<QcSSCD Level="WARN" /> -->
+				<!-- 				<IssuedToNaturalPerson Level="INFORM" /> -->
+				<!-- 				<IssuedToLegalPerson Level="INFORM" /> -->
+				<UsePseudonym Level="INFORM" />
 				<Cryptographic />
 			</SigningCertificate>
 			<CACertificate>
@@ -202,9 +253,23 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<SupportedCriticalExtensions Level="WARN">
+					<Id>2.5.29.15</Id> <!-- keyUsage -->
+					<Id>2.5.29.32</Id> <!-- certificatePolicies -->
+					<Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+					<Id>2.5.29.19</Id> <!-- basicConstraints -->
+					<Id>2.5.29.30</Id> <!-- nameConstraints -->
+					<Id>2.5.29.36</Id> <!-- policyConstraints -->
+					<Id>2.5.29.37</Id> <!-- extendedKeyUsage -->
+					<Id>2.5.29.31</Id> <!-- CRLDistributionPoints -->
+					<Id>2.5.29.54</Id> <!-- inhibitAnyPolicy -->
+					<Id>1.3.6.1.5.5.7.1.3</Id> <!-- QCStatements -->
+					<!-- policyMappings 2.5.29.33 not supported -->
+				</SupportedCriticalExtensions>
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -245,6 +310,16 @@
 			<ReferenceDataIntact Level="FAIL" />
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
+			<ByteRange Level="FAIL" />
+			<ByteRangeCollision Level="WARN" />
+			<PdfSignatureDictionary Level="FAIL" />
+			<PdfPageDifference Level="FAIL" />
+			<PdfAnnotationOverlap Level="WARN" />
+			<PdfVisualDifference Level="WARN" />
+			<DocMDP Level="WARN" />
+			<FieldMDP Level="WARN" />
+			<SigFieldLock Level="WARN" />
+			<UndefinedChanges Level="WARN" />
 			<SigningCertificate>
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
@@ -258,9 +333,23 @@
 				</ExtendedKeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<SupportedCriticalExtensions Level="WARN">
+					<Id>2.5.29.15</Id> <!-- keyUsage -->
+					<Id>2.5.29.32</Id> <!-- certificatePolicies -->
+					<Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+					<Id>2.5.29.19</Id> <!-- basicConstraints -->
+					<Id>2.5.29.30</Id> <!-- nameConstraints -->
+					<Id>2.5.29.36</Id> <!-- policyConstraints -->
+					<Id>2.5.29.37</Id> <!-- extendedKeyUsage -->
+					<Id>2.5.29.31</Id> <!-- CRLDistributionPoints -->
+					<Id>2.5.29.54</Id> <!-- inhibitAnyPolicy -->
+					<Id>1.3.6.1.5.5.7.1.3</Id> <!-- QCStatements -->
+					<!-- policyMappings 2.5.29.33 not supported -->
+				</SupportedCriticalExtensions>
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<NotSelfSigned Level="WARN" />
@@ -280,9 +369,23 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<SupportedCriticalExtensions Level="WARN">
+					<Id>2.5.29.15</Id> <!-- keyUsage -->
+					<Id>2.5.29.32</Id> <!-- certificatePolicies -->
+					<Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+					<Id>2.5.29.19</Id> <!-- basicConstraints -->
+					<Id>2.5.29.30</Id> <!-- nameConstraints -->
+					<Id>2.5.29.36</Id> <!-- policyConstraints -->
+					<Id>2.5.29.37</Id> <!-- extendedKeyUsage -->
+					<Id>2.5.29.31</Id> <!-- CRLDistributionPoints -->
+					<Id>2.5.29.54</Id> <!-- inhibitAnyPolicy -->
+					<Id>1.3.6.1.5.5.7.1.3</Id> <!-- QCStatements -->
+					<!-- policyMappings 2.5.29.33 not supported -->
+				</SupportedCriticalExtensions>
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -318,6 +421,21 @@
 				<RevocationFreshness Level="IGNORE" Unit="DAYS" Value="0" />
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<SupportedCriticalExtensions Level="WARN">
+					<Id>2.5.29.15</Id> <!-- keyUsage -->
+					<Id>2.5.29.32</Id> <!-- certificatePolicies -->
+					<Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+					<Id>2.5.29.19</Id> <!-- basicConstraints -->
+					<Id>2.5.29.30</Id> <!-- nameConstraints -->
+					<Id>2.5.29.36</Id> <!-- policyConstraints -->
+					<Id>2.5.29.37</Id> <!-- extendedKeyUsage -->
+					<Id>2.5.29.31</Id> <!-- CRLDistributionPoints -->
+					<Id>2.5.29.54</Id> <!-- inhibitAnyPolicy -->
+					<Id>1.3.6.1.5.5.7.1.3</Id> <!-- QCStatements -->
+					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+					<!-- policyMappings 2.5.29.33 not supported -->
+				</SupportedCriticalExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />
@@ -336,9 +454,23 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<SupportedCriticalExtensions Level="WARN">
+					<Id>2.5.29.15</Id> <!-- keyUsage -->
+					<Id>2.5.29.32</Id> <!-- certificatePolicies -->
+					<Id>2.5.29.17</Id> <!-- subjectAlternativeName -->
+					<Id>2.5.29.19</Id> <!-- basicConstraints -->
+					<Id>2.5.29.30</Id> <!-- nameConstraints -->
+					<Id>2.5.29.36</Id> <!-- policyConstraints -->
+					<Id>2.5.29.37</Id> <!-- extendedKeyUsage -->
+					<Id>2.5.29.31</Id> <!-- CRLDistributionPoints -->
+					<Id>2.5.29.54</Id> <!-- inhibitAnyPolicy -->
+					<Id>1.3.6.1.5.5.7.1.3</Id> <!-- QCStatements -->
+					<!-- policyMappings 2.5.29.33 not supported -->
+				</SupportedCriticalExtensions>
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
+				<IssuerName Level="FAIL" />
 				<NotRevoked Level="FAIL" />
 				<NotOnHold Level="FAIL" />
 				<Cryptographic />

@@ -231,7 +231,7 @@ public interface IUtils {
 	 *
 	 * @param array byte array to get subArray from
 	 * @param start the start index of the subArray
-	 * @param length the length of the subArray
+	 * @param length the final index of the subArray to be copied
 	 * @return subArray
 	 */
 	byte[] subarray(byte[] array, int start, int length);
@@ -317,7 +317,7 @@ public interface IUtils {
 	 * Checks if the string is base64-encoded
 	 *
 	 * @param base64String {@link String}
-	 * @return TRUE if he string is base64-encoded, FALSE otherwise
+	 * @return TRUE if the String is base64-encoded, FALSE otherwise
 	 */
 	boolean isBase64Encoded(String base64String);
 

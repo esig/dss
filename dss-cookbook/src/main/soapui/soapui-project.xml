@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="62c0c65c-00fe-478c-a060-00529a090280" activeEnvironment="Default" name="DSS-SOAP-REST" resourceRoot="" soapui-version="5.7.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="17828c3d-c8ef-495c-b77c-fc90a19c79fd" wsaVersion="NONE" name="SoapDocumentValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://validation.dss.esig.europa.eu/}SoapDocumentValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentValidationServiceImplService" targetNamespace="http://validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://validation.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+<con:soapui-project id="62c0c65c-00fe-478c-a060-00529a090280" activeEnvironment="Default" name="DSS-SOAP-REST" resourceRoot="" soapui-version="5.7.1" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="17828c3d-c8ef-495c-b77c-fc90a19c79fd" wsaVersion="NONE" name="SoapDocumentValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://validation.dss.esig.europa.eu/}SoapDocumentValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentValidationServiceImplService" targetNamespace="http://validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://validation.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
   <wsdl:types>
     <xs:schema elementFormDefault="unqualified" targetNamespace="http://validation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="http://dss.esig.europa.eu/validation/simple-report" xmlns:ns3="http://dss.esig.europa.eu/validation/diagnostic" xmlns:ns2="http://dss.esig.europa.eu/validation/detailed-report" xmlns:ns1="http://dss.esig.europa.eu/validation/policy">
       <xs:import namespace="http://dss.esig.europa.eu/validation/policy"/>
@@ -184,7 +184,7 @@
                                 </xs:sequence>
                               </xs:complexType>
                             </xs:element>
-                            <xs:element form="qualified" maxOccurs="unbounded" name="TrustedServiceProvider" type="ns3:TrustedServiceProviderType"/>
+                            <xs:element form="qualified" maxOccurs="unbounded" name="TrustServiceProvider" type="ns3:TrustServiceProviderType"/>
                             <xs:element form="qualified" name="Revocation" type="ns3:RevocationType"/>
                             <xs:element form="qualified" minOccurs="0" name="Info" type="ns3:InfoType"/>
                           </xs:sequence>
@@ -606,7 +606,7 @@
                             </xs:sequence>
                           </xs:complexType>
                         </xs:element>
-                        <xs:element maxOccurs="unbounded" name="TrustedServiceProvider" type="tns:TrustedServiceProviderType"/>
+                        <xs:element maxOccurs="unbounded" name="TrustServiceProvider" type="tns:TrustServiceProviderType"/>
                         <xs:element name="Revocation" type="tns:RevocationType"/>
                         <xs:element minOccurs="0" name="Info" type="tns:InfoType"/>
                       </xs:sequence>
@@ -727,7 +727,7 @@
           </xs:extension>
         </xs:simpleContent>
       </xs:complexType>
-      <xs:complexType name="TrustedServiceProviderType">
+      <xs:complexType name="TrustServiceProviderType">
         <xs:sequence>
           <xs:element name="TSPName" type="xs:string"/>
           <xs:element name="TSPServiceName" type="xs:string"/>
@@ -1578,10 +1578,12 @@
           <xs:element maxOccurs="unbounded" minOccurs="0" name="contentTimestamps" nillable="true" type="tns:timestampDTO"/>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="detachedContents" nillable="true" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element name="embedXML" type="xs:boolean"/>
           <xs:element minOccurs="0" name="encryptionAlgorithm" type="tns:encryptionAlgorithm"/>
           <xs:element name="generateTBSWithoutCertificate" type="xs:boolean"/>
           <xs:element minOccurs="0" name="imageParameters" type="tns:remoteSignatureImageParameters"/>
           <xs:element minOccurs="0" name="jwsSerializationType" type="tns:jwsSerializationType"/>
+          <xs:element name="manifestSignature" type="xs:boolean"/>
           <xs:element minOccurs="0" name="maskGenerationFunction" type="tns:maskGenerationFunction"/>
           <xs:element minOccurs="0" name="referenceDigestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="sigDMechanism" type="tns:sigDMechanism"/>
@@ -1648,7 +1650,6 @@
           <xs:element minOccurs="0" name="fieldParameters" type="tns:remoteSignatureFieldParameters"/>
           <xs:element minOccurs="0" name="image" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="imageScaling" type="tns:imageScaling"/>
-          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="textParameters" type="tns:remoteSignatureImageTextParameters"/>
           <xs:element minOccurs="0" name="zoom" type="xs:int"/>
         </xs:sequence>
@@ -1668,6 +1669,7 @@
           <xs:element minOccurs="0" name="originX" type="xs:float"/>
           <xs:element minOccurs="0" name="originY" type="xs:float"/>
           <xs:element minOccurs="0" name="page" type="xs:int"/>
+          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="width" type="xs:float"/>
         </xs:sequence>
       </xs:complexType>
@@ -1858,8 +1860,10 @@
           <xs:enumeration value="ALL_DATA_OBJECTS_TIMESTAMP"/>
           <xs:enumeration value="INDIVIDUAL_DATA_OBJECTS_TIMESTAMP"/>
           <xs:enumeration value="SIGNATURE_TIMESTAMP"/>
+          <xs:enumeration value="VRI_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_TIMESTAMP"/>
+          <xs:enumeration value="CONTAINER_TIMESTAMP"/>
           <xs:enumeration value="DOCUMENT_TIMESTAMP"/>
           <xs:enumeration value="ARCHIVE_TIMESTAMP"/>
         </xs:restriction>
@@ -1892,13 +1896,6 @@
           <xs:enumeration value="BOTTOM"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:simpleType name="imageScaling">
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="STRETCH"/>
-          <xs:enumeration value="ZOOM_AND_CENTER"/>
-          <xs:enumeration value="CENTER"/>
-        </xs:restriction>
-      </xs:simpleType>
       <xs:simpleType name="visualSignatureRotation">
         <xs:restriction base="xs:string">
           <xs:enumeration value="NONE"/>
@@ -1906,6 +1903,13 @@
           <xs:enumeration value="ROTATE_90"/>
           <xs:enumeration value="ROTATE_180"/>
           <xs:enumeration value="ROTATE_270"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="imageScaling">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="STRETCH"/>
+          <xs:enumeration value="ZOOM_AND_CENTER"/>
+          <xs:enumeration value="CENTER"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signerTextHorizontalAlignment">
@@ -1960,32 +1964,40 @@
       <xs:simpleType name="signatureLevel">
         <xs:restriction base="xs:string">
           <xs:enumeration value="XML_NOT_ETSI"/>
+          <xs:enumeration value="XAdES_BES"/>
+          <xs:enumeration value="XAdES_EPES"/>
+          <xs:enumeration value="XAdES_T"/>
+          <xs:enumeration value="XAdES_LT"/>
           <xs:enumeration value="XAdES_C"/>
           <xs:enumeration value="XAdES_X"/>
           <xs:enumeration value="XAdES_XL"/>
           <xs:enumeration value="XAdES_A"/>
-          <xs:enumeration value="XAdES_BASELINE_LTA"/>
-          <xs:enumeration value="XAdES_BASELINE_LT"/>
-          <xs:enumeration value="XAdES_BASELINE_T"/>
           <xs:enumeration value="XAdES_BASELINE_B"/>
+          <xs:enumeration value="XAdES_BASELINE_T"/>
+          <xs:enumeration value="XAdES_BASELINE_LT"/>
+          <xs:enumeration value="XAdES_BASELINE_LTA"/>
           <xs:enumeration value="CMS_NOT_ETSI"/>
+          <xs:enumeration value="CAdES_BES"/>
+          <xs:enumeration value="CAdES_EPES"/>
+          <xs:enumeration value="CAdES_T"/>
+          <xs:enumeration value="CAdES_LT"/>
           <xs:enumeration value="CAdES_C"/>
           <xs:enumeration value="CAdES_X"/>
           <xs:enumeration value="CAdES_XL"/>
           <xs:enumeration value="CAdES_A"/>
-          <xs:enumeration value="CAdES_BASELINE_LTA"/>
-          <xs:enumeration value="CAdES_BASELINE_LT"/>
-          <xs:enumeration value="CAdES_BASELINE_T"/>
           <xs:enumeration value="CAdES_BASELINE_B"/>
+          <xs:enumeration value="CAdES_BASELINE_T"/>
+          <xs:enumeration value="CAdES_BASELINE_LT"/>
+          <xs:enumeration value="CAdES_BASELINE_LTA"/>
           <xs:enumeration value="PDF_NOT_ETSI"/>
-          <xs:enumeration value="PAdES_BASELINE_LTA"/>
-          <xs:enumeration value="PAdES_BASELINE_LT"/>
-          <xs:enumeration value="PAdES_BASELINE_T"/>
-          <xs:enumeration value="PAdES_BASELINE_B"/>
           <xs:enumeration value="PKCS7_B"/>
           <xs:enumeration value="PKCS7_T"/>
           <xs:enumeration value="PKCS7_LT"/>
           <xs:enumeration value="PKCS7_LTA"/>
+          <xs:enumeration value="PAdES_BASELINE_B"/>
+          <xs:enumeration value="PAdES_BASELINE_T"/>
+          <xs:enumeration value="PAdES_BASELINE_LT"/>
+          <xs:enumeration value="PAdES_BASELINE_LTA"/>
           <xs:enumeration value="JSON_NOT_ETSI"/>
           <xs:enumeration value="JAdES_BASELINE_B"/>
           <xs:enumeration value="JAdES_BASELINE_T"/>
@@ -2539,10 +2551,12 @@
           <xs:element maxOccurs="unbounded" minOccurs="0" name="contentTimestamps" nillable="true" type="tns:timestampDTO"/>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="detachedContents" nillable="true" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element name="embedXML" type="xs:boolean"/>
           <xs:element minOccurs="0" name="encryptionAlgorithm" type="tns:encryptionAlgorithm"/>
           <xs:element name="generateTBSWithoutCertificate" type="xs:boolean"/>
           <xs:element minOccurs="0" name="imageParameters" type="tns:remoteSignatureImageParameters"/>
           <xs:element minOccurs="0" name="jwsSerializationType" type="tns:jwsSerializationType"/>
+          <xs:element name="manifestSignature" type="xs:boolean"/>
           <xs:element minOccurs="0" name="maskGenerationFunction" type="tns:maskGenerationFunction"/>
           <xs:element minOccurs="0" name="referenceDigestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="sigDMechanism" type="tns:sigDMechanism"/>
@@ -2616,7 +2630,6 @@
           <xs:element minOccurs="0" name="fieldParameters" type="tns:remoteSignatureFieldParameters"/>
           <xs:element minOccurs="0" name="image" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="imageScaling" type="tns:imageScaling"/>
-          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="textParameters" type="tns:remoteSignatureImageTextParameters"/>
           <xs:element minOccurs="0" name="zoom" type="xs:int"/>
         </xs:sequence>
@@ -2636,6 +2649,7 @@
           <xs:element minOccurs="0" name="originX" type="xs:float"/>
           <xs:element minOccurs="0" name="originY" type="xs:float"/>
           <xs:element minOccurs="0" name="page" type="xs:int"/>
+          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="width" type="xs:float"/>
         </xs:sequence>
       </xs:complexType>
@@ -2797,8 +2811,10 @@
           <xs:enumeration value="ALL_DATA_OBJECTS_TIMESTAMP"/>
           <xs:enumeration value="INDIVIDUAL_DATA_OBJECTS_TIMESTAMP"/>
           <xs:enumeration value="SIGNATURE_TIMESTAMP"/>
+          <xs:enumeration value="VRI_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_TIMESTAMP"/>
+          <xs:enumeration value="CONTAINER_TIMESTAMP"/>
           <xs:enumeration value="DOCUMENT_TIMESTAMP"/>
           <xs:enumeration value="ARCHIVE_TIMESTAMP"/>
         </xs:restriction>
@@ -2831,13 +2847,6 @@
           <xs:enumeration value="BOTTOM"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:simpleType name="imageScaling">
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="STRETCH"/>
-          <xs:enumeration value="ZOOM_AND_CENTER"/>
-          <xs:enumeration value="CENTER"/>
-        </xs:restriction>
-      </xs:simpleType>
       <xs:simpleType name="visualSignatureRotation">
         <xs:restriction base="xs:string">
           <xs:enumeration value="NONE"/>
@@ -2845,6 +2854,13 @@
           <xs:enumeration value="ROTATE_90"/>
           <xs:enumeration value="ROTATE_180"/>
           <xs:enumeration value="ROTATE_270"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="imageScaling">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="STRETCH"/>
+          <xs:enumeration value="ZOOM_AND_CENTER"/>
+          <xs:enumeration value="CENTER"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signerTextHorizontalAlignment">
@@ -2899,32 +2915,40 @@
       <xs:simpleType name="signatureLevel">
         <xs:restriction base="xs:string">
           <xs:enumeration value="XML_NOT_ETSI"/>
+          <xs:enumeration value="XAdES_BES"/>
+          <xs:enumeration value="XAdES_EPES"/>
+          <xs:enumeration value="XAdES_T"/>
+          <xs:enumeration value="XAdES_LT"/>
           <xs:enumeration value="XAdES_C"/>
           <xs:enumeration value="XAdES_X"/>
           <xs:enumeration value="XAdES_XL"/>
           <xs:enumeration value="XAdES_A"/>
-          <xs:enumeration value="XAdES_BASELINE_LTA"/>
-          <xs:enumeration value="XAdES_BASELINE_LT"/>
-          <xs:enumeration value="XAdES_BASELINE_T"/>
           <xs:enumeration value="XAdES_BASELINE_B"/>
+          <xs:enumeration value="XAdES_BASELINE_T"/>
+          <xs:enumeration value="XAdES_BASELINE_LT"/>
+          <xs:enumeration value="XAdES_BASELINE_LTA"/>
           <xs:enumeration value="CMS_NOT_ETSI"/>
+          <xs:enumeration value="CAdES_BES"/>
+          <xs:enumeration value="CAdES_EPES"/>
+          <xs:enumeration value="CAdES_T"/>
+          <xs:enumeration value="CAdES_LT"/>
           <xs:enumeration value="CAdES_C"/>
           <xs:enumeration value="CAdES_X"/>
           <xs:enumeration value="CAdES_XL"/>
           <xs:enumeration value="CAdES_A"/>
-          <xs:enumeration value="CAdES_BASELINE_LTA"/>
-          <xs:enumeration value="CAdES_BASELINE_LT"/>
-          <xs:enumeration value="CAdES_BASELINE_T"/>
           <xs:enumeration value="CAdES_BASELINE_B"/>
+          <xs:enumeration value="CAdES_BASELINE_T"/>
+          <xs:enumeration value="CAdES_BASELINE_LT"/>
+          <xs:enumeration value="CAdES_BASELINE_LTA"/>
           <xs:enumeration value="PDF_NOT_ETSI"/>
-          <xs:enumeration value="PAdES_BASELINE_LTA"/>
-          <xs:enumeration value="PAdES_BASELINE_LT"/>
-          <xs:enumeration value="PAdES_BASELINE_T"/>
-          <xs:enumeration value="PAdES_BASELINE_B"/>
           <xs:enumeration value="PKCS7_B"/>
           <xs:enumeration value="PKCS7_T"/>
           <xs:enumeration value="PKCS7_LT"/>
           <xs:enumeration value="PKCS7_LTA"/>
+          <xs:enumeration value="PAdES_BASELINE_B"/>
+          <xs:enumeration value="PAdES_BASELINE_T"/>
+          <xs:enumeration value="PAdES_BASELINE_LT"/>
+          <xs:enumeration value="PAdES_BASELINE_LTA"/>
           <xs:enumeration value="JSON_NOT_ETSI"/>
           <xs:enumeration value="JAdES_BASELINE_B"/>
           <xs:enumeration value="JAdES_BASELINE_T"/>
@@ -4199,10 +4223,10 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
-              <xs:element minOccurs="0" name="TrustedServiceProviders">
+              <xs:element minOccurs="0" name="TrustServiceProviders">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="TrustedServiceProvider" type="tns:TrustedServiceProvider"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="TrustServiceProvider" type="tns:TrustServiceProvider"/>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
@@ -4240,21 +4264,21 @@
           </xs:extension>
         </xs:simpleContent>
       </xs:complexType>
-      <xs:complexType name="TrustedServiceProvider">
+      <xs:complexType name="TrustServiceProvider">
         <xs:sequence>
           <xs:element name="TSPName" type="xs:string"/>
           <xs:element minOccurs="0" name="TSPRegistrationIdentifier" type="xs:string"/>
           <xs:element name="CountryCode" type="xs:string"/>
-          <xs:element name="TrustedServices">
+          <xs:element name="TrustServices">
             <xs:complexType>
               <xs:sequence>
-                <xs:element maxOccurs="unbounded" minOccurs="0" name="TrustedService" type="tns:TrustedService"/>
+                <xs:element maxOccurs="unbounded" minOccurs="0" name="TrustService" type="tns:TrustService"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="TrustedService">
+      <xs:complexType name="TrustService">
         <xs:sequence>
           <xs:element name="ServiceDigitalIdentifier" type="xs:IDREF"/>
           <xs:element name="ServiceName" type="xs:string"/>
@@ -5503,7 +5527,6 @@
           <xs:element minOccurs="0" name="fieldParameters" type="tns:remoteSignatureFieldParameters"/>
           <xs:element minOccurs="0" name="image" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="imageScaling" type="tns:imageScaling"/>
-          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="textParameters" type="tns:remoteSignatureImageTextParameters"/>
           <xs:element minOccurs="0" name="zoom" type="xs:int"/>
         </xs:sequence>
@@ -5523,6 +5546,7 @@
           <xs:element minOccurs="0" name="originX" type="xs:float"/>
           <xs:element minOccurs="0" name="originY" type="xs:float"/>
           <xs:element minOccurs="0" name="page" type="xs:int"/>
+          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="width" type="xs:float"/>
         </xs:sequence>
       </xs:complexType>
@@ -5623,8 +5647,10 @@
           <xs:enumeration value="ALL_DATA_OBJECTS_TIMESTAMP"/>
           <xs:enumeration value="INDIVIDUAL_DATA_OBJECTS_TIMESTAMP"/>
           <xs:enumeration value="SIGNATURE_TIMESTAMP"/>
+          <xs:enumeration value="VRI_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_TIMESTAMP"/>
+          <xs:enumeration value="CONTAINER_TIMESTAMP"/>
           <xs:enumeration value="DOCUMENT_TIMESTAMP"/>
           <xs:enumeration value="ARCHIVE_TIMESTAMP"/>
         </xs:restriction>
@@ -5657,13 +5683,6 @@
           <xs:enumeration value="BOTTOM"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:simpleType name="imageScaling">
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="STRETCH"/>
-          <xs:enumeration value="ZOOM_AND_CENTER"/>
-          <xs:enumeration value="CENTER"/>
-        </xs:restriction>
-      </xs:simpleType>
       <xs:simpleType name="visualSignatureRotation">
         <xs:restriction base="xs:string">
           <xs:enumeration value="NONE"/>
@@ -5671,6 +5690,13 @@
           <xs:enumeration value="ROTATE_90"/>
           <xs:enumeration value="ROTATE_180"/>
           <xs:enumeration value="ROTATE_270"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="imageScaling">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="STRETCH"/>
+          <xs:enumeration value="ZOOM_AND_CENTER"/>
+          <xs:enumeration value="CENTER"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signerTextHorizontalAlignment">
@@ -6006,7 +6032,6 @@
           <xs:element minOccurs="0" name="fieldParameters" type="tns:remoteSignatureFieldParameters"/>
           <xs:element minOccurs="0" name="image" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="imageScaling" type="tns:imageScaling"/>
-          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="textParameters" type="tns:remoteSignatureImageTextParameters"/>
           <xs:element minOccurs="0" name="zoom" type="xs:int"/>
         </xs:sequence>
@@ -6026,6 +6051,7 @@
           <xs:element minOccurs="0" name="originX" type="xs:float"/>
           <xs:element minOccurs="0" name="originY" type="xs:float"/>
           <xs:element minOccurs="0" name="page" type="xs:int"/>
+          <xs:element minOccurs="0" name="rotation" type="tns:visualSignatureRotation"/>
           <xs:element minOccurs="0" name="width" type="xs:float"/>
         </xs:sequence>
       </xs:complexType>
@@ -6138,8 +6164,10 @@
           <xs:enumeration value="ALL_DATA_OBJECTS_TIMESTAMP"/>
           <xs:enumeration value="INDIVIDUAL_DATA_OBJECTS_TIMESTAMP"/>
           <xs:enumeration value="SIGNATURE_TIMESTAMP"/>
+          <xs:enumeration value="VRI_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP"/>
           <xs:enumeration value="VALIDATION_DATA_TIMESTAMP"/>
+          <xs:enumeration value="CONTAINER_TIMESTAMP"/>
           <xs:enumeration value="DOCUMENT_TIMESTAMP"/>
           <xs:enumeration value="ARCHIVE_TIMESTAMP"/>
         </xs:restriction>
@@ -6172,13 +6200,6 @@
           <xs:enumeration value="BOTTOM"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:simpleType name="imageScaling">
-        <xs:restriction base="xs:string">
-          <xs:enumeration value="STRETCH"/>
-          <xs:enumeration value="ZOOM_AND_CENTER"/>
-          <xs:enumeration value="CENTER"/>
-        </xs:restriction>
-      </xs:simpleType>
       <xs:simpleType name="visualSignatureRotation">
         <xs:restriction base="xs:string">
           <xs:enumeration value="NONE"/>
@@ -6186,6 +6207,13 @@
           <xs:enumeration value="ROTATE_90"/>
           <xs:enumeration value="ROTATE_180"/>
           <xs:enumeration value="ROTATE_270"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="imageScaling">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="STRETCH"/>
+          <xs:enumeration value="ZOOM_AND_CENTER"/>
+          <xs:enumeration value="CENTER"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="signerTextHorizontalAlignment">

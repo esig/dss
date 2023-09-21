@@ -213,7 +213,7 @@
                     <crlUrl>http://repositorio.icpbrasil.gov.br/lcr/Serasa/repositorio/lcr/serasarfbv2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -260,7 +260,7 @@
                     <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -322,7 +322,7 @@
                     <crlUrl>http://repositorio.icpbrasil.gov.br/lcr/Certisign/ACCertisignTempo/LatestCRL.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -377,7 +377,7 @@
                     <crlUrl>http://www.receita.fazenda.gov.br/acrfb/acrfbv3.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -428,7 +428,7 @@
                     <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -480,7 +480,7 @@
                     <crlUrl>ldap:///CN=docusignhq-SEA-CAS-01-CA,CN=SEA-CAS-01,CN=CDP,CN=Public%20Key%20Services,CN=Services,CN=Configuration,DC=docusignhq,DC=com?certificateRevocationList?base?objectClass=cRLDistributionPoint</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -531,7 +531,7 @@
                     <crlUrl>http://acraiz.icpbrasil.gov.br/LCRacraizv2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -584,7 +584,7 @@
                     <crlUrl>http://icp-brasil.certisign.com.br/repositorio/lcr/ACCertisignG6/LatestCRL.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

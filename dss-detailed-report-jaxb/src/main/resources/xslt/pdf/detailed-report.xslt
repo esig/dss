@@ -76,10 +76,12 @@
 					
 					<xsl:apply-templates select="dss:Signature"/>
 					<xsl:apply-templates select="dss:Timestamp"/>
+					<xsl:apply-templates select="dss:EvidenceRecord"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
+					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='EVIDENCE_RECORD']"/>
 				    
    					<xsl:apply-templates select="dss:TLAnalysis"/>
 	    			
@@ -208,7 +210,7 @@
 
     </xsl:template>
     
-    <xsl:template match="dss:Signature|dss:Timestamp">
+    <xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord">
 	    
 		<fo:table table-layout="fixed">
 			<xsl:attribute name="margin-top">4px</xsl:attribute>
@@ -245,7 +247,7 @@
 	    			</fo:table-cell>
 					<fo:table-cell>
 						<fo:block>
-							<xsl:apply-templates select="dss:Conclusion|dss:ValidationProcessTimestamp/dss:Conclusion" />
+							<xsl:apply-templates select="dss:Conclusion" />
 						</fo:block>
 					</fo:table-cell>
 				</fo:table-row>
@@ -276,7 +278,17 @@
 	    	
     </xsl:template>
     
-	<xsl:template match="dss:ValidationProcessBasicSignature|dss:ValidationProcessTimestamp|dss:ValidationProcessLongTermData|dss:ValidationProcessArchivalData|dss:Certificate">
+	<xsl:template match="dss:ValidationProcessBasicSignature|dss:ValidationProcessBasicTimestamp|dss:ValidationProcessLongTermData
+			|dss:ValidationProcessArchivalData|dss:ValidationProcessArchivalDataTimestamp|dss:ValidationProcessEvidenceRecord
+			|dss:Certificate">
+
+		<xsl:variable name="poeStringValue">
+			<xsl:choose>
+				<xsl:when test="name()='ValidationProcessBasicTimestamp' or name()='ValidationProcessArchivalDataTimestamp'
+						or name()='ValidationProcessEvidenceRecord'">Lowest POE</xsl:when>
+				<xsl:otherwise>Best-signature-time</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
 
 		<fo:table table-layout="fixed">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -307,7 +319,7 @@
 								<fo:inline>
 									<xsl:attribute name="font-weight">normal</xsl:attribute>
 									<xsl:attribute name="font-size">6pt</xsl:attribute>
-									(Best signature time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)
+									(<xsl:value-of select="$poeStringValue"/> : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)
 								</fo:inline>
 							</xsl:if>
 
@@ -352,7 +364,7 @@
     	
     </xsl:template>
     
-    <xsl:template match="dss:ValidationSignatureQualification|dss:ValidationTimestampQualification|dss:ValidationCertificateQualification">
+    <xsl:template match="dss:ValidationSignatureQualification|dss:ValidationTimestampQualification|dss:ValidationTimestampQualificationAtTime|dss:ValidationCertificateQualification">
 
     	<fo:table table-layout="fixed">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -610,7 +622,7 @@
 								</xsl:when>
 								<xsl:when test="$statusText='IGNORED'">
 									<fo:instream-foreign-object fox:alt-text="IGNORED" content-height="7px" content-width="7px" height="7px" width="7px">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792"><path style="fill:grey" d="M555 1335l78-141q-87-63-136-159t-49-203q0-121 61-225-229 117-381 353 167 258 427 375zm389-759q0-20-14-34t-34-14q-125 0-214.5 89.5t-89.5 214.5q0 20 14 34t34 14 34-14 14-34q0-86 61-147t147-61q20 0 34-14t14-34zm363-191q0 7-1 9-106 189-316 567t-315 566l-49 89q-10 16-28 16-12 0-134-70-16-10-16-28 0-12 44-87-143-65-263.5-173t-208.5-245q-20-31-20-69t20-69q153-235 380-371t496-136q89 0 180 17l54-97q10-16 28-16 5 0 18 6t31 15.5 33 18.5 31.5 18.5 19.5 11.5q16 10 16 27zm37 447q0 139-79 253.5t-209 164.5l280-502q8 45 8 84zm448 128q0 35-20 69-39 64-109 145-150 172-347.5 267t-419.5 95l74-132q212-18 392.5-137t301.5-307q-115-179-282-294l63-112q95 64 182.5 153t144.5 184q20 34 20 69z"></path></svg>
+										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792"><path style="fill:grey" d="M555 1335l78-141q-87-63-136-159t-49-203q0-121 61-225-229 117-381 353 167 258 427 375zm389-759q0-20-14-34t-34-14q-125 0-214.5 89.5t-89.5 214.5q0 20 14 34t34 14 34-14 14-34q0-86 61-147t147-61q20 0 34-14t14-34zm363-191q0 7-1 9-106 189-316 567t-315 566l-49 89q-10 16-28 16-12 0-134-70-16-10-16-28 0-12 44-87-143-65-263.5-173t-208.5-245q-20-31-20-69t20-69q153-235 380-371t496-136q89 0 180 17l54-97q10-16 28-16 5 0 18 6t31 15.5 33 18.5 31.5 18.5 19.5 11.5q16 10 16 27zm37 447q0 139-79 253.5t-209 164.5l280-502q8 45 8 84zm448 128q0 35-20 69-39 64-109 145-150 172-347.5 267t-419.5 95l74-132q212-18 392.5-137t301.5-307q-115-179-282-294l63-112q95 64 182.5 153t144.5 184q20 34 20 69z"/></svg>
 									</fo:instream-foreign-object>
 								</xsl:when>
 								<xsl:otherwise>
@@ -714,7 +726,6 @@
     </xsl:template>
 
     <xsl:template match="dss:ProofOfExistence" />
-    <xsl:template match="dss:CryptographicInfo" />
     <xsl:template match="dss:CertificateChain" />
     <xsl:template match="dss:RevocationProductionDate" />
     <xsl:template match="dss:RevocationInfo" />

@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Contains qualification statuses for TrustedServices
+ * Contains qualification statuses for TrustServices
  *
  */
 public enum ServiceQualification {
@@ -61,7 +61,7 @@ public enum ServiceQualification {
      * identified by the applicable list of criteria, when they are claimed or stated as being qualified, do not have
      * their private key residing in an SSCD
      */
-   QC_NO_SSCD("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD"),
+    QC_NO_SSCD("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoSSCD"),
 
     /**
      * QCNoQSCD ("http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCNoQSCD"): to indicate that all certificates
@@ -159,9 +159,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCStatement' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCStatement' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains the 'QCStatement' identifier, FALSE otherwise
      */
     public static boolean isQcStatement(List<String> qualifiers) {
@@ -169,9 +169,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'NotQualified' identifier
+     * Gets whether the list of TrustService qualifiers contains 'NotQualified' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains the 'NotQualified' identifier, FALSE otherwise
      */
     public static boolean isNotQualified(List<String> qualifiers) {
@@ -179,18 +179,18 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCNoQSCD' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCNoQSCD' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains 'QCNoQSCD' identifier, FALSE otherwise
      */
     public static boolean isQcNoQSCD(List<String> qualifiers) {
         return listContains(qualifiers, QC_NO_QSCD);
     }
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCNoSSCD' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCNoSSCD' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains 'QCNoSSCD' identifier, FALSE otherwise
      */
     public static boolean isQcNoSSCD(List<String> qualifiers) {
@@ -198,9 +198,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCForLegalPerson' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCForLegalPerson' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains the 'QCForLegalPerson' identifier, FALSE otherwise
      */
     public static boolean isQcForLegalPerson(List<String> qualifiers) {
@@ -208,9 +208,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCQSCDStatusAsInCert' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCQSCDStatusAsInCert' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains 'QCQSCDStatusAsInCert' identifier, FALSE otherwise
      */
     public static boolean isQcQSCDStatusAsInCert(List<String> qualifiers) {
@@ -218,9 +218,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCSSCDStatusAsInCert' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCSSCDStatusAsInCert' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains QCSSCDStatusAsInCert' identifier, FALSE otherwise
      */
     public static boolean isQcSSCDStatusAsInCert(List<String> qualifiers) {
@@ -228,9 +228,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCQSCDManagedOnBehalf' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCQSCDManagedOnBehalf' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains the 'QCQSCDManagedOnBehalf' identifier, FALSE otherwise
      */
     public static boolean isQcQSCDManagedOnBehalf(List<String> qualifiers) {
@@ -238,9 +238,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCWithQSCD' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCWithQSCD' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains 'QCWithQSCD' identifier, FALSE otherwise
      */
     public static boolean isQcWithQSCD(List<String> qualifiers) {
@@ -248,9 +248,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCWithSSCD' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCWithSSCD' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains 'QCWithQSCD' identifier, FALSE otherwise
      */
     public static boolean isQcWithSSCD(List<String> qualifiers) {
@@ -258,9 +258,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCForESig' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCForESig' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains the 'QCForESig' identifier, FALSE otherwise
      */
     public static boolean isQcForEsig(List<String> qualifiers) {
@@ -268,9 +268,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCForESeal' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCForESeal' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains the 'QCForESeal' identifier, FALSE otherwise
      */
     public static boolean isQcForEseal(List<String> qualifiers) {
@@ -278,9 +278,9 @@ public enum ServiceQualification {
     }
 
     /**
-     * Gets whether the list of TrustedService qualifiers contains 'QCForWSA' identifier
+     * Gets whether the list of TrustService qualifiers contains 'QCForWSA' identifier
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return TRUE if the list of qualifiers contains the 'QCForWSA' identifier, FALSE otherwise
      */
     public static boolean isQcForWSA(List<String> qualifiers) {
@@ -290,7 +290,7 @@ public enum ServiceQualification {
     /**
      * Filters qualifiers containing the usage type identifiers (i.e. 'QCForESig', 'QCForESeal' or 'QCForWSA')
      *
-     * @param qualifiers list of {@link String} qualifiers extracted from a TrustedService
+     * @param qualifiers list of {@link String} qualifiers extracted from a TrustService
      * @return filtered list of qualifiers containing the usage type identifiers
      */
     public static List<String> getUsageQualifiers(List<String> qualifiers) {

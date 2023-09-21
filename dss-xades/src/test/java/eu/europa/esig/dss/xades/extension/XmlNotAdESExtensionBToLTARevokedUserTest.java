@@ -41,7 +41,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -79,10 +79,10 @@ public class XmlNotAdESExtensionBToLTARevokedUserTest extends AbstractXAdESTestE
     protected DSSDocument getSignedDocument(DSSDocument doc) {
         DSSDocument signedDocument = super.getSignedDocument(doc);
         Document docDom = DomUtils.buildDOM(signedDocument);
-        NodeList signatures = DomUtils.getNodeList(docDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
+        NodeList signatures = DomUtils.getNodeList(docDom, XMLDSigPath.ALL_SIGNATURES_PATH);
         assertEquals(1, signatures.getLength());
         Node signatureElement = signatures.item(0);
-        Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
+        Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
         final Element keyInfoDom = DomUtils.createElementNS(docDom, XMLDSigNamespace.NS, XMLDSigElement.KEY_INFO);
         signatureValueNode.getParentNode().insertBefore(keyInfoDom, signatureValueNode.getNextSibling());
         for (CertificateToken token : getCertificateChain()) {

@@ -65,6 +65,11 @@ public enum RevocationOrigin {
 	ADBE_REVOCATION_INFO_ARCHIVAL,
 
 	/**
+	 * Revocation data extracted from an Evidence Record's structure
+	 */
+	EVIDENCE_RECORD,
+
+	/**
 	 * The revocation data was embedded in signature or timestamp.
 	 */
 	INPUT_DOCUMENT,

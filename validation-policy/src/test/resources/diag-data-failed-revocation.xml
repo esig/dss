@@ -169,7 +169,7 @@
                     <ocspUrl>http://ocsp.izenpe.com:8094</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>JiaxlWO8eNmxRCuTzpjRSh5LdCZKzJAiLx88I4XCczc=</DigestValue>
@@ -242,7 +242,7 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-DB79D0AF49E6D8B88AEA6E1A92EE60C0CE8D35616AA43ECAB28F8D989D7EEE97">
                     <Status>GOOD</Status>
@@ -301,7 +301,7 @@
                     <crlUrl>http://crl.izenpe.com/cgi-bin/crl2</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -358,7 +358,7 @@
                     <ocspUrl>http://ocsp.izenpe.com:8094</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>ftGTYa1zTXA/ut8Cn1LsO2ZI2N1WuroIhO1PhZtbk3U=</DigestValue>
@@ -417,7 +417,7 @@
                     <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>lqVEdQJp/EAjc7mTBfk7EbgeMz1OS4gr2FNH+tps00A=</DigestValue>
@@ -475,7 +475,7 @@
                     <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>onfwYYsRYDtXap2bBFP6qp7CFgFyxW+mPYydQl+iyaU=</DigestValue>
@@ -526,7 +526,7 @@
                     <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>zXcKO6UAW6w/bvKef6THvqHvQb5SElNW2g3RjwRckhk=</DigestValue>
@@ -574,7 +574,7 @@
                     <crlUrl>http://crl.ssc.lt/root-a/cacrl.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>8bE/XJoyZAOw8xu+dpnNF8fRwLmBWG3Rp7IZxSUI/pk=</DigestValue>

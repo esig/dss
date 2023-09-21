@@ -31,11 +31,11 @@ public class AnnotationBox {
 	/** The lower left X coordinate */
 	private final float minX;
 
-	/** The upper right X coordinate */
-	private final float maxX;
-
 	/** The lower left Y coordinate */
 	private final float minY;
+
+	/** The upper right X coordinate */
+	private final float maxX;
 
 	/** The upper right Y coordinate */
 	private final float maxY;
@@ -202,7 +202,7 @@ public class AnnotationBox {
 
 	@Override
 	public String toString() {
-		return "AnnotationBox [minX=" + minX + ", maxX=" + maxX + ", minY=" + minY + ", maxY=" + maxY + "]";
+		return "AnnotationBox [minX=" + minX + ", minY=" + minY + ", maxX=" + maxX + ", maxY=" + maxY + "]";
 	}
 
 }

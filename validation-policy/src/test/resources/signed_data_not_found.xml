@@ -100,7 +100,7 @@
                     <certificatePolicy>2.5.29.32.0</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>a081e834e87e412d264a4113bc05518f406371bf</DigestValue>
@@ -152,7 +152,7 @@
                     <QcSSCD present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-0574F0CFD174789DDCB57C5F2EC6EC43DD341BF7789708E28E87AF9A2696CA56">
 	                <Status>REVOKED</Status>
@@ -202,7 +202,7 @@
                 </KeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>1660928d64e907f5174e9d92cc31988b45981a04</DigestValue>

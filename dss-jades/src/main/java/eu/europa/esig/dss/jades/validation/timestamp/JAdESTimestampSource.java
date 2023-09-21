@@ -46,6 +46,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
@@ -188,6 +189,12 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	}
 
 	@Override
+	protected boolean isEvidenceRecord(JAdESAttribute unsignedAttribute) {
+		// not supported
+		return false;
+	}
+
+	@Override
 	protected List<TimestampedReference> getSignatureTimestampReferences() {
 		List<TimestampedReference> timestampedReferences = super.getSignatureTimestampReferences();
 		addReferences(timestampedReferences, getKeyInfoReferences());
@@ -301,12 +308,6 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 			LOG.warn("An error occurred during parsing a certificate. Reason : {}", e.getMessage(), e);
 		}
 		return null;
-	}
-
-	@Override
-	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {
-		// not supported
-		return Collections.emptyList();
 	}
 
 	@Override
@@ -499,7 +500,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 					try {
 						return new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references);
 					} catch (Exception e) {
-						LOG.warn("Unable to parse timestamp '{}'", tstBase64, e);
+						LOG.warn("Unable to parse timestamp '{}'. Reason : {}", tstBase64, e.getMessage(), e);
 					}
 				}
 
@@ -519,6 +520,11 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	@Override
 	protected ArchiveTimestampType getArchiveTimestampType(JAdESAttribute unsignedAttribute) {
 		return ArchiveTimestampType.JAdES;
+	}
+
+	@Override
+	protected List<EvidenceRecord> makeEvidenceRecords(JAdESAttribute signatureAttribute, List<TimestampedReference> references) {
+		throw new UnsupportedOperationException("Embedded evidence records are not supported in JAdES!");
 	}
 
 }

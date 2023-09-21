@@ -68,7 +68,9 @@ public class EnforcedResolverFragment extends ResolverFragment {
 				String decodedValue = URLDecoder.decode(xpathString, StandardCharsets.UTF_8.name());
 				for (char c : decodedValue.toCharArray()) {
 					if (XPATH_CHAR_FILTER.indexOf(c) != -1) {
-						LOG.warn("Forbidden char '{}' detected", c);
+						if (LOG.isDebugEnabled()) {
+							LOG.debug("Forbidden char '{}' detected", c);
+						}
 						return false;
 					}
 				}

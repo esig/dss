@@ -8,7 +8,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObjec
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.xmlers.definition.XMLERSAttribute;
 import eu.europa.esig.xmlers.definition.XMLERSElement;
-import eu.europa.esig.xmlers.definition.XMLERSPaths;
+import eu.europa.esig.xmlers.definition.XMLERSPath;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Verifies ArchiveTimeStampSequence for an XML Evidence Record
@@ -45,12 +46,13 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
      * @return {@link DSSDocument} if matching document found, NULL otherwise
      */
     @Override
-    protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain) {
+    protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
+                                              List<DSSDocument> detachedContents) {
         String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
-        for (DSSDocument document : evidenceRecord.getDetachedContents()) {
+        for (DSSDocument document : detachedContents) {
             byte[] documentDigest;
             if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
-                byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(DSSUtils.toByteArray(document));
+                byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(document.openStream());
                 documentDigest = DSSUtils.digest(digest.getAlgorithm(), canonicalizedDocument);
             } else {
                 String base64Digest = document.getDigest(digest.getAlgorithm());
@@ -80,7 +82,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
         String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
         XmlArchiveTimeStampObject xmlArchiveTimeStampObject = (XmlArchiveTimeStampObject) archiveTimeStamp;
         Element archiveTimeStampElement = xmlArchiveTimeStampObject.getElement();
-        Element timeStampElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPaths.TIME_STAMP_PATH);
+        Element timeStampElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPath.TIME_STAMP_PATH);
         byte[] canonicalizedSubtree = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(timeStampElement);
         byte[] digestValue = DSSUtils.digest(digestAlgorithm, canonicalizedSubtree);
         return new DSSMessageDigest(digestAlgorithm, digestValue);
@@ -91,7 +93,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
         XmlArchiveTimeStampChainObject xmlArchiveTimeStampChainObject = (XmlArchiveTimeStampChainObject) archiveTimeStampChain;
 
         Document documentCopy = createDocumentCopy();
-        Element archiveTimeStampSequence = DomUtils.getElement(documentCopy.getDocumentElement(), XMLERSPaths.ARCHIVE_TIME_STAMP_SEQUENCE_PATH);
+        Element archiveTimeStampSequence = DomUtils.getElement(documentCopy.getDocumentElement(), XMLERSPath.ARCHIVE_TIME_STAMP_SEQUENCE_PATH);
         NodeList childNodes = archiveTimeStampSequence.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);

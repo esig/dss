@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -112,7 +112,7 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
     private List<DSSDocument> getDetachedContents(DSSDocument signatureDocument, ASiCContent asicContent) {
         if (ASiCContainerType.ASiC_E == asicContent.getContainerType()) {
             List<DSSDocument> manifests = asicContent.getManifestDocuments();
-            DSSDocument linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(manifests, signatureDocument.getName());
+            DSSDocument linkedManifest = ASiCManifestParser.getLinkedManifest(manifests, signatureDocument.getName());
             return Collections.singletonList(linkedManifest);
 
         } else {

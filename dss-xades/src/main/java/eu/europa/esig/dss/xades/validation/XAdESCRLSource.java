@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -48,7 +48,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 	private final Element signatureElement;
 
 	/** The XAdES XPaths */
-	private final XAdESPaths xadesPaths;
+	private final XAdESPath xadesPaths;
 
 	/**
 	 * The default constructor for XAdESCRLSource.
@@ -58,7 +58,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 	 * @param xadesPaths
 	 *                         adapted {@code XAdESPaths}
 	 */
-	public XAdESCRLSource(final Element signatureElement, final XAdESPaths xadesPaths) {
+	public XAdESCRLSource(final Element signatureElement, final XAdESPath xadesPaths) {
 		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
 		Objects.requireNonNull(xadesPaths, "XAdESPaths cannot be null");
 
@@ -87,12 +87,12 @@ public class XAdESCRLSource extends OfflineCRLSource {
 			for (int ii = 0; ii < crlValueNodes.getLength(); ii++) {
 				try {
 					final Element crlValueEl = (Element) crlValueNodes.item(ii);
-					if (crlValueEl != null) {
-						CRLBinary crlBinary = CRLUtils.buildCRLBinary(Utils.fromBase64(crlValueEl.getTextContent()));
-						addBinary(crlBinary, revocationOrigin);
-					}
+					String base64EncodedCRL = crlValueEl.getTextContent();
+					CRLBinary crlBinary = CRLUtils.buildCRLBinary(Utils.fromBase64(base64EncodedCRL));
+					addBinary(crlBinary, revocationOrigin);
+
 				} catch (Exception e) {
-					LOG.warn("Unable to build CRLBinary from an obtained element with origin {}", revocationOrigin);
+					LOG.warn("Unable to build CRLBinary from an obtained element with origin '{}'. Reason : {}", revocationOrigin, e.getMessage(), e);
 				}
 			}
 		}

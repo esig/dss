@@ -466,9 +466,9 @@ public class ETSIValidationReportBuilder {
 			validationObject.setObjectType(ObjectType.CERTIFICATE);
 			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
 			if (Utils.isArrayNotEmpty(certificate.getBinaries())) {
-				representation.setBase64(certificate.getBinaries());
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(certificate.getBinaries());
 			} else {
-				representation.setDigestAlgAndValue(getDigestAlgAndValueType(certificate.getDigestAlgoAndValue()));
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(getDigestAlgAndValueType(certificate.getDigestAlgoAndValue()));
 			}
 			validationObject.setValidationObjectRepresentation(representation);
 		}
@@ -476,24 +476,22 @@ public class ETSIValidationReportBuilder {
 	}
 	
 	private DigestAlgAndValueType getDigestAlgAndValueType(XmlDigestAlgoAndValue xmlDigestAlgoAndValue) {
-		return getDigestAlgAndValueType(xmlDigestAlgoAndValue.getDigestMethod(), xmlDigestAlgoAndValue.getDigestValue());
-	}
-	
-	private DigestAlgAndValueType getDigestAlgAndValueType(DigestAlgorithm digestAlgo, byte[] digestValue) {
 		DigestAlgAndValueType digestAlgAndValueType = new DigestAlgAndValueType();
-		DigestMethodType digestMethodType = new DigestMethodType();
-		digestMethodType.setAlgorithm(getUrn(digestAlgo));
-		digestAlgAndValueType.setDigestMethod(digestMethodType);
-		digestAlgAndValueType.setDigestValue(digestValue);
+		digestAlgAndValueType.setDigestMethod(getDigestMethodType(xmlDigestAlgoAndValue.getDigestMethod()));
+		digestAlgAndValueType.setDigestValue(xmlDigestAlgoAndValue.getDigestValue());
 		return digestAlgAndValueType;
 	}
 
 	private String getUrn(DigestAlgorithm digestAlgorithm) {
-		String urn = digestAlgorithm.getUri();
-		if (Utils.isStringEmpty(urn)) {
-			urn = ValidationProcessUtils.toUrnOid(digestAlgorithm.getOid());
+		if (digestAlgorithm != null) {
+			if (Utils.isStringNotEmpty(digestAlgorithm.getUri())) {
+				return digestAlgorithm.getUri();
+			}
+			if (Utils.isStringNotEmpty(digestAlgorithm.getOid())) {
+				return ValidationProcessUtils.toUrnOid(digestAlgorithm.getOid());
+			}
 		}
-		return urn;
+		return "?";
 	}
 	
 	private POEType getPOE(String tokenId, POEExtraction poeExtraction) {
@@ -521,9 +519,9 @@ public class ETSIValidationReportBuilder {
 			validationObject.setObjectType(ObjectType.TIMESTAMP);
 			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
 			if (Utils.isArrayNotEmpty(timestamp.getBinaries())) {
-				representation.setBase64(timestamp.getBinaries());
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(timestamp.getBinaries());
 			} else {
-				representation.setDigestAlgAndValue(getDigestAlgAndValueType(timestamp.getDigestAlgoAndValue()));
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(getDigestAlgAndValueType(timestamp.getDigestAlgoAndValue()));
 			}
 			validationObject.setValidationObjectRepresentation(representation);
 			validationObject.setPOEProvisioning(getPOEProvisioningType(timestamp));
@@ -596,7 +594,7 @@ public class ETSIValidationReportBuilder {
 			validationObject.setId(signedData.getId());
 			validationObject.setObjectType(ObjectType.SIGNED_DATA);
 			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-			representation.setDigestAlgAndValue(getDigestAlgAndValueType(signedData.getDigestAlgoAndValue()));
+			representation.getDirectOrBase64OrDigestAlgAndValue().add(getDigestAlgAndValueType(signedData.getDigestAlgoAndValue()));
 			validationObject.setValidationObjectRepresentation(representation);
 		}
 		return validationObject;
@@ -616,9 +614,9 @@ public class ETSIValidationReportBuilder {
 			}
 			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
 			if (Utils.isArrayNotEmpty(revocationData.getBinaries())) {
-				representation.setBase64(revocationData.getBinaries());
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(revocationData.getBinaries());
 			} else {
-				representation.setDigestAlgAndValue(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(getDigestAlgAndValueType(revocationData.getDigestAlgoAndValue()));
 			}
 //		Standard says choice
 //		String sourceAddress = revocationData.getSourceAddress();
@@ -650,9 +648,9 @@ public class ETSIValidationReportBuilder {
 			validationObject.setObjectType(objectType);
 			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
 			if (Utils.isArrayNotEmpty(orphanToken.getBinaries())) {
-				representation.setBase64(orphanToken.getBinaries());
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(orphanToken.getBinaries());
 			} else {
-				representation.setDigestAlgAndValue(getDigestAlgAndValueType(orphanToken.getDigestAlgoAndValue()));
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(getDigestAlgAndValueType(orphanToken.getDigestAlgoAndValue()));
 			}
 			validationObject.setValidationObjectRepresentation(representation);
 		}
@@ -1095,7 +1093,7 @@ public class ETSIValidationReportBuilder {
 	
 	private SACertIDType buildCertIDType(XmlDigestAlgoAndValue digestAlgoAndValue, byte[] issuerSerial) {
 		SACertIDType certIDType = objectFactory.createSACertIDType();
-		certIDType.setDigestMethod(getDigestMethodType(digestAlgoAndValue));
+		certIDType.setDigestMethod(getDigestMethodType(digestAlgoAndValue.getDigestMethod()));
 		certIDType.setDigestValue(digestAlgoAndValue.getDigestValue());
 		if (issuerSerial != null) {
 			certIDType.setX509IssuerSerial(issuerSerial);
@@ -1166,7 +1164,7 @@ public class ETSIValidationReportBuilder {
 	
 	private SACRLIDType buildCRLID(XmlDigestAlgoAndValue digestAlgoAndValue) {
 		SACRLIDType sacrlidType = objectFactory.createSACRLIDType();
-		sacrlidType.setDigestMethod(getDigestMethodType(digestAlgoAndValue));
+		sacrlidType.setDigestMethod(getDigestMethodType(digestAlgoAndValue.getDigestMethod()));
 		sacrlidType.setDigestValue(digestAlgoAndValue.getDigestValue());
 		return sacrlidType;
 	}
@@ -1185,9 +1183,9 @@ public class ETSIValidationReportBuilder {
 		return null;
 	}
 
-	private DigestMethodType getDigestMethodType(XmlDigestAlgoAndValue digestAlgoAndValue) {
+	private DigestMethodType getDigestMethodType(DigestAlgorithm digestAlgorithm) {
 		DigestMethodType digestMethodType = new DigestMethodType();
-		digestMethodType.setAlgorithm(digestAlgoAndValue.getDigestMethod().getUri());
+		digestMethodType.setAlgorithm(getUrn(digestAlgorithm));
 		return digestMethodType;
 	}
 	

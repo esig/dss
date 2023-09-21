@@ -20,21 +20,20 @@
  */
 package eu.europa.esig.saml;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
+import eu.europa.esig.saml.jaxb.assertion.AssertionType;
+import eu.europa.esig.saml.jaxb.metadata.EntityDescriptorType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
+import java.io.File;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
-
-import eu.europa.esig.saml.jaxb.assertion.AssertionType;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class SAMLAssertionUtilsTest {
 
@@ -60,6 +59,23 @@ public class SAMLAssertionUtilsTest {
 		unmarshaller.setSchema(schema);
 
 		JAXBElement<AssertionType> unmarshalled = (JAXBElement<AssertionType>) unmarshaller.unmarshal(file);
+		assertNotNull(unmarshalled);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void metadata () throws JAXBException {
+
+		JAXBContext jc = samlAssertionUtils.getJAXBContext();
+
+		File file = new File("src/test/resources/Metadata.xml");
+		Unmarshaller unmarshaller = jc.createUnmarshaller();
+
+		JAXBElement<EntityDescriptorType> unmarshalled = (JAXBElement<EntityDescriptorType>) unmarshaller.unmarshal(file);
+		assertNotNull(unmarshalled);
+
+		file = new File("src/test/resources/ServiceMetadata.xml");
+		unmarshalled = (JAXBElement<EntityDescriptorType>) unmarshaller.unmarshal(file);
 		assertNotNull(unmarshalled);
 	}
 

@@ -261,14 +261,14 @@ Default: `FAIL` (`NO_POLICY` and `ANY_POLICY`)
 
 * `PolicyAvailable` - this constraint is used to check whether the signature policy's document is accessible (e.g. from online source or from unsigned property SignaturePolicyStore). If the signature policy document is not accessible, the check will fail.
 
-Default: `FAIL`
+Default: `INFORM`
 
 [source,xml,indent=0]
-.Example of PolicyAvailable usage (with FAIL validation level)
+.Example of PolicyAvailable usage (with INFORM validation level)
 ----
 <SignatureConstraints>
     ...
-    <PolicyAvailable Level="FAIL" />
+    <PolicyAvailable Level="INFORM" />
     ...
 </SignatureConstraints>
 ----
@@ -289,14 +289,14 @@ Default: not executed
 
 * `PolicyHashMatch` - this constraint is used to check whether the hash of the signature policy defined within the signed property of the signature matched the computed hash of the actual extracted signature policy document. If the hash does not match, the check will fail.
 
-Default: `FAIL`
+Default: `WARN`
 
 [source,xml,indent=0]
-.Example of PolicyHashMatch usage (with FAIL validation level)
+.Example of PolicyHashMatch usage (with WARN validation level)
 ----
 <SignatureConstraints>
     ...
-    <PolicyHashMatch Level="FAIL" />
+    <PolicyHashMatch Level="WARN" />
     ...
 </SignatureConstraints>
 ----
@@ -637,35 +637,35 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
-* `TrustedServiceTypeIdentifier` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceTypeIdentifier corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceTypeIdentifier corresponding to one of the acceptable values, the check will fail.
+* `TrustServiceTypeIdentifier` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceTypeIdentifier corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceTypeIdentifier corresponding to one of the acceptable values, the check will fail.
 
 Default: not executed
 
 [source,xml,indent=0]
-.Example of TrustedServiceTypeIdentifier usage (with WARN validation level)
+.Example of TrustServiceTypeIdentifier usage (with WARN validation level)
 ----
 <BasicSignatureConstraints>
     ...
-    <TrustedServiceTypeIdentifier Level="WARN">
+    <TrustServiceTypeIdentifier Level="WARN">
         <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
-    </TrustedServiceTypeIdentifier>
+    </TrustServiceTypeIdentifier>
     ...
 </BasicSignatureConstraints>
 ----
 
-* `TrustedServiceStatus` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceStatus corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceStatus corresponding to one of the acceptable values, the check will fail.
+* `TrustServiceStatus` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceStatus corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceStatus corresponding to one of the acceptable values, the check will fail.
 
 Default: not executed
 
 [source,xml,indent=0]
-.Example of TrustedServiceStatus usage (with FAIL validation level)
+.Example of TrustServiceStatus usage (with FAIL validation level)
 ----
 <BasicSignatureConstraints>
     ...
-    <TrustedServiceStatus Level="FAIL">
+    <TrustServiceStatus Level="FAIL">
         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
-    </TrustedServiceStatus>
+    </TrustServiceStatus>
     ...
 </BasicSignatureConstraints>
 ----
@@ -1086,6 +1086,20 @@ Default: not executed
     <Country Level="WARN">
         <Id>USA</Id>
     </Country>
+    ...
+</SigningCertificate>
+----
+
+* `IssuerName` - this constraint is used to check whether the issuer distinguished name found in the certificate does match the subject distinguished name of its issuer certificate. If the certificate's issuer DN does not match the subject DN of the issuer certificate, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of IssuerName usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <IssuerName Level="FAIL" />
     ...
 </SigningCertificate>
 ----
@@ -2407,8 +2421,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |SigFieldLock                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |UndefinedChanges                |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |TrustedServiceTypeIdentifier    |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
-                                  |TrustedServiceStatus            |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |TrustServiceTypeIdentifier      |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |TrustServiceStatus              |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint

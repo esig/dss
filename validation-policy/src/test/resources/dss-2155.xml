@@ -108,7 +108,7 @@
             <CertificateChain/>
             <Trusted>true</Trusted>
             <SelfSigned>true</SelfSigned>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>7nTPk8AN0QbU1H7EVSFTJqzv8T0PvSC4UbHpz7Z8KCA=</DigestValue>
@@ -151,7 +151,7 @@
                     <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>9eTfvleE/I3G9JGdVWNWyIXwYYzbhvENLEsmrgFCSMk=</DigestValue>

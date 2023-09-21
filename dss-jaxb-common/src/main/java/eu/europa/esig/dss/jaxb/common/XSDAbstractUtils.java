@@ -158,7 +158,7 @@ public abstract class XSDAbstractUtils {
 			}
 			validator.validate(xmlSource);
 		} catch (SAXException e) {
-			throw new XSDValidationException(Arrays.asList(e.getMessage()));
+			throw new XSDValidationException(Collections.singletonList(e.getMessage()));
 		} finally {
 			XmlDefinerUtils.getInstance().postProcess(validator);
 		}

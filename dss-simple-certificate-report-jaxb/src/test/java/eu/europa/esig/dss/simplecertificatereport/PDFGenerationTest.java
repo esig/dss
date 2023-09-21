@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.sax.SAXResult;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -85,6 +86,13 @@ public class PDFGenerationTest {
 		assertTrue(pdfReport.exists());
 		assertTrue(pdfReport.delete(), "Cannot delete PDF document (IO error)");
 		assertFalse(pdfReport.exists());
+
+		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baos);
+			Result result = new SAXResult(fop.getDefaultHandler());
+			facade.generatePdfReport(simpleReport, result);
+			assertTrue(baos.toByteArray().length > 0);
+		}
 	}
 
 }

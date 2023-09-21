@@ -35,18 +35,19 @@ public class BOMTest {
 	public void test() throws IOException {
 		ApacheCommonsUtils acu = new ApacheCommonsUtils();
 
-		FileInputStream fis = new FileInputStream("src/test/resources/lotl_utf-8-sansbom.xml");
-		FileInputStream fisBom = new FileInputStream("src/test/resources/lotl_utf-8.xml");
+		try (FileInputStream fis = new FileInputStream("src/test/resources/lotl_utf-8-sansbom.xml");
+			 FileInputStream fisBom = new FileInputStream("src/test/resources/lotl_utf-8.xml")) {
+			assertNotEquals(acu.toBase64(acu.toByteArray(fis)), acu.toBase64(acu.toByteArray(fisBom)));
+		}
 
-		assertNotEquals(acu.toBase64(acu.toByteArray(fis)), acu.toBase64(acu.toByteArray(fisBom)));
+		try (FileInputStream fis = new FileInputStream("src/test/resources/lotl_utf-8-sansbom.xml");
+			 FileInputStream fisBom = new FileInputStream("src/test/resources/lotl_utf-8.xml")) {
 
-		fis = new FileInputStream("src/test/resources/lotl_utf-8-sansbom.xml");
-		fisBom = new FileInputStream("src/test/resources/lotl_utf-8.xml");
+			BOMInputStream bomIS = BOMInputStream.builder().setInputStream(fis).get();
+			BOMInputStream bomISSkipped = BOMInputStream.builder().setInputStream(fisBom).get();
 
-		BOMInputStream bomIS = new BOMInputStream(fis);
-		BOMInputStream bomISSkipped = new BOMInputStream(fisBom);
-
-		assertEquals(acu.toBase64(acu.toByteArray(bomIS)), acu.toBase64(acu.toByteArray(bomISSkipped)));
+			assertEquals(acu.toBase64(acu.toByteArray(bomIS)), acu.toBase64(acu.toByteArray(bomISSkipped)));
+		}
 	}
 
 }

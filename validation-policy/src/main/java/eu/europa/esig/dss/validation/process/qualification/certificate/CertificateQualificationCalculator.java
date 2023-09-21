@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
@@ -35,7 +35,7 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.ty
 
 /**
  * This class is used to determine certificate's qualification based on its content and
- * the given {@code TrustedServiceWrapper}
+ * the given {@code TrustServiceWrapper}
  *
  */
 public class CertificateQualificationCalculator {
@@ -44,15 +44,15 @@ public class CertificateQualificationCalculator {
 	private final CertificateWrapper endEntityCert;
 
 	/** Trusted Service to be used to help to determine the qualification */
-	private final TrustedServiceWrapper caqcTrustService;
+	private final TrustServiceWrapper caqcTrustService;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param endEntityCert {@link CertificateWrapper} to get qualification for
-	 * @param caqcTrustService {@link TrustedServiceWrapper} related TrustedService to extract qualification from
+	 * @param caqcTrustService {@link TrustServiceWrapper} related TrustService to extract qualification from
 	 */
-	public CertificateQualificationCalculator(CertificateWrapper endEntityCert, TrustedServiceWrapper caqcTrustService) {
+	public CertificateQualificationCalculator(CertificateWrapper endEntityCert, TrustServiceWrapper caqcTrustService) {
 		this.endEntityCert = endEntityCert;
 		this.caqcTrustService = caqcTrustService;
 	}

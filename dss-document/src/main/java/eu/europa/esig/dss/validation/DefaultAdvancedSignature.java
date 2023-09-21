@@ -37,8 +37,9 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -491,6 +492,29 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public List<TimestampToken> getAllTimestamps() {
 		return getTimestampSource().getAllTimestamps();
+	}
+
+	@Override
+	public List<EvidenceRecord> getEmbeddedEvidenceRecords() {
+		return getTimestampSource().getEmbeddedEvidenceRecords();
+	}
+
+	@Override
+	public void addExternalEvidenceRecord(EvidenceRecord evidenceRecord) {
+		getTimestampSource().addExternalEvidenceRecord(evidenceRecord);
+	}
+
+	@Override
+	public List<EvidenceRecord> getDetachedEvidenceRecords() {
+		return getTimestampSource().getDetachedEvidenceRecords();
+	}
+
+	@Override
+	public List<EvidenceRecord> getAllEvidenceRecords() {
+		List<EvidenceRecord> evidenceRecords = new ArrayList<>();
+		evidenceRecords.addAll(getEmbeddedEvidenceRecords());
+		evidenceRecords.addAll(getDetachedEvidenceRecords());
+		return evidenceRecords;
 	}
 
 	@Override

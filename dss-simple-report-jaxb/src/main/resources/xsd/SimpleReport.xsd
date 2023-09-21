@@ -20,6 +20,7 @@
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
 				<xs:element name="Signature" type="Signature" />
 				<xs:element name="Timestamp" type="Timestamp" />
+				<xs:element name="EvidenceRecord" type="EvidenceRecord" />
 			</xs:choice>
 			
 			<xs:element name="Semantic" type="Semantic" minOccurs="0" maxOccurs="unbounded" />
@@ -93,6 +94,7 @@
 					<xs:element name="SignatureLevel" type="SignatureLevel" minOccurs="0" />
 					<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Timestamps" type="Timestamps" minOccurs="0" />
+					<xs:element name="EvidenceRecords" type="EvidenceRecords" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 				<xs:attribute name="ParentId" type="xs:string" use="optional" />
@@ -109,10 +111,21 @@
 			<xs:extension base="xs:string">
 				<xs:attribute name="Id" type="xs:string" use="required" />
 				<xs:attribute type="xs:string" name="name"/>
-				<xs:attribute type="xs:string" name="scope"/>
+				<xs:attribute type="ScopeType" name="scope"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+
+	<xs:simpleType name="ScopeType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="FULL" />
+			<xs:enumeration value="PARTIAL" />
+			<xs:enumeration value="DIGEST" />
+			<xs:enumeration value="ARCHIVED" />
+			<xs:enumeration value="COUNTER_SIGNATURE" />
+			<xs:enumeration value="SIGNATURE" />
+		</xs:restriction>
+	</xs:simpleType>
 
 	<xs:complexType name="Timestamps">
 		<xs:sequence>
@@ -128,6 +141,24 @@
 					<xs:element name="ProducedBy" type="xs:string" minOccurs="0" />
 					<xs:element name="TimestampLevel" type="TimestampLevel" minOccurs="0" />
 					<xs:element name="TimestampScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="EvidenceRecords">
+		<xs:sequence>
+			<xs:element name="EvidenceRecord" type="EvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="EvidenceRecord">
+		<xs:complexContent>
+			<xs:extension base="Token">
+				<xs:sequence>
+					<xs:element name="POETime" type="xs:dateTime" />
+					<xs:element name="EvidenceRecordScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="Timestamps" type="Timestamps" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -197,11 +228,11 @@
 	<xs:complexType name="TrustAnchor">
 		<xs:sequence>
 			<xs:element name="TSLType" type="xs:string" minOccurs="0" />
-			<xs:element name="TrustServiceProvider" type="xs:string" />
-			<xs:element name="TrustServiceProviderRegistrationId" type="xs:string" />
-			<xs:element name="TrustServiceName" type="xs:string" maxOccurs="unbounded" />
+			<xs:element name="TrustServiceProvider" type="xs:string" minOccurs="0" />
+			<xs:element name="TrustServiceProviderRegistrationId" type="xs:string" minOccurs="0" />
+			<xs:element name="TrustServiceName" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="countryCode" type="xs:string" use="required" />
+		<xs:attribute name="countryCode" type="xs:string" />
 	</xs:complexType>
 	
 	<xs:complexType name="SignatureLevel">

@@ -24,13 +24,14 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -42,6 +43,8 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlDetails;
+import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
+import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecords;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplereport.jaxb.XmlPDFAInfo;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSemantic;
@@ -151,16 +154,33 @@ public class SimpleReportBuilder {
 		}
 
 		Set<String> attachedTimestampIds = new HashSet<>();
+		Set<String> attachedEvidenceRecordIds = new HashSet<>();
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			attachedTimestampIds.addAll(signature.getTimestampIdsList());
-			simpleReport.getSignatureOrTimestamp().add(getSignature(signature, containerInfoPresent));
+			attachedEvidenceRecordIds.addAll(signature.getEvidenceRecordIdsList());
+			attachedTimestampIds.addAll(signature.getEvidenceRecordTimestampIds());
+			simpleReport.getSignatureOrTimestampOrEvidenceRecord().add(getSignature(signature, containerInfoPresent));
+		}
+
+		for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
+			if (attachedEvidenceRecordIds.contains(evidenceRecord.getId())) {
+				continue;
+			}
+			attachedTimestampIds.addAll(evidenceRecord.getTimestampIdsList());
+			Indication erValidationIndication = detailedReport.getEvidenceRecordValidationIndication(evidenceRecord.getId());
+			if (erValidationIndication != null) {
+				simpleReport.getSignatureOrTimestampOrEvidenceRecord().add(getXmlEvidenceRecord(evidenceRecord));
+			}
 		}
 
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 			if (attachedTimestampIds.contains(timestamp.getId())) {
 				continue;
 			}
-			simpleReport.getSignatureOrTimestamp().add(getXmlTimestamp(timestamp));
+			Indication tstValidationIndication = detailedReport.getBasicTimestampValidationIndication(timestamp.getId());
+			if (tstValidationIndication != null) {
+				simpleReport.getSignatureOrTimestampOrEvidenceRecord().add(getXmlTimestamp(timestamp));
+			}
 		}
 
 		addStatistics(simpleReport);
@@ -299,11 +319,25 @@ public class SimpleReportBuilder {
 
 		xmlSignature.setCertificateChain(getCertChain(signatureId));
 
+		List<EvidenceRecordWrapper> evidenceRecordList = signature.getEvidenceRecords();
+		if (Utils.isCollectionNotEmpty(evidenceRecordList)) {
+			XmlEvidenceRecords xmlEvidenceRecords = new XmlEvidenceRecords();
+			for (EvidenceRecordWrapper evidenceRecord : evidenceRecordList) {
+				Indication erIndication = detailedReport.getEvidenceRecordValidationIndication(evidenceRecord.getId());
+				if (erIndication != null) {
+					xmlEvidenceRecords.getEvidenceRecord().add(getXmlEvidenceRecord(evidenceRecord));
+				}
+			}
+			if (Utils.isCollectionNotEmpty(xmlEvidenceRecords.getEvidenceRecord())) {
+				xmlSignature.setEvidenceRecords(xmlEvidenceRecords);
+			}
+		}
+
 		List<TimestampWrapper> timestampList = signature.getTimestampList();
 		if (Utils.isCollectionNotEmpty(timestampList)) {
 			XmlTimestamps xmlTimestamps = new XmlTimestamps();
 			for (TimestampWrapper timestamp : timestampList) {
-				Indication tstValidationIndication = detailedReport.getTimestampValidationIndication(timestamp.getId());
+				Indication tstValidationIndication = detailedReport.getBasicTimestampValidationIndication(timestamp.getId());
 				if (tstValidationIndication != null) {
 					xmlTimestamps.getTimestamp().add(getXmlTimestamp(timestamp));
 				}
@@ -365,19 +399,21 @@ public class SimpleReportBuilder {
 	}
 
 	private XmlTrustAnchors getXmlTrustAnchors(String certId) {
-		List<XmlTrustedServiceProvider> xmlTrustedServiceProviders = filterByCertificateId(certId);
-		if (Utils.isCollectionNotEmpty(xmlTrustedServiceProviders)) {
+		List<XmlTrustServiceProvider> xmlTrustServiceProviders = filterByCertificateId(certId);
+		if (Utils.isCollectionNotEmpty(xmlTrustServiceProviders)) {
 			final XmlTrustAnchors xmlTrustAnchors = new XmlTrustAnchors();
-			for (XmlTrustedServiceProvider trustedServiceProvider : xmlTrustedServiceProviders) {
+			for (XmlTrustServiceProvider trustServiceProvider : xmlTrustServiceProviders) {
 				final XmlTrustAnchor trustAnchor = new XmlTrustAnchor();
-				trustAnchor.setCountryCode(trustedServiceProvider.getTL().getCountryCode());
-				trustAnchor.setTSLType(trustedServiceProvider.getTL().getTSLType());
-				trustAnchor.setTrustServiceProvider(getEnOrFirst(trustedServiceProvider.getTSPNames()));
-				List<String> tspRegistrationIdentifiers = trustedServiceProvider.getTSPRegistrationIdentifiers();
+				if (trustServiceProvider.getTL() != null) {
+					trustAnchor.setCountryCode(trustServiceProvider.getTL().getCountryCode());
+					trustAnchor.setTSLType(trustServiceProvider.getTL().getTSLType());
+				}
+				trustAnchor.setTrustServiceProvider(getEnOrFirst(trustServiceProvider.getTSPNames()));
+				List<String> tspRegistrationIdentifiers = trustServiceProvider.getTSPRegistrationIdentifiers();
 				if (Utils.isCollectionNotEmpty(tspRegistrationIdentifiers)) {
 					trustAnchor.setTrustServiceProviderRegistrationId(tspRegistrationIdentifiers.get(0));
 				}
-				trustAnchor.getTrustServiceName().addAll(getUniqueServiceNames(trustedServiceProvider));
+				trustAnchor.getTrustServiceName().addAll(getUniqueServiceNames(trustServiceProvider));
 				xmlTrustAnchors.getTrustAnchor().add(trustAnchor);
 			}
 			return xmlTrustAnchors;
@@ -385,10 +421,10 @@ public class SimpleReportBuilder {
 		return null;
 	}
 
-	private Set<String> getUniqueServiceNames(XmlTrustedServiceProvider trustedServiceProvider) {
+	private Set<String> getUniqueServiceNames(XmlTrustServiceProvider trustServiceProvider) {
 		Set<String> result = new HashSet<>();
-		for (XmlTrustedService xmlTrustedService : trustedServiceProvider.getTrustedServices()) {
-			result.add(getEnOrFirst(xmlTrustedService.getServiceNames()));
+		for (XmlTrustService xmlTrustService : trustServiceProvider.getTrustServices()) {
+			result.add(getEnOrFirst(xmlTrustService.getServiceNames()));
 		}
 		return result;
 	}
@@ -405,20 +441,20 @@ public class SimpleReportBuilder {
 		return null;
 	}
 
-	private List<XmlTrustedServiceProvider> filterByCertificateId(String certId) {
+	private List<XmlTrustServiceProvider> filterByCertificateId(String certId) {
 		CertificateWrapper certificate = diagnosticData.getCertificateById(certId);
-		List<XmlTrustedServiceProvider> result = new ArrayList<>();
-		for (XmlTrustedServiceProvider xmlTrustedServiceProvider : certificate.getTrustServiceProviders()) {
-			List<XmlTrustedService> trustedServices = xmlTrustedServiceProvider.getTrustedServices();
+		List<XmlTrustServiceProvider> result = new ArrayList<>();
+		for (XmlTrustServiceProvider xmlTrustServiceProvider : certificate.getTrustServiceProviders()) {
+			List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
 			boolean foundCertId = false;
-			for (XmlTrustedService xmlTrustedService : trustedServices) {
-				if (Utils.areStringsEqual(certId, xmlTrustedService.getServiceDigitalIdentifier().getId())) {
+			for (XmlTrustService xmlTrustService : trustServices) {
+				if (Utils.areStringsEqual(certId, xmlTrustService.getServiceDigitalIdentifier().getId())) {
 					foundCertId = true;
 					break;
 				}
 			}
 			if (foundCertId) {
-				result.add(xmlTrustedServiceProvider);
+				result.add(xmlTrustServiceProvider);
 			}
 		}
 		return result;
@@ -448,7 +484,7 @@ public class SimpleReportBuilder {
 		XmlSignatureScope xmlSignatureScope = new XmlSignatureScope();
 		xmlSignatureScope.setId(signatureScope.getSignerData().getId());
 		xmlSignatureScope.setName(signatureScope.getName());
-		xmlSignatureScope.setScope(signatureScope.getScope().name());
+		xmlSignatureScope.setScope(signatureScope.getScope());
 		xmlSignatureScope.setValue(signatureScope.getDescription());
 		return xmlSignatureScope;
 	}
@@ -525,6 +561,53 @@ public class SimpleReportBuilder {
 		}
 
 		return xmlTimestamp;
+	}
+
+	private XmlEvidenceRecord getXmlEvidenceRecord(EvidenceRecordWrapper evidenceRecordWrapper) {
+		XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
+
+		String evidenceRecordId = evidenceRecordWrapper.getId();
+		xmlEvidenceRecord.setId(evidenceRecordId);
+		xmlEvidenceRecord.setFilename(evidenceRecordWrapper.getFilename());
+
+		xmlEvidenceRecord.setPOETime(detailedReport.getEvidenceRecordLowestPOETime(evidenceRecordId));
+
+		Indication indication = detailedReport.getFinalIndication(evidenceRecordId);
+		xmlEvidenceRecord.setIndication(indication);
+		finalIndications.add(indication);
+
+		SubIndication subIndication = detailedReport.getFinalSubIndication(evidenceRecordId);
+		if (subIndication != null) {
+			xmlEvidenceRecord.setSubIndication(subIndication);
+			finalSubIndications.add(subIndication);
+		}
+
+		XmlDetails validationDetails = getAdESValidationDetails(evidenceRecordId);
+		if (isNotEmpty(validationDetails)) {
+			xmlEvidenceRecord.setAdESValidationDetails(validationDetails);
+		}
+
+		if (Utils.isCollectionNotEmpty(evidenceRecordWrapper.getEvidenceRecordScopes())) {
+			for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope timestampScope : evidenceRecordWrapper.getEvidenceRecordScopes()) {
+				xmlEvidenceRecord.getEvidenceRecordScope().add(getXmlSignatureScope(timestampScope));
+			}
+		}
+
+		List<TimestampWrapper> timestampList = evidenceRecordWrapper.getTimestampList();
+		if (Utils.isCollectionNotEmpty(timestampList)) {
+			XmlTimestamps xmlTimestamps = new XmlTimestamps();
+			for (TimestampWrapper timestamp : timestampList) {
+				Indication tstValidationIndication = detailedReport.getBasicTimestampValidationIndication(timestamp.getId());
+				if (tstValidationIndication != null) {
+					xmlTimestamps.getTimestamp().add(getXmlTimestamp(timestamp));
+				}
+			}
+			if (Utils.isCollectionNotEmpty(xmlTimestamps.getTimestamp())) {
+				xmlEvidenceRecord.setTimestamps(xmlTimestamps);
+			}
+		}
+
+		return xmlEvidenceRecord;
 	}
 
 	private String getProducedByName(TimestampWrapper timestampWrapper) {

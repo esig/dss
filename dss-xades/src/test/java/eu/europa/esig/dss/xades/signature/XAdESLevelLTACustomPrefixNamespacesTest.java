@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 
 public class XAdESLevelLTACustomPrefixNamespacesTest extends AbstractXAdESTestSignature {
 
@@ -49,7 +49,7 @@ public class XAdESLevelLTACustomPrefixNamespacesTest extends AbstractXAdESTestSi
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		signatureParameters.setXmldsigNamespace(new DSSNamespace(XMLDSigNamespace.NS.getUri(), "toto"));
-		signatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "tata"));
+		signatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespace.XADES_132.getUri(), "tata"));
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

@@ -48,6 +48,7 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -352,6 +353,20 @@ public final class DomUtils {
 		return dom;
 	}
 
+	/**
+	 * Adopts all children of the {@code toBeAdopted} Node, excluding the Node itself.
+	 *
+	 * @param parentElement {@link Element} to be extended with children values
+	 * @param toBeAdopted {@link Node} containing children to be adopted
+	 */
+	public static void adoptChildren(Element parentElement, Node toBeAdopted) {
+		NodeList childNodes = toBeAdopted.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node child = childNodes.item(i);
+			child = parentElement.getOwnerDocument().importNode(child, true);
+			parentElement.appendChild(child);
+		}
+	}
 	
 	/**
 	 * This method creates a new instance of XPathExpression with the given xpath
@@ -615,15 +630,41 @@ public final class DomUtils {
 	 * @return {@code String} representation of the node
 	 */
 	public static String xmlToString(final Node node) {
+		final StringWriter stringWriter = new StringWriter();
+		final Result result = new StreamResult(stringWriter);
+
+		serializeNode(node, result);
+		return stringWriter.getBuffer().toString();
+	}
+
+	/**
+	 * Serializes a {@code Node} and writes the output into {@code Result}
+	 *
+	 * @param node {@link Node} to serialize
+	 * @param result {@link Result} serialization container
+	 */
+	private static void serializeNode(Node node, Result result) {
 		try {
-			final Source source = new DOMSource(node);
-			final StringWriter stringWriter = new StringWriter();
-			final Result result = new StreamResult(stringWriter);
-			final Transformer transformer = getSecureTransformer();
+			Transformer transformer = DomUtils.getSecureTransformer();
+			Document document;
+			if (Node.DOCUMENT_NODE == node.getNodeType()) {
+				document = (Document) node;
+			} else {
+				document = node.getOwnerDocument();
+			}
+
+			if (document != null) {
+				String xmlEncoding = document.getXmlEncoding();
+				if (Utils.isStringNotBlank(xmlEncoding)) {
+					transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
+				}
+			}
+
+			Source source = new DOMSource(node);
 			transformer.transform(source, result);
-			return stringWriter.getBuffer().toString();
-		} catch (Exception e) {
-			throw new DSSException(String.format("Unable to transform XML Node to string. Reason : %s", e.getMessage()), e);
+
+		} catch (TransformerException e) {
+			throw new DSSException("An error occurred during a node serialization.", e);
 		}
 	}
 
@@ -657,9 +698,14 @@ public final class DomUtils {
 	public static String getId(String uri) {
 		String id = uri;
 		if (startsFromHash(uri)) {
-			id = id.substring(1);
-		} else if (DomUtils.isXPointerQuery(uri)) {
-			id = DomUtils.getXPointerId(uri);
+			if (DomUtils.isXPointerQuery(uri)) {
+				String xpointerId = DomUtils.getXPointerId(uri);
+				if (xpointerId != null) {
+					id = xpointerId;
+				}
+			} else {
+				id = id.substring(1);
+			}
 		}
 		return id;
 	}
@@ -730,7 +776,7 @@ public final class DomUtils {
 	 * @return true if it is an XPointer query
 	 */
 	public static boolean isXPointerQuery(String uriValue) {
-		if (Utils.isStringEmpty(uriValue)) {
+		if (Utils.isStringBlank(uriValue)) {
 			return false;
 		}
 		String decodedUri;
@@ -831,8 +877,7 @@ public final class DomUtils {
 	public static Node excludeComments(Node node) {
 		excludeCommentsRecursively(node);
 		// workaround to handle the transforms correctly (clone does not work)
-		// TODO: improve
-		return buildDOM(xmlToString(node));
+		return buildDOM(serializeNode(node));
 	}
 
 	private static void excludeCommentsRecursively(final Node node) {
@@ -841,6 +886,7 @@ public final class DomUtils {
 			Node childNode = childNodes.item(ii);
 			if (Node.COMMENT_NODE == childNode.getNodeType()) {
 				node.removeChild(childNode);
+				--ii; // childNodes content is being modified dynamically
 			}
 			if (childNode.hasChildNodes()) {
 				excludeCommentsRecursively(childNode);
@@ -918,6 +964,7 @@ public final class DomUtils {
 		switch (node.getNodeType()) {
 			case Node.ELEMENT_NODE:
 			case Node.DOCUMENT_NODE:
+			case Node.COMMENT_NODE:
 				byte[] bytes = serializeNode(node);
 				String str = new String(bytes);
 				// TODO: better
@@ -929,9 +976,10 @@ public final class DomUtils {
 
 			case Node.TEXT_NODE:
 				String textContent = node.getTextContent();
-				if (Utils.isBase64Encoded(textContent)) {
+				// Use try-catch for performance purposes
+				try {
 					return Utils.fromBase64(node.getTextContent());
-				} else {
+				} catch (Exception e) {
 					return textContent.getBytes();
 				}
 

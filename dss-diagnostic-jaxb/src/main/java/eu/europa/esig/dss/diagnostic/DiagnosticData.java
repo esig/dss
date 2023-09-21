@@ -507,6 +507,22 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * Returns a list of {@code TimestampWrapper}s for the given {@code TimestampType}
+	 *
+	 * @param timestampType {@link TimestampType} to get time-stamps for
+	 * @return a list of {@link TimestampWrapper}
+	 */
+	public List<TimestampWrapper> getTimestampsByType(TimestampType timestampType) {
+		List<TimestampWrapper> result = new ArrayList<>();
+		for (TimestampWrapper timestampWrapper : getTimestampList()) {
+			if (timestampType != null && timestampType == timestampWrapper.getType()) {
+				result.add(timestampWrapper);
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * This method indicates if the certificate signature is valid and the revocation status is valid.
 	 *
 	 * @param dssCertificateId
@@ -923,6 +939,21 @@ public class DiagnosticData {
 			}
 		}
 		return usedTimestamps;
+	}
+
+	/**
+	 * Returns a list of time-stamp tokens which are not evidence record time-stamps
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
+	public List<TimestampWrapper> getNonEvidenceRecordTimestamps() {
+		List<TimestampWrapper> result = new ArrayList<>();
+		for (TimestampWrapper timestampWrapper : getTimestampList()) {
+			if (!timestampWrapper.getType().isEvidenceRecordTimestamp()) {
+				result.add(timestampWrapper);
+			}
+		}
+		return result;
 	}
 
 	/**

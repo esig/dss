@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleReport ValidationTime="2023-09-19T08:49:04Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validates electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+            Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+            signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
+    <DocumentName>er-tst-renewal.xml</DocumentName>
+    <ValidSignaturesCount>0</ValidSignaturesCount>
+    <SignaturesCount>0</SignaturesCount>
+    <EvidenceRecord Id="ER-D9BA417D0EB3E957B76A6721C74D0457B802EAABF10F335977829C78A2F5497F">
+        <Filename>er-tst-renewal.xml</Filename>
+        <Indication>INDETERMINATE</Indication>
+        <SubIndication>CERTIFICATE_CHAIN_GENERAL_FAILURE</SubIndication>
+        <AdESValidationDetails>
+            <Error Key="ADEST_IBSVPTADC_ANS">The result of time-stamp validation is not conclusive!</Error>
+        </AdESValidationDetails>
+        <POETime>2023-09-19T08:49:04Z</POETime>
+        <EvidenceRecordScope Id="D-E056F86CC72DAFEB9D8E6F2B49669E2919C7B688E42103642372F9CCDEAA727E" name="Full document" scope="FULL">Full document</EvidenceRecordScope>
+        <Timestamps>
+            <Timestamp Id="T-F7B853F12AE635CDF59E7BD84D65AAFA9926190F748E2709CF96D14C89DB4AAB">
+                <CertificateChain>
+                    <Certificate Id="C-AA02B99F9C4B57291E3C1744E44647709293D0FE17BB4EED28C99E973C7E8473">
+                        <QualifiedName>good-tsa</QualifiedName>
+                    </Certificate>
+                    <Certificate Id="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813" trusted="true">
+                        <QualifiedName>root-ca</QualifiedName>
+                    </Certificate>
+                </CertificateChain>
+                <Indication>INDETERMINATE</Indication>
+                <SubIndication>CERTIFICATE_CHAIN_GENERAL_FAILURE</SubIndication>
+                <AdESValidationDetails>
+                    <Error Key="BBB_XCV_SUB_ANS">The certificate validation is not conclusive!</Error>
+                    <Error Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Error>
+                </AdESValidationDetails>
+                <QualificationDetails>
+                    <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+                </QualificationDetails>
+                <ProductionTime>2023-07-03T13:18:43Z</ProductionTime>
+                <ProducedBy>good-tsa</ProducedBy>
+                <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+                <TimestampScope Id="D-E056F86CC72DAFEB9D8E6F2B49669E2919C7B688E42103642372F9CCDEAA727E" name="Full document" scope="FULL">Full document</TimestampScope>
+            </Timestamp>
+            <Timestamp Id="T-1F2C4283A8DD86F383B953AA01443129281F0B4EEE14FA656CF01DA2ACE3E382">
+                <CertificateChain>
+                    <Certificate Id="C-AA02B99F9C4B57291E3C1744E44647709293D0FE17BB4EED28C99E973C7E8473">
+                        <QualifiedName>good-tsa</QualifiedName>
+                    </Certificate>
+                    <Certificate Id="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813" trusted="true">
+                        <QualifiedName>root-ca</QualifiedName>
+                    </Certificate>
+                </CertificateChain>
+                <Indication>INDETERMINATE</Indication>
+                <SubIndication>CERTIFICATE_CHAIN_GENERAL_FAILURE</SubIndication>
+                <AdESValidationDetails>
+                    <Error Key="BBB_XCV_SUB_ANS">The certificate validation is not conclusive!</Error>
+                    <Error Key="BBB_XCV_IRDPFC_ANS">No revocation data found for the certificate!</Error>
+                </AdESValidationDetails>
+                <QualificationDetails>
+                    <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+                </QualificationDetails>
+                <ProductionTime>2023-07-03T13:20:00Z</ProductionTime>
+                <ProducedBy>good-tsa</ProducedBy>
+                <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+                <TimestampScope Id="D-E056F86CC72DAFEB9D8E6F2B49669E2919C7B688E42103642372F9CCDEAA727E" name="Full document" scope="FULL">Full document</TimestampScope>
+            </Timestamp>
+        </Timestamps>
+    </EvidenceRecord>
+</SimpleReport>

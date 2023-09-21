@@ -84,6 +84,7 @@ public class TrustService implements Serializable {
 		 * Default constructor
 		 */
 		public TrustServiceBuilder() {
+			// empty
 		}
 
 		/**

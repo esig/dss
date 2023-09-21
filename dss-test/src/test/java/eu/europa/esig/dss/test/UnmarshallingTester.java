@@ -43,6 +43,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -231,6 +232,9 @@ public class UnmarshallingTester {
 				case TIMESTAMP:
 					token = new XmlTimestamp();
 					break;
+				case EVIDENCE_RECORD:
+					token = new XmlEvidenceRecord();
+					break;
 				case SIGNED_DATA:
 					token = new XmlSignerData();
 					break;
@@ -362,7 +366,7 @@ public class UnmarshallingTester {
 			assertEquals(unmarshalledCert.getPolicyIds().size(), originalCert.getPolicyIds().size());
 			assertEquals(unmarshalledCert.getCertificateRevocationData().size(), originalCert.getCertificateRevocationData().size());
 			assertEquals(unmarshalledCert.getExtendedKeyUsages().size(), originalCert.getExtendedKeyUsages().size());
-			assertEquals(unmarshalledCert.getTrustedServices().size(), originalCert.getTrustedServices().size());
+			assertEquals(unmarshalledCert.getTrustServices().size(), originalCert.getTrustServices().size());
 			assertEquals(unmarshalledCert.getTrustServiceProviders().size(), originalCert.getTrustServiceProviders().size());
 
 			if (unmarshalledCert.getSigningCertificate() != null && !unmarshalledCert.getId().equals(unmarshalledCert.getSigningCertificate().getId())) {

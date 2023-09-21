@@ -55,6 +55,8 @@ public abstract class AbstractTestValidator {
 		return new InMemoryDocument(new byte[] { '1', '2', '3' });
 	}
 
+	protected abstract DSSDocument getXmlEvidenceRecordDocument();
+
 	@Test
 	public void validateSignatures() {
 		List<DSSDocument> documents = getValidDocuments();
@@ -92,15 +94,6 @@ public abstract class AbstractTestValidator {
 	}
 
 	@Test
-	public void validateNoSignatureDocument() {
-		DSSDocument document = getNoSignatureDocument();
-		if (document != null) {
-			SignedDocumentValidator validator = initValidator(document);
-			validate(validator, false);
-		}
-	}
-
-	@Test
 	public void isSupportedValidDocument() {
 		List<DSSDocument> documents = getValidDocuments();
 		for (DSSDocument document : documents) {
@@ -128,6 +121,14 @@ public abstract class AbstractTestValidator {
 		DSSDocument document = getNoSignatureDocument();
 		if (document != null) {
 			assertTrue(initEmptyValidator().isSupported(document));
+		}
+	}
+
+	@Test
+	public void isSupportedEvidenceRecordDocument() {
+		DSSDocument document = getXmlEvidenceRecordDocument();
+		if (document != null) {
+			assertFalse(initEmptyValidator().isSupported(document));
 		}
 	}
 

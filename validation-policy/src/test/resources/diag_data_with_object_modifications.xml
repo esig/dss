@@ -303,7 +303,7 @@
                     <keyUsageBit>crlSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>CjcyKUJuhaYACwfhGFXahmi9E3kGor95H01guP91MN0=</DigestValue>
@@ -355,7 +355,7 @@
                     <crlUrl>http://onsitecrl.trustwise.com/BTClass2CA-G3.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -435,7 +435,7 @@
                     <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-7A393E88E54B52393509E14401B66C0729207813525EF185A87B1E9CFFC733C1">
                     <Status>GOOD</Status>
@@ -497,7 +497,7 @@
                     <crlUrl>http://crl.universign.eu/universign_tsa_ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-FB1BB2FFEEC118A3254216D7341938CBE6A2BEC44A372C84B55422EBD59ED0D5">
                     <Status>GOOD</Status>
@@ -553,7 +553,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>l2M3h3ZnG86m6L0APtkh7hwpg8Jrk/TRCb+Zg2mH/Jk=</DigestValue>
@@ -607,7 +607,7 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>qHEna4P+/kh3DtFJTaFXqelYx2RJJvG/5KEhtL1Nr8M=</DigestValue>
@@ -665,7 +665,7 @@
                     <crlUrl>http://crl.quovadisglobal.com/qventca1g3.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -739,7 +739,7 @@
                     <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-2D1AD03A4263F1F7B21017D84407382C0DFFCF2D88F51A896696938530990B84">
                     <Status>GOOD</Status>
@@ -800,7 +800,7 @@
                     <crlUrl>http://crl.universign.eu/universign_primary_ca_hardware.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>wvdoguqftKgcSyhtWgnkS7ENSzZXLap+rB6FSw4NonE=</DigestValue>
@@ -850,7 +850,7 @@
                     <ocspUrl>http://aia.sk.ee/CA</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>/QQSKtYwqgCZh4VQ2Djr+uxdDzPaA10NCXb6lnCxctk=</DigestValue>

@@ -5,6 +5,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 
 import java.util.ArrayList;
@@ -41,6 +42,15 @@ public class EvidenceRecordWrapper {
     }
 
     /**
+     * Returns name of the evidence record's document, when applicable
+     *
+     * @return {@link String}
+     */
+    public String getFilename() {
+        return evidenceRecord.getDocumentName();
+    }
+
+    /**
      * Gets a list of digest matchers representing the associated archival data objects validation status
      *
      * @return a list of {@link XmlDigestMatcher}
@@ -50,17 +60,64 @@ public class EvidenceRecordWrapper {
     }
 
     /**
+     * Returns initial time-stamp of the evidence record
+     *
+     * @return {@link TimestampWrapper}
+     */
+    public TimestampWrapper getFirstTimestamp() {
+        List<TimestampWrapper> timestampList = getTimestampList();
+        if (timestampList != null && timestampList.size() > 0) {
+            return timestampList.get(0);
+        }
+        return null;
+    }
+
+    /**
      * Gets a list of time-stamp tokens associated with the evidence record
      *
      * @return a list of {@link TimestampWrapper}s
      */
-    public List<TimestampWrapper> getTimestamps() {
+    public List<TimestampWrapper> getTimestampList() {
         List<TimestampWrapper> tsps = new ArrayList<>();
         List<XmlFoundTimestamp> timestamps = evidenceRecord.getEvidenceRecordTimestamps();
         for (XmlFoundTimestamp xmlFoundTimestamp : timestamps) {
             tsps.add(new TimestampWrapper(xmlFoundTimestamp.getTimestamp()));
         }
         return tsps;
+    }
+
+    /**
+     * Returns a list of time-stamp identifiers associated with the Evidence Record
+     *
+     * @return a list of {@link String}s
+     */
+    public List<String> getTimestampIdsList() {
+        List<String> result = new ArrayList<>();
+        List<TimestampWrapper> timestamps = getTimestampList();
+        if (timestamps != null) {
+            for (TimestampWrapper tsp : timestamps) {
+                result.add(tsp.getId());
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns a collection of certificate tokens embedded within Evidence Record
+     *
+     * @return {@link FoundCertificatesProxy}
+     */
+    public FoundCertificatesProxy foundCertificates() {
+        return new FoundCertificatesProxy(evidenceRecord.getFoundCertificates());
+    }
+
+    /**
+     * Returns a collection of revocation tokens embedded within Evidence Record
+     *
+     * @return {@link FoundRevocationsProxy}
+     */
+    public FoundRevocationsProxy foundRevocations() {
+        return new FoundRevocationsProxy(evidenceRecord.getFoundRevocations());
     }
 
     /**
@@ -92,6 +149,15 @@ public class EvidenceRecordWrapper {
             return structuralValidation.getMessages();
         }
         return Collections.emptyList();
+    }
+
+    /**
+     * Returns a list of objects covered by the evidence record
+     *
+     * @return a list of {@link XmlTimestampedObject}s
+     */
+    public List<XmlTimestampedObject> getCoveredObjects() {
+        return evidenceRecord.getTimestampedObjects();
     }
 
     /**

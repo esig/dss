@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.CertificateType;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.QCTypeIdentifiers;
+import eu.europa.esig.dss.validation.process.qualification.certificate.QCTypeIdentifiers;
 
 import java.util.stream.Stream;
 

@@ -26,15 +26,18 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Context;
@@ -204,9 +207,22 @@ public class DetailedReport {
 	 * @return the first signature id
 	 */
 	public String getFirstSignatureId() {
-		List<String> result = getSignatureIds();
-		if (!result.isEmpty()) {
-			return result.get(0);
+		List<String> signatureIdList = getSignatureIds();
+		if (!signatureIdList.isEmpty()) {
+			return signatureIdList.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * This method returns the first timestamp id.
+	 *
+	 * @return the first timestamp id
+	 */
+	public String getFirstTimestampId() {
+		final List<String> timestampIdList = getTimestampIds();
+		if (!timestampIdList.isEmpty()) {
+			return timestampIdList.get(0);
 		}
 		return null;
 	}
@@ -218,6 +234,48 @@ public class DetailedReport {
 	 */
 	public List<String> getTimestampIds() {
 		List<String> result = new ArrayList<>();
+		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
+		for (XmlBasicBuildingBlocks bbb : bbbs) {
+			if (Context.TIMESTAMP == bbb.getType()) {
+				result.add(bbb.getId());
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This method returns the first evidence record id.
+	 *
+	 * @return the first evidence record id
+	 */
+	public String getFirstEvidenceRecordId() {
+		final List<String> evidenceRecordIds = getEvidenceRecordIds();
+		if (!evidenceRecordIds.isEmpty()) {
+			return evidenceRecordIds.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a list of all evidence record ids
+	 *
+	 * @return a list of {@link String} ids
+	 */
+	public List<String> getEvidenceRecordIds() {
+		List<String> result = new ArrayList<>();
+		List<?> tokens = jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord();
+		for (Object token : tokens) {
+			if (token instanceof XmlEvidenceRecord) {
+				XmlEvidenceRecord xmlEvidenceRecord = (XmlEvidenceRecord) token;
+				result.add(xmlEvidenceRecord.getId());
+			} else if (token instanceof XmlSignature) {
+				XmlSignature xmlSignature = (XmlSignature) token;
+				List<XmlEvidenceRecord> evidenceRecords = xmlSignature.getEvidenceRecords();
+				for (XmlEvidenceRecord xmlEvidenceRecord : evidenceRecords) {
+					result.add(xmlEvidenceRecord.getId());
+				}
+			}
+		}
 		List<XmlBasicBuildingBlocks> bbbs = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks bbb : bbbs) {
 			if (Context.TIMESTAMP == bbb.getType()) {
@@ -280,6 +338,25 @@ public class DetailedReport {
 	}
 
 	/**
+	 * Returns lowest POE of the evidence record with the given Id
+	 *
+	 * @param evidenceRecordId {@link String} id of the evidence record to get POE for
+	 * @return {@link Date}
+	 */
+	public Date getEvidenceRecordLowestPOETime(String evidenceRecordId) {
+		XmlEvidenceRecord xmlEvidenceRecord = getXmlEvidenceRecordById(evidenceRecordId);
+		if (xmlEvidenceRecord != null) {
+			if (xmlEvidenceRecord.getValidationProcessEvidenceRecord() != null) {
+				XmlProofOfExistence poe = xmlEvidenceRecord.getValidationProcessEvidenceRecord().getProofOfExistence();
+				if (poe != null) {
+					return poe.getTime();
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Gets basic validation indication for a signature with id
 	 *
 	 * @param signatureId {@link String}
@@ -310,13 +387,13 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Gets timestamp validation indication for a timestamp with id
+	 * Gets timestamp basic validation indication for a timestamp with id
 	 *
 	 * @param timestampId {@link String}
 	 * @return {@link Indication}
 	 */
-	public Indication getTimestampValidationIndication(String timestampId) {
-		XmlValidationProcessTimestamp timestampValidationById = getTimestampValidationById(timestampId);
+	public Indication getBasicTimestampValidationIndication(String timestampId) {
+		XmlValidationProcessBasicTimestamp timestampValidationById = getBasicTimestampValidationById(timestampId);
 		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
 			return timestampValidationById.getConclusion().getIndication();
 		}
@@ -324,15 +401,126 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Gets timestamp validation subIndication for a timestamp with id
+	 * Gets timestamp basic validation subIndication for a timestamp with id
 	 *
 	 * @param timestampId {@link String}
 	 * @return {@link Indication}
 	 */
-	public SubIndication getTimestampValidationSubIndication(String timestampId) {
-		XmlValidationProcessTimestamp timestampValidationById = getTimestampValidationById(timestampId);
+	public SubIndication getBasicTimestampValidationSubIndication(String timestampId) {
+		XmlValidationProcessBasicTimestamp timestampValidationById = getBasicTimestampValidationById(timestampId);
 		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
 			return timestampValidationById.getConclusion().getSubIndication();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets timestamp validation indication for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return {@link Indication}
+	 * @deprecated since DSS 5.13. Use {@code #getBasicTimestampValidationIndication(timestampId)} instead
+	 */
+	@Deprecated
+	public Indication getTimestampValidationIndication(String timestampId) {
+		return getBasicTimestampValidationIndication(timestampId);
+	}
+
+	/**
+	 * Gets timestamp validation subIndication for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return {@link Indication}
+	 * @deprecated since DSS 5.13. Use {@code #getBasicTimestampValidationSubIndication(timestampId)} instead
+	 */
+	@Deprecated
+	public SubIndication getTimestampValidationSubIndication(String timestampId) {
+		return getBasicTimestampValidationSubIndication(timestampId);
+	}
+
+	/**
+	 * Gets timestamp validation with archive data indication for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return {@link Indication}
+	 */
+	public Indication getArchiveDataTimestampValidationIndication(String timestampId) {
+		XmlValidationProcessArchivalDataTimestamp timestampValidationById = getArchiveDataTimestampValidationById(timestampId);
+		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
+			return timestampValidationById.getConclusion().getIndication();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets timestamp validation with archive data subIndication for a timestamp with id
+	 *
+	 * @param timestampId {@link String}
+	 * @return {@link SubIndication}
+	 */
+	public SubIndication getArchiveDataTimestampValidationSubIndication(String timestampId) {
+		XmlValidationProcessArchivalDataTimestamp timestampValidationById = getArchiveDataTimestampValidationById(timestampId);
+		if (timestampValidationById != null && timestampValidationById.getConclusion() != null) {
+			return timestampValidationById.getConclusion().getSubIndication();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets evidence record validation indication for an evidence record with id
+	 *
+	 * @param evidenceRecordId {@link String}
+	 * @return {@link Indication}
+	 */
+	public Indication getEvidenceRecordValidationIndication(String evidenceRecordId) {
+		XmlValidationProcessEvidenceRecord evidenceRecordValidationById = getEvidenceRecordValidationById(evidenceRecordId);
+		if (evidenceRecordValidationById != null && evidenceRecordValidationById.getConclusion() != null) {
+			return evidenceRecordValidationById.getConclusion().getIndication();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets evidence record validation subIndication for an evidence record with id
+	 *
+	 * @param evidenceRecordId {@link String}
+	 * @return {@link SubIndication}
+	 */
+	public SubIndication getEvidenceRecordValidationSubIndication(String evidenceRecordId) {
+		XmlValidationProcessEvidenceRecord evidenceRecordValidationById = getEvidenceRecordValidationById(evidenceRecordId);
+		if (evidenceRecordValidationById != null && evidenceRecordValidationById.getConclusion() != null) {
+			return evidenceRecordValidationById.getConclusion().getSubIndication();
+		}
+		return null;
+	}
+
+	private XmlValidationProcessEvidenceRecord getEvidenceRecordValidationById(String evidenceRecordId) {
+		XmlEvidenceRecord evidenceRecord = getXmlEvidenceRecordById(evidenceRecordId);
+		if (evidenceRecord != null) {
+			return evidenceRecord.getValidationProcessEvidenceRecord();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns an {@code XmlEvidenceRecord} by the given id
+	 * Null if the evidence record is not found
+	 *
+	 * @param evidenceRecordId {@link String} id of an evidence record to get
+	 * @return {@link XmlEvidenceRecord}
+	 */
+	public XmlEvidenceRecord getXmlEvidenceRecordById(String evidenceRecordId) {
+		for (XmlEvidenceRecord xmlEvidenceRecord : getIndependentEvidenceRecords()) {
+			if (xmlEvidenceRecord.getId().equals(evidenceRecordId)) {
+				return xmlEvidenceRecord;
+			}
+		}
+		for (XmlSignature xmlSignature : getSignatures()) {
+			for (XmlEvidenceRecord xmlEvidenceRecord : xmlSignature.getEvidenceRecords()) {
+				if (xmlEvidenceRecord.getId().equals(evidenceRecordId)) {
+					return xmlEvidenceRecord;
+				}
+			}
 		}
 		return null;
 	}
@@ -383,7 +571,7 @@ public class DetailedReport {
 	 * Gets validation with archive data subIndication for a signature with id
 	 *
 	 * @param signatureId {@link String}
-	 * @return {@link Indication}
+	 * @return {@link SubIndication}
 	 */
 	public SubIndication getArchiveDataValidationSubIndication(String signatureId) {
 		XmlSignature signature = getXmlSignatureById(signatureId);
@@ -397,7 +585,7 @@ public class DetailedReport {
 	 * Gets qualification for a signature with id
 	 *
 	 * @param signatureId {@link String}
-	 * @return {@link Indication}
+	 * @return {@link SignatureQualification}
 	 */
 	public SignatureQualification getSignatureQualification(String signatureId) {
 		XmlSignature signature = getXmlSignatureById(signatureId);
@@ -408,15 +596,53 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Gets qualification for a timestamp with id
+	 * Gets the final qualification result for a timestamp with id
 	 *
 	 * @param timestampId {@link String}
-	 * @return {@link Indication}
+	 * @return {@link TimestampQualification}
 	 */
 	public TimestampQualification getTimestampQualification(String timestampId) {
 		XmlValidationTimestampQualification timestampQualif = getXmlTimestampQualificationById(timestampId);
 		if (timestampQualif !=null) {
 			return timestampQualif.getTimestampQualification();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets qualification for a timestamp with the given id at the timestamp generation time
+	 *
+	 * @param timestampId {@link String}
+	 * @return {@link TimestampQualification}
+	 */
+	public TimestampQualification getTimestampQualificationAtTstGenerationTime(String timestampId) {
+		return getTimestampQualificationAtValidationTime(ValidationTime.TIMESTAMP_GENERATION_TIME, timestampId);
+	}
+
+	/**
+	 * Gets qualification for a timestamp with the given id at its best available POE time
+	 *
+	 * @param timestampId {@link String}
+	 * @return {@link TimestampQualification}
+	 */
+	public TimestampQualification getTimestampQualificationAtBestPoeTime(String timestampId) {
+		return getTimestampQualificationAtValidationTime(ValidationTime.TIMESTAMP_POE_TIME, timestampId);
+	}
+
+	/**
+	 * Gets qualification for a timestamp with the given id at the timestamp generation time
+	 *
+	 * @param timestampId {@link String}
+	 * @return {@link TimestampQualification}
+	 */
+	private TimestampQualification getTimestampQualificationAtValidationTime(ValidationTime validationTime, String timestampId) {
+		XmlValidationTimestampQualification tstQualificationValidation = getXmlTimestampQualificationById(timestampId);
+		if (tstQualificationValidation != null) {
+			for (XmlValidationTimestampQualificationAtTime tstQualAtTime : tstQualificationValidation.getValidationTimestampQualificationAtTime()) {
+				if (validationTime == tstQualAtTime.getValidationTime()) {
+					return tstQualAtTime.getTimestampQualification();
+				}
+			}
 		}
 		return null;
 	}
@@ -429,10 +655,18 @@ public class DetailedReport {
 		return null;
 	}
 
-	private XmlValidationProcessTimestamp getTimestampValidationById(String timestampId) {
+	private XmlValidationProcessBasicTimestamp getBasicTimestampValidationById(String timestampId) {
 		XmlTimestamp timestamp = getXmlTimestampById(timestampId);
 		if (timestamp != null) {
-			return timestamp.getValidationProcessTimestamp();
+			return timestamp.getValidationProcessBasicTimestamp();
+		}
+		return null;
+	}
+
+	private XmlValidationProcessArchivalDataTimestamp getArchiveDataTimestampValidationById(String timestampId) {
+		XmlTimestamp timestamp = getXmlTimestampById(timestampId);
+		if (timestamp != null) {
+			return timestamp.getValidationProcessArchivalDataTimestamp();
 		}
 		return null;
 	}
@@ -454,6 +688,23 @@ public class DetailedReport {
 		List<XmlSignature> signatures = getSignatures();
 		for (XmlSignature xmlSignature : signatures) {
 			List<XmlTimestamp> timestamps = xmlSignature.getTimestamps();
+			for (XmlTimestamp xmlTimestamp : timestamps) {
+				if (xmlTimestamp.getId().equals(timestampId)) {
+					return xmlTimestamp;
+				}
+			}
+			for (XmlEvidenceRecord xmlEvidenceRecord : xmlSignature.getEvidenceRecords()) {
+				for (XmlTimestamp xmlTimestamp : xmlEvidenceRecord.getTimestamps()) {
+					if (xmlTimestamp.getId().equals(timestampId)) {
+						return xmlTimestamp;
+					}
+				}
+			}
+		}
+
+		List<XmlEvidenceRecord> independentEvidenceRecords = getIndependentEvidenceRecords();
+		for (XmlEvidenceRecord xmlEvidenceRecord : independentEvidenceRecords) {
+			List<XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
 			for (XmlTimestamp xmlTimestamp : timestamps) {
 				if (xmlTimestamp.getId().equals(timestampId)) {
 					return xmlTimestamp;
@@ -508,7 +759,7 @@ public class DetailedReport {
 	 */
 	public List<XmlSignature> getSignatures() {
 		List<XmlSignature> result = new ArrayList<>();
-		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
 			if (element instanceof XmlSignature) {
 				result.add((XmlSignature) element);
 			}
@@ -523,9 +774,24 @@ public class DetailedReport {
 	 */
 	public List<XmlTimestamp> getIndependentTimestamps() {
 		List<XmlTimestamp> result = new ArrayList<>();
-		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
 			if (element instanceof XmlTimestamp) {
 				result.add((XmlTimestamp) element);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a list of all independent (detached) evidence records
+	 *
+	 * @return a list of {@link XmlEvidenceRecord}s
+	 */
+	public List<XmlEvidenceRecord> getIndependentEvidenceRecords() {
+		List<XmlEvidenceRecord> result = new ArrayList<>();
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
+			if (element instanceof XmlEvidenceRecord) {
+				result.add((XmlEvidenceRecord) element);
 			}
 		}
 		return result;
@@ -539,7 +805,7 @@ public class DetailedReport {
 	 */
 	public List<XmlCertificate> getCertificates() {
 		List<XmlCertificate> result = new ArrayList<>();
-		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrCertificate()) {
+		for (Serializable element : jaxbDetailedReport.getSignatureOrTimestampOrEvidenceRecord()) {
 			if (element instanceof XmlCertificate) {
 				result.add((XmlCertificate) element);
 			}
@@ -673,13 +939,11 @@ public class DetailedReport {
 		}
 		XmlTimestamp timestampById = getXmlTimestampById(tokenId);
 		if (timestampById != null) {
-			XmlBasicBuildingBlocks tstBBB = getBasicBuildingBlockById(tokenId);
-			XmlPSV psv = tstBBB.getPSV();
-			if (psv != null) {
-				return psv.getConclusion();
-			} else {
-				return timestampById.getValidationProcessTimestamp().getConclusion();
-			}
+			return timestampById.getConclusion();
+		}
+		XmlEvidenceRecord evidenceRecordById = getXmlEvidenceRecordById(tokenId);
+		if (evidenceRecordById != null) {
+			return evidenceRecordById.getConclusion();
 		}
 		XmlBasicBuildingBlocks bbb = getBasicBuildingBlockById(tokenId);
 		if (bbb != null) {

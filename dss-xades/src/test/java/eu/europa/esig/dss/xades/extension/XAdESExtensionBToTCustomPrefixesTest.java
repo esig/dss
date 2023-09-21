@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 
@@ -42,7 +42,7 @@ public class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExten
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
 		signatureParameters.setXmldsigNamespace(new DSSNamespace(XMLDSigNamespace.NS.getUri(), "tutu"));
-		signatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "toto"));
+		signatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespace.XADES_132.getUri(), "toto"));
 		
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getUsedTSPSourceAtSignatureTime());

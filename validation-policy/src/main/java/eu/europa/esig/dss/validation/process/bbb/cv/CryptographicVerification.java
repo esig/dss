@@ -154,12 +154,12 @@ public class CryptographicVerification extends Chain<XmlCV> {
 
 	private ChainItem<XmlCV> referenceDataFound(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataExistenceConstraint(context);
-		return new ReferenceDataExistenceCheck(i18nProvider, result, digestMatcher, constraint);
+		return new ReferenceDataExistenceCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> referenceDataIntact(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataIntactConstraint(context);
-		return new ReferenceDataIntactCheck(i18nProvider, result, digestMatcher, constraint);
+		return new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> manifestEntryExistence(List<XmlDigestMatcher> digestMatchers) {

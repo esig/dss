@@ -51,6 +51,9 @@ public enum XMLERSElement implements DSSElement {
     /** CryptographicInformationList */
     CRYPTOGRAPHIC_INFORMATION_LIST("CryptographicInformationList"),
 
+    /** CryptographicInformation */
+    CRYPTOGRAPHIC_INFORMATION("CryptographicInformation"),
+
     /** Sequence */
     SEQUENCE("Sequence"),
 
@@ -79,7 +82,7 @@ public enum XMLERSElement implements DSSElement {
      */
     XMLERSElement(String tagName) {
         this.tagName = tagName;
-        this.namespace = XMLERSNamespaces.XMLERS;
+        this.namespace = XMLERSNamespace.XMLERS;
     }
 
     @Override

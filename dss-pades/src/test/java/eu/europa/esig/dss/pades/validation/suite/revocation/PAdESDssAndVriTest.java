@@ -117,27 +117,26 @@ public class PAdESDssAndVriTest extends AbstractPAdESTestValidation {
 		super.validateETSISignatureAttributes(signatureAttributes);
 		
 		assertNotNull(signatureAttributes);
-		List<Object> attributesList = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		List<JAXBElement<?>> attributesList = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
 		assertTrue(Utils.isCollectionNotEmpty(attributesList));
 		List<SATimestampType> foundTimestamps = new ArrayList<>();
 		int docTimestampsCounter = 0;
 		int sigTimestampsCounter = 0;
 		int archiveTimestampsCounter = 0;
-		for (Object object : attributesList) {
-			JAXBElement<?> element = (JAXBElement<?>) object;
-			if (element.getValue() instanceof SATimestampType) {
-				SATimestampType saTimestamp = (SATimestampType) element.getValue();
+		for (JAXBElement<?> object : attributesList) {
+			if (object.getValue() instanceof SATimestampType) {
+				SATimestampType saTimestamp = (SATimestampType) object.getValue();
 				assertTrue(Utils.isCollectionNotEmpty(saTimestamp.getAttributeObject()));
 				assertNotNull(saTimestamp.getTimeStampValue());
 				foundTimestamps.add(saTimestamp);
 			}
-			if (element.getName().getLocalPart().equals("ArchiveTimeStamp")) {
+			if (object.getName().getLocalPart().equals("ArchiveTimeStamp")) {
 				archiveTimestampsCounter++;
 			}
-			if (element.getName().getLocalPart().equals("DocTimeStamp")) {
+			if (object.getName().getLocalPart().equals("DocTimeStamp")) {
 				docTimestampsCounter++;
 			}
-			if (element.getName().getLocalPart().equals("SignatureTimeStamp")) {
+			if (object.getName().getLocalPart().equals("SignatureTimeStamp")) {
 				sigTimestampsCounter++;
 			}
 		}

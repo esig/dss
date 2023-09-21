@@ -34,6 +34,9 @@ public enum Context {
 	/** The processing token is a timestamp */
 	TIMESTAMP,
 
+	/** The processing token is an evidence record */
+	EVIDENCE_RECORD,
+
 	/** The processing token is a revocation */
 	REVOCATION,
 

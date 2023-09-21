@@ -46,6 +46,12 @@
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureFormatParser.parse" 
 				printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureFormatParser.print" />
 		</jaxb:bindings>
+
+		<jaxb:bindings node="//xs:simpleType[@name='ScopeType']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.SignatureScopeType"
+						   parseMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.parse"
+						   printMethod="eu.europa.esig.dss.jaxb.parsers.SignatureScopeTypeParser.print" />
+		</jaxb:bindings>
 		
 	</jaxb:bindings>
 

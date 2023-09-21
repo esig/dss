@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.InputStream;
 
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -69,32 +69,32 @@ public class XAdESEnumsTest {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES111Element.values());
 
-			assertEquals(XAdESNamespaces.XADES_111, XAdES111Element.ANY.getNamespace());
-			assertEquals(XAdESNamespaces.XADES_111.getUri(), XAdES111Element.ANY.getURI());
+			assertEquals(XAdESNamespace.XADES_111, XAdES111Element.ANY.getNamespace());
+			assertEquals(XAdESNamespace.XADES_111.getUri(), XAdES111Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES122Utils.XADES_122_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES122Element.values());
 
-			assertEquals(XAdESNamespaces.XADES_122, XAdES122Element.ANY.getNamespace());
-			assertEquals(XAdESNamespaces.XADES_122.getUri(), XAdES122Element.ANY.getURI());
+			assertEquals(XAdESNamespace.XADES_122, XAdES122Element.ANY.getNamespace());
+			assertEquals(XAdESNamespace.XADES_122.getUri(), XAdES122Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES319132Utils.XADES_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES132Element.values());
 
-			assertEquals(XAdESNamespaces.XADES_132, XAdES132Element.ANY.getNamespace());
-			assertEquals(XAdESNamespaces.XADES_132.getUri(), XAdES132Element.ANY.getURI());
+			assertEquals(XAdESNamespace.XADES_132, XAdES132Element.ANY.getNamespace());
+			assertEquals(XAdESNamespace.XADES_132.getUri(), XAdES132Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES319132Utils.XADES_141_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES141Element.values());
 
-			assertEquals(XAdESNamespaces.XADES_141, XAdES141Element.ARCHIVE_TIMESTAMP.getNamespace());
-			assertEquals(XAdESNamespaces.XADES_141.getUri(), XAdES141Element.ARCHIVE_TIMESTAMP.getURI());
+			assertEquals(XAdESNamespace.XADES_141, XAdES141Element.ARCHIVE_TIMESTAMP.getNamespace());
+			assertEquals(XAdESNamespace.XADES_141.getUri(), XAdES141Element.ARCHIVE_TIMESTAMP.getURI());
 		}
 	}
 

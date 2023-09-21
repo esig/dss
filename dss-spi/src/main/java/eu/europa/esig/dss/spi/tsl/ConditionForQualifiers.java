@@ -32,20 +32,35 @@ public class ConditionForQualifiers implements Serializable {
 	private static final long serialVersionUID = 6284808669027768365L;
 
 	/** The condition */
-	private Condition condition;
+	private final Condition condition;
 
 	/** List of Qualifiers */
-	private List<String> qualifiers;
+	private final List<String> qualifiers;
+
+	/** Whether the corresponding Qualifications extension is marked as critical */
+	private final boolean critical;
 
 	/**
-	 * Default constructor
+	 * Default constructor for a non-critical condition
 	 *
 	 * @param condition {@link Condition}
 	 * @param qualifiers a list of {@link String}
 	 */
-	public ConditionForQualifiers(Condition condition, List<String> qualifiers) {
+	public ConditionForQualifiers(final Condition condition, final List<String> qualifiers) {
+		this(condition, qualifiers, false);
+	}
+
+	/**
+	 * Constructor with criticality level defined
+	 *
+	 * @param condition {@link Condition}
+	 * @param qualifiers a list of {@link String}
+	 * @param critical whether the Qualifications extension is critical
+	 */
+	public ConditionForQualifiers(final Condition condition, final List<String> qualifiers, final boolean critical) {
 		this.condition = condition;
 		this.qualifiers = qualifiers;
+		this.critical = critical;
 	}
 
 	/**
@@ -66,9 +81,18 @@ public class ConditionForQualifiers implements Serializable {
 		return condition;
 	}
 
+	/**
+	 * Gets whether the corresponding Qualifications extension is marked as critical
+	 *
+	 * @return TRUE if the condition is critical, FALSE otherwise
+	 */
+	public boolean isCritical() {
+		return critical;
+	}
+
 	@Override
 	public String toString() {
-		return "ConditionForQualifiers [qualifiers=" + qualifiers + ", condition=" + condition + "]";
+		return "ConditionForQualifiers [qualifiers=" + qualifiers + ", condition=" + condition + ", critical=" + critical + "]";
 	}
 
 }

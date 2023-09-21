@@ -38,6 +38,9 @@ public enum SignatureScopeType {
 	ARCHIVED,
 	
 	/** The signature counter-signs its master signature */
-	COUNTER_SIGNATURE
+	COUNTER_SIGNATURE,
+
+	/** The evidence record covers a signature */
+	SIGNATURE
 
 }

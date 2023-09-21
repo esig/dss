@@ -43,11 +43,14 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -56,7 +59,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
@@ -70,6 +73,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDocMDP;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
@@ -82,6 +86,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
@@ -97,8 +102,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedService;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
@@ -111,6 +116,7 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -148,6 +154,7 @@ import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
+import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -428,34 +435,86 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		
-		int basicValidationTSTPassedCounter = 0;
-		int basicValidationTSTFailedCounter = 0;
+		int validationTSTCounter = 0;
 		for (String timestampId : timestampIds) {
 			for (XmlConstraint constraint : constraints) {
 				if (Utils.isStringNotEmpty(constraint.getId()) && constraint.getId().contains(timestampId)) {
-					if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+					if (MessageTag.ADEST_IBSVPTADC.getId().equals(constraint.getName().getKey())) {
 						assertEquals(XmlStatus.OK, constraint.getStatus());
-
-					} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
-						if (XmlStatus.OK.equals(constraint.getStatus())) {
-							++basicValidationTSTPassedCounter;
-						} else {
-							++basicValidationTSTFailedCounter;
-						}
-
-					} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
-						assertEquals(XmlStatus.OK, constraint.getStatus());
-
-					} else if (MessageTag.ARCH_ICHFCRLPOET.getId().equals(constraint.getName().getKey())) {
-						assertEquals(XmlStatus.OK, constraint.getStatus());
+						++validationTSTCounter;
 					}
 				}
 			}
 			assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(timestampId));
 			assertNull(detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
 		}
-		assertEquals(1, basicValidationTSTPassedCounter);
-		assertEquals(2, basicValidationTSTFailedCounter);
+		assertEquals(3, validationTSTCounter);
+
+		assertEquals(3, xmlSignature.getTimestamps().size());
+
+		int basicTstSuccessCounter = 0;
+		int basicTstFailureCounter = 0;
+		for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : xmlSignature.getTimestamps()) {
+			boolean passedTst = false;
+			XmlValidationProcessBasicTimestamp timestampBasicValidation = xmlTimestamp.getValidationProcessBasicTimestamp();
+			if (Indication.PASSED.equals(timestampBasicValidation.getConclusion().getIndication())) {
+				passedTst = true;
+				++basicTstSuccessCounter;
+			} else {
+				assertEquals(Indication.INDETERMINATE, timestampBasicValidation.getConclusion().getIndication());
+				assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, timestampBasicValidation.getConclusion().getSubIndication());
+				++basicTstFailureCounter;
+			}
+
+			boolean basicTstAcceptableCheckFound = false;
+			boolean basicTstConclusiveCheckFound = false;
+			boolean pastTstAcceptableCheckFound = false;
+			boolean digestAlgoTstCheckFound = false;
+			boolean messageImprintTstCheckFound = false;
+
+			XmlValidationProcessArchivalDataTimestamp timestampArchivalDataValidation = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+			assertEquals(Indication.PASSED, timestampArchivalDataValidation.getConclusion().getIndication());
+			for (XmlConstraint constraint : timestampArchivalDataValidation.getConstraint()) {
+				if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					basicTstAcceptableCheckFound = true;
+
+				} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+					if (passedTst) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					} else {
+						assertEquals(XmlStatus.WARNING, constraint.getStatus());
+						assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), constraint.getWarning().getKey());
+					}
+					basicTstConclusiveCheckFound = true;
+
+				} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					pastTstAcceptableCheckFound = true;
+
+				} else if (MessageTag.ARCH_ICHFCRLPOET.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					digestAlgoTstCheckFound = true;
+
+				} else if (MessageTag.BBB_SAV_DMICTSTMCMI.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					messageImprintTstCheckFound = true;
+
+				} else {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+				}
+			}
+
+			assertTrue(basicTstAcceptableCheckFound);
+			assertTrue(basicTstConclusiveCheckFound);
+			if (!passedTst) {
+				assertTrue(pastTstAcceptableCheckFound);
+			}
+			assertTrue(digestAlgoTstCheckFound);
+			assertTrue(messageImprintTstCheckFound);
+		}
+		assertEquals(1, basicTstSuccessCounter);
+		assertEquals(2, basicTstFailureCounter);
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -550,7 +609,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
-		XmlValidationProcessTimestamp validationProcessTimestamp = xmlSignature.getTimestamps().get(0).getValidationProcessTimestamp();
+		XmlValidationProcessBasicTimestamp validationProcessTimestamp = xmlSignature.getTimestamps().get(0).getValidationProcessBasicTimestamp();
 		assertEquals(Indication.FAILED, validationProcessTimestamp.getConclusion().getIndication());
 		assertEquals(SubIndication.HASH_FAILURE, validationProcessTimestamp.getConclusion().getSubIndication());
 
@@ -599,7 +658,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
-		XmlValidationProcessTimestamp validationProcessTimestamp = xmlSignature.getTimestamps().get(0).getValidationProcessTimestamp();
+		XmlValidationProcessBasicTimestamp validationProcessTimestamp = xmlSignature.getTimestamps().get(0).getValidationProcessBasicTimestamp();
 		assertEquals(Indication.INDETERMINATE, validationProcessTimestamp.getConclusion().getIndication());
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessTimestamp.getConclusion().getSubIndication());
 
@@ -667,37 +726,99 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
-		int basicValidationTSTFailedCounter = 0;
-		int basicValidationTSTPassedCounter = 0;
-
 		DetailedReport detailedReport = reports.getDetailedReport();
-		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures()
-				.get(0).getValidationProcessArchivalData();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+
+		int validationTSTPassedCounter = 0;
+		int validationTSTFailedCounter = 0;
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
 		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		for (String timestampId : timestampIds) {
 			for (XmlConstraint constraint : constraints) {
 				if (timestampId.equals(constraint.getId())) {
-					if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+					if (MessageTag.ADEST_IBSVPTADC.getId().equals(constraint.getName().getKey())) {
 						if (XmlStatus.OK.equals(constraint.getStatus())) {
-							assertEquals(Indication.PASSED,
-									detailedReport.getBasicBuildingBlocksIndication(timestampId));
-							++basicValidationTSTPassedCounter;
-						} else {
-							assertEquals(Indication.FAILED,
-									detailedReport.getBasicBuildingBlocksIndication(timestampId));
-							assertEquals(SubIndication.HASH_FAILURE,
-									detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
-							++basicValidationTSTFailedCounter;
+							assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(timestampId));
+							++validationTSTPassedCounter;
+						} else if (XmlStatus.WARNING.equals(constraint.getStatus())) {
+							assertEquals(Indication.FAILED, detailedReport.getBasicBuildingBlocksIndication(timestampId));
+							assertEquals(SubIndication.HASH_FAILURE, detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
+							++validationTSTFailedCounter;
 						}
-					} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
-						assertEquals(XmlStatus.OK, constraint.getStatus());
 					}
 				}
 			}
 		}
-		assertEquals(2, basicValidationTSTFailedCounter);
-		assertEquals(1, basicValidationTSTPassedCounter);
+		assertEquals(1, validationTSTPassedCounter);
+		assertEquals(2, validationTSTFailedCounter);
+
+		int basicTstSuccessCounter = 0;
+		int basicTstFailureCounter = 0;
+
+		for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : xmlSignature.getTimestamps()) {
+			boolean passedTst = false;
+			XmlValidationProcessBasicTimestamp timestampBasicValidation = xmlTimestamp.getValidationProcessBasicTimestamp();
+			if (Indication.PASSED.equals(timestampBasicValidation.getConclusion().getIndication())) {
+				passedTst = true;
+				++basicTstSuccessCounter;
+			} else {
+				++basicTstFailureCounter;
+			}
+
+			boolean basicTstAcceptableCheckFound = false;
+			boolean basicTstConclusiveCheckFound = false;
+			boolean pastTstAcceptableCheckFound = false;
+			boolean digestAlgoTstCheckFound = false;
+			boolean messageImprintTstCheckFound = false;
+
+			XmlValidationProcessArchivalDataTimestamp timestampArchivalDataValidation = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+			for (XmlConstraint constraint : timestampArchivalDataValidation.getConstraint()) {
+				if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+					if (XmlStatus.OK.equals(constraint.getStatus())) {
+						assertTrue(passedTst);
+						assertEquals(Indication.PASSED, timestampArchivalDataValidation.getConclusion().getIndication());
+					} else {
+						assertEquals(Indication.FAILED, timestampArchivalDataValidation.getConclusion().getIndication());
+						assertEquals(SubIndication.HASH_FAILURE, timestampArchivalDataValidation.getConclusion().getSubIndication());
+					}
+					basicTstAcceptableCheckFound = true;
+
+				} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+					assertTrue(passedTst);
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					basicTstConclusiveCheckFound = true;
+
+				} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+					assertTrue(passedTst);
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					pastTstAcceptableCheckFound = true;
+
+				} else if (MessageTag.ARCH_ICHFCRLPOET.getId().equals(constraint.getName().getKey())) {
+					assertTrue(passedTst);
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					digestAlgoTstCheckFound = true;
+
+				} else if (MessageTag.BBB_SAV_DMICTSTMCMI.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					assertTrue(passedTst);
+					messageImprintTstCheckFound = true;
+
+				} else {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+				}
+			}
+
+			assertTrue(basicTstAcceptableCheckFound);
+			if (passedTst) {
+				assertTrue(basicTstConclusiveCheckFound);
+				assertTrue(digestAlgoTstCheckFound);
+				assertTrue(messageImprintTstCheckFound);
+			}
+		}
+
+		assertEquals(1, basicTstSuccessCounter);
+		assertEquals(2, basicTstFailureCounter);
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -732,47 +853,101 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
-		int basicValidationTSTFailedCounter = 0;
-		int basicValidationTSTPassedCounter = 0;
-
-		int messageImprintCheckFailedCounter = 0;
-		int messageImprintCheckPassedCounter = 0;
+		int tstPassedCounter = 0;
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures()
-				.get(0).getValidationProcessArchivalData();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
 		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		for (String timestampId : timestampIds) {
 			for (XmlConstraint constraint : constraints) {
 				if (timestampId.equals(constraint.getId())) {
-					if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
-						assertEquals(XmlStatus.OK, constraint.getStatus());
-					} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+					if (MessageTag.ADEST_IBSVPTADC.getId().equals(constraint.getName().getKey())) {
 						if (XmlStatus.OK.equals(constraint.getStatus())) {
-							++basicValidationTSTPassedCounter;
-						} else {
-							++basicValidationTSTFailedCounter;
-						}
-					} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
-						assertEquals(XmlStatus.OK, constraint.getStatus());
-					} else if (MessageTag.ARCH_ICHFCRLPOET.getId().equals(constraint.getName().getKey())) {
-						assertEquals(XmlStatus.OK, constraint.getStatus());
-					} else if (MessageTag.BBB_SAV_DMICTSTMCMI.getId().equals(constraint.getName().getKey())) {
-						if (XmlStatus.OK.equals(constraint.getStatus())) {
-							++messageImprintCheckPassedCounter;
-						} else {
-							++messageImprintCheckFailedCounter;
+							++tstPassedCounter;
 						}
 					}
 				}
 			}
 			assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(timestampId));
 		}
-		assertEquals(2, basicValidationTSTFailedCounter);
-		assertEquals(1, basicValidationTSTPassedCounter);
-		assertEquals(2, messageImprintCheckFailedCounter);
+		assertEquals(3, tstPassedCounter);
+
+		int basicTstSuccessCounter = 0;
+		int basicTstFailureCounter = 0;
+
+		int messageImprintCheckPassedCounter = 0;
+		int messageImprintCheckFailedCounter = 0;
+
+		for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : xmlSignature.getTimestamps()) {
+			boolean passedTst = false;
+			XmlValidationProcessBasicTimestamp timestampBasicValidation = xmlTimestamp.getValidationProcessBasicTimestamp();
+			if (Indication.PASSED.equals(timestampBasicValidation.getConclusion().getIndication())) {
+				passedTst = true;
+				++basicTstSuccessCounter;
+			} else {
+				assertEquals(Indication.INDETERMINATE, timestampBasicValidation.getConclusion().getIndication());
+				assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, timestampBasicValidation.getConclusion().getSubIndication());
+				++basicTstFailureCounter;
+			}
+
+			boolean basicTstAcceptableCheckFound = false;
+			boolean basicTstConclusiveCheckFound = false;
+			boolean pastTstAcceptableCheckFound = false;
+			boolean digestAlgoTstCheckFound = false;
+			boolean messageImprintTstCheckFound = false;
+
+			XmlValidationProcessArchivalDataTimestamp timestampArchivalDataValidation = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+			assertEquals(Indication.PASSED, timestampArchivalDataValidation.getConclusion().getIndication());
+			for (XmlConstraint constraint : timestampArchivalDataValidation.getConstraint()) {
+				if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					basicTstAcceptableCheckFound = true;
+
+				} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+					if (passedTst) {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					} else {
+						assertEquals(XmlStatus.WARNING, constraint.getStatus());
+						assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), constraint.getWarning().getKey());
+					}
+					basicTstConclusiveCheckFound = true;
+
+				} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					pastTstAcceptableCheckFound = true;
+
+				} else if (MessageTag.ARCH_ICHFCRLPOET.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					digestAlgoTstCheckFound = true;
+
+				} else if (MessageTag.BBB_SAV_DMICTSTMCMI.getId().equals(constraint.getName().getKey())) {
+					if (XmlStatus.OK.equals(constraint.getStatus())) {
+						++messageImprintCheckPassedCounter;
+					} else {
+						++messageImprintCheckFailedCounter;
+					}
+					messageImprintTstCheckFound = true;
+
+				} else {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+				}
+			}
+
+			assertTrue(basicTstAcceptableCheckFound);
+			assertTrue(basicTstConclusiveCheckFound);
+			if (!passedTst) {
+				assertTrue(pastTstAcceptableCheckFound);
+			}
+			assertTrue(digestAlgoTstCheckFound);
+			assertTrue(messageImprintTstCheckFound);
+		}
+
+		assertEquals(1, basicTstSuccessCounter);
+		assertEquals(2, basicTstFailureCounter);
 		assertEquals(1, messageImprintCheckPassedCounter);
+		assertEquals(2, messageImprintCheckFailedCounter);
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -838,34 +1013,50 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(validationDate, bestSignatureTime);
 
 		assertEquals(4, simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()).size());
-		assertEquals(2, simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId())
-				.get(0).getAdESValidationDetails().getError().size());
+		assertEquals(3, simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId()).get(0)
+				.getAdESValidationDetails().getError().size());
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		
-		int basicValidationTSTFailedCounter = 0;
-		int pastValidationTSTFailedCounter = 0;
 
-		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getSignatures().get(0).getValidationProcessArchivalData();
-		List<XmlConstraint> constraints = validationProcessArchivalData.getConstraint();
-		List<String> timestampIds = detailedReport.getTimestampIds();
-		for (String timestampId : timestampIds) {
-			for (XmlConstraint constraint : constraints) {
-				if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
-					assertEquals(XmlStatus.OK, constraint.getStatus());
-				} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
-					assertEquals(XmlStatus.WARNING, constraint.getStatus());
-					basicValidationTSTFailedCounter++;
-				} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
-					assertEquals(XmlStatus.WARNING, constraint.getStatus());
-					pastValidationTSTFailedCounter++;
-				}
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
+		assertEquals(Indication.INDETERMINATE, validationProcessArchivalData.getConclusion().getIndication());
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, validationProcessArchivalData.getConclusion().getSubIndication());
+
+		int tstCheckCounter = 0;
+		for (XmlConstraint constraint : validationProcessArchivalData.getConstraint()) {
+			if (MessageTag.ADEST_IBSVPTADC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), constraint.getWarning().getKey());
+				++tstCheckCounter;
 			}
-			assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(timestampId));
-			assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicBuildingBlocksSubIndication(timestampId));
 		}
-		assertEquals(1, basicValidationTSTFailedCounter);
-		assertEquals(1, pastValidationTSTFailedCounter);
+		assertEquals(1, tstCheckCounter);
+
+		boolean basicValidationCheckFound = false;
+		boolean pastValidationTSTFailedCounter = false;
+
+		XmlValidationProcessArchivalDataTimestamp tstValidationProcessArchivalData = xmlSignature.getTimestamps().get(0).getValidationProcessArchivalDataTimestamp();
+		assertEquals(Indication.INDETERMINATE, tstValidationProcessArchivalData.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, tstValidationProcessArchivalData.getConclusion().getSubIndication());
+
+		List<XmlConstraint> constraints = tstValidationProcessArchivalData.getConstraint();
+		for (XmlConstraint constraint : constraints) {
+			if (MessageTag.ARCH_IRTVBBA.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), constraint.getWarning().getKey());
+				basicValidationCheckFound = true;
+			} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.PSV_IPTVC_ANS.getId(), constraint.getError().getKey());
+				pastValidationTSTFailedCounter = true;
+			}
+		}
+
+		assertTrue(basicValidationCheckFound);
+		assertTrue(pastValidationTSTFailedCounter);
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -1268,7 +1459,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(1, timestampIds.size());
 
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(timestampIds.get(0)));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(0)));
 
 		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
 
@@ -1303,7 +1494,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(5, timestampIds.size());
 		for (String tspId : timestampIds) {
-			assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(tspId));
+			assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(tspId));
 		}
 
 		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
@@ -1560,7 +1751,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(5, timestampIds.size());
 		for (String tspId : timestampIds) {
-			assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(tspId));
+			assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(tspId));
 		}
 
 		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
@@ -1594,7 +1785,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(5, timestampIds.size());
 		for (String tspId : timestampIds) {
-			assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(tspId));
+			assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(tspId));
 		}
 
 		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(simpleReport.getFirstSignatureId()));
@@ -2294,6 +2485,9 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_IMFP_ASICE_ANS)));
 
 		validateBestSigningTimes(reports);
 		checkReports(reports);
@@ -3610,9 +3804,15 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				new File("src/test/resources/DSS-2025/diag-sign-cert-tst-not-unique.xml"));
 		assertNotNull(diagnosticData);
 
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.WARN);
+		validationPolicy.getTimestampConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setIssuerName(constraint);
+
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setValidationPolicy(validationPolicy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
@@ -3620,6 +3820,11 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp xmlTimestamp = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId()).get(0);
+		assertEquals(Indication.PASSED, xmlTimestamp.getIndication());
+		assertTrue(checkMessageValuePresence(convertMessages(xmlTimestamp.getAdESValidationDetails().getWarning()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCIDNMSDNIC_ANS)));
 	}
 	
 	@Test
@@ -3634,9 +3839,15 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		ValidationPolicy defaultPolicy = loadDefaultPolicy();
 		TimestampConstraints timestampConstraints = defaultPolicy.getTimestampConstraints();
 		SignedAttributesConstraints signedAttributes = timestampConstraints.getSignedAttributes();
+
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(Level.FAIL);
 		signedAttributes.setUnicitySigningCertificate(levelConstraint);
+
+		levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.WARN);
+		defaultPolicy.getTimestampConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setIssuerName(levelConstraint);
 		
 		executor.setValidationPolicy(defaultPolicy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
@@ -3652,8 +3863,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(tstId));
-		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, detailedReport.getTimestampValidationSubIndication(tstId));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(tstId));
+		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, detailedReport.getBasicTimestampValidationSubIndication(tstId));
 	}
 	
 	@Test
@@ -3674,6 +3885,11 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		TimestampConstraints timestampConstraints = defaultPolicy.getTimestampConstraints();
 		SignedAttributesConstraints tstSignedAttributes = timestampConstraints.getSignedAttributes();
 		tstSignedAttributes.setUnicitySigningCertificate(levelConstraint);
+
+		levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.WARN);
+		defaultPolicy.getTimestampConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setIssuerName(levelConstraint);
 		
 		executor.setValidationPolicy(defaultPolicy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
@@ -3700,6 +3916,11 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SignatureConstraints signatureConstraints = defaultPolicy.getSignatureConstraints();
 		SignedAttributesConstraints sigSignedAttributes = signatureConstraints.getSignedAttributes();
 		sigSignedAttributes.setUnicitySigningCertificate(levelConstraint);
+
+		levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.WARN);
+		defaultPolicy.getTimestampConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setIssuerName(levelConstraint);
 		
 		executor.setValidationPolicy(defaultPolicy);
 		executor.setCurrentTime(diagnosticData.getValidationDate());
@@ -3718,6 +3939,12 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				new File("src/test/resources/DSS-2025/diag-sign-cert-another-cert.xml"));
 		assertNotNull(diagnosticData);
 
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.WARN);
+		validationPolicy.getTimestampConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setIssuerName(constraint);
+
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadDefaultPolicy());
@@ -3729,6 +3956,59 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.NO_SIGNING_CERTIFICATE_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void dss2025TstIssuerNameFailLevel() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/DSS-2025/diag-sign-cert-tst-not-unique.xml"));
+		assertNotNull(diagnosticData);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+		validationPolicy.getTimestampConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setIssuerName(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		// reports.print();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp xmlTimestamp = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId()).get(0);
+		assertEquals(Indication.INDETERMINATE, xmlTimestamp.getIndication());
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, xmlTimestamp.getSubIndication());
+		assertTrue(checkMessageValuePresence(convertMessages(xmlTimestamp.getAdESValidationDetails().getError()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCIDNMSDNIC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+		assertNotNull(tstBBB);
+		
+		XmlXCV xcv = tstBBB.getXCV();
+		assertNotNull(xcv);
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(2, subXCVs.size());
+
+		XmlSubXCV xmlSubXCV = subXCVs.get(0);
+		boolean issuerNameCheckFound = false;
+		for (XmlConstraint xmlConstraint : xmlSubXCV.getConstraint()) {
+			if (MessageTag.BBB_XCV_DCIDNMSDNIC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_DCIDNMSDNIC_ANS.getId(), xmlConstraint.getError().getKey());
+				issuerNameCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+			}
+		}
+		assertTrue(issuerNameCheckFound);
 	}
 	
 	// DSS-2056
@@ -4147,7 +4427,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
 		String tstId = detailedReport.getTimestampIds().get(0);
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(tstId));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(tstId));
 		
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
 		XmlSAV sav = signatureBBB.getSAV();
@@ -4182,8 +4462,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(xmlTimestamp.getId()));
-		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getTimestampValidationSubIndication(xmlTimestamp.getId()));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(xmlTimestamp.getId()));
+		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, detailedReport.getBasicTimestampValidationSubIndication(xmlTimestamp.getId()));
 		
 		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
 		XmlSAV sav = signatureBBB.getSAV();
@@ -4320,6 +4600,118 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		}
 		assertTrue(signaturePolicyStoreCheckExecuted);
 	}
+
+	@Test
+	public void signaturePolicyNotIdentifierFailLevelTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_zero_hash_policy.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlPolicy xmlPolicy = diagnosticData.getSignatures().get(0).getPolicy();
+		xmlPolicy.setIdentified(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().setPolicyAvailable(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.BBB_VCI_ISPA_ANS)));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, detailedReport.getBasicBuildingBlocksSubIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.INDETERMINATE, bbb.getConclusion().getIndication());
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, bbb.getConclusion().getSubIndication());
+
+		XmlVCI vci = bbb.getVCI();
+		assertEquals(Indication.INDETERMINATE, vci.getConclusion().getIndication());
+		assertEquals(SubIndication.SIGNATURE_POLICY_NOT_AVAILABLE, vci.getConclusion().getSubIndication());
+
+		boolean sigPolicyIdentifiedCheckExecuted = false;
+		boolean zeroHashPolicyCheckExecuted = false;
+		for (XmlConstraint constraint : vci.getConstraint()) {
+			if (MessageTag.BBB_VCI_ISPA.name().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_VCI_ISPA_ANS.name(), constraint.getError().getKey());
+				sigPolicyIdentifiedCheckExecuted = true;
+			} else if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getKey())) {
+				zeroHashPolicyCheckExecuted = true;
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(sigPolicyIdentifiedCheckExecuted);
+		assertFalse(zeroHashPolicyCheckExecuted);
+	}
+
+	@Test
+	public void signaturePolicyNotIdentifierInformLevelTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_zero_hash_policy.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlPolicy xmlPolicy = diagnosticData.getSignatures().get(0).getPolicy();
+		xmlPolicy.setIdentified(false);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.INFORM);
+		validationPolicy.getSignatureConstraints().setPolicyAvailable(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationInfo(simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.BBB_VCI_ISPA_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicBuildingBlocksIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.PASSED, bbb.getConclusion().getIndication());
+
+		XmlVCI vci = bbb.getVCI();
+		assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
+
+		boolean sigPolicyIdentifiedCheckExecuted = false;
+		boolean zeroHashPolicyCheckExecuted = false;
+		for (XmlConstraint constraint : vci.getConstraint()) {
+			if (MessageTag.BBB_VCI_ISPA.name().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.INFORMATION, constraint.getStatus());
+				assertEquals(MessageTag.BBB_VCI_ISPA_ANS.name(), constraint.getInfo().getKey());
+				sigPolicyIdentifiedCheckExecuted = true;
+			} else if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getKey())) {
+				zeroHashPolicyCheckExecuted = true;
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(sigPolicyIdentifiedCheckExecuted);
+		assertFalse(zeroHashPolicyCheckExecuted);
+	}
 	
 	@Test
 	public void zeroHashPolicyCheckTest() throws Exception {
@@ -4345,14 +4737,18 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		
 		XmlVCI vci = bbb.getVCI();
 		assertEquals(Indication.PASSED, vci.getConclusion().getIndication());
-		
+
+		boolean sigPolicyIdentifiedCheckExecuted = false;
 		boolean zeroHashPolicyCheckExecuted = false;
 		for (XmlConstraint constraint : vci.getConstraint()) {
-			if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getKey())) {
+			if (MessageTag.BBB_VCI_ISPA.name().equals(constraint.getName().getKey())) {
+				sigPolicyIdentifiedCheckExecuted = true;
+			} else if (MessageTag.BBB_VCI_IZHSP.name().equals(constraint.getName().getKey())) {
 				zeroHashPolicyCheckExecuted = true;
 			}
 			assertEquals(XmlStatus.OK, constraint.getStatus());
 		}
+		assertTrue(sigPolicyIdentifiedCheckExecuted);
 		assertTrue(zeroHashPolicyCheckExecuted);
 	}
 
@@ -4612,6 +5008,443 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 		}
 		assertTrue(certTypeCheckProcessed);
+	}
+
+	@Test
+	public void grantedTspWithQualifierTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-with-qualifier.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					consistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void grantedTspWithUnknownQualifierTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-with-unknown-qualifier.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3C)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3C.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void grantedTspQscdOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-qscd-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void grantedTspSscdOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-sscd-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_CERTIFICATE_ISSUANCE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3B)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3B.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void grantedTspSscdAndQscdOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-sscd-and-qscd-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void qscdWithNoSscdOverruleTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/qscd-with-no-sscd-overrule.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3B)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3B.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void qscdWithQscdOverruleConflictTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-qscd-overrule-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+	@Test
+	public void qscdWithManagedOnBehalfAndQscdOverruleConflictTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-managedonbehalf-and-qscd-overrule-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertFalse(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+
+	@Test
+	public void qscdWithManagedOnBehalfAndNoQscdOverruleConflictTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-managedonbehalf-and-noqscd-overrule-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
+	}
+
+
+	@Test
+	public void qscdWithStatusAsInCertAndQscdOverruleConflictTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/sig-qualification/granted-tsp-statusasincert-and-qscd-overrule-conflict.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(SignatureQualification.ADESIG_QC, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS)));
+		assertTrue(Utils.isCollectionNotEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_QSCD_AT_ST_ANS, MessageTag.VT_BEST_SIGNATURE_TIME)));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_SERV_CONS_ANS3A)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignQual = xmlSignature.getValidationSignatureQualification();
+		assertNotNull(validationSignQual);
+
+		assertEquals(2, validationSignQual.getValidationCertificateQualification().size());
+		for (XmlValidationCertificateQualification certQualification : validationSignQual.getValidationCertificateQualification()) {
+			boolean consistencyCheckProcessed = false;
+			boolean qscdConsistencyCheckProcessed = false;
+			for (XmlConstraint constraint : certQualification.getConstraint()) {
+				if (MessageTag.QUAL_TL_SERV_CONS.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_TL_SERV_CONS_ANS3A.getId(), constraint.getWarning().getKey());
+					consistencyCheckProcessed = true;
+				} else if (MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_CONSISTENT_BY_QSCD_ANS.getId(), constraint.getError().getKey());
+					qscdConsistencyCheckProcessed = true;
+				}
+			}
+			assertTrue(consistencyCheckProcessed);
+			assertTrue(qscdConsistencyCheckProcessed);
+		}
 	}
 
 	@Test
@@ -6248,7 +7081,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = detailedReport.getSignatures().get(0).getTimestamps();
 		assertEquals(1, timestamps.size());
 
-		XmlValidationProcessTimestamp validationProcessTimestamp = timestamps.get(0).getValidationProcessTimestamp();
+		XmlValidationProcessBasicTimestamp validationProcessTimestamp = timestamps.get(0).getValidationProcessBasicTimestamp();
 		assertEquals(Indication.FAILED, validationProcessTimestamp.getConclusion().getIndication());
 		assertEquals(SubIndication.HASH_FAILURE, validationProcessTimestamp.getConclusion().getSubIndication());
 	}
@@ -6936,7 +7769,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		int validationTimeFailedTimestampCounter = 0;
 		int validationTimePassedTimestampCounter = 0;
 		for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp timestamp : xmlTimestamps) {
-			XmlValidationProcessTimestamp validationProcessTimestamp = timestamp.getValidationProcessTimestamp();
+			XmlValidationProcessBasicTimestamp validationProcessTimestamp = timestamp.getValidationProcessBasicTimestamp();
 			if (Indication.INDETERMINATE.equals(validationProcessTimestamp.getConclusion().getIndication())) {
 				assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessTimestamp.getConclusion().getSubIndication());
 				assertTrue(checkMessageValuePresence(convert(validationProcessTimestamp.getConclusion().getErrors()),
@@ -7336,14 +8169,14 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		boolean sigTstFound = false;
 		boolean arcTstFound = false;
 		for (eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp timestamp : signatureTimestamps) {
-			if (Indication.PASSED.equals(detailedReport.getTimestampValidationIndication(timestamp.getId()))) {
+			if (Indication.PASSED.equals(detailedReport.getBasicTimestampValidationIndication(timestamp.getId()))) {
 				XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(timestamp.getId());
 				assertNotNull(tstBBB);
 				assertNull(tstBBB.getFC());
 				sigTstFound = true;
 
-			} else if (Indication.FAILED.equals(detailedReport.getTimestampValidationIndication(timestamp.getId()))) {
-				assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getTimestampValidationSubIndication(timestamp.getId()));
+			} else if (Indication.FAILED.equals(detailedReport.getBasicTimestampValidationIndication(timestamp.getId()))) {
+				assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getBasicTimestampValidationSubIndication(timestamp.getId()));
 
 				XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(timestamp.getId());
 				assertNotNull(tstBBB);
@@ -7403,7 +8236,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		boolean sigTstFound = false;
 		boolean arcTstFound = false;
 		for (eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp timestamp : signatureTimestamps) {
-			assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(timestamp.getId()));
+			assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestamp.getId()));
 
 			XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(timestamp.getId());
 			if (tstBBB.getFC() == null) {
@@ -9940,8 +10773,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -9988,7 +10821,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
-		assertEquals(3, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
 				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
@@ -9998,8 +10831,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10031,31 +10864,31 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(2, validationCertificateQualification.size());
 
 		for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
-			boolean mraTrustedServiceCheckFound = false;
+			boolean mraTrustServiceCheckFound = false;
 			for (XmlConstraint constraint : certificateQualification.getConstraint()) {
 				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
 					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
 					assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
-					mraTrustedServiceCheckFound = true;
+					mraTrustServiceCheckFound = true;
 				} else {
 					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
 			}
-			assertTrue(mraTrustedServiceCheckFound);
+			assertTrue(mraTrustServiceCheckFound);
 		}
 
 		checkReports(reports);
 	}
 
 	@Test
-	public void mraAfterCertIssuanceTestTest() throws Exception {
+	public void mraAfterCertIssuanceTest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/mra/diag-data-mra-qesig.xml"));
 		assertNotNull(xmlDiagnosticData);
 
 		XmlCertificate xmlSigningCertificate = xmlDiagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
-		XmlTrustedService trustedService = xmlSigningCertificate.getTrustedServiceProviders().get(0).getTrustedServices().get(0);
-		trustedService.getMRATrustServiceMapping().setEquivalenceStatusStartingTime(new Date());
+		XmlTrustService trustService = xmlSigningCertificate.getTrustServiceProviders().get(0).getTrustServices().get(0);
+		trustService.getMRATrustServiceMapping().setEquivalenceStatusStartingTime(new Date());
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(xmlDiagnosticData);
@@ -10069,7 +10902,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
-		assertEquals(3, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
 				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
@@ -10079,8 +10912,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10112,17 +10945,17 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(2, validationCertificateQualification.size());
 
 		for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
-			boolean mraTrustedServiceCheckFound = false;
+			boolean mraTrustServiceCheckFound = false;
 			for (XmlConstraint constraint : certificateQualification.getConstraint()) {
 				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
 					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
 					assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
-					mraTrustedServiceCheckFound = true;
+					mraTrustServiceCheckFound = true;
 				} else {
 					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
 			}
-			assertTrue(mraTrustedServiceCheckFound);
+			assertTrue(mraTrustServiceCheckFound);
 		}
 
 		checkReports(reports);
@@ -10146,7 +10979,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.ADESEAL, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
-		assertEquals(3, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(2, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
 				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
@@ -10169,8 +11002,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10193,14 +11026,21 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualification(tstId));
 			eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(tstId);
 			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			boolean mraTrustedServiceCheckFound = false;
-			for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
-				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
-					mraTrustedServiceCheckFound = true;
+			assertNotNull(validationTimestampQualification);
+
+			List<XmlValidationTimestampQualificationAtTime> timestampQualificationsAtTime = validationTimestampQualification.getValidationTimestampQualificationAtTime();
+			assertEquals(2, timestampQualificationsAtTime.size());
+
+			for (XmlValidationTimestampQualificationAtTime timestampQualificationAtTime : timestampQualificationsAtTime) {
+				boolean mraTrustServiceCheckFound = false;
+				for (XmlConstraint constraint : timestampQualificationAtTime.getConstraint()) {
+					if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
+						mraTrustServiceCheckFound = true;
+					}
+					assertEquals(XmlStatus.OK, constraint.getStatus());
 				}
-				assertEquals(XmlStatus.OK, constraint.getStatus());
+				assertTrue(mraTrustServiceCheckFound);
 			}
-			assertTrue(mraTrustedServiceCheckFound);
 		}
 
 		checkReports(reports);
@@ -10224,7 +11064,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SignatureQualification.ADESEAL, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
-		assertEquals(3, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertEquals(2, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
 		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
 				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
@@ -10249,8 +11089,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10273,17 +11113,24 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualification(tstId));
 			eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(tstId);
 			XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();
-			boolean mraTrustedServiceCheckFound = false;
-			for (XmlConstraint constraint : validationTimestampQualification.getConstraint()) {
-				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
-					assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-					assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
-					mraTrustedServiceCheckFound = true;
-				} else {
-					assertEquals(XmlStatus.OK, constraint.getStatus());
+			assertNotNull(validationTimestampQualification);
+
+			List<XmlValidationTimestampQualificationAtTime> timestampQualificationsAtTime = validationTimestampQualification.getValidationTimestampQualificationAtTime();
+			assertEquals(2, timestampQualificationsAtTime.size());
+
+			for (XmlValidationTimestampQualificationAtTime timestampQualificationAtTime : timestampQualificationsAtTime) {
+				boolean mraTrustServiceCheckFound = false;
+				for (XmlConstraint constraint : timestampQualificationAtTime.getConstraint()) {
+					if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
+						assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+						assertEquals(MessageTag.QUAL_HAS_METS_ANS.getId(), constraint.getError().getKey());
+						mraTrustServiceCheckFound = true;
+					} else {
+						assertEquals(XmlStatus.OK, constraint.getStatus());
+					}
 				}
+				assertTrue(mraTrustServiceCheckFound);
 			}
-			assertTrue(mraTrustedServiceCheckFound);
 		}
 
 		checkReports(reports);
@@ -10320,8 +11167,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10381,8 +11228,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertNotNull(signature);
 
 		CertificateWrapper signingCertificate = signature.getSigningCertificate();
-		List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-		String tlId = trustedServices.get(0).getTrustedList().getId();
+		List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+		String tlId = trustServices.get(0).getTrustedList().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -10407,6 +11254,58 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.PASSED, validationSignatureQualification.getConclusion().getIndication());
 		assertTrue(checkMessageValuePresence(convert(validationSignatureQualification.getConclusion().getInfos()),
 				i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS_V2)));
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void mraCertEquivalenceRuleNotAppliedTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/mra/diag-data-mra-qesig-cert-rule-not-applied.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+		assertEquals(0, Utils.collectionSize(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
+		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(
+				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_HAS_METS_HCCECBA_ANS_2, MRAEquivalenceContext.QC_COMPLIANCE.getUri())));
+		assertEquals(1, Utils.collectionSize(simpleReport.getQualificationInfo(simpleReport.getFirstSignatureId())));
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationInfo(
+				simpleReport.getFirstSignatureId()), i18nProvider.getMessage(MessageTag.QUAL_TL_IMRA_ANS)));
+
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNotNull(signature);
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationSignatureQualification validationSignatureQualification = xmlSignature.getValidationSignatureQualification();
+
+		for (XmlValidationCertificateQualification certificateQualification : validationSignatureQualification.getValidationCertificateQualification()) {
+			assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, certificateQualification.getCertificateQualification());
+
+			boolean mraCertContentEquivalenceCheckFound = false;
+			for (XmlConstraint constraint : certificateQualification.getConstraint()) {
+				if (MessageTag.QUAL_HAS_METS_HCCECBA.getId().equals(constraint.getName().getKey())) {
+					assertEquals(XmlStatus.WARNING, constraint.getStatus());
+					assertEquals(MessageTag.QUAL_HAS_METS_HCCECBA_ANS_2.getId(), constraint.getWarning().getKey());
+					mraCertContentEquivalenceCheckFound = true;
+				} else {
+					assertEquals(XmlStatus.OK, constraint.getStatus());
+				}
+			}
+			assertTrue(mraCertContentEquivalenceCheckFound);
+		}
 
 		checkReports(reports);
 	}
@@ -10834,7 +11733,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstTimestampId())));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(simpleReport.getFirstTimestampId()));
 
 		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(simpleReport.getFirstTimestampId());
 		assertNotNull(tstBBB);
@@ -10882,8 +11781,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				i18nProvider.getMessage(MessageTag.BBB_FC_IDPDFAC_ANS)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(simpleReport.getFirstTimestampId()));
-		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getTimestampValidationSubIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(Indication.FAILED, detailedReport.getBasicTimestampValidationIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getBasicTimestampValidationSubIndication(simpleReport.getFirstTimestampId()));
 
 		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(simpleReport.getFirstTimestampId());
 		assertNotNull(tstBBB);
@@ -11241,7 +12140,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(timestampId)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(timestampId));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampId));
 
 		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(timestampId);
 		assertNotNull(tstBBB);
@@ -11300,8 +12199,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				i18nProvider.getMessage(MessageTag.BBB_XCV_ISCGEKU_ANS, MessageTag.SIGNING_CERTIFICATE, MessageTag.TIMESTAMP)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(timestampId));
-		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, detailedReport.getTimestampValidationSubIndication(timestampId));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(timestampId));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, detailedReport.getBasicTimestampValidationSubIndication(timestampId));
 
 		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(timestampId);
 		assertNotNull(tstBBB);
@@ -11432,8 +12331,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		Reports reports = executor.execute();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.INDETERMINATE, detailedReport.getTimestampValidationIndication(xmlTimestamp.getId()));
-		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, detailedReport.getTimestampValidationSubIndication(xmlTimestamp.getId()));
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(xmlTimestamp.getId()));
+		assertEquals(SubIndication.CHAIN_CONSTRAINTS_FAILURE, detailedReport.getBasicTimestampValidationSubIndication(xmlTimestamp.getId()));
 
 		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
 		assertNotNull(timestampBBB);
@@ -12753,10 +13652,40 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
 
-		XmlValidationProcessTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(
-				xmlDiagnosticData.getUsedTimestamps().get(0).getId()).getValidationProcessTimestamp();
-		assertEquals(Indication.INDETERMINATE, validationProcessTimestamp.getConclusion().getIndication());
-		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessTimestamp.getConclusion().getSubIndication());
+		eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp = detailedReport.getXmlTimestampById(xmlDiagnosticData.getUsedTimestamps().get(0).getId());
+		XmlValidationProcessBasicTimestamp basicValidationProcessTimestamp = xmlTimestamp.getValidationProcessBasicTimestamp();
+		assertEquals(Indication.INDETERMINATE, basicValidationProcessTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, basicValidationProcessTimestamp.getConclusion().getSubIndication());
+
+		XmlValidationProcessArchivalDataTimestamp validationProcessArchivalDataTimestamp = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+		assertEquals(Indication.INDETERMINATE, validationProcessArchivalDataTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessArchivalDataTimestamp.getConclusion().getSubIndication());
+
+		boolean basicTstAllowedValidationFound = false;
+		boolean basicValidationCheckFound = false;
+		boolean tstPSVFound = false;
+		for (XmlConstraint xmlConstraint : validationProcessArchivalDataTimestamp.getConstraint()) {
+			if (MessageTag.ARCH_IRTVBBA.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				basicTstAllowedValidationFound = true;
+
+			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), xmlConstraint.getWarning().getKey());
+				basicValidationCheckFound = true;
+
+			} else if (MessageTag.PSV_IPTVC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.PSV_IPTVC_ANS.getId(), xmlConstraint.getError().getKey());
+				tstPSVFound = true;
+
+			} else {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+			}
+		}
+		assertTrue(basicTstAllowedValidationFound);
+		assertTrue(basicValidationCheckFound);
+		assertTrue(tstPSVFound);
 
 		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlDiagnosticData.getUsedTimestamps().get(0).getId());
 		assertNotNull(tstBBB);
@@ -12769,24 +13698,13 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, validationProcessArchivalData.getConclusion().getIndication());
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessArchivalData.getConclusion().getSubIndication());
 
-		boolean tstAllowedBasicValidationFound = false;
-		boolean basicValidationCheckFound = false;
-		boolean tstPSVFound = false;
+		boolean tstAllowedValidationFound = false;
 		boolean sigPSVFound = false;
 		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
-			if (MessageTag.ARCH_IRTVBBA.getId().equals(xmlConstraint.getName().getKey())) {
-				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
-				tstAllowedBasicValidationFound = true;
-
-			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(xmlConstraint.getName().getKey())) {
+			if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
-				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), xmlConstraint.getWarning().getKey());
-				basicValidationCheckFound = true;
-
-			} else if (MessageTag.PSV_IPTVC.getId().equals(xmlConstraint.getName().getKey())) {
-				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
-				assertEquals(MessageTag.PSV_IPTVC_ANS.getId(), xmlConstraint.getWarning().getKey());
-				tstPSVFound = true;
+				assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getWarning().getKey());
+				tstAllowedValidationFound = true;
 
 			} else if (MessageTag.PSV_IPSVC.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
@@ -12797,9 +13715,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
 			}
 		}
-		assertTrue(tstAllowedBasicValidationFound);
-		assertTrue(basicValidationCheckFound);
-		assertTrue(tstPSVFound);
+		assertTrue(tstAllowedValidationFound);
 		assertTrue(sigPSVFound);
 	}
 
@@ -12831,14 +13747,14 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.PSV_IPSVC_ANS)));
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
-				i18nProvider.getMessage(MessageTag.PSV_IPTVC_ANS)));
+				i18nProvider.getMessage(MessageTag.ADEST_IBSVPTADC_ANS)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
 
-		XmlValidationProcessTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(
-				xmlDiagnosticData.getUsedTimestamps().get(0).getId()).getValidationProcessTimestamp();
+		XmlValidationProcessBasicTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(
+				xmlDiagnosticData.getUsedTimestamps().get(0).getId()).getValidationProcessBasicTimestamp();
 		assertEquals(Indication.INDETERMINATE, validationProcessTimestamp.getConclusion().getIndication());
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessTimestamp.getConclusion().getSubIndication());
 
@@ -12849,28 +13765,18 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, psv.getConclusion().getIndication());
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, psv.getConclusion().getSubIndication());
 
-		XmlValidationProcessArchivalData validationProcessArchivalData = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId()).getValidationProcessArchivalData();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
 		assertEquals(Indication.INDETERMINATE, validationProcessArchivalData.getConclusion().getIndication());
 		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessArchivalData.getConclusion().getSubIndication());
 
-		boolean tstAllowedBasicValidationFound = false;
-		boolean basicValidationCheckFound = false;
-		boolean tstPSVFound = false;
+		boolean tstAllowedValidationFound = false;
 		boolean sigPSVFound = false;
 		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
-			if (MessageTag.ARCH_IRTVBBA.getId().equals(xmlConstraint.getName().getKey())) {
-				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
-				tstAllowedBasicValidationFound = true;
-
-			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(xmlConstraint.getName().getKey())) {
+			if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
-				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), xmlConstraint.getWarning().getKey());
-				basicValidationCheckFound = true;
-
-			} else if (MessageTag.PSV_IPTVC.getId().equals(xmlConstraint.getName().getKey())) {
-				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
-				assertEquals(MessageTag.PSV_IPTVC_ANS.getId(), xmlConstraint.getWarning().getKey());
-				tstPSVFound = true;
+				assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getWarning().getKey());
+				tstAllowedValidationFound = true;
 
 			} else if (MessageTag.PSV_IPSVC.getId().equals(xmlConstraint.getName().getKey())) {
 				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
@@ -12881,10 +13787,41 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
 			}
 		}
-		assertTrue(tstAllowedBasicValidationFound);
-		assertTrue(basicValidationCheckFound);
-		assertTrue(tstPSVFound);
+		assertTrue(tstAllowedValidationFound);
 		assertTrue(sigPSVFound);
+
+		XmlValidationProcessArchivalDataTimestamp tstValidationProcessArchivalData = xmlSignature.getTimestamps().get(0).getValidationProcessArchivalDataTimestamp();
+		assertEquals(Indication.INDETERMINATE, tstValidationProcessArchivalData.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, tstValidationProcessArchivalData.getConclusion().getSubIndication());
+
+		boolean tstAllowedBasicValidationFound = false;
+		boolean tstConclusiveBasicValidationFound = false;
+		boolean tstPSVFound = false;
+
+		List<XmlConstraint> constraints = tstValidationProcessArchivalData.getConstraint();
+		for (XmlConstraint xmlConstraint : constraints) {
+			if (MessageTag.ARCH_IRTVBBA.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				tstAllowedBasicValidationFound = true;
+
+			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), xmlConstraint.getWarning().getKey());
+				tstConclusiveBasicValidationFound = true;
+
+			} else if (MessageTag.PSV_IPTVC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.PSV_IPTVC_ANS.getId(), xmlConstraint.getError().getKey());
+				tstPSVFound = true;
+
+			} else {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+			}
+		}
+
+		assertTrue(tstAllowedBasicValidationFound);
+		assertTrue(tstConclusiveBasicValidationFound);
+		assertTrue(tstPSVFound);
 	}
 
 	@Test
@@ -12913,15 +13850,15 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.PSV_IPSVC_ANS)));
 		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-				i18nProvider.getMessage(MessageTag.ARCH_IRTVBBA_ANS)));
+				i18nProvider.getMessage(MessageTag.ADEST_IBSVPTADC_ANS)));
 		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
 				i18nProvider.getMessage(MessageTag.PSV_IPTVC_ANS)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
 
-		XmlValidationProcessTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(
-				xmlDiagnosticData.getUsedTimestamps().get(0).getId()).getValidationProcessTimestamp();
+		XmlValidationProcessBasicTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(
+				xmlDiagnosticData.getUsedTimestamps().get(0).getId()).getValidationProcessBasicTimestamp();
 		assertEquals(Indication.FAILED, validationProcessTimestamp.getConclusion().getIndication());
 		assertEquals(SubIndication.SIG_CRYPTO_FAILURE, validationProcessTimestamp.getConclusion().getSubIndication());
 
@@ -12935,18 +13872,18 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.FAILED, validationProcessArchivalData.getConclusion().getIndication());
 		assertEquals(SubIndication.SIG_CRYPTO_FAILURE, validationProcessArchivalData.getConclusion().getSubIndication());
 
-		boolean tstAllowedBasicValidationFound = false;
+		boolean tstAllowedValidationFound = false;
 		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
-			if (MessageTag.ARCH_IRTVBBA.getId().equals(xmlConstraint.getName().getKey())) {
+			if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
 				if (XmlStatus.NOT_OK == xmlConstraint.getStatus()) {
-					assertEquals(MessageTag.ARCH_IRTVBBA_ANS.getId(), xmlConstraint.getError().getKey());
-					tstAllowedBasicValidationFound = true;
+					assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getError().getKey());
+					tstAllowedValidationFound = true;
 				}
 			} else {
 				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
 			}
 		}
-		assertTrue(tstAllowedBasicValidationFound);
+		assertTrue(tstAllowedValidationFound);
 	}
 
 	@Test
@@ -12978,7 +13915,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
 
 		for (XmlTimestamp xmlTimestamp : xmlDiagnosticData.getUsedTimestamps()) {
-			XmlValidationProcessTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(xmlTimestamp.getId()).getValidationProcessTimestamp();
+			XmlValidationProcessBasicTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(xmlTimestamp.getId()).getValidationProcessBasicTimestamp();
 			assertEquals(Indication.PASSED, validationProcessTimestamp.getConclusion().getIndication());
 		}
 
@@ -13029,7 +13966,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		boolean validTstFound = false;
 		boolean invalidTstFound = false;
 		for (XmlTimestamp xmlTimestamp : xmlDiagnosticData.getUsedTimestamps()) {
-			XmlValidationProcessTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(xmlTimestamp.getId()).getValidationProcessTimestamp();
+			XmlValidationProcessBasicTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(xmlTimestamp.getId()).getValidationProcessBasicTimestamp();
 			if (Indication.PASSED == validationProcessTimestamp.getConclusion().getIndication()) {
 				assertEquals(TimestampType.ARCHIVE_TIMESTAMP, xmlTimestamp.getType());
 				validTstFound = true;
@@ -13046,8 +13983,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, validationProcessArchivalData.getConclusion().getIndication());
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, validationProcessArchivalData.getConclusion().getSubIndication());
 
-		boolean basicTstValidationCheckSuccessFound = false;
-		boolean basicTstValidationCheckFailureFound = false;
+		boolean tstValidationCheckSuccessFound = false;
+		boolean tstValidationCheckFailureFound = false;
 		boolean tLevelCheckFound = false;
 		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
 			if (MessageTag.BBB_SAV_IVTTSTP.getId().equals(xmlConstraint.getName().getKey())) {
@@ -13055,12 +13992,12 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				assertEquals(MessageTag.BBB_SAV_IVTTSTP_ANS.getId(), xmlConstraint.getError().getKey());
 				tLevelCheckFound = true;
 
-			} else if (MessageTag.ARCH_IRTVBBA.getId().equals(xmlConstraint.getName().getKey())) {
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
 				if (XmlStatus.OK.equals(xmlConstraint.getStatus())) {
-					basicTstValidationCheckSuccessFound = true;
+					tstValidationCheckSuccessFound = true;
 				} else if (XmlStatus.WARNING.equals(xmlConstraint.getStatus())) {
-					assertEquals(MessageTag.ARCH_IRTVBBA_ANS.getId(), xmlConstraint.getWarning().getKey());
-					basicTstValidationCheckFailureFound = true;
+					assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getWarning().getKey());
+					tstValidationCheckFailureFound = true;
 				}
 
 			} else {
@@ -13068,8 +14005,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 
 		}
-		assertTrue(basicTstValidationCheckSuccessFound);
-		assertTrue(basicTstValidationCheckFailureFound);
+		assertTrue(tstValidationCheckSuccessFound);
+		assertTrue(tstValidationCheckFailureFound);
 		assertTrue(tLevelCheckFound);
 	}
 
@@ -13102,7 +14039,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
 
 		for (XmlTimestamp xmlTimestamp : xmlDiagnosticData.getUsedTimestamps()) {
-			XmlValidationProcessTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(xmlTimestamp.getId()).getValidationProcessTimestamp();
+			XmlValidationProcessBasicTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(xmlTimestamp.getId()).getValidationProcessBasicTimestamp();
 			assertEquals(Indication.PASSED, validationProcessTimestamp.getConclusion().getIndication());
 		}
 
@@ -13153,7 +14090,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		boolean validTstFound = false;
 		boolean invalidTstFound = false;
 		for (XmlTimestamp xmlTimestamp : xmlDiagnosticData.getUsedTimestamps()) {
-			XmlValidationProcessTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(xmlTimestamp.getId()).getValidationProcessTimestamp();
+			XmlValidationProcessBasicTimestamp validationProcessTimestamp = detailedReport.getXmlTimestampById(xmlTimestamp.getId()).getValidationProcessBasicTimestamp();
 			if (Indication.PASSED == validationProcessTimestamp.getConclusion().getIndication()) {
 				assertEquals(TimestampType.SIGNATURE_TIMESTAMP, xmlTimestamp.getType());
 				validTstFound = true;
@@ -13170,8 +14107,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, validationProcessArchivalData.getConclusion().getIndication());
 		assertEquals(SubIndication.SIG_CONSTRAINTS_FAILURE, validationProcessArchivalData.getConclusion().getSubIndication());
 
-		boolean basicTstValidationCheckSuccessFound = false;
-		boolean basicTstValidationCheckFailureFound = false;
+		boolean tstValidationCheckSuccessFound = false;
+		boolean tstValidationCheckFailureFound = false;
 		boolean ltaLevelCheckFound = false;
 		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
 			if (MessageTag.BBB_SAV_IVLTATSTP.getId().equals(xmlConstraint.getName().getKey())) {
@@ -13179,12 +14116,12 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				assertEquals(MessageTag.BBB_SAV_IVLTATSTP_ANS.getId(), xmlConstraint.getError().getKey());
 				ltaLevelCheckFound = true;
 
-			} else if (MessageTag.ARCH_IRTVBBA.getId().equals(xmlConstraint.getName().getKey())) {
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
 				if (XmlStatus.OK.equals(xmlConstraint.getStatus())) {
-					basicTstValidationCheckSuccessFound = true;
+					tstValidationCheckSuccessFound = true;
 				} else if (XmlStatus.WARNING.equals(xmlConstraint.getStatus())) {
-					assertEquals(MessageTag.ARCH_IRTVBBA_ANS.getId(), xmlConstraint.getWarning().getKey());
-					basicTstValidationCheckFailureFound = true;
+					assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getWarning().getKey());
+					tstValidationCheckFailureFound = true;
 				}
 
 			} else {
@@ -13192,8 +14129,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 
 		}
-		assertTrue(basicTstValidationCheckSuccessFound);
-		assertTrue(basicTstValidationCheckFailureFound);
+		assertTrue(tstValidationCheckSuccessFound);
+		assertTrue(tstValidationCheckFailureFound);
 		assertTrue(ltaLevelCheckFound);
 	}
 
@@ -13224,7 +14161,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				i18nProvider.getMessage(MessageTag.BBB_FC_IECTF_ANS)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(simpleReport.getFirstTimestampId()));
 
 		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(simpleReport.getFirstTimestampId());
 		assertNotNull(tstBBB);
@@ -13271,8 +14208,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 				i18nProvider.getMessage(MessageTag.BBB_FC_IECTF_ANS)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
-		assertEquals(Indication.FAILED, detailedReport.getTimestampValidationIndication(simpleReport.getFirstTimestampId()));
-		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getTimestampValidationSubIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(Indication.FAILED, detailedReport.getBasicTimestampValidationIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, detailedReport.getBasicTimestampValidationSubIndication(simpleReport.getFirstTimestampId()));
 
 		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(simpleReport.getFirstTimestampId());
 		assertNotNull(tstBBB);
@@ -13292,6 +14229,837 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 		}
 		assertTrue(containerCheckFound);
+	}
+
+	@Test
+	public void notTrustedCertChainTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		for (XmlCertificate certificate : xmlDiagnosticData.getUsedCertificates()) {
+			certificate.getSources().remove(CertificateSourceType.TRUSTED_STORE);
+		}
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_SIG_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.INDETERMINATE, bbb.getConclusion().getIndication());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, bbb.getConclusion().getSubIndication());
+
+		XmlXCV xcv = bbb.getXCV();
+		assertEquals(Indication.INDETERMINATE, xcv.getConclusion().getIndication());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, xcv.getConclusion().getSubIndication());
+
+		boolean prospectiveCertChainCheckFound = false;
+		for (XmlConstraint constraint : xcv.getConstraint()) {
+			if (MessageTag.BBB_XCV_CCCBB.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_CCCBB_SIG_ANS.getId(), constraint.getError().getKey());
+				prospectiveCertChainCheckFound = true;
+			}
+		}
+		assertTrue(prospectiveCertChainCheckFound);
+		assertTrue(Utils.isCollectionEmpty(xcv.getSubXCV()));
+	}
+
+	@Test
+	public void notTrustedCertChainInformTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		for (XmlCertificate certificate : xmlDiagnosticData.getUsedCertificates()) {
+			certificate.getSources().remove(CertificateSourceType.TRUSTED_STORE);
+		}
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.INFORM);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setProspectiveCertificateChain(levelConstraint);
+		validationPolicy.getRevocationConstraints().getBasicSignatureConstraints().setProspectiveCertificateChain(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationInfo(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_SIG_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.PASSED, bbb.getConclusion().getIndication());
+
+		XmlXCV xcv = bbb.getXCV();
+		assertEquals(Indication.PASSED, xcv.getConclusion().getIndication());
+
+		boolean prospectiveCertChainCheckFound = false;
+		for (XmlConstraint constraint : xcv.getConstraint()) {
+			if (MessageTag.BBB_XCV_CCCBB.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.INFORMATION, constraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_CCCBB_SIG_ANS.getId(), constraint.getInfo().getKey());
+				prospectiveCertChainCheckFound = true;
+			}
+		}
+		assertTrue(prospectiveCertChainCheckFound);
+		assertEquals(3, xcv.getSubXCV().size());
+	}
+
+	@Test
+	public void issuerNameFailLevel() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlCertificate certificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
+		certificate.getIssuerDistinguishedName().clear();
+
+		XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
+		xmlDistinguishedName.setFormat("CANONICAL");
+		xmlDistinguishedName.setValue("c=lu,ou=pki-test,o=nowina solutions,cn=invalid-ca");
+		certificate.getIssuerDistinguishedName().add(xmlDistinguishedName);
+
+		xmlDistinguishedName = new XmlDistinguishedName();
+		xmlDistinguishedName.setFormat("RFC2253");
+		xmlDistinguishedName.setValue("C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=invalid-ca");
+		certificate.getIssuerDistinguishedName().add(xmlDistinguishedName);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setIssuerName(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCIDNMSDNIC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(sigBBB);
+
+		XmlXCV xcv = sigBBB.getXCV();
+		assertNotNull(xcv);
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+
+		XmlSubXCV xmlSubXCV = subXCVs.get(0);
+		boolean issuerNameCheckFound = false;
+		for (XmlConstraint xmlConstraint : xmlSubXCV.getConstraint()) {
+			if (MessageTag.BBB_XCV_DCIDNMSDNIC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_DCIDNMSDNIC_ANS.getId(), xmlConstraint.getError().getKey());
+				issuerNameCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+			}
+		}
+		assertTrue(issuerNameCheckFound);
+	}
+
+	@Test
+	public void issuerNameWarnLevel() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlCertificate certificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
+		certificate.getIssuerDistinguishedName().clear();
+
+		XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
+		xmlDistinguishedName.setFormat("CANONICAL");
+		xmlDistinguishedName.setValue("c=lu,ou=pki-test,o=nowina solutions,cn=invalid-ca");
+		certificate.getIssuerDistinguishedName().add(xmlDistinguishedName);
+
+		xmlDistinguishedName = new XmlDistinguishedName();
+		xmlDistinguishedName.setFormat("RFC2253");
+		xmlDistinguishedName.setValue("C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=invalid-ca");
+		certificate.getIssuerDistinguishedName().add(xmlDistinguishedName);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.WARN);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()
+				.getSigningCertificate().setIssuerName(constraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCIDNMSDNIC_ANS)));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.BBB_XCV_DCIDNMSDNIC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertNotNull(sigBBB);
+
+		XmlXCV xcv = sigBBB.getXCV();
+		assertNotNull(xcv);
+		List<XmlSubXCV> subXCVs = xcv.getSubXCV();
+		assertEquals(3, subXCVs.size());
+
+		XmlSubXCV xmlSubXCV = subXCVs.get(0);
+		boolean issuerNameCheckFound = false;
+		for (XmlConstraint xmlConstraint : xmlSubXCV.getConstraint()) {
+			if (MessageTag.BBB_XCV_DCIDNMSDNIC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				assertEquals(MessageTag.BBB_XCV_DCIDNMSDNIC_ANS.getId(), xmlConstraint.getWarning().getKey());
+				issuerNameCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+			}
+		}
+		assertTrue(issuerNameCheckFound);
+	}
+
+	@Test
+	public void sigWithERValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/er-validation/sig-with-er-valid.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+		assertEquals(Indication.PASSED, signatureTimestamps.get(0).getIndication());
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureEvidenceRecords.size());
+		assertEquals(Indication.PASSED, signatureEvidenceRecords.get(0).getIndication());
+
+		XmlTimestamps timestamps = signatureEvidenceRecords.get(0).getTimestamps();
+		assertNotNull(timestamps);
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> evidenceRecordTimestamps = timestamps.getTimestamp();
+		assertEquals(2, evidenceRecordTimestamps.size());
+		for (eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp xmlTimestamp : evidenceRecordTimestamps) {
+			assertEquals(Indication.PASSED, xmlTimestamp.getIndication());
+		}
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+
+		int processedTimestampsCounter = 0;
+		int skippedTimestampsCounter = 0;
+		for (XmlTimestamp xmlTimestamp : diagnosticData.getUsedTimestamps()) {
+			XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+			if (tstBBB != null) {
+				++processedTimestampsCounter;
+			} else {
+				++skippedTimestampsCounter;
+			}
+		}
+		assertEquals(3, processedTimestampsCounter);
+		assertEquals(0, skippedTimestampsCounter);
+
+		assertEquals(Indication.PASSED, detailedReport.getEvidenceRecordValidationIndication(signatureEvidenceRecords.get(0).getId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord xmlEvidenceRecord = detailedReport.getXmlEvidenceRecordById(signatureEvidenceRecords.get(0).getId());
+		assertEquals(Indication.PASSED, xmlEvidenceRecord.getConclusion().getIndication());
+
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+		assertEquals(Indication.PASSED, validationProcessEvidenceRecord.getConclusion().getIndication());
+
+		int dataObjectFoundCheckCounter = 0;
+		int dataObjectIntactCheckCounter = 0;
+		int tstValidationConclusiveCheckCounter = 0;
+		int cryptoConstraintsCheckCounter = 0;
+		for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
+			if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++dataObjectFoundCheckCounter;
+			} else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++dataObjectIntactCheckCounter;
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++tstValidationConclusiveCheckCounter;
+			} else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++cryptoConstraintsCheckCounter;
+			}
+		}
+		assertEquals(1, dataObjectFoundCheckCounter);
+		assertEquals(1, dataObjectIntactCheckCounter);
+		assertEquals(2, tstValidationConclusiveCheckCounter);
+		assertEquals(1, cryptoConstraintsCheckCounter);
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
+		assertEquals(Indication.PASSED, validationProcessArchivalData.getConclusion().getIndication());
+		
+		boolean evidenceRecordCheckFound = false;
+		boolean ltLevelAcceptableCheckFound = false;
+		boolean tstValidationCheckFound = false;
+		boolean pastSignatureValidationCheckFound = false;
+		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
+			if (MessageTag.ADEST_IRERVPC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				evidenceRecordCheckFound = true;
+			} else if (MessageTag.ARCH_LTVV.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				ltLevelAcceptableCheckFound = true;
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				tstValidationCheckFound = true;
+			} else if (MessageTag.PSV_IPSVC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				pastSignatureValidationCheckFound = true;
+			}
+		}
+		assertTrue(evidenceRecordCheckFound);
+		assertTrue(ltLevelAcceptableCheckFound);
+		assertTrue(tstValidationCheckFound);
+		assertTrue(pastSignatureValidationCheckFound);
+	}
+
+	@Test
+	public void sigWithBrokenERValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/er-validation/sig-with-er-valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlEvidenceRecord xmlEvidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+		xmlEvidenceRecord.getDigestMatchers().get(0).setDataIntact(false);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+		assertEquals(Indication.INDETERMINATE, signatureTimestamps.get(0).getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, signatureTimestamps.get(0).getSubIndication());
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureEvidenceRecords.size());
+		assertEquals(Indication.FAILED, signatureEvidenceRecords.get(0).getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, signatureEvidenceRecords.get(0).getSubIndication());
+
+		XmlTimestamps timestamps = signatureEvidenceRecords.get(0).getTimestamps();
+		assertNotNull(timestamps);
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> evidenceRecordTimestamps = timestamps.getTimestamp();
+		assertEquals(2, evidenceRecordTimestamps.size());
+		for (eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp xmlTimestamp : evidenceRecordTimestamps) {
+			assertEquals(Indication.PASSED, xmlTimestamp.getIndication());
+		}
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getArchiveDataTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		int processedTimestampsCounter = 0;
+		int skippedTimestampsCounter = 0;
+		for (XmlTimestamp xmlTimestamp : diagnosticData.getUsedTimestamps()) {
+			XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+			if (tstBBB != null) {
+				++processedTimestampsCounter;
+			} else {
+				++skippedTimestampsCounter;
+			}
+		}
+		assertEquals(3, processedTimestampsCounter);
+		assertEquals(0, skippedTimestampsCounter);
+
+		assertEquals(Indication.FAILED, detailedReport.getEvidenceRecordValidationIndication(signatureEvidenceRecords.get(0).getId()));
+		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getEvidenceRecordValidationSubIndication(signatureEvidenceRecords.get(0).getId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord evidenceRecord = detailedReport.getXmlEvidenceRecordById(signatureEvidenceRecords.get(0).getId());
+		assertEquals(Indication.FAILED, evidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, evidenceRecord.getConclusion().getSubIndication());
+
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = evidenceRecord.getValidationProcessEvidenceRecord();
+		assertEquals(Indication.FAILED, validationProcessEvidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, validationProcessEvidenceRecord.getConclusion().getSubIndication());
+
+		int dataObjectFoundCheckCounter = 0;
+		int dataObjectIntactCheckCounter = 0;
+		int tstValidationConclusiveCheckCounter = 0;
+		int cryptoConstraintsCheckCounter = 0;
+		for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
+			if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++dataObjectFoundCheckCounter;
+			} else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.BBB_CV_IRDOI_ANS.getId(), xmlConstraint.getError().getKey());
+				++dataObjectIntactCheckCounter;
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++tstValidationConclusiveCheckCounter;
+			} else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++cryptoConstraintsCheckCounter;
+			}
+		}
+		assertEquals(1, dataObjectFoundCheckCounter);
+		assertEquals(1, dataObjectIntactCheckCounter);
+		assertEquals(0, tstValidationConclusiveCheckCounter);
+		assertEquals(0, cryptoConstraintsCheckCounter);
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
+		assertEquals(Indication.INDETERMINATE, validationProcessArchivalData.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessArchivalData.getConclusion().getSubIndication());
+
+		boolean evidenceRecordCheckFound = false;
+		boolean ltLevelAcceptableCheckFound = false;
+		boolean tstValidationCheckFound = false;
+		boolean pastSignatureValidationCheckFound = false;
+		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
+			if (MessageTag.ADEST_IRERVPC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				assertEquals(MessageTag.ADEST_IRERVPC_ANS.getId(), xmlConstraint.getWarning().getKey());
+				evidenceRecordCheckFound = true;
+			} else if (MessageTag.ARCH_LTVV.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				ltLevelAcceptableCheckFound = true;
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				tstValidationCheckFound = true;
+			} else if (MessageTag.PSV_IPSVC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.PSV_IPSVC_ANS.getId(), xmlConstraint.getError().getKey());
+				pastSignatureValidationCheckFound = true;
+			}
+		}
+		assertTrue(evidenceRecordCheckFound);
+		assertTrue(ltLevelAcceptableCheckFound);
+		assertTrue(tstValidationCheckFound);
+		assertTrue(pastSignatureValidationCheckFound);
+	}
+
+	@Test
+	public void sigWithBrokenERFirstTimestampValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/er-validation/sig-with-er-valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlEvidenceRecord xmlEvidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+		XmlTimestamp xmlERTimestamp = xmlEvidenceRecord.getEvidenceRecordTimestamps().get(0).getTimestamp();
+		xmlERTimestamp.getDigestMatchers().get(0).setDataIntact(false);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+		assertEquals(Indication.INDETERMINATE, signatureTimestamps.get(0).getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, signatureTimestamps.get(0).getSubIndication());
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureEvidenceRecords.size());
+		assertEquals(Indication.FAILED, signatureEvidenceRecords.get(0).getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, signatureEvidenceRecords.get(0).getSubIndication());
+
+		XmlTimestamps timestamps = signatureEvidenceRecords.get(0).getTimestamps();
+		assertNotNull(timestamps);
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> evidenceRecordTimestamps = timestamps.getTimestamp();
+		assertEquals(2, evidenceRecordTimestamps.size());
+
+		assertEquals(Indication.FAILED, evidenceRecordTimestamps.get(0).getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, evidenceRecordTimestamps.get(0).getSubIndication());
+
+		assertEquals(Indication.PASSED, evidenceRecordTimestamps.get(1).getIndication());
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getArchiveDataTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		int processedTimestampsCounter = 0;
+		int skippedTimestampsCounter = 0;
+		for (XmlTimestamp xmlTimestamp : diagnosticData.getUsedTimestamps()) {
+			XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+			if (tstBBB != null) {
+				++processedTimestampsCounter;
+			} else {
+				++skippedTimestampsCounter;
+			}
+		}
+		assertEquals(3, processedTimestampsCounter);
+		assertEquals(0, skippedTimestampsCounter);
+
+		assertEquals(Indication.FAILED, detailedReport.getEvidenceRecordValidationIndication(signatureEvidenceRecords.get(0).getId()));
+		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getEvidenceRecordValidationSubIndication(signatureEvidenceRecords.get(0).getId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord evidenceRecord = detailedReport.getXmlEvidenceRecordById(signatureEvidenceRecords.get(0).getId());
+		assertEquals(Indication.FAILED, evidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, evidenceRecord.getConclusion().getSubIndication());
+
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = evidenceRecord.getValidationProcessEvidenceRecord();
+		assertEquals(Indication.FAILED, validationProcessEvidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, validationProcessEvidenceRecord.getConclusion().getSubIndication());
+
+		int dataObjectFoundCheckCounter = 0;
+		int dataObjectIntactCheckCounter = 0;
+		int tstValidationConclusiveCheckCounter = 0;
+		int cryptoConstraintsCheckCounter = 0;
+		for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
+			if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++dataObjectFoundCheckCounter;
+			} else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++dataObjectIntactCheckCounter;
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getError().getKey());
+				++tstValidationConclusiveCheckCounter;
+			} else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++cryptoConstraintsCheckCounter;
+			}
+		}
+		assertEquals(1, dataObjectFoundCheckCounter);
+		assertEquals(1, dataObjectIntactCheckCounter);
+		assertEquals(1, tstValidationConclusiveCheckCounter);
+		assertEquals(0, cryptoConstraintsCheckCounter);
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
+		assertEquals(Indication.INDETERMINATE, validationProcessArchivalData.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessArchivalData.getConclusion().getSubIndication());
+
+		boolean evidenceRecordCheckFound = false;
+		boolean ltLevelAcceptableCheckFound = false;
+		boolean tstValidationCheckFound = false;
+		boolean pastSignatureValidationCheckFound = false;
+		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
+			if (MessageTag.ADEST_IRERVPC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				assertEquals(MessageTag.ADEST_IRERVPC_ANS.getId(), xmlConstraint.getWarning().getKey());
+				evidenceRecordCheckFound = true;
+			} else if (MessageTag.ARCH_LTVV.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				ltLevelAcceptableCheckFound = true;
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				tstValidationCheckFound = true;
+			} else if (MessageTag.PSV_IPSVC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.PSV_IPSVC_ANS.getId(), xmlConstraint.getError().getKey());
+				pastSignatureValidationCheckFound = true;
+			}
+		}
+		assertTrue(evidenceRecordCheckFound);
+		assertTrue(ltLevelAcceptableCheckFound);
+		assertTrue(tstValidationCheckFound);
+		assertTrue(pastSignatureValidationCheckFound);
+	}
+
+	@Test
+	public void sigWithBrokenERSecondTimestampValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/er-validation/sig-with-er-valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlEvidenceRecord xmlEvidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+		XmlTimestamp xmlERTimestamp = xmlEvidenceRecord.getEvidenceRecordTimestamps().get(1).getTimestamp();
+		xmlERTimestamp.getDigestMatchers().get(0).setDataIntact(false);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+		assertEquals(Indication.INDETERMINATE, signatureTimestamps.get(0).getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, signatureTimestamps.get(0).getSubIndication());
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureEvidenceRecords.size());
+		assertEquals(Indication.FAILED, signatureEvidenceRecords.get(0).getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, signatureEvidenceRecords.get(0).getSubIndication());
+
+		XmlTimestamps timestamps = signatureEvidenceRecords.get(0).getTimestamps();
+		assertNotNull(timestamps);
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> evidenceRecordTimestamps = timestamps.getTimestamp();
+		assertEquals(2, evidenceRecordTimestamps.size());
+
+		assertEquals(Indication.PASSED, evidenceRecordTimestamps.get(0).getIndication());
+
+		assertEquals(Indication.FAILED, evidenceRecordTimestamps.get(1).getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, evidenceRecordTimestamps.get(1).getSubIndication());
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getArchiveDataTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		int processedTimestampsCounter = 0;
+		int skippedTimestampsCounter = 0;
+		for (XmlTimestamp xmlTimestamp : diagnosticData.getUsedTimestamps()) {
+			XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+			if (tstBBB != null) {
+				++processedTimestampsCounter;
+			} else {
+				++skippedTimestampsCounter;
+			}
+		}
+		assertEquals(3, processedTimestampsCounter);
+		assertEquals(0, skippedTimestampsCounter);
+
+		assertEquals(Indication.FAILED, detailedReport.getEvidenceRecordValidationIndication(signatureEvidenceRecords.get(0).getId()));
+		assertEquals(SubIndication.HASH_FAILURE, detailedReport.getEvidenceRecordValidationSubIndication(signatureEvidenceRecords.get(0).getId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord evidenceRecord = detailedReport.getXmlEvidenceRecordById(signatureEvidenceRecords.get(0).getId());
+		assertEquals(Indication.FAILED, evidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, evidenceRecord.getConclusion().getSubIndication());
+
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = evidenceRecord.getValidationProcessEvidenceRecord();
+		assertEquals(Indication.FAILED, validationProcessEvidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, validationProcessEvidenceRecord.getConclusion().getSubIndication());
+
+		int dataObjectFoundCheckCounter = 0;
+		int dataObjectIntactCheckCounter = 0;
+		int tstValidationValidCheckCounter = 0;
+		int tstValidationInvalidCheckCounter = 0;
+		int cryptoConstraintsCheckCounter = 0;
+		for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
+			if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++dataObjectFoundCheckCounter;
+			} else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++dataObjectIntactCheckCounter;
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+				if (XmlStatus.OK.equals(xmlConstraint.getStatus())) {
+					++tstValidationValidCheckCounter;
+				} else if (XmlStatus.NOT_OK.equals(xmlConstraint.getStatus())) {
+					assertEquals(MessageTag.ADEST_IBSVPTADC_ANS.getId(), xmlConstraint.getError().getKey());
+					++tstValidationInvalidCheckCounter;
+				}
+			} else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				++cryptoConstraintsCheckCounter;
+			}
+		}
+		assertEquals(1, dataObjectFoundCheckCounter);
+		assertEquals(1, dataObjectIntactCheckCounter);
+		assertEquals(1, tstValidationValidCheckCounter);
+		assertEquals(1, tstValidationInvalidCheckCounter);
+		assertEquals(0, cryptoConstraintsCheckCounter);
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
+		assertEquals(Indication.INDETERMINATE, validationProcessArchivalData.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessArchivalData.getConclusion().getSubIndication());
+
+		boolean evidenceRecordCheckFound = false;
+		boolean ltLevelAcceptableCheckFound = false;
+		boolean tstValidationCheckFound = false;
+		boolean pastSignatureValidationCheckFound = false;
+		for (XmlConstraint xmlConstraint : validationProcessArchivalData.getConstraint()) {
+			if (MessageTag.ADEST_IRERVPC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				assertEquals(MessageTag.ADEST_IRERVPC_ANS.getId(), xmlConstraint.getWarning().getKey());
+				evidenceRecordCheckFound = true;
+			} else if (MessageTag.ARCH_LTVV.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+				ltLevelAcceptableCheckFound = true;
+			} else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+				tstValidationCheckFound = true;
+			} else if (MessageTag.PSV_IPSVC.getId().equals(xmlConstraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+				assertEquals(MessageTag.PSV_IPSVC_ANS.getId(), xmlConstraint.getError().getKey());
+				pastSignatureValidationCheckFound = true;
+			}
+		}
+		assertTrue(evidenceRecordCheckFound);
+		assertTrue(ltLevelAcceptableCheckFound);
+		assertTrue(tstValidationCheckFound);
+		assertTrue(pastSignatureValidationCheckFound);
+	}
+
+	@Test
+	public void sigWithERLTValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/er-validation/sig-with-er-valid.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationLevel(ValidationLevel.LONG_TERM_DATA);
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp> signatureTimestamps = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureTimestamps.size());
+		assertEquals(Indication.INDETERMINATE, signatureTimestamps.get(0).getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, signatureTimestamps.get(0).getSubIndication());
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(simpleReport.getFirstSignatureId());
+		assertEquals(0, signatureEvidenceRecords.size());
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getBasicTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		int processedTimestampsCounter = 0;
+		int skippedTimestampsCounter = 0;
+		for (XmlTimestamp xmlTimestamp : diagnosticData.getUsedTimestamps()) {
+			XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+			if (tstBBB != null) {
+				assertFalse(xmlTimestamp.getType().isEvidenceRecordTimestamp());
+				++processedTimestampsCounter;
+			} else {
+				assertTrue(xmlTimestamp.getType().isEvidenceRecordTimestamp());
+				++skippedTimestampsCounter;
+			}
+		}
+		assertEquals(1, processedTimestampsCounter);
+		assertEquals(2, skippedTimestampsCounter);
+
+		assertNull(detailedReport.getArchiveDataTimestampValidationIndication(signatureTimestamps.get(0).getId()));
+		assertNull(detailedReport.getArchiveDataTimestampValidationSubIndication(signatureTimestamps.get(0).getId()));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		assertNull(detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+		assertNull(detailedReport.getArchiveDataValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+
+		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
+		assertNull(validationProcessArchivalData);
 	}
 
 	@Test
@@ -13506,8 +15274,8 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		// for eSig only when type or QcStatement is defined
 		assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
-		List<XmlTrustedServiceProvider> trustedServices = signingCertificate.getTrustedServiceProviders();
-		String tlId = trustedServices.get(0).getTL().getId();
+		List<XmlTrustServiceProvider> trustServices = signingCertificate.getTrustServiceProviders();
+		String tlId = trustServices.get(0).getTL().getId();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlTLAnalysis tlAnalysis = detailedReport.getTLAnalysisById(tlId);
@@ -13537,14 +15305,14 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(2, validationCertificateQualification.size());
 
 		for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
-			boolean mraTrustedServiceCheckFound = false;
+			boolean mraTrustServiceCheckFound = false;
 			for (XmlConstraint constraint : certificateQualification.getConstraint()) {
 				if (MessageTag.QUAL_HAS_METS.getId().equals(constraint.getName().getKey())) {
-					mraTrustedServiceCheckFound = true;
+					mraTrustServiceCheckFound = true;
 					break;
 				}
 			}
-			assertFalse(mraTrustedServiceCheckFound);
+			assertFalse(mraTrustServiceCheckFound);
 		}
 	}
 

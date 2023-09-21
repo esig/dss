@@ -28,8 +28,8 @@
             <Id>ANY_POLICY</Id>
             <Id>NO_POLICY</Id>
         </AcceptablePolicies>
-        <PolicyAvailable Level="FAIL" />
-        <PolicyHashMatch Level="FAIL" />
+        <PolicyAvailable Level="INFORM" />
+        <PolicyHashMatch Level="WARN" />
         <AcceptableFormats Level="FAIL">
             <Id>*</Id>
         </AcceptableFormats>
@@ -47,16 +47,16 @@
             <PdfPageDifference Level="FAIL" />
             <PdfAnnotationOverlap Level="WARN" />
             <PdfVisualDifference Level="WARN" />
-            <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
+            <!-- 			<TrustServiceTypeIdentifier Level="WARN"> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
-            <!-- 			</TrustedServiceTypeIdentifier> -->
-            <!-- 			<TrustedServiceStatus Level="FAIL"> -->
+            <!-- 			</TrustServiceTypeIdentifier> -->
+            <!-- 			<TrustServiceStatus Level="FAIL"> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id> -->
-            <!-- 			</TrustedServiceStatus> -->
+            <!-- 			</TrustServiceStatus> -->
             <SigningCertificate>
                 <Recognition Level="FAIL" />
                 <Signature Level="FAIL" />
@@ -128,16 +128,16 @@
             <SignatureIntact Level="FAIL" />
             <SignatureDuplicated Level="FAIL" />
             <ProspectiveCertificateChain Level="FAIL" />
-            <!-- 			<TrustedServiceTypeIdentifier Level="WARN"> -->
+            <!-- 			<TrustServiceTypeIdentifier Level="WARN"> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id> -->
-            <!-- 			</TrustedServiceTypeIdentifier> -->
-            <!-- 			<TrustedServiceStatus Level="FAIL"> -->
+            <!-- 			</TrustServiceTypeIdentifier> -->
+            <!-- 			<TrustServiceStatus Level="FAIL"> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Id> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation</Id> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id> -->
             <!-- 				<Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id> -->
-            <!-- 			</TrustedServiceStatus> -->
+            <!-- 			</TrustServiceStatus> -->
             <SigningCertificate>
                 <Recognition Level="FAIL" />
                 <Signature Level="FAIL" />

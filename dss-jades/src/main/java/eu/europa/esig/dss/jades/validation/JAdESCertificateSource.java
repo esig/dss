@@ -183,8 +183,14 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		if (Utils.isCollectionNotEmpty(x509CertChain)) {
 			for (Object item : x509CertChain) {
 				String certificateBase64 = DSSJsonUtils.toString(item);
-				CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(certificateBase64);
-				addCertificate(certificate, CertificateOrigin.KEY_INFO);
+				if (Utils.isStringNotEmpty(certificateBase64)) {
+					try {
+						CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(certificateBase64);
+						addCertificate(certificate, CertificateOrigin.KEY_INFO);
+					} catch (Exception e) {
+						LOG.warn("Unable to decode a certificate from '{}'! Reason : {}", certificateBase64, e.getMessage(), e);
+					}
+				}
 			}
 		}
 	}
@@ -269,8 +275,12 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		String encoding = DSSJsonUtils.getAsString(x509Cert, JAdESHeaderParameterNames.ENCODING);
 		if (Utils.isStringEmpty(encoding) || Utils.areStringsEqual(PKIEncoding.DER.getUri(), encoding)) {
 			String val = DSSJsonUtils.getAsString(x509Cert, JAdESHeaderParameterNames.VAL);
-			if (Utils.isStringNotBlank(val)) {
-				addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(val), origin);
+			if (Utils.isStringNotEmpty(val)) {
+				try {
+					addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(val), origin);
+				} catch (Exception e) {
+					LOG.warn("Unable to decode a certificate from '{}'! Reason : {}", val, e.getMessage(), e);
+				}
 			}
 
 		} else {

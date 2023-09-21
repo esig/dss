@@ -367,11 +367,11 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 				try {
 					if (provider instanceof AuthProvider) {
 						((AuthProvider) provider).logout();
-						provider.clear();
 					}
 				} catch (LoginException e) {
 					LOG.error("Unable to logout : {}", e.getMessage(), e);
 				}
+				provider.clear();
 				Security.removeProvider(provider.getName());
 			} catch (SecurityException e) {
 				LOG.error("Unable to remove provider '{}'", provider.getName(), e);

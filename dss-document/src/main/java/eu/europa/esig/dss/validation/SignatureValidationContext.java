@@ -47,6 +47,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSuppo
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
 import eu.europa.esig.dss.validation.status.SignatureStatus;
 import eu.europa.esig.dss.validation.status.TokenStatus;
@@ -224,6 +225,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 		List<TimestampToken> timestamps = signature.getAllTimestamps();
 		prepareTimestamps(timestamps);
+
+		List<EvidenceRecord> allEvidenceRecords = signature.getAllEvidenceRecords();
+		for (EvidenceRecord evidenceRecord : allEvidenceRecords) {
+			addEvidenceRecordForVerification(evidenceRecord);
+		}
 
 		registerBestSignatureTime(signature); // to be done after timestamp POE extraction
 
@@ -461,7 +467,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private CertificateToken getIssuerFromProcessedCertificates(Token token) {
 		CertificateToken issuerCertificateToken = tokenIssuerMap.get(token);
-		// isSignedBy(...) check is required when a certificates is present in different sources
+		// isSignedBy(...) check is required when a certificate is present in different sources
 		// in order to instantiate a public key of the signer
 		if (issuerCertificateToken != null &&
 				(token.getPublicKeyOfTheSigner() != null || token.isSignedBy(issuerCertificateToken))) {
@@ -735,6 +741,14 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		return chain;
+	}
+
+	@Override
+	public void addEvidenceRecordForVerification(EvidenceRecord evidenceRecord) {
+		addDocumentCertificateSource(evidenceRecord.getCertificateSource());
+		addDocumentCRLSource(evidenceRecord.getCRLSource());
+		addDocumentOCSPSource(evidenceRecord.getOCSPSource());
+		prepareTimestamps(evidenceRecord.getTimestamps());
 	}
 
 	@Override

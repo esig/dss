@@ -22,7 +22,7 @@ package eu.europa.esig.xades.definition.xades141;
 
 import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
 import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
-import eu.europa.esig.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 
 /**
  * The XAdES 1.4.1 elements
@@ -68,7 +68,7 @@ public enum XAdES141Element implements DSSElement {
 	 */
 	XAdES141Element(String tagName) {
 		this.tagName = tagName;
-		this.namespace = XAdESNamespaces.XADES_141;
+		this.namespace = XAdESNamespace.XADES_141;
 	}
 
 	@Override

@@ -115,7 +115,7 @@
                     <crlUrl>http://dss.nowina.lu/pki-factory/crl/ee-root-ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>mGVLRJTFEz/Iz1DkRq61jkZ/sH8PfH9gygK8IKR9wHw=</DigestValue>

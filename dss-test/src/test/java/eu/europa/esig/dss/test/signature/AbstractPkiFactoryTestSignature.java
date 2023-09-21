@@ -555,23 +555,19 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		assertNotNull(signatureAttributes);
 		super.validateETSISignatureAttributes(signatureAttributes);
 
-		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-		for (Object signatureAttributeObj : signatureAttributeObjects) {
-			if (signatureAttributeObj instanceof JAXBElement) {
-				JAXBElement<?> jaxbElement = (JAXBElement<?>) signatureAttributeObj;
-				Object value = jaxbElement.getValue();
-				
-				if (value instanceof SACommitmentTypeIndicationType) {
-					// TODO multiple value -> multiple tag in signatureattributes ??
-					SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
-					validateETSICommitment(commitment, parameters);
-				} else if (value instanceof SASignerRoleType) {
-					SASignerRoleType signerRoles = (SASignerRoleType) value;
-					validateETSISASignerRoleType(signerRoles, parameters);
-				} else if (value instanceof SASignatureProductionPlaceType) {
-					SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
-					validateETSISASignatureProductionPlaceType(productionPlace, parameters);
-				}
+		List<JAXBElement<?>> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		for (JAXBElement<?> signatureAttributeObj : signatureAttributeObjects) {
+			Object value = signatureAttributeObj.getValue();
+			if (value instanceof SACommitmentTypeIndicationType) {
+				// TODO multiple value -> multiple tag in signatureattributes ??
+				SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
+				validateETSICommitment(commitment, parameters);
+			} else if (value instanceof SASignerRoleType) {
+				SASignerRoleType signerRoles = (SASignerRoleType) value;
+				validateETSISASignerRoleType(signerRoles, parameters);
+			} else if (value instanceof SASignatureProductionPlaceType) {
+				SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
+				validateETSISASignatureProductionPlaceType(productionPlace, parameters);
 			}
 		}
 	}

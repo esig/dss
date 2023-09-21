@@ -24,7 +24,7 @@ import eu.europa.esig.dss.xml.XMLCanonicalizer;
 import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPaths;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -85,7 +85,7 @@ public class ReferenceBuilder {
 		Objects.requireNonNull(xadesSignatureParameters, "Signature parameters shall be provided!");
 		this.documents = documents;
 		this.signatureParameters = xadesSignatureParameters;
-		this.digestAlgorithm = getReferenceDigestAlgorithmOrDefault(xadesSignatureParameters);
+		this.digestAlgorithm = DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(xadesSignatureParameters);
 		this.referenceIdProvider = referenceIdProvider;
 	}
 
@@ -204,7 +204,7 @@ public class ReferenceBuilder {
 			Element manifestElement = manifestDoc.getDocumentElement();
 			assertXmlManifestSignaturePossible(manifestElement);
 
-			reference.setType(XMLDSigPaths.MANIFEST_TYPE);
+			reference.setType(XMLDSigPath.MANIFEST_TYPE);
 			reference.setUri(DomUtils.toElementReference(manifestElement.getAttribute(XMLDSigAttribute.ID.getAttributeName())));
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), XMLCanonicalizer.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Collections.singletonList(xmlTransform));
@@ -212,14 +212,14 @@ public class ReferenceBuilder {
 		} else if (signatureParameters.isEmbedXML()) {
 			assertEnvelopingSignatureWithEmbeddedXMLPossible(document);
 
-			reference.setType(XMLDSigPaths.OBJECT_TYPE);
+			reference.setType(XMLDSigPath.OBJECT_TYPE);
 			reference.setUri(DomUtils.toElementReference(OBJECT_ID_PREFIX + refId));
 
 			DSSTransform xmlTransform = new CanonicalizationTransform(signatureParameters.getXmldsigNamespace(), XMLCanonicalizer.DEFAULT_DSS_C14N_METHOD);
 			reference.setTransforms(Collections.singletonList(xmlTransform));
 
 		} else {
-			reference.setType(XMLDSigPaths.OBJECT_TYPE);
+			reference.setType(XMLDSigPath.OBJECT_TYPE);
 			reference.setUri(DomUtils.toElementReference(OBJECT_ID_PREFIX + refId));
 
 			DSSTransform base64Transform = new Base64Transform(signatureParameters.getXmldsigNamespace());
@@ -265,10 +265,6 @@ public class ReferenceBuilder {
 		dssTransformList.add(canonicalization);
 		reference.setTransforms(dssTransformList);
 		return reference;
-	}
-
-	private DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
-		return params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
 	}
 
 }

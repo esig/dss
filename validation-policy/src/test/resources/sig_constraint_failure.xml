@@ -93,7 +93,7 @@
                     <certificatePolicy>0.4.0.1456.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>SFUiAAK84hgQExXOJyzBtKX02uA3Ay9jMF75CIZwHGc=</DigestValue>
@@ -132,7 +132,7 @@
                     <keyUsageBit>keyCertSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>XFhGjVX1jkl+dDmC0rUAELbRZTdKz4On1KMtt2jEQI4=</DigestValue>
@@ -182,7 +182,7 @@
                     <QcCompliance present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
 	            <CertificateRevocation Revocation="R-79ADAE6C275B8805AF16746D43CEA07C1E1102C6476C9E9C4B2B4F30230B4F74">
 	                <Status>GOOD</Status>
@@ -232,7 +232,7 @@
                     <certificatePolicy>1.2.616.1.113527.2.5.1.11</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <Revocations>
 	            <CertificateRevocation Revocation="R-44E8F4F581737AD1B43EA4562D51AB3F3EB458C3A0E91979EF35F133EE31797E">
 	                <Status>GOOD</Status>
@@ -282,7 +282,7 @@
 
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>jzy9OBVZFYPmNyX6M9r1ywGFLmz4LJ39TwkdFgNJxzM=</DigestValue>
@@ -321,7 +321,7 @@
                     <keyUsageBit>keyCertSign</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>jaCE/Pmc4Hci+JsyBZOYBvpcuBHhyBP2oQjH0zazQI4=</DigestValue>
@@ -364,7 +364,7 @@
                 </KeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>GfH0EKUD22ReCFEUEzOnWnTlXl8H30XtM8BiCFdRkAI=</DigestValue>

@@ -33,7 +33,6 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.validationreport.jaxb.SADataObjectFormatType;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -42,7 +41,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -100,11 +98,11 @@ public class JAdESSignDetachedCompactSignatureTest extends AbstractJAdESTestSign
     }
 
     @Override
-    protected void checkMimeType(DiagnosticData diagnosticData) {
+    protected void checkSignatureType(DiagnosticData diagnosticData) {
         boolean joseTypeSigFound = false;
         boolean joseJsonTypeSigFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-            MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getMimeType());
+            MimeType mimeType = MimeType.fromMimeTypeString(signatureWrapper.getSignatureType());
             if (MimeTypeEnum.JOSE.equals(mimeType)) {
                 joseTypeSigFound = true;
             } else if (MimeTypeEnum.JOSE_JSON.equals(mimeType)) {
@@ -113,13 +111,6 @@ public class JAdESSignDetachedCompactSignatureTest extends AbstractJAdESTestSign
         }
         assertTrue(joseTypeSigFound);
         assertTrue(joseJsonTypeSigFound);
-    }
-
-    @Override
-    protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
-        assertNotNull(dataObjectFormat.getMimeType());
-        MimeType mimeType = MimeType.fromMimeTypeString(dataObjectFormat.getMimeType());
-        assertTrue(MimeTypeEnum.JOSE.equals(mimeType) || MimeTypeEnum.JOSE_JSON.equals(mimeType));
     }
 
     @Override

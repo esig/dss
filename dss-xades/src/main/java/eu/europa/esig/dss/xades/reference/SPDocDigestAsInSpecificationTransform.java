@@ -54,7 +54,14 @@ public class SPDocDigestAsInSpecificationTransform extends AbstractTransform {
     }
 
     @Override
+    @Deprecated
     public byte[] getBytesAfterTransformation(Node node) {
+        throw new IllegalArgumentException(
+                "The transform SPDocDigestAsInSpecificationTransform cannot be used for reference processing!");
+    }
+
+    @Override
+    public DSSTransformOutput performTransform(DSSTransformOutput transformOutput) {
         throw new IllegalArgumentException(
                 "The transform SPDocDigestAsInSpecificationTransform cannot be used for reference processing!");
     }

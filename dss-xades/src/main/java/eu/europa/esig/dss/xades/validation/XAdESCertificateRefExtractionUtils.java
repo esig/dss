@@ -28,7 +28,7 @@ import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +54,10 @@ public final class XAdESCertificateRefExtractionUtils {
 	 * Extracts a {@code CertificateRef} from a V1 {@code certRefElement}
 	 *
 	 * @param certRefElement {@link Element} V1 certRef element
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @return {@link CertificateRef}
 	 */
-	public static CertificateRef createCertificateRefFromV1(Element certRefElement, XAdESPaths xadesPaths) {
+	public static CertificateRef createCertificateRefFromV1(Element certRefElement, XAdESPath xadesPaths) {
 		if (certRefElement != null) {
 			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
 			if (certDigest != null) {
@@ -74,10 +74,10 @@ public final class XAdESCertificateRefExtractionUtils {
 	 * Extracts a {@code CertificateRef} from a V2 {@code certRefElement}
 	 *
 	 * @param certRefElement {@link Element} V2 certRef element
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @return {@link CertificateRef}
 	 */
-	public static CertificateRef createCertificateRefFromV2(Element certRefElement, XAdESPaths xadesPaths) {
+	public static CertificateRef createCertificateRefFromV2(Element certRefElement, XAdESPath xadesPaths) {
 		if (certRefElement != null) {
 			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
 			if (certDigest != null) {
@@ -90,7 +90,7 @@ public final class XAdESCertificateRefExtractionUtils {
 		return null;
 	}
 
-	private static SignerIdentifier getCertificateIdentifierV1(Element certRefElement, XAdESPaths xadesPaths) {
+	private static SignerIdentifier getCertificateIdentifierV1(Element certRefElement, XAdESPath xadesPaths) {
 		X500Principal issuerName = null;
 		BigInteger serialNumber = null;
 
@@ -127,7 +127,7 @@ public final class XAdESCertificateRefExtractionUtils {
 		return signerIdentifier;
 	}
 
-	private static SignerIdentifier getCertificateIdentifierV2(Element certRefElement, XAdESPaths xadesPaths) {
+	private static SignerIdentifier getCertificateIdentifierV2(Element certRefElement, XAdESPath xadesPaths) {
 		final Element issuerSerialV2Element = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialV2Path());
 		if (issuerSerialV2Element == null) {
 			// Tag issuerSerialV2 is optional
@@ -137,13 +137,18 @@ public final class XAdESCertificateRefExtractionUtils {
 		final String textContent = issuerSerialV2Element.getTextContent();
 
 		try {
-			IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
-			return DSSASN1Utils.toSignerIdentifier(issuerSerial);
+			if (Utils.isBase64Encoded(textContent)) {
+				IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(textContent));
+				return DSSASN1Utils.toSignerIdentifier(issuerSerial);
+			} else {
+				LOG.warn("The IssuerSerialV2 value is not base64-encoded!");
+			}
+
 		} catch (Exception e) {
 			LOG.warn("An error occurred while parsing IssuerSerialV2 from CertIDTypeV2 element! " +
 							"Reason : {}", e.getMessage(), e);
-			return null;
 		}
+		return null;
 	}
 
 }

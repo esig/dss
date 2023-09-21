@@ -23,9 +23,9 @@ package eu.europa.esig.dss.asic.cades.timestamp;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -34,12 +34,12 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
-import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -148,7 +148,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
         List<DSSDocument> manifestDocuments = validator.getManifestDocuments();
         assertEquals(1, manifestDocuments.size());
 
-        ManifestFile coveredManifest = ASiCWithCAdESManifestParser.getManifestFile(manifestDocuments.get(0));
+        ManifestFile coveredManifest = ASiCManifestParser.getManifestFile(manifestDocuments.get(0));
         assertNotNull(coveredManifest);
 
         List<ManifestEntry> entries = coveredManifest.getEntries();
@@ -187,7 +187,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
         List<DSSDocument> manifestDocuments = validator.getManifestDocuments();
         assertEquals(1, manifestDocuments.size());
 
-        ManifestFile coveredManifest = ASiCWithCAdESManifestParser.getManifestFile(manifestDocuments.get(0));
+        ManifestFile coveredManifest = ASiCManifestParser.getManifestFile(manifestDocuments.get(0));
         assertNotNull(coveredManifest);
 
         List<ManifestEntry> entries = coveredManifest.getEntries();
@@ -277,7 +277,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
         List<DSSDocument> manifestDocuments = validator.getManifestDocuments();
         assertEquals(1, manifestDocuments.size());
 
-        ManifestFile coveredManifest = ASiCWithCAdESManifestParser.getManifestFile(manifestDocuments.get(0));
+        ManifestFile coveredManifest = ASiCManifestParser.getManifestFile(manifestDocuments.get(0));
         assertNotNull(coveredManifest);
 
         List<ManifestEntry> entries = coveredManifest.getEntries();

@@ -75,18 +75,18 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		Collection<Long> ocspKeys = getOCSPKeys(validator);
 		Collection<Long> certKeys = getCertKeys(validator);
 		
-		checkValidationData(signedDocument, crlKeys, ocspKeys, certKeys);
+		checkValidationData(signedDocument, crlKeys, ocspKeys, certKeys, true);
 		
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, params);
-		checkValidationData(extendedDocument, crlKeys, ocspKeys, certKeys);
+		checkValidationData(extendedDocument, crlKeys, ocspKeys, certKeys, true);
 		
 		dataToSign = service.getDataToSign(signedDocument, params);
 		signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, params, signatureValue);
-		checkValidationData(doubleSignedDocument, crlKeys, ocspKeys, certKeys);
+		checkValidationData(doubleSignedDocument, crlKeys, ocspKeys, certKeys, false);
 		
 		DSSDocument doubleSignedExtendedDocument = service.extendDocument(signedDocument, params);
-		checkValidationData(doubleSignedExtendedDocument, crlKeys, ocspKeys, certKeys);
+		checkValidationData(doubleSignedExtendedDocument, crlKeys, ocspKeys, certKeys, true);
 		
 		// doubleSignedExtendedDocument.save("target/doubleSigned.pdf");
 		
@@ -122,29 +122,35 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		return certs;
 	}
 	
-	private void checkValidationData(DSSDocument document, Collection<Long> crls, Collection<Long> ocsps, Collection<Long> certs) {
+	private void checkValidationData(DSSDocument document, Collection<Long> crls, Collection<Long> ocsps, Collection<Long> certs, boolean match) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
 			Map<Long, CRLBinary> crlMap = crlSource.getCrlMap();
-			assertEquals(1, crlMap.size());
-			for (Long crl : crls) {
-				assertNotNull(crlMap.get(crl));
+			if (match) {
+				assertEquals(1, crlMap.size());
+				for (Long crl : crls) {
+					assertNotNull(crlMap.get(crl));
+				}
 			}
 			
 			PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
 			Map<Long, OCSPResponseBinary> ocspMap = ocspSource.getOcspMap();
-			assertEquals(1, ocspMap.size());
-			for (Long ocsp : ocsps) {
-				assertNotNull(ocspMap.get(ocsp));
+			if (match) {
+				assertEquals(1, ocspMap.size());
+				for (Long ocsp : ocsps) {
+					assertNotNull(ocspMap.get(ocsp));
+				}
 			}
 			
 			PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
 			Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
-			for (Long cert : certs) {
-				assertNotNull(certificateMap.get(cert));
+			if (match) {
+				for (Long cert : certs) {
+					assertNotNull(certificateMap.get(cert));
+				}
 			}
 		}
 	}

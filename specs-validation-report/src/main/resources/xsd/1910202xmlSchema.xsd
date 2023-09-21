@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:tsl="http://uri.etsi.org/02231/v2#" xmlns:XAdES="http://uri.etsi.org/01903/v1.3.2#" xmlns:vr="http://uri.etsi.org/19102/v1.2.1#" targetNamespace="http://uri.etsi.org/19102/v1.2.1#" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.0">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dss="urn:oasis:names:tc:dss:1.0:core:schema" xmlns:tsl="http://uri.etsi.org/02231/v2#" xmlns:XAdES="http://uri.etsi.org/01903/v1.3.2#" xmlns:vr="http://uri.etsi.org/19102/v1.4.1#" targetNamespace="http://uri.etsi.org/19102/v1.4.1#" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.0">
 	<xs:import namespace="http://www.w3.org/2000/09/xmldsig#" schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd"/>
 	<xs:import namespace="http://uri.etsi.org/01903/v1.3.2#" schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"/>
 	<xs:import namespace="http://uri.etsi.org/02231/v2#" schemaLocation="http://uri.etsi.org/19612/v2.2.1/ts_119612v020201_201601xsd.xsd"/>
@@ -7,6 +7,14 @@
 	================= SignatureReference element to ease referencing from TS 119 442 =========================
 -->
 	<xs:element name="SignatureReference" type="vr:SignatureReferenceType"/>
+	<!--
+	================= Auxiliary AnyType =========================
+-->
+	<xs:complexType name="AnyType" mixed="true">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:any processContents="lax"/>
+		</xs:sequence>
+	</xs:complexType>
 	<!--
 	================= Validation Report =========================
 -->
@@ -33,7 +41,7 @@
 			<xs:element name="SignatureQuality" type="vr:SignatureQualityType" minOccurs="0"/>
 			<xs:element name="SignatureValidationProcess" type="vr:SignatureValidationProcessType" minOccurs="0"/>
 			<xs:element name="SignatureValidationStatus" type="vr:ValidationStatusType"/>
-			<xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--
@@ -47,7 +55,7 @@
 			<xs:element name="HashOnly" type="xs:boolean"/>
 			<xs:element name="DocHashOnly" type="xs:boolean"/>
 			<xs:element name="DAIdentifier" type="xs:string" minOccurs="0"/>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="id" type="xs:ID" use="optional"/>
 	</xs:complexType>
@@ -58,7 +66,7 @@
 		<xs:sequence>
 			<xs:element name="DigitalId" type="tsl:DigitalIdentityType" maxOccurs="unbounded"/>
 			<xs:element name="TSPInformation" type="tsl:TSPInformationType" minOccurs="0"/>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--
@@ -128,9 +136,9 @@
 				<xs:sequence>
 					<xs:element name="DigestAlgAndValue" type="XAdES:DigestAlgAndValueType"/>
 					<xs:element name="SignersDocumentRepresentation" type="vr:VOReferenceType"
-								minOccurs="0" />
+								minOccurs="0"/>
 				</xs:sequence>
-				<xs:element name="SignersDocumentRepresentation" type="vr:VOReferenceType" />
+				<xs:element name="SignersDocumentRepresentation" type="vr:VOReferenceType"/>
 			</xs:choice>
 			<xs:element name="SignersDocumentRef" type="vr:VOReferenceType" minOccurs="0"/>
 		</xs:sequence>
@@ -174,7 +182,7 @@
 			<xs:element name="SubFilter" type="vr:SASubFilterType"/>
 			<xs:element name="ByteRange" type="vr:SAListOfIntegersType"/>
 			<xs:element name="Filter" type="vr:SAFilterType"/>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:choice>
 	</xs:complexType>
 	<!--
@@ -184,7 +192,7 @@
 		<xs:sequence>
 			<xs:element name="SignerCertificate" type="vr:VOReferenceType"/>
 			<xs:element name="Signer" type="xs:string" minOccurs="0"/>
-			<xs:any namespace="##other" minOccurs="0"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="Pseudonym" type="xs:boolean" use="optional"/>
 	</xs:complexType>
@@ -204,7 +212,7 @@
 			<xs:element name="SignatureValidationProcessID" type="xs:anyURI" minOccurs="0"/>
 			<xs:element name="SignatureValidationServicePolicy" type="xs:anyURI" minOccurs="0"/>
 			<xs:element name="SignatureValidationPracticeStatement" type="xs:anyURI" minOccurs="0"/>
-			<xs:any namespace="##other" minOccurs="0"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--
@@ -228,7 +236,7 @@
 			<xs:element name="SigningCertificate" type="vr:VOReferenceType"/>
 			<xs:element name="IntermediateCertificate" type="vr:VOReferenceType" minOccurs="0" maxOccurs="unbounded"/>
 			<xs:element name="TrustAnchor" type="vr:VOReferenceType" minOccurs="0"/>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--
@@ -240,7 +248,7 @@
 			<xs:element name="RevocationTime" type="xs:dateTime"/>
 			<xs:element name="RevocationReason" type="xs:anyURI" minOccurs="0"/>
 			<xs:element name="RevocationObject" type="vr:VOReferenceType" minOccurs="0"/>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--
@@ -253,7 +261,7 @@
 			<xs:element name="AlgorithmParameters" type="vr:TypedDataType" minOccurs="0"/>
 			<xs:element name="SecureAlgorithm" type="xs:boolean"/>
 			<xs:element name="NotAfter" type="xs:dateTime" minOccurs="0"/>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<!--
@@ -290,11 +298,11 @@
 	========================= ValidationObjectRepresentationType =============================
 -->
 	<xs:complexType name="ValidationObjectRepresentationType">
-		<xs:choice>
-			<xs:element name="direct" type="xs:anyType" minOccurs="0"/>
-			<xs:element name="base64" type="xs:base64Binary" minOccurs="0"/>
-			<xs:element name="DigestAlgAndValue" type="XAdES:DigestAlgAndValueType" minOccurs="0"/>
-			<xs:element name="URI" type="xs:anyURI" minOccurs="0"/>
+		<xs:choice maxOccurs="unbounded">
+			<xs:element name="direct" type="xs:anyType"/>
+			<xs:element name="base64" type="xs:base64Binary"/>
+			<xs:element name="DigestAlgAndValue" type="XAdES:DigestAlgAndValueType"/>
+			<xs:element name="URI" type="xs:anyURI"/>
 		</xs:choice>
 	</xs:complexType>
 	<!--
@@ -338,7 +346,7 @@
 			</xs:sequence>
 			<xs:element ref="vr:XAdESSignaturePtr"/>
 			<xs:element name="PAdESFieldName" type="xs:string"/>
-			<xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="OtherInformation" type="vr:AnyType" minOccurs="0"/>
 		</xs:choice>
 	</xs:complexType>
 	<xs:element name="XAdESSignaturePtr" type="vr:XAdESSignaturePtrType"/>
