@@ -66,6 +66,11 @@ public class XMLERSPath extends AbstractPath {
     public static final String TIME_STAMP_TOKEN_PATH = fromCurrentPosition(XMLERSElement.TIME_STAMP, XMLERSElement.TIME_STAMP_TOKEN);
 
     /**
+     * "./ers:TimeStamp/ers:CryptographicInformationList/ers:CryptographicInformation"
+     */
+    public static final String CRYPTOGRAPHIC_INFORMATION_PATH = fromCurrentPosition(XMLERSElement.TIME_STAMP, XMLERSElement.CRYPTOGRAPHIC_INFORMATION_LIST, XMLERSElement.CRYPTOGRAPHIC_INFORMATION);
+
+    /**
      * Returns a namespace of the XMLERS paths
      *
      * @return {@link DSSNamespace}

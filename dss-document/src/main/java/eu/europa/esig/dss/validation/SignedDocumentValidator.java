@@ -717,7 +717,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected void prepareDetachedEvidenceRecordValidationContext(
 			final ValidationContext validationContext, Collection<EvidenceRecord> evidenceRecords) {
 		for (EvidenceRecord evidenceRecord : evidenceRecords) {
-			prepareDetachedTimestampValidationContext(validationContext, evidenceRecord.getTimestamps());
+			validationContext.addEvidenceRecordForVerification(evidenceRecord);
 		}
 	}
 

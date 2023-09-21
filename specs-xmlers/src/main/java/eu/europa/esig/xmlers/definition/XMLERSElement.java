@@ -51,6 +51,9 @@ public enum XMLERSElement implements DSSElement {
     /** CryptographicInformationList */
     CRYPTOGRAPHIC_INFORMATION_LIST("CryptographicInformationList"),
 
+    /** CryptographicInformation */
+    CRYPTOGRAPHIC_INFORMATION("CryptographicInformation"),
+
     /** Sequence */
     SEQUENCE("Sequence"),
 

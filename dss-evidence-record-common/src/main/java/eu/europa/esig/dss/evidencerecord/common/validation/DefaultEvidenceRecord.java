@@ -7,6 +7,12 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
@@ -36,6 +42,21 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      * Represents a structure of the evidence record
      */
     private List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence;
+
+    /**
+     * Cached offline evidence record certificate source
+     */
+    private TokenCertificateSource certificateSource;
+
+    /**
+     * Cached offline evidence record CRL source
+     */
+    private OfflineCRLSource crlSource;
+
+    /**
+     * Cached offline evidence record OCSP source
+     */
+    private OfflineOCSPSource ocspSource;
 
     /** Cached instance of timestamp source */
     private EvidenceRecordTimestampSource<?> timestampSource;
@@ -157,6 +178,30 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      * @return {@link EvidenceRecordParser}
      */
     protected abstract EvidenceRecordParser buildEvidenceRecordParser();
+
+    @Override
+    public TokenCertificateSource getCertificateSource() {
+        if (certificateSource == null) {
+            certificateSource = new EvidenceRecordCertificateSource(getArchiveTimeStampSequence());
+        }
+        return certificateSource;
+    }
+
+    @Override
+    public OfflineRevocationSource<CRL> getCRLSource() {
+        if (crlSource == null) {
+            crlSource = new EvidenceRecordCRLSource(getArchiveTimeStampSequence());
+        }
+        return crlSource;
+    }
+
+    @Override
+    public OfflineRevocationSource<OCSP> getOCSPSource() {
+        if (ocspSource == null) {
+            ocspSource = new EvidenceRecordOCSPSource(getArchiveTimeStampSequence());
+        }
+        return ocspSource;
+    }
 
     @Override
     public List<ReferenceValidation> getReferenceValidation() {

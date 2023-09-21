@@ -47,6 +47,9 @@ public enum CertificateOrigin {
 	VRI_DICTIONARY,
 
 	/** Certificates extracted from an OCSP Response */
-	BASIC_OCSP_RESP
+	BASIC_OCSP_RESP,
+
+	/** Certificates extracted from an Evidence Record */
+	EVIDENCE_RECORD
 
 }

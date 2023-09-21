@@ -228,7 +228,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 		List<EvidenceRecord> allEvidenceRecords = signature.getAllEvidenceRecords();
 		for (EvidenceRecord evidenceRecord : allEvidenceRecords) {
-			prepareTimestamps(evidenceRecord.getTimestamps());
+			addEvidenceRecordForVerification(evidenceRecord);
 		}
 
 		registerBestSignatureTime(signature); // to be done after timestamp POE extraction
@@ -741,6 +741,14 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		return chain;
+	}
+
+	@Override
+	public void addEvidenceRecordForVerification(EvidenceRecord evidenceRecord) {
+		addDocumentCertificateSource(evidenceRecord.getCertificateSource());
+		addDocumentCRLSource(evidenceRecord.getCRLSource());
+		addDocumentOCSPSource(evidenceRecord.getOCSPSource());
+		prepareTimestamps(evidenceRecord.getTimestamps());
 	}
 
 	@Override

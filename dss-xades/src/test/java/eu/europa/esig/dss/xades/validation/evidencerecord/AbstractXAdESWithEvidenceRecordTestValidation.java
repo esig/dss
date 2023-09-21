@@ -149,6 +149,8 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                         List<XmlDigestMatcher> tstDigestMatcherList = timestamp.getDigestMatchers();
                         assertTrue(Utils.isCollectionNotEmpty(tstDigestMatcherList));
 
+                        long digestMatcherCounter = tstDigestMatcherList.stream().filter(m -> DigestMatcherType.MESSAGE_IMPRINT != m.getType()).count();
+
                         boolean archiveTstDigestFound = false;
                         boolean archiveTstSequenceDigestFound = false;
                         for (XmlDigestMatcher digestMatcher : tstDigestMatcherList) {
@@ -161,7 +163,7 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                             assertTrue(digestMatcher.isDataIntact());
                         }
 
-                        if (tstDigestMatcherList.size() == 1) {
+                        if (digestMatcherCounter == 1) {
                             assertTrue(archiveTstDigestFound);
                         } else {
                             assertTrue(archiveTstSequenceDigestFound);

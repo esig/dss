@@ -118,6 +118,8 @@
                 <FoundTimestamp Timestamp="T-1AAB362B1B904BAB0D4209A952BE0300E50906C253C9478477B042105DC51947"/>
                 <FoundTimestamp Timestamp="T-B914CF2D7E9272E3C1659A1A0EEE59ECBCAD9C4E520ED547B5CE322B18A582"/>
             </EvidenceRecordTimestamps>
+            <FoundCertificates />
+            <FoundRevocations />
             <TimestampedObjects>
                 <TimestampedObject Token="D-40B66CFD8CF142CB0DBE66AF4956185C6B35365EDDE821D81B6F750CD792469B" Category="SIGNED_DATA"/>
                 <TimestampedObject Token="S-6417E9A7865F756B27A5EADB49DADAEB4110CBD1AE080B3D30BFF16EC841F629" Category="SIGNATURE"/>

@@ -6,6 +6,11 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 
@@ -37,6 +42,27 @@ public interface EvidenceRecord extends IdentifierBasedObject {
      * @return in the case of the detached signature this is the {@code List} of signed contents.
      */
     List<DSSDocument> getDetachedContents();
+
+    /**
+     * Gets a certificate source which contains ALL certificates embedded in the evidence record.
+     *
+     * @return {@link CertificateSource}
+     */
+    TokenCertificateSource getCertificateSource();
+
+    /**
+     * Gets a CRL source which contains ALL CRLs embedded in the evidence record.
+     *
+     * @return {@code OfflineRevocationSource}
+     */
+    OfflineRevocationSource<CRL> getCRLSource();
+
+    /**
+     * Gets an OCSP source which contains ALL OCSP responses embedded in the evidence record.
+     *
+     * @return {@code OfflineRevocationSource}
+     */
+    OfflineRevocationSource<OCSP> getOCSPSource();
 
     /**
      * Returns a list of incorporated timestamp tokens

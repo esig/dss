@@ -103,6 +103,24 @@ public class EvidenceRecordWrapper {
     }
 
     /**
+     * Returns a collection of certificate tokens embedded within Evidence Record
+     *
+     * @return {@link FoundCertificatesProxy}
+     */
+    public FoundCertificatesProxy foundCertificates() {
+        return new FoundCertificatesProxy(evidenceRecord.getFoundCertificates());
+    }
+
+    /**
+     * Returns a collection of revocation tokens embedded within Evidence Record
+     *
+     * @return {@link FoundRevocationsProxy}
+     */
+    public FoundRevocationsProxy foundRevocations() {
+        return new FoundRevocationsProxy(evidenceRecord.getFoundRevocations());
+    }
+
+    /**
      * Gets the evidence record format type
      *
      * @return {@link EvidenceRecordTypeEnum}

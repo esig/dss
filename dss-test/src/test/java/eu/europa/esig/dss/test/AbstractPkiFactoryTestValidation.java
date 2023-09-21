@@ -1140,6 +1140,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void checkEvidenceRecords(DiagnosticData diagnosticData) {
 		checkEvidenceRecordDigestMatchers(diagnosticData);
 		checkEvidenceRecordTimestamps(diagnosticData);
+		checkEvidenceRecordValidationData(diagnosticData);
 		checkEvidenceRecordStructuralValidation(diagnosticData);
 		checkEvidenceRecordScopes(diagnosticData);
 		checkEvidenceRecordTimestampedReferences(diagnosticData);
@@ -1168,6 +1169,27 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			for (TimestampWrapper timestampWrapper : timestamps) {
 				checkTimestamp(diagnosticData, timestampWrapper);
 			}
+		}
+	}
+
+	protected void checkEvidenceRecordValidationData(DiagnosticData diagnosticData) {
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			FoundCertificatesProxy foundCertificates = evidenceRecord.foundCertificates();
+			assertEquals(Utils.collectionSize(foundCertificates.getRelatedCertificates()),
+					Utils.collectionSize(foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.EVIDENCE_RECORD)));
+			assertEquals(Utils.collectionSize(foundCertificates.getOrphanCertificates()),
+					Utils.collectionSize(foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.EVIDENCE_RECORD)));
+			assertEquals(0, Utils.collectionSize(foundCertificates.getRelatedCertificateRefs()));
+			assertEquals(0, Utils.collectionSize(foundCertificates.getOrphanCertificateRefs()));
+
+			FoundRevocationsProxy foundRevocations = evidenceRecord.foundRevocations();
+			assertEquals(Utils.collectionSize(foundRevocations.getRelatedRevocationData()),
+					Utils.collectionSize(foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.EVIDENCE_RECORD)));
+			assertEquals(Utils.collectionSize(foundRevocations.getOrphanRevocationData()),
+					Utils.collectionSize(foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.EVIDENCE_RECORD)));
+			assertEquals(0, Utils.collectionSize(foundRevocations.getRelatedRevocationRefs()));
+			assertEquals(0, Utils.collectionSize(foundRevocations.getOrphanRevocationRefs()));
 		}
 	}
 

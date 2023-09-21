@@ -577,6 +577,7 @@
 			<xs:enumeration value="OTHER" />
 			<xs:enumeration value="AIA" />
 			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="EVIDENCE_RECORD" />
 			<xs:enumeration value="UNKNOWN" />
 		</xs:restriction>
 	</xs:simpleType>

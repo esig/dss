@@ -1,15 +1,17 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
-import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
+import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformation;
+import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformationType;
+import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
+import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xmlers.definition.XMLERSAttribute;
 import eu.europa.esig.xmlers.definition.XMLERSPath;
-import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -92,6 +94,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
         XmlArchiveTimeStampObject archiveTimeStampObject = new XmlArchiveTimeStampObject(archiveTimeStampElement);
         archiveTimeStampObject.setHashTree(getHashTree(archiveTimeStampElement));
         archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStampElement));
+        archiveTimeStampObject.setCryptographicInformationList(getCryptographicInformationList(archiveTimeStampElement));
         archiveTimeStampObject.setOrder(getOrderAttributeValue(archiveTimeStampElement));
         return archiveTimeStampObject;
     }
@@ -182,6 +185,35 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
             throw new IllegalInputException("The Algorithm attribute shall be defined!");
         }
         return canonicalizationAttribute;
+    }
+
+    private List<CryptographicInformation> getCryptographicInformationList(Element archiveTimeStampElement) {
+        NodeList cryptographicInformationNodeList = DomUtils.getNodeList(archiveTimeStampElement, XMLERSPath.CRYPTOGRAPHIC_INFORMATION_PATH);
+        if (cryptographicInformationNodeList == null || cryptographicInformationNodeList.getLength() == 0) {
+            return Collections.emptyList();
+        }
+
+        final List<CryptographicInformation> cryptographicInformationList = new ArrayList<>();
+        for (int i = 0; i < cryptographicInformationNodeList.getLength(); i++) {
+            Element cryptographicInformationElement = (Element) cryptographicInformationNodeList.item(i);
+            String type = cryptographicInformationElement.getAttribute(XMLERSAttribute.TYPE.getAttributeName());
+            if (Utils.isStringEmpty(type)) {
+                LOG.warn("Type attribute shall be defined within CryptographicInformation element! Element is skipped.");
+                continue;
+            }
+            CryptographicInformationType cryptographicInformationType = CryptographicInformationType.fromLabel(type);
+
+            String textContent = cryptographicInformationElement.getTextContent();
+            if (!Utils.isBase64Encoded(textContent)) {
+                LOG.warn("Value within CryptographicInformation element shall be base64-encoded! Element is skipped.");
+                continue;
+            }
+
+            cryptographicInformationList.add(
+                    new CryptographicInformation(Utils.fromBase64(textContent), cryptographicInformationType));
+        }
+
+        return cryptographicInformationList;
     }
 
 }

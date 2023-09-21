@@ -1024,6 +1024,16 @@ public abstract class DiagnosticDataBuilder {
 	/**
 	 * Returns found certificates from the source
 	 *
+	 * @param certificateSource {@link TokenCertificateSource}
+	 * @return {@link XmlFoundCertificates}
+	 */
+	protected XmlFoundCertificates getXmlFoundCertificates(TokenCertificateSource certificateSource) {
+		return getXmlFoundCertificates(null, certificateSource);
+	}
+
+	/**
+	 * Returns found certificates from the source
+	 *
 	 * @param tokenIdentifier {@link Identifier} of the token
 	 * @param certificateSource {@link TokenCertificateSource}
 	 * @return {@link XmlFoundCertificates}
@@ -1038,9 +1048,12 @@ public abstract class DiagnosticDataBuilder {
 				xmlFoundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
 			}
 		}
-		CertificateToken signingCertificate = signingCertificateMap.get(tokenIdentifier.asXmlId());
-		xmlFoundCertificates.getOrphanCertificates().addAll(getOrphanCertificates(certificateSource, signingCertificate));
-		xmlFoundCertificates.getOrphanCertificates().addAll(getOrphanCertificateRefs(certificateSource, signingCertificate));
+		if (tokenIdentifier != null) {
+			CertificateToken signingCertificate = signingCertificateMap.get(tokenIdentifier.asXmlId());
+			// safe null processing is implemented inside (to create orphan references, when needed)
+			xmlFoundCertificates.getOrphanCertificates().addAll(getOrphanCertificates(certificateSource, signingCertificate));
+			xmlFoundCertificates.getOrphanCertificates().addAll(getOrphanCertificateRefs(certificateSource, signingCertificate));
+		}
 		return xmlFoundCertificates;
 	}
 
@@ -1053,6 +1066,10 @@ public abstract class DiagnosticDataBuilder {
 		
 		if (CertificateSourceType.OCSP_RESPONSE.equals(certificateSource.getCertificateSourceType())) {
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.BASIC_OCSP_RESP,
+					certificateSource.getCertificates(), certificateSource);
+
+		} else if (CertificateSourceType.EVIDENCE_RECORD.equals(certificateSource.getCertificateSourceType())) {
+			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.EVIDENCE_RECORD,
 					certificateSource.getCertificates(), certificateSource);
 
 		} else {

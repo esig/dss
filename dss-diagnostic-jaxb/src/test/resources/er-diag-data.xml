@@ -230,6 +230,8 @@
             <EvidenceRecordTimestamps>
                 <FoundTimestamp Timestamp="TIMESTAMP_good-tsa_20230905-0858"/>
             </EvidenceRecordTimestamps>
+            <FoundCertificates />
+            <FoundRevocations />
             <TimestampedObjects>
                 <TimestampedObject Token="DOCUMENT_Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566-xml" Category="SIGNED_DATA"/>
                 <TimestampedObject Token="DOCUMENT_Full-XML-file" Category="SIGNED_DATA"/>
@@ -275,6 +277,8 @@
             <EvidenceRecordTimestamps>
                 <FoundTimestamp Timestamp="TIMESTAMP_good-tsa_20230905-0858"/>
             </EvidenceRecordTimestamps>
+            <FoundCertificates />
+            <FoundRevocations />
             <TimestampedObjects>
                 <TimestampedObject Token="DOCUMENT_Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566-xml" Category="SIGNED_DATA"/>
                 <TimestampedObject Token="DOCUMENT_Full-XML-file" Category="SIGNED_DATA"/>
