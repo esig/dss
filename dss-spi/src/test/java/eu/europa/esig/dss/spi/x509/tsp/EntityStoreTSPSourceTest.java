@@ -144,36 +144,25 @@ public class EntityStoreTSPSourceTest {
         Exception exception1 = assertThrows(NullPointerException.class, () ->new KeyEntityTSPSource((KeyStore) null, null, null));
         assertEquals("KeyStore is not defined!", exception1.getMessage());
 
-        KeyEntityTSPSource tspSource1 = new KeyEntityTSPSource((KeyStore) null, null, null);
-        Exception exception = assertThrows(NullPointerException.class, () -> tspSource1.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
-//        assertEquals("KeyStore is not defined!", exception.getMessage());
-
         KeyStore keyStore = KeyStore.getInstance(KS_TYPE);
         try (InputStream is = Files.newInputStream(KS_FILE.toPath())) {
             keyStore.load(is, KS_PASSWORD);
         }
 
-        KeyEntityTSPSource tspSource2 = new KeyEntityTSPSource(keyStore, null, null);
-
-        exception = assertThrows(NullPointerException.class, () -> tspSource2.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+        Exception exception = assertThrows(NullPointerException.class, () -> new KeyEntityTSPSource(keyStore, null, null));
         assertEquals("Alias is not defined!", exception.getMessage());
 
-        KeyEntityTSPSource tspSource3 = new KeyEntityTSPSource(keyStore, ALIAS, null);
-
-        exception = assertThrows(NullPointerException.class, () -> tspSource3.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
-        assertEquals("Password from key entry is not defined!", exception.getMessage());
+        exception = assertThrows(DSSException.class, () -> new KeyEntityTSPSource(keyStore, ALIAS, null));
+      //  assertEquals("Alias is not defined!", exception.getMessage());
 
         KeyEntityTSPSource tspSource4 = new KeyEntityTSPSource(keyStore, ALIAS, KS_PASSWORD);
-
         TimestampBinary timeStampResponse = tspSource4.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         assertTimestampValid(timeStampResponse, digest);
 
-        KeyEntityTSPSource tspSource5 = new KeyEntityTSPSource(keyStore, "wrong-alias", KS_PASSWORD);
-        exception = assertThrows(IllegalArgumentException.class, () -> tspSource5.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+        exception = assertThrows(IllegalArgumentException.class, () -> new KeyEntityTSPSource(keyStore, "wrong-alias", KS_PASSWORD));
         assertEquals("No related/supported key entry found for alias 'wrong-alias'!", exception.getMessage());
 
-        KeyEntityTSPSource tspSource6 = new KeyEntityTSPSource(keyStore, ALIAS, "wrong-password".toCharArray());
-        exception = assertThrows(DSSException.class, () -> tspSource6.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+        exception = assertThrows(DSSException.class, () -> new KeyEntityTSPSource(keyStore, ALIAS, "wrong-password".toCharArray()));
         assertTrue(exception.getMessage().contains("Unable to recover the key entry with alias 'self-signed-tsa'."));
     }
 

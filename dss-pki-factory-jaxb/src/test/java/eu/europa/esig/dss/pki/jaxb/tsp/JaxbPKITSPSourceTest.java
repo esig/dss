@@ -18,6 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package eu.europa.esig.dss.pki.jaxb.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
@@ -41,9 +42,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * How to initialize online TSP source.
  */
 
-public class PKITSPSourceTest {
+public class JaxbPKITSPSourceTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PKITSPSourceTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JaxbPKITSPSourceTest.class);
     CertEntityRepository certEntityRepository = new JaxbCertEntityRepository();
 
 

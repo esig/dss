@@ -1,3 +1,5 @@
+package eu.europa.esig.dss.pki.jaxb.revocation.crl;
+
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
@@ -19,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PKICRLSourceTest {
+public class JaxbPKICRLSourceTest {
 
 
     private static CertEntityRepository certEntityRepository = new JaxbCertEntityRepository();

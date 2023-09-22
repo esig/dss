@@ -121,6 +121,8 @@
 		<module>dss-test</module>
 		<module>dss-token</module>
 		<module>validation-policy</module>
+		<module>dss-pki-factory-jaxb</module>
+		<module>dss-pki-factory</module>
 		<module>dss-xades</module>
 		<module>dss-cades</module>
 		<module>dss-jades</module>
@@ -168,8 +170,6 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
-        <module>dss-pki-factory</module>
-        <module>dss-pki-factory-jaxb</module>
     </modules>
 
 	<build>

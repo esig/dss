@@ -18,6 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package eu.europa.esig.dss.pki.jaxb.revocation.ocsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
@@ -39,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PKIOCSPSourceTest {
+public class JaxbPKIOCSPSourceTest {
 
     private static CertificateToken certificateToken;
     private static CertificateToken rootToken;

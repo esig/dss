@@ -18,6 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+package eu.europa.esig.dss.pki.jaxb.aia;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.jaxb.db.JaxbCertEntityRepository;
@@ -39,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class PKIAIASourceTest {
+public class JaxbPKIAIASourceTest {
 
     private static CertificateToken certificateWithAIA;
     private static CertificateToken goodCaTrusted;

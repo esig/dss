@@ -10,9 +10,8 @@ import eu.europa.esig.dss.pki.jaxb.db.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.jaxb.dto.CertSubjectWrapperDTO;
 import eu.europa.esig.dss.pki.jaxb.model.DBCertEntity;
 import eu.europa.esig.dss.pki.jaxb.utils.PKIUtils;
-import eu.europa.esig.dss.pki.jaxb.wrapper.CertificateWrapper;
+import eu.europa.esig.dss.pki.jaxb.wrapper.PKICertificateWrapper;
 import eu.europa.esig.dss.pki.jaxb.wrapper.EntityId;
-import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -84,7 +83,7 @@ public class PKICertificationEntityBuilder {
 
             DBCertEntity issuer = getIssuer(entities, certType.getIssuer());
             String issuerName = issuer != null ? issuer.getSubject() : certType.getSubject();
-            CertificateWrapper wrapper = new CertificateWrapper(certType, issuerName);
+            PKICertificateWrapper wrapper = new PKICertificateWrapper(certType, issuerName);
             try {
                 KeyPair subjectKeyPair = getKeyPair(keyPairs, wrapper.getSubject(), wrapper.getKeyAlgo());
                 KeyPair issuerKeyPair = wrapper.isSelfSigned() ? subjectKeyPair : getKeyPair(keyPairs, getIssuerSubject(entities, wrapper.getIssuer()), wrapper.getKeyAlgo());
@@ -105,7 +104,7 @@ public class PKICertificationEntityBuilder {
     }
 
 
-    private DBCertEntity buildDbCertEntity(CertificateWrapper wrapper, X509CertificateHolder certificateHolder, KeyPair subjectKeyPair, Map<EntityId, DBCertEntity> entities, String pkiName) {
+    private DBCertEntity buildDbCertEntity(PKICertificateWrapper wrapper, X509CertificateHolder certificateHolder, KeyPair subjectKeyPair, Map<EntityId, DBCertEntity> entities, String pkiName) {
 
         boolean selfSign = wrapper.getIssuer().equals(wrapper.getKey());
         DBCertEntity dbCertEntity;
@@ -142,7 +141,7 @@ public class PKICertificationEntityBuilder {
         return dbCertEntity;
     }
 
-    private X509CertBuilder getX509CertBuilder(CertificateWrapper wrapper, KeyPair subjectKeyPair, KeyPair issuerKeyPair, X500Name subjectX500Name, X500Name issuerX500Name) {
+    private X509CertBuilder getX509CertBuilder(PKICertificateWrapper wrapper, KeyPair subjectKeyPair, KeyPair issuerKeyPair, X500Name subjectX500Name, X500Name issuerX500Name) {
         X509CertBuilder certBuilder = new X509CertBuilder();
         certBuilder.subject(subjectX500Name, subjectKeyPair.getPublic());
         certBuilder.issuer(issuerX500Name, issuerKeyPair.getPrivate());
@@ -270,11 +269,11 @@ public class PKICertificationEntityBuilder {
      * Initialize subject based on given subject/organization (optional.)/country (optional.)
      *
      * @param x500Names          a map between {@link EntityId} and {@link X500Name}
-     * @param certificateWrapper {@link CertificateWrapper}
+     * @param certificateWrapper {@link PKICertificateWrapper}
      * @param subjectWrapper     {@link CertSubjectWrapperDTO}
      * @throws IllegalStateException Common name is null
      */
-    private X500Name getX500NameSubject(Map<EntityId, X500Name> x500Names, CertificateWrapper certificateWrapper, CertSubjectWrapperDTO subjectWrapper) {
+    private X500Name getX500NameSubject(Map<EntityId, X500Name> x500Names, PKICertificateWrapper certificateWrapper, CertSubjectWrapperDTO subjectWrapper) {
         EntityId key = certificateWrapper.getKey();
         if (x500Names.containsKey(key)) {
             return x500Names.get(key);

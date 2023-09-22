@@ -26,12 +26,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class CertificateWrapper {
+public class PKICertificateWrapper {
 
     private final XmlCertificateType cert;
     private final EntityId key;
 
-    public CertificateWrapper(XmlCertificateType cert, String issuerName) {
+    public PKICertificateWrapper(XmlCertificateType cert, String issuerName) {
         this.cert = cert;
         this.key = new EntityId(issuerName, cert.getSerialNumber());
     }

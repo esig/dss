@@ -198,7 +198,6 @@ public class KeyEntityTSPSource implements TSPSource {
      * @param keyEntryPassword char array representing a password from the key entry
      */
     public KeyEntityTSPSource(KeyStore keyStore, String alias, char[] keyEntryPassword) {
-        // TODO : add Objects.requireNotNull checks
         Objects.requireNonNull(keyStore,"KeyStore is not defined!");
         Objects.requireNonNull(alias,"Alias is not defined!");
         Objects.requireNonNull(keyStore,"key Entry Password is not defined!");
