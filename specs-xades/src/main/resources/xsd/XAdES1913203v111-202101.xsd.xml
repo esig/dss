@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema elementFormDefault="qualified"
+    targetNamespace="http://uri.etsi.org/19132/v1.1.1#"
+    xmlns="http://uri.etsi.org/19132/v1.1.1#"
+    xmlns:ers="urn:ietf:params:xml:ns:ers" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="urn:ietf:params:xml:ns:ers" schemaLocation="https://www.iana.org/assignments/xml-registry/schema/ers.xsd"/>
+    <xsd:element name="SealingEvidenceRecords" type="EvidenceRecordsType"/>
+    <xsd:complexType name="EvidenceRecordsType">
+        <xsd:choice>
+            <xsd:sequence maxOccurs="unbounded" minOccurs="1">
+                <xsd:element ref="ers:EvidenceRecord"/>
+            </xsd:sequence>
+            <xsd:sequence maxOccurs="unbounded" minOccurs="1">
+                <xsd:element name="ASN1EvidenceRecord" type="xsd:base64Binary"/>
+            </xsd:sequence>
+        </xsd:choice>
+    </xsd:complexType>
+</xsd:schema>
