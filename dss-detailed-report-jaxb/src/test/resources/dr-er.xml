@@ -34,6 +34,13 @@
                 <Time>2023-07-03T13:18:43Z</Time>
                 <TimestampId>TIMESTAMP_good-tsa_20230703-1318</TimestampId>
             </ProofOfExistence>
+            <CryptographicValidation secure="true">
+                <Algorithm>
+                    <Name>SHA256</Name>
+                    <Uri>http://www.w3.org/2001/04/xmlenc#sha256</Uri>
+                </Algorithm>
+                <ConcernedMaterial>EVIDENCE-RECORD_er-tst-renewal.xml</ConcernedMaterial>
+            </CryptographicValidation>
         </ValidationProcessEvidenceRecord>
         <Timestamp Id="TIMESTAMP_good-tsa_20230703-1320">
             <ValidationProcessBasicTimestamp Type="EVIDENCE_RECORD_TIMESTAMP" ProductionTime="2023-07-03T13:20:00Z" Title="Validation Process for Basic Time-stamps">

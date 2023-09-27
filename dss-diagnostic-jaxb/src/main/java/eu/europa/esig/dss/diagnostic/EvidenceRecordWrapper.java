@@ -1,12 +1,22 @@
 package eu.europa.esig.dss.diagnostic;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -161,12 +171,213 @@ public class EvidenceRecordWrapper {
     }
 
     /**
+     * Returns a list of {@link SignatureWrapper}s covered be the current evidence record
+     *
+     * @return list of {@link SignatureWrapper}s
+     */
+    public List<SignatureWrapper> getCoveredSignatures() {
+        List<SignatureWrapper> signatures = new ArrayList<>();
+
+        List<XmlAbstractToken> coveredObjectsByCategory = getCoveredObjectsByCategory(TimestampedObjectType.SIGNATURE);
+        for (XmlAbstractToken token : coveredObjectsByCategory) {
+            if (token instanceof XmlSignature) {
+                signatures.add(new SignatureWrapper((XmlSignature) token));
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.SIGNATURE));
+            }
+        }
+        return signatures;
+    }
+
+    /**
+     * Returns a list of certificates covered be the current evidence record
+     *
+     * @return list of {@link CertificateWrapper}s
+     */
+    public List<CertificateWrapper> getCoveredCertificates() {
+        List<CertificateWrapper> certificates = new ArrayList<>();
+
+        List<XmlAbstractToken> coveredObjectsByCategory = getCoveredObjectsByCategory(TimestampedObjectType.CERTIFICATE);
+        for (XmlAbstractToken token : coveredObjectsByCategory) {
+            if (token instanceof XmlCertificate) {
+                certificates.add(new CertificateWrapper((XmlCertificate) token));
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.CERTIFICATE));
+            }
+        }
+        return certificates;
+    }
+
+    /**
+     * Returns a list of revocation data covered be the current evidence record
+     *
+     * @return list of {@link RevocationWrapper}s
+     */
+    public List<RevocationWrapper> getCoveredRevocations() {
+        List<RevocationWrapper> revocations = new ArrayList<>();
+
+        List<XmlAbstractToken> coveredObjectsByCategory = getCoveredObjectsByCategory(TimestampedObjectType.REVOCATION);
+        for (XmlAbstractToken token : coveredObjectsByCategory) {
+            if (token instanceof XmlRevocation) {
+                revocations.add(new RevocationWrapper((XmlRevocation) token));
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.REVOCATION));
+            }
+        }
+        return revocations;
+    }
+
+    /**
+     * Returns a list of timestamps covered be the current evidence record
+     *
+     * @return list of {@link TimestampWrapper}s
+     */
+    public List<TimestampWrapper> getCoveredTimestamps() {
+        List<TimestampWrapper> timestamps = new ArrayList<>();
+
+        List<XmlAbstractToken> coveredObjectsByCategory = getCoveredObjectsByCategory(TimestampedObjectType.TIMESTAMP);
+        for (XmlAbstractToken token : coveredObjectsByCategory) {
+            if (token instanceof XmlTimestamp) {
+                timestamps.add(new TimestampWrapper((XmlTimestamp) token));
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.TIMESTAMP));
+            }
+        }
+        return timestamps;
+    }
+
+    /**
+     * Returns a list of evidence records covered be the current evidence record
+     *
+     * @return list of {@link EvidenceRecordWrapper}s
+     */
+    public List<EvidenceRecordWrapper> getCoveredEvidenceRecords() {
+        List<EvidenceRecordWrapper> evidenceRecords = new ArrayList<>();
+
+        List<XmlAbstractToken> coveredObjectsByCategory = getCoveredObjectsByCategory(TimestampedObjectType.EVIDENCE_RECORD);
+        for (XmlAbstractToken token : coveredObjectsByCategory) {
+            if (token instanceof XmlEvidenceRecord) {
+                evidenceRecords.add(new EvidenceRecordWrapper((XmlEvidenceRecord) token));
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.EVIDENCE_RECORD));
+            }
+        }
+        return evidenceRecords;
+    }
+
+    /**
+     * Returns a list of Signed data covered be the current evidence record
+     *
+     * @return list of {@link SignerDataWrapper}s
+     */
+    public List<SignerDataWrapper> getCoveredSignedData() {
+        List<SignerDataWrapper> timestamps = new ArrayList<>();
+
+        List<XmlAbstractToken> coveredObjectsByCategory = getCoveredObjectsByCategory(TimestampedObjectType.SIGNED_DATA);
+        for (XmlAbstractToken token : coveredObjectsByCategory) {
+            if (token instanceof XmlSignerData) {
+                timestamps.add(new SignerDataWrapper((XmlSignerData) token));
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.SIGNED_DATA));
+            }
+        }
+        return timestamps;
+    }
+
+    /**
+     * Returns a list of all OrphanTokens covered by the evidence record
+     *
+     * @return list of {@link OrphanTokenWrapper}s
+     */
+    @SuppressWarnings("rawtypes")
+    public List<OrphanTokenWrapper> getAllCoveredOrphanTokens() {
+        List<OrphanTokenWrapper> timestampedObjectIds = new ArrayList<>();
+        timestampedObjectIds.addAll(getCoveredOrphanCertificates());
+        timestampedObjectIds.addAll(getCoveredOrphanRevocations());
+        return timestampedObjectIds;
+    }
+
+    /**
+     * Returns a list of OrphanCertificateTokens covered by the evidence record
+     *
+     * @return list of orphan certificates
+     */
+    public List<OrphanCertificateTokenWrapper> getCoveredOrphanCertificates() {
+        List<OrphanCertificateTokenWrapper> orphanCertificates = new ArrayList<>();
+
+        List<XmlAbstractToken> coveredObjectsByCategory = getCoveredObjectsByCategory(TimestampedObjectType.ORPHAN_CERTIFICATE);
+        for (XmlAbstractToken token : coveredObjectsByCategory) {
+            if (token instanceof XmlOrphanCertificateToken) {
+                orphanCertificates.add(new OrphanCertificateTokenWrapper((XmlOrphanCertificateToken) token));
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.ORPHAN_CERTIFICATE));
+            }
+        }
+        return orphanCertificates;
+    }
+
+    /**
+     * Returns a list of OrphanRevocationTokens covered by the evidence record
+     *
+     * @return list of orphan revocations
+     */
+    public List<OrphanRevocationTokenWrapper> getCoveredOrphanRevocations() {
+        List<OrphanRevocationTokenWrapper> orphanRevocations = new ArrayList<>();
+
+        List<XmlAbstractToken> coveredObjectsByCategory = getCoveredObjectsByCategory(TimestampedObjectType.ORPHAN_REVOCATION);
+        for (XmlAbstractToken token : coveredObjectsByCategory) {
+            if (token instanceof XmlOrphanRevocationToken) {
+                orphanRevocations.add(new OrphanRevocationTokenWrapper((XmlOrphanRevocationToken) token));
+            } else {
+                throw new IllegalArgumentException(
+                        String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.ORPHAN_REVOCATION));
+            }
+        }
+        return orphanRevocations;
+    }
+
+    private List<XmlAbstractToken> getCoveredObjectsByCategory(TimestampedObjectType category) {
+        List<XmlAbstractToken> coveredObjectIds = new ArrayList<>();
+        for (XmlTimestampedObject coveredObject : getCoveredObjects()) {
+            if (category == coveredObject.getCategory()) {
+                coveredObjectIds.add(coveredObject.getToken());
+            }
+        }
+        return coveredObjectIds;
+    }
+
+    /**
      * Returns Evidence record's Signature Scopes
      *
      * @return a list of {@link XmlSignatureScope}s
      */
     public List<XmlSignatureScope> getEvidenceRecordScopes() {
         return evidenceRecord.getEvidenceRecordScopes();
+    }
+
+    /**
+     * Returns binaries of the evidence record
+     *
+     * @return byet array
+     */
+    public byte[] getBinaries() {
+        return evidenceRecord.getBase64Encoded();
+    }
+
+    /**
+     * Returns digest algorithm and value of the timestamp token binaries, when defined
+     *
+     * @return {@link XmlDigestAlgoAndValue}
+     */
+    public XmlDigestAlgoAndValue getDigestAlgoAndValue() {
+        return evidenceRecord.getDigestAlgoAndValue();
     }
 
 }

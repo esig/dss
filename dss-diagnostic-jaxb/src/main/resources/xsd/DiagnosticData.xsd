@@ -1474,6 +1474,11 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
+
+					<xs:choice>
+						<xs:element name="Base64Encoded" type="xs:base64Binary" />
+						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+					</xs:choice>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

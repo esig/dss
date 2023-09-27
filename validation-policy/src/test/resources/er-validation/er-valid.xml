@@ -56,6 +56,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </EvidenceRecordScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Gqs2KxuQS6sNQgmpUr4DAOUJBsJTyUeEd7BCEF3FGUc=</DigestValue>
+            </DigestAlgoAndValue>
         </EvidenceRecord>
     </EvidenceRecords>
     <UsedCertificates>

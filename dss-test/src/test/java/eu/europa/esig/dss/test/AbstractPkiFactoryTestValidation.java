@@ -24,6 +24,7 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -1144,6 +1145,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkEvidenceRecordStructuralValidation(diagnosticData);
 		checkEvidenceRecordScopes(diagnosticData);
 		checkEvidenceRecordTimestampedReferences(diagnosticData);
+		checkEvidenceRecordRepresentation(diagnosticData);
 	}
 
 	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
@@ -1232,6 +1234,29 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					.filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
 			assertTrue(Utils.isCollectionNotEmpty(coveredObjects.stream()
 					.filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).collect(Collectors.toList())));
+
+			assertEquals(Utils.collectionSize(signatures), Utils.collectionSize(evidenceRecord.getCoveredSignatures()));
+			if (Utils.isCollectionNotEmpty(signatures)) {
+				assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredCertificates()));
+				assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredRevocations()));
+				assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredTimestamps()));
+			}
+			assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignedData()));
+		}
+	}
+
+	protected void checkEvidenceRecordRepresentation(DiagnosticData diagnosticData) {
+		for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
+			TokenExtractionStrategy tokenExtractionStrategy = getTokenExtractionStrategy();
+			if (tokenExtractionStrategy.isEvidenceRecord()) {
+				assertNotNull(evidenceRecord.getBinaries());
+				assertNull(evidenceRecord.getDigestAlgoAndValue());
+			} else {
+				assertNull(evidenceRecord.getBinaries());
+				assertNotNull(evidenceRecord.getDigestAlgoAndValue());
+				assertNotNull(evidenceRecord.getDigestAlgoAndValue().getDigestMethod());
+				assertNotNull(evidenceRecord.getDigestAlgoAndValue().getDigestValue());
+			}
 		}
 	}
 	
@@ -1987,6 +2012,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void verifyReportsData(Reports reports) {
 		checkSignatureReports(reports);
 		checkTimestampReports(reports);
+		checkEvidenceRecordReports(reports);
 		checkReportsTokens(reports);
 		checkReportsSignatureIdentifier(reports);
 		checkReportsSignaturePolicyIdentifier(reports);
@@ -2137,6 +2163,46 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			}
 		}
 	}
+
+	protected void checkEvidenceRecordReports(Reports reports) {
+		DiagnosticData diagnosticData = reports.getDiagnosticData();
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		if (Utils.isCollectionNotEmpty(evidenceRecords)) {
+			ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
+			assertNotNull(signatureValidationObjects);
+			assertTrue(Utils.isCollectionNotEmpty(signatureValidationObjects.getValidationObject()));
+			for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
+				assertNotNull(validationObject.getId());
+				assertNotNull(validationObject.getObjectType());
+				if (ObjectType.EVIDENCE_RECORD.equals(validationObject.getObjectType())) {
+					XmlEvidenceRecord xmlEvidenceRecordById = detailedReport.getXmlEvidenceRecordById(validationObject.getId());
+					assertNotNull(xmlEvidenceRecordById);
+
+					SignatureValidationReportType validationReport = validationObject.getValidationReport();
+					assertNotNull(validationReport);
+
+					XmlConclusion conclusion = xmlEvidenceRecordById.getConclusion();
+
+					ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
+					assertNotNull(signatureValidationStatus);
+					assertNotNull(signatureValidationStatus.getMainIndication());
+					assertEquals(conclusion.getIndication(), signatureValidationStatus.getMainIndication());
+					if (Indication.PASSED != signatureValidationStatus.getMainIndication()) {
+						assertTrue(Utils.isCollectionNotEmpty(signatureValidationStatus.getSubIndication()));
+						assertEquals(conclusion.getSubIndication(), signatureValidationStatus.getSubIndication().get(0));
+					}
+
+					List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+					assertEquals(1, associatedValidationReportData.size());
+				}
+			}
+		}
+	}
+
 
 	private void checkBBBs(XmlBasicBuildingBlocks bbb, SignatureValidationReportType validationReport) {
 		ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport = validationReport.getValidationConstraintsEvaluationReport();
@@ -2291,6 +2357,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			int crlCounter = 0;
 			int ocspCounter = 0;
 			int timestampCounter = 0;
+			int evidenceRecordCounter = 0;
 			int signedDataCounter = 0;
 			int otherCounter = 0;
 			for (ValidationObjectType validationObject : validationObjects) {
@@ -2306,6 +2373,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 						break;
 					case TIMESTAMP:
 						++timestampCounter;
+						break;
+					case EVIDENCE_RECORD:
+						++evidenceRecordCounter;
 						break;
 					case SIGNED_DATA:
 						++signedDataCounter;
@@ -2386,6 +2456,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					.filter(r -> RevocationType.OCSP.equals(r.getRevocationType())).count();
 			assertEquals(ddOcsps, ocspCounter);
 			assertEquals(diagnosticData.getTimestampList().size(), timestampCounter);
+			assertEquals(diagnosticData.getEvidenceRecords().size(), evidenceRecordCounter);
 			assertEquals(diagnosticData.getAllSignerDocuments().size(), signedDataCounter);
 			assertEquals(0, otherCounter);
 			
@@ -2393,6 +2464,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			assertEquals(0, diagnosticData.getUsedCertificates().size());
 			assertEquals(0, diagnosticData.getAllRevocationData().size());
 			assertEquals(0, diagnosticData.getTimestampList().size());
+			assertEquals(0, diagnosticData.getEvidenceRecords().size());
 			assertEquals(0, diagnosticData.getAllSignerDocuments().size());
 			checkOrphanTokens(diagnosticData);
 		}

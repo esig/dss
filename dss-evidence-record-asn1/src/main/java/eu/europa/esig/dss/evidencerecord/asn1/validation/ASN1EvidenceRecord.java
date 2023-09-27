@@ -6,6 +6,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.tsp.EvidenceRecord;
 
 /**
@@ -44,6 +45,11 @@ public class ASN1EvidenceRecord extends DefaultEvidenceRecord {
     @Override
     protected EvidenceRecordTimestampSource<?> buildTimestampSource() {
         return new ASN1EvidenceRecordTimestampSource(this);
+    }
+
+    @Override
+    public byte[] getEncoded() {
+        return DSSASN1Utils.getDEREncoded(evidenceRecord);
     }
 
 }

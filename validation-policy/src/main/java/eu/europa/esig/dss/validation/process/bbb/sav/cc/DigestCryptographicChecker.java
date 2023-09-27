@@ -59,4 +59,19 @@ public class DigestCryptographicChecker extends AbstractCryptographicChecker {
 		
 	}
 
+	@Override
+	protected Date getNotAfter() {
+		if (constraintWrapper.isDigestAlgorithmReliable(digestAlgorithm) &&
+				(encryptionAlgorithm == null || (constraintWrapper.isEncryptionAlgorithmReliable(encryptionAlgorithm) &&
+						constraintWrapper.isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, keyLengthUsedToSignThisToken)))) {
+			Date notAfter = constraintWrapper.getExpirationDate(digestAlgorithm);
+			Date expirationEncryption = constraintWrapper.getExpirationDate(encryptionAlgorithm, keyLengthUsedToSignThisToken);
+			if (notAfter == null || (expirationEncryption != null && expirationEncryption.before(notAfter))) {
+				notAfter = expirationEncryption;
+			}
+			return notAfter;
+		}
+		return null;
+	}
+
 }

@@ -5,6 +5,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -27,6 +29,19 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.enums.ObjectType;
+import eu.europa.esig.validationreport.enums.TypeOfProof;
+import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
+import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
+import eu.europa.esig.validationreport.jaxb.POEType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectRepresentationType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
+import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
+import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -672,6 +687,8 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
+        eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         CryptographicConstraint cryptographicConstraint = validationPolicy.getEvidenceRecordCryptographicConstraint();
         AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
@@ -717,6 +734,19 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
         assertNotNull(validationProcessEvidenceRecord);
         assertEquals(i18nProvider.getMessage(MessageTag.VPER), validationProcessEvidenceRecord.getTitle());
+
+        XmlCryptographicValidation cryptographicValidation = validationProcessEvidenceRecord.getCryptographicValidation();
+        assertNotNull(cryptographicValidation);
+        assertTrue(cryptographicValidation.isSecure());
+
+        XmlCryptographicAlgorithm algorithm = cryptographicValidation.getAlgorithm();
+        assertNotNull(algorithm);
+        assertEquals(DigestAlgorithm.SHA224.getName(), algorithm.getName());
+        assertEquals(DigestAlgorithm.SHA224.getUri(), algorithm.getUri());
+
+        assertTrue(cryptographicValidation.getValidationTime().before(cryptographicValidation.getNotAfter()));
+
+        assertEquals(xmlEvidenceRecord.getId(), cryptographicValidation.getConcernedMaterial());
 
         conclusion = validationProcessEvidenceRecord.getConclusion();
         assertNotNull(conclusion);
@@ -813,6 +843,91 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         assertTrue(indeterminateBasicTstFound);
         assertTrue(passedBasicTstFound);
 
+        ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+
+        List<SignatureValidationReportType> signatureValidationReports = etsiValidationReportJaxb.getSignatureValidationReport();
+        assertTrue(Utils.isCollectionNotEmpty(signatureValidationReports));
+
+        SignatureValidationReportType signatureValidationReportType = signatureValidationReports.get(0);
+        assertEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationReportType.getSignatureValidationStatus().getMainIndication());
+
+        ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
+        assertNotNull(signatureValidationObjects);
+
+        List<ValidationObjectType> validationObjects = signatureValidationObjects.getValidationObject();
+        assertEquals(11, validationObjects.size());
+
+        int evidenceRecordReportCounter = 0;
+        int timestampReportCounter = 0;
+        int certificateReportCounter = 0;
+        int crlReportCounter = 0;
+        int ocspReportCounter = 0;
+        int signerDataReportCounter = 0;
+        for (ValidationObjectType validationObjectType : validationObjects) {
+            ObjectType objectType = validationObjectType.getObjectType();
+            if (ObjectType.EVIDENCE_RECORD == objectType) {
+                assertEquals(xmlEvidenceRecord.getId(), validationObjectType.getId());
+
+                POEType poeType = validationObjectType.getPOE();
+                assertNotNull(poeType);
+                assertNull(poeType.getPOEObject());
+                assertEquals(TypeOfProof.VALIDATION, poeType.getTypeOfProof());
+                assertEquals(diagnosticData.getValidationDate(), poeType.getPOETime());
+
+                POEProvisioningType poeProvisioning = validationObjectType.getPOEProvisioning();
+                assertNotNull(poeProvisioning);
+                assertEquals(evidenceRecord.getEvidenceRecordTimestamps().get(0).getTimestamp().getProductionTime(), poeProvisioning.getPOETime());
+                assertEquals(3, poeProvisioning.getValidationObject().size()); // 3 signed data
+
+                SignatureValidationReportType validationReport = validationObjectType.getValidationReport();
+                assertNotNull(validationReport);
+
+                ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
+                assertNotNull(signatureValidationStatus);
+                assertEquals(Indication.PASSED, signatureValidationStatus.getMainIndication());
+
+                List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+                assertEquals(1, associatedValidationReportData.size());
+
+                ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);
+                CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
+                assertNotNull(cryptoInformation);
+                assertEquals(1, cryptoInformation.getValidationObjectId().getVOReference().size());
+                assertEquals(DigestAlgorithm.SHA224, DigestAlgorithm.forXML(cryptoInformation.getAlgorithm()));
+                assertTrue(cryptoInformation.isSecureAlgorithm());
+                assertEquals(cryptographicValidation.getNotAfter(), cryptoInformation.getNotAfter());
+
+                ++evidenceRecordReportCounter;
+            } else if (ObjectType.TIMESTAMP == objectType) {
+                ++timestampReportCounter;
+            } else if (ObjectType.CERTIFICATE == objectType) {
+                ++certificateReportCounter;
+            } else if (ObjectType.CRL == objectType) {
+                ++crlReportCounter;
+            } else if (ObjectType.OCSP_RESPONSE == objectType) {
+                ++ocspReportCounter;
+            } else if (ObjectType.SIGNED_DATA == objectType) {
+                ++signerDataReportCounter;
+            }
+
+            ValidationObjectRepresentationType validationObjectRepresentation = validationObjectType.getValidationObjectRepresentation();
+            assertNotNull(validationObjectRepresentation);
+
+            List<Object> directOrBase64OrDigestAlgAndValue = validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue();
+            assertEquals(1, directOrBase64OrDigestAlgAndValue.size());
+
+            assertTrue(directOrBase64OrDigestAlgAndValue.get(0) instanceof DigestAlgAndValueType);
+            DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) directOrBase64OrDigestAlgAndValue.get(0);
+            assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forXML(digestAlgAndValueType.getDigestMethod().getAlgorithm()));
+            assertNotNull(digestAlgAndValueType.getDigestValue());
+        }
+        assertEquals(1, evidenceRecordReportCounter);
+        assertEquals(2, timestampReportCounter);
+        assertEquals(3, certificateReportCounter);
+        assertEquals(2, crlReportCounter);
+        assertEquals(0, ocspReportCounter);
+        assertEquals(3, signerDataReportCounter);
+
         checkReports(reports);
     }
 
@@ -820,6 +935,8 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
     public void invalidERWithExpiredCryptoTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
+
+        eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
 
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         CryptographicConstraint cryptographicConstraint = validationPolicy.getEvidenceRecordCryptographicConstraint();
@@ -871,6 +988,19 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
         assertNotNull(validationProcessEvidenceRecord);
         assertEquals(i18nProvider.getMessage(MessageTag.VPER), validationProcessEvidenceRecord.getTitle());
+
+        XmlCryptographicValidation cryptographicValidation = validationProcessEvidenceRecord.getCryptographicValidation();
+        assertNotNull(cryptographicValidation);
+        assertFalse(cryptographicValidation.isSecure());
+
+        XmlCryptographicAlgorithm algorithm = cryptographicValidation.getAlgorithm();
+        assertNotNull(algorithm);
+        assertEquals(DigestAlgorithm.SHA224.getName(), algorithm.getName());
+        assertEquals(DigestAlgorithm.SHA224.getUri(), algorithm.getUri());
+
+        assertTrue(cryptographicValidation.getValidationTime().after(cryptographicValidation.getNotAfter()));
+
+        assertEquals(xmlEvidenceRecord.getId(), cryptographicValidation.getConcernedMaterial());
 
         conclusion = validationProcessEvidenceRecord.getConclusion();
         assertNotNull(conclusion);
@@ -971,6 +1101,92 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         }
         assertTrue(indeterminateBasicTstFound);
         assertTrue(passedBasicTstFound);
+
+        ValidationReportType etsiValidationReportJaxb = reports.getEtsiValidationReportJaxb();
+
+        List<SignatureValidationReportType> signatureValidationReports = etsiValidationReportJaxb.getSignatureValidationReport();
+        assertTrue(Utils.isCollectionNotEmpty(signatureValidationReports));
+
+        SignatureValidationReportType signatureValidationReportType = signatureValidationReports.get(0);
+        assertEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationReportType.getSignatureValidationStatus().getMainIndication());
+
+        ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
+        assertNotNull(signatureValidationObjects);
+
+        List<ValidationObjectType> validationObjects = signatureValidationObjects.getValidationObject();
+        assertEquals(11, validationObjects.size());
+
+        int evidenceRecordReportCounter = 0;
+        int timestampReportCounter = 0;
+        int certificateReportCounter = 0;
+        int crlReportCounter = 0;
+        int ocspReportCounter = 0;
+        int signerDataReportCounter = 0;
+        for (ValidationObjectType validationObjectType : validationObjects) {
+            ObjectType objectType = validationObjectType.getObjectType();
+            if (ObjectType.EVIDENCE_RECORD == objectType) {
+                assertEquals(xmlEvidenceRecord.getId(), validationObjectType.getId());
+
+                POEType poeType = validationObjectType.getPOE();
+                assertNotNull(poeType);
+                assertNull(poeType.getPOEObject());
+                assertEquals(TypeOfProof.VALIDATION, poeType.getTypeOfProof());
+                assertEquals(diagnosticData.getValidationDate(), poeType.getPOETime());
+
+                POEProvisioningType poeProvisioning = validationObjectType.getPOEProvisioning();
+                assertNotNull(poeProvisioning);
+                assertEquals(evidenceRecord.getEvidenceRecordTimestamps().get(0).getTimestamp().getProductionTime(), poeProvisioning.getPOETime());
+                assertEquals(3, poeProvisioning.getValidationObject().size()); // 3 signed data
+
+                SignatureValidationReportType validationReport = validationObjectType.getValidationReport();
+                assertNotNull(validationReport);
+
+                ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
+                assertNotNull(signatureValidationStatus);
+                assertEquals(Indication.INDETERMINATE, signatureValidationStatus.getMainIndication());
+                assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureValidationStatus.getSubIndication().get(0));
+
+                List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
+                assertEquals(1, associatedValidationReportData.size());
+
+                ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);
+                CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
+                assertNotNull(cryptoInformation);
+                assertEquals(1, cryptoInformation.getValidationObjectId().getVOReference().size());
+                assertEquals(DigestAlgorithm.SHA224, DigestAlgorithm.forXML(cryptoInformation.getAlgorithm()));
+                assertFalse(cryptoInformation.isSecureAlgorithm());
+                assertEquals(cryptographicValidation.getNotAfter(), cryptoInformation.getNotAfter());
+
+                ++evidenceRecordReportCounter;
+            } else if (ObjectType.TIMESTAMP == objectType) {
+                ++timestampReportCounter;
+            } else if (ObjectType.CERTIFICATE == objectType) {
+                ++certificateReportCounter;
+            } else if (ObjectType.CRL == objectType) {
+                ++crlReportCounter;
+            } else if (ObjectType.OCSP_RESPONSE == objectType) {
+                ++ocspReportCounter;
+            } else if (ObjectType.SIGNED_DATA == objectType) {
+                ++signerDataReportCounter;
+            }
+
+            ValidationObjectRepresentationType validationObjectRepresentation = validationObjectType.getValidationObjectRepresentation();
+            assertNotNull(validationObjectRepresentation);
+
+            List<Object> directOrBase64OrDigestAlgAndValue = validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue();
+            assertEquals(1, directOrBase64OrDigestAlgAndValue.size());
+
+            assertTrue(directOrBase64OrDigestAlgAndValue.get(0) instanceof DigestAlgAndValueType);
+            DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) directOrBase64OrDigestAlgAndValue.get(0);
+            assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forXML(digestAlgAndValueType.getDigestMethod().getAlgorithm()));
+            assertNotNull(digestAlgAndValueType.getDigestValue());
+        }
+        assertEquals(1, evidenceRecordReportCounter);
+        assertEquals(2, timestampReportCounter);
+        assertEquals(3, certificateReportCounter);
+        assertEquals(2, crlReportCounter);
+        assertEquals(0, ocspReportCounter);
+        assertEquals(3, signerDataReportCounter);
 
         checkReports(reports);
     }

@@ -975,6 +975,23 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * Returns the EvidenceRecordWrapper corresponding to the given id.
+	 *
+	 * @param id
+	 *            evidence record id
+	 * @return evidence record wrapper or null
+	 */
+	public EvidenceRecordWrapper getEvidenceRecordById(String id) {
+		List<EvidenceRecordWrapper> evidenceRecords = getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			if (id.equals(evidenceRecord.getId())) {
+				return evidenceRecord;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * This method retrieves a list of certificate wrappers
 	 * 
 	 * @return a list of {@link CertificateWrapper}s.

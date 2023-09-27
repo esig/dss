@@ -28,52 +28,88 @@ public enum TokenExtractionStrategy {
     /**
      * Extract certificates, timestamps and revocation data
      */
-    EXTRACT_ALL(true, true, true),
+    EXTRACT_ALL(true, true, true, true),
 
     /**
      * Extract certificates
      */
-    EXTRACT_CERTIFICATES_ONLY(true, false, false),
+    EXTRACT_CERTIFICATES_ONLY(true, false, false, false),
 
     /**
      * Extract timestamps
      */
-    EXTRACT_TIMESTAMPS_ONLY(false, true, false),
+    EXTRACT_TIMESTAMPS_ONLY(false, true, false, false),
 
     /**
      * Extract revocation data
      */
-    EXTRACT_REVOCATION_DATA_ONLY(false, false, true),
+    EXTRACT_REVOCATION_DATA_ONLY(false, false, true, false),
+
+    /**
+     * Extract revocation data
+     */
+    EXTRACT_EVIDENCE_RECORDS_ONLY(false, false, false, true),
 
     /**
      * Extract certificates and timestamps
      */
-    EXTRACT_CERTIFICATES_AND_TIMESTAMPS(true, true, false),
+    EXTRACT_CERTIFICATES_AND_TIMESTAMPS(true, true, false, false),
+
+    /**
+     * Extract certificates and timestamps
+     */
+    EXTRACT_CERTIFICATES_AND_EVIDENCE_RECORDS(true, false, false, true),
+
+    /**
+     * Extract certificates, timestamps and evidence records
+     */
+    EXTRACT_CERTIFICATES_AND_TIMESTAMPS_AND_EVIDENCE_RECORDS(true, true, false, true),
 
     /**
      * Extract certificates and revocation data
      */
-    EXTRACT_CERTIFICATES_AND_REVOCATION_DATA(true, false, true),
+    EXTRACT_CERTIFICATES_AND_REVOCATION_DATA(true, false, true, false),
+
+    /**
+     * Extract certificates, revocation data and evidence records
+     */
+    EXTRACT_CERTIFICATES_AND_REVOCATION_DATA_AND_EVIDENCE_RECORDS(true, false, true, true),
 
     /**
      * Extract timestamps and revocation data
      */
-    EXTRACT_TIMESTAMPS_AND_REVOCATION_DATA(false, true,
-            true),
+    EXTRACT_TIMESTAMPS_AND_REVOCATION_DATA(false, true, true, false),
+
+    /**
+     * Extract timestamps and evidence records
+     */
+    EXTRACT_TIMESTAMPS_AND_EVIDENCE_RECORDS(false, true, false, true),
+
+    /**
+     * Extract revocation data and evidence records
+     */
+    EXTRACT_REVOCATION_DATA_AND_EVIDENCE_RECORDS(false, false, true, true),
+
+    /**
+     * Extract timestamps, revocation data and evidence records
+     */
+    EXTRACT_TIMESTAMPS_AND_REVOCATION_DATA_AND_EVIDENCE_RECORDS(false, true, true, true),
 
     /**
      * Extract nothing
      */
-    NONE(false, false, false);
+    NONE(false, false, false, false);
 
     private final boolean certificate;
     private final boolean timestamp;
     private final boolean revocationData;
+    private final boolean evidenceRecord;
 
-    TokenExtractionStrategy(boolean certificate, boolean timestamp, boolean revocationData) {
+    TokenExtractionStrategy(boolean certificate, boolean timestamp, boolean revocationData, boolean evidenceRecord) {
         this.certificate = certificate;
         this.timestamp = timestamp;
         this.revocationData = revocationData;
+        this.evidenceRecord = evidenceRecord;
     }
 
     /**
@@ -104,16 +140,40 @@ public enum TokenExtractionStrategy {
     }
 
     /**
+     * This method returns true if the evidence record extraction is enabled
+     *
+     * @return true if evidence records need to be extracted
+     */
+    public boolean isEvidenceRecord() {
+        return evidenceRecord;
+    }
+
+    /**
      * Returns the enumeration value depending on parameters
      *
      * @param certificate    true if certificates need to be extracted
      * @param timestamp      true if timestamps need to be extracted
      * @param revocationData true if revocation data need to be extracted
      * @return {@link TokenExtractionStrategy}
+     * @deprecated since DSS 5.13. Please use {@code #fromParameters(certificate, timestamp, revocationData, evidenceRecord)}.
      */
+    @Deprecated
     public static TokenExtractionStrategy fromParameters(boolean certificate, boolean timestamp, boolean revocationData) {
+        return fromParameters(certificate, timestamp, revocationData, false);
+    }
+
+    /**
+     * Returns the enumeration value depending on parameters
+     *
+     * @param certificate    true if certificates need to be extracted
+     * @param timestamp      true if timestamps need to be extracted
+     * @param revocationData true if revocation data need to be extracted
+     * @param evidenceRecord true if evidence records need to be extracted
+     * @return {@link TokenExtractionStrategy}
+     */
+    public static TokenExtractionStrategy fromParameters(boolean certificate, boolean timestamp, boolean revocationData, boolean evidenceRecord) {
         for (TokenExtractionStrategy value : TokenExtractionStrategy.values()) {
-            if ((certificate == value.certificate) && (timestamp == value.timestamp) && (revocationData == value.revocationData)) {
+            if ((certificate == value.certificate) && (timestamp == value.timestamp) && (revocationData == value.revocationData) && (evidenceRecord == value.evidenceRecord)) {
                 return value;
             }
         }
