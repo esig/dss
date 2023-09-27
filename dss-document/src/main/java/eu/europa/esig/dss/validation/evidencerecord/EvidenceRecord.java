@@ -142,4 +142,11 @@ public interface EvidenceRecord extends IdentifierBasedObject {
      */
     String getId();
 
+    /**
+     * Returns binaries of the evidence record document
+     *
+     * @return byte array
+     */
+    byte[] getEncoded();
+
 }

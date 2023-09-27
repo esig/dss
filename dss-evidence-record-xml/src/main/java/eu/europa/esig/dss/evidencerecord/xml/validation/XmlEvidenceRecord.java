@@ -6,6 +6,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.evidencerecord.xml.validation.timestamp.XMLEvidenceRecordTimestampSource;
+import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.xmlers.XMLEvidenceRecordUtils;
 import org.w3c.dom.Element;
 
@@ -62,6 +63,11 @@ public class XmlEvidenceRecord extends DefaultEvidenceRecord {
     @Override
     public EvidenceRecordTypeEnum getReferenceRecordType() {
         return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
+    }
+
+    @Override
+    public byte[] getEncoded() {
+        return DomUtils.serializeNode(evidenceRecordElement);
     }
 
 }

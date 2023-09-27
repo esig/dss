@@ -261,6 +261,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </EvidenceRecordScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PPlSNKAZDNM6tAjH/CQ8oxw9+3ci0VCwkgfcSn6/M6A=</DigestValue>
+            </DigestAlgoAndValue>
         </EvidenceRecord>
         <EvidenceRecord Id="EVIDENCE-RECORD_UNKNOWN-SIGNER_20230905-0858">
             <DocumentName>evidence-record-5b5edd31-344d-4d66-8e95-79f9acaab566-broken.xml</DocumentName>
@@ -308,6 +312,10 @@
                     <Description>Full document</Description>
                 </SignatureScope>
             </EvidenceRecordScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>xyd4ToQuUViiqEn+vUmI64NhIicuecWf6jnv5jZpDW8=</DigestValue>
+            </DigestAlgoAndValue>
         </EvidenceRecord>
     </EvidenceRecords>
     <UsedCertificates>

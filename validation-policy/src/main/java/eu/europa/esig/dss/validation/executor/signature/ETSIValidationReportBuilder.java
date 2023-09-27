@@ -29,16 +29,19 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
@@ -76,8 +79,10 @@ import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.vpfswatsp.EvidenceRecordPOE;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POE;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
+import eu.europa.esig.dss.validation.process.vpfswatsp.TimestampPOE;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.enums.SignatureValidationProcessID;
@@ -415,11 +420,27 @@ public class ETSIValidationReportBuilder {
 		POEExtraction poeExtraction = new POEExtraction();
 		poeExtraction.init(diagnosticData, currentTime);
 
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		// 1. Extract POEs
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			if (Indication.PASSED == detailedReport.getEvidenceRecordValidationIndication(evidenceRecord.getId())) {
+				poeExtraction.extractPOE(evidenceRecord);
+			}
+		}
+
+		List<TimestampWrapper> timestampList = diagnosticData.getNonEvidenceRecordTimestamps();
 		poeExtraction.collectAllPOE(timestampList);
 
-		for (TimestampWrapper timestamp : timestampList) {
+		// 2. Add validation object types
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			ValidationObjectType evidenceRecordValidationObject = getEvidenceRecordValidationObject(evidenceRecord);
+			evidenceRecordValidationObject.setPOE(getPOE(evidenceRecord.getId(), poeExtraction));
+			validationObjectListType.getValidationObject().add(evidenceRecordValidationObject);
+		}
+
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 			ValidationObjectType timestampValidationObject = getTimestampValidationObject(timestamp);
+			timestampValidationObject.setPOE(getPOE(timestamp.getId(), poeExtraction));
 			validationObjectListType.getValidationObject().add(timestampValidationObject);
 		}
 
@@ -498,15 +519,138 @@ public class ETSIValidationReportBuilder {
 		POEType poeType = objectFactory.createPOEType();
 		POE lowestPOE = poeExtraction.getLowestPOE(tokenId);
 		poeType.setPOETime(lowestPOE.getTime());
-		if (lowestPOE.isTimestampPoe()) {
-			String timestampId = lowestPOE.getTimestampId();
+		if (lowestPOE instanceof TimestampPOE) {
+			String timestampId = lowestPOE.getPOEProviderId();
 			if (Utils.isStringNotEmpty(timestampId)) {
 				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampId);
 				poeType.setPOEObject(getVOReference(getTimestampValidationObject(timestampWrapper)));
 			}
+		} else if (lowestPOE instanceof EvidenceRecordPOE) {
+			String evidenceRecordId = lowestPOE.getPOEProviderId();
+			if (Utils.isStringNotEmpty(evidenceRecordId)) {
+				EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecordById(evidenceRecordId);
+				poeType.setPOEObject(getVOReference(getEvidenceRecordValidationObject(evidenceRecord)));
+			}
 		}
 		poeType.setTypeOfProof(TypeOfProof.VALIDATION);
 		return poeType;
+	}
+
+	private ValidationObjectType getEvidenceRecordValidationObject(EvidenceRecordWrapper evidenceRecord) {
+		ValidationObjectType validationObject = validationObjectMap.get(evidenceRecord.getId());
+		if (validationObject == null) {
+			validationObject = objectFactory.createValidationObjectType();
+			validationObjectMap.put(evidenceRecord.getId(), validationObject);
+
+			validationObject.setId(evidenceRecord.getId());
+			validationObject.setObjectType(ObjectType.EVIDENCE_RECORD);
+			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
+			if (Utils.isArrayNotEmpty(evidenceRecord.getBinaries())) {
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(evidenceRecord.getBinaries());
+			} else {
+				representation.getDirectOrBase64OrDigestAlgAndValue().add(getDigestAlgAndValueType(evidenceRecord.getDigestAlgoAndValue()));
+			}
+			validationObject.setValidationObjectRepresentation(representation);
+			validationObject.setPOEProvisioning(getPOEProvisioningType(evidenceRecord));
+			validationObject.setValidationReport(getValidationReport(evidenceRecord));
+		}
+		return validationObject;
+	}
+
+	private POEProvisioningType getPOEProvisioningType(EvidenceRecordWrapper evidenceRecord) {
+		POEProvisioningType poeProvisioning = objectFactory.createPOEProvisioningType();
+		poeProvisioning.setPOETime(evidenceRecord.getFirstTimestamp().getProductionTime());
+
+		for (CertificateWrapper cert : evidenceRecord.getCoveredCertificates()) {
+			poeProvisioning.getValidationObject().add(getVOReference(getCertificateValidationObject(cert)));
+		}
+
+		// only created validation objects must be added (not references)
+		List<OrphanCertificateTokenWrapper> allOrphanObjectCertificates = diagnosticData.getAllOrphanCertificateObjects();
+		for (OrphanCertificateTokenWrapper orphanCert : evidenceRecord.getCoveredOrphanCertificates()) {
+			if (allOrphanObjectCertificates.contains(orphanCert)) {
+				poeProvisioning.getValidationObject().add(getVOReference(getOrphanCertificateValidationObject(orphanCert)));
+			}
+		}
+
+		for (RevocationWrapper revocation : evidenceRecord.getCoveredRevocations()) {
+			poeProvisioning.getValidationObject().add(getVOReference(getRevocationValidationObject(revocation)));
+		}
+		// only created validation objects must be added (not references)
+		List<OrphanRevocationTokenWrapper> allOrphanObjectRevocations = diagnosticData.getAllOrphanRevocationObjects();
+		for (OrphanRevocationTokenWrapper orphanRevocation : evidenceRecord.getCoveredOrphanRevocations()) {
+			if (allOrphanObjectRevocations.contains(orphanRevocation)) {
+				poeProvisioning.getValidationObject().add(getVOReference(getOrphanRevocationValidationObject(orphanRevocation)));
+			}
+		}
+
+		for (EvidenceRecordWrapper er : evidenceRecord.getCoveredEvidenceRecords()) {
+			poeProvisioning.getValidationObject().add(getVOReference(getEvidenceRecordValidationObject(er)));
+		}
+
+		for (TimestampWrapper tst : evidenceRecord.getCoveredTimestamps()) {
+			poeProvisioning.getValidationObject().add(getVOReference(getTimestampValidationObject(tst)));
+		}
+
+		for (SignerDataWrapper signerData : evidenceRecord.getCoveredSignedData()) {
+			poeProvisioning.getValidationObject().add(getVOReference(getSignerDataValidationObject(signerData)));
+		}
+
+		List<SignatureWrapper> timestampedSignatures = evidenceRecord.getCoveredSignatures();
+		for (SignatureWrapper timestampedSignature : timestampedSignatures) {
+			poeProvisioning.getSignatureReference().add(getSignatureReference(timestampedSignature));
+		}
+
+		return poeProvisioning;
+	}
+
+	private SignatureValidationReportType getValidationReport(EvidenceRecordWrapper evidenceRecord) {
+		XmlEvidenceRecord xmlEvidenceRecord = detailedReport.getXmlEvidenceRecordById(evidenceRecord.getId());
+		// return null if validation was not performed
+		if (xmlEvidenceRecord == null) {
+			return null;
+		}
+		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
+		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(evidenceRecord));
+		return signatureValidationReport;
+	}
+
+	private ValidationStatusType getValidationStatus(EvidenceRecordWrapper evidenceRecord) {
+		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
+		fillIndicationSubIndication(validationStatus, evidenceRecord.getId());
+		fillMessages(validationStatus, evidenceRecord.getId());
+		addValidationReportData(validationStatus, evidenceRecord);
+		return validationStatus;
+	}
+
+	private void addValidationReportData(ValidationStatusType validationStatus, EvidenceRecordWrapper evidenceRecord) {
+		ValidationReportDataType validationReportData = getAssociatedValidationReportData(validationStatus);
+		if (Indication.PASSED != detailedReport.getEvidenceRecordValidationIndication(evidenceRecord.getId())) {
+			for (TimestampWrapper timestampWrapper : evidenceRecord.getTimestampList()) {
+				if (Indication.PASSED != detailedReport.getFinalIndication(timestampWrapper.getId())) {
+					ValidationObjectType timestampValidationObject = getTimestampValidationObject(timestampWrapper);
+					validationReportData.getRelatedValidationObject().add(getVOReference(timestampValidationObject));
+				}
+			}
+		}
+		XmlEvidenceRecord xmlEvidenceRecord = detailedReport.getXmlEvidenceRecordById(evidenceRecord.getId());
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+		XmlCryptographicValidation cryptographicValidation = validationProcessEvidenceRecord.getCryptographicValidation();
+		if (cryptographicValidation != null) {
+			fillCryptographicInfo(validationReportData, evidenceRecord, cryptographicValidation);
+		}
+	}
+	private void fillCryptographicInfo(ValidationReportDataType validationReportData, EvidenceRecordWrapper evidenceRecord,
+									   XmlCryptographicValidation cryptographicValidation) {
+		CryptoInformationType cryptoInformationType = objectFactory.createCryptoInformationType();
+		cryptoInformationType.setValidationObjectId(getVOReference(getEvidenceRecordValidationObject(evidenceRecord)));
+		cryptoInformationType.setSecureAlgorithm(cryptographicValidation.isSecure());
+		XmlCryptographicAlgorithm algorithm = cryptographicValidation.getAlgorithm();
+		if (algorithm != null) {
+			cryptoInformationType.setAlgorithm(algorithm.getUri());
+		}
+		cryptoInformationType.setNotAfter(cryptographicValidation.getNotAfter());
+		validationReportData.setCryptoInformation(cryptoInformationType);
 	}
 
 	private ValidationObjectType getTimestampValidationObject(TimestampWrapper timestamp) {
@@ -554,6 +698,10 @@ public class ETSIValidationReportBuilder {
 			if (allOrphanObjectRevocations.contains(orphanRevocation)) {
 				poeProvisioning.getValidationObject().add(getVOReference(getOrphanRevocationValidationObject(orphanRevocation)));
 			}
+		}
+
+		for (EvidenceRecordWrapper er : timestamp.getTimestampedEvidenceRecords()) {
+			poeProvisioning.getValidationObject().add(getVOReference(getEvidenceRecordValidationObject(er)));
 		}
 		
 		for (TimestampWrapper tst : timestamp.getTimestampedTimestamps()) {
@@ -659,23 +807,23 @@ public class ETSIValidationReportBuilder {
 
 	private ValidationStatusType getValidationStatus(AbstractTokenProxy token) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
-		fillIndicationSubIndication(validationStatus, token);
-		fillMessages(validationStatus, token);
+		fillIndicationSubIndication(validationStatus, token.getId());
+		fillMessages(validationStatus, token.getId());
 		addValidationReportData(validationStatus, token);
 		return validationStatus;
 	}
 
-	private void fillIndicationSubIndication(ValidationStatusType validationStatus, AbstractTokenProxy token) {
-		validationStatus.setMainIndication(detailedReport.getFinalIndication(token.getId()));
-		validationStatus.getSubIndication().add(detailedReport.getFinalSubIndication(token.getId()));
+	private void fillIndicationSubIndication(ValidationStatusType validationStatus, String tokenId) {
+		validationStatus.setMainIndication(detailedReport.getFinalIndication(tokenId));
+		validationStatus.getSubIndication().add(detailedReport.getFinalSubIndication(tokenId));
 	}
 
-	private void fillMessages(ValidationStatusType validationStatus, AbstractTokenProxy token) {
-		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationErrors(token.getId()).stream()
+	private void fillMessages(ValidationStatusType validationStatus, String tokenId) {
+		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationErrors(tokenId).stream()
 				.map(Message::getValue).collect(Collectors.toList()), MessageType.ERROR);
-		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationWarnings(token.getId()).stream()
+		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationWarnings(tokenId).stream()
 				.map(Message::getValue).collect(Collectors.toList()), MessageType.WARN);
-		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationInfos(token.getId()).stream()
+		fillMessagesOfType(validationStatus, detailedReport.getAdESValidationInfos(tokenId).stream()
 				.map(Message::getValue).collect(Collectors.toList()), MessageType.INFO);
 	}
 

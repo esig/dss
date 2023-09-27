@@ -397,7 +397,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	private XmlProofOfExistence toXmlProofOfExistence(POE poe) {
 		XmlProofOfExistence xmlPoe = new XmlProofOfExistence();
 		xmlPoe.setTime(poe.getTime());
-		xmlPoe.setTimestampId(poe.getTimestampId());
+		xmlPoe.setTimestampId(poe.getPOEProviderId());
 		return xmlPoe;
 	}
 
@@ -406,7 +406,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		if (timestampId != null) {
 			for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 				if (timestampId.equals(timestamp.getId())) {
-					return new POE(timestamp);
+					return new TimestampPOE(timestamp);
 				}
 			}
 		}

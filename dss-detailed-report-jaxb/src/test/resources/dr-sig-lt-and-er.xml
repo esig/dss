@@ -187,6 +187,13 @@
                     <Time>2023-09-06T10:43:24Z</Time>
                     <TimestampId>T-24284A8C28E7362814D9247159F00F0EEF378AF02DA76E935D7B8095AFFE2BA4</TimestampId>
                 </ProofOfExistence>
+                <CryptographicValidation secure="true">
+                    <Algorithm>
+                        <Name>SHA256</Name>
+                        <Uri>http://www.w3.org/2001/04/xmlenc#sha256</Uri>
+                    </Algorithm>
+                    <ConcernedMaterial>ER-DBA3331996519B0C24A8BEB73BD5AAE4633C3F3C4438968486B071390C7A4E00</ConcernedMaterial>
+                </CryptographicValidation>
             </ValidationProcessEvidenceRecord>
             <Timestamp Id="T-24284A8C28E7362814D9247159F00F0EEF378AF02DA76E935D7B8095AFFE2BA4">
                 <ValidationProcessBasicTimestamp Type="EVIDENCE_RECORD_TIMESTAMP" ProductionTime="2023-09-06T10:43:24Z" Title="Validation Process for Basic Time-stamps">

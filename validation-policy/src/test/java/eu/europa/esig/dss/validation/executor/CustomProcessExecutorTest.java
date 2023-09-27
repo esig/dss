@@ -2646,6 +2646,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 		
 		TimestampWrapper earliestTimestamp = reports.getDiagnosticData().getTimestampById("T-950D06E9BC8B0CDB73D88349F14D3BC702BF4947752A121A940EE03639C1249D");
+		TimestampWrapper secondTimestamp = reports.getDiagnosticData().getTimestampById("T-88E49182915AC09C4734996E127BFB04944E485EFC29C89D7822250A57FCC2FB");
 		
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
 		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
@@ -2654,11 +2655,18 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		for (ValidationObjectType validationObject : signatureValidationObjects.getValidationObject()) {
 			if (validationObject.getPOE() != null) {
 				VOReferenceType poeObjectReference = validationObject.getPOE().getPOEObject();
-				if (poeObjectReference != null) {
+				if (earliestTimestamp.getId().equals(validationObject.getId())) {
+					assertEquals(secondTimestamp.getProductionTime(), validationObject.getPOE().getPOETime());
+					Object poeObject = poeObjectReference.getVOReference().get(0);
+					assertTrue(poeObject instanceof ValidationObjectType);
+					assertEquals(secondTimestamp.getId(), ((ValidationObjectType) poeObject).getId());
+				} else if (poeObjectReference != null) {
 					assertEquals(earliestTimestamp.getProductionTime(), validationObject.getPOE().getPOETime());
 					Object poeObject = poeObjectReference.getVOReference().get(0);
 					assertTrue(poeObject instanceof ValidationObjectType);
 					assertEquals(earliestTimestamp.getId(), ((ValidationObjectType) poeObject).getId());
+				} else {
+					assertEquals(diagnosticData.getValidationDate(), validationObject.getPOE().getPOETime());
 				}
 			}
 		}

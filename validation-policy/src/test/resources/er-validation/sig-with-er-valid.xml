@@ -133,6 +133,10 @@
                 <TimestampedObject Token="C-DD7496F8B6C574ECFA0B356A3D1A00DCFEC2111A3094B3B148A978D3C31F6126" Category="CERTIFICATE"/>
             </TimestampedObjects>
             <EvidenceRecordScopes />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>TXx6ieu1k8lqF6236U2aw7fOxEUEAEP5XPZfg/MbU4U=</DigestValue>
+            </DigestAlgoAndValue>
         </EvidenceRecord>
     </EvidenceRecords>
     <UsedCertificates>

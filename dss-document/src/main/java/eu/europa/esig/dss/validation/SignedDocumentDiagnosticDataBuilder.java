@@ -71,6 +71,7 @@ import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
@@ -967,6 +968,15 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlEvidenceRecord.setTimestampedObjects(getXmlTimestampedObjects(evidenceRecord.getTimestampedReferences()));
 		xmlEvidenceRecord.setFoundCertificates(getXmlFoundCertificates(evidenceRecord.getCertificateSource()));
 		xmlEvidenceRecord.setFoundRevocations(getXmlFoundRevocations(evidenceRecord.getCRLSource(), evidenceRecord.getOCSPSource()));
+
+		byte[] encoded = evidenceRecord.getEncoded();
+		if (tokenExtractionStrategy.isEvidenceRecord()) {
+			xmlEvidenceRecord.setBase64Encoded(encoded);
+		} else {
+			byte[] digest = DSSUtils.digest(defaultDigestAlgorithm, encoded);
+			xmlEvidenceRecord.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, digest));
+		}
+
 		return xmlEvidenceRecord;
 	}
 

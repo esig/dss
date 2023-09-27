@@ -68,26 +68,29 @@ public class POEComparator implements Comparator<POE>, Serializable {
 
 	private int compareByType(POE poe1, POE poe2) {
 		// POE defined by a timestamp is preferred over a POE defined by a control time
-		if (poe1.isTimestampPoe() && !poe2.isTimestampPoe()) {
+		if (poe1.isTokenProvided() && !poe2.isTokenProvided()) {
 			return -1;
-		} else if (!poe1.isTimestampPoe() && poe2.isTimestampPoe()) {
+		} else if (!poe1.isTokenProvided() && poe2.isTokenProvided()) {
 			return 1;
 		}
 		return 0;
 	}
 
 	private int compareByTimestampType(POE poe1, POE poe2) {
-		TimestampType poe1TstType = poe1.getTimestampType();
-		TimestampType poe2TstType = poe2.getTimestampType();
-		if (poe1TstType != null && poe2TstType != null) {
-			return poe1TstType.compare(poe2TstType);
+		if (poe1 instanceof TimestampPOE && poe2 instanceof TimestampPOE) {
+			TimestampType poe1TstType = ((TimestampPOE) poe1).getTimestampType();
+			TimestampType poe2TstType = ((TimestampPOE) poe2).getTimestampType();
+			if (poe1TstType != null && poe2TstType != null) {
+				return poe1TstType.compare(poe2TstType);
+			}
+
 		}
 		return 0;
 	}
 
 	private int compareByTimestampedReferences(POE poe1, POE poe2) {
-		List<XmlTimestampedObject> poe1References = poe1.getTimestampedObjects();
-		List<XmlTimestampedObject> poe2References = poe2.getTimestampedObjects();
+		List<XmlTimestampedObject> poe1References = poe1.getPOEObjects();
+		List<XmlTimestampedObject> poe2References = poe2.getPOEObjects();
 		if (poe1References != null && poe2References != null) {
 			if (poe1References.size() < poe2References.size()) {
 				return -1;
@@ -106,7 +109,7 @@ public class POEComparator implements Comparator<POE>, Serializable {
 	 * @return TRUE if the {@code poe1} is before {@code poe2}, FALSE otherwise
 	 */
 	public boolean before(POE poe1, POE poe2) {
-		return compare(poe1, poe2) == -1;
+		return compare(poe1, poe2) < 0;
 	}
 
 }

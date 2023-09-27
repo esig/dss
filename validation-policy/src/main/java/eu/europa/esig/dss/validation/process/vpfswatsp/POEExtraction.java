@@ -140,7 +140,7 @@ public class POEExtraction {
 		if (timestamp.isMessageImprintDataFound() && timestamp.isMessageImprintDataIntact()) {
 			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
 			if (Utils.isCollectionNotEmpty(timestampedObjects)) {
-				POE poe = new POE(timestamp);
+				POE poe = new TimestampPOE(timestamp);
 				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
 					addPOE(xmlTimestampedObject.getToken().getId(), poe);
 				}
@@ -156,12 +156,9 @@ public class POEExtraction {
 	public void extractPOE(EvidenceRecordWrapper evidenceRecord) {
 		List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
 		if (Utils.isCollectionNotEmpty(coveredObjects)) {
-			TimestampWrapper firstTimestamp = evidenceRecord.getFirstTimestamp();
-			if (firstTimestamp != null) {
-				POE poe = new POE(firstTimestamp);
-				for (XmlTimestampedObject xmlTimestampedObject : coveredObjects) {
-					addPOE(xmlTimestampedObject.getToken().getId(), poe);
-				}
+			POE poe = new EvidenceRecordPOE(evidenceRecord);
+			for (XmlTimestampedObject xmlTimestampedObject : coveredObjects) {
+				addPOE(xmlTimestampedObject.getToken().getId(), poe);
 			}
 		}
 	}
