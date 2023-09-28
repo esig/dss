@@ -5052,8 +5052,8 @@
    <soapenv:Body>\r
       <tim:getTimestampResponse>\r
          <digest>\r
-            <algorithm>SHA1</algorithm>\r
-            <value>Ir3ZcUPfazmmWvrSr2vYvyDNT3s=</value>\r
+            <algorithm>SHA256</algorithm>\r
+            <value>V/1gGgWDuN89MJPmERpJIpn+s7GtK9Iek1d9Y+wd9EA=</value>\r
          </digest>\r
       </tim:getTimestampResponse>\r
    </soapenv:Body>\r
