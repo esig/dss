@@ -163,6 +163,9 @@ public class RemoteDocumentValidationService {
 		if (Utils.isCollectionNotEmpty(dataToValidate.getOriginalDocuments())) {
 			signedDocValidator.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(dataToValidate.getOriginalDocuments()));
 		}
+		if (Utils.isCollectionNotEmpty(dataToValidate.getEvidenceRecords())) {
+			signedDocValidator.setDetachedEvidenceRecordDocuments(RemoteDocumentConverter.toDSSDocuments(dataToValidate.getEvidenceRecords()));
+		}
 		signedDocValidator.setCertificateVerifier(verifier);
 		// If null, uses default (NONE)
 		if (dataToValidate.getTokenExtractionStrategy() != null) {
