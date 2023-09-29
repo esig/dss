@@ -40,5 +40,10 @@
 			<artifactId>dss-xades</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-evidence-record-xml</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

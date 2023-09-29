@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f762ece0-45e3-49a8-bae2-55454f59353b",
+		"_postman_id": "a33b35e0-c5ec-44ce-a047-9810230e2ded",
 		"name": "DSS REST services",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3881138"
@@ -384,7 +384,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"algorithm\" : \"SHA1\",\r\n  \"value\" : \"Ir3ZcUPfazmmWvrSr2vYvyDNT3s=\"\r\n}"
+					"raw": "{\r\n  \"algorithm\" : \"SHA256\",\r\n  \"value\" : \"V/1gGgWDuN89MJPmERpJIpn+s7GtK9Iek1d9Y+wd9EA=\"\r\n}"
 				},
 				"url": {
 					"raw": "localhost:8080/services/rest/timestamp-service/getTimestampResponse",

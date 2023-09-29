@@ -45,6 +45,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.transform.Templates;
 import javax.xml.validation.Schema;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -176,6 +177,11 @@ public class SignedDocumentValidatorTest {
 		// end::demo-facade[]
 		assertNotNull(xmlDetailedReport);
 		assertNotNull(htmlDetailedReport);
+
+		DSSDocument evidenceRecordDocument = null;
+		// tag::detached-evidence-records[]
+		documentValidator.setDetachedEvidenceRecordDocuments(Collections.singletonList(evidenceRecordDocument));
+		// end::detached-evidence-records[]
 
 		// tag::demo-xml-definer[]
 		// import eu.europa.esig.dss.detailedreport.DetailedReportFacade;

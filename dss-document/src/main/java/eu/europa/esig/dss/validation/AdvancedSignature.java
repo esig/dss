@@ -522,8 +522,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	void findSignatureScope(SignatureScopeFinder<?> signatureScopeFinder);
 
 	/**
-	 * Returns a list of found SignatureScopes NOTE: the method
-	 * {@code findSignatureScope(signatureScopeFinder)} shall be called before
+	 * Returns a list of found SignatureScopes
 	 * 
 	 * @return a list of {@link SignatureScope}s
 	 */

@@ -12,6 +12,7 @@ $ echo '{
     "name" : "sample.xml"
   } ],
   "policy" : null,
+  "evidenceRecords" : null,
   "tokenExtractionStrategy" : "NONE",
   "signatureId" : null
 }' | http POST 'http://localhost:8080/services/rest/validation/validateSignature' \

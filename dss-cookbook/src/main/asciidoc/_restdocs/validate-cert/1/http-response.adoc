@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Fri, 11 Aug 2023 09:32:16 GMT
+Date: Thu, 28 Sep 2023 07:36:02 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -14,15 +14,16 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 7670
+Content-Length: 7703
 
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2023-08-11T09:32:16Z",
+    "ValidationDate" : "2023-09-28T07:36:02Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
+    "EvidenceRecord" : null,
     "Certificate" : [ {
       "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
       "SubjectDistinguishedName" : [ {
@@ -146,10 +147,10 @@ Content-Length: 7670
         "Info" : [ ]
       }
     } ],
-    "ValidationTime" : "2023-08-11T09:32:16Z"
+    "ValidationTime" : "2023-09-28T07:36:02Z"
   },
   "detailedReport" : {
-    "signatureOrTimestampOrCertificate" : [ {
+    "signatureOrTimestampOrEvidenceRecord" : [ {
       "Certificate" : {
         "ValidationCertificateQualification" : [ ],
         "Constraint" : [ {
