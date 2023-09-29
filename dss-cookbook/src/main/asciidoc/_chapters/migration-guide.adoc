@@ -121,6 +121,110 @@ secureContainerHandlerBuilder.setThreshold(1000000);
 secureContainerHandlerBuilder.setExtractComments(true);
 ZipUtils.getInstance().setZipContainerHandlerBuilder(secureContainerHandlerBuilder);
 
+|Timestamp processing classes moved to `dss-spi` module       a|[source,java]
+----
+import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
+import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
+import eu.europa.esig.dss.spi.x509.timestamp.TSPSource;
+...
+----
+                                                            a|[source,java]
+----
+import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+...
+----
+
+|Common certificate/revocation sources moved to `dss-spi` module         a|[source,java]
+----
+import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.validation.ListRevocationSource;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
+----
+
+|Validation support classes moved to `dss-model` module         a|[source,java]
+----
+import eu.europa.esig.dss.validation.ManifestEntry;
+import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.validation.TokenIdentifierProvider;
+import eu.europa.esig.dss.validation.scope.SignatureScope;
+...
+----
+                                                                a|[source,java]
+----
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+...
+----
+
+|DomUtils moved to `dss-xml` module                             a|[source,java]
+----
+import eu.europa.esig.dss.DomUtils;
+----
+                                                                a|[source,java]
+----
+import eu.europa.esig.dss.xml.DomUtils;
+----
+
+|Canonicalization                                               a|[source,java]
+----
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+
+byte[] canonicalizedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, bytesToCanonicalize);
+----
+                                                                a|[source,java]
+----
+import eu.europa.esig.dss.XMLCanonicalizer;
+
+byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(bytesToCanonicalize);
+----
+
+|Signature scopes                                               a|[source,java]
+----
+AdvancedSignature advancedSignature = ...
+advancedSignature.findSignatureScope(signatureScopeFinder);
+List<SignatureScope> signatureScopes = advancedSignature.getSignatureScopes();
+----
+                                                                a|[source,java]
+----
+AdvancedSignature advancedSignature = ...
+List<SignatureScope> signatureScopes = advancedSignature.getSignatureScopes();
+----
+
+|CMSSignedDataBuilder refactoring                               a|[source,java]
+----
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
+import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
+
+CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
+SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true, contentToSign);
+CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, originalCmsSignedData);
+CMSTypedData content = CMSUtils.getContentToBeSigned(contentToSign);
+CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
+----
+                                                                a|[source,java]
+----
+import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
+import org.bouncycastle.cms.SignerInfoGenerator;
+
+SignerInfoGenerator signerInfoGenerator = new CMSSignerInfoGeneratorBuilder().build(contentToSign, parameters, customContentSigner);
+CMSSignedData cmsSignedData = getCMSSignedDataBuilder(parameters).setOriginalCMSSignedData(originalCmsSignedData).createCMSSignedData(signerInfoGenerator, contentToSign);
+----
+
 |===
 
 [cols="2,5,5"]

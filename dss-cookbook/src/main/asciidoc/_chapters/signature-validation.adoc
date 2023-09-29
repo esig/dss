@@ -403,6 +403,7 @@ It is also possible to use a stylesheet to generate an SVG image from an XML doc
 
 === Various DSS validation options
 
+[[ValidationLevel]]
 ==== Validation level
 
 While there exist four signature levels: `BASELINE-B`, `BASELINE-T`, `BASELINE-LT` and `BASELINE-LTA` (cf. <<SignatureClasses>>), for signature validation according to ETSI EN 319 102-1 (cf. <<R09>>) DSS allows processing the validation of signature with following levels:
@@ -410,7 +411,7 @@ While there exist four signature levels: `BASELINE-B`, `BASELINE-T`, `BASELINE-L
  * `BASIC_SIGNATURES` - the basic signature validation process, supporting validation of signatures where the time of validation lies within the validity period of the signing-certificate and the signing-certificate is not revoked. This level corresponds to section "5.3 Validation process for Basic Signatures" of the standard.
  * `TIMESTAMPS` - the validation process combines the basic signature validation process and the basic validation of embedded timestamp tokens, which signing-certificate is valid at validation time and not revoked. This level corresponds to section "5.4 Time-stamp validation building block" of the standard.
  * `LONG_TERM_DATA` - performs a validation of a signature with time and signatures with long-term validation material. The signing-certificate of a signature passed to this process shall be retrospectively valid, taking into account the available signature-time-stamp and long-term validation material. This level corresponds to section "5.5 Validation process for Signatures with Time and Signatures with Long-Term Validation Material" of the standard.
- * `ARCHIVAL_DATA` - performs validation of signatures providing long-term availability and integrity of validation material. The signing-certificate of a signature passed to this process shall be retrospectively valid with relation to all the available POEs (signature and archive time-stamps) and long-term validation material. This level corresponds to section "5.6 Validation process for Signatures providing Long Term Availability and Integrity of Validation Material" of the standard.
+ * `ARCHIVAL_DATA` - performs validation of signatures providing long-term availability and integrity of validation material. The signing-certificate of a signature passed to this process shall be retrospectively valid with relation to all the available POEs (signature, archive time-stamps and evidence records) and long-term validation material. This level corresponds to section "5.6 Validation process for Signatures providing Long Term Availability and Integrity of Validation Material" of the standard.
 
 For configuration examples please see <<AdESValidation>> section.
 
@@ -494,14 +495,78 @@ With DSS, it is possible to add a "Semantics" section at the end of the reports 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-semantics]
 ----
 
+[[EvidenceRecords]]
+=== Evidence records
+
+Since version `5.13` DSS provides a possibility of evidence records validation in relation to digital signatures or alone.
+
+Currently, the only supported version of evidence records is RFC 6283 XML Evidence Records (cf. <<R22>>).
+
+DSS performs cryptographic validation of the evidence record's hash tree, as well as processing of evidence record as a material for achieving a long-term preservation and availability as per ETSI EN 319 102-1 (cf. <<R09>>).
+
+In order to add support of XML evidence records on validation, the following dependency has to be added to a `pom.xml` file within your project:
+
+[source,xml,indent=0]
+.pom.xml
+----
+<dependency>
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>dss-evidence-record-xml</artifactId>
+</dependency>
+----
+
+Please note, that as evidence records processing is a part of "5.6 Validation process for Signatures providing Long Term Availability and Integrity of Validation Material" process, the validation level within document validator shall be set to `ARCHIVAL_DATA` in order to perform validation of evidence records. See <<ValidationLevel>> for more information.
+
+==== Validation of signatures with evidence records
+
+DSS is able to validate an evidence record as a material providing a signature's proof of existence (POE) in the following circumstances:
+
+* as a detached evidence record applied on the whole document containing the signature(s) (the support is independent of the signature's type);
+* as an embedded evidence record within an ASiC container, conformant to the specification within ETSI EN 319 162-1 (cf. <<R04>>) standard. This includes support of ASiC-E and ASiC-S container types with XAdES or CAdES signatures.
+
+In order to provide one or multiple detached evidence records covering the complete signature's document to the signature validation process, the evidence record document(s) should be provided to the corresponding instance of a `DocumentValidator` performing validation of the signature:
+
+[source,java,indent=0]
+.Providing detached evidence records
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=detached-evidence-records]
+----
+
+The validator will load a relevant implementation supporting processing of the given evidence record format, providing the corresponding dependency is loaded within the classpath (see above for `pom.xml` file configuration). If the evidence record is valid, the validator will use the time of the first embedded time-stamp as a proof of existence (POE) time of the signature and the covered data objects.
+
+==== Validation of evidence records alone
+
+In addition to the validation of signatures with evidence records, it is also possible to validate evidence records alone against the given data objects covered by the hash tree.
+
+The validation process verifies the cryptographic validity of the hash tree, providing that the hashes of the given archive data objects are present at the first level of the hash tree, as well as perform validation of the evidence record's time-stamps as per ETSI EN 319 102-1 (cf. <<R09>>).
+
+To validate an evidence record, one may use the class `EvidenceRecordValidator`, which will load the corresponding implementation capable of processing the evidence record according to its type:
+
+[source,java,indent=0]
+.Evidence record validation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EvidenceRecordValidatorTest.java[tags=evidence-record-alone]
+----
+
+It is also possible to validate an evidence record document using a global `SignedDocumentValidator`, which is capable of distinguishing the document containing an evidence record from a signature or a time-stamp:
+
+[source,java,indent=0]
+.Evidence record validation using SignedDocumentValidator
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EvidenceRecordValidatorTest.java[tags=evidence-record-signed-doc-validator]
+----
+
+The choice between two approaches have no impact on the final validation process, provided that the corresponding implementation of a document factory is configured within `META-INF/services` folder. See <<ServiceLoaderValidation>> for more information.
+
 [[ServiceLoaderValidation]]
 === DocumentValidator implementations
 
-For signature document or a signature policy validation, DSS is able to load a corresponding implementation of validator for the given document format at runtime using a `ServiceLoader` (e.g. `XMLDocumentValidator` for XAdES signature).
+For a signature document, a signature policy validation or an evidence record document, DSS is able to load a corresponding implementation of validator for the given document format at runtime using a `ServiceLoader` (e.g. `XMLDocumentValidator` for XAdES signature).
 
-DSS is able to choose the required implementation for the following interfaces:
+DSS may load the relevant implementation for one of the following interfaces:
 
 * `DocumentValidationFactory` - checks a provided signed file's format and loads a relevant validator;
+* `EvidenceRecordValidatorFactory` - checks a provided evidence record file's format and loads a relevant validator;
 * `SignaturePolicyValidator` - checks a signature policy file and loads a relevant validator to be able to process the detected format.
 
 WARNING: If no appropriate available implementation is found, an exception will be thrown.
@@ -521,6 +586,17 @@ The following implementations are present in DSS:
 * `ASiCContainerWithCAdESValidatorFactory`: loads `ASiCContainerWithCAdESValidator` (delivered in `dss-asic-cades` module);
 * `ASiCContainerWithXAdESValidatorFactory`: loads `ASiCContainerWithXAdESValidator` (delivered in `dss-asic-xades` module);
 * `DetachedTimestampValidatorFactory`: loads `DetachedTimestampValidator`, for an independent timestamp validation (delivered in `dss-document` module).
+
+Additionally, DSS supports loading of an Evidence Record validator using `SignedDocumentValidator`. See <<EvidenceRecordValidator>> for more information.
+
+[[EvidenceRecordValidator]]
+==== Evidence Record Validator
+
+A validator implementation for an evidence record document can be loaded using either a `SignedDocumentValidator` or an `EvidenceRecordValidator` explicitly.
+
+The following implementation of a validator factory is present in DSS:
+
+* `XMLEvidenceRecordValidatorFactory`: loads `XMLEvidenceRecordValidator`, used for an RFC 6283 XML Evidence Record (cf. <<R22>>) validation (delivered in `dss-evidence-record-xml` module).
 
 ==== Signature Policy Validator
 
