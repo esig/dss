@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -114,7 +115,7 @@ public class EntityStoreTSPSourceTest {
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
         assertEquals(SignatureAlgorithm.RSA_SHA256.getOid(), timeStampToken.toCMSSignedData().getSignerInfos().get(timeStampToken.getSID()).getEncryptionAlgOID());
 
-        tspSource.setTstDigestAlgorithm(DigestAlgorithm.SHA512);
+        tspSource.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
         timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         timeStampToken = assertTimestampValid(timeStampResponse, digest);
@@ -129,7 +130,7 @@ public class EntityStoreTSPSourceTest {
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
         assertEquals(SignatureAlgorithm.RSA_SHA256.getOid(), timeStampToken.toCMSSignedData().getSignerInfos().get(timeStampToken.getSID()).getEncryptionAlgOID());
 
-        tspSource.setEnablePSS(true);
+        tspSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
         timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         timeStampToken = assertTimestampValid(timeStampResponse, digest);

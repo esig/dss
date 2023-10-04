@@ -1,10 +1,10 @@
 package eu.europa.esig.dss.test;
 
 import eu.europa.esig.dss.pki.jaxb.XmlPki;
-import eu.europa.esig.dss.pki.jaxb.config.PKIJaxbFacade;
-import eu.europa.esig.dss.pki.jaxb.service.PKICertificationEntityBuilder;
+import eu.europa.esig.dss.pki.jaxb.PKIJaxbFacade;
+import eu.europa.esig.dss.pki.jaxb.repository.JaxbCertEntityRepository;
+import eu.europa.esig.dss.pki.jaxb.builder.JAXBCertEntityBuilder;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,26 +25,27 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static eu.europa.esig.dss.pki.jaxb.constant.PKIJaxbConstant.XML_FOLDER;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.XML_FOLDER;
 
-public class XMLCertificateLoader {
+/**
+ * This class is used to facilitate JAXB PKI content loading in unit tests
+ *
+ */
+public class JAXBPKICertificateLoader {
 
-    // TODO : not singleton
-    private static final Logger LOG = LoggerFactory.getLogger(XMLCertificateLoader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JAXBPKICertificateLoader.class);
 
-    private final PKICertificationEntityBuilder certificationEntityBuilder = new PKICertificationEntityBuilder();
+    private final JAXBCertEntityBuilder certificationEntityBuilder = new JAXBCertEntityBuilder();
 
-    public XMLCertificateLoader(CertEntityRepository<? extends CertEntity> repository) {
-        this.repository = repository;
-    }
-
-    private CertEntityRepository<? extends CertEntity> repository;
+    private JaxbCertEntityRepository repository;
     private final Set<Path> createdPKIs = new HashSet<>();
     private final Map<Path, XmlPki> filePkiMap = new HashMap<>();
 
-    // TODO : instantiate with JaxbCertEntityRepository
-
     private CertificateSource certificateSource;
+
+    public JAXBPKICertificateLoader(JaxbCertEntityRepository repository) {
+        this.repository = repository;
+    }
 
     public void setCommonTrustedCertificateSource(CertificateSource certificateSource) {
         this.certificateSource = certificateSource;
@@ -89,14 +90,13 @@ public class XMLCertificateLoader {
     }
 
     private static File getFolder() {
-        ClassLoader classLoader = XMLCertificateLoader.class.getClassLoader();
+        ClassLoader classLoader = JAXBPKICertificateLoader.class.getClassLoader();
         URL resourceFolder = classLoader.getResource(XML_FOLDER);
         if (resourceFolder == null) {
             throw new RuntimeException("PKI resource folder not found.");
         }
         return new File(resourceFolder.getFile());
     }
-
 
     public XmlPki getPki(File folder, String certificateSubject) {
         for (File file : Objects.requireNonNull(folder.listFiles())) {
@@ -146,6 +146,5 @@ public class XMLCertificateLoader {
     private boolean checkPKIContainsCertificate(XmlPki pki, String certificationSubject) {
         return pki.getCertificate().stream().anyMatch(certificateType -> certificationSubject.equals(certificateType.getSubject()));
     }
-
 
 }

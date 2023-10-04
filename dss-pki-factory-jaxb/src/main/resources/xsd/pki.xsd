@@ -31,7 +31,7 @@
                         minOccurs="0"/>
 
             <xs:element name="keyAlgo" type="KeyAlgo"/>
-            <xs:element name="digestAlgo" type="DigestAlgo" minOccurs="0"/>
+            <xs:element name="digestAlgo" type="xs:string" minOccurs="0"/>
 
             <xs:element name="notBefore" type="DateDefinitionType"/>
             <xs:element name="notAfter" type="DateDefinitionType"/>
@@ -42,22 +42,7 @@
             <xs:element name="keyUsages" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="keyUsage" minOccurs="0"
-                                    maxOccurs="unbounded">
-                            <xs:simpleType>
-                                <xs:restriction base="xs:string">
-                                    <xs:enumeration value="digitalSignature"/>
-                                    <xs:enumeration value="nonRepudiation"/>
-                                    <xs:enumeration value="keyEncipherment"/>
-                                    <xs:enumeration value="dataEncipherment"/>
-                                    <xs:enumeration value="keyAgreement"/>
-                                    <xs:enumeration value="keyCertSign"/>
-                                    <xs:enumeration value="crlSign"/>
-                                    <xs:enumeration value="encipherOnly"/>
-                                    <xs:enumeration value="decipherOnly"/>
-                                </xs:restriction>
-                            </xs:simpleType>
-                        </xs:element>
+                        <xs:element name="keyUsage" type="KeyUsageBit" minOccurs="0" maxOccurs="unbounded" />
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -119,6 +104,20 @@
         </xs:sequence>
     </xs:complexType>
 
+    <xs:simpleType name="KeyUsageBit" final="restriction">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="digitalSignature" />
+            <xs:enumeration value="nonRepudiation" />
+            <xs:enumeration value="keyEncipherment" />
+            <xs:enumeration value="dataEncipherment" />
+            <xs:enumeration value="keyAgreement" />
+            <xs:enumeration value="keyCertSign" />
+            <xs:enumeration value="crlSign" />
+            <xs:enumeration value="encipherOnly" />
+            <xs:enumeration value="decipherOnly" />
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="emptyType">
         <xs:sequence/>
     </xs:complexType>
@@ -138,7 +137,7 @@
     </xs:complexType>
 
     <xs:complexType name="KeyAlgo">
-        <xs:attribute name="encryption" type="EncryptionAlgo"/>
+        <xs:attribute name="encryption" type="xs:string"/>
         <xs:attribute name="length" type="xs:int" use="optional"/>
         <xs:attribute name="pss" type="xs:boolean" use="optional"/>
     </xs:complexType>
@@ -152,27 +151,6 @@
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
-
-    <xs:simpleType name="DigestAlgo" final="restriction">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="SHA1"/>
-            <xs:enumeration value="SHA256"/>
-            <xs:enumeration value="SHA512"/>
-            <xs:enumeration value="SHA3-256"/>
-            <xs:enumeration value="SHA3-512"/>
-        </xs:restriction>
-    </xs:simpleType>
-
-    <xs:simpleType name="EncryptionAlgo" final="restriction">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="RSA"/>
-            <xs:enumeration value="RSASSA-PSS"/>
-            <xs:enumeration value="DSA"/>
-            <xs:enumeration value="ECDSA"/>
-            <xs:enumeration value="Ed25519"/>
-            <xs:enumeration value="Ed448"/>
-        </xs:restriction>
-    </xs:simpleType>
 
     <xs:simpleType name="RevocationReason"
                    final="restriction">

@@ -1,14 +1,16 @@
 package eu.europa.esig.dss.pki.x509.revocation.crl;
 
+import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.pki.exception.PKIException;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.repository.CertEntityRepository;
@@ -40,154 +42,78 @@ import java.util.Objects;
  */
 public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PKICRLSource.class);
     private static final long serialVersionUID = 6912729291417315212L;
 
+    private static final Logger LOG = LoggerFactory.getLogger(PKICRLSource.class);
 
-    private CertEntity certEntity;
-    private Date productionDate;
+    /**
+     * The repository managing the PKI
+     */
+    private final CertEntityRepository certEntityRepository;
+
+    /**
+     * Cert Entity issuing the CRL responses
+     */
+    private CertEntity crlIssuer;
+
+    /**
+     * Indicates the issue date of the CRL
+     */
+    private Date thisUpdate;
+
+    /**
+     * Indicates the date by which a new CRL will be issued
+     */
     private Date nextUpdate;
 
+    /**
+     * The DigestAlgorithm to be used on CRL signing
+     */
     private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
+
+    /**
+     * Encryption algorithm of the signature of the CRL
+     */
+    private EncryptionAlgorithm encryptionAlgorithm;
+
+    /**
+     * Mask Generation Function of the signature of the CRL
+     */
     private MaskGenerationFunction maskGenerationFunction;
-    private CertEntityRepository certEntityRepository;
 
     /**
-     * Constructs a PkiCRLSource with the specified CertEntity.
+     * Creates a PKICRLSource instance with a CRL issuer being the issuer certificate token provided on the CRL request
      *
-     * @param certEntity           The CertEntity for which CRLs will be obtained.
-     * @param certEntityRepository The CertEntity for which CRLs will be obtained.
+     * @param certEntityRepository {@link CertEntityRepository}
      */
-    public PKICRLSource(CertEntityRepository<? extends CertEntity> certEntityRepository, CertEntity certEntity) {
-        this.certEntityRepository = certEntityRepository;
-        this.certEntity = certEntity;
-    }
-
-
     public PKICRLSource(CertEntityRepository<? extends CertEntity> certEntityRepository) {
+        Objects.requireNonNull(certEntityRepository, "Certificate repository shall be provided!");
         this.certEntityRepository = certEntityRepository;
     }
 
-
     /**
-     * Retrieves a Certificate Revocation List (CRL) token for the given certificate and its issuer certificate if the CertEntity is not already.
+     * Creates a PKICRLSource instance with enforced CRL signer {@code CertEntity}
      *
-     * @param certificateToken       The CertificateToken representing the certificate to be checked for revocation.
-     * @param issuerCertificateToken The CertificateToken representing the issuer certificate of the certificate to be verified.
-     * @return The CRLToken representing the revocation status of the certificate.
-     * @throws NullPointerException If either certificateToken or issuerCertificateToken or nextUpdate is null.
-     * @throws RuntimeException     If an error occurs during the CRL retrieval or validation process.
+     * @param certEntityRepository {@link CertEntityRepository}
+     * @param crlIssuer            {@link CertEntity} to issue CRL
      */
-    @Override
-    public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) throws NullPointerException, RuntimeException {
-        Objects.requireNonNull(certificateToken, "Certificate cannot be null");
-        Objects.requireNonNull(issuerCertificateToken, "The issuer of the certificate to be verified cannot be null");
-
-        final String dssIdAsString = certificateToken.getDSSIdAsString();
-        List<String> cRLAccessUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
-        if (Utils.isCollectionEmpty(cRLAccessUrls)) {
-            LOG.warn("No CRL location found for {}", dssIdAsString);
-            return null;
-        }
-
-        // If the CertEntity is not already set, retrieve it based on the issuer certificate and certificate subject.
-        CertEntity currentCertEntity;
-
-        if (certEntity == null) {
-            currentCertEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
-        } else {
-            currentCertEntity = certEntity;
-        }
-
-        // Obtain the CRL bytes based on the productionDate and nextUpdate parameters.
-        byte[] crlBytes = getCRL(currentCertEntity, productionDate, nextUpdate);
-
-        final CRLValidity crlValidity;
-
-        try {
-            // Build the CRLValidity using CRLUtils from the retrieved CRL bytes and the issuerCertificateToken.
-            crlValidity = CRLUtils.buildCRLValidity(CRLUtils.buildCRLBinary(crlBytes), issuerCertificateToken);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Create a new CRLToken with the certificateToken and the CRLValidity, and set its origin as external.
-        final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
-        crlToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
-        return crlToken;
-    }
-
-
-    private byte[] generateCRL(final CertEntity certEntity, Date productionTime, Date nextUpdate) {
-        try {
-
-            X509CertificateHolder caCert = DSSASN1Utils.getX509CertificateHolder(certEntity.getCertificateToken());
-
-            Map<CertEntity, CertEntityRevocation> revocationList = certEntityRepository.getRevocationList(certEntity);
-
-            SignatureAlgorithm algorithm = SignatureAlgorithm.getAlgorithm(certEntity.getEncryptionAlgorithm(), digestAlgorithm, maskGenerationFunction);
-
-            if (productionTime == null) {
-                productionTime = new Date();
-            }
-            X509v2CRLBuilder builder = new X509v2CRLBuilder(caCert.getSubject(), productionTime);
-            if (nextUpdate != null) {
-                builder.setNextUpdate(nextUpdate);
-            }
-
-            addRevocationsToCRL(builder, revocationList);
-
-            Objects.requireNonNull(algorithm, "SignatureAlgorithm cannot be null!");
-            ContentSigner signer = new JcaContentSignerBuilder(algorithm.getJCEId()).build(certEntity.getPrivateKeyObject());
-
-            X509CRLHolder crl = builder.build(signer);
-
-            return crl.getEncoded();
-        } catch (IOException | OperatorCreationException e) {
-            LOG.error("Unable to generate the CRL", e);
-            throw new DSSException("Unable to generate the CRL");
-        }
+    public PKICRLSource(CertEntityRepository<? extends CertEntity> certEntityRepository, CertEntity crlIssuer) {
+        this(certEntityRepository);
+        this.crlIssuer = crlIssuer;
     }
 
     /**
-     * Adds revocations to the CRL builder based on the provided CertEntity and revocationList.
+     * Gets nextUpdate value
      *
-     * @param revocationList List of Revocation objects containing the revocation information.
-     * @param builder        The X509v2CRLBuilder instance to which the entries will be added.
-     * @return List of added CRLEntry objects.
+     * @return {@link Date}
      */
-
-    protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<CertEntity, CertEntityRevocation> revocationList) {
-        revocationList.forEach((key, value) -> {
-            X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(key.getCertificateToken());
-            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), value.getRevocationReason().getValue());
-        });
-    }
-
-
-    /**
-     * Generates a CRL (Certificate Revocation List) for the specified CertEntity with the provided production time and next update time.
-     *
-     * @param certEntity     The CertEntity of the CRL issuer.
-     * @param productionTime The notBefore (validity start) date of the CRL. If null, the current date is used.
-     * @param nextUpdateTime The notAfter (validity end) date of the CRL. If true, set notAfter 6 months after the current date; if false, set notAfter 6 months after the production time.
-     * @return The generated CRL in byte array format.
-     */
-    public byte[] getCRL(final CertEntity certEntity, Date productionTime, Date nextUpdateTime) {
-        return generateCRL(certEntity, productionTime, nextUpdateTime);
-    }
-
-    /**
-     * Set the production date for the CRL generation.
-     *
-     * @param productionDate The production date to be set.
-     */
-    public void setProductionDate(Date productionDate) {
-        this.productionDate = productionDate;
+    public Date getNextUpdate() {
+        return nextUpdate;
     }
 
     /**
      * Set the next update date for the CRL generation.
+     * If not set, the nextUpdate field will not be added to CRL.
      *
      * @param nextUpdate The next update date to be set.
      */
@@ -195,16 +121,203 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
         this.nextUpdate = nextUpdate;
     }
 
+    /**
+     * Gets thisUpdate value.
+     * If not defined, returns the current time.
+     *
+     * @return {@link Date}
+     */
+    protected Date getThisUpdate() {
+        if (thisUpdate == null) {
+            return new Date();
+        }
+        return thisUpdate;
+    }
+
+    /**
+     * Set the production date for the CRL generation.
+     *
+     * @param thisUpdate The production date to be set.
+     */
+    public void setThisUpdate(Date thisUpdate) {
+        this.thisUpdate = thisUpdate;
+    }
+
+    /**
+     * Sets Digest Algorithm to be used on CRL request signature
+     * Default: SHA256 ({@code DigestAlgorithm.SHA256})
+     *
+     * @param digestAlgorithm {@link DigestAlgorithm}
+     */
     public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
         this.digestAlgorithm = digestAlgorithm;
     }
 
+    /**
+     * Sets encryption algorithm to be used on CRL signature generation.
+     * If not defined, the encryption algorithm from the given {@code CertEntity} CRL issuer will be used.
+     * NOTE: It is important to ensure that the defined encryption algorithm is supported by the CRL issuer.
+     *
+     * @param encryptionAlgorithm {@link EncryptionAlgorithm}
+     */
+    public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
+        this.encryptionAlgorithm = encryptionAlgorithm;
+    }
+
+    /**
+     * Sets mask generation function to be used on CRL signature generation
+     * NOTE: The used encryption algorithm should support the given parameter.
+     *
+     * @param maskGenerationFunction {@link MaskGenerationFunction}
+     */
     public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
         this.maskGenerationFunction = maskGenerationFunction;
     }
 
-    public void setCertEntity(CertEntity certEntity) {
-        this.certEntity = certEntity;
+    /**
+     * Returns a {@code CertEntity} to be used as an CRL issuer.
+     *
+     * @param certificateToken {@link CertificateToken} to request CRL for
+     * @param issuerCertificateToken {@link CertificateToken} issued the {@code certificateToken}
+     * @return {@link CertEntity} representing the entry to be used as an issuer of the CRL
+     */
+    protected CertEntity getCRLIssuer(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+        CertEntity currentCRLIssuer;
+        if (crlIssuer != null) {
+            currentCRLIssuer = crlIssuer;
+        } else {
+            currentCRLIssuer = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+        }
+        return currentCRLIssuer;
+    }
+
+    /**
+     * Sets a CertEntity to be used as a CRL issuer.
+     * If not defined, the certificate issuer will be used as a CRL issuing certificate.
+     *
+     * @param crlIssuer {@link CertEntity}
+     */
+    public void setCRLIssuer(CertEntity crlIssuer) {
+        this.crlIssuer = crlIssuer;
+    }
+
+    /**
+     * Retrieves a Certificate Revocation List (CRL) token for the given certificate and its issuer certificate if the CertEntity is not already.
+     *
+     * @param certificateToken       The CertificateToken representing the certificate to be checked for revocation.
+     * @param issuerCertificateToken The CertificateToken representing the issuer certificate of the certificate to be verified.
+     * @return The CRLToken representing the revocation status of the certificate.
+     */
+    @Override
+    public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken)  {
+        Objects.requireNonNull(certificateToken, "Certificate cannot be null!");
+        Objects.requireNonNull(issuerCertificateToken, "The issuer of the certificate to be verified cannot be null!");
+
+        final String dssIdAsString = certificateToken.getDSSIdAsString();
+        LOG.trace("--> PKICRLSource queried for {}", dssIdAsString);
+        if (!canGenerate(certificateToken, issuerCertificateToken)) {
+            return null;
+        }
+
+        try {
+            // Obtain the CRL bytes based on the productionDate and nextUpdate parameters.
+            CRLBinary crlBinary = generateCRL(certificateToken, issuerCertificateToken);
+
+            // Build the CRLValidity using CRLUtils from the retrieved CRL bytes and the issuerCertificateToken.
+            final CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerCertificateToken);
+
+            // Create a new CRLToken with the certificateToken and the CRLValidity, and set its origin as external.
+            final CRLToken crlToken = new CRLToken(certificateToken, crlValidity);
+            crlToken.setExternalOrigin(RevocationOrigin.EXTERNAL);
+            return crlToken;
+
+        } catch (Exception e) {
+            throw new PKIException(String.format("Unable to build a CRL for certificate with Id '%s'. " +
+                    "Reason : %s", certificateToken.getDSSIdAsString(), e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Returns whether the current implementation is able to produce a CRL for the given {@code certificateToken}
+     *
+     * @param certificateToken {@link CertificateToken} to produce a CRL for
+     * @param issuerCertificateToken {@link CertificateToken} representing an issuer of the {@code certificateToken}
+     * @return TRUE if the current implementation is able to produce a CRL for the given pair, FALSE otherwise
+     */
+    protected boolean canGenerate(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+        List<String> crlAccessUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
+        if (Utils.isCollectionEmpty(crlAccessUrls)) {
+            LOG.debug("No CRL location found for {}", certificateToken.getDSSIdAsString());
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Generates a CRL token and returns encoded binaries
+     *
+     * @param certificateToken {@link CertificateToken} to get CRL for
+     * @param issuerCertificateToken {@link CertificateToken} issued the {@code certificateToken}
+     * @return {@link CRLBinary} representing a DER-encoded CRL token
+     * @throws IOException if an exception occurs on CRL generation
+     * @throws OperatorCreationException if an exception occurs on CRL signing
+     */
+    protected CRLBinary generateCRL(CertificateToken certificateToken, CertificateToken issuerCertificateToken) throws IOException, OperatorCreationException {
+        CertEntity crlIssuer = getCRLIssuer(certificateToken, issuerCertificateToken);
+        X509CertificateHolder caCert = DSSASN1Utils.getX509CertificateHolder(crlIssuer.getCertificateToken());
+
+        Map<CertEntity, CertEntityRevocation> revocationList = certEntityRepository.getRevocationList(crlIssuer);
+
+        SignatureAlgorithm signatureAlgorithm =  getSignatureAlgorithm(crlIssuer);
+
+        Date thisUpdate = getThisUpdate();
+        X509v2CRLBuilder builder = new X509v2CRLBuilder(caCert.getSubject(), thisUpdate);
+
+        Date nextUpdate = getNextUpdate();
+        if (nextUpdate != null) {
+            builder.setNextUpdate(nextUpdate);
+        }
+
+        addRevocationsToCRL(builder, revocationList);
+
+        ContentSigner signer = new JcaContentSignerBuilder(signatureAlgorithm.getJCEId()).build(crlIssuer.getPrivateKeyObject());
+
+        X509CRLHolder crl = builder.build(signer);
+
+        return new CRLBinary(crl.getEncoded());
+    }
+
+    /**
+     * Returns a signature algorithm to be used on CRL creation
+     *
+     * @param crlIssuer {@link CertEntity} to sign the CRL
+     * @return {@link SignatureAlgorithm}
+     */
+    protected SignatureAlgorithm getSignatureAlgorithm(CertEntity crlIssuer) {
+        EncryptionAlgorithm encryptionAlgorithm = this.encryptionAlgorithm;
+        if (encryptionAlgorithm != null) {
+            if (!encryptionAlgorithm.isEquivalent(crlIssuer.getEncryptionAlgorithm())) {
+                throw new IllegalArgumentException(String.format(
+                        "Defined EncryptionAlgorithm '%s' is not equivalent to the one returned by CRL Issuer '%s'", encryptionAlgorithm, crlIssuer.getEncryptionAlgorithm()));
+
+            }
+        } else {
+            encryptionAlgorithm = crlIssuer.getEncryptionAlgorithm();
+        }
+        return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+    }
+
+    /**
+     * Adds revocations to the CRL builder based on the provided CertEntity and revocationList.
+     *
+     * @param revocationList List of Revocation objects containing the revocation information.
+     * @param builder        The X509v2CRLBuilder instance to which the entries will be added.
+     */
+    protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<CertEntity, CertEntityRevocation> revocationList) {
+        revocationList.forEach((key, value) -> {
+            X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(key.getCertificateToken());
+            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), value.getRevocationReason().getValue());
+        });
     }
 
 }

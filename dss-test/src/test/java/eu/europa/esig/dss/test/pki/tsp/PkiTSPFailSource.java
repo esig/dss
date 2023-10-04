@@ -9,6 +9,7 @@ import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampResponse;
 import org.bouncycastle.tsp.TimeStampResponseGenerator;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -27,7 +28,8 @@ public class PkiTSPFailSource extends PKITSPSource {
     }
 
     @Override
-    protected TimeStampResponse generateResponse(TimeStampResponseGenerator responseGenerator, TimeStampRequest request, Date date) throws TSPException {
+    protected TimeStampResponse buildResponse(TimeStampResponseGenerator responseGenerator, TimeStampRequest request,
+                                              BigInteger timeStampSerialNumber, Date productionTime) throws TSPException {
         return responseGenerator.generateFailResponse(PKIStatus.REJECTION, PKIFailureInfo.systemFailure, "Error for testing");
     }
 

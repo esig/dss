@@ -1,6 +1,5 @@
-package eu.europa.esig.dss.pki.jaxb.config;
+package eu.europa.esig.dss.pki.jaxb;
 
-import eu.europa.esig.dss.pki.jaxb.XmlPki;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

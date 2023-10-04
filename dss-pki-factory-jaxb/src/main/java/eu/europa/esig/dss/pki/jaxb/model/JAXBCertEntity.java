@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.pki.jaxb.model;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.model.DSSException;
@@ -14,16 +15,14 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
- * Represents a database entity for certificates.
+ * Represents a JAXB implementation of a {@code CertEntity}.
+ *
  */
-public class DBCertEntity implements CertEntity {
+public class JAXBCertEntity implements CertEntity {
 
     private static final long serialVersionUID = 5363087537311186428L;
-
-    private String internalId = UUID.randomUUID().toString();
 
     private String subject;
 
@@ -35,7 +34,7 @@ public class DBCertEntity implements CertEntity {
 
     private String privateKeyAlgo;
 
-    private String digestAlgo;
+    private DigestAlgorithm digestAlgo;
 
     private Date revocationDate;
 
@@ -43,9 +42,9 @@ public class DBCertEntity implements CertEntity {
 
     private boolean suspended;
 
-    private DBCertEntity parent;
+    private JAXBCertEntity parent;
 
-    private DBCertEntity ocspResponder;
+    private JAXBCertEntity ocspResponder;
 
     private boolean pss;
 
@@ -60,14 +59,6 @@ public class DBCertEntity implements CertEntity {
     private boolean toBeIgnored;
 
     private String pkiName;
-
-    public String getInternalId() {
-        return internalId;
-    }
-
-    public void setInternalId(String internalId) {
-        this.internalId = internalId;
-    }
 
     public String getSubject() {
         return subject;
@@ -106,11 +97,11 @@ public class DBCertEntity implements CertEntity {
         this.privateKeyAlgo = privateKeyAlgo;
     }
 
-    public String getDigestAlgo() {
+    public DigestAlgorithm getDigestAlgo() {
         return digestAlgo;
     }
 
-    public void setDigestAlgo(String digestAlgo) {
+    public void setDigestAlgo(DigestAlgorithm digestAlgo) {
         this.digestAlgo = digestAlgo;
     }
 
@@ -138,19 +129,19 @@ public class DBCertEntity implements CertEntity {
         this.suspended = suspended;
     }
 
-    public DBCertEntity getParent() {
+    public JAXBCertEntity getParent() {
         return parent;
     }
 
-    public void setParent(DBCertEntity parent) {
+    public void setParent(JAXBCertEntity parent) {
         this.parent = parent;
     }
 
-    public DBCertEntity getOcspResponder() {
+    public JAXBCertEntity getOcspResponder() {
         return ocspResponder;
     }
 
-    public void setOcspResponder(DBCertEntity ocspResponder) {
+    public void setOcspResponder(JAXBCertEntity ocspResponder) {
         this.ocspResponder = ocspResponder;
     }
 
@@ -250,11 +241,11 @@ public class DBCertEntity implements CertEntity {
      */
     public List<CertificateToken> getCertificateChain() {
         List<CertificateToken> certChain = new ArrayList<>();
-        DBCertEntity entity = this;
+        JAXBCertEntity entity = this;
         while (entity != null) {
-            DBCertEntity parent = entity.getParent();
+            JAXBCertEntity parent = entity.getParent();
             certChain.add(entity.getCertificateToken());
-            if (entity.getInternalId().equals(parent.getInternalId())) {
+            if (entity.getCertificateToken().equals(parent.getCertificateToken())) {
                 break;
             }
             entity = parent;

@@ -2,6 +2,8 @@ package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -9,7 +11,6 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
-import org.bouncycastle.cms.DefaultCMSSignatureAlgorithmNameGenerator;
 import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.operator.ContentSigner;
@@ -56,30 +57,30 @@ public class KeyEntityTSPSource implements TSPSource {
     private static final long serialVersionUID = -5082887845359355029L;
 
     /**
+     * The private key to be used to sign a time-stamp token
+     */
+    private PrivateKey privateKey;
+
+    /**
+     * The certificate representing a time-stamp issuer
+     */
+    private X509Certificate certificate;
+
+    /**
+     * Certificate chain associated with the {@code certificate}
+     */
+    private List<X509Certificate> certificateChain;
+
+    /**
      * SecureRandom used to calculate a serial number for a timestamp
      */
     private final SecureRandom secureRandom = new SecureRandom();
 
-    // TODO : remove unused global variables
-    /**
-     * The KeyStore to be used to access the key to create a timestamp
-     */
-    private KeyStore keyStore;
-
-    /**
-     * The alias of the key entry to be used to sign the timestamp
-     */
-    private String alias;
-
-    /**
-     * The password protection to access the key entry within the key store
-     */
-    private char[] keyEntryPassword;
-
     /**
      * Collection of digest algorithms accepted by the current TSP source in the request
      */
-    protected Collection<DigestAlgorithm> acceptedDigestAlgorithms = Arrays.asList(DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512);
+    private Collection<DigestAlgorithm> acceptedDigestAlgorithms =
+            Arrays.asList(DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512);
 
     /**
      * The TSA policy
@@ -94,37 +95,24 @@ public class KeyEntityTSPSource implements TSPSource {
     /**
      * The Digest Algorithm of the signature of the created time-stamp token
      */
-    private DigestAlgorithm tstDigestAlgorithm = DigestAlgorithm.SHA256;
+    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 
     /**
-     * Defines whether a time-stamp should be generated with a hash algorithm using a Probabilistic Signature Scheme (always MGF1 is used)
+     * Encryption algorithm of the signature of the OCSP response
      */
-    private boolean enablePSS = false;
+    private EncryptionAlgorithm encryptionAlgorithm;
 
     /**
-     * Default constructor instantiating empty configuration of the KeyStoreTSPSource
+     * Mask Generation Function of the signature of the OCSP response
+     */
+    private MaskGenerationFunction maskGenerationFunction;
+
+    /**
+     * Default constructor instantiating empty configuration of the KeyEntityTSPSource
      */
     protected KeyEntityTSPSource() {
-        // TODO : to be removed
         // empty
     }
-
-    // TODO : add comments
-    protected PrivateKey privateKey;
-    protected X509Certificate certificate;
-    protected List<X509Certificate> certificateChain;
-
-    public KeyEntityTSPSource(PrivateKey privateKey, X509Certificate certificateToken, List<X509Certificate> certificateChain) {
-        this.privateKey = privateKey;
-        this.certificate = certificateToken;
-        this.certificateChain = certificateChain;
-    }
-    public KeyEntityTSPSource(PrivateKey privateKey, CertificateToken certificateToken, List<CertificateToken> certificateChain) {
-        this.privateKey = privateKey;
-        this.certificate = certificateToken.getCertificate();
-        this.certificateChain = certificateChain.stream().map(CertificateToken::getCertificate).collect(Collectors.toList());
-    }
-
 
     /**
      * Constructor instantiating the key store content and key entry data
@@ -207,32 +195,79 @@ public class KeyEntityTSPSource implements TSPSource {
         this.certificateChain = Arrays.stream(privateKeyEntry.getCertificateChain()).map(c -> (X509Certificate) c).collect(Collectors.toList());
     }
 
+    private static KeyStore.PrivateKeyEntry getPrivateKeyEntry(KeyStore keyStore, String alias, char[] keyEntryPassword) {
+        try {
+            if (!keyStore.isKeyEntry(alias)) {
+                throw new IllegalArgumentException(String.format("No related/supported key entry found for alias '%s'!", alias));
+            }
+            if (!keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
+                throw new IllegalArgumentException(String.format("No key entry found for alias '%s' is not instance of a PrivateKeyEntry!", alias));
+            }
 
-    /**
-     * Sets the KeyStore (required)
-     *
-     * @param keyStore {@link KeyStore}
-     */
-    public void setKeyStore(KeyStore keyStore) {
-        this.keyStore = keyStore;
+            return (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword));
+        } catch (NoSuchAlgorithmException | UnrecoverableEntryException | KeyStoreException e) {
+            throw new DSSException(String.format("Unable to recover the key entry with alias '%s'. Reason : %s", alias, e.getMessage()), e);
+        }
     }
 
     /**
-     * Sets the alias of the key entry within the KeyStore to be used to create a timestamp (required)
+     * Constructor to instantiate KeyEntityTSPSource with the given {@code PrivateKey} and
+     * the corresponding {@code certificateToken} and {@code certificateChain}
      *
-     * @param alias {@link String}
+     * @param privateKey       {@link PrivateKey} representing a key t be used to sing the time-stamp token
+     * @param certificateToken {@link CertificateToken} representing a time-stamp issuer certificate associated
+     *                         with the {@code privateKey}
+     * @param certificateChain a list of {@link CertificateToken}s representing a certificate chain
+     *                         for {@code certificateToken} to be added within the time-stamp
      */
-    public void setAlias(String alias) {
-        this.alias = alias;
+    public KeyEntityTSPSource(PrivateKey privateKey, CertificateToken certificateToken, List<CertificateToken> certificateChain) {
+        this(privateKey, certificateToken.getCertificate(), certificateChain.stream().map(CertificateToken::getCertificate).collect(Collectors.toList()));
     }
 
     /**
-     * Sets the password protection String to access the key entry under the defined alias
+     * Constructor to instantiate KeyEntityTSPSource with the given {@code PrivateKey} and
+     * the corresponding {@code certificate} and {@code certificateChain}
      *
-     * @param keyEntryPassword char array
+     * @param privateKey       {@link PrivateKey} representing a key t be used to sing the time-stamp token
+     * @param certificate {@link X509Certificate} representing a time-stamp issuer certificate associated
+     *                         with the {@code privateKey}
+     * @param certificateChain a list of {@link X509Certificate}s representing a certificate chain
+     *                         for {@code certificateToken} to be added within the time-stamp
      */
-    public void setKeyEntryPassword(char[] keyEntryPassword) {
-        this.keyEntryPassword = keyEntryPassword;
+    public KeyEntityTSPSource(PrivateKey privateKey, X509Certificate certificate, List<X509Certificate> certificateChain) {
+        Objects.requireNonNull(privateKey,"PrivateKey is not defined!");
+        Objects.requireNonNull(certificate,"Certificate is not defined!");
+        Objects.requireNonNull(certificateChain,"Certificate chain is not defined!");
+        this.privateKey = privateKey;
+        this.certificate = certificate;
+        this.certificateChain = certificateChain;
+    }
+
+    /**
+     * Sets the private key used to sign the time-stamp token
+     *
+     * @param privateKey {@link PrivateKey}
+     */
+    public void setPrivateKey(PrivateKey privateKey) {
+        this.privateKey = privateKey;
+    }
+
+    /**
+     * Sets a time-stamp issuer certificate
+     *
+     * @param certificate {@link X509Certificate}
+     */
+    public void setCertificate(X509Certificate certificate) {
+        this.certificate = certificate;
+    }
+
+    /**
+     * Sets a certificate chain to be embedded within the time-stamp token
+     *
+     * @param certificateChain a list of {@link CertificateToken}s
+     */
+    public void setCertificateChain(List<X509Certificate> certificateChain) {
+        this.certificateChain = certificateChain;
     }
 
     /**
@@ -256,6 +291,18 @@ public class KeyEntityTSPSource implements TSPSource {
     }
 
     /**
+     * Gets the production time of the time-stamp
+     *
+     * @return {@link Date}
+     */
+    protected Date getProductionTime() {
+        if (productionTime == null) {
+            return new Date();
+        }
+        return productionTime;
+    }
+
+    /**
      * Sets a production time of the timestamp.
      * NOTE: if not defined, the current time will be used.
      *
@@ -269,50 +316,47 @@ public class KeyEntityTSPSource implements TSPSource {
      * Sets the digest algorithm of the signature of the generated time-stamp token
      * Default: DigestAlgorithm.SHA256
      *
-     * @param tstDigestAlgorithm {@link DigestAlgorithm}
+     * @param digestAlgorithm {@link DigestAlgorithm}
      */
-    public void setTstDigestAlgorithm(DigestAlgorithm tstDigestAlgorithm) {
-        this.tstDigestAlgorithm = tstDigestAlgorithm;
+    public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+        this.digestAlgorithm = digestAlgorithm;
     }
 
     /**
-     * Sets whether a time-stamp should be generated with a hash algorithm using the Probabilistic Signature Scheme (MGF1 is used)
-     * Default: FALSE (MGF1 is not applied)
+     * Sets the encryption algorithm to be used on time-stamp's signature generation.
+     * NOTE: the encryptionAlgorithm, when defined, shall be compatible with the encryption algorithm used by the target key!
      *
-     * @param enablePSS whether MGF1 shall be applied
+     * @param encryptionAlgorithm {@link EncryptionAlgorithm}
      */
-    public void setEnablePSS(boolean enablePSS) {
-        this.enablePSS = enablePSS;
+    public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
+        this.encryptionAlgorithm = encryptionAlgorithm;
     }
 
-
-    public void setCertificate(X509Certificate certificate) {
-        this.certificate = certificate;
-    }
-
-    public void setCertificateChain(List<X509Certificate> certificateChain) {
-        this.certificateChain = certificateChain;
+    /**
+     * Sets the mask generation function to be applied on a time-stamp signing.
+     * NOTE: the mask generation function should be compatible with the given encryption algorithm!
+     *
+     * @param maskGenerationFunction {@link MaskGenerationFunction}
+     */
+    public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+        this.maskGenerationFunction = maskGenerationFunction;
     }
 
     @Override
     public TimestampBinary getTimeStampResponse(DigestAlgorithm digestAlgorithm, byte[] digest) {
-        // TODO : check add requireNonNull for all mandatory objects
+        Objects.requireNonNull(privateKey, "PrivateKey is not defined! Use #setPrivateKey method.");
+        Objects.requireNonNull(certificate, "Certificate is not defined! Use #setCertificate method.");
+        Objects.requireNonNull(certificateChain, "Certificate chain is not defined! Use #setCertificateChain method.");
         Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm is not defined!");
         Objects.requireNonNull(digest, "digest is not defined!");
         if (!acceptedDigestAlgorithms.contains(digestAlgorithm)) {
-            throw new DSSException(String.format("DigestAlgorithm '%s' is not supported by the KeyStoreTSPSource implementation!", digestAlgorithm));
+            throw new DSSException(String.format("DigestAlgorithm '%s' is not supported by the KeyEntityTSPSource implementation!", digestAlgorithm));
         }
 
         try {
-
             ASN1ObjectIdentifier digestAlgoOID = getASN1ObjectIdentifier(digestAlgorithm);
-
-            TimeStampRequest request = initRequest(digestAlgoOID, digest);
-
-            TimeStampResponseGenerator responseGenerator = initResponseGenerator(privateKey, certificate, certificateChain, digestAlgoOID);
-
-            Date date = productionTime != null ? productionTime : new Date();
-            TimeStampResponse response = generateResponse(responseGenerator, request, date);
+            TimeStampRequest request = createRequest(digestAlgoOID, digest);
+            TimeStampResponse response = generateResponse(request, digestAlgoOID);
             return new TimestampBinary(response.getTimeStampToken().getEncoded());
 
         } catch (IOException | TSPException e) {
@@ -320,26 +364,80 @@ public class KeyEntityTSPSource implements TSPSource {
         }
     }
 
-
-    protected TimeStampRequest initRequest(ASN1ObjectIdentifier digestAlgoOID, byte[] digest) {
-
-        TimeStampRequestGenerator requestGenerator = new TimeStampRequestGenerator();
+    /**
+     * Creates a request for a time-stamp token generation
+     *
+     * @param digestAlgoOID {@link ASN1ObjectIdentifier} representing an OID of a Digest Algorithm used to compute hash to be time-stamped
+     * @param digest byte array representing hash to be time-stamped
+     * @return {@link TimeStampRequest}
+     */
+    protected TimeStampRequest createRequest(ASN1ObjectIdentifier digestAlgoOID, byte[] digest) {
+        final TimeStampRequestGenerator requestGenerator = new TimeStampRequestGenerator();
         requestGenerator.setCertReq(true);
         return requestGenerator.generate(digestAlgoOID, digest);
 
     }
 
-    protected TimeStampResponseGenerator initResponseGenerator(PrivateKey privateKey,
-                                                               X509Certificate certificateToken,
-                                                               List<X509Certificate> certificateChain,
-                                                               ASN1ObjectIdentifier digestAlgoOID) {
+    private Set<ASN1ObjectIdentifier> getAcceptedDigestAlgorithmIdentifiers() {
+        Set<ASN1ObjectIdentifier> result = new HashSet<>();
+        for (DigestAlgorithm digestAlgorithm : acceptedDigestAlgorithms) {
+            result.add(getASN1ObjectIdentifier(digestAlgorithm));
+        }
+        return result;
+    }
+
+    private ASN1ObjectIdentifier getASN1ObjectIdentifier(DigestAlgorithm digestAlgorithm) {
+        return getASN1ObjectIdentifier(digestAlgorithm.getOid());
+    }
+
+    private ASN1ObjectIdentifier getASN1ObjectIdentifier(String oid) {
+        return new ASN1ObjectIdentifier(oid);
+    }
+
+    /**
+     * Returns the target signature algorithm to be used to time-stamp generation
+     *
+     * @return {@link String} signature algorithm name
+     */
+    protected SignatureAlgorithm getSignatureAlgorithm() {
+        EncryptionAlgorithm keyAlgorithm = EncryptionAlgorithm.forKey(privateKey);
+        if (this.encryptionAlgorithm != null) {
+            if (!this.encryptionAlgorithm.isEquivalent(keyAlgorithm)) {
+                throw new IllegalArgumentException(String.format(
+                        "Defined EncryptionAlgorithm '%s' is not equivalent to the one returned by time-stamp issuer '%s'", encryptionAlgorithm, keyAlgorithm));
+            }
+            keyAlgorithm = encryptionAlgorithm;
+        }
+        return SignatureAlgorithm.getAlgorithm(keyAlgorithm, digestAlgorithm, maskGenerationFunction);
+    }
+
+    /**
+     * This method generates a timestamp response
+     *
+     * @param request           {@link TimeStampRequest}
+     * @param digestAlgoOID     {@link ASN1ObjectIdentifier} representing an OID of a DigestAlgorithm used to generate the time-stamp
+     * @return {@link TimeStampResponse}
+     * @throws TSPException if an error occurs during the timestamp response generation
+     */
+    protected TimeStampResponse generateResponse(TimeStampRequest request, ASN1ObjectIdentifier digestAlgoOID) throws TSPException {
+        TimeStampResponseGenerator responseGenerator = initResponseGenerator(digestAlgoOID);
+        BigInteger timeStampSerialNumber = getTimeStampSerialNumber();
+        Date productionTime = getProductionTime();
+        return buildResponse(responseGenerator, request, timeStampSerialNumber, productionTime);
+    }
+
+    /**
+     * This method initializes the {@code TimeStampResponseGenerator}
+     *
+     * @param digestAlgoOID {@link ASN1ObjectIdentifier} used to generate the message-imprint
+     * @return {@link TimeStampResponseGenerator}
+     */
+    protected TimeStampResponseGenerator initResponseGenerator(ASN1ObjectIdentifier digestAlgoOID) {
         try {
-            EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forKey(privateKey);
-            String sigAlgoName = getSignatureAlgorithmName(tstDigestAlgorithm, encryptionAlgorithm, enablePSS);
+            SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
+            ContentSigner signer = new JcaContentSignerBuilder(signatureAlgorithm.getJCEId()).build(privateKey);
 
-            ContentSigner signer = new JcaContentSignerBuilder(sigAlgoName).build(privateKey);
-
-            X509CertificateHolder certificateHolder = new X509CertificateHolder(certificateToken.getEncoded());
+            X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
             SignerInfoGenerator infoGenerator = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider()).build(signer, certificateHolder);
 
             AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(digestAlgoOID);
@@ -358,58 +456,19 @@ public class KeyEntityTSPSource implements TSPSource {
         }
     }
 
-    private Set<ASN1ObjectIdentifier> getAcceptedDigestAlgorithmIdentifiers() {
-        Set<ASN1ObjectIdentifier> result = new HashSet<>();
-        for (DigestAlgorithm digestAlgorithm : acceptedDigestAlgorithms) {
-            result.add(getASN1ObjectIdentifier(digestAlgorithm));
-        }
-        return result;
-    }
-
-    private ASN1ObjectIdentifier getASN1ObjectIdentifier(EncryptionAlgorithm encryptionAlgorithm) {
-        return getASN1ObjectIdentifier(encryptionAlgorithm.getOid());
-    }
-
-    protected ASN1ObjectIdentifier getASN1ObjectIdentifier(DigestAlgorithm digestAlgorithm) {
-        return getASN1ObjectIdentifier(digestAlgorithm.getOid());
-    }
-
-
-    private ASN1ObjectIdentifier getASN1ObjectIdentifier(String oid) {
-        return new ASN1ObjectIdentifier(oid);
-    }
-
     /**
-     * Returns the target signature algorithm to be used to time-stamp generation
-     *
-     * @param digestAlgorithm     {@link DigestAlgorithm}
-     * @param encryptionAlgorithm {@link EncryptionAlgorithm}
-     * @param enablePSS           whether the MGF1 shall be applied
-     * @return {@link String} signature algorithm name
-     */
-    protected String getSignatureAlgorithmName(DigestAlgorithm digestAlgorithm, EncryptionAlgorithm encryptionAlgorithm, boolean enablePSS) {
-        AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(getASN1ObjectIdentifier(digestAlgorithm));
-        AlgorithmIdentifier encryptionAlg = new AlgorithmIdentifier(getASN1ObjectIdentifier(encryptionAlgorithm));
-
-        DefaultCMSSignatureAlgorithmNameGenerator sigAlgoGenerator = new DefaultCMSSignatureAlgorithmNameGenerator();
-        String sigAlgoName = sigAlgoGenerator.getSignatureName(digestAlgorithmIdentifier, encryptionAlg);
-        if (enablePSS) {
-            sigAlgoName += "andMGF1";
-        }
-        return sigAlgoName;
-    }
-
-    /**
-     * This method generates a timestamp response
+     * Generates a time-stamp response
      *
      * @param responseGenerator {@link TimeStampResponseGenerator}
-     * @param request           {@link TimeStampRequest}
-     * @param date              {@link Date} production time of the timestamp
+     * @param request {@link TimeStampRequest}
+     * @param timeStampSerialNumber {@link BigInteger}
+     * @param productionTime {@link Date} representing a time-stamp's generation time
      * @return {@link TimeStampResponse}
-     * @throws TSPException if an error occurs during the timestamp response generation
+     * @throws TSPException if an error occurs on time-stamp generation
      */
-    protected TimeStampResponse generateResponse(TimeStampResponseGenerator responseGenerator, TimeStampRequest request, Date date) throws TSPException {
-        return responseGenerator.generate(request, getTimeStampSerialNumber(), date);
+    protected TimeStampResponse buildResponse(TimeStampResponseGenerator responseGenerator, TimeStampRequest request,
+                                              BigInteger timeStampSerialNumber, Date productionTime) throws TSPException {
+        return responseGenerator.generate(request, timeStampSerialNumber, productionTime);
     }
 
     /**
@@ -421,18 +480,4 @@ public class KeyEntityTSPSource implements TSPSource {
         return new BigInteger(128, secureRandom);
     }
 
-    private static KeyStore.PrivateKeyEntry getPrivateKeyEntry(KeyStore keyStore, String alias, char[] keyEntryPassword) {
-        try {
-            if (!keyStore.isKeyEntry(alias)) {
-                throw new IllegalArgumentException(String.format("No related/supported key entry found for alias '%s'!", alias));
-            }
-            if (!keyStore.entryInstanceOf(alias, KeyStore.PrivateKeyEntry.class)) {
-                throw new IllegalArgumentException(String.format("No key entry found for alias '%s' is not instance of a PrivateKeyEntry!", alias));
-            }
-
-            return (KeyStore.PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword));
-        } catch (NoSuchAlgorithmException | UnrecoverableEntryException | KeyStoreException e) {
-            throw new DSSException(String.format("Unable to recover the key entry with alias '%s'. Reason : %s", alias, e.getMessage()), e);
-        }
-    }
 }

@@ -28,6 +28,28 @@
                            printMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.printShortName"/>
         </jaxb:bindings>
 
+        <jaxb:bindings node="//xs:simpleType[@name='KeyUsageBit']">
+            <jaxb:javaType name="eu.europa.esig.dss.enumerations.KeyUsageBit"
+                           parseMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.parse"
+                           printMethod="eu.europa.esig.dss.jaxb.parsers.KeyUsageBitParser.print" />
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='CertificateType']//xs:element[@name='digestAlgo']">
+            <jaxb:javaType name="eu.europa.esig.dss.enumerations.DigestAlgorithm"
+                           parseMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.parse"
+                           printMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.print" />
+        </jaxb:bindings>
+
+        <jaxb:bindings node="//xs:complexType[@name='KeyAlgo']//xs:attribute[@name='encryption']">
+            <jaxb:property>
+                <jaxb:baseType>
+                    <jaxb:javaType name="eu.europa.esig.dss.enumerations.EncryptionAlgorithm"
+                                   parseMethod="eu.europa.esig.dss.jaxb.parsers.EncryptionAlgorithmParser.parse"
+                                   printMethod="eu.europa.esig.dss.jaxb.parsers.EncryptionAlgorithmParser.print" />
+                </jaxb:baseType>
+            </jaxb:property>
+        </jaxb:bindings>
+
     </jaxb:bindings>
 
 </jaxb:bindings>

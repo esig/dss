@@ -10,15 +10,17 @@ import java.util.Date;
  */
 public class CertEntityRevocation {
 
-    private Date revocationDate;
-    private RevocationReason revocationReason;
+    /** The revocation time of the certificate */
+    private final Date revocationDate;
 
+    /** The revocation reason */
+    private final RevocationReason revocationReason;
 
     /**
      * Constructs a new Revocation instance with the provided revocation date and reason.
      *
-     * @param revocationDate   The date of revocation.
-     * @param revocationReason The reason for revocation.
+     * @param revocationDate {@link Date} the date of revocation.
+     * @param revocationReason {@link Date} the reason for revocation.
      */
     public CertEntityRevocation(Date revocationDate, RevocationReason revocationReason) {
         this.revocationDate = revocationDate;
@@ -42,6 +44,5 @@ public class CertEntityRevocation {
     public RevocationReason getRevocationReason() {
         return revocationReason;
     }
-
 
 }

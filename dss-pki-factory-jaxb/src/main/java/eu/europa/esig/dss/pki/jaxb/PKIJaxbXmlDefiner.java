@@ -18,18 +18,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pki.jaxb.config;
+package eu.europa.esig.dss.pki.jaxb;
 
 import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
-import eu.europa.esig.dss.pki.jaxb.ObjectFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -61,9 +57,6 @@ public final class PKIJaxbXmlDefiner {
     /** Schema (thread-safe) */
     private static Schema schema;
 
-    /** SVG Templates (thread-safe) */
-    private static Templates svgTemplates;
-
     /**
      * Gets the JAXB context
      *
@@ -92,27 +85,6 @@ public final class PKIJaxbXmlDefiner {
             }
         }
         return schema;
-    }
-
-    /**
-     * Gets the SVG template
-     *
-     * @return {@link Templates}
-     * @throws TransformerConfigurationException if an exception occurs
-     * @throws IOException if file reading exception occurs
-     */
-    public static Templates getSvgTemplates() throws TransformerConfigurationException, IOException {
-        if (svgTemplates == null) {
-// 			svgTemplates = loadTemplates(PKI_XSLT_SVG_LOCATION);
-        }
-        return svgTemplates;
-    }
-
-    private static Templates loadTemplates(String path) throws TransformerConfigurationException, IOException {
-        try (InputStream is = PKIJaxbXmlDefiner.class.getResourceAsStream(path)) {
-            TransformerFactory transformerFactory = XmlDefinerUtils.getInstance().getSecureTransformerFactory();
-            return transformerFactory.newTemplates(new StreamSource(is));
-        }
     }
 
 }

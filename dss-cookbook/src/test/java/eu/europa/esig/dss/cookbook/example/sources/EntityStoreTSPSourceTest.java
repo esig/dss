@@ -49,7 +49,7 @@ public class EntityStoreTSPSourceTest {
 
         // This method allows definition of a digest algorithm to be used for a signature of the generated time-stamp
         // Default: SHA-256
-        entityStoreTSPSource.setTstDigestAlgorithm(DigestAlgorithm.SHA256);
+        entityStoreTSPSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
         // This method defines whether hash algorithm used to sign the timestamp shall use a Probabilistic Signature Scheme
         // Default: FALSE (no PSS is used)

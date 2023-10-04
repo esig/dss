@@ -85,7 +85,7 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		signatureParameters.setTokenReferencesDigestAlgorithm(DigestAlgorithm.SHA384);
 		signatureParameters.setEn319132(false);
 		CertificateVerifier certificateVerifier=getCompleteCertificateVerifier();
-		PKIOCSPSource pkiocspSource=pKIDelegateOCSPSource();
+		PKIOCSPSource pkiocspSource = pkiDelegatedOCSPSource();
 		certificateVerifier.setOcspSource(pkiocspSource);
 		service = new XAdESService(certificateVerifier);
 		service.setTspSource(getGoodTsa());

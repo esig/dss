@@ -23,62 +23,61 @@ package eu.europa.esig.dss.pki.jaxb.tsp;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.pki.jaxb.db.JaxbCertEntityRepository;
+import eu.europa.esig.dss.pki.jaxb.AbstractTestJaxbPKI;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.repository.CertEntityRepository;
 import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * How to initialize online TSP source.
- */
-
-public class JaxbPKITSPSourceTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(JaxbPKITSPSourceTest.class);
-    CertEntityRepository certEntityRepository = new JaxbCertEntityRepository();
-
+public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
 
     @Test
     public void testSuccess() {
-
-        CertEntity certEntity = certEntityRepository.getCertEntityBySubject("good-tsa");
+        CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
         final byte[] toDigest = "Hello world".getBytes(StandardCharsets.UTF_8);
         final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
         final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
-
-        LOG.info(DSSUtils.toHex(tsBinary.getBytes()));
-
         assertNotNull(tsBinary);
     }
 
     @Test
-    public void testTimestampFail() {
-
-
-        CertEntity certEntity = certEntityRepository.getCertEntityBySubject("good-tsa");
+    public void testTimestampUnsupportedDigestAlgo() {
+        CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
 
+        final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
+        final byte[] toDigest = "Hello world good tsa".getBytes(StandardCharsets.UTF_8);
+        final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
+
+        Exception exception = assertThrows(DSSException.class, () -> tspSource.getTimeStampResponse(digestAlgorithm, digestValue));
+        assertTrue(exception.getMessage().contains("DigestAlgorithm '" + digestAlgorithm + "' is not supported by the KeyEntityTSPSource implementation!"));
+
+        tspSource.setAcceptedDigestAlgorithms(Collections.singleton(DigestAlgorithm.SHA1));
+        final TimestampBinary tsBinary = tspSource.getTimeStampResponse(digestAlgorithm, digestValue);
+        assertNotNull(tsBinary);
+    }
+
+    @Test
+    public void testTimestampSha3DigestAlgo() {
+        CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
+        PKITSPSource tspSource = new PKITSPSource(certEntity);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA3_256;
         final byte[] toDigest = "Hello world good tsa".getBytes(StandardCharsets.UTF_8);
         final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
 
         Exception exception = assertThrows(DSSException.class, () -> tspSource.getTimeStampResponse(digestAlgorithm, digestValue));
-        assertTrue(exception.getMessage().contains("DigestAlgorithm '" + digestAlgorithm + "' is not supported by the PkiTSPSource implementation!"));
+        assertTrue(exception.getMessage().contains("DigestAlgorithm '" + digestAlgorithm + "' is not supported by the KeyEntityTSPSource implementation!"));
     }
-
 
 }

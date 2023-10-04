@@ -19,30 +19,31 @@ import java.util.List;
 public interface CertEntity extends Serializable {
 
     /**
-     * Get the private key associated with this certificate entity.
+     * Gets the private key associated with this certificate entity.
      *
-     * @return The private key as a {@link PrivateKey} object.
+     * @return private key as a {@link PrivateKey} object
      */
     PrivateKey getPrivateKeyObject();
 
     /**
-     * Get the certificate chain associated with this certificate entity.
+     * Gets the certificate chain associated with this certificate entity.
      *
-     * @return A list of {@link CertificateToken} objects representing the certificate chain.
+     * @return a list of {@link CertificateToken} objects representing the certificate chain.
      */
     List<CertificateToken> getCertificateChain();
 
     /**
-     * Get the certificate token associated with this certificate entity.
+     * Gets the certificate token associated with this certificate entity.
      *
-     * @return The certificate token as a {@link CertificateToken} object.
+     * @return the certificate token as a {@link CertificateToken} object.
      */
     CertificateToken getCertificateToken();
 
     /**
-     * Get the encryption algorithm associated with this certificate entity.
+     * Gets the encryption algorithm associated with this certificate entity.
      *
-     * @return The encryption algorithm as an {@link EncryptionAlgorithm} object.
+     * @return the encryption algorithm as an {@link EncryptionAlgorithm} object.
      */
     EncryptionAlgorithm getEncryptionAlgorithm();
+
 }

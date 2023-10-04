@@ -34,8 +34,6 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
-import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -78,7 +76,7 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 	@Override
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
-		certificateVerifier.setOcspSource(pKIDelegateOCSPSource());
+		certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
 		return certificateVerifier;
 	}
 

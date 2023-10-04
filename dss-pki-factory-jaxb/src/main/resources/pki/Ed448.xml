@@ -7,6 +7,7 @@
         <issuer serialNumber="1000">Ed448-root-ca</issuer>
 
         <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
 
         <notBefore year="-1"/>
         <notAfter year="1"/>
@@ -23,6 +24,7 @@
         <issuer serialNumber="1000">Ed448-root-ca</issuer>
 
         <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
 
         <notBefore year="-1"/>
         <notAfter year="1"/>
@@ -41,6 +43,7 @@
         <ocspResponder serialNumber="1001">Ed448-root-ca</ocspResponder>
 
         <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
 
         <notBefore month="-11"/>
         <notAfter month="11"/>
@@ -60,6 +63,7 @@
         <issuer serialNumber="1002">Ed448-root-ca</issuer>
 
         <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
 
         <notBefore month="-11"/>
         <notAfter month="11"/>

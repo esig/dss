@@ -21,51 +21,42 @@
 package eu.europa.esig.dss.pki.jaxb.aia;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pki.jaxb.db.JaxbCertEntityRepository;
-import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.repository.CertEntityRepository;
+import eu.europa.esig.dss.pki.jaxb.AbstractTestJaxbPKI;
 import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
-import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class JaxbPKIAIASourceTest {
+public class JaxbPKIAIASourceTest extends AbstractTestJaxbPKI {
 
-    private static CertificateToken certificateWithAIA;
-    private static CertificateToken goodCaTrusted;
-    private static final CertEntityRepository certEntityRepository = new JaxbCertEntityRepository();
-    private static CertEntity certEntity;
+    private static CertificateToken goodUser;
+    private static CertificateToken goodCa;
 
     @BeforeAll
     public static void init() {
-        certEntity = certEntityRepository.getCertEntityBySubject("good-user");
-        certificateWithAIA = certEntity.getCertificateToken();
-        goodCaTrusted = certEntityRepository.getCertEntityBySubject("root-ca").getCertificateToken();
-        assertNotNull(certificateWithAIA);
+        goodUser = repository.getCertEntityBySubject("good-user").getCertificateToken();
+        goodCa = repository.getCertEntityBySubject("root-ca").getCertificateToken();
     }
 
     @Test
-    public void testLoadIssuer() {
-        PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
+    public void testCompleteCertChain() {
+        PKIAIASource aiaSource = new PKIAIASource(repository);
         aiaSource.setCompleteCertificateChain(true);
-        CertificateToken certificateToken = certEntityRepository.getCertEntityBySubject("John Doe").getCertificateToken();
-        Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificateToken);
 
-        assertTrue(Utils.isCollectionNotEmpty(issuers));
+        Collection<CertificateToken> certChain = aiaSource.getCertificatesByAIA(goodUser);
+        assertTrue(Utils.isCollectionNotEmpty(certChain));
+        assertEquals(2, certChain.size());
+
         boolean foundIssuer = false;
-        for (CertificateToken issuer : issuers) {
-            if (certificateToken.isSignedBy(issuer)) {
+        for (CertificateToken issuer : certChain) {
+            if (goodUser.isSignedBy(issuer)) {
                 foundIssuer = true;
             }
         }
@@ -73,47 +64,35 @@ public class JaxbPKIAIASourceTest {
     }
 
     @Test
-    public void setNullCertEntityRepositoryTest() {
-        PKIAIASource aiaSource = new PKIAIASource(null);
-        Exception exception = assertThrows(NullPointerException.class, () -> aiaSource.getCertificatesByAIA(certificateWithAIA));
-        assertEquals("CertEntity Repository is not provided", exception.getMessage());
-    }
+    public void testLoadIssuer() {
+        PKIAIASource aiaSource = new PKIAIASource(repository);
+        aiaSource.setCompleteCertificateChain(false);
 
-    @Test
-    public void setNullCertificateTokenTest() {
-        PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
-        Exception exception = assertThrows(NullPointerException.class, () -> aiaSource.getCertificatesByAIA(null));
-        assertEquals("CertificateToken parameter cannot be null", exception.getMessage());
-    }
-
-    @Test
-    public void emptyAcceptedProtocolsTest() {
-        PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
-        Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(certificateWithAIA);
-        assertFalse(Utils.isCollectionEmpty(issuers));
+        Collection<CertificateToken> certChain = aiaSource.getCertificatesByAIA(goodUser);
+        assertTrue(Utils.isCollectionNotEmpty(certChain));
+        assertEquals(1, certChain.size());
+        assertTrue(goodUser.isSignedBy(certChain.iterator().next()));
     }
 
     @Test
     public void testLoadIssuerNoAIA() {
-        PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
+        PKIAIASource aiaSource = new PKIAIASource(repository);
         aiaSource.setCompleteCertificateChain(true);
-        Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(goodCaTrusted);
+        Collection<CertificateToken> issuers = aiaSource.getCertificatesByAIA(goodCa);
         assertTrue(Utils.isCollectionEmpty(issuers));
-        assertTrue(goodCaTrusted.isCA());
     }
 
     @Test
-    public void acceptedProtocolsTest() {
-        CertificateToken certificate = certEntityRepository.getCertEntityBySubject("ocsp-skip-root-ca").getCertificateToken(); //src/test/resources/sk_ca.cer
-        Collection<CertificateToken> issuers = new HashSet<>();
-        if (CertificateExtensionsUtils.getAuthorityInformationAccess(certificate) != null) {
-            PKIAIASource aiaSource = new PKIAIASource(certEntityRepository);
-            issuers = aiaSource.getCertificatesByAIA(certificate);
+    public void setNullRepositoryTest() {
+        Exception exception = assertThrows(NullPointerException.class, () -> new PKIAIASource(null));
+        assertEquals("Certificate repository shall be provided!", exception.getMessage());
+    }
 
-        }
-
-        assertEquals(0, issuers.size());
-
+    @Test
+    public void setNullCertificateTokenTest() {
+        PKIAIASource aiaSource = new PKIAIASource(repository);
+        Exception exception = assertThrows(NullPointerException.class, () -> aiaSource.getCertificatesByAIA(null));
+        assertEquals("Certificate Token parameter is not provided!", exception.getMessage());
     }
 
 }
