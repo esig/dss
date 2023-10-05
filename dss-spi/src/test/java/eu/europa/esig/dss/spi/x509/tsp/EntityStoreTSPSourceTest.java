@@ -62,7 +62,7 @@ public class EntityStoreTSPSourceTest {
 
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DTBS);
         Exception exception = assertThrows(DSSException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
-        assertEquals("DigestAlgorithm 'SHA1' is not supported by the KeyStoreTSPSource implementation!", exception.getMessage());
+        assertEquals("DigestAlgorithm 'SHA1' is not supported by the KeyEntityTSPSource implementation!", exception.getMessage());
 
         tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);

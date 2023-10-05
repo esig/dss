@@ -149,8 +149,12 @@ public abstract class RevocationDataLoadingStrategy {
 				return revocationToken;
 			}
 		} catch (DSSException e) {
-			LOG.error("CRL DSS Exception: {}", e.getMessage(), e);
-			return null;
+			String errorMessage = "CRL DSS Exception: {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("A CRL for token {} is not obtained! Return null value.", certificateToken.getDSSIdAsString());
@@ -186,8 +190,12 @@ public abstract class RevocationDataLoadingStrategy {
 				return revocationToken;
 			}
 		} catch (DSSException e) {
-			LOG.error("OCSP DSS Exception: {}", e.getMessage(), e);
-			return null;
+			String errorMessage = "OCSP DSS Exception: {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("An OCSP response for token {} is not obtained! Return null value.", certificateToken.getDSSIdAsString());

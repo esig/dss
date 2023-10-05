@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="belgium">
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="good-pki">
 
     <certificate>
         <serialNumber>1</serialNumber>
@@ -368,7 +368,7 @@
 
         <notBefore month="-11"/>
         <notAfter month="11"/>
-        <suspended/>
+        <revocation month="-1" reason="certificateHold"/>
 
         <keyUsages>
             <keyUsage>nonRepudiation</keyUsage>

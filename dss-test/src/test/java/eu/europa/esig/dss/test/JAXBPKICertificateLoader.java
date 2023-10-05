@@ -1,11 +1,11 @@
 package eu.europa.esig.dss.test;
 
-import eu.europa.esig.dss.pki.jaxb.XmlPki;
 import eu.europa.esig.dss.pki.jaxb.PKIJaxbFacade;
-import eu.europa.esig.dss.pki.jaxb.repository.JaxbCertEntityRepository;
+import eu.europa.esig.dss.pki.jaxb.XmlPki;
 import eu.europa.esig.dss.pki.jaxb.builder.JAXBCertEntityBuilder;
+import eu.europa.esig.dss.pki.jaxb.repository.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -13,19 +13,15 @@ import org.xml.sax.SAXException;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.XML_FOLDER;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * This class is used to facilitate JAXB PKI content loading in unit tests
@@ -35,50 +31,59 @@ public class JAXBPKICertificateLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(JAXBPKICertificateLoader.class);
 
+    private final JaxbCertEntityRepository repository;
+
     private final JAXBCertEntityBuilder certificationEntityBuilder = new JAXBCertEntityBuilder();
 
-    private JaxbCertEntityRepository repository;
-    private final Set<Path> createdPKIs = new HashSet<>();
-    private final Map<Path, XmlPki> filePkiMap = new HashMap<>();
+    private final Set<String> createdPKIs = new HashSet<>();
+    private final Map<String, XmlPki> filePkiMap = new HashMap<>();
 
-    private CertificateSource certificateSource;
+    private String pkiFolder;
+
+    private String[] pkiFilenames;
+
+    private CommonTrustedCertificateSource trustedCertificateSource;
 
     public JAXBPKICertificateLoader(JaxbCertEntityRepository repository) {
         this.repository = repository;
     }
 
-    public void setCommonTrustedCertificateSource(CertificateSource certificateSource) {
-        this.certificateSource = certificateSource;
+    public void setCommonTrustedCertificateSource(CommonTrustedCertificateSource trustedCertificateSource) {
+        this.trustedCertificateSource = trustedCertificateSource;
+    }
+
+    public void setPkiFolder(String pkiFolder) {
+        this.pkiFolder = pkiFolder;
+    }
+
+    public void setPkiFilenames(String[] pkiFilenames) {
+        this.pkiFilenames = pkiFilenames;
     }
 
     private void synchronizeCertificateSource() {
-        if (certificateSource == null) {
+        if (trustedCertificateSource == null) {
             LOG.warn("No CommonTrustedCertificateSource to be synchronized");
             return;
         }
-        repository.getTrustAnchors().stream().map(CertEntity::getCertificateToken).forEach(certificateToken -> certificateSource.addCertificate(certificateToken));
+        repository.getTrustAnchors().stream().map(CertEntity::getCertificateToken).forEach(certificateToken -> trustedCertificateSource.addCertificate(certificateToken));
     }
 
-    // return CertEntity
     public CertEntity loadCertificateEntityFromXml(String certificateSubjectName) {
-        File folder = getFolder();
         CertEntity dbCertEntity = repository.getCertEntityBySubject(certificateSubjectName);
-        dbCertEntity = getCertEntity(certificateSubjectName, folder, dbCertEntity);
+        dbCertEntity = getCertEntity(certificateSubjectName, dbCertEntity);
         return dbCertEntity;
 
     }
 
     public CertEntity loadCertificateEntityFromXml(Long serialNumber, String issuerSubjectName) {
-        File folder = getFolder();
         CertEntity dbCertEntity = repository.getOneBySerialNumberAndParentSubject(serialNumber, issuerSubjectName);
-        dbCertEntity = getCertEntity(issuerSubjectName, folder, dbCertEntity);
+        dbCertEntity = getCertEntity(issuerSubjectName, dbCertEntity);
         return dbCertEntity;
-
     }
 
-    private CertEntity getCertEntity(String certificateSubjectName, File folder, CertEntity dbCertEntity) {
+    private CertEntity getCertEntity(String certificateSubjectName, CertEntity dbCertEntity) {
         if (dbCertEntity == null) {
-            certificationEntityBuilder.persistPKI(repository, getPki(folder, certificateSubjectName));
+            certificationEntityBuilder.persistPKI(repository, getPki(certificateSubjectName));
 
             dbCertEntity = repository.getCertEntityBySubject(certificateSubjectName);
             synchronizeCertificateSource();
@@ -89,44 +94,38 @@ public class JAXBPKICertificateLoader {
         return dbCertEntity;
     }
 
-    private static File getFolder() {
-        ClassLoader classLoader = JAXBPKICertificateLoader.class.getClassLoader();
-        URL resourceFolder = classLoader.getResource(XML_FOLDER);
-        if (resourceFolder == null) {
-            throw new RuntimeException("PKI resource folder not found.");
-        }
-        return new File(resourceFolder.getFile());
-    }
+    public XmlPki getPki(String certificateSubject) {
+        try {
+            for (String filename : Objects.requireNonNull(pkiFilenames, "PKI filenames shall be defined!")) {
+                String pkiFilePath = (pkiFolder != null ? pkiFolder : "") + "/" + filename;
+                try (InputStream is = JAXBPKICertificateLoader.class.getResourceAsStream(pkiFilePath)) {
+                    Objects.requireNonNull(is, String.format("Cannot find file %s", pkiFilePath));
+                    if (createdPKIs.contains(filename)) {
+                        continue;
+                    }
 
-    public XmlPki getPki(File folder, String certificateSubject) {
-        for (File file : Objects.requireNonNull(folder.listFiles())) {
+                    XmlPki pki = processPKIFile(is, filename, certificateSubject);
 
-            Path filePath = file.toPath();
-            // if createdPKIs.contains FILE - continue
-            if (createdPKIs.contains(filePath)) {
-                continue;
+                    if (pki != null) {
+                        createdPKIs.add(filename);
+                        return pki;
+                    }
+                }
             }
 
-            XmlPki pki = processPKIFile(filePath, certificateSubject);
-
-            if (pki != null) {
-                createdPKIs.add(filePath);
-                return pki;
-            }
+        } catch (IOException e) {
+            fail("Unable to load PKI content folder.", e);
         }
-        throw new RuntimeException("Xml not found.");
+        fail("Xml PKI factory content not found.");
+        return null;
     }
 
-    public XmlPki processPKIFile(Path filePath, String certificateSubject) {
-        XmlPki pki = filePkiMap.get(filePath);
+    public XmlPki processPKIFile(InputStream is, String path, String certificateSubject) {
+        XmlPki pki = filePkiMap.get(path);
         // map.get filePath
         if (pki == null) {
-            try (InputStream is = Files.newInputStream(filePath)) {
-                pki = loadPKI(is);
-                filePkiMap.put(filePath, pki);
-            } catch (IOException | JAXBException | SAXException e) {
-                throw new RuntimeException(e);
-            }
+            pki = loadPKI(is);
+            filePkiMap.put(path, pki);
         }
 
         if (checkPKIContainsCertificate(pki, certificateSubject)) {
@@ -135,12 +134,15 @@ public class JAXBPKICertificateLoader {
         return null;
     }
 
-    private XmlPki loadPKI(InputStream inputStream) throws JAXBException, IOException, SAXException {
+    private XmlPki loadPKI(InputStream inputStream) {
         try (InputStream is = inputStream) {
             Unmarshaller unmarshaller = PKIJaxbFacade.newFacade().getUnmarshaller(true);
             JAXBElement<XmlPki> unmarshalled = (JAXBElement<XmlPki>) unmarshaller.unmarshal(is);
             return unmarshalled.getValue();
+        } catch (JAXBException | IOException | SAXException e) {
+            fail(e);
         }
+        return null;
     }
 
     private boolean checkPKIContainsCertificate(XmlPki pki, String certificationSubject) {

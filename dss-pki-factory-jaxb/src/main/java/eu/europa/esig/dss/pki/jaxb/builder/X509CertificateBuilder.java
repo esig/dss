@@ -31,6 +31,7 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
 import org.bouncycastle.asn1.x509.PolicyInformation;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.qualified.ETSIQCObjectIdentifiers;
 import org.bouncycastle.asn1.x509.qualified.QCStatement;
@@ -464,7 +465,8 @@ public class X509CertificateBuilder {
     }
 
     private void addSKI(X509v3CertificateBuilder certBuilder) throws CertIOException {
-        certBuilder.addExtension(Extension.subjectKeyIdentifier, false, DSSASN1Utils.computeSkiFromCertPublicKey(publicKey));
+        byte[] skiValue = DSSASN1Utils.computeSkiFromCertPublicKey(publicKey);
+        certBuilder.addExtension(Extension.subjectKeyIdentifier, false, new SubjectKeyIdentifier(skiValue));
     }
 
     private void addBasicConstraint(X509v3CertificateBuilder certBuilder) throws CertIOException {

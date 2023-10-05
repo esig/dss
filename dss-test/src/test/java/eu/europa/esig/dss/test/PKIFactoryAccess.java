@@ -26,8 +26,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.pki.jaxb.repository.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
+import eu.europa.esig.dss.pki.jaxb.repository.JaxbCertEntityRepository;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
 import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
@@ -51,6 +51,7 @@ import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.CompositeRevocationSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.CompositeAIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
@@ -60,15 +61,23 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.test.pki.CertEntitySignatureTokenConnection;
 import eu.europa.esig.dss.test.pki.tsp.PkiTSPFailSource;
+import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
+import eu.europa.esig.dss.token.AbstractSignatureTokenConnection;
+import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.KeyStoreSignatureTokenConnection;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import org.h2.jdbcx.JdbcDataSource;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.security.KeyStore;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -82,7 +91,12 @@ import java.util.stream.Collectors;
 public abstract class PKIFactoryAccess {
 
     private static final String PKI_FACTORY_HOST;
+
     private static final char[] PKI_FACTORY_KEYSTORE_PASSWORD;
+    private static final String PKI_FACTORY_KEYSTORE_PATH;
+
+    private static final String PKI_FACTORY_RESOURCES_FOLDER;
+    private static final String[] PKI_FACTORY_RESOURCES_FILENAMES;
 
     private static final JdbcDataSource dataSource;
 
@@ -93,6 +107,10 @@ public abstract class PKIFactoryAccess {
 
             PKI_FACTORY_HOST = props.getProperty("pki.factory.host");
             PKI_FACTORY_KEYSTORE_PASSWORD = props.getProperty("pki.factory.keystore.password").toCharArray();
+            PKI_FACTORY_KEYSTORE_PATH = props.getProperty("pki.factory.keystore.path");
+
+            PKI_FACTORY_RESOURCES_FOLDER = props.getProperty("pki.factory.resources.folder");
+            PKI_FACTORY_RESOURCES_FILENAMES = Arrays.stream(props.getProperty("pki.factory.resources.filenames").split(",")).map(String::trim).toArray(String[]::new);
 
             dataSource = new JdbcDataSource();
             dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
@@ -100,10 +118,6 @@ public abstract class PKIFactoryAccess {
             throw new RuntimeException("Unable to initialize from pki-factory.properties", e);
         }
     }
-
-    private static final String KEYSTORE_ROOT_PATH = "/keystore/";
-    private static final String CERT_ROOT_PATH = "/crt/";
-    private static final String CERT_EXTENSION = ".crt";
 
     private static final String TSA_ROOT_PATH = "/tsa/";
     protected static final String GOOD_TSA = "good-tsa";
@@ -120,10 +134,6 @@ public abstract class PKIFactoryAccess {
     protected static final String FAIL_GOOD_TSA = "fail/good-tsa";
     /* Produces HTTP error 500 */
     private static final String ERROR500_GOOD_TSA = "error-500/good-tsa";
-
-    private static final String KEYSTORE_TYPE = "PKCS12";
-    // JDK-7 + PKCS12 is not allowed for trust-store
-    private static final String TRUSTSTORE_TYPE = "JKS";
 
     protected static final String GOOD_USER = "good-user";
     // RSA key with RSASSA-PSS signature
@@ -162,7 +172,7 @@ public abstract class PKIFactoryAccess {
 
     private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
     private static final int TIMEOUT_MS = 10000;
-    private static CommonTrustedCertificateSource trusted;
+    private static CommonTrustedCertificateSource trustedCertificateSource;
 
     private static JaxbCertEntityRepository certEntityRepository;
     private static JAXBPKICertificateLoader certificateLoader;
@@ -182,36 +192,33 @@ public abstract class PKIFactoryAccess {
     }
 
     protected CertificateVerifier getCompleteCertificateVerifier() {
-        return getCertificateVerifier(cacheOCSPSource(pkiDelegatedOCSPSource()), cacheCRLSource(pKICRLSource()), cacheAIASource(pkiAIASource()), getTrustedCertificateSource());
+        return getCertificateVerifier(cacheOCSPSource(pkiDelegatedOCSPSource()), cacheCRLSource(pkiCRLSource()), cacheAIASource(pkiAIASource()), getTrustedCertificateSource());
     }
 
     protected CertificateVerifier getCompositeCertificateVerifier() {
         CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-        certificateVerifier.setCrlSource(getCompositeCRL());
-        certificateVerifier.setOcspSource(getCompositeOcsp());
+        certificateVerifier.setCrlSource(getCompositeCRLSource());
+        certificateVerifier.setOcspSource(getCompositeOCSPSource());
         certificateVerifier.setAIASource(getCompositeAia());
+        certificateVerifier.setTrustedCertSources(getTrustedCertificateSource());
         return certificateVerifier;
     }
 
-    protected CertificateVerifier getOnlineCompleteCertificateVerifier() {
-        return getCertificateVerifier(cacheOCSPSource(onlineOcspSource()), cacheCRLSource(onlineCrlSource()), cacheAIASource(onlineAIASource()), getTrustedCertificateSource());
-    }
-
     protected CertificateVerifier getCertificateVerifierWithMGF1() {
-        PKICRLSource pkicrlSource = pKICRLSource();
+        PKICRLSource pkicrlSource = pkiCRLSource();
         pkicrlSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-        PKIOCSPSource pKIOCSPSource = pKIOCSPSource();
+        PKIOCSPSource pKIOCSPSource = pkiOCSPSource();
         pKIOCSPSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
         return getCertificateVerifier(pKIOCSPSource, pkicrlSource, pkiAIASource(), getTrustedCertificateSource());
     }
 
     protected CertificateVerifier getCertificateVerifierWithSHA3_256() {
-        PKICRLSource pkicrlSource = pKICRLSource();
+        PKICRLSource pkicrlSource = pkiCRLSource();
         pkicrlSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
 
-        PKIOCSPSource pKIOCSPSource = pKIOCSPSource();
+        PKIOCSPSource pKIOCSPSource = pkiOCSPSource();
         pKIOCSPSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
         pKIOCSPSource.setOcspResponder(getPKICertEntity(SHA3_OCSP_RESPONDER));
 
@@ -235,7 +242,7 @@ public abstract class PKIFactoryAccess {
     }
 
     protected CertificateVerifier getCertificateVerifierWithoutTrustSources() {
-        return getCertificateVerifier(cacheOCSPSource(pKIOCSPSource()), cacheCRLSource(pKICRLSource()), cacheAIASource(pkiAIASource()));
+        return getCertificateVerifier(cacheOCSPSource(pkiOCSPSource()), cacheCRLSource(pkiCRLSource()), cacheAIASource(pkiAIASource()));
     }
 
     protected CertificateVerifier getOfflineCertificateVerifier() {
@@ -276,13 +283,12 @@ public abstract class PKIFactoryAccess {
         return cacheCRLSource;
     }
 
-    protected PKICRLSource pKICRLSource() {
+    protected PKICRLSource pkiCRLSource() {
         PKICRLSource pkiCRLSource = new PKICRLSource(getCertEntityRepository());
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, 6);
         Date nextUpdate = cal.getTime();
         pkiCRLSource.setNextUpdate(nextUpdate);
-//        pkiCRLSource.setProductionDate(new Date());
         return pkiCRLSource;
     }
 
@@ -300,7 +306,7 @@ public abstract class PKIFactoryAccess {
         return cacheOCSPSource;
     }
 
-    protected PKIOCSPSource pKIOCSPSource() {
+    protected PKIOCSPSource pkiOCSPSource() {
         return new PKIOCSPSource(getCertEntityRepository());
     }
 
@@ -315,7 +321,7 @@ public abstract class PKIFactoryAccess {
         return pkiDelegatedOCSPSource;
     }
 
-    private OnlineOCSPSource onlineOcspSource() {
+    private OnlineOCSPSource onlineOCSPSource() {
         OnlineOCSPSource ocspSource = new OnlineOCSPSource();
         OCSPDataLoader dataLoader = new OCSPDataLoader();
         dataLoader.setTimeoutConnection(TIMEOUT_MS);
@@ -325,7 +331,7 @@ public abstract class PKIFactoryAccess {
         return ocspSource;
     }
 
-    private OnlineCRLSource onlineCrlSource() {
+    private OnlineCRLSource onlineCRLSource() {
         OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
         onlineCRLSource.setDataLoader(getFileCacheDataLoader());
         return onlineCRLSource;
@@ -349,28 +355,37 @@ public abstract class PKIFactoryAccess {
         return getXMLCertificateLoader().loadCertificateEntityFromXml(getSigningAlias());
     }
 
-    protected JAXBPKICertificateLoader getXMLCertificateLoader() {
+    protected AbstractSignatureTokenConnection getToken() {
+        return new CertEntitySignatureTokenConnection(getCertEntity());
+    }
 
+    protected DSSPrivateKeyEntry getPrivateKeyEntry() {
+        return getToken().getKeys().iterator().next();
+    }
+
+    protected JAXBPKICertificateLoader getXMLCertificateLoader() {
         if (certificateLoader == null) {
             certificateLoader = new JAXBPKICertificateLoader(getCertEntityRepository());
-            certificateLoader.setCommonTrustedCertificateSource(getTrustedCertificateSource());
+            certificateLoader.setPkiFolder(PKI_FACTORY_RESOURCES_FOLDER);
+            certificateLoader.setPkiFilenames(PKI_FACTORY_RESOURCES_FILENAMES);
+            certificateLoader.setCommonTrustedCertificateSource((CommonTrustedCertificateSource) getTrustedCertificateSource());
         }
         return certificateLoader;
     }
 
     protected CertificateSource getTrustedCertificateSource() {
-        if (trusted == null) {
-            trusted = new CommonTrustedCertificateSource();
+        if (trustedCertificateSource == null) {
+            trustedCertificateSource = new CommonTrustedCertificateSource();
         }
-        return trusted;
+        return trustedCertificateSource;
     }
 
     protected CertificateSource getSHA3PKITrustAnchors() {
-        return getTrustedCertificateSourceByPKIName("sha3-pki.jks");
+        return getTrustedCertificateSourceByPKIName("sha3-pki");
     }
 
-    protected CertificateSource getBelgiumTrustAnchors() {
-        return getTrustedCertificateSourceByPKIName("belgium.jks");
+    protected CertificateSource getGoodPKITrustAnchors() {
+        return getTrustedCertificateSourceByPKIName("good-pki");
     }
 
     private CertificateSource getTrustedCertificateSourceByPKIName(String pkiName) {
@@ -379,6 +394,29 @@ public abstract class PKIFactoryAccess {
         if (Utils.isCollectionNotEmpty(trustAnchors)) {
             trustAnchors.stream().map(JAXBCertEntity::getCertificateToken).forEach(trustedCertificateSource::addCertificate);
         }
+        return trustedCertificateSource;
+    }
+
+    protected AbstractKeyStoreTokenConnection getOnlinePKCS12Token() {
+        return new KeyStoreSignatureTokenConnection(getOnlineKeystoreContent(getPKCS12KeystoreName()), "PKCS12",
+                new KeyStore.PasswordProtection(PKI_FACTORY_KEYSTORE_PASSWORD));
+    }
+
+    protected byte[] getOnlineKeystoreContent(String keystoreName) {
+        DataLoader dataLoader = getFileCacheDataLoader();
+        String keystoreUrl = PKI_FACTORY_HOST + PKI_FACTORY_KEYSTORE_PATH + keystoreName;
+        return dataLoader.get(keystoreUrl);
+    }
+
+    protected String getPKCS12KeystoreName() {
+        return DSSUtils.encodeURI(getSigningAlias() + ".p12");
+    }
+
+    protected CertificateSource getOnlineTrustedCertificateSource() {
+        byte[] trustedStoreContent = getOnlineKeystoreContent("trust-anchors.jks");
+        KeyStoreCertificateSource keystore = new KeyStoreCertificateSource(new ByteArrayInputStream(trustedStoreContent), "JKS", PKI_FACTORY_KEYSTORE_PASSWORD);
+        CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+        trustedCertificateSource.importAsTrusted(keystore);
         return trustedCertificateSource;
     }
 
@@ -414,32 +452,26 @@ public abstract class PKIFactoryAccess {
         return composite;
     }
 
-    protected CompositeRevocationSource<CRL, CRLSource> getCompositeCRL() {
+    protected CompositeRevocationSource<CRL, CRLSource> getCompositeCRLSource() {
         CompositeRevocationSource<CRL, CRLSource> composite = new CompositeRevocationSource<>();
-        LinkedHashMap<String, CRLSource> cRLSources = new LinkedHashMap<>();
-        cRLSources.put("PKICRLSource", pKICRLSource());
-        cRLSources.put("OnlineCrlSource", onlineCrlSource());
-
-        composite.setSources(cRLSources);
+        LinkedHashMap<String, CRLSource> crlSources = new LinkedHashMap<>();
+        crlSources.put("PKICRLSource", pkiCRLSource());
+        crlSources.put("OnlineCrlSource", onlineCRLSource());
+        composite.setSources(crlSources);
         return composite;
     }
 
-    protected CompositeRevocationSource<OCSP, OCSPSource> getCompositeOcsp() {
+    protected CompositeRevocationSource<OCSP, OCSPSource> getCompositeOCSPSource() {
         CompositeRevocationSource<OCSP, OCSPSource> composite = new CompositeRevocationSource<>();
-        LinkedHashMap<String, OCSPSource> oCSPSources = new LinkedHashMap<>();
-        oCSPSources.put("PKIOCSPSource", pKIOCSPSource());
-        oCSPSources.put("OnlineOCSPSource", onlineOcspSource());
-
-        composite.setSources(oCSPSources);
+        LinkedHashMap<String, OCSPSource> ocspSources = new LinkedHashMap<>();
+        ocspSources.put("PKIOCSPSource", pkiOCSPSource());
+        ocspSources.put("OnlineOCSPSource", onlineOCSPSource());
+        composite.setSources(ocspSources);
         return composite;
     }
 
     protected PKITSPSource getGoodTsa() {
         return getPKITSPSourceByName(GOOD_TSA);
-    }
-
-    protected TSPSource getOnlineGoodTsa() {
-        return getOnlineTSPSourceByName(GOOD_TSA);
     }
 
     protected PKITSPSource getPSSGoodTsa() {
@@ -497,7 +529,6 @@ public abstract class PKIFactoryAccess {
     }
 
     protected PKITSPSource getPKITSPSourceByName(String tsaName) {
-
         return new PKITSPSource(getPKICertEntity(tsaName));
     }
 
@@ -509,22 +540,8 @@ public abstract class PKIFactoryAccess {
         return new PkiTSPFailSource(getPKICertEntity(tsaName));
     }
 
-    protected PKITSPSource getPkiTSPSourceByName(String tsaName) {
-        return new PKITSPSource(getPKICertEntity(tsaName));
-    }
-
-    protected PKITSPSource getPkiTSPSourceByNameAndTime(String tsaName, Date date) {
-        PKITSPSource tspSource = new PKITSPSource(getPKICertEntity(tsaName));
-        tspSource.setProductionTime(date);
-        return tspSource;
-    }
-
     protected OnlineTSPSource getOnlineTSPSourceByName(String tsaName) {
         return getOnlineTSPSourceByUrl(getTsaUrl(tsaName));
-    }
-
-    protected OnlineTSPSource getOnlineTSPSourceByNameAndTime(String tsaName, Date date) {
-        return getOnlineTSPSourceByUrl(getTsaUrl(tsaName, date));
     }
 
     private OnlineTSPSource getOnlineTSPSourceByUrl(String tsaUrl) {
@@ -560,15 +577,6 @@ public abstract class PKIFactoryAccess {
 
     protected CertificateToken getCertificateByPrimaryKey(long serialNumber, String issuerName) {
         return getXMLCertificateLoader().loadCertificateEntityFromXml(serialNumber, issuerName).getCertificateToken();
-    }
-
-    protected String getCertificateName(String certificateId) {
-        return DSSUtils.encodeURI(certificateId + CERT_EXTENSION);
-    }
-
-
-    protected String getCertificateNameByPrimaryKey(String issuerName, long serialNumber) {
-        return DSSUtils.encodeURI(issuerName + "/" + serialNumber + CERT_EXTENSION);
     }
 
     // Allows to configure a proxy

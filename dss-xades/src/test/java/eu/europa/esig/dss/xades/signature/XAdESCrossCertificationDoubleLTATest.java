@@ -87,7 +87,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
 
         CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
 
-        customCertificateVerifier.setCrlSource(pKICRLSource());
+        customCertificateVerifier.setCrlSource(pkiCRLSource());
         customCertificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
         customCertificateVerifier.setAIASource(pkiAIASource());
         customCertificateVerifier.setTrustedCertSources(commonTrustedCertificateSource);
@@ -107,7 +107,6 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         validator.setCertificateVerifier(customCertificateVerifier);
         validator.setDetachedContents(Arrays.asList(documentToSign));
         Reports reports = validator.validateDocument();
-        reports.print();
 
         DiagnosticData diagnosticData = reports.getDiagnosticData();
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
@@ -130,7 +129,7 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
 
         customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
 
-        customCertificateVerifier.setCrlSource(pKICRLSource());
+        customCertificateVerifier.setCrlSource(pkiCRLSource());
 //        customCertificateVerifier.setTrustedCertSources(commonTrustedCertificateSource);
 
         service = new XAdESService(customCertificateVerifier);
@@ -151,7 +150,6 @@ public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
         validator.setDetachedContents(Arrays.asList(documentToSign));
         reports = validator.validateDocument();
-        reports.print();
 
         diagnosticData = reports.getDiagnosticData();
         signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());

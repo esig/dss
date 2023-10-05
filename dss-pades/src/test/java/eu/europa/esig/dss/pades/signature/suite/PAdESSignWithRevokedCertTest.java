@@ -29,7 +29,7 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
@@ -142,7 +142,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
         CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
         certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getCertEntityRepository()));
         certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getCertEntityRepository()));
-        service = new PAdESService(certificateVerifier); //FIXME ask Alex about this
+        service = new PAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));

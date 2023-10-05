@@ -17,7 +17,7 @@ public class PKITSPSource extends KeyEntityTSPSource {
      * @param certEntity The certificate entity associated with the TSP source.
      */
     public PKITSPSource(CertEntity certEntity) {
-        super(certEntity.getPrivateKeyObject(), certEntity.getCertificateToken(), certEntity.getCertificateChain());
+        super(certEntity.getPrivateKey(), certEntity.getCertificateToken(), certEntity.getCertificateChain());
     }
 
 }

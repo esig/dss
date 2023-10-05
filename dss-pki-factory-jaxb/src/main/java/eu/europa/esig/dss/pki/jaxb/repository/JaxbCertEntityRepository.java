@@ -4,7 +4,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.CertEntityRevocation;
-import eu.europa.esig.dss.pki.repository.CertEntityRepository;
+import eu.europa.esig.dss.pki.model.CertEntityRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class JaxbCertEntityRepository implements CertEntityRepository<JAXBCertEn
     public JAXBCertEntity getOneBySerialNumberAndParentSubject(Long serialNumber, String issuerName) {
         List<JAXBCertEntity> certEntityList = certEntities.stream().filter(
                 dbCertEntity -> dbCertEntity.getSerialNumber().equals(serialNumber) &&
-                        dbCertEntity.getParent().getSubject().equals(issuerName)).collect(Collectors.toList());
+                        dbCertEntity.getIssuer().getSubject().equals(issuerName)).collect(Collectors.toList());
         return certEntityList.stream().findFirst().orElse(null);
     }
 
@@ -116,7 +116,12 @@ public class JaxbCertEntityRepository implements CertEntityRepository<JAXBCertEn
 
     @Override
     public Map<JAXBCertEntity, CertEntityRevocation> getRevocationList(JAXBCertEntity parent) {
-        return certEntities.stream().filter(dbCertEntity -> dbCertEntity.getRevocationDate() != null && parent.equals(dbCertEntity.getParent())).collect(Collectors.toMap(dbCertEntity -> dbCertEntity, dbCertEntity -> new CertEntityRevocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason())));
+        return certEntities.stream()
+                .filter(dbCertEntity -> dbCertEntity.getRevocationDate() != null && parent.equals(dbCertEntity.getIssuer()))
+                .collect(Collectors.toMap(
+                        dbCertEntity -> dbCertEntity,
+                        dbCertEntity -> new CertEntityRevocation(dbCertEntity.getRevocationDate(), dbCertEntity.getRevocationReason())
+                ));
     }
 
     @Override
@@ -128,7 +133,7 @@ public class JaxbCertEntityRepository implements CertEntityRepository<JAXBCertEn
 
     @Override
     public CertEntity getIssuer(JAXBCertEntity certEntity) {
-        return certEntity.getParent();
+        return certEntity.getIssuer();
     }
 
     @Override

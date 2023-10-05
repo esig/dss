@@ -43,6 +43,7 @@
         <serialNumber>2002</serialNumber>
         <subject>cc-root-ca</subject>
         <issuer serialNumber="2001">external-root-ca</issuer>
+        <crossCertificate serialNumber="2003">cc-root-ca</crossCertificate>
 
         <keyAlgo encryption="RSA" length="2048"/>
         <digestAlgo>SHA512</digestAlgo>
@@ -62,6 +63,7 @@
         <serialNumber>2003</serialNumber>
         <subject>cc-root-ca</subject>
         <issuer serialNumber="2003">cc-root-ca</issuer>
+        <crossCertificate serialNumber="2002">external-ca</crossCertificate>
 
         <keyAlgo encryption="RSA" length="2048"/>
         <digestAlgo>SHA512</digestAlgo>

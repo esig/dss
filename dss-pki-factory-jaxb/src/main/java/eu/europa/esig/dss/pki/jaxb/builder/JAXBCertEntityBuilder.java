@@ -43,16 +43,14 @@ import java.util.Map;
 
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CRL_EXTENSION;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CRL_PATH;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CRT_EXTENSION;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CRT_PATH;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CUSTOM_URL_PREFIX;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.EMPTY_URL_PREFIX;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.EXTENDED_URL_PREFIX;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.HOST;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CERT_EXTENSION;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CERT_PATH;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_HOST;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.OCSP_EXTENSION;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.OCSP_PATH;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.country;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.organisation;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.organisationUnit;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_COUNTRY;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_ORGANISATION;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_ORGANISATION_UNIT;
 
 
 /**
@@ -137,28 +135,20 @@ public class JAXBCertEntityBuilder {
                     .with(JAXBCertEntity::setSerialNumber, certificate.getSerialNumber())
                     .with(JAXBCertEntity::setCertificateToken, DSSUtils.loadCertificate(certificateHolder.getEncoded()))
                     .with(JAXBCertEntity::setPrivateKey, subjectKeyPair.getPrivate().getEncoded())
-                    .with(JAXBCertEntity::setPrivateKeyAlgo, subjectKeyPair.getPrivate().getAlgorithm())
                     .with(JAXBCertEntity::setRevocationDate, convert(certificate.getRevocation()))
                     .with(JAXBCertEntity::setRevocationReason, certificate.getRevocation() != null ? certificate.getRevocation().getReason() : null)
-                    .with(JAXBCertEntity::setSuspended, certificate.getSuspended() != null)
                     .with(JAXBCertEntity::setOcspResponder, getEntity(entities, certificate.getOcspResponder() != null ? new EntityId(certificate.getOcspResponder()) : null, false))
                     .with(JAXBCertEntity::setTrustAnchor, certificate.getTrustAnchor() != null)
-                    .with(JAXBCertEntity::setCa, certificate.getCa() != null)
-                    .with(JAXBCertEntity::setTsa, certificate.getTsa() != null)
-                    .with(JAXBCertEntity::setOcsp, certificate.getOcspSigning() != null)
-                    .with(JAXBCertEntity::setToBeIgnored, certificate.getIgnore() != null)
                     .with(JAXBCertEntity::setPkiName, pkiName)
-                    .with(JAXBCertEntity::setPss, certificate.getKeyAlgo() != null && Utils.isTrue(certificate.getKeyAlgo().isPss()))
-                    .with(JAXBCertEntity::setDigestAlgo, certificate.getDigestAlgo())
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         //@formatter:on
         if (selfSigned) {
-            dbCertEntity.setParent(dbCertEntity);
+            dbCertEntity.setIssuer(dbCertEntity);
         } else {
-            dbCertEntity.setParent(getEntity(entities, issuerKey, selfSigned));
+            dbCertEntity.setIssuer(getEntity(entities, issuerKey, selfSigned));
         }
 
         return dbCertEntity;
@@ -238,15 +228,15 @@ public class JAXBCertEntityBuilder {
     private String getCrlUrl(XmlCRLType crlEntity) {
         if (crlEntity != null && crlEntity.getValue() != null) {
             if (crlEntity.getDate() == null) {
-                return HOST + CRL_PATH + getCertStringUrl(crlEntity, EXTENDED_URL_PREFIX) + CRL_EXTENSION;
+                return PKI_FACTORY_HOST + CRL_PATH + getCertStringUrl(crlEntity) + CRL_EXTENSION;
             } else {
                 Date time = crlEntity.getDate().toGregorianCalendar().getTime();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm");
                 String date = sdf.format(time);
                 if (crlEntity.isFutur() == null) {
-                    return HOST + CRL_PATH + date + "/" + crlEntity.getValue() + CRL_EXTENSION;
+                    return PKI_FACTORY_HOST + CRL_PATH + date + "/" + crlEntity.getValue() + CRL_EXTENSION;
                 } else {
-                    return HOST + CRL_PATH + date + "/" + crlEntity.isFutur() + "/" + crlEntity.getValue() + CRL_EXTENSION;
+                    return PKI_FACTORY_HOST + CRL_PATH + date + "/" + crlEntity.isFutur() + "/" + crlEntity.getValue() + CRL_EXTENSION;
                 }
             }
         }
@@ -255,20 +245,20 @@ public class JAXBCertEntityBuilder {
 
     private String getOcspUrl(XmlEntityKey entityKey) {
         if (entityKey != null) {
-            return HOST + OCSP_PATH + getCertStringUrl(entityKey, CUSTOM_URL_PREFIX);
+            return PKI_FACTORY_HOST + OCSP_PATH + getCertStringUrl(entityKey) + OCSP_EXTENSION;
         }
         return null;
     }
 
     private String getAiaUrl(XmlEntityKey entityKey) {
         if (entityKey != null) {
-            return HOST + CRT_PATH + getCertStringUrl(entityKey, EMPTY_URL_PREFIX) + CRT_EXTENSION;
+            return PKI_FACTORY_HOST + CERT_PATH + getCertStringUrl(entityKey) + CERT_EXTENSION;
         }
         return null;
     }
 
-    private String getCertStringUrl(XmlEntityKey entityKey, String urlPrefix) {
-        return entityKey.getSerialNumber() != null ? urlPrefix + entityKey.getValue() + "/" + entityKey.getSerialNumber() : entityKey.getValue();
+    private String getCertStringUrl(XmlEntityKey entityKey) {
+        return entityKey.getSerialNumber() != null ? entityKey.getValue() + "/" + entityKey.getSerialNumber() : entityKey.getValue();
     }
 
     private X500Name getX500NameIssuer(Map<EntityId, X500Name> x500names, EntityId key) {
@@ -296,17 +286,17 @@ public class JAXBCertEntityBuilder {
             if (!Utils.isStringEmpty(certType.getCountry())) {
                 tmpCountry = certType.getCountry();
             } else {
-                tmpCountry = country;
+                tmpCountry = PKI_FACTORY_COUNTRY;
             }
 
             String tmpOrganisation;
             if (!Utils.isStringEmpty(certType.getOrganization())) {
                 tmpOrganisation = certType.getOrganization();
             } else {
-                tmpOrganisation = organisation;
+                tmpOrganisation = PKI_FACTORY_ORGANISATION;
             }
 
-            X500Name x500Name = new X500NameBuilder().commonName(certType.getSubject()).pseudo(certType.getPseudo()).country(tmpCountry).organisation(tmpOrganisation).organisationUnit(organisationUnit).build();
+            X500Name x500Name = new X500NameBuilder().commonName(certType.getSubject()).pseudo(certType.getPseudo()).country(tmpCountry).organisation(tmpOrganisation).organisationUnit(PKI_FACTORY_ORGANISATION_UNIT).build();
             x500Names.put(entityId, x500Name);
             x500Names.put(new EntityId(certType.getSubject(), null), x500Name);
             return x500Name;
@@ -326,8 +316,14 @@ public class JAXBCertEntityBuilder {
     }
 
     private KeyPair buildKeyPair(Map<EntityId, KeyPair> keyPairs, EntityId entityId, XmlCertificateType certType) throws GeneralSecurityException {
-        KeyPair keyPair = build(certType.getKeyAlgo(), certType.getDigestAlgo());
-        keyPairs.put(entityId, keyPair);
+        KeyPair keyPair = keyPairs.get(entityId);
+        if (keyPair == null) {
+            keyPair = build(certType.getKeyAlgo(), certType.getDigestAlgo());
+            keyPairs.put(entityId, keyPair);
+        }
+        if (certType.getCrossCertificate() != null) {
+            keyPairs.put(new EntityId(certType.getCrossCertificate()), keyPair);
+        }
         return keyPair;
     }
 
@@ -379,9 +375,7 @@ public class JAXBCertEntityBuilder {
 
     private void saveEntity(JaxbCertEntityRepository repository, JAXBCertEntity certEntity, Map<EntityId, JAXBCertEntity> entities, EntityId key) {
         if (repository.save(certEntity)) {
-            // TODO : evaluate why two times #put is called
             entities.put(key, certEntity);
-            entities.put(new EntityId(certEntity.getSubject(), null), certEntity);
             LOG.info("Creation of '{}' : DONE. Certificate Id : '{}'", certEntity.getSubject(), certEntity.getCertificateToken().getDSSIdAsString());
         } else {
             LOG.warn("Unable to add cert entity '{}' to the database. Certificate Id: '{}'", certEntity.getSubject(), certEntity.getCertificateToken().getDSSIdAsString());

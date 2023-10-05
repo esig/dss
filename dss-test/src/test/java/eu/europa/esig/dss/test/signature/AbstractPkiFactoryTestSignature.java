@@ -67,7 +67,6 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
-import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -188,7 +187,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		super.checkSigningCertificateValue(diagnosticData);
 		
 		String signingCertificateId = diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId());
-		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
+		CertificateToken certificate = getSigningCert();
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
 		assertEquals(certificate.getSubject().getRFC2253(), certificateDN);
@@ -206,7 +205,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		
 		String signingCertificateId = diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId());
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
-		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
+		CertificateToken certificate = getSigningCert();
 		assertEquals(certificate.getIssuer().getRFC2253(), issuerDN);
 	}
 
@@ -222,12 +221,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	@Override
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
 		super.checkCertificateChain(diagnosticData);
-		
-		KSPrivateKeyEntry entry = getPrivateKeyEntry();
+
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertTrue(Utils.isCollectionNotEmpty(signatureCertificateChain));
 		// upper certificate than trust anchors are ignored
-		assertTrue(entry.getCertificateChain().length >= signatureCertificateChain.size());
+		assertTrue(getCertificateChain().length >= signatureCertificateChain.size());
 	}
 
 	@Override

@@ -27,18 +27,26 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.jaxb.AbstractTestJaxbPKI;
 import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import org.bouncycastle.asn1.ocsp.ResponderID;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.ocsp.RespID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
 
@@ -167,6 +175,43 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
         assertEquals(ocspResponder, ocspToken.getIssuerCertificateToken());
+    }
+
+    @Test
+    public void testOCSPWithResponderIdByKey() {
+        PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
+        ocspSource.setResponderIdByKey(true);
+        OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
+        assertNotNull(ocspToken);
+        assertNotNull(ocspToken.getBasicOCSPResp());
+
+        RespID respId = ocspToken.getBasicOCSPResp().getResponderId();
+        assertNotNull(respId);
+        ResponderID responderID = respId.toASN1Primitive();
+
+        assertNotNull(responderID.getKeyHash());
+        assertTrue(DSSASN1Utils.isSkiEqual(responderID.getKeyHash(), goodCa));
+
+        assertNull(responderID.getName());
+    }
+
+    @Test
+    public void testOCSPWithResponderIdByName() throws IOException {
+        PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
+        ocspSource.setResponderIdByKey(false);
+        OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
+        assertNotNull(ocspToken);
+        assertNotNull(ocspToken.getBasicOCSPResp());
+
+        RespID respId = ocspToken.getBasicOCSPResp().getResponderId();
+        assertNotNull(respId);
+        ResponderID responderID = respId.toASN1Primitive();
+
+        assertNull(responderID.getKeyHash());
+
+        X500Name name = responderID.getName();
+        assertNotNull(name);
+        assertArrayEquals(DSSASN1Utils.getX509CertificateHolder(goodCa).getSubject().getEncoded(), name.getEncoded());
     }
 
     @Test

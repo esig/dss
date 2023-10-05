@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pki.repository;
+package eu.europa.esig.dss.pki.model;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.model.CertEntity;

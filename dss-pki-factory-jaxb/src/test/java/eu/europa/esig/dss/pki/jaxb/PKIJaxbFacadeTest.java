@@ -16,10 +16,10 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PKIJaxbFacadeTest {
+public class PKIJaxbFacadeTest extends AbstractTestJaxbPKI {
 
     public static Stream<Arguments> data() {
-        File folder = new File("src/main/resources/pki");
+        File folder = new File(PKIJaxbFacadeTest.class.getClassLoader().getResource(XML_FOLDER).getPath());
         List<Arguments> dataToRun = new ArrayList<>();
         for (File file : folder.listFiles()) {
             dataToRun.add(Arguments.of(file));

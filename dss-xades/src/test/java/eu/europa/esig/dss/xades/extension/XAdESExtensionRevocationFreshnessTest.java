@@ -78,8 +78,8 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		// avoid caching
 		certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setAIASource(pkiAIASource());
-		certificateVerifier.setCrlSource(pKICRLSource());
-		certificateVerifier.setOcspSource(pKIOCSPSource());
+		certificateVerifier.setCrlSource(pkiCRLSource());
+		certificateVerifier.setOcspSource(pkiOCSPSource());
 
 		signingAlias = EE_GOOD_USER;
 		
@@ -168,7 +168,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 
 		XAdESService service = new XAdESService(certificateVerifier);
 		// ensure the time is synchronized between the TSP and revocation data
-        service.setTspSource(getPkiTSPSourceByName(EE_GOOD_TSA));
+        service.setTspSource(getPKITSPSourceByName(EE_GOOD_TSA));
 
 		DSSDocument signedDocument = sign(service, documentToSign);
 		

@@ -189,7 +189,7 @@ public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(documentToValidate);
         validator.setCertificateVerifier(getCompleteCertificateVerifier());
         Reports reports = validator.validateDocument();
-        reports.print();
+        // reports.print();
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         

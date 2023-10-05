@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="Ed25519-pki">
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="ed25519-pki">
 
     <certificate>
         <serialNumber>1000</serialNumber>

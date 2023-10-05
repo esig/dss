@@ -25,8 +25,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
-import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -36,8 +34,6 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -66,7 +62,6 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
         trustedCertSource.addCertificate(getCertificate(OCSP_SKIP_CA));
 
         certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setAIASource(new PKIAIASource(getCertEntityRepository()));
         certificateVerifier.addTrustedCertSources(trustedCertSource);
 
         service = new XAdESService(certificateVerifier);
@@ -78,16 +73,12 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
         Exception exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
 
-        certificateVerifier.setOcspSource(null);//FIXME ask Alex about this issue
+        certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
 
         exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
-        PKICRLSource pkicrlSource=new PKICRLSource(getCertEntityRepository());
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, 6);
-        Date nextUpdate = cal.getTime();
-        pkicrlSource.setNextUpdate(nextUpdate);
-        certificateVerifier.setCrlSource(pkicrlSource);
+
+        certificateVerifier.setCrlSource(pkiCRLSource());
 
         DSSDocument signedDocument = super.sign();
         assertNotNull(signedDocument);

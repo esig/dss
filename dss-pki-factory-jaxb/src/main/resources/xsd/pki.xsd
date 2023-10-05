@@ -24,6 +24,7 @@
             <xs:element name="subject" type="xs:string"/>
             <xs:element name="pseudo" type="xs:string" minOccurs="0"/>
             <xs:element name="issuer" type="EntityKey"/>
+            <xs:element name="crossCertificate" type="EntityKey" minOccurs="0"/>
             <xs:element name="organization" type="xs:string"
                         minOccurs="0"/>
             <xs:element name="country" type="xs:string" minOccurs="0"/>
@@ -37,7 +38,6 @@
             <xs:element name="notAfter" type="DateDefinitionType"/>
 
             <xs:element name="revocation" type="RevocationType" minOccurs="0"/>
-            <xs:element name="suspended" type="emptyType" minOccurs="0"/>
 
             <xs:element name="keyUsages" minOccurs="0">
                 <xs:complexType>

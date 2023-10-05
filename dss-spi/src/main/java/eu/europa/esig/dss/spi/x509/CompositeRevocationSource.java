@@ -34,7 +34,7 @@ import java.util.Map.Entry;
  * This class allows to retrieve a RevocationToken with different sources. The composite will try all sources until to get a
  * non-empty response.
  */
-public class CompositeRevocationSource<T extends Revocation,R extends RevocationSource<T>> implements RevocationSource<T> {
+public class CompositeRevocationSource<T extends Revocation, R extends RevocationSource<T>> implements RevocationSource<T> {
 
     private static final long serialVersionUID = 948088043702414489L;
 
@@ -80,4 +80,5 @@ public class CompositeRevocationSource<T extends Revocation,R extends Revocation
         LOG.debug("Unable to retrieve the ocsp token (" + compositeRevocationSources.size() + " tries)");
         return null;
     }
+
 }

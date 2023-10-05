@@ -107,7 +107,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(currentDate);
         calendar.add(Calendar.MINUTE, -1);
-        PKICRLSource pKICRLSource = pKICRLSource();
+        PKICRLSource pKICRLSource = pkiCRLSource();
         pKICRLSource.setThisUpdate(calendar.getTime());
         completeCertificateVerifier.setCrlSource(pKICRLSource);
         completeCertificateVerifier.setOcspSource(null);

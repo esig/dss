@@ -44,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class CAdESCounterSignatureValidationTest extends AbstractCAdESTestValidation {
 
 	@Override
+	@SuppressWarnings("unchecked")
 	protected DSSDocument getSignedDocument() {
 		FileDocument fileDocument = new FileDocument("src/test/resources/validation/counterSig.p7m");
 		

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="ed448-pki">
+
+    <certificate>
+        <serialNumber>1000</serialNumber>
+        <subject>Ed448-root-ca</subject>
+        <issuer serialNumber="1000">Ed448-root-ca</issuer>
+
+        <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1001</serialNumber>
+        <subject>Ed448-ocsp-responder</subject>
+        <issuer serialNumber="1000">Ed448-root-ca</issuer>
+
+        <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <ocspSigning/>
+        <ocspNoCheck/>
+        <!-- 		<trustAnchor /> -->
+    </certificate>
+
+    <certificate>
+        <serialNumber>1002</serialNumber>
+        <subject>Ed448-good-ca</subject>
+        <issuer serialNumber="1000">Ed448-root-ca</issuer>
+        <ocspResponder serialNumber="1001">Ed448-root-ca</ocspResponder>
+
+        <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>Ed448-root-ca</crl>
+        <aia>Ed448-root-ca</aia>
+        <!-- 		<trustAnchor /> -->
+    </certificate>
+
+    <certificate>
+        <serialNumber>1100</serialNumber>
+        <subject>Ed448-good-user</subject>
+        <issuer serialNumber="1002">Ed448-root-ca</issuer>
+
+        <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <ocsp>Ed448-good-ca</ocsp>
+        <aia>Ed448-good-ca</aia>
+    </certificate>
+
+    <!-- 	TSA doesn't work : https://github.com/bcgit/bc-java/issues/692 -->
+    <!-- 	<certificate> -->
+    <!-- 		<serialNumber>1200</serialNumber> -->
+    <!-- 		<subject>Ed448-good-tsa</subject> -->
+    <!-- 		<issuer serialNumber="1000">Ed448-root-ca</issuer> -->
+    <!-- 		<keyAlgo encryption="Ed448" /> -->
+    <!-- 		<notBefore month="-11"/> -->
+    <!-- 		<notAfter month="11"/> -->
+    <!-- 		<keyUsages> -->
+    <!-- 			<keyUsage>digitalSignature</keyUsage> -->
+    <!-- 		</keyUsages> -->
+    <!-- 		<tsa /> -->
+    <!-- 		<crl>Ed448-root-ca</crl> -->
+    <!-- 		<aia>Ed448-root-ca</aia> -->
+    <!-- 		<trustAnchor /> -->
+    <!-- 	</certificate> -->
+
+</pki>

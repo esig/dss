@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="Test Country">
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="zz-pki">
 
     <!-- National RootCA certificate-->
     <certificate>

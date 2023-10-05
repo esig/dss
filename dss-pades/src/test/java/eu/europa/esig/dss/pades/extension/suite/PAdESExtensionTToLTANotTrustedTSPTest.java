@@ -23,13 +23,9 @@ package eu.europa.esig.dss.pades.extension.suite;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -54,13 +50,10 @@ public class PAdESExtensionTToLTANotTrustedTSPTest extends AbstractPAdESTestExte
 
     @Override
     protected PAdESService getSignatureServiceToExtend() {
-        CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-        certificateVerifier.setAIASource(new DefaultAIASource());
-        certificateVerifier.setCrlSource(new OnlineCRLSource());
-        certificateVerifier.setOcspSource(new OnlineOCSPSource());
+        CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 
         CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
-        trustedCertificateSource.importAsTrusted(getBelgiumTrustAnchors());
+        trustedCertificateSource.importAsTrusted(getGoodPKITrustAnchors());
         certificateVerifier.setTrustedCertSources(trustedCertificateSource);
 
         PAdESService service = new PAdESService(certificateVerifier);

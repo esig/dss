@@ -2,7 +2,7 @@ package eu.europa.esig.dss.pki.x509.revocation.ocsp;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.repository.CertEntityRepository;
+import eu.europa.esig.dss.pki.model.CertEntityRepository;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Map;

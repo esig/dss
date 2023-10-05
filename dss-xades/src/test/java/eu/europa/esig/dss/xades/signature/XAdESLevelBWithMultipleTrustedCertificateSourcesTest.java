@@ -35,7 +35,6 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
@@ -48,7 +47,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -81,24 +79,20 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 
 	@Test
-	public void validateWithValidTrustAnchorTest() throws IOException {
+	public void validateWithValidTrustAnchorTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
-		CommonTrustedCertificateSource trusted = new CommonTrustedCertificateSource();
-		trusted.importAsTrusted(getBelgiumTrustAnchors());
-		certificateVerifier.setTrustedCertSources(trusted);
+		certificateVerifier.setTrustedCertSources(getGoodPKITrustAnchors());
 		expectedResult = Indication.TOTAL_PASSED;
 		trustedStoreExpectedResult = true;
 		validate(signedDocument);
 	}
 	
 	@Test
-	public void validateWithValidTrustAnchorAndAdjunctTest() throws IOException {
+	public void validateWithValidTrustAnchorAndAdjunctTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
-		CommonTrustedCertificateSource trusted = new CommonTrustedCertificateSource();
-		trusted.importAsTrusted(getBelgiumTrustAnchors());
-		certificateVerifier.setTrustedCertSources(trusted);
+		certificateVerifier.setTrustedCertSources(getGoodPKITrustAnchors());
 		
 		CertificateSource cs = new CommonCertificateSource();
 		cs.addCertificate(getCertificate(ROOT_CA));
@@ -109,26 +103,21 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 	
 	@Test
-	public void validateWithInvalidTrustAnchorTest() throws IOException {
+	public void validateWithInvalidTrustAnchorTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
-		CommonTrustedCertificateSource trusted = new CommonTrustedCertificateSource();
-		trusted.importAsTrusted(getSHA3PKITrustAnchors());
-		certificateVerifier.setTrustedCertSources(trusted);
+		certificateVerifier.setTrustedCertSources(getSHA3PKITrustAnchors());
 		expectedResult = Indication.INDETERMINATE;
 		trustedStoreExpectedResult = false;
 		validate(signedDocument);
 	}
 	
 	@Test
-	public void validateWithBothTrustAnchorsTest() throws IOException {
+	public void validateWithBothTrustAnchorsTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
-
-		CommonTrustedCertificateSource trustedSource1 = new CommonTrustedCertificateSource();
-		trustedSource1.importAsTrusted(getSHA3PKITrustAnchors());
 		
-		certificateVerifier.setTrustedCertSources(trustedSource1);
+		certificateVerifier.setTrustedCertSources(getSHA3PKITrustAnchors());
 		expectedResult = Indication.INDETERMINATE;
 		trustedStoreExpectedResult = false;
 		validate(signedDocument);
@@ -136,9 +125,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 		ListCertificateSource trustedCertSources = certificateVerifier.getTrustedCertSources();
 		assertEquals(1, trustedCertSources.getNumberOfSources());
 
-		CommonTrustedCertificateSource trustedSource2 = new CommonTrustedCertificateSource();
-		trustedSource2.importAsTrusted(getBelgiumTrustAnchors());
-		certificateVerifier.addTrustedCertSources(trustedSource2);
+		certificateVerifier.addTrustedCertSources(getGoodPKITrustAnchors());
 		
 		trustedCertSources = certificateVerifier.getTrustedCertSources();
 		assertEquals(2, trustedCertSources.getNumberOfSources());
@@ -149,32 +136,27 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 
 	@Test
-	public void validateWithArrayOfTrustAnchorsTest() throws IOException {
+	public void validateWithArrayOfTrustAnchorsTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
-		CommonTrustedCertificateSource trustedSource1 = new CommonTrustedCertificateSource();
-		trustedSource1.importAsTrusted(getSHA3PKITrustAnchors());
-		CommonTrustedCertificateSource trustedSource2 = new CommonTrustedCertificateSource();
-		trustedSource2.importAsTrusted(getBelgiumTrustAnchors());
-		certificateVerifier.setTrustedCertSources(trustedSource1, trustedSource2);
+		certificateVerifier.setTrustedCertSources(getSHA3PKITrustAnchors(), getGoodPKITrustAnchors());
 		expectedResult = Indication.TOTAL_PASSED;
 		trustedStoreExpectedResult = true;
 		validate(signedDocument);
 	}
 	
 	@Test
-	public void validateWithArrayOfDuplicateTrustAnchorsTest() throws IOException {
+	public void validateWithArrayOfDuplicateTrustAnchorsTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
-		CommonTrustedCertificateSource trustedSource1 = new CommonTrustedCertificateSource();
-		trustedSource1.importAsTrusted(getBelgiumTrustAnchors());
-		certificateVerifier.setTrustedCertSources(trustedSource1, trustedSource1);
+		CertificateSource trustedSource = getGoodPKITrustAnchors();
+		certificateVerifier.setTrustedCertSources(trustedSource, trustedSource);
 		expectedResult = Indication.TOTAL_PASSED;
 		trustedStoreExpectedResult = true;
 		validate(signedDocument);
 	}
 
-	private DSSDocument sign() throws IOException {
+	private DSSDocument sign() {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);

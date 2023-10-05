@@ -23,7 +23,7 @@ public interface CertEntity extends Serializable {
      *
      * @return private key as a {@link PrivateKey} object
      */
-    PrivateKey getPrivateKeyObject();
+    PrivateKey getPrivateKey();
 
     /**
      * Gets the certificate chain associated with this certificate entity.

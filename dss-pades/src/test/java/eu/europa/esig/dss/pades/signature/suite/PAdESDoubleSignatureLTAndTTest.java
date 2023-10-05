@@ -35,8 +35,6 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -108,8 +106,8 @@ public class PAdESDoubleSignatureLTAndTTest extends AbstractPAdESTestSignature {
         SignedDocumentValidator validator = super.getValidator(signedDocument);
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
         // to no cache
-        certificateVerifier.setOcspSource(new OnlineOCSPSource());
-        certificateVerifier.setCrlSource(new OnlineCRLSource());
+        certificateVerifier.setOcspSource(pkiOCSPSource());
+        certificateVerifier.setCrlSource(pkiCRLSource());
         validator.setCertificateVerifier(certificateVerifier);
         return validator;
     }

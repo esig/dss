@@ -9,19 +9,19 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.security.Security;
 import java.util.Objects;
 
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.XML_FOLDER;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractTestJaxbPKI {
 
     protected static JaxbCertEntityRepository repository = new JaxbCertEntityRepository();
+    protected static final String XML_FOLDER = "pki";
 
     static {
         Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -31,8 +31,7 @@ public abstract class AbstractTestJaxbPKI {
     private static void loadPki() {
         for (File file : Objects.requireNonNull(getFolder().listFiles())) {
             JAXBCertEntityBuilder builder = new JAXBCertEntityBuilder();
-
-            try (InputStream is = new FileInputStream(file)) {
+            try (InputStream is = Files.newInputStream(file.toPath())) {
                 XmlPki pki = loadPKI(is);
                 builder.persistPKI(repository, pki);
             } catch (Exception e) {
