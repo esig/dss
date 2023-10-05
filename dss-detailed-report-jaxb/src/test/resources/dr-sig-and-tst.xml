@@ -922,5 +922,5 @@
     <Semantic Key="INDETERMINATE">The available information is insufficient to ascertain the signature to be TOTAL-PASSED or TOTAL-FAILED.</Semantic>
     <Semantic Key="PASSED">The validation process succeeded</Semantic>
     <Semantic Key="FAILED">The validation process failed</Semantic>
-    <Semantic Key="TRY_LATER">The signature validation process results into INDETERMINATE because not all constraints can be fulfilled using available information. However, it may be possible to do so using additional revocation information that will be available at a later point of time.</Semantic>    
+    <Semantic Key="TRY_LATER">The signature validation process results into INDETERMINATE because not all constraints can be fulfilled using available information. However, it may be possible to do so using additional revocation information that will be available at a later point of time.</Semantic>
 </DetailedReport>

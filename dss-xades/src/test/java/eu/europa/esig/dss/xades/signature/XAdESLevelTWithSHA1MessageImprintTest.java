@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +66,7 @@ public class XAdESLevelTWithSHA1MessageImprintTest extends AbstractXAdESTestSign
 
 		service = new XAdESService(getOfflineCertificateVerifier());
 
-		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
 		service.setTspSource(tspSource);
 	}

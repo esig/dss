@@ -60,7 +60,7 @@ public class XAdESWithPSSTest extends AbstractXAdESTestSignature {
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-		service = new XAdESService(getCompleteCertificateVerifier());
+		service = new XAdESService(getCertificateVerifierWithMGF1());
 		service.setTspSource(getPSSGoodTsa());
 	}
 

@@ -25,12 +25,9 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,13 +54,10 @@ public class XAdESLevelTNotTrustedTSPTest extends AbstractXAdESTestSignature {
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
-        CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setAIASource(new DefaultAIASource());
-        certificateVerifier.setCrlSource(new OnlineCRLSource());
-        certificateVerifier.setOcspSource(new OnlineOCSPSource());
+        CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 
         CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
-        trustedCertificateSource.importAsTrusted(getBelgiumTrustAnchors());
+        trustedCertificateSource.importAsTrusted(getGoodPKITrustAnchors());
         certificateVerifier.setTrustedCertSources(trustedCertificateSource);
 
         service = new XAdESService(certificateVerifier);

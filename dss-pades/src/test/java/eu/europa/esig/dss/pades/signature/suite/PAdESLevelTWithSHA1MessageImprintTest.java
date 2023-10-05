@@ -33,7 +33,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collections;
@@ -62,7 +62,7 @@ public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSign
 
 		service = new PAdESService(getOfflineCertificateVerifier());
 
-		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
 		service.setTspSource(tspSource);
 	}

@@ -32,7 +32,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
+import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.RevocationDataVerifier;
@@ -69,9 +69,9 @@ public class XAdESLevelLTWithSHA1OcspResponseTest extends AbstractXAdESTestSigna
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 
         certificateVerifier = getCompleteCertificateVerifier();
-        OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-        ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA1);
-        certificateVerifier.setOcspSource(ocspSource);
+        PKIOCSPSource pkiOCSPSource = pkiOCSPSource();
+        pkiOCSPSource.setDigestAlgorithm(DigestAlgorithm.SHA1);
+        certificateVerifier.setOcspSource(pkiOCSPSource);
 
         service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
@@ -102,8 +102,8 @@ public class XAdESLevelLTWithSHA1OcspResponseTest extends AbstractXAdESTestSigna
                 DigestAlgorithm.SHA256, DigestAlgorithm.SHA512));
         certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
 
-        OnlineOCSPSource ocspSource = new OnlineOCSPSource();
-        ocspSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA256);
+        PKIOCSPSource ocspSource = pkiOCSPSource();
+        ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
         certificateVerifier.setOcspSource(ocspSource);
 
         validator.setCertificateVerifier(certificateVerifier);

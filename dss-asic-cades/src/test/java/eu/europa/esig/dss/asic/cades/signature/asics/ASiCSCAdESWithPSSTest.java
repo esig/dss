@@ -36,6 +36,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +67,12 @@ public class ASiCSCAdESWithPSSTest extends AbstractASiCSCAdESTestSignature {
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getPSSGoodTsa());
 	}
-	
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		return super.getCertificateVerifierWithMGF1();
+	}
+
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);

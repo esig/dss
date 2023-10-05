@@ -58,7 +58,7 @@ public class PAdESWithSHA3Test extends AbstractPAdESTestSignature {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		
-		service = new PAdESService(getCompleteCertificateVerifier());
+		service = new PAdESService(getCertificateVerifierWithSHA3_256());
 		service.setTspSource(getSHA3GoodTsa());
 	}
 

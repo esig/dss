@@ -124,7 +124,7 @@ public class SignPdfWithExternalCmsTest extends CookbookTools {
     }
 
     private SignatureValue computeSignatureValue(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm) throws Exception {
-        try (SignatureTokenConnection signingToken = getPkcs12Token()) {
+        try (SignatureTokenConnection signingToken = getToken()) {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
             return signingToken.sign(toBeSigned, digestAlgorithm, privateKey);
         }

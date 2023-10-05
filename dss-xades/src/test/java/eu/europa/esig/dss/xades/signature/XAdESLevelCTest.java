@@ -38,11 +38,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -82,8 +84,10 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_C);
 		signatureParameters.setTokenReferencesDigestAlgorithm(DigestAlgorithm.SHA384);
 		signatureParameters.setEn319132(false);
-
-		service = new XAdESService(getCompleteCertificateVerifier());
+		CertificateVerifier certificateVerifier=getCompleteCertificateVerifier();
+		PKIOCSPSource pkiocspSource = pkiDelegatedOCSPSource();
+		certificateVerifier.setOcspSource(pkiocspSource);
+		service = new XAdESService(certificateVerifier);
 		service.setTspSource(getGoodTsa());
 	}
 

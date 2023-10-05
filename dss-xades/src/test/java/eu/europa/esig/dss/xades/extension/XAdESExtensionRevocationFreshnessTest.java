@@ -35,11 +35,8 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -80,9 +77,9 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 
 		// avoid caching
 		certificateVerifier = getOfflineCertificateVerifier();
-		certificateVerifier.setAIASource(new DefaultAIASource());
-		certificateVerifier.setCrlSource(new OnlineCRLSource());
-		certificateVerifier.setOcspSource(new OnlineOCSPSource());
+		certificateVerifier.setAIASource(pkiAIASource());
+		certificateVerifier.setCrlSource(pkiCRLSource());
+		certificateVerifier.setOcspSource(pkiOCSPSource());
 
 		signingAlias = EE_GOOD_USER;
 		
@@ -171,7 +168,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 
 		XAdESService service = new XAdESService(certificateVerifier);
 		// ensure the time is synchronized between the TSP and revocation data
-        service.setTspSource(getOnlineTSPSourceByName(EE_GOOD_TSA));
+        service.setTspSource(getPKITSPSourceByName(EE_GOOD_TSA));
 
 		DSSDocument signedDocument = sign(service, documentToSign);
 		

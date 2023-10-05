@@ -26,6 +26,9 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -141,7 +144,11 @@ public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
         signingAlias = GOOD_USER_UNKNOWN;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);
-
+        CertificateVerifier certificateVerifier=super.getCompleteCertificateVerifier();
+        certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getCertEntityRepository()));
+        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getCertEntityRepository()));
+        service = new XAdESService(certificateVerifier);
+        service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
     }

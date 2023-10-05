@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -58,233 +58,233 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSignature {
 
-	private static final Logger logger = LoggerFactory.getLogger(AbstractCAdESRequirementChecks.class);
-	
-	private DSSDocument documentToSign;
-	private CAdESService service;
-	private CAdESSignatureParameters signatureParameters;
+    private static final Logger logger = LoggerFactory.getLogger(AbstractCAdESRequirementChecks.class);
 
-	@BeforeEach
-	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello world".getBytes());
-		
-		service = new CAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
-		
-		signatureParameters = new CAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-	}
-	
-	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		super.onDocumentSigned(byteArray);
-		try {
-			ASN1InputStream asn1sInput = new ASN1InputStream(byteArray);
-			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
-			
-			assertEquals(2, asn1Seq.size());
-			ASN1ObjectIdentifier oid = ASN1ObjectIdentifier.getInstance(asn1Seq.getObjectAt(0));
-			assertEquals(PKCSObjectIdentifiers.signedData, oid);
+    private DSSDocument documentToSign;
+    private CAdESService service;
+    private CAdESSignatureParameters signatureParameters;
 
-			ASN1TaggedObject taggedObj = ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1));
-			SignedData signedData = SignedData.getInstance(taggedObj.getBaseObject());
+    @BeforeEach
+    public void init() throws Exception {
+        documentToSign = new InMemoryDocument("Hello world".getBytes());
 
-			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
-			assertEquals(1, signerInfosAsn1.size());
+        service = new CAdESService(getCompleteCertificateVerifier());
+        service.setTspSource(getGoodTsa());
 
-			SignerInfo signerInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
+        signatureParameters = new CAdESSignatureParameters();
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+    }
 
-			checkSignedData(signedData);
-			checkContentTypePresent(signerInfo);
-			checkMessageDigestPresent(signerInfo);
-			checkSigningTimePresent(signerInfo);
-			checkSignatureTimeStampPresent(signerInfo);
-			checkCertificateValue(signerInfo);
-			checkCompleteCertificateReference(signerInfo);
-			checkRevocationValues(signerInfo);
-			checkCompleteRevocationReferences(signerInfo);
-			checkCAdESCTimestamp(signerInfo);
-			checkTimestampedCertsCrlsReferences(signerInfo);
-			checkArchiveTimeStampV3(signerInfo);
+    @Override
+    protected void onDocumentSigned(byte[] byteArray) {
+        super.onDocumentSigned(byteArray);
+        try {
+            ASN1InputStream asn1sInput = new ASN1InputStream(byteArray);
+            ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-			Utils.closeQuietly(asn1sInput);
-		} catch (Exception e) {
-			fail(e);
-		}
-	}
+            assertEquals(2, asn1Seq.size());
+            ASN1ObjectIdentifier oid = ASN1ObjectIdentifier.getInstance(asn1Seq.getObjectAt(0));
+            assertEquals(PKCSObjectIdentifiers.signedData, oid);
 
-	/**
-	 * SignedData shall be present in B/T/LT/LTA
-	 */
-	protected void checkSignedData(SignedData signedData) throws Exception {
-		checkSignedDataCertificatesPresent(signedData);
-	}
+            ASN1TaggedObject taggedObj = ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1));
+            SignedData signedData = SignedData.getInstance(taggedObj.getBaseObject());
 
-	/**
-	 * SignedData.certificates shall be present in B/T/LT/LTA
-	 */
-	protected void checkSignedDataCertificatesPresent(SignedData signedData) throws Exception {
-		ASN1Set certificates = signedData.getCertificates();
-		logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
-		assertTrue(certificates.size() > 0);
+            ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
+            assertEquals(1, signerInfosAsn1.size());
 
-		for (int i = 0; i < certificates.size(); i++) {
-			ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
-			X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
-			CertificateToken certificate = DSSASN1Utils.getCertificate(certificateHolder);
-			certificate.getCertificate().checkValidity();
-		}
-	}
+            SignerInfo signerInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
 
-	/**
-	 * SignedData.crls shall be present in LT/LTA
-	 */
-	protected void checkSignedDataRevocationDataPresent(SignedData signedData) throws Exception {
-		ASN1Set crls = signedData.getCRLs();
-		logger.info("CRLs (" + crls.size() + ") : " + crls);
-		assertTrue(crls.size() > 1);
+            checkSignedData(signedData);
+            checkContentTypePresent(signerInfo);
+            checkMessageDigestPresent(signerInfo);
+            checkSigningTimePresent(signerInfo);
+            checkSignatureTimeStampPresent(signerInfo);
+            checkCertificateValue(signerInfo);
+            checkCompleteCertificateReference(signerInfo);
+            checkRevocationValues(signerInfo);
+            checkCompleteRevocationReferences(signerInfo);
+            checkCAdESCTimestamp(signerInfo);
+            checkTimestampedCertsCrlsReferences(signerInfo);
+            checkArchiveTimeStampV3(signerInfo);
 
-		boolean crlFound = false;
-		boolean ocspFound = false;
-		for (int i = 0; i < crls.size(); i++) {
-			ASN1Primitive asn1Primitive = (crls.getObjectAt(i)).toASN1Primitive();
-			if (asn1Primitive instanceof ASN1Sequence) {
-				CRLBinary crlBinary = CRLUtils.buildCRLBinary(asn1Primitive.getEncoded());
-				assertNotNull(crlBinary);
-				crlFound = true;
-			} else if (asn1Primitive instanceof ASN1TaggedObject) {
-				ASN1TaggedObject asn1TaggedObject = ASN1TaggedObject.getInstance(asn1Primitive);
-				if (asn1TaggedObject.getTagNo() == 1) {
-					OtherRevocationInfoFormat infoFormat = OtherRevocationInfoFormat.getInstance(asn1TaggedObject, false);
-					assertEquals(CMSObjectIdentifiers.id_ri_ocsp_response, infoFormat.getInfoFormat());
+            Utils.closeQuietly(asn1sInput);
+        } catch (Exception e) {
+            fail(e);
+        }
+    }
 
-					ASN1Sequence asn1Sequence = (ASN1Sequence) infoFormat.getInfo();
-					assertEquals(2, asn1Sequence.size());
+    /**
+     * SignedData shall be present in B/T/LT/LTA
+     */
+    protected void checkSignedData(SignedData signedData) throws Exception {
+        checkSignedDataCertificatesPresent(signedData);
+    }
 
-					final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(asn1Sequence);
-					assertNotNull(ocspResp);
-					ocspFound = true;
-				}
-			}
-		}
-		assertTrue(crlFound, "CRL is not found!");
-		assertTrue(ocspFound, "OCSP is not found!");
-	}
+    /**
+     * SignedData.certificates shall be present in B/T/LT/LTA
+     */
+    protected void checkSignedDataCertificatesPresent(SignedData signedData) throws Exception {
+        ASN1Set certificates = signedData.getCertificates();
+        logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
+        assertTrue(certificates.size() > 0);
 
-	/**
-	 * Content-type shall be present in B/T/LT/LTA
-	 */
-	protected void checkContentTypePresent(SignerInfo signerInfo) {
-		assertTrue(isSignedAttributeFound(signerInfo, PKCSObjectIdentifiers.pkcs_9_at_contentType));
-	}
+        for (int i = 0; i < certificates.size(); i++) {
+            ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
+            X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
+            CertificateToken certificate = DSSASN1Utils.getCertificate(certificateHolder);
+            certificate.getCertificate().checkValidity();
+        }
+    }
 
-	/**
-	 * Message-digest shall be present in B/T/LT/LTA
-	 */
-	protected void checkMessageDigestPresent(SignerInfo signerInfo) {
-		assertTrue(isSignedAttributeFound(signerInfo, PKCSObjectIdentifiers.pkcs_9_at_messageDigest));
-	}
+    /**
+     * SignedData.crls shall be present in LT/LTA
+     */
+    protected void checkSignedDataRevocationDataPresent(SignedData signedData) throws Exception {
+        ASN1Set crls = signedData.getCRLs();
+        logger.info("CRLs (" + crls.size() + ") : " + crls);
+        assertTrue(crls.size() > 1);
 
-	/**
-	 * Signing-time shall be present in B/T/LT/LTA
-	 */
-	protected void checkSigningTimePresent(SignerInfo signerInfo) {
-		assertTrue(isSignedAttributeFound(signerInfo, PKCSObjectIdentifiers.pkcs_9_at_signingTime));
-	}
+        boolean crlFound = false;
+        boolean ocspFound = false;
+        for (int i = 0; i < crls.size(); i++) {
+            ASN1Primitive asn1Primitive = (crls.getObjectAt(i)).toASN1Primitive();
+            if (asn1Primitive instanceof ASN1Sequence) {
+                CRLBinary crlBinary = CRLUtils.buildCRLBinary(asn1Primitive.getEncoded());
+                assertNotNull(crlBinary);
+                crlFound = true;
+            } else if (asn1Primitive instanceof ASN1TaggedObject) {
+                ASN1TaggedObject asn1TaggedObject = ASN1TaggedObject.getInstance(asn1Primitive);
+                if (asn1TaggedObject.getTagNo() == 1) {
+                    OtherRevocationInfoFormat infoFormat = OtherRevocationInfoFormat.getInstance(asn1TaggedObject, false);
+                    assertEquals(CMSObjectIdentifiers.id_ri_ocsp_response, infoFormat.getInfoFormat());
 
-	/**
-	 * signature-time-stamp shall be present in T/LT/LTA
-	 */
-	protected void checkSignatureTimeStampPresent(SignerInfo signerInfo) {
-		assertTrue(isUnsignedAttributeFound(signerInfo, PKCSObjectIdentifiers.id_aa_signatureTimeStampToken));
-	}
+                    ASN1Sequence asn1Sequence = (ASN1Sequence) infoFormat.getInfo();
+                    assertEquals(2, asn1Sequence.size());
 
-	/**
-	 * certificate-value shall not be present (B/T 1 or 0 ; LT/LTA 0)
-	 */
-	protected abstract void checkCertificateValue(SignerInfo signerInfo);
+                    final OCSPResp ocspResp = DSSRevocationUtils.getOcspResp(asn1Sequence);
+                    assertNotNull(ocspResp);
+                    ocspFound = true;
+                }
+            }
+        }
+        assertTrue(crlFound, "CRL is not found!");
+        assertTrue(ocspFound, "OCSP is not found!");
+    }
 
-	/**
-	 * complete-certificate-references shall not be present (B/T 1 or 0 ; LT/LTA 0)
-	 */
-	protected abstract void checkCompleteCertificateReference(SignerInfo signerInfo);
+    /**
+     * Content-type shall be present in B/T/LT/LTA
+     */
+    protected void checkContentTypePresent(SignerInfo signerInfo) {
+        assertTrue(isSignedAttributeFound(signerInfo, PKCSObjectIdentifiers.pkcs_9_at_contentType));
+    }
 
-	/**
-	 * revocation-values shall not be present (B/T 1 or 0 ; LT/LTA 0)
-	 */
-	protected abstract void checkRevocationValues(SignerInfo signerInfo);
+    /**
+     * Message-digest shall be present in B/T/LT/LTA
+     */
+    protected void checkMessageDigestPresent(SignerInfo signerInfo) {
+        assertTrue(isSignedAttributeFound(signerInfo, PKCSObjectIdentifiers.pkcs_9_at_messageDigest));
+    }
 
-	/**
-	 * complete-revocation-references shall not be present (B/T 1 or 0 ; LT/LTA 0)
-	 */
-	protected abstract void checkCompleteRevocationReferences(SignerInfo signerInfo);
+    /**
+     * Signing-time shall be present in B/T/LT/LTA
+     */
+    protected void checkSigningTimePresent(SignerInfo signerInfo) {
+        assertTrue(isSignedAttributeFound(signerInfo, PKCSObjectIdentifiers.pkcs_9_at_signingTime));
+    }
 
-	/**
-	 * CAdES-C-timestamp shall not be present (B/T 0+ ; LT/LTA 0)
-	 */
-	protected abstract void checkCAdESCTimestamp(SignerInfo signerInfo);
+    /**
+     * signature-time-stamp shall be present in T/LT/LTA
+     */
+    protected void checkSignatureTimeStampPresent(SignerInfo signerInfo) {
+        assertTrue(isUnsignedAttributeFound(signerInfo, PKCSObjectIdentifiers.id_aa_signatureTimeStampToken));
+    }
 
-	/**
-	 * time-stamped-certs-crls-references shall not be present (B/T 0+ ; LT/LTA 0)
-	 */
-	protected abstract void checkTimestampedCertsCrlsReferences(SignerInfo signerInfo);
+    /**
+     * certificate-value shall not be present (B/T 1 or 0 ; LT/LTA 0)
+     */
+    protected abstract void checkCertificateValue(SignerInfo signerInfo);
 
-	/**
-	 * archive-time-stamp-v3 (B/T/LT 0; LTA 1+)
-	 */
-	protected abstract void checkArchiveTimeStampV3(SignerInfo signerInfo);
+    /**
+     * complete-certificate-references shall not be present (B/T 1 or 0 ; LT/LTA 0)
+     */
+    protected abstract void checkCompleteCertificateReference(SignerInfo signerInfo);
 
-	protected boolean isSignedAttributeFound(SignerInfo signerInfo, ASN1ObjectIdentifier oid) {
-		return countSignedAttribute(signerInfo, oid) > 0;
-	}
+    /**
+     * revocation-values shall not be present (B/T 1 or 0 ; LT/LTA 0)
+     */
+    protected abstract void checkRevocationValues(SignerInfo signerInfo);
 
-	protected boolean isUnsignedAttributeFound(SignerInfo signerInfo, ASN1ObjectIdentifier oid) {
-		return countUnsignedAttribute(signerInfo, oid) > 0;
-	}
+    /**
+     * complete-revocation-references shall not be present (B/T 1 or 0 ; LT/LTA 0)
+     */
+    protected abstract void checkCompleteRevocationReferences(SignerInfo signerInfo);
 
-	protected int countSignedAttribute(SignerInfo signerInfo, ASN1ObjectIdentifier oid) {
-		ASN1Set authenticatedAttributes = signerInfo.getAuthenticatedAttributes();
-		return countInSet(oid, authenticatedAttributes);
-	}
+    /**
+     * CAdES-C-timestamp shall not be present (B/T 0+ ; LT/LTA 0)
+     */
+    protected abstract void checkCAdESCTimestamp(SignerInfo signerInfo);
 
-	protected int countUnsignedAttribute(SignerInfo signerInfo, ASN1ObjectIdentifier oid) {
-		ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
-		return countInSet(oid, unauthenticatedAttributes);
-	}
+    /**
+     * time-stamped-certs-crls-references shall not be present (B/T 0+ ; LT/LTA 0)
+     */
+    protected abstract void checkTimestampedCertsCrlsReferences(SignerInfo signerInfo);
 
-	private int countInSet(ASN1ObjectIdentifier oid, ASN1Set set) {
-		int counter = 0;
-		if (set != null) {
-			for (int i = 0; i < set.size(); i++) {
-				ASN1Sequence attrSeq = ASN1Sequence.getInstance(set.getObjectAt(i));
-				ASN1ObjectIdentifier attrOid = ASN1ObjectIdentifier.getInstance(attrSeq.getObjectAt(0));
-				if (oid.equals(attrOid)) {
-					counter++;
-				}
-			}
-		}
-		return counter;
-	}
+    /**
+     * archive-time-stamp-v3 (B/T/LT 0; LTA 1+)
+     */
+    protected abstract void checkArchiveTimeStampV3(SignerInfo signerInfo);
 
-	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
-	}
+    protected boolean isSignedAttributeFound(SignerInfo signerInfo, ASN1ObjectIdentifier oid) {
+        return countSignedAttribute(signerInfo, oid) > 0;
+    }
 
-	@Override
-	protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
-		return service;
-	}
-	
-	@Override
-	protected CAdESSignatureParameters getSignatureParameters() {
-		return signatureParameters;
-	}
+    protected boolean isUnsignedAttributeFound(SignerInfo signerInfo, ASN1ObjectIdentifier oid) {
+        return countUnsignedAttribute(signerInfo, oid) > 0;
+    }
 
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
-	}
+    protected int countSignedAttribute(SignerInfo signerInfo, ASN1ObjectIdentifier oid) {
+        ASN1Set authenticatedAttributes = signerInfo.getAuthenticatedAttributes();
+        return countInSet(oid, authenticatedAttributes);
+    }
+
+    protected int countUnsignedAttribute(SignerInfo signerInfo, ASN1ObjectIdentifier oid) {
+        ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
+        return countInSet(oid, unauthenticatedAttributes);
+    }
+
+    private int countInSet(ASN1ObjectIdentifier oid, ASN1Set set) {
+        int counter = 0;
+        if (set != null) {
+            for (int i = 0; i < set.size(); i++) {
+                ASN1Sequence attrSeq = ASN1Sequence.getInstance(set.getObjectAt(i));
+                ASN1ObjectIdentifier attrOid = ASN1ObjectIdentifier.getInstance(attrSeq.getObjectAt(0));
+                if (oid.equals(attrOid)) {
+                    counter++;
+                }
+            }
+        }
+        return counter;
+    }
+
+    @Override
+    protected DSSDocument getDocumentToSign() {
+        return documentToSign;
+    }
+
+    @Override
+    protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
+        return service;
+    }
+
+    @Override
+    protected CAdESSignatureParameters getSignatureParameters() {
+        return signatureParameters;
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return GOOD_USER;
+    }
 }

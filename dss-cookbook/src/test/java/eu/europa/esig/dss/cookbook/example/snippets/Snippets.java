@@ -266,7 +266,7 @@ public class Snippets {
 		String base64Sha256HashOfDocument = document.getDigest(DigestAlgorithm.SHA256);
 
 		// Compute hash on a byte array
-		byte[] binaries = "Hello World".getBytes();
+		byte[] binaries = "Hello World!".getBytes();
 		byte[] sha256HashOfBinaries = DSSUtils.digest(DigestAlgorithm.SHA256, binaries);
 		String base64Sha256HashOfBinaries = Utils.toBase64(sha256HashOfBinaries);
 		// end::hashComputation[]

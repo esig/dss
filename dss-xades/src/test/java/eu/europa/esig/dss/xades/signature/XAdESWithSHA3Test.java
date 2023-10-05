@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -42,62 +42,63 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XAdESWithSHA3Test extends AbstractXAdESTestSignature {
 
-	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
-	private XAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+    private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
+    private XAdESSignatureParameters signatureParameters;
+    private DSSDocument documentToSign;
 
-	@BeforeEach
-	public void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
+    @BeforeEach
+    public void init() throws Exception {
+        documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
-		signatureParameters = new XAdESSignatureParameters();
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		
-		service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getSHA3GoodTsa());
-	}
+        signatureParameters = new XAdESSignatureParameters();
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 
-	@Override
-	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
-		super.verifyDiagnosticData(diagnosticData);
+        service = new XAdESService(getCertificateVerifierWithSHA3_256());
+        service.setTspSource(getSHA3GoodTsa());
+    }
 
-		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
-		for(CertificateWrapper wrapper: usedCertificates) {
-			assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
-		}
-		
-		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
-		for(RevocationWrapper wrapper : allRevocationData) {
-			assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
-		}
-		
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		for(TimestampWrapper wrapper : timestampList) {
-			assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
-		}
-	}
 
-	@Override
-	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
-		return service;
-	}
+    @Override
+    protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+        super.verifyDiagnosticData(diagnosticData);
 
-	@Override
-	protected XAdESSignatureParameters getSignatureParameters() {
-		return signatureParameters;
-	}
+        List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+        for (CertificateWrapper wrapper : usedCertificates) {
+            assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
+        }
 
-	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
-	}
+        Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
+        for (RevocationWrapper wrapper : allRevocationData) {
+            assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
+        }
 
-	@Override
-	protected String getSigningAlias() {
-		return RSA_SHA3_USER;
-	}
+        List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+        for (TimestampWrapper wrapper : timestampList) {
+            assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
+        }
+    }
+
+    @Override
+    protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
+        return service;
+    }
+
+    @Override
+    protected XAdESSignatureParameters getSignatureParameters() {
+        return signatureParameters;
+    }
+
+    @Override
+    protected DSSDocument getDocumentToSign() {
+        return documentToSign;
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return RSA_SHA3_USER;
+    }
 
 }

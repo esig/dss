@@ -129,15 +129,15 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 	private byte[] sign(final byte[] bytes, final String javaSignatureAlgorithm, final AlgorithmParameterSpec param,
 						final DSSPrivateKeyEntry keyEntry) throws GeneralSecurityException {
-		if (!(keyEntry instanceof KSPrivateKeyEntry)) {
-			throw new IllegalArgumentException("Only KSPrivateKeyEntry are supported");
+		if (!(keyEntry instanceof DSSPrivateKeyAccessEntry)) {
+			throw new IllegalArgumentException("Only DSSPrivateKeyAccessEntry are supported");
 		}
 		LOG.info("Signature algorithm : {}", javaSignatureAlgorithm);
 		final Signature signature = getSignatureInstance(javaSignatureAlgorithm);
 		if (param != null) {
 			signature.setParameter(param);
 		}
-		signature.initSign(((KSPrivateKeyEntry) keyEntry).getPrivateKey());
+		signature.initSign(((DSSPrivateKeyAccessEntry) keyEntry).getPrivateKey());
 		signature.update(bytes);
 		return signature.sign();
 	}

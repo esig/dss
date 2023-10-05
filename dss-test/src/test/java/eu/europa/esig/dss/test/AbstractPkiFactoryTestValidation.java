@@ -230,7 +230,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkSignaturePolicy(signatures);
 
 		Reports reports = validator.validateDocument();
-		// reports.setValidateXml(true);
+		reports.setValidateXml(true);
 		// reports.print();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();

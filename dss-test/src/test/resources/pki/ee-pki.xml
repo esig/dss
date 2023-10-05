@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="ee-pki">
+
+    <certificate>
+        <serialNumber>1000</serialNumber>
+        <subject>ee-root-ca</subject>
+        <issuer serialNumber="1000">ee-root-ca</issuer>
+
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1001</serialNumber>
+        <subject>ee-ocsp-responder</subject>
+        <issuer serialNumber="1000">ee-root-ca</issuer>
+
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <trustAnchor/>
+        <ocspSigning/>
+        <ocspNoCheck/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1002</serialNumber>
+        <subject>ee-good-ca</subject>
+        <issuer serialNumber="1000">ee-root-ca</issuer>
+        <ocspResponder serialNumber="1001">ee-root-ca</ocspResponder>
+
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <trustAnchor/>
+        <crl>ee-root-ca</crl>
+        <aia>ee-root-ca</aia>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1100</serialNumber>
+        <subject>ee-good-user</subject>
+        <issuer serialNumber="1002">ee-root-ca</issuer>
+
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <ocsp>ee-good-ca</ocsp>
+        <aia>ee-good-ca</aia>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1200</serialNumber>
+        <subject>ee-good-tsa</subject>
+        <issuer serialNumber="1000">ee-root-ca</issuer>
+
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <trustAnchor/>
+        <tsa/>
+        <crl>ee-root-ca</crl>
+        <aia>ee-root-ca</aia>
+    </certificate>
+
+</pki>

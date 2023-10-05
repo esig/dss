@@ -32,7 +32,7 @@ public class XAdESExtensionLTToLTAWithFailTimestampTest extends AbstractXAdESTes
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
-		return getFailGoodTsa();
+		return getOnlineFailGoodTsa();
 	}
 
 	@Override

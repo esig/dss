@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+import java.util.Objects;
+
 /**
  * Defines QCStatements based on ETSI EN 319 412-5
  */
@@ -67,11 +69,26 @@ public enum QCStatement implements OidDescription {
 	 * QcType::= SEQUENCE {
 	 * qcType OBJECT IDENTIFIER {{id-etsi-qct-esign | id-etsi-qct-eseal | id-etsi-qct-web, ...}}}
 	 */
-	QC_TYPE("qc-type", "0.4.0.1862.1.6");
+	QC_TYPE("qc-type", "0.4.0.1862.1.6"),
 
+	/**
+	 * esi4-qcStatement-7 QC-STATEMENT ::= { SYNTAX QcCClegislation IDENTIFIED BY id-etsi-qcsQcCClegislation }
+	 * id-etsi-qcs-QcCClegislation OBJECT IDENTIFIER ::= { id-etsi-qcs 7 }
+	 */
+	QC_CCLEGISLATION("qc-cclegislation", "0.4.0.1862.1.7");
+
+	/** User-friendly identifier */
 	private final String description;
+
+	/** Object identifier */
 	private final String oid;
 
+	/**
+	 * Default constructor
+	 *
+	 * @param description {@link String} user-friendly identifier
+	 * @param oid {@link String} OID
+	 */
 	QCStatement(String description, String oid) {
 		this.description = description;
 		this.oid = oid;
@@ -85,6 +102,38 @@ public enum QCStatement implements OidDescription {
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * Gets a QCStatement for the given label description string
+	 *
+	 * @param description {@link String}
+	 * @return {@link QCStatement}
+	 */
+	public static QCStatement forLabel(String description) {
+		Objects.requireNonNull(description, "Description label cannot be null!");
+		for (QCStatement qcStatement : values()) {
+			if (description.equals(qcStatement.description)) {
+				return qcStatement;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets a QCStatement for the given OID string
+	 *
+	 * @param oid {@link String}
+	 * @return {@link QCStatement}
+	 */
+	public static QCStatement forOID(String oid) {
+		Objects.requireNonNull(oid, "OID cannot be null!");
+		for (QCStatement qcStatement : values()) {
+			if (oid.equals(qcStatement.oid)) {
+				return qcStatement;
+			}
+		}
+		return null;
 	}
 
 }

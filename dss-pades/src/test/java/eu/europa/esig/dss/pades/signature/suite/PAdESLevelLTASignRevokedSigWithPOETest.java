@@ -60,7 +60,7 @@ public class PAdESLevelLTASignRevokedSigWithPOETest extends AbstractPAdESTestVal
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 
-        CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
+        CertificateVerifier certificateVerifier = getCompositeCertificateVerifier();
         certificateVerifier.addTrustedCertSources(getTrustedCertSource());
         certificateVerifier.setRevocationFallback(true);
 

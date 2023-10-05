@@ -34,7 +34,7 @@ public class ASiCeExtensionWithXAdESBToTWithFailTimestampTest extends AbstractAS
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
-		return getFailGoodTsa();
+		return getOnlineFailGoodTsa();
 	}
 
 	@Override

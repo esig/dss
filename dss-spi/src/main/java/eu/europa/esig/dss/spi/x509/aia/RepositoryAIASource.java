@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,7 +38,6 @@ import java.util.Set;
 
 /**
  * Abstract repository AIA source
- *
  */
 public abstract class RepositoryAIASource implements AIASource {
 
@@ -49,7 +48,7 @@ public abstract class RepositoryAIASource implements AIASource {
     /**
      * Data source is used to access certificate tokens that are not present in the repository
      */
-    protected OnlineAIASource proxiedSource;
+    protected AIASource proxiedSource;
 
     /**
      * Default constructor instantiating object with null proxied source
@@ -61,16 +60,16 @@ public abstract class RepositoryAIASource implements AIASource {
     /**
      * Sets a source to access an AIA in case the requested certificates are not present in the repository
      *
-     * @param proxiedSource {@link OnlineAIASource}
-     *               a source to be used to download the data when no relevant certificates is found in the repository
+     * @param proxiedSource {@link AIASource}
+     *                      a source to be used to download the data when no relevant certificates is found in the repository
      */
-    public void setProxySource(OnlineAIASource proxiedSource) {
+    public void setProxySource(AIASource proxiedSource) {
         this.proxiedSource = proxiedSource;
     }
 
     @Override
     public Set<CertificateToken> getCertificatesByAIA(CertificateToken certificateToken) {
-       return getCertificatesByAIA(certificateToken, false);
+        return getCertificatesByAIA(certificateToken, false);
     }
 
     /**
@@ -78,7 +77,7 @@ public abstract class RepositoryAIASource implements AIASource {
      * by forcing the refresh
      *
      * @param certificateToken {@link CertificateToken} to get certificate chain by AIA for
-     * @param forceRefresh defines should the related certificates be refreshed within the source
+     * @param forceRefresh     defines should the related certificates be refreshed within the source
      * @return a set if {@link CertificateToken}s
      */
     public Set<CertificateToken> getCertificatesByAIA(CertificateToken certificateToken, boolean forceRefresh) {
@@ -105,11 +104,11 @@ public abstract class RepositoryAIASource implements AIASource {
     }
 
     /**
-     * Extracts a set of {@code CertificateToken}s from the defined proxiedSource and inserts/updates its
+     * Extracts a set of {@code CertificateToken}s from the defined proxiedSource and inserts/updates values
      * in the cache source if required.
      *
      * @param certificateToken {@link CertificateToken} to extract the AIA certificates for
-     * @param aiaKeys - list of keys that can be used as unique identifications of the revocation entry
+     * @param aiaKeys          - list of keys that can be used as unique identifications of the revocation entry
      * @return a set of {@link CertificateToken}s
      */
     private Set<CertificateToken> extractAndInsertCertificatesFromProxiedSource(final CertificateToken certificateToken,
@@ -127,22 +126,46 @@ public abstract class RepositoryAIASource implements AIASource {
             }
         }
 
-        Set<CertificateToken> certificatesByAIA = new HashSet<>();
+        final Set<CertificateToken> result = new HashSet<>();
 
-        List<OnlineAIASource.CertificatesAndAIAUrl> certificatesAndAIAUrls = proxiedSource.getCertificatesAndAIAUrls(certificateToken);
-        if (Utils.isCollectionNotEmpty(certificatesAndAIAUrls)) {
-            for (OnlineAIASource.CertificatesAndAIAUrl certificatesByAiaUrl : certificatesAndAIAUrls) {
-                String aiaUrl = certificatesByAiaUrl.getAiaUrl();
-                List<CertificateToken> certificateTokens = certificatesByAiaUrl.getCertificates();
-                if (Utils.isCollectionNotEmpty(certificateTokens)) {
-                    insertCertificates(aiaUrl, certificateTokens);
-                    certificatesByAIA.addAll(certificateTokens);
-                    LOG.info("Certificate tokens with AIA '{}' are added into the cache", aiaUrl);
+        Set<CertificateToken> certificatesTokenByAIA = proxiedSource.getCertificatesByAIA(certificateToken);
+        if (Utils.isCollectionNotEmpty(certificatesTokenByAIA)) {
+            for (CertificateToken certificate : certificatesTokenByAIA) {
+                String sourceUrl = getCertificateTokenAIAUrl(certificate);
+                if (sourceUrl == null) {
+                    LOG.warn("Not able to find AIA CA issuers URL for certificate '{}'. CA issuers will not be added to the cache.", certificateToken.getDSSIdAsString());
+                    return certificatesTokenByAIA;
                 }
+                String aiaKey = getAIAKey(sourceUrl);
+                insertCertificate(aiaKey, certificate);
+                result.add(certificate);
             }
+            LOG.info("CA issuers for a certificate with Id '{}' are added into the cache", certificateToken.getDSSIdAsString());
         }
 
-        return certificatesByAIA;
+        return result;
+    }
+
+    /**
+     * Returns a caIssuers access URL
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @return {@link String}
+     */
+    protected String getCertificateTokenAIAUrl(CertificateToken certificateToken) {
+        String sourceUrl = certificateToken.getSourceURL();
+        if (sourceUrl == null) {
+            List<String> aiaUrls = CertificateExtensionsUtils.getCAIssuersAccessUrls(certificateToken);
+            if (aiaUrls.size() == 0) {
+                LOG.warn("No AIA distribution points have been found for this certificate Token with ID {} ", certificateToken.getDSSIdAsString());
+            } else if (aiaUrls.size() == 1) {
+                sourceUrl = aiaUrls.get(0);
+            } else {
+                sourceUrl = aiaUrls.get(0);
+                LOG.debug("There are multiple AIA distribution points for certificate token with ID {} , the first url will be used as Jdbc revocation source key", certificateToken.getDSSIdAsString());
+            }
+        }
+        return sourceUrl;
     }
 
     /**
@@ -161,9 +184,19 @@ public abstract class RepositoryAIASource implements AIASource {
     protected List<String> initCertificateAIAKeys(List<String> aiaUrls) {
         List<String> keys = new ArrayList<>();
         for (String url : aiaUrls) {
-            keys.add(DSSUtils.getSHA1Digest(url));
+            keys.add(getAIAKey(url));
         }
         return keys;
+    }
+
+    /**
+     * Creates a key corresponding to the given {@code aiaUrl}
+     *
+     * @param aiaUrl {@link String} URL
+     * @return {@link String} key
+     */
+    protected String getAIAKey(final String aiaUrl) {
+        return DSSUtils.getSHA1Digest(aiaUrl);
     }
 
     private Set<CertificateToken> extractAIAFromCacheSource(List<String> aiaKeys) {
@@ -185,10 +218,19 @@ public abstract class RepositoryAIASource implements AIASource {
     /**
      * This method allows inserting of a certificate into the DB
      *
-     * @param aiaUrl {@link String} AIA Url used to download the certificates
+     * @param aiaKey            {@link String} AIA key identifying an AIA access URL
      * @param certificateTokens a collection of {@link CertificateToken}s to insert
      */
-    protected abstract void insertCertificates(final String aiaUrl, final Collection<CertificateToken> certificateTokens);
+    @Deprecated
+    protected abstract void insertCertificates(final String aiaKey, final Collection<CertificateToken> certificateTokens);
+
+    /**
+     * This method allows inserting of a certificate into the DB
+     *
+     * @param aiaKey           {@link String} AIA key identifying an AIA access URL
+     * @param certificateToken {@link CertificateToken} to insert
+     */
+    protected abstract void insertCertificate(final String aiaKey, final CertificateToken certificateToken);
 
     /**
      * This method removes the certificates from DB with the given aiaKey

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
@@ -105,11 +106,16 @@ public class CookbookTools extends PKIFactoryAccess {
 	 * 
 	 */
 	protected SignatureTokenConnection getPkcs12Token() throws IOException {
-		return getToken();
+		return getOnlinePKCS12Token();
 	}
 
 	protected TSPSource getOnlineTSPSource() {
-		return getGoodTsa();
+		return getOnlineTSPSourceByName(GOOD_TSA);
+	}
+
+	@Override
+	protected CertificateSource getTrustedCertificateSource() {
+		return getOnlineTrustedCertificateSource();
 	}
 
 	@Override

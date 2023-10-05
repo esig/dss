@@ -122,6 +122,8 @@
 		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-token</module>
+		<module>dss-pki-factory-jaxb</module>
+		<module>dss-pki-factory</module>
 		<module>dss-test</module>
 		<module>dss-xades</module>
 		<module>dss-cades</module>
@@ -886,7 +888,16 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pki-factory</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pki-factory-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<!-- Public Dependencies -->
 
 			<dependency>

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+import java.util.Objects;
+
 /**
  * Defines QC type identifiers based on ETSI EN 319 412-5
  */
@@ -68,6 +70,22 @@ public enum QCTypeEnum implements QCType {
 	@Override
 	public String getDescription() {
 		return description;
+	}
+
+	/**
+	 * Gets a QCType for the given label description string
+	 *
+	 * @param description {@link String}
+	 * @return {@link QCStatement}
+	 */
+	public static QCTypeEnum forLabel(String description) {
+		Objects.requireNonNull(description, "Description label cannot be null!");
+		for (QCTypeEnum qcType : values()) {
+			if (description.equals(qcType.description)) {
+				return qcType;
+			}
+		}
+		return null;
 	}
 
 }

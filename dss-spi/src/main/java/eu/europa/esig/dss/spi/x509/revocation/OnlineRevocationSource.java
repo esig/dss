@@ -28,7 +28,9 @@ import eu.europa.esig.dss.spi.client.http.DataLoader;
  * Sub-interface for online sources of {@link RevocationToken}s
  *
  * @param <R> implementation of {@code Revocation} (CRL or OCSP) for the current revocation source
+ * @deprecated since DSS 5.13. To be removed later.
  */
+@Deprecated
 public interface OnlineRevocationSource<R extends Revocation> extends RevocationSource<R> {
 	
 	/**
@@ -37,7 +39,9 @@ public interface OnlineRevocationSource<R extends Revocation> extends Revocation
 	 * @param dataLoader
 	 *            the component that allows to retrieve a revocation response using
 	 *            HTTP.
+	 * @deprecated since DSS 5.13. Method {@code #setDataLoader} to be used directly in implementation
 	 */
+	@Deprecated
 	void setDataLoader(final DataLoader dataLoader);
 
 	/**
@@ -50,7 +54,9 @@ public interface OnlineRevocationSource<R extends Revocation> extends Revocation
 	 *                               The {@code CertificateToken} which is the
 	 *                               issuer of the certificateToken
 	 * @return an instance of {@code RevocationTokenAndUrl}
+	 * @deprecated since DSS 5.13. Use {@code #getRevocationToken(certificateToken, issuerToken).getSourceURL()} method
 	 */
+	@Deprecated
 	RevocationTokenAndUrl<R> getRevocationTokenAndUrl(CertificateToken certificateToken, CertificateToken issuerToken);
 
 	/**
@@ -58,7 +64,9 @@ public interface OnlineRevocationSource<R extends Revocation> extends Revocation
 	 * and the URL {@code String} used to download the token from
 	 *
 	 * @param <R> implementation of {@code Revocation} (CRL or OCSP) for the current revocation source
+	 * @deprecated since DSS 5.13. To be removed.
 	 */
+	@Deprecated
 	class RevocationTokenAndUrl<R extends Revocation> {
 
 		/**

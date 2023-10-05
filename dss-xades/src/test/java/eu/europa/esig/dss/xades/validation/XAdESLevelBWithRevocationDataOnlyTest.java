@@ -113,7 +113,6 @@ public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestVali
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
-		certificateVerifier.setOcspSource(new OnlineOCSPSource());
 		validator.setCertificateVerifier(certificateVerifier);
 		return validator;
 	}

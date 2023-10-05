@@ -58,7 +58,7 @@ public class CAdESWithSHA3Test extends AbstractCAdESTestSignature {
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		
-		service = new CAdESService(getCompleteCertificateVerifier());
+		service = new CAdESService(getCertificateVerifierWithSHA3_256());
 		service.setTspSource(getSHA3GoodTsa());
 	}
 

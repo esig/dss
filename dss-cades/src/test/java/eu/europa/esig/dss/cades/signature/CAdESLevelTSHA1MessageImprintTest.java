@@ -32,7 +32,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.x509.tsp.KeyStoreTSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collections;
@@ -63,7 +63,7 @@ public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignatur
 
 		service = new CAdESService(getOfflineCertificateVerifier());
 
-		KeyStoreTSPSource tspSource = getKeyStoreTSPSourceByName(GOOD_TSA);
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(GOOD_TSA);
 		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
 
 		service.setTspSource(tspSource);

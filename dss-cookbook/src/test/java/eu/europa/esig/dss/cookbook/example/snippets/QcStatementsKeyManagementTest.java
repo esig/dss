@@ -23,23 +23,24 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.extension.QcStatements;
 import eu.europa.esig.dss.spi.QcStatementUtils;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.token.AbstractKeyStoreTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
+import eu.europa.esig.dss.token.Pkcs12SignatureToken;
 import eu.europa.esig.dss.token.predicate.DSSKeyEntryPredicate;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.security.KeyStore;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class QcStatementsKeyManagementTest extends PKIFactoryAccess {
-
-    private String signingAlias;
+public class QcStatementsKeyManagementTest {
 
     @Test
-    public void qscdTest() {
-        signingAlias = "John Doe";
+    public void qscdTest() throws IOException {
 
-        try (AbstractKeyStoreTokenConnection token = getToken()) {
+        try (AbstractKeyStoreTokenConnection token = new Pkcs12SignatureToken("src/test/resources/john-doe.p12",
+                new KeyStore.PasswordProtection("ks-password".toCharArray()))) {
             // tag::qcQscdPredicateUsage[]
             // Use of custom DSSKeyEntryPredicate
             token.setKeyEntryPredicate(new QcQSCDKeyEntryPredicate());
@@ -50,10 +51,10 @@ public class QcStatementsKeyManagementTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void nonQscdTest() {
-        signingAlias = "Bob Doe";
+    public void nonQscdTest() throws IOException {
 
-        try (AbstractKeyStoreTokenConnection token = getToken()) {
+        try (AbstractKeyStoreTokenConnection token = new Pkcs12SignatureToken("src/test/resources/bob-doe.p12",
+                new KeyStore.PasswordProtection("ks-password".toCharArray()))) {
             token.setKeyEntryPredicate(new QcQSCDKeyEntryPredicate());
             assertEquals(0, token.getKeys().size());
         }
@@ -81,10 +82,5 @@ public class QcStatementsKeyManagementTest extends PKIFactoryAccess {
 
     }
     // end::qcQscdPredicate[]
-
-    @Override
-    protected String getSigningAlias() {
-        return signingAlias;
-    }
 
 }
