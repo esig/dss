@@ -3,16 +3,15 @@ package eu.europa.esig.dss.test;
 import eu.europa.esig.dss.pki.jaxb.PKIJaxbFacade;
 import eu.europa.esig.dss.pki.jaxb.XmlPki;
 import eu.europa.esig.dss.pki.jaxb.builder.JAXBCertEntityBuilder;
-import eu.europa.esig.dss.pki.jaxb.repository.JaxbCertEntityRepository;
+import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntityRepository;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -31,7 +30,7 @@ public class JAXBPKICertificateLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(JAXBPKICertificateLoader.class);
 
-    private final JaxbCertEntityRepository repository;
+    private final JAXBCertEntityRepository repository;
 
     private final JAXBCertEntityBuilder certificationEntityBuilder = new JAXBCertEntityBuilder();
 
@@ -44,7 +43,7 @@ public class JAXBPKICertificateLoader {
 
     private CommonTrustedCertificateSource trustedCertificateSource;
 
-    public JAXBPKICertificateLoader(JaxbCertEntityRepository repository) {
+    public JAXBPKICertificateLoader(JAXBCertEntityRepository repository) {
         this.repository = repository;
     }
 
@@ -124,23 +123,20 @@ public class JAXBPKICertificateLoader {
         XmlPki pki = filePkiMap.get(path);
         // map.get filePath
         if (pki == null) {
-            pki = loadPKI(is);
+            pki = loadPKI(is, path);
             filePkiMap.put(path, pki);
         }
-
         if (checkPKIContainsCertificate(pki, certificateSubject)) {
             return pki;
         }
         return null;
     }
 
-    private XmlPki loadPKI(InputStream inputStream) {
+    private XmlPki loadPKI(InputStream inputStream, String pkiPath) {
         try (InputStream is = inputStream) {
-            Unmarshaller unmarshaller = PKIJaxbFacade.newFacade().getUnmarshaller(true);
-            JAXBElement<XmlPki> unmarshalled = (JAXBElement<XmlPki>) unmarshaller.unmarshal(is);
-            return unmarshalled.getValue();
-        } catch (JAXBException | IOException | SAXException e) {
-            fail(e);
+            return PKIJaxbFacade.newFacade().unmarshall(is);
+        } catch (JAXBException | IOException | SAXException | XMLStreamException e) {
+            fail(String.format("Unable to load PKI XML : %s", pkiPath), e);
         }
         return null;
     }

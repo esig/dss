@@ -5,38 +5,32 @@
         <serialNumber>2000</serialNumber>
         <subject>external-root-ca</subject>
         <issuer serialNumber="2000">external-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA512</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
         </keyUsages>
         <ca/>
-        <ignore/>
     </certificate>
 
     <certificate>
         <serialNumber>2001</serialNumber>
         <subject>external-ca</subject>
         <issuer serialNumber="2000">external-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA512</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
         </keyUsages>
         <ca/>
-        <ignore/>
         <crl>external-root-ca</crl>
-        <aia>external-root-ca</aia>
+        <caIssuers>external-root-ca</caIssuers>
     </certificate>
 
     <certificate>
@@ -44,19 +38,17 @@
         <subject>cc-root-ca</subject>
         <issuer serialNumber="2001">external-root-ca</issuer>
         <crossCertificate serialNumber="2003">cc-root-ca</crossCertificate>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA512</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
         </keyUsages>
         <ca/>
         <crl>external-ca</crl>
-        <aia>external-ca</aia>
+        <caIssuers>external-ca</caIssuers>
     </certificate>
 
     <certificate>
@@ -64,12 +56,10 @@
         <subject>cc-root-ca</subject>
         <issuer serialNumber="2003">cc-root-ca</issuer>
         <crossCertificate serialNumber="2002">external-ca</crossCertificate>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA512</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
@@ -82,108 +72,100 @@
         <serialNumber>2500</serialNumber>
         <subject>cc-good-tsa-crossed</subject>
         <issuer serialNumber="2002">external-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
-        <tsa/>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.8</extendedKeyUsage> <!-- time-stamping -->
+        </extendedKeyUsages>
         <crl>cc-root-ca</crl>
-        <aia>cc-root-ca</aia>
+        <caIssuers>cc-root-ca</caIssuers>
     </certificate>
 
     <certificate>
         <serialNumber>2200</serialNumber>
         <subject>cc-good-ca-crossed</subject>
         <issuer serialNumber="2002">external-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
         </keyUsages>
         <ca/>
         <crl serialNumber="2002">external-ca</crl>
-        <aia serialNumber="2002">external-ca</aia>
+        <caIssuers serialNumber="2002">external-ca</caIssuers>
     </certificate>
 
     <certificate>
         <serialNumber>2210</serialNumber>
         <subject>cc-good-user-crossed</subject>
         <issuer serialNumber="2200">cc-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>nonRepudiation</keyUsage>
         </keyUsages>
         <crl>cc-good-ca-crossed</crl>
-        <aia>cc-good-ca-crossed</aia>
+        <caIssuers>cc-good-ca-crossed</caIssuers>
     </certificate>
 
     <certificate>
         <serialNumber>2501</serialNumber>
         <subject>cc-good-tsa-trusted</subject>
         <issuer serialNumber="2003">cc-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
-        <tsa/>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.8</extendedKeyUsage> <!-- time-stamping -->
+        </extendedKeyUsages>
         <crl>cc-root-ca</crl>
-        <aia>cc-root-ca</aia>
+        <caIssuers>cc-root-ca</caIssuers>
     </certificate>
 
     <certificate>
         <serialNumber>2201</serialNumber>
         <subject>cc-good-ca-trusted</subject>
         <issuer serialNumber="2003">cc-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
         </keyUsages>
         <ca/>
         <crl serialNumber="2003">cc-root-ca</crl>
-        <aia serialNumber="2003">cc-root-ca</aia>
+        <caIssuers serialNumber="2003">cc-root-ca</caIssuers>
     </certificate>
 
     <certificate>
         <serialNumber>2210</serialNumber>
         <subject>cc-good-user-trusted</subject>
         <issuer serialNumber="2201">cc-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>nonRepudiation</keyUsage>
         </keyUsages>
         <crl>cc-good-ca-trusted</crl>
-        <aia>cc-good-ca-trusted</aia>
+        <caIssuers>cc-good-ca-trusted</caIssuers>
     </certificate>
 
 </pki>

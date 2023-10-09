@@ -70,6 +70,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
      * Default constructor instantiating object with null values
      */
     protected RepositoryRevocationSource() {
+        // empty
     }
 
     /**

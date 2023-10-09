@@ -5,12 +5,10 @@
         <serialNumber>1000</serialNumber>
         <subject>Ed448-root-ca</subject>
         <issuer serialNumber="1000">Ed448-root-ca</issuer>
-
-        <keyAlgo encryption="Ed448"/>
-        <digestAlgo>SHAKE256_512</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
@@ -22,16 +20,16 @@
         <serialNumber>1001</serialNumber>
         <subject>Ed448-ocsp-responder</subject>
         <issuer serialNumber="1000">Ed448-root-ca</issuer>
-
-        <keyAlgo encryption="Ed448"/>
-        <digestAlgo>SHAKE256_512</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
-        <ocspSigning/>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.9</extendedKeyUsage> <!-- ocsp-signing -->
+        </extendedKeyUsages>
         <ocspNoCheck/>
         <!-- 		<trustAnchor /> -->
     </certificate>
@@ -41,19 +39,17 @@
         <subject>Ed448-good-ca</subject>
         <issuer serialNumber="1000">Ed448-root-ca</issuer>
         <ocspResponder serialNumber="1001">Ed448-root-ca</ocspResponder>
-
-        <keyAlgo encryption="Ed448"/>
-        <digestAlgo>SHAKE256_512</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
         </keyUsages>
         <ca/>
         <crl>Ed448-root-ca</crl>
-        <aia>Ed448-root-ca</aia>
+        <caIssuers>Ed448-root-ca</caIssuers>
         <!-- 		<trustAnchor /> -->
     </certificate>
 
@@ -61,17 +57,15 @@
         <serialNumber>1100</serialNumber>
         <subject>Ed448-good-user</subject>
         <issuer serialNumber="1002">Ed448-root-ca</issuer>
-
-        <keyAlgo encryption="Ed448"/>
-        <digestAlgo>SHAKE256_512</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="Ed448"/>
+        <digestAlgo>SHAKE256_512</digestAlgo>
         <keyUsages>
             <keyUsage>nonRepudiation</keyUsage>
         </keyUsages>
         <ocsp>Ed448-good-ca</ocsp>
-        <aia>Ed448-good-ca</aia>
+        <caIssuers>Ed448-good-ca</caIssuers>
     </certificate>
 
     <!-- 	TSA doesn't work : https://github.com/bcgit/bc-java/issues/692 -->

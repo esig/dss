@@ -1,7 +1,6 @@
-package eu.europa.esig.dss.pki.jaxb.repository;
+package eu.europa.esig.dss.pki.jaxb.model;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.model.CertEntityRepository;
@@ -19,9 +18,9 @@ import java.util.stream.Collectors;
  * JAXB PKI implementation of {@code CertEntityRepository}
  *
  */
-public class JaxbCertEntityRepository implements CertEntityRepository<JAXBCertEntity> {
+public class JAXBCertEntityRepository implements CertEntityRepository<JAXBCertEntity> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JaxbCertEntityRepository.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JAXBCertEntityRepository.class);
 
     /** A set of all CertEntities */
     private final Set<JAXBCertEntity> certEntities = new HashSet<>();
@@ -29,7 +28,7 @@ public class JaxbCertEntityRepository implements CertEntityRepository<JAXBCertEn
     /**
      * Default constructor
      */
-    public JaxbCertEntityRepository() {
+    public JAXBCertEntityRepository() {
         // empty
     }
 

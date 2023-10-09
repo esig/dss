@@ -48,5 +48,5 @@ Starting from version `5.13` DSS provides a `KeyStoreTSPSource` implementation a
 [source,java,indent=0]
 .Configuration of a KeyStoreTSPSource
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/KeyStoreTSPSourceTest.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sources/KeyEntityTSPSourceTest.java[tags=demo]
 ----

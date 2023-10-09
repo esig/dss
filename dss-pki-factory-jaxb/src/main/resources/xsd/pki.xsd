@@ -5,55 +5,164 @@
            xmlns="http://pki-factory.nowina.lu/pki-factory"
            xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+    <xs:annotation>
+        <xs:documentation>This schema is used to build a JAXB PKI with provided the configuration.</xs:documentation>
+    </xs:annotation>
+
     <xs:complexType name="pki">
+        <xs:annotation>
+            <xs:documentation>The root element of the PKI factory</xs:documentation>
+        </xs:annotation>
         <xs:sequence>
-            <xs:element name="certificate" type="CertificateType" maxOccurs="unbounded"/>
+            <xs:element name="certificate" type="CertificateType" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation>A single certificate token representation</xs:documentation>
+                </xs:annotation>
+            </xs:element>
         </xs:sequence>
-        <xs:attribute name="name" type="xs:string"/>
-        <xs:attribute name="organization" type="xs:string"/>
-        <xs:attribute name="country" type="xs:string"/>
+        <xs:attribute name="name" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Name of the PKI</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="organization" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Organization name where PKI is created</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="country" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>Country name where PKI is created</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
+
     <xs:element name="pki" type="pki"/>
 
-
     <xs:complexType name="CertificateType">
+        <xs:annotation>
+            <xs:documentation>Contains configuration of a single certificate token</xs:documentation>
+        </xs:annotation>
         <xs:sequence>
+            <xs:element name="serialNumber" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>A serial number of the certificate</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="subject" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>A common name of the certificate</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="organization" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>The organization name of the certificate's owner.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="country" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>The two-letter code of a country of the certificate's owner.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="pseudo" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>A pseudonym of the certificate</xs:documentation>
+                </xs:annotation>
+            </xs:element>
 
-            <xs:element name="serialNumber" type="xs:long"/>
+            <xs:element name="issuer" type="EntityKey">
+                <xs:annotation>
+                    <xs:documentation>The issuer certificate identifier. Shall be defined by a serial number and an issuer's common name. For self-signed certificates, shall contain the information about the certificate itself.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="crossCertificate" type="EntityKey" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Cross-certificate with the same key pair as the current certificate. Shall be bi-directional link. Shall be defined by a serial number and an issuer's common name.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ocspResponder" type="EntityKey" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Delegated OCSP Responder certificate. May be defined for CA certificates. Shall be defined by a serial number and an issuer's common name.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
 
-            <xs:element name="subject" type="xs:string"/>
-            <xs:element name="pseudo" type="xs:string" minOccurs="0"/>
-            <xs:element name="issuer" type="EntityKey"/>
-            <xs:element name="crossCertificate" type="EntityKey" minOccurs="0"/>
-            <xs:element name="organization" type="xs:string"
-                        minOccurs="0"/>
-            <xs:element name="country" type="xs:string" minOccurs="0"/>
-            <xs:element name="ocspResponder" type="EntityKey"
-                        minOccurs="0"/>
+            <xs:element name="notBefore" type="DateDefinitionType">
+                <xs:annotation>
+                    <xs:documentation>Defines the notBefore field value of the certificate.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="notAfter" type="DateDefinitionType">
+                <xs:annotation>
+                    <xs:documentation>Defines the notAfter field value of the certificate.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
 
-            <xs:element name="keyAlgo" type="KeyAlgo"/>
-            <xs:element name="digestAlgo" type="xs:string" minOccurs="0"/>
-
-            <xs:element name="notBefore" type="DateDefinitionType"/>
-            <xs:element name="notAfter" type="DateDefinitionType"/>
-
-            <xs:element name="revocation" type="RevocationType" minOccurs="0"/>
+            <xs:element name="keyAlgo" type="KeyAlgo">
+                <xs:annotation>
+                    <xs:documentation>Configuration of a key pair linked to the certificate.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="digestAlgo" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Digest Algorithm to be used on other certificate creation. NOTE: shall be defined in cases, when there is a need to encryption algorithm keys, such as for certificates with Ed448 or Ed25519 algorithms.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
 
             <xs:element name="keyUsages" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>A list of key usages for the certificate.</xs:documentation>
+                </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="keyUsage" type="KeyUsageBit" minOccurs="0" maxOccurs="unbounded" />
+                        <xs:element name="keyUsage" type="KeyUsageBit" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>A single KeyUsage value bit.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="extendedKeyUsages" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>A list of extended key usages for the certificate.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="extendedKeyUsage" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>A single ExtendedKeyUsage OID.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
 
             <xs:element name="certificatePolicies" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Contains a list of certificate policies to be defined within the corresponding certificate's extension.</xs:documentation>
+                </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="certificatePolicy" type="xs:string"
-                                    minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="certificatePolicy" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Certificate policy's OID.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
+            </xs:element>
+
+            <xs:element name="ca" type="emptyType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Defines whether the certificate is a CA certificate. Adds BasicConstraints.cA extension.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="ocspNoCheck" type="emptyType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Defines whether the certificate should contain ocsp-no-check extension.</xs:documentation>
+                </xs:annotation>
             </xs:element>
 
             <!-- QC_COMPLIANCE("qc-compliance", "0.4.0.1862.1.1") -->
@@ -62,10 +171,16 @@
             <!-- QC_SSCD("qc-sscd", "0.4.0.1862.1.4") -->
             <!-- QC_PDS("qc-pds", "0.4.0.1862.1.5") -->
             <xs:element name="qcStatementIds" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>List of QcStatement's to be added within a certificate.</xs:documentation>
+                </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="qcStatement" type="xs:string"
-                                    minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="qcStatement" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>QcStatement OID.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
@@ -74,37 +189,70 @@
             <!-- QCT_ESEAL("qc-type-eseal", "0.4.0.1862.1.6.2") -->
             <!-- QCT_WEB("qc-type-web", "0.4.0.1862.1.6.3") -->
             <xs:element name="qcTypes" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>List of QcType's to be added within a certificate. NOTE: the corresponding QcStatement will be added automatically, when this value is defined.</xs:documentation>
+                </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="qcType" type="xs:string"
-                                    minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="qcType" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>QcType OID.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
 
             <xs:element name="qcCClegislation" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>List of QcCClegoislation country codes to be added within a certificate. NOTE: the corresponding QcStatement will be added automatically, when this value is defined.</xs:documentation>
+                </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="CountryName" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="CountryName" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+                            <xs:annotation>
+                                <xs:documentation>Two-letter country code identifier.</xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
 
-            <xs:element name="ca" type="emptyType" minOccurs="0"/>
-            <xs:element name="ignore" type="emptyType" minOccurs="0"/>
-            <xs:element name="trustAnchor" type="emptyType" minOccurs="0"/>
-            <xs:element name="tsa" type="emptyType" minOccurs="0"/>
-            <xs:element name="ocspSigning" type="emptyType" minOccurs="0"/>
-            <xs:element name="ocspNoCheck" type="emptyType" minOccurs="0"/>
+            <xs:element name="crl" type="EntityKey" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Defines certificate to issue CRL. If not present, no CRL distribution point will be defined within the certificate.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="ocsp" type="EntityKey" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Defines certificate to issue OCSP responses. If not present, no OCSP access point will be defined within the certificate.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="caIssuers" type="EntityKey" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Defines certificate to issue the Authority Information Access caIssuers. If not present, no Authority Information Access caIssuers will be defined within the certificate.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
 
-            <xs:element name="crl" type="CRLType" minOccurs="0"/>
-            <xs:element name="ocsp" type="EntityKey" minOccurs="0"/>
-            <xs:element name="aia" type="EntityKey" minOccurs="0"/>
+            <xs:element name="trustAnchor" type="emptyType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Defines whether the certificate should be recognized as a trust anchor within the PKI.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element name="revocation" type="RevocationType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Contains status information for a revoked certificate.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
 
         </xs:sequence>
     </xs:complexType>
 
     <xs:simpleType name="KeyUsageBit" final="restriction">
+        <xs:annotation>
+            <xs:documentation>Defines the KeyUsage bit.</xs:documentation>
+        </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="digitalSignature" />
             <xs:enumeration value="nonRepudiation" />
@@ -119,41 +267,81 @@
     </xs:simpleType>
 
     <xs:complexType name="emptyType">
+        <xs:annotation>
+            <xs:documentation>An element for unambiguous definition of TRUE values.</xs:documentation>
+        </xs:annotation>
         <xs:sequence/>
     </xs:complexType>
 
     <xs:complexType name="DateDefinitionType">
+        <xs:annotation>
+            <xs:documentation>Defines a date value.</xs:documentation>
+        </xs:annotation>
         <xs:attribute name="year" type="xs:int" use="optional"/>
         <xs:attribute name="month" type="xs:int" use="optional"/>
         <xs:attribute name="day" type="xs:int" use="optional"/>
     </xs:complexType>
 
     <xs:complexType name="RevocationType">
+        <xs:annotation>
+            <xs:documentation>Contains revocation status information for a revoked certificate.</xs:documentation>
+        </xs:annotation>
         <xs:complexContent>
             <xs:extension base="DateDefinitionType">
-                <xs:attribute name="reason" type="RevocationReason"/>
+                <xs:attribute name="reason" type="RevocationReason">
+                    <xs:annotation>
+                        <xs:documentation>The revocation reason.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="KeyAlgo">
-        <xs:attribute name="encryption" type="xs:string"/>
-        <xs:attribute name="length" type="xs:int" use="optional"/>
-        <xs:attribute name="pss" type="xs:boolean" use="optional"/>
+        <xs:annotation>
+            <xs:documentation>Configuration of a certificate's key pair.</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="encryption" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>The encryption algorithm name.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="length" type="xs:int" use="optional">
+            <xs:annotation>
+                <xs:documentation>The key length.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="pss" type="xs:boolean" use="optional">
+            <xs:annotation>
+                <xs:documentation>Defines whether Mask Generation Function (PSS) should be used. The value is used on other certificates creation.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <!-- If serial number is defined, the parameter works as a primary key (combination of issuer's name + serial number) -->
     <!-- In other case, the string value defines the target certificate name -->
     <xs:complexType name="EntityKey">
+        <xs:annotation>
+            <xs:documentation>Represents a identifier uniquely identifying a certificate within the PKI. Contains a serial number and issuer's common name of the certificate.</xs:documentation>
+        </xs:annotation>
         <xs:simpleContent>
+            <xs:annotation>
+                <xs:documentation>Subject name of the certificate's issuer certificate.</xs:documentation>
+            </xs:annotation>
             <xs:extension base="xs:string">
-                <xs:attribute name="serialNumber" type="xs:long" use="optional"/>
+                <xs:attribute name="serialNumber" type="xs:long" use="optional">
+                    <xs:annotation>
+                        <xs:documentation>Serial number of the target certificate.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 
-    <xs:simpleType name="RevocationReason"
-                   final="restriction">
+    <xs:simpleType name="RevocationReason" final="restriction">
+        <xs:annotation>
+            <xs:documentation>Revocation reason value.</xs:documentation>
+        </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="unspecified"/>
             <xs:enumeration value="keyCompromise"/>
@@ -168,16 +356,5 @@
             <xs:enumeration value="aACompromise"/>
         </xs:restriction>
     </xs:simpleType>
-
-    <xs:complexType name="CRLType">
-        <xs:simpleContent>
-            <xs:extension base="EntityKey">
-                <xs:attribute name="date" type="xs:date"/>
-                <!-- Apply only if date is set -->
-                <xs:attribute name="futur" type="xs:boolean"
-                              use="optional"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
 
 </xs:schema>

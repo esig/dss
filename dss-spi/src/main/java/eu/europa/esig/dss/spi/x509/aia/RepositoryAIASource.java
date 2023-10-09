@@ -199,6 +199,17 @@ public abstract class RepositoryAIASource implements AIASource {
         return DSSUtils.getSHA1Digest(aiaUrl);
     }
 
+    /**
+     * Generates a unique identifier for the {@code CertificateToken} and {@code aiaUrl} pair
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @param aiaUrl {@link String}
+     * @return {@link String}
+     */
+    protected String getUniqueCertificateAiaId(final CertificateToken certificateToken, String aiaUrl) {
+        return DSSUtils.getSHA1Digest(certificateToken.getDSSIdAsString() + aiaUrl);
+    }
+
     private Set<CertificateToken> extractAIAFromCacheSource(List<String> aiaKeys) {
         Set<CertificateToken> certificateTokens = new LinkedHashSet<>();
         for (String key : aiaKeys) {

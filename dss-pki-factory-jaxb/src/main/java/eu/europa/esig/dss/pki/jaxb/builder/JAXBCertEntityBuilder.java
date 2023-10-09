@@ -2,11 +2,10 @@ package eu.europa.esig.dss.pki.jaxb.builder;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.pki.exception.PKIException;
-import eu.europa.esig.dss.pki.jaxb.XmlCRLType;
+import eu.europa.esig.dss.pki.jaxb.PKIJaxbFacade;
 import eu.europa.esig.dss.pki.jaxb.XmlCertificateType;
 import eu.europa.esig.dss.pki.jaxb.XmlDateDefinitionType;
 import eu.europa.esig.dss.pki.jaxb.XmlEntityKey;
@@ -14,7 +13,7 @@ import eu.europa.esig.dss.pki.jaxb.XmlKeyAlgo;
 import eu.europa.esig.dss.pki.jaxb.XmlPki;
 import eu.europa.esig.dss.pki.jaxb.model.EntityId;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
-import eu.europa.esig.dss.pki.jaxb.repository.JaxbCertEntityRepository;
+import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntityRepository;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -24,7 +23,11 @@ import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.GeneralSecurityException;
@@ -32,23 +35,20 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
 import java.security.Security;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CRL_EXTENSION;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CRL_PATH;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CERT_EXTENSION;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CERT_PATH;
-import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_HOST;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CRL_EXTENSION;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CRL_PATH;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.OCSP_EXTENSION;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.OCSP_PATH;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_COUNTRY;
+import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_HOST;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_ORGANISATION;
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.PKI_FACTORY_ORGANISATION_UNIT;
 
@@ -73,14 +73,27 @@ public class JAXBCertEntityBuilder {
     }
 
     /**
+     * Generates certificate entries from configuration provided within {@code pkiFile} and populates the {@code repository}
+     *
+     * @param repository {@link JAXBCertEntityRepository} to be populated
+     * @param pkiFile {@link File} containing PKI configuration
+     */
+    public void persistPKI(JAXBCertEntityRepository repository, File pkiFile) {
+        try {
+            persistPKI(repository, PKIJaxbFacade.newFacade().unmarshall(pkiFile));
+        } catch (IOException | JAXBException | SAXException | XMLStreamException e) {
+            throw new PKIException(String.format("Unable to load PKI from file '%s'", pkiFile.getName()), e);
+        }
+    }
+
+    /**
      * Generates certificate entries from configuration provided within {@code pki} and populates the {@code repository}
      *
-     * @param repository {@link JaxbCertEntityRepository} to be populated
+     * @param repository {@link JAXBCertEntityRepository} to be populated
      * @param pki {@link XmlPki} to generate values from
      */
-    public void persistPKI(JaxbCertEntityRepository repository, XmlPki pki) {
+    public void persistPKI(JAXBCertEntityRepository repository, XmlPki pki) {
         LOG.info("PKI {} : {} certificates", pki.getName(), pki.getCertificate().size());
-
         Map<EntityId, XmlCertificateType> certificateTypeMap = new HashMap<>();
         Map<EntityId, X500Name> x500names = new HashMap<>();
         Map<EntityId, KeyPair> keyPairs = new HashMap<>();
@@ -170,7 +183,7 @@ public class JAXBCertEntityBuilder {
         }
 
         certBuilder.issuer(issuerX500Name, issuerKeyPair.getPrivate(), signatureAlgo)
-                .caIssuers(getAiaUrl(certificateType.getAia()))
+                .caIssuers(getCAIssuersUrl(certificateType.getCaIssuers()))
                 .crl(getCrlUrl(certificateType.getCrl()))
                 .ocsp(getOcspUrl(certificateType.getOcsp()))
                 .keyUsages(certificateType.getKeyUsages() != null ? certificateType.getKeyUsages().getKeyUsage() : Collections.emptyList())
@@ -186,15 +199,8 @@ public class JAXBCertEntityBuilder {
             certBuilder.ocspNoCheck(true);
         }
 
-        List<ExtendedKeyUsage> extendedKeyUsageList = new ArrayList<>();
-        if (certificateType.getOcspSigning() != null) {
-            extendedKeyUsageList.add(ExtendedKeyUsage.OCSP_SIGNING);
-        }
-        if (certificateType.getTsa() != null) {
-            extendedKeyUsageList.add(ExtendedKeyUsage.TIMESTAMPING);
-        }
-        if (Utils.isCollectionNotEmpty(extendedKeyUsageList)) {
-            certBuilder.extendedKeyUsages(extendedKeyUsageList);
+        if (certificateType.getExtendedKeyUsages() != null) {
+            certBuilder.extendedKeyUsages(certificateType.getExtendedKeyUsages().getExtendedKeyUsage());
         }
 
         return certBuilder;
@@ -225,20 +231,9 @@ public class JAXBCertEntityBuilder {
         return null;
     }
 
-    private String getCrlUrl(XmlCRLType crlEntity) {
-        if (crlEntity != null && crlEntity.getValue() != null) {
-            if (crlEntity.getDate() == null) {
-                return PKI_FACTORY_HOST + CRL_PATH + getCertStringUrl(crlEntity) + CRL_EXTENSION;
-            } else {
-                Date time = crlEntity.getDate().toGregorianCalendar().getTime();
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-hh-mm");
-                String date = sdf.format(time);
-                if (crlEntity.isFutur() == null) {
-                    return PKI_FACTORY_HOST + CRL_PATH + date + "/" + crlEntity.getValue() + CRL_EXTENSION;
-                } else {
-                    return PKI_FACTORY_HOST + CRL_PATH + date + "/" + crlEntity.isFutur() + "/" + crlEntity.getValue() + CRL_EXTENSION;
-                }
-            }
+    private String getCrlUrl(XmlEntityKey entityKey) {
+        if (entityKey != null) {
+            return PKI_FACTORY_HOST + CRL_PATH + getCertStringUrl(entityKey) + CRL_EXTENSION;
         }
         return null;
     }
@@ -250,7 +245,7 @@ public class JAXBCertEntityBuilder {
         return null;
     }
 
-    private String getAiaUrl(XmlEntityKey entityKey) {
+    private String getCAIssuersUrl(XmlEntityKey entityKey) {
         if (entityKey != null) {
             return PKI_FACTORY_HOST + CERT_PATH + getCertStringUrl(entityKey) + CERT_EXTENSION;
         }
@@ -373,7 +368,7 @@ public class JAXBCertEntityBuilder {
         return null;
     }
 
-    private void saveEntity(JaxbCertEntityRepository repository, JAXBCertEntity certEntity, Map<EntityId, JAXBCertEntity> entities, EntityId key) {
+    private void saveEntity(JAXBCertEntityRepository repository, JAXBCertEntity certEntity, Map<EntityId, JAXBCertEntity> entities, EntityId key) {
         if (repository.save(certEntity)) {
             entities.put(key, certEntity);
             LOG.info("Creation of '{}' : DONE. Certificate Id : '{}'", certEntity.getSubject(), certEntity.getCertificateToken().getDSSIdAsString());

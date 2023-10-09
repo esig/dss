@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
-import eu.europa.esig.dss.pki.jaxb.repository.JaxbCertEntityRepository;
+import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntityRepository;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.x509.aia.PKIAIASource;
 import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
@@ -174,7 +174,7 @@ public abstract class PKIFactoryAccess {
     private static final int TIMEOUT_MS = 10000;
     private static CommonTrustedCertificateSource trustedCertificateSource;
 
-    private static JaxbCertEntityRepository certEntityRepository;
+    private static JAXBCertEntityRepository certEntityRepository;
     private static JAXBPKICertificateLoader certificateLoader;
 
     protected abstract String getSigningAlias();
@@ -184,9 +184,9 @@ public abstract class PKIFactoryAccess {
         return new CommonCertificateVerifier();
     }
 
-    protected JaxbCertEntityRepository getCertEntityRepository() {
+    protected JAXBCertEntityRepository getCertEntityRepository() {
         if (certEntityRepository == null) {
-            certEntityRepository = new JaxbCertEntityRepository();
+            certEntityRepository = new JAXBCertEntityRepository();
         }
         return certEntityRepository;
     }

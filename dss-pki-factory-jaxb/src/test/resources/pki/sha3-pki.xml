@@ -5,12 +5,10 @@
         <serialNumber>1000</serialNumber>
         <subject>sha3-root-ca</subject>
         <issuer serialNumber="1000">sha3-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA3-256</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA3-256</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
@@ -22,18 +20,18 @@
         <serialNumber>1001</serialNumber>
         <subject>sha3-ocsp-responder</subject>
         <issuer serialNumber="1000">sha3-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA3-256</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA3-256</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
-        <trustAnchor/>
-        <ocspSigning/>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.9</extendedKeyUsage> <!-- ocsp-signing -->
+        </extendedKeyUsages>
         <ocspNoCheck/>
+        <trustAnchor/>
     </certificate>
 
     <certificate>
@@ -41,56 +39,52 @@
         <subject>sha3-good-ca</subject>
         <issuer serialNumber="1000">sha3-root-ca</issuer>
         <ocspResponder serialNumber="1001">sha3-root-ca</ocspResponder>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA3-256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA3-256</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
         </keyUsages>
         <ca/>
-        <trustAnchor/>
         <crl>sha3-root-ca</crl>
-        <aia>sha3-root-ca</aia>
+        <caIssuers>sha3-root-ca</caIssuers>
+        <trustAnchor/>
     </certificate>
 
     <certificate>
         <serialNumber>1100</serialNumber>
         <subject>sha3-good-user</subject>
         <issuer serialNumber="1002">sha3-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA3-256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA3-256</digestAlgo>
         <keyUsages>
             <keyUsage>nonRepudiation</keyUsage>
         </keyUsages>
         <ocsp>sha3-good-ca</ocsp>
-        <aia>sha3-good-ca</aia>
+        <caIssuers>sha3-good-ca</caIssuers>
     </certificate>
 
     <certificate>
         <serialNumber>1200</serialNumber>
         <subject>sha3-good-tsa</subject>
         <issuer serialNumber="1000">sha3-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA3-256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA3-256</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
-        <trustAnchor/>
-        <tsa/>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.8</extendedKeyUsage> <!-- time-stamping -->
+        </extendedKeyUsages>
         <crl>sha3-root-ca</crl>
-        <aia>sha3-root-ca</aia>
+        <caIssuers>sha3-root-ca</caIssuers>
+        <trustAnchor/>
     </certificate>
 
 </pki>

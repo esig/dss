@@ -2,7 +2,6 @@ package eu.europa.esig.dss.cookbook.example.sources;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -11,7 +10,7 @@ import java.security.KeyStore;
 import java.util.Arrays;
 import java.util.Date;
 
-public class EntityStoreTSPSourceTest {
+public class KeyEntityTSPSourceTest {
 
     @Test
     public void test() throws Exception {
@@ -33,7 +32,7 @@ public class EntityStoreTSPSourceTest {
         keyStore.load(Files.newInputStream(keyStoreFile.toPath()), keyStorePassword);
 
         // instantiate the KeyStoreTSPSource
-        KeyEntityTSPSource entityStoreTSPSource = new KeyEntityTSPSource(keyStore, "certificate", keyStorePassword);
+        eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource entityStoreTSPSource = new eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource(keyStore, "certificate", keyStorePassword);
 
         // This method allows configuration of digest algorithms to be supported for a timestamp request
         // Default: SHA-224, SHA-256, SHA-384, SHA-512

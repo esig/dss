@@ -5,12 +5,10 @@
         <serialNumber>1000</serialNumber>
         <subject>pss-root-ca</subject>
         <issuer serialNumber="1000">pss-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048" pss="true"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048" pss="true"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
@@ -22,18 +20,18 @@
         <serialNumber>1001</serialNumber>
         <subject>pss-ocsp-responder</subject>
         <issuer serialNumber="1000">pss-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048" pss="true"/>
-        <digestAlgo>SHA1</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048" pss="true"/>
+        <digestAlgo>SHA1</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
-        <trustAnchor/>
-        <ocspSigning/>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.9</extendedKeyUsage> <!-- ocsp-signing -->
+        </extendedKeyUsages>
         <ocspNoCheck/>
+        <trustAnchor/>
     </certificate>
 
     <certificate>
@@ -41,56 +39,52 @@
         <subject>pss-good-ca</subject>
         <issuer serialNumber="1000">pss-root-ca</issuer>
         <ocspResponder serialNumber="1001">pss-root-ca</ocspResponder>
-
-        <keyAlgo encryption="RSA" length="2048" pss="true"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" pss="true"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>crlSign</keyUsage>
             <keyUsage>keyCertSign</keyUsage>
         </keyUsages>
         <ca/>
-        <trustAnchor/>
         <crl>pss-root-ca</crl>
-        <aia>pss-root-ca</aia>
+        <caIssuers>pss-root-ca</caIssuers>
+        <trustAnchor/>
     </certificate>
 
     <certificate>
         <serialNumber>1100</serialNumber>
         <subject>pss-good-user</subject>
         <issuer serialNumber="1002">pss-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048" pss="true"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" pss="true"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>nonRepudiation</keyUsage>
         </keyUsages>
         <ocsp>pss-good-ca</ocsp>
-        <aia>pss-good-ca</aia>
+        <caIssuers>pss-good-ca</caIssuers>
     </certificate>
 
     <certificate>
         <serialNumber>1200</serialNumber>
         <subject>pss-good-tsa</subject>
         <issuer serialNumber="1000">pss-root-ca</issuer>
-
-        <keyAlgo encryption="RSA" length="2048" pss="true"/>
-        <digestAlgo>SHA512</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" pss="true"/>
+        <digestAlgo>SHA512</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
-        <trustAnchor/>
-        <tsa/>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.8</extendedKeyUsage> <!-- time-stamping -->
+        </extendedKeyUsages>
         <crl>pss-root-ca</crl>
-        <aia>pss-root-ca</aia>
+        <caIssuers>pss-root-ca</caIssuers>
+        <trustAnchor/>
     </certificate>
 
 </pki>

@@ -2,7 +2,6 @@ package eu.europa.esig.dss.pki.jaxb.builder;
 
 
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
-import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.QCTypeEnum;
@@ -78,7 +77,7 @@ public class X509CertificateBuilder {
     private List<KeyUsageBit> keyUsages;
 
     /** List of extended key usages */
-    private List<ExtendedKeyUsage> extendedKeyUsages;
+    private List<String> extendedKeyUsages;
 
     /** AIA.caIssuers Url */
     private String caIssuersUrl;
@@ -220,10 +219,10 @@ public class X509CertificateBuilder {
     /**
      * Adds extended key usages certificate extension
      *
-     * @param extendedKeyUsages a list of {@link ExtendedKeyUsage}s
+     * @param extendedKeyUsages a list of {@link String} OIDs
      * @return {@link X509CertificateBuilder} this
      */
-    public X509CertificateBuilder extendedKeyUsages(List<ExtendedKeyUsage> extendedKeyUsages) {
+    public X509CertificateBuilder extendedKeyUsages(List<String> extendedKeyUsages) {
         this.extendedKeyUsages = extendedKeyUsages;
         return this;
     }
@@ -325,7 +324,7 @@ public class X509CertificateBuilder {
 
     private void addExtendedKeyUsageExtension(X509v3CertificateBuilder certBuilder) throws CertIOException {
         KeyPurposeId[] keyPurposeIds = extendedKeyUsages.stream().map(e ->
-                KeyPurposeId.getInstance(new ASN1ObjectIdentifier(e.getOid()))).toArray(KeyPurposeId[]::new);
+                KeyPurposeId.getInstance(new ASN1ObjectIdentifier(e))).toArray(KeyPurposeId[]::new);
         org.bouncycastle.asn1.x509.ExtendedKeyUsage bcExtendedKeyUsage = new org.bouncycastle.asn1.x509.ExtendedKeyUsage(keyPurposeIds);
         certBuilder.addExtension(Extension.extendedKeyUsage, true, bcExtendedKeyUsage);
     }

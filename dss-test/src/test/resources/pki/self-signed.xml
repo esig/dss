@@ -5,12 +5,10 @@
         <serialNumber>1</serialNumber>
         <subject>self-signed</subject>
         <issuer serialNumber="1">self-signed</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA512</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
         <keyUsages>
             <keyUsage>nonRepudiation</keyUsage>
         </keyUsages>
@@ -20,12 +18,10 @@
         <serialNumber>2</serialNumber>
         <subject>self-signed-trusted</subject>
         <issuer serialNumber="2">self-signed-trusted</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA512</digestAlgo>
-
         <notBefore year="-1"/>
         <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
         <keyUsages>
             <keyUsage>nonRepudiation</keyUsage>
         </keyUsages>
@@ -36,33 +32,33 @@
         <serialNumber>100</serialNumber>
         <subject>self-signed-tsa</subject>
         <issuer serialNumber="100">self-signed-tsa</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
-        <tsa/>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.8</extendedKeyUsage> <!-- time-stamping -->
+        </extendedKeyUsages>
     </certificate>
 
     <certificate>
         <serialNumber>101</serialNumber>
         <subject>self-signed-trusted-tsa</subject>
         <issuer serialNumber="101">self-signed-trusted-tsa</issuer>
-
-        <keyAlgo encryption="RSA" length="2048"/>
-        <digestAlgo>SHA256</digestAlgo>
-
         <notBefore month="-11"/>
         <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
         <keyUsages>
             <keyUsage>digitalSignature</keyUsage>
         </keyUsages>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.8</extendedKeyUsage> <!-- time-stamping -->
+        </extendedKeyUsages>
         <trustAnchor/>
-        <tsa/>
     </certificate>
 
 </pki>

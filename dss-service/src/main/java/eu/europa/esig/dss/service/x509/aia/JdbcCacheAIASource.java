@@ -227,11 +227,6 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
             jdbcCacheConnector.execute(getInsertCertificateTokenEntryQuery(), getUniqueCertificateAiaId(certificateTokens, aiaKey), aiaKey, certificateTokens.getEncoded());
             LOG.debug("AIA Certificate with Id '{}' successfully inserted in DB", certificateTokens.getDSSIdAsString());
         }
-
-    }
-
-    private String getUniqueCertificateAiaId(final CertificateToken certificateToken, String aiaUrl) {
-        return DSSUtils.getSHA1Digest(certificateToken.getDSSIdAsString() + aiaUrl);
     }
 
     @Override

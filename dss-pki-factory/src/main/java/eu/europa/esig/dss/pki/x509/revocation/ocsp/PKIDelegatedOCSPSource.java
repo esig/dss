@@ -31,10 +31,16 @@ public class PKIDelegatedOCSPSource extends PKIOCSPSource {
     /**
      * Sets a map of CA cert entities and their delegated OCSP Responders
      *
-     * @param ocspResponders a map between CA {@link CertEntity}s and delegated OCSP Responser {@link CertEntity}s
+     * @param ocspResponders a map between CA {@link CertEntity}s and delegated OCSP Responder {@link CertEntity}s
      */
     public void setOcspResponders(Map<CertEntity, CertEntity> ocspResponders) {
         this.ocspResponders = ocspResponders;
+    }
+
+    @Override
+    public void setOcspResponder(CertEntity ocspResponder) {
+        throw new UnsupportedOperationException("Method #setOcspResponder is not supported " +
+                "within PKIDelegatedOCSPSource class. Use #setOcspResponders method instead.");
     }
 
     @Override
