@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static eu.europa.esig.dss.pki.jaxb.property.PKIJaxbProperties.CERT_EXTENSION;
@@ -94,12 +95,14 @@ public class JAXBCertEntityBuilder {
      */
     public void persistPKI(JAXBCertEntityRepository repository, XmlPki pki) {
         LOG.info("PKI {} : {} certificates", pki.getName(), pki.getCertificate().size());
-        Map<EntityId, XmlCertificateType> certificateTypeMap = new HashMap<>();
-        Map<EntityId, X500Name> x500names = new HashMap<>();
-        Map<EntityId, KeyPair> keyPairs = new HashMap<>();
-        Map<EntityId, JAXBCertEntity> entities = new HashMap<>();
-        JAXBCertEntity certEntity;
 
+        final Map<EntityId, JAXBCertEntity> entities = new HashMap<>();
+        final Map<EntityId, XmlCertificateType> certificateTypeMap = new HashMap<>();
+        final Map<EntityId, X500Name> x500names = new HashMap<>();
+        final Map<EntityId, KeyPair> keyPairs = new HashMap<>();
+        buildEntities(pki.getCertificate(), entities, certificateTypeMap, x500names, keyPairs);
+
+        JAXBCertEntity certEntity;
         for (XmlCertificateType certType : pki.getCertificate()) {
 
             LOG.info("Init '{}' ...", certType.getSubject());
@@ -108,16 +111,18 @@ public class JAXBCertEntityBuilder {
             String issuerName = issuer != null ? issuer.getSubject() : certType.getSubject();
             EntityId entityId = new EntityId(issuerName, certType.getSerialNumber());
             EntityId issuerId = new EntityId(certType.getIssuer());
+
+            certEntity = entities.get(entityId);
             try {
                 certificateTypeMap.put(entityId, certType);
 
-                KeyPair subjectKeyPair = buildKeyPair(keyPairs, entityId, certType);
+                KeyPair subjectKeyPair = getKeyPair(keyPairs, entityId);
 
                 boolean selfSigned = entityId.equals(issuerId);
                 KeyPair issuerKeyPair = selfSigned ? subjectKeyPair : getKeyPair(keyPairs, issuerId);
 
-                X500Name subjectX500Name = getX500NameSubject(x500names, certType, entityId);
-                X500Name issuerX500Name = getX500NameIssuer(x500names, issuerId);
+                X500Name subjectX500Name = getX500Name(x500names, entityId);
+                X500Name issuerX500Name = getX500Name(x500names, issuerId);
 
                 XmlCertificateType issuerCertificate = getIssuerCertificateType(certificateTypeMap, certType, issuerId);
                 X509CertificateBuilder certBuilder = getX509CertBuilder(
@@ -125,8 +130,8 @@ public class JAXBCertEntityBuilder {
                 X509CertificateHolder certificateHolder = certBuilder.build(BigInteger.valueOf(certType.getSerialNumber()),
                         convert(certType.getNotBefore()), convert(certType.getNotAfter()));
 
-                certEntity = buildJaxbCertEntity(certType, certificateHolder, subjectKeyPair, entityId, issuerId, entities, pki.getName());
-                saveEntity(repository, certEntity, entities, entityId);
+                certEntity = buildJaxbCertEntity(certType, certEntity, certificateHolder, subjectKeyPair, entityId, issuerId, entities, pki.getName());
+                saveEntity(repository, certEntity);
 
             } catch (Exception e) {
                 throw new PKIException(String.format("Unable to create a PKI. Reason : %s", e.getMessage()), e);
@@ -135,36 +140,103 @@ public class JAXBCertEntityBuilder {
 
     }
 
-    private JAXBCertEntity buildJaxbCertEntity(XmlCertificateType certificate, X509CertificateHolder certificateHolder,
+    /**
+     * Returns a map with pre-created {@code JAXBCertEntity}s. Required for smooth processing.
+     *
+     * @param certificateTypeList a list of {@link XmlCertificateType}s
+     */
+    private void buildEntities(List<XmlCertificateType> certificateTypeList,
+            Map<EntityId, JAXBCertEntity> entities, Map<EntityId, XmlCertificateType> certificateTypeMap,
+            Map<EntityId, X500Name> x500names, Map<EntityId, KeyPair> keyPairs) {
+
+        Map<XmlCertificateType, EntityId> identifierMap = new HashMap<>();
+        for (XmlCertificateType certificate : certificateTypeList) {
+            EntityId entityId = getEntityId(certificate, certificateTypeList, entities, identifierMap);
+
+            JAXBCertEntity certEntity = entities.get(entityId);
+            if (certEntity == null) {
+                certEntity = instantiateCertEntity(certificate);
+                entities.put(entityId, certEntity);
+            }
+
+            certificateTypeMap.put(entityId, certificate);
+
+            buildKeyPair(certificate, entityId, keyPairs);
+            buildX500NameSubject(certificate, entityId, x500names);
+        }
+    }
+
+    private JAXBCertEntity instantiateCertEntity(XmlCertificateType certificate) {
+        JAXBCertEntity certEntity = new JAXBCertEntity();
+        certEntity.setSubject(certificate.getSubject());
+        certEntity.setSerialNumber(certificate.getSerialNumber());
+        return certEntity;
+    }
+
+    private EntityId getEntityId(XmlCertificateType certificate, List<XmlCertificateType> certificateTypeList, Map<EntityId, JAXBCertEntity> entities, Map<XmlCertificateType, EntityId> identifierMap) {
+        EntityId entityId = identifierMap.get(certificate);
+        if (entityId != null) {
+            return entityId;
+        }
+        XmlEntityKey issuerKey = certificate.getIssuer();
+        // if self-signed
+        if (issuerKey.getSerialNumber() != null && issuerKey.getSerialNumber() == certificate.getSerialNumber() && issuerKey.getValue().equals(certificate.getSubject())) {
+            entityId = new EntityId(issuerKey);
+        }
+        if (entityId == null) {
+            JAXBCertEntity issuer = findIssuer(certificate, certificateTypeList, entities, identifierMap);
+            if (issuer != null) {
+                entityId = new EntityId(issuer.getSubject(), certificate.getSerialNumber());
+            }
+        }
+        identifierMap.put(certificate, entityId);
+        return entityId;
+    }
+
+    private JAXBCertEntity findIssuer(XmlCertificateType certificate, List<XmlCertificateType> certificateTypeList, Map<EntityId, JAXBCertEntity> entities, Map<XmlCertificateType, EntityId> identifierMap) {
+        EntityId issuerId = new EntityId(certificate.getIssuer());
+        for (XmlCertificateType issuerCandidate : certificateTypeList) {
+            if (certificate == issuerCandidate) {
+                continue;
+            }
+            EntityId entityId = getEntityId(issuerCandidate, certificateTypeList, entities, identifierMap);
+            if (issuerId.equals(entityId)) {
+                JAXBCertEntity issuerCertEntity = entities.get(entityId);
+                if (issuerCertEntity == null) {
+                    issuerCertEntity = instantiateCertEntity(issuerCandidate);
+                    entities.put(entityId, issuerCertEntity);
+                }
+                return issuerCertEntity;
+            }
+        }
+        return null;
+    }
+
+    private JAXBCertEntity buildJaxbCertEntity(XmlCertificateType certificate, JAXBCertEntity certEntity, X509CertificateHolder certificateHolder,
                                                KeyPair subjectKeyPair, EntityId entityId, EntityId issuerKey,
                                                Map<EntityId, JAXBCertEntity> entities, String pkiName) {
 
         boolean selfSigned = entityId.equals(issuerKey);
-        JAXBCertEntity dbCertEntity;
         //@formatter:off
         try {
-            dbCertEntity = GenericBuilder.of(JAXBCertEntity::new)
-                    .with(JAXBCertEntity::setSubject, certificate.getSubject())
-                    .with(JAXBCertEntity::setSerialNumber, certificate.getSerialNumber())
-                    .with(JAXBCertEntity::setCertificateToken, DSSUtils.loadCertificate(certificateHolder.getEncoded()))
-                    .with(JAXBCertEntity::setPrivateKey, subjectKeyPair.getPrivate().getEncoded())
-                    .with(JAXBCertEntity::setRevocationDate, convert(certificate.getRevocation()))
-                    .with(JAXBCertEntity::setRevocationReason, certificate.getRevocation() != null ? certificate.getRevocation().getReason() : null)
-                    .with(JAXBCertEntity::setOcspResponder, getEntity(entities, certificate.getOcspResponder() != null ? new EntityId(certificate.getOcspResponder()) : null, false))
-                    .with(JAXBCertEntity::setTrustAnchor, certificate.getTrustAnchor() != null)
-                    .with(JAXBCertEntity::setPkiName, pkiName)
-                    .build();
+            certEntity.setCertificateToken(DSSUtils.loadCertificate(certificateHolder.getEncoded()));
+            certEntity.setPrivateKey(subjectKeyPair.getPrivate().getEncoded());
+            certEntity.setRevocationDate(convert(certificate.getRevocation()));
+            certEntity.setRevocationReason(certificate.getRevocation() != null ? certificate.getRevocation().getReason() : null);
+            certEntity.setOcspResponder(getEntity(entities, certificate.getOcspResponder() != null ? new EntityId(certificate.getOcspResponder()) : null, false));
+            certEntity.setTrustAnchor(certificate.getTrustAnchor() != null);
+            certEntity.setPkiName(pkiName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         //@formatter:on
         if (selfSigned) {
-            dbCertEntity.setIssuer(dbCertEntity);
+            certEntity.setIssuer(certEntity);
         } else {
-            dbCertEntity.setIssuer(getEntity(entities, issuerKey, selfSigned));
+            certEntity.setIssuer(getEntity(entities, issuerKey, selfSigned));
         }
 
-        return dbCertEntity;
+        return certEntity;
     }
 
     private X509CertificateBuilder getX509CertBuilder(XmlCertificateType certificateType, KeyPair subjectKeyPair, XmlCertificateType issuerCertificateType,
@@ -256,7 +328,14 @@ public class JAXBCertEntityBuilder {
         return entityKey.getSerialNumber() != null ? entityKey.getValue() + "/" + entityKey.getSerialNumber() : entityKey.getValue();
     }
 
-    private X500Name getX500NameIssuer(Map<EntityId, X500Name> x500names, EntityId key) {
+    private KeyPair getKeyPair(Map<EntityId, KeyPair> keyPairs, EntityId key) {
+        if (keyPairs.containsKey(key)) {
+            return keyPairs.get(key);
+        }
+        throw new IllegalStateException("EntityId not found : " + key);
+    }
+
+    private X500Name getX500Name(Map<EntityId, X500Name> x500names, EntityId key) {
         if (x500names.containsKey(key)) {
             return x500names.get(key);
         }
@@ -269,14 +348,13 @@ public class JAXBCertEntityBuilder {
      * @param x500Names          a map between {@link EntityId} and {@link X500Name}
      * @throws IllegalStateException Common name is null
      */
-    private X500Name getX500NameSubject(Map<EntityId, X500Name> x500Names, XmlCertificateType certType, EntityId entityId) {
+    private X500Name buildX500NameSubject(XmlCertificateType certType, EntityId entityId, Map<EntityId, X500Name> x500Names) {
         if (x500Names.containsKey(entityId)) {
             return x500Names.get(entityId);
         } else {
             if (certType.getSubject() == null) {
                 throw new IllegalStateException("Missing common name for " + entityId);
             }
-
             String tmpCountry;
             if (!Utils.isStringEmpty(certType.getCountry())) {
                 tmpCountry = certType.getCountry();
@@ -291,9 +369,11 @@ public class JAXBCertEntityBuilder {
                 tmpOrganisation = PKI_FACTORY_ORGANISATION;
             }
 
-            X500Name x500Name = new X500NameBuilder().commonName(certType.getSubject()).pseudo(certType.getPseudo()).country(tmpCountry).organisation(tmpOrganisation).organisationUnit(PKI_FACTORY_ORGANISATION_UNIT).build();
+            final X500Name x500Name = new X500NameBuilder()
+                    .commonName(certType.getSubject()).pseudo(certType.getPseudo()).country(tmpCountry)
+                    .organisation(tmpOrganisation).organisationUnit(PKI_FACTORY_ORGANISATION_UNIT)
+                    .build();
             x500Names.put(entityId, x500Name);
-            x500Names.put(new EntityId(certType.getSubject(), null), x500Name);
             return x500Name;
         }
     }
@@ -306,11 +386,7 @@ public class JAXBCertEntityBuilder {
         return issuerCertificate;
     }
 
-    private KeyPair getKeyPair(Map<EntityId, KeyPair> keyPairs, EntityId entityId) {
-        return keyPairs.get(entityId);
-    }
-
-    private KeyPair buildKeyPair(Map<EntityId, KeyPair> keyPairs, EntityId entityId, XmlCertificateType certType) throws GeneralSecurityException {
+    private KeyPair buildKeyPair(XmlCertificateType certType, EntityId entityId, Map<EntityId, KeyPair> keyPairs) {
         KeyPair keyPair = keyPairs.get(entityId);
         if (keyPair == null) {
             keyPair = build(certType.getKeyAlgo(), certType.getDigestAlgo());
@@ -322,23 +398,27 @@ public class JAXBCertEntityBuilder {
         return keyPair;
     }
 
-    private KeyPair build(XmlKeyAlgo algo, DigestAlgorithm digestAlgorithm) throws GeneralSecurityException {
-        if (EncryptionAlgorithm.ECDSA.isEquivalent(algo.getEncryption())) {
-            ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(getEllipticCurveName(algo));
-            KeyPairGenerator generator = KeyPairGenerator.getInstance(algo.getEncryption().getName(), DSSSecurityProvider.getSecurityProvider());
-            generator.initialize(ecSpec, new SecureRandom());
-            return generator.generateKeyPair();
-        } else if (EncryptionAlgorithm.EDDSA.isEquivalent(algo.getEncryption())) {
-            SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(algo.getEncryption(), digestAlgorithm);
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(signatureAlgorithm.getJCEId(), DSSSecurityProvider.getSecurityProvider());
-            return keyGenerator.generateKeyPair();
-        } else {
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algo.getEncryption().getName(), DSSSecurityProvider.getSecurityProvider());
-            Integer keySize = algo.getLength();
-            if (keySize != null) {
-                keyGenerator.initialize(keySize);
+    private KeyPair build(XmlKeyAlgo algo, DigestAlgorithm digestAlgorithm) {
+        try {
+            if (EncryptionAlgorithm.ECDSA.isEquivalent(algo.getEncryption())) {
+                ECParameterSpec ecSpec = ECNamedCurveTable.getParameterSpec(getEllipticCurveName(algo));
+                KeyPairGenerator generator = KeyPairGenerator.getInstance(algo.getEncryption().getName(), DSSSecurityProvider.getSecurityProvider());
+                generator.initialize(ecSpec, new SecureRandom());
+                return generator.generateKeyPair();
+            } else if (EncryptionAlgorithm.EDDSA.isEquivalent(algo.getEncryption())) {
+                SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(algo.getEncryption(), digestAlgorithm);
+                KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(signatureAlgorithm.getJCEId(), DSSSecurityProvider.getSecurityProvider());
+                return keyGenerator.generateKeyPair();
+            } else {
+                KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(algo.getEncryption().getName(), DSSSecurityProvider.getSecurityProvider());
+                Integer keySize = algo.getLength();
+                if (keySize != null) {
+                    keyGenerator.initialize(keySize);
+                }
+                return keyGenerator.generateKeyPair();
             }
-            return keyGenerator.generateKeyPair();
+        } catch (GeneralSecurityException e) {
+            throw new PKIException("Unable to build a key pair.", e);
         }
     }
 
@@ -368,9 +448,8 @@ public class JAXBCertEntityBuilder {
         return null;
     }
 
-    private void saveEntity(JAXBCertEntityRepository repository, JAXBCertEntity certEntity, Map<EntityId, JAXBCertEntity> entities, EntityId key) {
+    private void saveEntity(JAXBCertEntityRepository repository, JAXBCertEntity certEntity) {
         if (repository.save(certEntity)) {
-            entities.put(key, certEntity);
             LOG.info("Creation of '{}' : DONE. Certificate Id : '{}'", certEntity.getSubject(), certEntity.getCertificateToken().getDSSIdAsString());
         } else {
             LOG.warn("Unable to add cert entity '{}' to the database. Certificate Id: '{}'", certEntity.getSubject(), certEntity.getCertificateToken().getDSSIdAsString());

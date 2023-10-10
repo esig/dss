@@ -48,7 +48,7 @@ public class JAXBCertEntityRepository implements CertEntityRepository<JAXBCertEn
      * @param issuerName {@link String} issuer certificate's distinguished name
      * @return {@link JAXBCertEntity}
      */
-    public JAXBCertEntity getOneBySerialNumberAndParentSubject(Long serialNumber, String issuerName) {
+    public JAXBCertEntity getCertEntityBySerialNumberAndParentSubject(Long serialNumber, String issuerName) {
         List<JAXBCertEntity> certEntityList = certEntities.stream().filter(
                 dbCertEntity -> dbCertEntity.getSerialNumber().equals(serialNumber) &&
                         dbCertEntity.getIssuer().getSubject().equals(issuerName)).collect(Collectors.toList());

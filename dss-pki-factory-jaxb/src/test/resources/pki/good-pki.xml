@@ -20,7 +20,7 @@
     <certificate>
         <serialNumber>2</serialNumber>
         <subject>ocsp-responder</subject>
-        <issuer serialNumber="1">root-ca</issuer>
+        <issuer serialNumber="4">root-ca</issuer>
         <notBefore year="-1"/>
         <notAfter year="1"/>
         <keyAlgo encryption="RSA" length="2048"/>
@@ -38,7 +38,7 @@
         <serialNumber>4</serialNumber>
         <subject>good-ca</subject>
         <issuer serialNumber="1">root-ca</issuer>
-        <ocspResponder serialNumber="2">root-ca</ocspResponder>
+        <ocspResponder serialNumber="2">good-ca</ocspResponder>
         <notBefore month="-11"/>
         <notAfter month="11"/>
         <keyAlgo encryption="RSA" length="2048"/>
@@ -56,7 +56,7 @@
         <serialNumber>5</serialNumber>
         <subject>expired-ca</subject>
         <issuer serialNumber="1">root-ca</issuer>
-        <ocspResponder serialNumber="2">root-ca</ocspResponder>
+        <ocspResponder serialNumber="2">good-ca</ocspResponder>
         <notBefore month="-11"/>
         <notAfter month="-1"/>
         <keyAlgo encryption="RSA" length="2048"/>
@@ -74,7 +74,7 @@
         <serialNumber>6</serialNumber>
         <subject>revoked-ca</subject>
         <issuer serialNumber="1">root-ca</issuer>
-        <ocspResponder serialNumber="2">root-ca</ocspResponder>
+        <ocspResponder serialNumber="2">good-ca</ocspResponder>
         <notBefore month="-11"/>
         <notAfter month="11"/>
         <keyAlgo encryption="RSA" length="2048"/>
@@ -93,7 +93,7 @@
         <serialNumber>7</serialNumber>
         <subject>good-ca-tsa</subject>
         <issuer serialNumber="1">root-ca</issuer>
-        <ocspResponder serialNumber="2">root-ca</ocspResponder>
+        <ocspResponder serialNumber="2">good-ca</ocspResponder>
         <notBefore month="-11"/>
         <notAfter month="11"/>
         <keyAlgo encryption="RSA" length="2048"/>

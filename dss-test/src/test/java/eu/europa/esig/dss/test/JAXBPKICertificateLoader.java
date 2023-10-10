@@ -75,7 +75,7 @@ public class JAXBPKICertificateLoader {
     }
 
     public CertEntity loadCertificateEntityFromXml(Long serialNumber, String issuerSubjectName) {
-        CertEntity dbCertEntity = repository.getOneBySerialNumberAndParentSubject(serialNumber, issuerSubjectName);
+        CertEntity dbCertEntity = repository.getCertEntityBySerialNumberAndParentSubject(serialNumber, issuerSubjectName);
         dbCertEntity = getCertEntity(issuerSubjectName, dbCertEntity);
         return dbCertEntity;
     }
