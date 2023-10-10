@@ -39,22 +39,25 @@
 				<artifactId>jaxb-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>xjc</id>
 						<phase>generate-sources</phase>
 						<goals>
-							<goal>xjc</goal>
+							<goal>generate</goal>
 						</goals>
+						<configuration>
+							<schemaDirectory>src/main/resources/xsd</schemaDirectory>
+							<generatePackage>eu.europa.esig.dss.simplereport.jaxb</generatePackage>
+							<schemaIncludes>
+								<schemaInclude>SimpleReport.xsd</schemaInclude>
+							</schemaIncludes>
+							<bindingIncludes>
+								<include>bindings.xjb</include>
+							</bindingIncludes>
+							<specVersion>3.0</specVersion>
+							<encoding>UTF-8</encoding>
+							<locale>en</locale>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<sources>
-						<source>src/main/resources/xsd/SimpleReport.xsd</source>
-					</sources>
-					<xjbSources>
-						<xjbSource>src/main/resources/xsd/bindings.xjb</xjbSource>
-					</xjbSources>
-					<locale>en</locale>
-				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>org.glassfish.jaxb</groupId>

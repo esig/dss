@@ -47,7 +47,7 @@
 		<logback-classic.version>1.3.7</logback-classic.version> <!-- Version 1.4+ supports only Java 11+ -->
 
 		<bouncycastle.version>1.74</bouncycastle.version>
-		<xmlsec.version>3.0.1</xmlsec.version>
+		<xmlsec.version>3.0.2</xmlsec.version>
 		<jose4j.version>0.9.3</jose4j.version>
 		<pdfbox.version>2.0.28</pdfbox.version>
 		<openpdf.version>1.3.30</openpdf.version>
@@ -65,7 +65,7 @@
 		<junit.version>5.9.3</junit.version>
 
 		<awaitility.version>4.2.0</awaitility.version>
-		<mockito.version>4.11.0</mockito.version>
+		<mockito.version>4.11.0</mockito.version> <!-- Version 5 requires JDK 11+ -->
 		<h2database.version>2.2.220</h2database.version>
 		<jackson.version>2.15.1</jackson.version>
 		<fop-core.version>2.8</fop-core.version>
@@ -411,7 +411,7 @@
 				<plugin>
 					<groupId>org.jvnet.jaxb</groupId>
 					<artifactId>jaxb-maven-plugin</artifactId>
-					<version>2.0.2</version>
+					<version>4.0.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -855,11 +855,6 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-			<dependency>
-				<groupId>com.github.jaxb-xew-plugin</groupId>
-				<artifactId>jaxb-xew-plugin</artifactId>
-				<version>2.0</version>
-			</dependency>
 
 			<!-- Public Dependencies -->
 
@@ -951,13 +946,6 @@
 				<artifactId>jaxb-runtime</artifactId>
 				<version>${jaxb-runtime.version}</version>
 				<scope>runtime</scope>
-			</dependency>
-
-			<!-- Overwrites vulnerable dependency version within xmlsec -->
-			<dependency>
-				<groupId>com.fasterxml.woodstox</groupId>
-				<artifactId>woodstox-core</artifactId>
-				<version>${woodstox-core.version}</version>
 			</dependency>
 
 			<!-- REST/SOAP API -->

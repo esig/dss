@@ -1,6 +1,0 @@
-<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-    <system systemId="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" uri="./../../../../../specs-xmldsig/src/main/resources/xsd/xmldsig-core-schema.xsd"/>
-    <system systemId="http://www.w3.org/2001/xml.xsd" uri="./../../../../../specs-xmldsig/src/main/resources/xsd/xml.xsd"/>
-    <system systemId="http://schemas.xmlsoap.org/soap/envelope/" uri="./schemas.xmlsoap.org.xsd"/>
-    <system systemId="http://www.w3.org/TR/2002/REC-xmlenc-core-20021210/xenc-schema.xsd" uri="./xenc-schema.xsd"/>
-</catalog>

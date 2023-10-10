@@ -8,20 +8,6 @@
 		<xjc:javaType name="java.util.Date" xmlType="xs:dateTime"
 					  adapter="eu.europa.esig.dss.jaxb.parsers.DateParser"/>
 	</jaxb:globalBindings>
-
-	<jaxb:bindings
-			schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"	node="//xs:schema">
-		<jaxb:schemaBindings>
-			<jaxb:package name="eu.europa.esig.xades.jaxb.xades132" />
-		</jaxb:schemaBindings>
-	</jaxb:bindings>
-
-	<jaxb:bindings
-			schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" node="//xs:schema">
-		<jaxb:schemaBindings>
-			<jaxb:package name="eu.europa.esig.xmldsig.jaxb" />
-		</jaxb:schemaBindings>
-	</jaxb:bindings>
 	
 	<jaxb:bindings schemaLocation="1910202xmlSchema.xsd" node="//xs:schema">
 		<jaxb:schemaBindings>

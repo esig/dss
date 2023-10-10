@@ -99,7 +99,7 @@ public class CriteriaListConverter implements Function<CriteriaListType, Conditi
 				for (ObjectIdentifierType oidType : policiesListType.getPolicyIdentifier()) {
 					IdentifierType identifier = oidType.getIdentifier();
 					if (identifier != null) {
-						String id = DSSUtils.getObjectIdentifierValue(identifier.getValue(), ObjectIdentifierQualifier.fromValue(identifier.getQualifier().value()));
+						String id = DSSUtils.getObjectIdentifierValue(identifier.getValue(), ObjectIdentifierQualifier.fromValue(identifier.getQualifier().getValue()));
 						if (Utils.isStringNotEmpty(id)) {
 							condition.addChild(new PolicyIdCondition(id));
 						}
@@ -139,7 +139,7 @@ public class CriteriaListConverter implements Function<CriteriaListType, Conditi
 						List<QcStatementType> qcStatement = qcStatementList.getQcStatement();
 						for (QcStatementType qcStatementType : qcStatement) {
 							IdentifierType qcStatementIdentifier = qcStatementType.getQcStatementId().getIdentifier();
-							String oid = DSSUtils.getObjectIdentifierValue(qcStatementIdentifier.getValue(), ObjectIdentifierQualifier.fromValue(qcStatementIdentifier.getQualifier().value()));
+							String oid = DSSUtils.getObjectIdentifierValue(qcStatementIdentifier.getValue(), ObjectIdentifierQualifier.fromValue(qcStatementIdentifier.getQualifier().getValue()));
 							String legislation = null;
 							String type = null;
 
@@ -149,7 +149,7 @@ public class CriteriaListConverter implements Function<CriteriaListType, Conditi
 								ObjectIdentifierType qcType = qcStatementInfo.getQcType();
 								if (qcType != null) {
 									IdentifierType qcTypeIdentifier = qcType.getIdentifier();
-									String id = DSSUtils.getObjectIdentifierValue(qcTypeIdentifier.getValue(), ObjectIdentifierQualifier.fromValue(qcTypeIdentifier.getQualifier().value()));
+									String id = DSSUtils.getObjectIdentifierValue(qcTypeIdentifier.getValue(), ObjectIdentifierQualifier.fromValue(qcTypeIdentifier.getQualifier().getValue()));
 									if (Utils.isStringNotEmpty(id)) {
 										type = id;
 									}
@@ -175,7 +175,7 @@ public class CriteriaListConverter implements Function<CriteriaListType, Conditi
 			for (ObjectIdentifierType objectIdentifierType : oits) {
 				IdentifierType identifier = objectIdentifierType.getIdentifier();
 				if (identifier != null) {
-					String id = DSSUtils.getObjectIdentifierValue(identifier.getValue(), ObjectIdentifierQualifier.fromValue(identifier.getQualifier().value()));
+					String id = DSSUtils.getObjectIdentifierValue(identifier.getValue(), ObjectIdentifierQualifier.fromValue(identifier.getQualifier().getValue()));
 					if (Utils.isStringNotEmpty(id)) {
 						if (DSSUtils.isOidCode(id)) {
 							oids.add(id);

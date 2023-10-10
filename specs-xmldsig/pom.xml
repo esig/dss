@@ -40,39 +40,36 @@
 				<artifactId>jaxb-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>xjc</id>
+						<id>generate-classes</id>
 						<phase>generate-sources</phase>
 						<goals>
-							<goal>xjc</goal>
+							<goal>generate</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<sources>
-						<source>src/main/resources/xsd/xml.xsd</source>
-						<source>src/main/resources/xsd/xmldsig-core-schema.xsd</source>
-						<source>src/main/resources/xsd/xmldsig-filter2.xsd</source>
-					</sources>
-					<xjbSources>
-						<xjbSource>src/main/resources/xsd/bindings.xjb</xjbSource>
-					</xjbSources>
-					<catalog>src/main/resources/xsd/catalog.xml</catalog>
+					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
+					<schemaIncludes>
+						<schemaInclude>xmldsig-core-schema.xsd</schemaInclude>
+					</schemaIncludes>
+					<catalog>src/main/resources/xsd/catalog.cat</catalog>
+					<bindingIncludes>
+						<include>bindings.xjb</include>
+					</bindingIncludes>
+					<strict>false</strict>
+					<specVersion>3.0</specVersion>
+					<episode>true</episode>
 					<locale>en</locale>
-					<arguments>
-						<argument>-Xxew</argument>
-						<argument>-Xxew:instantiate lazy</argument>
-					</arguments>
+
+					<disableXmlSecurity>false</disableXmlSecurity>
+					<accessExternalSchema>file</accessExternalSchema>
+					<accessExternalDTD>file</accessExternalDTD>
 				</configuration>
 				<dependencies>
 					<dependency>
 						<groupId>org.glassfish.jaxb</groupId>
 						<artifactId>jaxb-runtime</artifactId>
 						<version>4.0.1</version>
-					</dependency>
-					<dependency>
-						<groupId>com.github.jaxb-xew-plugin</groupId>
-						<artifactId>jaxb-xew-plugin</artifactId>
-						<version>2.0</version>
 					</dependency>
 				</dependencies>
 			</plugin>

@@ -8,10 +8,5 @@
 			<jaxb:package name="eu.europa.esig.asic.manifest.jaxb" />
 		</jaxb:schemaBindings>
 	</jaxb:bindings>
-	<jaxb:bindings schemaLocation="http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd" node="//xs:schema">
-		<jaxb:schemaBindings>
-			<jaxb:package name="eu.europa.esig.xmldsig.jaxb"/>
-		</jaxb:schemaBindings>
-	</jaxb:bindings>
 
 </jaxb:bindings>
