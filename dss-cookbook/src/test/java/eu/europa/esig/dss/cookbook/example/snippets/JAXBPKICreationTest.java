@@ -2,9 +2,15 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pki.jaxb.JAXBPKILoader;
 import eu.europa.esig.dss.pki.jaxb.builder.JAXBCertEntityBuilder;
+import eu.europa.esig.dss.pki.jaxb.builder.KeyPairBuilder;
+import eu.europa.esig.dss.pki.jaxb.builder.X500NameBuilder;
+import eu.europa.esig.dss.pki.jaxb.builder.X509CertificateBuilder;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntityRepository;
 import eu.europa.esig.dss.pki.model.CertEntity;
@@ -17,10 +23,13 @@ import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,8 +57,8 @@ public class JAXBPKICreationTest {
         // Load an XML file containing PKI configuration
         File pkiFile = new File("src/test/resources/pki/good-pki.xml");
 
-        // Init a JAXBCertEntityBuilder to load PKI from XML file
-        JAXBCertEntityBuilder builder = new JAXBCertEntityBuilder();
+        // Init a JAXBPKILoader to load PKI from XML file
+        JAXBPKILoader builder = new JAXBPKILoader();
 
         // Initialize a content of the PKI from XML file and load created entries to the repository
         builder.persistPKI(jaxbRepository, pkiFile);
@@ -186,8 +195,8 @@ public class JAXBPKICreationTest {
         // Load an XML file containing PKI configuration
         File pkiFile = new File("src/test/resources/pki/good-pki.xml");
 
-        // Init a JAXBCertEntityBuilder to load PKI from XML file
-        JAXBCertEntityBuilder builder = new JAXBCertEntityBuilder();
+        // Init a JAXBPKILoader to load PKI from XML file
+        JAXBPKILoader builder = new JAXBPKILoader();
 
         // Initialize a content of the PKI from XML file and load created entries to the repository
         builder.persistPKI(repository, pkiFile);
@@ -210,6 +219,62 @@ public class JAXBPKICreationTest {
         // end::tsp-source[]
 
         assertNotNull(timestampBinary);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.MONTH, -12);
+        Date notBefore = calendar.getTime();
+        calendar.add(Calendar.MONTH, 24);
+        Date notAfter = calendar.getTime();
+
+
+        // tag::add-pki-certificate[]
+        // import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+        // import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+        // import eu.europa.esig.dss.model.x509.CertificateToken;
+        // import eu.europa.esig.dss.pki.jaxb.builder.JAXBCertEntityBuilder;
+        // import eu.europa.esig.dss.pki.jaxb.builder.KeyPairBuilder;
+        // import eu.europa.esig.dss.pki.jaxb.builder.X500NameBuilder;
+        // import eu.europa.esig.dss.pki.jaxb.builder.X509CertificateBuilder;
+        // import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
+        // import org.bouncycastle.asn1.x500.X500Name;
+        // import java.math.BigInteger;
+        // import java.security.KeyPair;
+
+        // Builds a Subject name for the certificate
+        X500Name x500Name = new X500NameBuilder()
+                .commonName("new-good-user").organisation("Nowina Solutions").country("LU")
+                .build();
+
+        // Generate a key pair
+        KeyPair keyPair = new KeyPairBuilder(EncryptionAlgorithm.RSA, 2048).build();
+
+        // Extract an issuer entity from the current repository
+        JAXBCertEntity goodCa = repository.getCertEntityBySubject("good-ca");
+
+        // Generate a certificate token
+        CertificateToken certificateToken = new X509CertificateBuilder()
+                .subject(x500Name, BigInteger.valueOf(101), keyPair.getPublic())
+                .issuer(goodCa.getCertificateToken(), goodCa.getPrivateKey(), SignatureAlgorithm.RSA_SHA256)
+                .notBefore(notBefore).notAfter(notAfter)
+                // provide additional configuration when needed
+                .build();
+
+        // Build the CertEntity
+        JAXBCertEntity certEntity = new JAXBCertEntityBuilder()
+                .setCertificateToken(certificateToken).setPrivateKey(keyPair.getPrivate())
+                .setIssuer(goodCa)
+                .build();
+
+        // Add the generated CertEntity to the repository
+        repository.save(certEntity);
+
+        // The created CertEntity is now a part of the PKI and can be accessed from the repository
+        JAXBCertEntity newGoodUser = repository.getCertEntityBySubject("new-good-user");
+        // end::add-pki-certificate[]
+
+        assertNotNull(newGoodUser);
     }
 
 }

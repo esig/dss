@@ -81,3 +81,11 @@ An example of a JAXB PKI generation can be found below:
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=demo]
 ----
+
+It is also possible to modify the PKI entries dynamically, for instance, add a new certificate or revoke a certificate. See below an example of adding a new certificate to the generated earlier PKI repository:
+
+[source,java,indent=0]
+.Add new certificate to PKI repository
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=add-pki-certificate]
+----

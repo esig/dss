@@ -54,6 +54,13 @@ public class JAXBCertEntity implements CertEntity {
     private String pkiName;
 
     /**
+     * Default constructor
+     */
+    public JAXBCertEntity() {
+        // empty
+    }
+
+    /**
      * Gets the certificate's common name
      *
      * @return {@link String}
@@ -165,7 +172,7 @@ public class JAXBCertEntity implements CertEntity {
     /**
      * Gets the certificate's issuer
      *
-     * @return {@@link JAXBCertEntity}
+     * @return {@link JAXBCertEntity}
      */
     public JAXBCertEntity getIssuer() {
         return issuer;
@@ -241,7 +248,6 @@ public class JAXBCertEntity implements CertEntity {
             EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(this.getPrivateKeyBinaries());
             return keyFactory.generatePrivate(privateKeySpec);
         } catch (GeneralSecurityException e) {
-
             throw new DSSException("Unable to regenerate the private key");
         }
     }

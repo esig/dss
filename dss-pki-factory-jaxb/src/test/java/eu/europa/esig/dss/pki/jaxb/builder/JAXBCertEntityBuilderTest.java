@@ -1,270 +1,104 @@
 package eu.europa.esig.dss.pki.jaxb.builder;
 
+import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
-import eu.europa.esig.dss.enumerations.KeyUsageBit;
-import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
-import eu.europa.esig.dss.model.x509.extension.QcStatements;
 import eu.europa.esig.dss.pki.jaxb.AbstractTestJaxbPKI;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
-import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
+import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.junit.jupiter.api.Test;
 
-import java.security.PrivateKey;
-import java.security.interfaces.RSAPrivateKey;
+import java.math.BigInteger;
+import java.security.KeyPair;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAXBCertEntityBuilderTest extends AbstractTestJaxbPKI {
 
     @Test
-    public void certificatesTest() {
-        JAXBCertEntity goodUser = repository.getCertEntityBySubject("good-user");
-        assertEquals(10, goodUser.getSerialNumber());
-        assertEquals("good-user", goodUser.getSubject());
-
-        CertificateToken goodUserCertificate = goodUser.getCertificateToken();
-        assertNotNull(goodUserCertificate);
-
-        assertTrue(goodUserCertificate.getNotBefore().before(new Date()));
-        assertTrue(goodUserCertificate.getNotAfter().after(new Date()));
-
-        assertEquals(EncryptionAlgorithm.RSA.getName(), goodUserCertificate.getPublicKey().getAlgorithm());
-        assertTrue(goodUserCertificate.getPublicKey() instanceof RSAPublicKey);
-        assertEquals(2048, ((RSAPublicKey) goodUserCertificate.getPublicKey()).getModulus().bitLength());
-
-        assertEquals(1, goodUserCertificate.getKeyUsageBits().size());
-        assertEquals(KeyUsageBit.NON_REPUDIATION, goodUserCertificate.getKeyUsageBits().get(0));
-
-        assertFalse(Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getExtendedKeyUsage(goodUserCertificate).getOids()));
-
-        assertFalse(CertificateExtensionsUtils.getBasicConstraints(goodUserCertificate).isCa());
-        assertNull(CertificateExtensionsUtils.getOcspNoCheck(goodUserCertificate));
-
-        assertFalse(Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getCRLAccessUrls(goodUserCertificate)));
-        assertTrue(Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getOCSPAccessUrls(goodUserCertificate)));
-        assertTrue(Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getCAIssuersAccessUrls(goodUserCertificate)));
-
+    public void test() throws Exception {
         JAXBCertEntity goodCa = repository.getCertEntityBySubject("good-ca");
-        assertEquals(4, goodCa.getSerialNumber());
-        assertEquals("good-ca", goodCa.getSubject());
 
-        CertificateToken goodCaCertificate = goodCa.getCertificateToken();
+        X500Name x500Name = new X500NameBuilder()
+                .commonName("new-good-user").organisation("Nowina Solutions").country("LU")
+                .build();
 
-        assertTrue(goodUserCertificate.isSignedBy(goodCaCertificate));
+        KeyPair keyPair = new KeyPairBuilder(EncryptionAlgorithm.RSA, 2048).build();
 
-        JAXBCertEntity issuer = goodUser.getIssuer();
-        assertEquals(goodCa, issuer);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.add(Calendar.MONTH, -12);
+        Date notBefore = calendar.getTime();
+        calendar.add(Calendar.MONTH, 24);
+        Date notAfter = calendar.getTime();
 
-        List<CertificateToken> certificateChain = goodUser.getCertificateChain();
+        CertificateToken certificateToken = new X509CertificateBuilder()
+                .subject(x500Name, BigInteger.valueOf(101), keyPair.getPublic())
+                .issuer(goodCa.getCertificateToken(), goodCa.getPrivateKey(), SignatureAlgorithm.RSA_SHA256)
+                .notBefore(notBefore).notAfter(notAfter)
+                .ocsp("http://dss.nowina.lu/pki/ocsp")
+                .build();
+
+        JAXBCertEntity certEntity = new JAXBCertEntityBuilder()
+                .setCertificateToken(certificateToken).setIssuer(goodCa).setPrivateKey(keyPair.getPrivate())
+                .build();
+        assertNotNull(certEntity);
+
+        repository.save(certEntity);
+
+        JAXBCertEntity newGoodUser = repository.getCertEntityBySubject("new-good-user");
+        assertNotNull(newGoodUser);
+
+        assertEquals(101, newGoodUser.getSerialNumber());
+        assertEquals("new-good-user", newGoodUser.getSubject());
+
+        CertificateToken newGoodUserCertificate = newGoodUser.getCertificateToken();
+        assertEquals(notBefore, newGoodUserCertificate.getNotBefore());
+        assertEquals(notAfter, newGoodUserCertificate.getNotAfter());
+
+        assertEquals("Nowina Solutions",
+                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, newGoodUserCertificate.getSubject()));
+        assertEquals("LU",
+                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, newGoodUserCertificate.getSubject()));
+
+        assertEquals(EncryptionAlgorithm.RSA.getName(), newGoodUserCertificate.getPublicKey().getAlgorithm());
+        assertTrue(newGoodUserCertificate.getPublicKey() instanceof RSAPublicKey);
+        assertEquals(2048, ((RSAPublicKey) newGoodUserCertificate.getPublicKey()).getModulus().bitLength());
+
+        List<CertificateToken> certificateChain = newGoodUser.getCertificateChain();
         assertEquals(3, certificateChain.size());
-        assertTrue(certificateChain.contains(goodCaCertificate));
-        assertTrue(certificateChain.contains(goodUserCertificate));
 
-        assertEquals(2, goodCaCertificate.getKeyUsageBits().size());
-        assertTrue(goodCaCertificate.getKeyUsageBits().contains(KeyUsageBit.KEY_CERT_SIGN));
-        assertTrue(goodCaCertificate.getKeyUsageBits().contains(KeyUsageBit.CRL_SIGN));
+        PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
+        OCSPToken ocspToken = ocspSource.getRevocationToken(newGoodUserCertificate, goodCa.getCertificateToken());
+        assertNotNull(ocspToken);
+        assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
 
-        assertTrue(CertificateExtensionsUtils.getBasicConstraints(goodCaCertificate).isCa());
+        calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date revocationDate = calendar.getTime();
 
-        PrivateKey privateKey = goodUser.getPrivateKey();
-        assertNotNull(privateKey);
-        assertEquals(EncryptionAlgorithm.RSA.getName(), privateKey.getAlgorithm());
-        assertTrue(goodUserCertificate.getPublicKey() instanceof RSAPublicKey);
-        assertEquals(2048, ((RSAPrivateKey) privateKey).getModulus().bitLength());
+        newGoodUser.setRevocationDate(revocationDate);
+        newGoodUser.setRevocationReason(RevocationReason.KEY_COMPROMISE);
 
-        assertEquals(10, goodUserCertificate.getSerialNumber().intValue());
-        assertEquals("good-user", DSSASN1Utils.getSubjectCommonName(goodUserCertificate));
-
-        assertNull(goodUser.getRevocationDate());
-        assertNull(goodUser.getRevocationReason());
-
-        assertEquals("good-pki", goodUser.getPkiName());
-
-        assertNull(goodUser.getOcspResponder());
-        assertFalse(goodUser.isTrustAnchor());
-
-        assertTrue(Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getCRLAccessUrls(goodCaCertificate)));
-        assertFalse(Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getOCSPAccessUrls(goodCaCertificate)));
-        assertTrue(Utils.isCollectionNotEmpty(CertificateExtensionsUtils.getCAIssuersAccessUrls(goodCaCertificate)));
-
-        assertNotNull(goodCa.getOcspResponder());
-        assertFalse(goodCa.isTrustAnchor());
-
-        JAXBCertEntity ocspResponder = goodCa.getOcspResponder();
-
-        assertEquals(2, ocspResponder.getSerialNumber());
-        assertEquals("ocsp-responder", ocspResponder.getSubject());
-
-        CertificateToken ocspResponderCertificate = ocspResponder.getCertificateToken();
-        assertTrue(ocspResponderCertificate.isSignedBy(goodCaCertificate));
-
-        assertEquals(ExtendedKeyUsage.OCSP_SIGNING.getOid(), CertificateExtensionsUtils.getExtendedKeyUsage(ocspResponderCertificate).getOids().get(0));
-        assertNotNull(CertificateExtensionsUtils.getOcspNoCheck(ocspResponderCertificate));
-        assertTrue(CertificateExtensionsUtils.getOcspNoCheck(ocspResponderCertificate).isOcspNoCheck());
-
-        JAXBCertEntity rootCa = repository.getCertEntityBySubject("root-ca");
-
-        assertEquals(1, rootCa.getSerialNumber());
-        assertEquals("root-ca", rootCa.getSubject());
-
-        assertTrue(rootCa.isTrustAnchor());
-        assertTrue(goodCaCertificate.isSignedBy(rootCa.getCertificateToken()));
-
-        JAXBCertEntity revokedUser = repository.getCertEntityBySubject("revoked-user");
-        assertEquals(12, revokedUser.getSerialNumber());
-        assertEquals("revoked-user", revokedUser.getSubject());
-
-        assertNotNull(revokedUser.getRevocationDate());
-        assertEquals(RevocationReason.KEY_COMPROMISE, revokedUser.getRevocationReason());
-
-        JAXBCertEntity pseudoUser = repository.getCertEntityBySubject("good-user-with-pseudo");
-        assertEquals(22, pseudoUser.getSerialNumber());
-        assertEquals("good-user-with-pseudo", pseudoUser.getSubject());
-
-        assertEquals("user-pseudo",
-                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.PSEUDONYM, pseudoUser.getCertificateToken().getSubject()));
-    }
-
-    @Test
-    public void crossCertificatesTest() {
-        JAXBCertEntity firstCrossCertificate = repository.getCertEntityBySerialNumberAndParentSubject(2002L, "external-ca");
-        JAXBCertEntity secondCrossCertificate = repository.getCertEntityBySerialNumberAndParentSubject(2003L, "cc-root-ca");
-        assertArrayEquals(firstCrossCertificate.getCertificateToken().getPublicKey().getEncoded(),
-                secondCrossCertificate.getCertificateToken().getPublicKey().getEncoded());
-
-        JAXBCertEntity firstCrossCertificateIssuer = repository.getCertEntityBySerialNumberAndParentSubject(2001L, "external-root-ca");
-        JAXBCertEntity secondCrossCertificateIssuer = repository.getCertEntityBySerialNumberAndParentSubject(2003L, "cc-root-ca");
-
-        assertTrue(firstCrossCertificate.getCertificateToken().isSignedBy(firstCrossCertificateIssuer.getCertificateToken()));
-        assertFalse(firstCrossCertificate.getCertificateToken().isSignedBy(secondCrossCertificateIssuer.getCertificateToken()));
-        assertTrue(secondCrossCertificate.getCertificateToken().isSignedBy(secondCrossCertificateIssuer.getCertificateToken()));
-        assertFalse(secondCrossCertificate.getCertificateToken().isSignedBy(firstCrossCertificateIssuer.getCertificateToken()));
-
-        JAXBCertEntity crossedCa = repository.getCertEntityBySerialNumberAndParentSubject(2200L, "cc-root-ca");
-        assertTrue(crossedCa.getCertificateToken().isSignedBy(firstCrossCertificate.getCertificateToken()));
-        assertTrue(crossedCa.getCertificateToken().isSignedBy(secondCrossCertificate.getCertificateToken()));
-    }
-
-    @Test
-    public void ed25519Test() {
-        JAXBCertEntity goodUser = repository.getCertEntityBySubject("Ed25519-good-user");
-        assertEquals(1100, goodUser.getSerialNumber());
-        assertEquals("Ed25519-good-user", goodUser.getSubject());
-
-        assertEquals(EncryptionAlgorithm.EDDSA.getName(), goodUser.getPrivateKey().getAlgorithm());
-        assertEquals(SignatureAlgorithm.ED25519.getJCEId(), goodUser.getCertificateToken().getPublicKey().getAlgorithm());
-
-        JAXBCertEntity goodCa = repository.getCertEntityBySubject("Ed25519-good-ca");
-        assertEquals(1002, goodCa.getSerialNumber());
-        assertEquals("Ed25519-good-ca", goodCa.getSubject());
-
-        assertEquals(EncryptionAlgorithm.EDDSA.getName(), goodCa.getPrivateKey().getAlgorithm());
-        assertEquals(SignatureAlgorithm.ED25519.getJCEId(), goodCa.getCertificateToken().getPublicKey().getAlgorithm());
-
-        assertTrue(goodUser.getCertificateToken().isSignedBy(goodCa.getCertificateToken()));
-    }
-
-    @Test
-    public void ed448Test() {
-        JAXBCertEntity goodUser = repository.getCertEntityBySubject("Ed448-good-user");
-        assertEquals(1100, goodUser.getSerialNumber());
-        assertEquals("Ed448-good-user", goodUser.getSubject());
-
-        assertEquals(EncryptionAlgorithm.EDDSA.getName(), goodUser.getPrivateKey().getAlgorithm());
-        assertEquals(SignatureAlgorithm.ED448.getJCEId(), goodUser.getCertificateToken().getPublicKey().getAlgorithm());
-
-        JAXBCertEntity goodCa = repository.getCertEntityBySubject("Ed448-good-ca");
-        assertEquals(1002, goodCa.getSerialNumber());
-        assertEquals("Ed448-good-ca", goodCa.getSubject());
-
-        assertEquals(EncryptionAlgorithm.EDDSA.getName(), goodCa.getPrivateKey().getAlgorithm());
-        assertEquals(SignatureAlgorithm.ED448.getJCEId(), goodCa.getCertificateToken().getPublicKey().getAlgorithm());
-
-        assertTrue(goodUser.getCertificateToken().isSignedBy(goodCa.getCertificateToken()));
-    }
-
-    @Test
-    public void qcStatementsTest() {
-        JAXBCertEntity johnDoe = repository.getCertEntityBySubject("John Doe");
-        assertEquals(100111, johnDoe.getSerialNumber());
-        assertEquals("John Doe", johnDoe.getSubject());
-
-        assertEquals("Test Qualified Trust Service Provider 1 from ZZ",
-                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, johnDoe.getCertificateToken().getSubject()));
-        assertEquals("ZZ",
-                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, johnDoe.getCertificateToken().getSubject()));
-
-        CertificatePolicies certificatePolicies = CertificateExtensionsUtils.getCertificatePolicies(johnDoe.getCertificateToken());
-        assertNotNull(certificatePolicies);
-        assertEquals(1, certificatePolicies.getPolicyList().size());
-        assertEquals("1.3.6.1.4.1.314159.1.2", certificatePolicies.getPolicyList().get(0).getOid());
-
-        QcStatements qcStatements = CertificateExtensionsUtils.getQcStatements(johnDoe.getCertificateToken());
-        assertNotNull(qcStatements);
-        assertTrue(qcStatements.isQcCompliance());
-        assertTrue(qcStatements.isQcQSCD());
-
-        assertEquals(1, qcStatements.getQcTypes().size());
-        assertEquals(QCTypeEnum.QCT_ESIGN, qcStatements.getQcTypes().get(0));
-
-        assertEquals(1, qcStatements.getQcLegislationCountryCodes().size());
-        assertEquals("ZZ", qcStatements.getQcLegislationCountryCodes().get(0));
-
-        JAXBCertEntity aliceDoe = repository.getCertEntityBySubject("Alice Doe");
-        assertEquals(100114, aliceDoe.getSerialNumber());
-        assertEquals("Alice Doe", aliceDoe.getSubject());
-
-        assertEquals("Test Qualified Trust Service Provider 1 from ZZ",
-                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, aliceDoe.getCertificateToken().getSubject()));
-        assertEquals("ZZ",
-                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, aliceDoe.getCertificateToken().getSubject()));
-
-        certificatePolicies = CertificateExtensionsUtils.getCertificatePolicies(aliceDoe.getCertificateToken());
-        assertNotNull(certificatePolicies);
-        assertEquals(1, certificatePolicies.getPolicyList().size());
-        assertEquals("1.3.6.1.4.1.314159.1.2", certificatePolicies.getPolicyList().get(0).getOid());
-
-        qcStatements = CertificateExtensionsUtils.getQcStatements(aliceDoe.getCertificateToken());
-        assertNotNull(qcStatements);
-        assertFalse(qcStatements.isQcCompliance());
-        assertFalse(qcStatements.isQcQSCD());
-
-        assertEquals(1, qcStatements.getQcTypes().size());
-        assertEquals(QCTypeEnum.QCT_ESIGN, qcStatements.getQcTypes().get(0));
-
-        assertEquals(1, qcStatements.getQcLegislationCountryCodes().size());
-        assertEquals("ZZ", qcStatements.getQcLegislationCountryCodes().get(0));
-
-        JAXBCertEntity nonQualified = repository.getCertEntityBySubject("Test-Non-Qualified-TSA-from-ZZ");
-        assertEquals(100140, nonQualified.getSerialNumber());
-        assertEquals("Test-Non-Qualified-TSA-from-ZZ", nonQualified.getSubject());
-
-        assertEquals("Test Non Qualified Trust Service Provider 1 from ZZ",
-                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.O, nonQualified.getCertificateToken().getSubject()));
-        assertEquals("ZZ",
-                DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.C, nonQualified.getCertificateToken().getSubject()));
-
-        certificatePolicies = CertificateExtensionsUtils.getCertificatePolicies(nonQualified.getCertificateToken());
-        assertNull(certificatePolicies);
-
-        qcStatements = CertificateExtensionsUtils.getQcStatements(nonQualified.getCertificateToken());
-        assertNull(qcStatements);
+        ocspToken = ocspSource.getRevocationToken(newGoodUserCertificate, goodCa.getCertificateToken());
+        assertNotNull(ocspToken);
+        assertEquals(CertificateStatus.REVOKED, ocspToken.getStatus());
+        assertEquals(revocationDate, ocspToken.getRevocationDate());
+        assertEquals(RevocationReason.KEY_COMPROMISE, ocspToken.getReason());
     }
 
 }

@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
  */
 public final class EncryptionAlgorithmParser {
 
+	/**
+	 * Default constructor
+	 */
 	private EncryptionAlgorithmParser() {
+		// empty
 	}
 
 	/**

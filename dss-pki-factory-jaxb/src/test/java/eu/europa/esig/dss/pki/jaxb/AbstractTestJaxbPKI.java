@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.pki.jaxb;
 
-import eu.europa.esig.dss.pki.jaxb.builder.JAXBCertEntityBuilder;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntityRepository;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 
@@ -21,7 +20,7 @@ public abstract class AbstractTestJaxbPKI {
 
     private static void loadPki() {
         for (File file : Objects.requireNonNull(getFolder().listFiles())) {
-            JAXBCertEntityBuilder builder = new JAXBCertEntityBuilder();
+            JAXBPKILoader builder = new JAXBPKILoader();
             builder.persistPKI(repository, file);
         }
     }

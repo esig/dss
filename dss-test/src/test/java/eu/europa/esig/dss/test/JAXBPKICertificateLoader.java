@@ -2,7 +2,7 @@ package eu.europa.esig.dss.test;
 
 import eu.europa.esig.dss.pki.jaxb.PKIJaxbFacade;
 import eu.europa.esig.dss.pki.jaxb.XmlPki;
-import eu.europa.esig.dss.pki.jaxb.builder.JAXBCertEntityBuilder;
+import eu.europa.esig.dss.pki.jaxb.JAXBPKILoader;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntityRepository;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -32,7 +32,7 @@ public class JAXBPKICertificateLoader {
 
     private final JAXBCertEntityRepository repository;
 
-    private final JAXBCertEntityBuilder certificationEntityBuilder = new JAXBCertEntityBuilder();
+    private final JAXBPKILoader certificationEntityBuilder = new JAXBPKILoader();
 
     private final Set<String> createdPKIs = new HashSet<>();
     private final Map<String, XmlPki> filePkiMap = new HashMap<>();

@@ -6,7 +6,9 @@ import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.QCTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -48,9 +50,10 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Builds a {@code X509CertificateHolder}
+ * Builds a {@code eu.europa.esig.dss.model.x509.CertificateToken}
  *
  */
 public class X509CertificateBuilder {
@@ -58,8 +61,17 @@ public class X509CertificateBuilder {
     /** The certificate's subject DN */
     private X500Name subjectName;
 
+    /** Serial number of the certificate */
+    private BigInteger serialNumber;
+
     /** Certificate's public key */
     private PublicKey publicKey;
+
+    /** notBefore time of the certificate */
+    private Date notBefore;
+
+    /** notAfter time of the certificate */
+    private Date notAfter;
 
     /** The certificate's issuer DN */
     private X500Name issuerName;
@@ -115,12 +127,18 @@ public class X509CertificateBuilder {
      * Sets mandatory information about the certificate
      *
      * @param subjectName {@link X500Name} representing a DN subject name of the certificate to be created
-     * @param subjectPublicKey {@link PublicKey} of the certificate to be created
+     * @param serialNumber {@link BigInteger} representing a certificate's serial number
+     * @param publicKey {@link PublicKey} of the certificate to be created
      * @return {@link X509CertificateBuilder} this
      */
-    public X509CertificateBuilder subject(X500Name subjectName, PublicKey subjectPublicKey) {
+    public X509CertificateBuilder subject(X500Name subjectName, BigInteger serialNumber, PublicKey publicKey) {
+        Objects.requireNonNull(subjectName, "SubjectName cannot be null!");
+        Objects.requireNonNull(serialNumber, "SerialNumber cannot be null!");
+        Objects.requireNonNull(publicKey, "PublicKey cannot be null!");
+
         this.subjectName = subjectName;
-        this.publicKey = subjectPublicKey;
+        this.serialNumber = serialNumber;
+        this.publicKey = publicKey;
         return this;
     }
 
@@ -133,9 +151,49 @@ public class X509CertificateBuilder {
      * @return {@link X509CertificateBuilder} this
      */
     public X509CertificateBuilder issuer(X500Name issuerName, PrivateKey issuerPrivateKey, SignatureAlgorithm signatureAlgorithm) {
+        Objects.requireNonNull(issuerName, "IssuerName cannot be null!");
+        Objects.requireNonNull(serialNumber, "SerialNumber cannot be null!");
+        Objects.requireNonNull(publicKey, "PublicKey cannot be null!");
         this.issuerName = issuerName;
         this.issuerKey = issuerPrivateKey;
         this.signatureAlgorithm = signatureAlgorithm;
+        return this;
+    }
+
+    /**
+     * Sets mandatory information about the certificate's issuer to sign the created certificate with a CertificateToken of the issuer
+     *
+     * @param issuerCertificate {@link CertificateToken} representing a certificate token of the issuer
+     * @param issuerPrivateKey {@link PrivateKey} of the issuer certificate to sign the certificate
+     * @param signatureAlgorithm {@link SignatureAlgorithm} to be used on signature creation
+     * @return {@link X509CertificateBuilder} this
+     */
+    public X509CertificateBuilder issuer(CertificateToken issuerCertificate, PrivateKey issuerPrivateKey, SignatureAlgorithm signatureAlgorithm) {
+        Objects.requireNonNull(issuerCertificate, "CertificateToken cannot be null!");
+        return issuer(DSSASN1Utils.getX509CertificateHolder(issuerCertificate).getSubject(), issuerPrivateKey, signatureAlgorithm);
+    }
+
+    /**
+     * Sets mandatory information about the certificate's notBefore field
+     *
+     * @param notBefore {@link Date} representing a certificate's notBefore time
+     * @return {@link X509CertificateBuilder} this
+     */
+    public X509CertificateBuilder notBefore(Date notBefore) {
+        Objects.requireNonNull(notBefore, "NotBefore shall be defined!");
+        this.notBefore = notBefore;
+        return this;
+    }
+
+    /**
+     * Sets mandatory information about the certificate's notAfter field
+     *
+     * @param notAfter {@link Date} representing a certificate's notAfter time
+     * @return {@link X509CertificateBuilder} this
+     */
+    public X509CertificateBuilder notAfter(Date notAfter) {
+        Objects.requireNonNull(notAfter, "NotAfter shall be defined!");
+        this.notAfter = notAfter;
         return this;
     }
 
@@ -263,19 +321,23 @@ public class X509CertificateBuilder {
     /**
      * Builds a certificate token
      *
-     * @param serial {@link BigInteger} serial number
-     * @param notBefore {@link Date} the certificate's start validity date
-     * @param notAfter {@link Date} the certificate's end validity date
-     * @return {@link X509CertificateHolder}
+     * @return {@link CertificateToken}
      * @throws OperatorCreationException if an error on certificate signing occurs
      * @throws IOException if an error on certificate's content creation occurs
      */
-    public X509CertificateHolder build(BigInteger serial, Date notBefore, Date notAfter) throws OperatorCreationException, IOException {
+    public CertificateToken build() throws OperatorCreationException, IOException {
+        Objects.requireNonNull(subjectName, "SubjectName shall be defined!");
+        Objects.requireNonNull(serialNumber, "SerialNumber shall be defined!");
+        Objects.requireNonNull(publicKey, "PublicKey shall be defined!");
+        Objects.requireNonNull(issuerName, "IssuerName shall be defined!");
+        Objects.requireNonNull(issuerKey, "Issuer's private key shall be defined!");
+        Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm shall be defined!");
+
         ContentSigner rootSigner = new JcaContentSignerBuilder(signatureAlgorithm.getJCEId()).build(issuerKey);
 
         SubjectPublicKeyInfo membersKeyInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
 
-        X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuerName, serial, notBefore, notAfter, subjectName, membersKeyInfo);
+        X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder(issuerName, serialNumber, notBefore, notAfter, subjectName, membersKeyInfo);
 
         if (keyUsages != null) {
             addKeyUsageExtension(certBuilder);
@@ -311,7 +373,8 @@ public class X509CertificateBuilder {
             addOCSPNoCheck(certBuilder);
         }
 
-        return certBuilder.build(rootSigner);
+        X509CertificateHolder x509CertificateHolder = certBuilder.build(rootSigner);
+        return DSSUtils.loadCertificate(x509CertificateHolder.getEncoded());
     }
 
     private void addKeyUsageExtension(X509v3CertificateBuilder certBuilder) throws CertIOException {
