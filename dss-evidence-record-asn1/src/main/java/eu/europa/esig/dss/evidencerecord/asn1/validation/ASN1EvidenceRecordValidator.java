@@ -1,9 +1,15 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
+import org.bouncycastle.asn1.tsp.EvidenceRecord;
+import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
+import org.bouncycastle.tsp.ers.ERSEvidenceRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 
 /**
@@ -12,6 +18,11 @@ import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
  */
 public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ASN1EvidenceRecordValidator.class);
+
+    /** The root element of the document to validate */
+    private EvidenceRecord rootElement;
+
     /**
      * The default constructor for ASN1EvidenceRecordValidator.
      *
@@ -19,9 +30,18 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
      */
     public ASN1EvidenceRecordValidator(final DSSDocument document) {
         super(document);
+        this.rootElement = toASN1Document(document).toASN1Structure();
     }
 
-    /**
+    private ERSEvidenceRecord toASN1Document(DSSDocument document) {
+        try {
+            return new ERSEvidenceRecord(document.openStream(), new JcaDigestCalculatorProviderBuilder().build());
+        } catch (Exception e) {
+            throw new IllegalInputException(String.format("An ASN.1 file is expected : %s", e.getMessage()), e);
+        }
+	}
+
+	/**
      * Empty constructor
      */
     ASN1EvidenceRecordValidator() {
@@ -35,7 +55,7 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
     }
 
     @Override
-    protected EvidenceRecord buildEvidenceRecord() {
+    protected eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord buildEvidenceRecord() {
         // TODO : to be implemented
         return null;
     }
