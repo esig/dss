@@ -33,6 +33,13 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
         this.rootElement = toASN1Document(document).toASN1Structure();
     }
 
+	/**
+     * Empty constructor
+     */
+    ASN1EvidenceRecordValidator() {
+        // empty
+    }
+    
     private ERSEvidenceRecord toASN1Document(DSSDocument document) {
         try {
             return new ERSEvidenceRecord(document.openStream(), new JcaDigestCalculatorProviderBuilder().build());
@@ -40,13 +47,6 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
             throw new IllegalInputException(String.format("An ASN.1 file is expected : %s", e.getMessage()), e);
         }
 	}
-
-	/**
-     * Empty constructor
-     */
-    ASN1EvidenceRecordValidator() {
-        // empty
-    }
 
     @Override
     public boolean isSupported(DSSDocument dssDocument) {
@@ -56,8 +56,12 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
 
     @Override
     protected eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord buildEvidenceRecord() {
-        // TODO : to be implemented
-        return null;
+        final ASN1EvidenceRecord evidenceRecord = new ASN1EvidenceRecord(this.rootElement);
+        evidenceRecord.setFilename(document.getName());
+        evidenceRecord.setManifestFile(manifestFile);
+        evidenceRecord.setDetachedContents(detachedContents);
+        return evidenceRecord;
     }
+
 
 }
