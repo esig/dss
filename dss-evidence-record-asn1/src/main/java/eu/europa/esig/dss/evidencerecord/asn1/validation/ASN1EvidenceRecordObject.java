@@ -1,0 +1,26 @@
+package eu.europa.esig.dss.evidencerecord.asn1.validation;
+
+import org.bouncycastle.asn1.tsp.ArchiveTimeStampChain;
+
+import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordObject;
+
+/**
+ * Represents an element of ASN1 Evidence Record
+ *
+ */
+public interface ASN1EvidenceRecordObject extends EvidenceRecordObject {
+
+    /**
+     * Gets the current Element corresponding to the object type
+     *
+     * @return {@link ArchiveTimeStampChain}
+     */
+	//ArchiveTimeStampChain getElement();
+
+    /**
+     * Gets Order attribute value of the corresponding element
+     *
+     * @return Order attribute value
+     */
+    int getOrder();
+}
