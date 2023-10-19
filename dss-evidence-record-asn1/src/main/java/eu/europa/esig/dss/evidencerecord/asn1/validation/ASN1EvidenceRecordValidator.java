@@ -3,8 +3,6 @@ package eu.europa.esig.dss.evidencerecord.asn1.validation;
 import org.bouncycastle.asn1.tsp.EvidenceRecord;
 import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
 import org.bouncycastle.tsp.ers.ERSEvidenceRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -17,8 +15,6 @@ import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
  *
  */
 public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ASN1EvidenceRecordValidator.class);
 
     /** The root element of the document to validate */
     private EvidenceRecord rootElement;

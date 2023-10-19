@@ -16,9 +16,6 @@ public class ASN1ArchiveTimeStampChainObject extends ArchiveTimeStampChainObject
 	/** The current Element */
     private final ArchiveTimeStampChain element;
 
-    /** Canonicalization method (XML only) */
-    private String canonicalizationMethod;
-
     /** Order of the element */
     private int order;
 
@@ -35,24 +32,6 @@ public class ASN1ArchiveTimeStampChainObject extends ArchiveTimeStampChainObject
 //    public ArchiveTimeStampChain getElement() {
 //        return element;
 //    }
-
-    /**
-     * Gets canonicalization method (XML only)
-     *
-     * @return {@link String} representing the canonicalization algorithm
-     */
-    public String getCanonicalizationMethod() {
-        return canonicalizationMethod;
-    }
-
-    /**
-     * Sets canonicalization method (XML only)
-     *
-     * @param canonicalizationMethod {@link String} representing the canonicalization algorithm
-     */
-    public void setCanonicalizationMethod(String canonicalizationMethod) {
-        this.canonicalizationMethod = canonicalizationMethod;
-    }
 
     @Override
     public int getOrder() {

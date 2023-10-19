@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
+import org.bouncycastle.asn1.tsp.EvidenceRecord;
+
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.evidencerecord.asn1.validation.timestamp.ASN1EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
@@ -7,7 +9,6 @@ import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import org.bouncycastle.asn1.tsp.EvidenceRecord;
 
 /**
  * ASN.1 Evidence Record implementations (RFC 4998)
@@ -25,6 +26,15 @@ public class ASN1EvidenceRecord extends DefaultEvidenceRecord {
      */
     public ASN1EvidenceRecord(EvidenceRecord evidenceRecord) {
         this.evidenceRecord = evidenceRecord;
+    }
+    
+    /**
+     * Gets the EvidenceRecord XML Element
+     *
+     * @return {@link EvidenceRecord}
+     */
+    public EvidenceRecord getEvidenceRecordElement() {
+        return evidenceRecord;
     }
 
     @Override
