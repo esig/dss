@@ -59,5 +59,4 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
         return evidenceRecord;
     }
 
-
 }

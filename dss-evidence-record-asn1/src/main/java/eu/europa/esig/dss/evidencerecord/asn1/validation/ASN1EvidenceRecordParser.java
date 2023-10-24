@@ -57,9 +57,6 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
             for (int i = 0; i < archiveTimeStampSequenceList.size(); i++) {
                 final ArchiveTimeStampChain archiveTimeStampChainElement = (ArchiveTimeStampChain) archiveTimeStampSequenceList.getArchiveTimeStampChains()[i];
                 ASN1ArchiveTimeStampChainObject archiveTimeStampChain = getASN1ArchiveTimeStampChainObject(archiveTimeStampChainElement, i+1);
-//                int order = archiveTimeStampChain.getOrder();
-//                // TODO : verify order validity
-//                result[order - 1] = archiveTimeStampChain;
                 result[i] = archiveTimeStampChain;
             }
             return Arrays.asList(result);
@@ -78,7 +75,7 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
     }
     
     private DigestAlgorithm getDigestAlgorithm(ArchiveTimeStampChain archiveTimeStampChainElement) {
-    	// TODO!! Where to take the alg from? First Element?
+    	// TODO!? Where to take the alg from? First Element?
     	AlgorithmIdentifier algIdentifier = archiveTimeStampChainElement.getArchiveTimestamps()[0].getDigestAlgorithmIdentifier();
         return DigestAlgorithm.forOID(algIdentifier.getAlgorithm().getId());
     }
@@ -90,8 +87,6 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
             for (int i = 0; i < archiveTimeStampList.length; i++) {
                 final ArchiveTimeStamp archiveTimeStampElement = (ArchiveTimeStamp) archiveTimeStampList[i];
                 ASN1ArchiveTimeStampObject archiveTimeStamp = getASN1ArchiveTimeStampObject(archiveTimeStampElement, i+1);
-//                int order = archiveTimeStamp.getOrder();
-//                result[order - 1] = archiveTimeStamp;
                 result[i] = archiveTimeStamp;
             }
             return Arrays.asList(result);
@@ -128,8 +123,6 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
             for (int i = 0; i < hashTree.length; i++) {
                 final PartialHashtree sequenceElement = (PartialHashtree) hashTree[i];
                 ASN1SequenceObject digestValueGroup = getDigestValueGroup(sequenceElement, i+1);
-//                int order = digestValueGroup.getOrder();
-//                result[order - 1] = digestValueGroup;
                 result[i] = digestValueGroup;
             }
             return Arrays.asList(result);
@@ -151,23 +144,18 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
         for (int i = 0; i < sequenceElement.getValueCount(); i++) {
             final byte[] digestValueElement = digestValueList[i];
             result.add(digestValueElement);
-//            String textContent = digestValueElement.getTextContent();
-//            if (!Utils.isBase64Encoded(textContent)) {
-//                throw new IllegalInputException("DigestValue is not base64-encoded!");
-//            }
-//            result.add(Utils.fromBase64(textContent));
         }
 
         return result;
     }
     
+    // TODO: What is this for and where to get it?
     private List<CryptographicInformation> getCryptographicInformationList(ArchiveTimeStamp archiveTimeStampElement) {
 //        NodeList cryptographicInformationNodeList = DomUtils.getNodeList(archiveTimeStampElement, XMLERSPath.CRYPTOGRAPHIC_INFORMATION_PATH);
 //        if (cryptographicInformationNodeList == null || cryptographicInformationNodeList.getLength() == 0) {
 //            return Collections.emptyList();
 //        }
 
-    	// TODO: !!!
         final List<CryptographicInformation> cryptographicInformationList = new ArrayList<>();
 //        for (int i = 0; i < cryptographicInformationNodeList.getLength(); i++) {
 //            Element cryptographicInformationElement = (Element) cryptographicInformationNodeList.item(i);

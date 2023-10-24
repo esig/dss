@@ -70,6 +70,7 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
 		// get the new Document Hash
 		// sort both Hashes in ascending Order
 		// and digest the concat Hashvalue
+		
         return new DSSMessageDigest(digestAlgorithm, digestValue);
     }
     
