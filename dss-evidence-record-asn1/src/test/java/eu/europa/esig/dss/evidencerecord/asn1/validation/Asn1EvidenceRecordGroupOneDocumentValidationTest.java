@@ -9,16 +9,16 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class Asn1EvidenceRecordSimpleOneDocumentValidationTest extends AbstractEvidenceRecordTestValidation {
+public class Asn1EvidenceRecordGroupOneDocumentValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-    	return new FileDocument("src/test/resources/BIN-1_ER.ers");
+    	return new FileDocument("src/test/resources/evidencerecord.ers");
     }
 
     @Override
     protected List<DSSDocument> getDetachedContents() {
-    	return Collections.singletonList(new DigestDocument(DigestAlgorithm.SHA256, "odTntQ2Wk/mjGy6UhOpq36WFg3cw/iupTROl1MgcMt8="));
+    	return Collections.singletonList(new DigestDocument(DigestAlgorithm.SHA256, "Oida+g+rN0DmsVgqZOgAex7lYghgYcgQth4CXl5idH0="));
     }
 
 }
