@@ -324,7 +324,7 @@ public class PKIOCSPSource implements OCSPSource {
             final CertEntity ocspResponder = getOCSPResponder(certificateToken, issuerCertificateToken);
             final BasicOCSPRespBuilder builder = initBuilder(ocspResponder.getCertificateToken());
 
-            CertEntityRevocation certRevocation = getCertificateTokenRevocation(certificateToken);
+            CertEntityRevocation certRevocation = getCertificateTokenRevocation(certificateToken, ocspReq);
             addRevocationStatusToOCSPResponse(builder, ocspReq, certRevocation);
 
             SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(ocspResponder);
@@ -345,12 +345,14 @@ public class PKIOCSPSource implements OCSPSource {
     }
 
     /**
-     * Returns a revocation status for the given {@code CertificateToken}
+     * Returns a revocation status for the given {@code CertificateToken} or a certificate within {@code OCSPReq}
      *
      * @param certificateToken {@link CertificateToken} to get revocation status for
+     * @param ocspReq {@link OCSPReq}
      * @return {@link CertEntityRevocation}
      */
-    protected CertEntityRevocation getCertificateTokenRevocation(CertificateToken certificateToken) {
+    @SuppressWarnings("unchecked")
+    protected CertEntityRevocation getCertificateTokenRevocation(CertificateToken certificateToken, OCSPReq ocspReq) {
         CertEntity certEntity = certEntityRepository.getByCertificateToken(certificateToken);
         if (certEntity == null) {
             throw new PKIException(String.format("CertEntity for certificate token with Id '%s' " +

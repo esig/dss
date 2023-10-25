@@ -2,13 +2,13 @@ package eu.europa.esig.dss.pki.jaxb.model;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.model.CertEntityRepository;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class JAXBCertEntityRepository implements CertEntityRepository<JAXBCertEn
     private static final Logger LOG = LoggerFactory.getLogger(JAXBCertEntityRepository.class);
 
     /** A set of all CertEntities */
-    private final Set<JAXBCertEntity> certEntities = new HashSet<>();
+    private final Set<JAXBCertEntity> certEntities = new LinkedHashSet<>();
 
     /**
      * Default constructor
@@ -67,11 +67,11 @@ public class JAXBCertEntityRepository implements CertEntityRepository<JAXBCertEn
     /**
      * Retrieves a list of {@code JAXBCertEntity} for the given JAXB PKI name
      *
-     * @param name {@link String} name of the PKI to get trust anchors for
+     * @param name {@link String} name of the PKI
      * @return a list of {@link JAXBCertEntity}s
      */
-    public List<JAXBCertEntity> getTrustAnchorsByPkiName(String name) {
-        return certEntities.stream().filter(dbCertEntity -> dbCertEntity.isTrustAnchor() && dbCertEntity.getPkiName().equals(name)).collect(Collectors.toList());
+    public List<JAXBCertEntity> getByPkiName(String name) {
+        return certEntities.stream().filter(dbCertEntity -> dbCertEntity.getPkiName().equals(name)).collect(Collectors.toList());
     }
 
     /**

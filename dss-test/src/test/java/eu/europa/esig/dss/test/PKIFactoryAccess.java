@@ -390,9 +390,9 @@ public abstract class PKIFactoryAccess {
 
     private CertificateSource getTrustedCertificateSourceByPKIName(String pkiName) {
         CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
-        List<JAXBCertEntity> trustAnchors = certEntityRepository.getTrustAnchorsByPkiName(pkiName);
-        if (Utils.isCollectionNotEmpty(trustAnchors)) {
-            trustAnchors.stream().map(JAXBCertEntity::getCertificateToken).forEach(trustedCertificateSource::addCertificate);
+        List<JAXBCertEntity> certEntities = certEntityRepository.getByPkiName(pkiName);
+        if (Utils.isCollectionNotEmpty(certEntities)) {
+            certEntities.stream().filter(JAXBCertEntity::isTrustAnchor).map(JAXBCertEntity::getCertificateToken).forEach(trustedCertificateSource::addCertificate);
         }
         return trustedCertificateSource;
     }

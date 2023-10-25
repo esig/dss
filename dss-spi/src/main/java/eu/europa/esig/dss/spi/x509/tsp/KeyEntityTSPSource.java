@@ -354,9 +354,8 @@ public class KeyEntityTSPSource implements TSPSource {
         }
 
         try {
-            ASN1ObjectIdentifier digestAlgoOID = getASN1ObjectIdentifier(digestAlgorithm);
-            TimeStampRequest request = createRequest(digestAlgoOID, digest);
-            TimeStampResponse response = generateResponse(request, digestAlgoOID);
+            TimeStampRequest request = createRequest(digestAlgorithm, digest);
+            TimeStampResponse response = generateResponse(request, digestAlgorithm);
             return new TimestampBinary(response.getTimeStampToken().getEncoded());
 
         } catch (IOException | TSPException e) {
@@ -367,14 +366,14 @@ public class KeyEntityTSPSource implements TSPSource {
     /**
      * Creates a request for a time-stamp token generation
      *
-     * @param digestAlgoOID {@link ASN1ObjectIdentifier} representing an OID of a Digest Algorithm used to compute hash to be time-stamped
+     * @param digestAlgorithm {@link DigestAlgorithm} to be used to compute hash to be time-stamped
      * @param digest byte array representing hash to be time-stamped
      * @return {@link TimeStampRequest}
      */
-    protected TimeStampRequest createRequest(ASN1ObjectIdentifier digestAlgoOID, byte[] digest) {
+    protected TimeStampRequest createRequest(DigestAlgorithm digestAlgorithm, byte[] digest) {
         final TimeStampRequestGenerator requestGenerator = new TimeStampRequestGenerator();
         requestGenerator.setCertReq(true);
-        return requestGenerator.generate(digestAlgoOID, digest);
+        return requestGenerator.generate(getASN1ObjectIdentifier(digestAlgorithm), digest);
 
     }
 
@@ -415,12 +414,12 @@ public class KeyEntityTSPSource implements TSPSource {
      * This method generates a timestamp response
      *
      * @param request           {@link TimeStampRequest}
-     * @param digestAlgoOID     {@link ASN1ObjectIdentifier} representing an OID of a DigestAlgorithm used to generate the time-stamp
+     * @param digestAlgorithm   {@link DigestAlgorithm} used to generate the time-stamp
      * @return {@link TimeStampResponse}
      * @throws TSPException if an error occurs during the timestamp response generation
      */
-    protected TimeStampResponse generateResponse(TimeStampRequest request, ASN1ObjectIdentifier digestAlgoOID) throws TSPException {
-        TimeStampResponseGenerator responseGenerator = initResponseGenerator(digestAlgoOID);
+    protected TimeStampResponse generateResponse(TimeStampRequest request, DigestAlgorithm digestAlgorithm) throws TSPException {
+        TimeStampResponseGenerator responseGenerator = initResponseGenerator(digestAlgorithm);
         BigInteger timeStampSerialNumber = getTimeStampSerialNumber();
         Date productionTime = getProductionTime();
         return buildResponse(responseGenerator, request, timeStampSerialNumber, productionTime);
@@ -429,10 +428,10 @@ public class KeyEntityTSPSource implements TSPSource {
     /**
      * This method initializes the {@code TimeStampResponseGenerator}
      *
-     * @param digestAlgoOID {@link ASN1ObjectIdentifier} used to generate the message-imprint
+     * @param digestAlgorithm {@link DigestAlgorithm} used to generate the message-imprint
      * @return {@link TimeStampResponseGenerator}
      */
-    protected TimeStampResponseGenerator initResponseGenerator(ASN1ObjectIdentifier digestAlgoOID) {
+    protected TimeStampResponseGenerator initResponseGenerator(DigestAlgorithm digestAlgorithm) {
         try {
             SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
             ContentSigner signer = new JcaContentSignerBuilder(signatureAlgorithm.getJCEId()).build(privateKey);
@@ -440,7 +439,7 @@ public class KeyEntityTSPSource implements TSPSource {
             X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
             SignerInfoGenerator infoGenerator = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider()).build(signer, certificateHolder);
 
-            AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(digestAlgoOID);
+            AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(getASN1ObjectIdentifier(digestAlgorithm));
             DigestCalculator digestCalculator = new JcaDigestCalculatorProviderBuilder().build().get(digestAlgorithmIdentifier);
 
             TimeStampTokenGenerator tokenGenerator = new TimeStampTokenGenerator(infoGenerator, digestCalculator, getASN1ObjectIdentifier(tsaPolicy));

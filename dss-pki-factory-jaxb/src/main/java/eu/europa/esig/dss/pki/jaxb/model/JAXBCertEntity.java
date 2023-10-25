@@ -129,7 +129,7 @@ public class JAXBCertEntity implements CertEntity {
      *
      * @param privateKey byte array
      */
-    public void setPrivateKey(byte[] privateKey) {
+    public void setPrivateKeyBinaries(byte[] privateKey) {
         this.privateKey = privateKey;
     }
 
@@ -281,6 +281,5 @@ public class JAXBCertEntity implements CertEntity {
         }
         return certChain;
     }
-
 
 }

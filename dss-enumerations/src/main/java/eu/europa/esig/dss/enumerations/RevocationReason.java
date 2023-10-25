@@ -120,7 +120,7 @@ public enum RevocationReason implements UriBasedEnum {
 	}
 
 	/**
-	 * Returns a {@code RevocationReason} based on the given value
+	 * Returns a {@code RevocationReason} based on the given integer value
 	 *
 	 * @param value to check
 	 * @return {@link RevocationReason}
@@ -128,6 +128,21 @@ public enum RevocationReason implements UriBasedEnum {
 	public static RevocationReason fromInt(final int value) {
 		for (RevocationReason reason : RevocationReason.values()) {
 			if (reason.value == value) {
+				return reason;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a {@code RevocationReason} based on the given label String value
+	 *
+	 * @param value {@link String} to check
+	 * @return {@link RevocationReason}
+	 */
+	public static RevocationReason fromValue(final String value) {
+		for (RevocationReason reason : RevocationReason.values()) {
+			if (reason.shortName.equals(value)) {
 				return reason;
 			}
 		}

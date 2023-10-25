@@ -192,7 +192,7 @@ public class JAXBCertEntityBuilder {
         }
         if (certEntity.getPrivateKeyBinaries() == null) {
             Objects.requireNonNull(privateKey, "PrivateKey shall be provided!");
-            certEntity.setPrivateKey(privateKey);
+            certEntity.setPrivateKeyBinaries(privateKey);
         }
         if (certEntity.getIssuer() == null) {
             certEntity.setIssuer(issuer);

@@ -221,7 +221,8 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
 
         try {
             // Obtain the CRL bytes based on the productionDate and nextUpdate parameters.
-            CRLBinary crlBinary = generateCRL(certificateToken, issuerCertificateToken);
+            CertEntity crlIssuer = getCRLIssuer(certificateToken, issuerCertificateToken);
+            CRLBinary crlBinary = generateCRL(crlIssuer);
 
             // Build the CRLValidity using CRLUtils from the retrieved CRL bytes and the issuerCertificateToken.
             final CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerCertificateToken);
@@ -256,19 +257,17 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
     /**
      * Generates a CRL token and returns encoded binaries
      *
-     * @param certificateToken {@link CertificateToken} to get CRL for
-     * @param issuerCertificateToken {@link CertificateToken} issued the {@code certificateToken}
+     * @param crlIssuer {@link CertEntity} issuer of the CRL
      * @return {@link CRLBinary} representing a DER-encoded CRL token
      * @throws IOException if an exception occurs on CRL generation
      * @throws OperatorCreationException if an exception occurs on CRL signing
      */
-    protected CRLBinary generateCRL(CertificateToken certificateToken, CertificateToken issuerCertificateToken) throws IOException, OperatorCreationException {
-        CertEntity crlIssuer = getCRLIssuer(certificateToken, issuerCertificateToken);
+    protected CRLBinary generateCRL(CertEntity crlIssuer) throws IOException, OperatorCreationException {
         X509CertificateHolder caCert = DSSASN1Utils.getX509CertificateHolder(crlIssuer.getCertificateToken());
 
         Map<CertEntity, CertEntityRevocation> revocationList = certEntityRepository.getRevocationList(crlIssuer);
 
-        SignatureAlgorithm signatureAlgorithm =  getSignatureAlgorithm(crlIssuer);
+        SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(crlIssuer);
 
         Date thisUpdate = getThisUpdate();
         X509v2CRLBuilder builder = new X509v2CRLBuilder(caCert.getSubject(), thisUpdate);
