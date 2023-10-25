@@ -37,11 +37,8 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
     protected DSSMessageDigest computeTimeStampHash(DigestAlgorithm digestAlgorithm,
     		ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain) {
 	    ASN1ArchiveTimeStampObject asn1ArchiveTimeStampObject = (ASN1ArchiveTimeStampObject) archiveTimeStamp;
-//	    Element archiveTimeStampElement = asn1ArchiveTimeStampObject.getElement();
-//	    Element timeStampElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPath.TIME_STAMP_PATH);
-//	    byte[] canonicalizedSubtree = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(timeStampElement);
-//	    byte[] digestValue = DSSUtils.digest(digestAlgorithm, canonicalizedSubtree);
-	    return new DSSMessageDigest(digestAlgorithm, asn1ArchiveTimeStampObject.getTimestampToken().getMessageImprint().getValue());
+	    byte[] digestValue = DSSUtils.digest(digestAlgorithm, asn1ArchiveTimeStampObject.getTimestampToken().getEncoded());
+	    return new DSSMessageDigest(digestAlgorithm, digestValue);
     }
 
     @Override
