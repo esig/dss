@@ -229,7 +229,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkDetachedEvidenceRecords(validator.getDetachedEvidenceRecords());
 		checkSignaturePolicy(signatures);
 
-		Reports reports = validator.validateDocument();
+		Reports reports = validateDocument(validator);
 		reports.setValidateXml(true);
 		// reports.print();
 
@@ -362,6 +362,10 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				}
 			}
 		}
+	}
+
+	protected Reports validateDocument(DocumentValidator validator) {
+		return validator.validateDocument();
 	}
 	
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
