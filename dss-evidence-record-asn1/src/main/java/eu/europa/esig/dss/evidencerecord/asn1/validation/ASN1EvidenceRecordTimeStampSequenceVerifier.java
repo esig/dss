@@ -32,7 +32,6 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
         super(evidenceRecord);
     }
 
-    // TODO: !?
     @Override
     protected DSSMessageDigest computeTimeStampHash(DigestAlgorithm digestAlgorithm,
     		ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain) {
