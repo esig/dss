@@ -120,7 +120,9 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
                     item = item.setNextItem(referenceDataFound);
                 }
 
-                item = item.setNextItem(referenceDataIntact(digestMatcher));
+                if (digestMatcher.isDataFound()) {
+                    item = item.setNextItem(referenceDataIntact(digestMatcher));
+                }
 
             }
 
