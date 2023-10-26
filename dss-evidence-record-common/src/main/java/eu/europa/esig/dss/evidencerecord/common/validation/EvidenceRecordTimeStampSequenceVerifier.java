@@ -90,7 +90,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                         // if first time-stamp in a next ArchiveTimeStampChain
                         if (lastTimeStampHash.isEmpty()) {
                             if (!firstArchiveTimeStampChain) {
-                                DSSMessageDigest lastTimeStampSequenceHash = computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain);
+                                DSSMessageDigest lastTimeStampSequenceHash = computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain, detachedContents);
                                 // validate first time-stamp in ArchiveTimeStampChain
                                 timestampValidations = validateArchiveTimeStampSequenceDigest(archiveDataObjectValidations, lastTimeStampSequenceHash);
 
@@ -315,9 +315,10 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param digestAlgorithm {@link DigestAlgorithm} to be used for hash computation
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} to compute hash for
+     * @param detachedContents a list of {@link DSSDocument}s provided within a container
      * @return {@link DSSMessageDigest}
      */
-    protected abstract DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain);
+    protected abstract DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents);
 
     /**
      * Computes a hash value for a group of hashes

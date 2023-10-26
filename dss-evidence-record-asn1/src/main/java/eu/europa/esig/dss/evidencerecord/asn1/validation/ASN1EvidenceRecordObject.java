@@ -1,7 +1,5 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
-import org.bouncycastle.asn1.tsp.ArchiveTimeStampChain;
-
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordObject;
 
 /**

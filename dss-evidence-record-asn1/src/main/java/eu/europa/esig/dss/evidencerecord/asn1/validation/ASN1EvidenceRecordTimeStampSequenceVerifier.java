@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bouncycastle.asn1.tsp.ArchiveTimeStampChain;
 import org.bouncycastle.asn1.tsp.ArchiveTimeStampSequence;
@@ -11,16 +13,21 @@ import org.slf4j.LoggerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
+import eu.europa.esig.dss.evidencerecord.common.validation.ByteArrayComparator;
+import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Verifies ArchiveTimeStampSequence for an ASN.1 Evidence Record
  *
  */
 public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTimeStampSequenceVerifier {
-	
+
 	private static final Logger LOG = LoggerFactory.getLogger(ASN1EvidenceRecordTimeStampSequenceVerifier.class);
 
     /**
@@ -35,13 +42,13 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
     @Override
     protected DSSMessageDigest computeTimeStampHash(DigestAlgorithm digestAlgorithm,
     		ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain) {
-	    ASN1ArchiveTimeStampObject asn1ArchiveTimeStampObject = (ASN1ArchiveTimeStampObject) archiveTimeStamp;
-	    byte[] digestValue = DSSUtils.digest(digestAlgorithm, asn1ArchiveTimeStampObject.getTimestampToken().getEncoded());
-	    return new DSSMessageDigest(digestAlgorithm, digestValue);
+        ASN1ArchiveTimeStampObject asn1ArchiveTimeStampObject = (ASN1ArchiveTimeStampObject) archiveTimeStamp;
+        byte[] digestValue = DSSUtils.digest(digestAlgorithm, asn1ArchiveTimeStampObject.getTimestampToken().getEncoded());
+        return new DSSMessageDigest(digestAlgorithm, digestValue);
     }
 
     @Override
-    protected DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain) {
+    protected DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents) {
         ASN1ArchiveTimeStampChainObject asn1ArchiveTimeStampChainObject = (ASN1ArchiveTimeStampChainObject) archiveTimeStampChain;
 
         ArchiveTimeStampSequence archiveTimeStampSequence = getArchiveTimeStampSequence();
@@ -52,7 +59,8 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
             	precedingchildNodes[i] = childNodes[i];
             }
         }
-        
+
+        // calc the preceding ATSSeq hash
         ArchiveTimeStampSequence precedingarchiveTimeStampSequence = new ArchiveTimeStampSequence(precedingchildNodes);
         byte[] digestValue = null;
 		try {
@@ -61,19 +69,117 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
 			LOG.warn("Unable to generate ASN1 TimeStampSequence. Reason : {}", e.getMessage(), e);
 			return null;
 		}
-		
-		// TODO:
-		// get the new Document Hash
-		// sort both Hashes in ascending Order
-		// and digest the concat Hashvalue
-		
-        return new DSSMessageDigest(digestAlgorithm, digestValue);
+
+		// get hash from document(s)
+		List<byte[]> digestValues = new ArrayList<>();
+		for (DSSDocument document : detachedContents) {
+			digestValues.add(Utils.fromBase64(document.getDigest(digestAlgorithm)) );
+		}
+		DigestValueGroup digestValueGroup = new DigestValueGroup();
+		digestValueGroup.setDigestValues(digestValues);
+		DSSMessageDigest documentHash = computeDigestValueGroupHash( digestAlgorithm, digestValueGroup );
+
+		// sort both hashes in ascending order, concat hashes and create a new digest
+        return computeChainAndDocumentHash( digestAlgorithm, documentHash, new DSSMessageDigest(digestAlgorithm, digestValue), false );
     }
-    
+
     private ArchiveTimeStampSequence getArchiveTimeStampSequence() {
     	ASN1EvidenceRecord asn1EvidenceRecord = (ASN1EvidenceRecord) evidenceRecord;
     	EvidenceRecord evidenceRecord = asn1EvidenceRecord.getEvidenceRecordElement();
         return evidenceRecord.getArchiveTimeStampSequence();
+    }
+
+    /**
+     * Computes a hash value for a group of hashes
+     *
+     * @param digestAlgorithm {@link DigestAlgorithm} to be used for a hash computation
+     * @param digestValueGroup {@link DigestValueGroup} containing grouped elements from a hash tree
+     * @param otherObjectDigests additional hash values obtained from other computations
+     * @return {@link DSSMessageDigest}
+     */
+    protected DSSMessageDigest computeDigestValueGroupHash(DigestAlgorithm digestAlgorithm,
+                                                           DigestValueGroup digestValueGroup, DSSMessageDigest... otherObjectDigests) {
+        /*
+         * The algorithm by which a root hash value is generated from the
+         * <HashTree> element is as follows: the content of each <DigestValue>
+         element within the first <Sequence> element is base64 ([RFC4648],
+         * using the base64 alphabet not the base64url alphabet) decoded to
+         * obtain a binary value (representing the hash value). All collected
+         * hash values from the sequence are ordered in binary ascending order,
+         * concatenated and a new hash value is generated from that string.
+         * With one exception to this rule: when the first <Sequence> element
+         * has only one <DigestValue> element, then its binary value is added to
+         * the next list obtained from the next <Sequence> element.
+         */
+        // 1. Group together items
+        List<byte[]> hashValueList = new ArrayList<>(digestValueGroup.getDigestValues());
+        for (DSSMessageDigest messageDigest : otherObjectDigests) {
+            if (!messageDigest.isEmpty()) {
+                hashValueList.add(messageDigest.getValue());
+            }
+        }
+        // 2a. Exception
+        if (Utils.collectionSize(hashValueList) == 1) {
+            return new DSSMessageDigest(digestAlgorithm, hashValueList.get(0));
+        }
+        // 2b. Binary ascending sort
+        hashValueList.sort(ByteArrayComparator.getInstance());
+        // 3. Concatenate
+        final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+        for (byte[] hashValue : hashValueList) {
+            digestCalculator.update(hashValue);
+        }
+        // 4. Calculate hash value
+        return digestCalculator.getMessageDigest();
+    }
+
+    /**
+     * Computes a hash value for chain-hash and document-hash
+     *
+     * Note: rfc4998 is ambiguous in this case
+     * All known ASN.1 ERs are not sorted for this hash!
+     * read more here: https://github.com/de-bund-bsi-tr-esor/ERVerifyTool/issues/2
+     * 
+     * @param digestAlgorithm {@link DigestAlgorithm} to be used for a hash computation
+     * @param otherObjectDigests additional hash values obtained from other computations
+     * @return {@link DSSMessageDigest}
+     */
+    protected DSSMessageDigest computeChainAndDocumentHash(DigestAlgorithm digestAlgorithm, DSSMessageDigest documentHash, DSSMessageDigest chainHash, boolean sort ) {
+        /*
+         * The algorithm by which a root hash value is generated from the
+         * <HashTree> element is as follows: the content of each <DigestValue>
+         element within the first <Sequence> element is base64 ([RFC4648],
+         * using the base64 alphabet not the base64url alphabet) decoded to
+         * obtain a binary value (representing the hash value). All collected
+         * hash values from the sequence are [ordered in binary ascending order],
+         * concatenated and a new hash value is generated from that string.
+         * With one exception to this rule: when the first <Sequence> element
+         * has only one <DigestValue> element, then its binary value is added to
+         * the next list obtained from the next <Sequence> element.
+         */
+        // 1. Group together items
+        List<byte[]> hashValueList = new ArrayList<>();
+        hashValueList.add(documentHash.getValue());
+        hashValueList.add(chainHash.getValue());
+
+        // 2a. Exception
+        if (Utils.collectionSize(hashValueList) == 1) {
+            return new DSSMessageDigest(digestAlgorithm, hashValueList.get(0));
+        }
+
+        // 2b. Binary ascending sort
+        if (sort)
+        {
+        	hashValueList.sort(ByteArrayComparator.getInstance());
+        }
+
+        // 3. Concatenate
+        final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+        for (byte[] hashValue : hashValueList) {
+            digestCalculator.update(hashValue);
+        }
+        // 4. Calculate hash value
+        return digestCalculator.getMessageDigest();
     }
 
 }
