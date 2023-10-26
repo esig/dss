@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;

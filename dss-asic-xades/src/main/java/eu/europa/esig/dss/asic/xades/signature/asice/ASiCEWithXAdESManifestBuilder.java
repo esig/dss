@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestAttribute;
 import eu.europa.esig.dss.asic.xades.definition.ManifestElement;

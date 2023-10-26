@@ -30,7 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;

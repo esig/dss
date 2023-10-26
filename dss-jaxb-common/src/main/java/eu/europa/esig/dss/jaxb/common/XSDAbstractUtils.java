@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.jaxb.common;
 
-import eu.europa.esig.dss.jaxb.common.exception.XSDValidationException;
+import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
+import eu.europa.esig.dss.xml.common.exception.XSDValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -114,7 +115,7 @@ public abstract class XSDAbstractUtils {
 			return e.getAllMessages();
 		} catch (Exception e) {
 			LOG.warn("An exception occurred : {}", e.getMessage(), e);
-			return Arrays.asList(e.getMessage());
+			return Collections.singletonList(e.getMessage());
 		}
 	}
 
@@ -134,7 +135,7 @@ public abstract class XSDAbstractUtils {
 			return e.getAllMessages();
 		} catch (Exception e) {
 			LOG.warn("An exception occurred : {}", e.getMessage(), e);
-			return Arrays.asList(e.getMessage());
+			return Collections.singletonList(e.getMessage());
 		}
 	}
 

@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.xades.definition.xades132;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSAttribute;
+
+import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
 
 /**
  * The XAdES 1.3.2 attributes

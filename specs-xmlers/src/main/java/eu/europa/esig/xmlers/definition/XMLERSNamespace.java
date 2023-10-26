@@ -1,6 +1,6 @@
 package eu.europa.esig.xmlers.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
  * Defines a list of used XMLERS namespaces

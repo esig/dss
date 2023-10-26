@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;

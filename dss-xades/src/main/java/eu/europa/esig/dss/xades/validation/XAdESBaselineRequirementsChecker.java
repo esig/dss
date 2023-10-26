@@ -27,7 +27,7 @@ import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;

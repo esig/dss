@@ -84,24 +84,6 @@ SubIndication subIndication = detailedReport.getTimestampValidationSubIndication
 Indication indication = detailedReport.getBasicTimestampValidationIndication(tspId);
 SubIndication subIndication = detailedReport.getBasicTimestampValidationSubIndication(tspId);
 
-|DSSErrorHandlerAlert package                                        a|[source,java]
-----
-import eu.europa.esig.dss.jaxb.common.DSSErrorHandlerAlert;
-----
-                                                                     a|[source,java]
-import eu.europa.esig.dss.jaxb.common.alert.DSSErrorHandlerAlert;
-
-|PDF visual signature rotation                                       a|[source,java]
-----
-SignatureImageParameters imageParameters = new SignatureImageParameters();
-imageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
-----
-                                                                     a|[source,java]
-SignatureImageParameters imageParameters = new SignatureImageParameters();
-SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
-imageParameters.setFieldParameters(fieldParameters);
-
 |ZipUtils handler                                       a|[source,java]
 ----
 SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
@@ -170,13 +152,52 @@ import eu.europa.esig.dss.model.scope.SignatureScope;
 ...
 ----
 
-|DomUtils moved to `dss-xml` module                             a|[source,java]
+|XmlDefinerUtils and related classes moved to `dss-xml-common` module a|[source,java]
+----
+import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+import eu.europa.esig.dss.jaxb.common.DocumentBuilderFactoryBuilder;
+import eu.europa.esig.dss.jaxb.common.TransformerFactoryBuilder;
+import eu.europa.esig.dss.jaxb.common.SchemaFactoryBuilder;
+import eu.europa.esig.dss.jaxb.common.ValidatorConfigurator;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
+import eu.europa.esig.dss.xml.common.DocumentBuilderFactoryBuilder;
+import eu.europa.esig.dss.xml.common.TransformerFactoryBuilder;
+import eu.europa.esig.dss.xml.common.SchemaFactoryBuilder;
+import eu.europa.esig.dss.xml.common.ValidatorConfigurator;
+----
+
+|XML definitions moved to `dss-xml-common` module                    a|[source,java]
+----
+import eu.europa.esig.dss.definition.DSSAttribute;
+import eu.europa.esig.dss.definition.DSSElement;
+import eu.europa.esig.dss.definition.DSSNamespace;
+...
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+...
+----
+
+|DSSErrorHandlerAlert package                                        a|[source,java]
+----
+import eu.europa.esig.dss.jaxb.common.DSSErrorHandlerAlert;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.xml.common.alert.DSSErrorHandlerAlert;
+
+|DomUtils moved to `dss-xml-utils` module                       a|[source,java]
 ----
 import eu.europa.esig.dss.DomUtils;
 ----
                                                                 a|[source,java]
 ----
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 ----
 
 |Canonicalization                                               a|[source,java]
@@ -187,10 +208,21 @@ byte[] canonicalizedBytes = DSSXMLUtils.canonicalize(canonicalizationMethod, byt
 ----
                                                                 a|[source,java]
 ----
-import eu.europa.esig.dss.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 
 byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(bytesToCanonicalize);
 ----
+
+|PDF visual signature rotation                                       a|[source,java]
+----
+SignatureImageParameters imageParameters = new SignatureImageParameters();
+imageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+----
+                                                                     a|[source,java]
+SignatureImageParameters imageParameters = new SignatureImageParameters();
+SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+imageParameters.setFieldParameters(fieldParameters);
 
 |Signature scopes                                               a|[source,java]
 ----

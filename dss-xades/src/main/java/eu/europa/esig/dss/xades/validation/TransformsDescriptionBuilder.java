@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.transforms.Transforms;

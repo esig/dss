@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.spi.DSSUtils;

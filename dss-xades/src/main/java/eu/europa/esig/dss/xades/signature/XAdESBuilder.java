@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -36,6 +33,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xades.definition.XAdESElement;
 import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.definition.XAdESPath;
@@ -47,7 +47,7 @@ import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

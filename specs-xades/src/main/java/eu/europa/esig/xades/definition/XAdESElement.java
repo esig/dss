@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.xades.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
 
 /**
  * Defines a XAdES element

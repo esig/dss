@@ -20,19 +20,19 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigPath;

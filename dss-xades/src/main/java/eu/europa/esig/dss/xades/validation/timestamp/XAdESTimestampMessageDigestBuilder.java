@@ -20,27 +20,27 @@
  */
 package eu.europa.esig.dss.xades.validation.timestamp;
 
-import eu.europa.esig.dss.xml.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
-import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.xades.definition.XAdESPath;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.validation.XAdESAttribute;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.xades.definition.XAdESPath;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.asic.manifest.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
  * This class contains constants for ASiC and its namespace.

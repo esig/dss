@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.xades.signature;
 
 import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;

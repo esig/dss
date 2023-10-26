@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

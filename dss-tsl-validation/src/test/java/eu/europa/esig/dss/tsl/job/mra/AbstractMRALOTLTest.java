@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.tsl.job.mra;
 
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -31,7 +30,6 @@ import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -66,6 +64,8 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.trustedlist.enums.Assert;
 import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;

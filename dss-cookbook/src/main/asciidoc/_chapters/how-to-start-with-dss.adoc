@@ -263,10 +263,14 @@ This chapter provides an overview on modules available within https://github.com
 
 dss-enumerations:: Contains a list of all used enumerations in the DSS project.
 dss-alerts:: Allows configuration of triggers and handlers for arbitrary defined events.
-dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
+dss-xml-common:: Contains security configurations and definition classes for XML processing.
 
 ===== JAXB model modules
 
+dss-jaxb-common:: Contains abstract classes for JAXB processing.
+dss-jaxb-parsers:: Contains a list of all classes used to transform JAXB objects/strings to Java objects and vice versa.
+
+'''
 specs-xmldsig:: W3C XSD schema for signatures http://www.w3.org/2000/09/xmldsig
 specs-xades:: ETSI EN 319 132-1 XSD schema for XAdES.
 specs-trusted-list:: ETSI TS 119 612 XSD schema for parsing Trusted Lists.
@@ -292,7 +296,7 @@ dss-utils:: API with utility methods for String, Collection, I/O,...
 dss-utils-apache-commons:: Implementation of dss-utils with Apache Commons libraries.
 dss-utils-google-guava:: Implementation of dss-utils with Google Guava.
 '''
-dss-xml:: Utils for working with XML-based content.
+dss-xml-utils:: Utils for working with XML-based content.
 
 ===== i18n
 

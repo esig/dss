@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.xmldsig.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
  * Defines the namespace corresponding to the

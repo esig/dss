@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.asic.manifest.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSAttribute;
+import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
 
 /**
  * Represents a collection of attributes defined in ASiC XSD schema

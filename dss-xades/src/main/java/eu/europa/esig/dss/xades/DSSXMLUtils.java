@@ -20,15 +20,9 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.xml.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.xml.SantuarioInitializer;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
-import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -40,6 +34,12 @@ import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades111.XAdES111Path;

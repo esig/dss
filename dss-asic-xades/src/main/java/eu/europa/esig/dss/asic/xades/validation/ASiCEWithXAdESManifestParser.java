@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import eu.europa.esig.dss.xml.DomUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.asic.xades.definition.ManifestPath;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.enumerations.MimeType;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

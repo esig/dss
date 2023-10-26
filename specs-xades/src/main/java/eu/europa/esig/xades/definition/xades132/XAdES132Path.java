@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.xades.definition.xades132;
 
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
+import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.xades.XAdES319132Utils;
 import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xades.definition.XAdESPath;
-import eu.europa.esig.xades.XAdES319132Utils;
-import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 
 /**
  * XAdES 1.3.2 paths

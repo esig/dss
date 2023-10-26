@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.validation.xsw;
 
-import eu.europa.esig.dss.xml.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;

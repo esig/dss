@@ -50,7 +50,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.xades.definition.xades132.XAdES132Path;

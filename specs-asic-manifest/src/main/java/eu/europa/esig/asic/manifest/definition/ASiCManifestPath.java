@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.asic.manifest.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 
 /**
  * Contains paths for an ASiC scheme

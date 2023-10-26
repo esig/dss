@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;

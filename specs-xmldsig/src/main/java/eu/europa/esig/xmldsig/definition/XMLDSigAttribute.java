@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.xmldsig.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSAttribute;
+import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
 
 /**
  * Represents a collection of attributes defined in https://www.w3.org/TR/xmldsig-core1/

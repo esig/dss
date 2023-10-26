@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.asic.xades.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
  * This class contains constants for Manifest and its namespace.

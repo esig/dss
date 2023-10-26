@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.xmldsig.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 
 /**
  * Contains a list of "http://www.w3.org/2000/09/xmldsig#" xpaths

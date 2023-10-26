@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.xades.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
  * Defines a list of used XAdES namespaces

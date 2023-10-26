@@ -86,7 +86,11 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-xml</artifactId>
+			<artifactId>dss-xml-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-xml-utils</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

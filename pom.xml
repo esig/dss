@@ -92,6 +92,7 @@
 	<modules>
 		<module>dss-enumerations</module>
 		<module>dss-alert</module>
+		<module>dss-xml-common</module>
 		<module>dss-jaxb-common</module>
 		<module>dss-jaxb-parsers</module>
 		<module>specs-xmldsig</module>
@@ -113,7 +114,7 @@
 		<module>dss-utils-google-guava</module>
 		<module>dss-i18n</module>
 		<module>dss-model</module>
-		<module>dss-xml</module>
+		<module>dss-xml-utils</module>
 		<module>dss-crl-parser</module>
 		<module>dss-crl-parser-x509crl</module>
 		<module>dss-crl-parser-stream</module>
@@ -506,7 +507,12 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-xml</artifactId>
+				<artifactId>dss-xml-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-xml-utils</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xades.definition.XAdESPath;
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PathsTest {
 	

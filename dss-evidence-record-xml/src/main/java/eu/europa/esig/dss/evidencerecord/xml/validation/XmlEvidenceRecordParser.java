@@ -9,7 +9,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xmlers.definition.XMLERSAttribute;
 import eu.europa.esig.xmlers.definition.XMLERSPath;
 import org.slf4j.Logger;

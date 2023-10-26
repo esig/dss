@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.SantuarioInitializer;
+import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;

@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 
 public class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExtension {

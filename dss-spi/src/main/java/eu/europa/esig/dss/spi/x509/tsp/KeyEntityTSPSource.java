@@ -374,7 +374,6 @@ public class KeyEntityTSPSource implements TSPSource {
         final TimeStampRequestGenerator requestGenerator = new TimeStampRequestGenerator();
         requestGenerator.setCertReq(true);
         return requestGenerator.generate(getASN1ObjectIdentifier(digestAlgorithm), digest);
-
     }
 
     private Set<ASN1ObjectIdentifier> getAcceptedDigestAlgorithmIdentifiers() {

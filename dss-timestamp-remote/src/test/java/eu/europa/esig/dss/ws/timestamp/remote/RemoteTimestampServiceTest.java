@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.ws.timestamp.remote;
 
-import eu.europa.esig.dss.xml.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;

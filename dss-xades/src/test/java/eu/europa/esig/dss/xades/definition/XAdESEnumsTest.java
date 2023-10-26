@@ -20,24 +20,15 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.InputStream;
-
+import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xades.XAdES111Utils;
+import eu.europa.esig.xades.XAdES122Utils;
+import eu.europa.esig.xades.XAdES319132Utils;
+import eu.europa.esig.xades.XAdESUtils;
 import eu.europa.esig.xades.definition.XAdESNamespace;
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.jaxb.common.definition.DSSAttribute;
-import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.xades.definition.xades111.XAdES111Attribute;
 import eu.europa.esig.xades.definition.xades111.XAdES111Element;
 import eu.europa.esig.xades.definition.xades122.XAdES122Attribute;
@@ -46,11 +37,19 @@ import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.xades.XAdES111Utils;
-import eu.europa.esig.xades.XAdES122Utils;
-import eu.europa.esig.xades.XAdES319132Utils;
-import eu.europa.esig.xades.XAdESUtils;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.io.InputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESEnumsTest {
 	

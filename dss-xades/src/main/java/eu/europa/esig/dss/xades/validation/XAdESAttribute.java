@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
 import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.utils.Utils;

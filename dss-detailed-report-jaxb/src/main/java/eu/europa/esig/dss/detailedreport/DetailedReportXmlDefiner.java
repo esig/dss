@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.detailedreport;
 
 import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
-import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;

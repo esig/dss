@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.saml.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
  * Contains a SAML namespace definition

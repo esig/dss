@@ -6,7 +6,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.evidencerecord.xml.validation.timestamp.XMLEvidenceRecordTimestampSource;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xmlers.XMLEvidenceRecordUtils;
 import org.w3c.dom.Element;
 

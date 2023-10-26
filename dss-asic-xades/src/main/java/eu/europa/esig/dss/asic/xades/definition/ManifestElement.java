@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.asic.xades.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSElement;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
+
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
  * The Manifest element enumeration

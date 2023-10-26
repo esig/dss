@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.xml.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.utils.Utils;

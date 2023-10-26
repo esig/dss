@@ -30,7 +30,7 @@ import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades111.XAdES111Path;
 import eu.europa.esig.xades.definition.xades122.XAdES122Path;

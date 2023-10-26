@@ -14,7 +14,7 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.Reference;
 import org.junit.jupiter.api.Tag;

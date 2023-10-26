@@ -1,6 +1,6 @@
 package eu.europa.esig.xmlers.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.DSSAttribute;
+import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
 
 /**
  * Represents a collection of attributes defined in XMLERS XSD schema

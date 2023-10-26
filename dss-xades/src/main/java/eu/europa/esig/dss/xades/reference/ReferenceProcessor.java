@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.xml.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.DomUtils;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

@@ -17,11 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-enumerations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-alert</artifactId>
+            <artifactId>dss-xml-common</artifactId>
         </dependency>
 
         <dependency>

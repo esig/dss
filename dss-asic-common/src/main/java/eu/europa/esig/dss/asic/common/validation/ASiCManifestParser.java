@@ -15,7 +15,7 @@ import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xml.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.slf4j.Logger;

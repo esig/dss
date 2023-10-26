@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic.xades.definition;
 
-import eu.europa.esig.dss.jaxb.common.definition.AbstractPath;
-import eu.europa.esig.dss.jaxb.common.definition.DSSNamespace;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
  * Path expressions for a Manifest
