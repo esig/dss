@@ -141,39 +141,37 @@ For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-unio
 
 === References
 
-// TODO : add links to the standards
-
 [%header,cols=4]
 .References
 |=======================
-|Ref.			|Title																			|Reference					|Version
-|[[R01]]	R01	|ESI - XAdES digital signatures													|ETSI EN 319 132 part 1-2	|1.1.1
-|[[R02]]	R02	|ESI - CAdES digital signatures													|ETSI EN 319 122 part 1-2	|1.1.1
-|[[R03]]	R03	|ESI - PAdES digital signatures													|ETSI EN 319 142 part 1-2	|1.1.1
-|[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|ETSI EN 319 162 part 1-2	|1.1.1
-|[[R05]]	R05	|ESI - JAdES digital signatures													|ETSI TS 119 182 part 1 	|1.1.1
-|[[R06]]	R06	|Document management - Portable document format - Part 1: PDF 1.7				|ISO 32000-1				|1
-|[[R07]]	R07	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|DIRECTIVE 1999/93/EC	|
-|[[R08]]	R08	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|RFC 3161					|
-|[[R09]]	R09	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI EN 319 102-1			|1.3.1
-|[[R10]]	R10	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists   |ETSI TS 119 172-4			|1.1.1
-|[[R11]]	R11	|ESI - Trusted Lists															|ETSI TS 119 612		    |2.2.1
-|[[R12]]	R12	|eIDAS Regulation No 910/2014													|910/2014/EU			    |
-|[[R13]]	R13	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|ETSI TS 119 102-2		    |1.3.1
-|[[R14]]	R14	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|ETSI TS 119 615		    |1.1.1
-|[[R15]]    R15 |Internet RFC 2315 PKCS #7: Cryptographic Message Syntax                        |RFC 2315                   |Version 1.5
-|[[R16]]    R16 |Commission implementing decision (EU) 2015/1506 of 8 September 2015            |CID 2015/1506              |
-|[[R17]]	R17	|ESI - Building blocks and table of contents for human readable signature policy documents                  |ETSI TS 119 172-1			|1.1.1
-|[[R18]]	R18	|ESI - XML format for signature policies                                        |ETSI TS 119 172-2			|1.1.1
-|[[R19]]	R19	|ESI - ASN.1 format for signature policies                                      |ETSI TS 119 172-3			|1.1.1
-|[[R20]]	R20	|ESI - Cryptographic Suites                                                     |ETSI TS 119 312			|1.4.2
-|[[R21]]    R21 |Internet RFC 7515: JSON Web Signature (JWS)                                    |RFC 7515                   |
-|[[R22]]    R22 |Internet RFC 6283: Extensible Markup Language Evidence Record Syntax (XMLERS)                                    |RFC 6283                   |
-|[[R23]]    R23 |Internet RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile |RFC 5280        |
-|[[R24]]    R24 |Internet RFC 6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP      |RFC 6960                   |
-|[[R25]]    R25 |Common PKI Specifications for Interoperable Applications from T7 & TeleTrusT   |Common PKI v2.0            |v2.0
-|[[R26]]    R26 |Electronic Signatures and Infrastructures (ESI); Certificate Profiles; Part 5: QCStatements                |ETSI EN 319 412-5          | V2.3.1
-|[[R27]]    R27 |Document management - Portable document format - Part 2: PDF 2.0               |ISO 32000-2	            |2
+|Ref.			|Title																			|Reference					                                                                                                                                    |Version
+|[[R01]]	R01	|ESI - XAdES digital signatures													|https://www.etsi.org/deliver/etsi_en/319100_319199/31913201/01.02.01_60/en_31913201v010201p.pdf[ETSI EN 319 132 part 1] - https://www.etsi.org/deliver/etsi_en/319100_319199/31913202/01.01.01_60/en_31913202v010101p.pdf[2]	                                |1.2.1 (2022-02)
+|[[R02]]	R02	|ESI - CAdES digital signatures													|https://www.etsi.org/deliver/etsi_en/319100_319199/31912201/01.03.01_60/en_31912201v010301p.pdf[ETSI EN 319 122 part 1] - https://www.etsi.org/deliver/etsi_en/319100_319199/31912202/01.01.01_60/en_31912202v010101p.pdf[2]	                                |1.3.1 (2023-06)
+|[[R03]]	R03	|ESI - PAdES digital signatures													|https://www.etsi.org/deliver/etsi_en/319100_319199/31914201/01.01.01_60/en_31914201v010101p.pdf[ETSI EN 319 142 part 1] - https://www.etsi.org/deliver/etsi_en/319100_319199/31914202/01.01.01_60/en_31914202v010101p.pdf[2]                                  	|1.1.1 (2016-04)
+|[[R04]]	R04	|ESI - Associated Signature Containers (ASiC)									|https://www.etsi.org/deliver/etsi_en/319100_319199/31916201/01.01.01_60/en_31916201v010101p.pdf[ETSI EN 319 162 part 1] - https://www.etsi.org/deliver/etsi_en/319100_319199/31916202/01.01.01_60/en_31916202v010101p.pdf[2]                                  	|1.1.1 (2016-04)
+|[[R05]]	R05	|ESI - JAdES digital signatures													|https://www.etsi.org/deliver/etsi_ts/119100_119199/11918201/01.01.01_60/ts_11918201v010101p.pdf[ETSI TS 119 182 part 1]                                    	|1.1.1 (2021-03)
+|[[R06]]	R06	|Document management - Portable document format - Part 1: PDF 1.7				|https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/PDF32000_2008.pdf[ISO 32000-1]			                                                     	|First edition (2008)
+|[[R07]]	R07	|Directive 1999/93/EC of the European Parliament and of the Council of 13 December 1999 on a Community framework for electronic signatures.	|https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A31999L0093[Directive 1999/93/EC] 	    |
+|[[R08]]	R08	|Internet X.509 Public Key Infrastructure - Time-Stamp Protocol (TSP)			|https://www.ietf.org/rfc/rfc3161.txt[RFC 3161]				                                                                                                	|
+|[[R09]]	R09	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|https://www.etsi.org/deliver/etsi_en/319100_319199/31910201/01.03.01_60/en_31910201v010301p.pdf[ETSI EN 319 102-1]	                                    		|1.3.1 (2021-11)
+|[[R10]]	R10	|ESI - Signature validation policy for European qualified electronic signatures/seals using trusted lists   |https://www.etsi.org/deliver/etsi_ts/119100_119199/11917204/01.01.01_60/ts_11917204v010101p.pdf[ETSI TS 119 172-4]			        |1.1.1 (2021-05)
+|[[R11]]	R11	|ESI - Trusted Lists															|https://www.etsi.org/deliver/etsi_ts/119600_119699/119612/02.02.01_60/ts_119612v020201p.pdf[ETSI TS 119 612]                                       		    |2.2.1 (2016-04)
+|[[R12]]	R12	|eIDAS Regulation No 910/2014													|https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv%3AOJ.L_.2014.257.01.0073.01.ENG[Regulation (EU) No 910/2014]                        			    |
+|[[R13]]	R13	|ESI - Procedures for Creation and Validation of AdES Digital Signatures		|https://www.etsi.org/deliver/etsi_ts/119100_119199/11910202/01.04.01_60/ts_11910202v010401p.pdf[ETSI TS 119 102-2]                                 		    |1.4.1 (2023-06)
+|[[R14]]	R14	|ESI - Procedures for using and interpreting EU Member States national trusted lists						|https://www.etsi.org/deliver/etsi_ts/119600_119699/119615/01.02.01_60/ts_119615v010201p.pdf[ETSI TS 119 615]             		    |1.2.1 (2023-06)
+|[[R15]]    R15 |Internet RFC 2315 PKCS #7: Cryptographic Message Syntax                        |https://www.ietf.org/rfc/rfc2315.txt[RFC 2315]                                                                                                                 |
+|[[R16]]    R16 |Commission implementing decision (EU) 2015/1506 of 8 September 2015            |https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex%3A32015D1506[CID 2015/1506]                                                                          |
+|[[R17]]	R17	|ESI - Building blocks and table of contents for human readable signature policy documents                  |https://www.etsi.org/deliver/etsi_ts/119100_119199/11917201/01.01.01_60/ts_11917201v010101p.pdf[ETSI TS 119 172-1]		         	|1.1.1 (2015-07)
+|[[R18]]	R18	|ESI - XML format for signature policies                                        |https://www.etsi.org/deliver/etsi_ts/119100_119199/11917202/01.01.01_60/ts_11917202v010101p.pdf[ETSI TS 119 172-2]                                  			|1.1.1 (2019-12)
+|[[R19]]	R19	|ESI - ASN.1 format for signature policies                                      |https://www.etsi.org/deliver/etsi_ts/119100_119199/11917203/01.01.01_60/ts_11917203v010101p.pdf[ETSI TS 119 172-3]                                 			|1.1.1 (2019-12)
+|[[R20]]	R20	|ESI - Cryptographic Suites                                                     |https://www.etsi.org/deliver/etsi_ts/119300_119399/119312/01.04.02_60/ts_119312v010402p.pdf[ETSI TS 119 312]                                       			|1.4.2 (2022-02)
+|[[R21]]    R21 |Internet RFC 7515: JSON Web Signature (JWS)                                    |https://www.ietf.org/rfc/rfc7515.txt[RFC 7515]                                                                                                                 |
+|[[R22]]    R22 |Internet RFC 6283: Extensible Markup Language Evidence Record Syntax (XMLERS)  |https://www.ietf.org/rfc/rfc6283.txt[RFC 6283]                                                                                                                 |
+|[[R23]]    R23 |Internet RFC 5280: Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile   |https://www.ietf.org/rfc/rfc5280.txt[RFC 5280]                                                                        |
+|[[R24]]    R24 |Internet RFC 6960: X.509 Internet Public Key Infrastructure Online Certificate Status Protocol - OCSP      |https://www.ietf.org/rfc/rfc6960.txt[RFC 6960]                                                                                     |
+|[[R25]]    R25 |Common PKI Specifications for Interoperable Applications from T7 & TeleTrusT   |https://www.bundesnetzagentur.de/EVD/DE/SharedDocuments/Downloads/Anbieter_Infothek/Common_PKI_v2.0_02.pdf?__blob=publicationFile&v=1[Common PKI v2.0]         |2.0 (January 2009)
+|[[R26]]    R26 |Electronic Signatures and Infrastructures (ESI); Certificate Profiles; Part 5: QCStatements                |https://www.etsi.org/deliver/etsi_en/319400_319499/31941205/02.04.01_60/en_31941205v020401p.pdf[ETSI EN 319 412-5]                 |2.4.1 (2023-09)
+|[[R27]]    R27 |Document management - Portable document format - Part 2: PDF 2.0               |https://developer.adobe.com/document-services/docs/assets/5b15559b96303194340b99820d3a70fa/PDF_ISO_32000-2.pdf[ISO 32000-2]                       	            |2.0 (2017)
 
 |=======================
 
