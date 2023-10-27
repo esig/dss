@@ -685,7 +685,7 @@ public final class DomUtils {
 	 */
 	public static String getXPathByIdAttribute(String uri) {
 		String id = getId(uri);
-		return "[@Id='" + id + "' or @id='" + id + "' or @ID='" + id + "']";
+		return "[@*[local-name()='Id']='" + id + "' or @*[local-name()='id']='" + id + "' or @*[local-name()='ID']='" + id + "']";
 	}
 
 	/**
@@ -711,7 +711,8 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Extract an element from the given document {@code node} with the given Id
+	 * Extract an element from the given document {@code node} with the given Id.
+	 * The method is namespace independent.
 	 *
 	 * @param node {@link Node} containing the element with the Id
 	 * @param id {@link String} id of an element to find
@@ -867,14 +868,13 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Returns a Node with excluded comments.
-	 * 
+	 * Returns a Document with excluded comments.
 	 * NOTE: the method modifies the original {@code node}!
 	 * 
 	 * @param node {@link Node} to process
-	 * @return binaries of the {@code node} without comments
+	 * @return {@link Document} without comments
 	 */
-	public static Node excludeComments(Node node) {
+	public static Document excludeComments(Node node) {
 		excludeCommentsRecursively(node);
 		// workaround to handle the transforms correctly (clone does not work)
 		return buildDOM(serializeNode(node));

@@ -56,6 +56,12 @@ public interface DSSTransform extends Serializable {
 	@Deprecated
 	byte[] getBytesAfterTransformation(Node node);
 
+	/**
+	 * Executes a transform on the provided {@code DSSTransformOutput}
+	 *
+	 * @param transformOutput {@link DSSTransformOutput}
+	 * @return {@link DSSTransformOutput} after applying the transform
+	 */
 	DSSTransformOutput performTransform(DSSTransformOutput transformOutput);
 	
 	/**

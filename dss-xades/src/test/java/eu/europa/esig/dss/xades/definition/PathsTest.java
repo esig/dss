@@ -40,7 +40,7 @@ public class PathsTest {
 	@Test
 	public void objectWithId() {
 		String objectById = XMLDSigPath.OBJECT_PATH + DomUtils.getXPathByIdAttribute("bla");
-		assertEquals("./ds:Object[@Id='bla' or @id='bla' or @ID='bla']", objectById);
+		assertEquals("./ds:Object[@*[local-name()='Id']='bla' or @*[local-name()='id']='bla' or @*[local-name()='ID']='bla']", objectById);
 	}
 
 	@Test

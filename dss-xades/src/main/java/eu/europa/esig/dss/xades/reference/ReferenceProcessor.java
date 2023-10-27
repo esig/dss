@@ -95,7 +95,7 @@ public class ReferenceProcessor {
     }
 
     private Node dereferenceNode(DSSReference reference) {
-        Node deReferencedNode = getNodeToTransform(reference);
+        Document document = getDocumentToTransform(reference);
         /*
          * 4.4.3.3 Same-Document URI-References
          *
@@ -108,22 +108,24 @@ public class ReferenceProcessor {
          * 4. if the URI has no fragment identifier or the fragment identifier is a shortname XPointer,
          *    then delete all comment nodes
          */
-        if (deReferencedNode != null && DSSXMLUtils.isSameDocumentReference(reference.getUri()) && !DomUtils.isXPointerQuery(reference.getUri())) {
-            deReferencedNode = DomUtils.excludeComments(deReferencedNode);
+        if (document != null && DSSXMLUtils.isSameDocumentReference(reference.getUri()) && !DomUtils.isXPointerQuery(reference.getUri())) {
+            document = DomUtils.excludeComments(document);
         }
-        return deReferencedNode;
+        // extract the target Node after performing comments removal (otherwise the relation to parent nodes can be lost)
+        return getNodeToTransform(document, reference);
     }
 
-    private Node getNodeToTransform(DSSReference reference) {
+    private Document getDocumentToTransform(DSSReference reference) {
         DSSDocument contents = reference.getContents();
         if (!DomUtils.isDOM(contents)) {
             // cannot be transformed
             return null;
         }
+        return DomUtils.buildDOM(contents);
+    }
 
-        final Document doc = DomUtils.buildDOM(contents);
+    private Node getNodeToTransform(Document doc, DSSReference reference) {
         String uri = reference.getUri();
-
         if (signatureParameters != null && signatureParameters.isEmbedXML()) {
             final Document doc2 = DomUtils.buildDOM();
             final Element dom = DomUtils.createElementNS(doc2, signatureParameters.getXmldsigNamespace(), XMLDSigElement.OBJECT);
@@ -136,9 +138,8 @@ public class ReferenceProcessor {
             return dom;
 
         } else if (DomUtils.isElementReference(uri)) {
-            DSSXMLUtils.recursiveIdBrowse(doc.getDocumentElement());
             final String targetId = DomUtils.getId(uri);
-            Element elementById = doc.getElementById(targetId);
+            Element elementById = DomUtils.getElementById(doc, targetId);
             if (elementById != null) {
                 return elementById;
             }
@@ -146,13 +147,10 @@ public class ReferenceProcessor {
 
         }
         // TODO : add support of xPointer
-
         if (Utils.isCollectionNotEmpty(reference.getTransforms())) {
             return doc;
         }
-
         return null;
-
     }
 
     private boolean isUniqueBase64Transform(List<DSSTransform> transforms) {

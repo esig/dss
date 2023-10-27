@@ -183,5 +183,21 @@ public class DomUtilsTest {
 
 		assertNull(DomUtils.getId(null));
 	}
+
+	@Test
+	public void getElementByIdTest() {
+		assertNotNull(DomUtils.getElementById(
+				DomUtils.buildDOM("<el id=\"signedData\">Text</el>"), "signedData"));
+		assertNotNull(DomUtils.getElementById(
+				DomUtils.buildDOM("<el Id=\"signedData\">Text</el>"), "signedData"));
+		assertNotNull(DomUtils.getElementById(
+				DomUtils.buildDOM("<el ID=\"signedData\">Text</el>"), "signedData"));
+		assertNotNull(DomUtils.getElementById(
+				DomUtils.buildDOM("<el xmlns:prefix=\"urn:prefix\" prefix:id=\"signedData\">Text</el>"), "signedData"));
+		assertNull(DomUtils.getElementById(
+				DomUtils.buildDOM("<el id=\"signedData\">Text</el>"), "notSignedData"));
+		assertNull(DomUtils.getElementById(
+				DomUtils.buildDOM("<el ids=\"signedData\">Text</el>"), "signedData"));
+	}
 	
 }
