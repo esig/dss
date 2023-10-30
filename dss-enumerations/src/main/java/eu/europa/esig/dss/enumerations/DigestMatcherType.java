@@ -76,6 +76,9 @@ public enum DigestMatcherType {
 	/** Evidence record archive object */
 	EVIDENCE_RECORD_ARCHIVE_OBJECT,
 
+	/** Identifies evidence record archive object which has not been associated with any of the provided documents */
+	EVIDENCE_RECORD_ORPHAN_REFERENCE,
+
 	/** Evidence record previous archive time-stamp object */
 	EVIDENCE_RECORD_ARCHIVE_TIME_STAMP,
 

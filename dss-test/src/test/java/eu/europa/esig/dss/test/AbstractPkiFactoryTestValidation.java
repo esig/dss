@@ -955,12 +955,14 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 			List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
 			for (TimestampWrapper timestampWrapper : allTimestamps) {
-				checkTimestamp(diagnosticData, timestampWrapper);
+				if (!timestampWrapper.getType().isEvidenceRecordTimestamp()) {
+					checkTimestamp(diagnosticData, timestampWrapper);
 
-				List<SignatureWrapper> timestampedSignatures = timestampWrapper.getTimestampedSignatures();
-				if (timestampedSignatures.stream().map(SignatureWrapper::getId)
-						.collect(Collectors.toList()).contains(signatureWrapper.getId())) {
-					checkTimestampedProperties(allTimestamps, timestampWrapper, allSignatures, signatureWrapper);
+					List<SignatureWrapper> timestampedSignatures = timestampWrapper.getTimestampedSignatures();
+					if (timestampedSignatures.stream().map(SignatureWrapper::getId)
+							.collect(Collectors.toList()).contains(signatureWrapper.getId())) {
+						checkTimestampedProperties(allTimestamps, timestampWrapper, allSignatures, signatureWrapper);
+					}
 				}
 			}
 		}
@@ -1158,13 +1160,20 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			List<XmlDigestMatcher> digestMatchers = evidenceRecord.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
 				assertNotNull(digestMatcher.getDigestMethod());
 				assertNotNull(digestMatcher.getDigestValue());
-				assertTrue(digestMatcher.isDataFound());
-				assertTrue(digestMatcher.isDataIntact());
+				if (allArchiveDataObjectsProvidedToValidation()) {
+					assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
+					assertTrue(digestMatcher.isDataFound());
+					assertTrue(digestMatcher.isDataIntact());
+				}
 			}
 		}
+	}
+
+	// NOTE: used for EvidenceRecord validation
+	protected boolean allArchiveDataObjectsProvidedToValidation() {
+		return true;
 	}
 
 	protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
@@ -1173,7 +1182,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
 			assertTrue(Utils.isCollectionNotEmpty(timestamps));
 			for (TimestampWrapper timestampWrapper : timestamps) {
-				checkTimestamp(diagnosticData, timestampWrapper);
+				if (allArchiveDataObjectsProvidedToValidation()) {
+					checkTimestamp(diagnosticData, timestampWrapper);
+				}
 			}
 		}
 	}

@@ -93,6 +93,10 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
+				if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == digestMatcher.getType()) {
+					// Evidence Records optionally allow additional digests to be present within first data group
+					continue;
+				}
 				/*
 				 * 1) The building block shall obtain the signed data object(s) if not provided
 				 * in the inputs (e.g. by dereferencing an URI present in the signature). If the

@@ -1079,6 +1079,20 @@ public interface ValidationPolicy {
 	LevelConstraint getEvidenceRecordDataObjectIntactConstraint();
 
 	/**
+	 * Returns DataObjectFound constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectFound element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectFoundConstraint();
+
+	/**
+	 * Returns DataObjectGroup constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectGroup element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectGroupConstraint();
+
+	/**
 	 * Returns CounterSignature constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}DiagnosticDataFacade

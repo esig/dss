@@ -1059,6 +1059,7 @@
 
 			<!-- EVIDENCE_RECORD -->
 			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_OBJECT" />
+			<xs:enumeration value="EVIDENCE_RECORD_ORPHAN_REFERENCE" />
 			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_TIME_STAMP" />
 			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE" />
 		</xs:restriction>
