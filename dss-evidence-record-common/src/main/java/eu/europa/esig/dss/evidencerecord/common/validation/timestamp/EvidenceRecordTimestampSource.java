@@ -253,6 +253,10 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
      * @return a list of {@link TimestampedReference}s
      */
     protected List<TimestampedReference> getEncapsulatedReferencesFromCryptographicInformationList(List<CryptographicInformation> cryptographicInformationList) {
+        if (Utils.isCollectionEmpty(cryptographicInformationList)) {
+            return Collections.emptyList();
+        }
+
         final List<TimestampedReference> references = new ArrayList<>();
 
         List<CertificateToken> certificateTokens = getEncapsulatedCertificateTokens(cryptographicInformationList);

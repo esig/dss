@@ -126,6 +126,7 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
 
         // 2b. Binary ascending sort
         // NOTE: See comment above
+        // TODO : what about accepting both options (i.e. sorted/not sorted) ?
         if (sort) {
         	hashValueList.sort(ByteArrayComparator.getInstance());
         }

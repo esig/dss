@@ -1,14 +1,13 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
-import org.bouncycastle.asn1.tsp.EvidenceRecord;
-import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
-import org.bouncycastle.tsp.ers.ERSEvidenceRecord;
-
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
+import org.bouncycastle.asn1.tsp.EvidenceRecord;
+import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
+import org.bouncycastle.tsp.ers.ERSEvidenceRecord;
 
 /**
  * Class for validation of an ASN.1 Evidence Record (RFC 4998)
@@ -47,7 +46,16 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
     @Override
     public boolean isSupported(DSSDocument dssDocument) {
         byte firstByte = DSSUtils.readFirstByte(dssDocument);
-        return DSSASN1Utils.isASN1SequenceTag(firstByte);
+        return DSSASN1Utils.isASN1SequenceTag(firstByte) && canBuildEvidenceRecord(dssDocument);
+    }
+
+    private boolean canBuildEvidenceRecord(DSSDocument dssDocument) {
+        try {
+            toASN1Document(dssDocument);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override
