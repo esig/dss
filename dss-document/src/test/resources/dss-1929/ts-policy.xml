@@ -285,6 +285,13 @@
 			<Cryptographic/>
 		</BasicSignatureConstraints>
 	</Revocation>
+	<EvidenceRecord>
+		<DataObjectExistence Level="FAIL" />
+		<DataObjectIntact Level="FAIL" />
+		<DataObjectFound Level="FAIL" />
+		<DataObjectGroup Level="WARN" />
+		<Cryptographic />
+	</EvidenceRecord>
 	<Cryptographic Level="FAIL">
 		<AcceptableEncryptionAlgo>
 			<Algo>RSA</Algo>
