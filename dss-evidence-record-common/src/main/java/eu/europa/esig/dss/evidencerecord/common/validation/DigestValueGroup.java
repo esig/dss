@@ -13,6 +13,9 @@ public class DigestValueGroup implements EvidenceRecordObject {
     /** List of digest values */
     private List<byte[]> digestValues;
 
+    /** Order of the element */
+    private int order;
+
     /**
      * Default constructor
      */
@@ -36,6 +39,24 @@ public class DigestValueGroup implements EvidenceRecordObject {
      */
     public void setDigestValues(List<byte[]> digestValues) {
         this.digestValues = digestValues;
+    }
+
+    /**
+     * Gets Order attribute value of the corresponding element
+     *
+     * @return Order attribute value
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Sets order of the object within its parent
+     *
+     * @param order int value
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 
 }

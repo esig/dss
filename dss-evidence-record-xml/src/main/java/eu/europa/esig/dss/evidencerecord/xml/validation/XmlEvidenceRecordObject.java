@@ -23,5 +23,4 @@ public interface XmlEvidenceRecordObject extends EvidenceRecordObject {
      */
     int getOrder();
 
-
 }

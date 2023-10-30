@@ -5,44 +5,22 @@ import org.bouncycastle.asn1.tsp.ArchiveTimeStamp;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 
 /**
- * The ASN1 Evidence Record representation of ArchiveTimeStamp element
+ * The ASN1 Evidence Record representation of ArchiveTimeStamp object
  *
  */
 public class ASN1ArchiveTimeStampObject extends ArchiveTimeStampObject implements ASN1EvidenceRecordObject {
     
 	private static final long serialVersionUID = 2496285566554079215L;
 
-	/** The current Element */
-    private final ArchiveTimeStamp element;
-
-    /** Order of the element */
-    private int order;
+	/** The current ArchiveTimeStamp */
+    private final ArchiveTimeStamp archiveTimeStamp;
 
     /**
      * Default constructor
      *
-     * @param element {@link Element}
+     * @param archiveTimeStamp {@link ArchiveTimeStamp}
      */
-    public ASN1ArchiveTimeStampObject(final ArchiveTimeStamp element) {
-        this.element = element;
-    }
-
-//    @Override
-//    public ArchiveTimeStamp getElement() {
-//        return element;
-//    }
-
-    @Override
-    public int getOrder() {
-        return order;
-    }
-
-    /**
-     * Sets order of the object within its parent
-     *
-     * @param order int value
-     */
-    public void setOrder(int order) {
-        this.order = order;
+    public ASN1ArchiveTimeStampObject(final ArchiveTimeStamp archiveTimeStamp) {
+        this.archiveTimeStamp = archiveTimeStamp;
     }
 }

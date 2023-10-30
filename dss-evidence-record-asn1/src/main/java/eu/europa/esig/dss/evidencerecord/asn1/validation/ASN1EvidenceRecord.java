@@ -29,11 +29,11 @@ public class ASN1EvidenceRecord extends DefaultEvidenceRecord {
     }
     
     /**
-     * Gets the EvidenceRecord XML Element
+     * Gets the BouncyCastle EvidenceRecord object
      *
      * @return {@link EvidenceRecord}
      */
-    public EvidenceRecord getEvidenceRecordElement() {
+    public EvidenceRecord getEvidenceRecord() {
         return evidenceRecord;
     }
 

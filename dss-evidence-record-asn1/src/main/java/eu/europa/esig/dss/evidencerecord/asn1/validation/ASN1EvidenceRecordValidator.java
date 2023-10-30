@@ -16,8 +16,8 @@ import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
  */
 public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
 
-    /** The root element of the document to validate */
-    private EvidenceRecord rootElement;
+    /** The root object of the document to validate */
+    private EvidenceRecord evidenceRecordObject;
 
     /**
      * The default constructor for ASN1EvidenceRecordValidator.
@@ -26,7 +26,7 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
      */
     public ASN1EvidenceRecordValidator(final DSSDocument document) {
         super(document);
-        this.rootElement = toASN1Document(document).toASN1Structure();
+        this.evidenceRecordObject = toASN1Document(document).toASN1Structure();
     }
 
 	/**
@@ -52,7 +52,7 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
 
     @Override
     protected eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord buildEvidenceRecord() {
-        final ASN1EvidenceRecord evidenceRecord = new ASN1EvidenceRecord(this.rootElement);
+        final ASN1EvidenceRecord evidenceRecord = new ASN1EvidenceRecord(this.evidenceRecordObject);
         evidenceRecord.setFilename(document.getName());
         evidenceRecord.setManifestFile(manifestFile);
         evidenceRecord.setDetachedContents(detachedContents);
