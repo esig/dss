@@ -139,6 +139,7 @@
 		<module>dss-tsl-validation</module>
 		<module>dss-evidence-record-common</module>
 		<module>dss-evidence-record-xml</module>
+		<module>dss-evidence-record-asn1</module>
 		<module>dss-common-remote-dto</module>
 		<module>dss-common-remote-converter</module>
 		<module>dss-signature-dto</module>
@@ -628,6 +629,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-evidence-record-xml</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-evidence-record-asn1</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
