@@ -49,17 +49,19 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
                                               List<DSSDocument> detachedContents) {
         String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
-        for (DSSDocument document : detachedContents) {
-            byte[] documentDigest;
-            if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
-                byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(document.openStream());
-                documentDigest = DSSUtils.digest(digest.getAlgorithm(), canonicalizedDocument);
-            } else {
-                String base64Digest = document.getDigest(digest.getAlgorithm());
-                documentDigest = Utils.fromBase64(base64Digest);
-            }
-            if (Arrays.equals(digest.getValue(), documentDigest)) {
-                return document;
+        if (Utils.isCollectionNotEmpty(detachedContents)) {
+            for (DSSDocument document : detachedContents) {
+                byte[] documentDigest;
+                if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
+                    byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(document.openStream());
+                    documentDigest = DSSUtils.digest(digest.getAlgorithm(), canonicalizedDocument);
+                } else {
+                    String base64Digest = document.getDigest(digest.getAlgorithm());
+                    documentDigest = Utils.fromBase64(base64Digest);
+                }
+                if (Arrays.equals(digest.getValue(), documentDigest)) {
+                    return document;
+                }
             }
         }
         return null;

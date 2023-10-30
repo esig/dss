@@ -112,7 +112,7 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
 
                     if (tstReferenceValidationList.size() == 1) {
                         assertTrue(archiveTstDigestFound);
-                    } else {
+                    } else if (tstCoversOnlyCurrentHashTreeData()) {
                         assertTrue(archiveTstSequenceDigestFound);
                     }
 
@@ -121,6 +121,10 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
                 ++tstCounter;
             }
         }
+    }
+
+    protected boolean tstCoversOnlyCurrentHashTreeData() {
+        return true;
     }
 
     protected void verifySimpleReport(SimpleReport simpleReport) {

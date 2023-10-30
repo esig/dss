@@ -277,11 +277,13 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
     protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
                                               List<DSSDocument> detachedContents) {
         byte[] documentDigest;
-        for (DSSDocument document : detachedContents) {
-            String base64Digest = document.getDigest(digest.getAlgorithm());
-            documentDigest = Utils.fromBase64(base64Digest);
-            if (Arrays.equals(digest.getValue(), documentDigest)) {
-                return document;
+        if (Utils.isCollectionNotEmpty(detachedContents)) {
+            for (DSSDocument document : detachedContents) {
+                String base64Digest = document.getDigest(digest.getAlgorithm());
+                documentDigest = Utils.fromBase64(base64Digest);
+                if (Arrays.equals(digest.getValue(), documentDigest)) {
+                    return document;
+                }
             }
         }
         return null;
