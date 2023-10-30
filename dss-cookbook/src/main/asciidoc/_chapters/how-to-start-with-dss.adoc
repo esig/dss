@@ -333,6 +333,7 @@ dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, augmentation
 
 dss-evidence-record-common:: Common code and interfaces for validation of evidence records.
 dss-evidence-record-xml:: Code for validation of RFC 6283 XML Evidence Records (cf. <<R22>>).
+dss-evidence-record-asn1:: Code for validation of RFC 4998 Evidence Records (ASN.1 format) (cf. <<R23>>).
 
 ===== WebServices
 
