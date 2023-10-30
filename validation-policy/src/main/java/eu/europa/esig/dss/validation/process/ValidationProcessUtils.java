@@ -404,6 +404,8 @@ public class ValidationProcessUtils {
 				return MessageTag.ACCM_POS_MESS_IMP;
 			case EVIDENCE_RECORD_ARCHIVE_OBJECT:
 				return MessageTag.ACCM_POS_ER_ADO;
+			case EVIDENCE_RECORD_ORPHAN_REFERENCE:
+				return MessageTag.ACCM_POS_ER_OR;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
 				return MessageTag.ACCM_POS_ER_TST;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:

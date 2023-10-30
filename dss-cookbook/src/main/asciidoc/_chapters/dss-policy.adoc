@@ -2074,7 +2074,7 @@ Default: not executed
 The `<Revocation>` block defines rules for checking revocation data applicability rules (CRLs and OCSPs). The `<Revocation>` element shall be a child of `ConstraintsParameters`:
 
 [source,xml,indent=0]
-.TimestampConstraints element definition
+.Revocation element definition
 ----
 <ConstraintsParameters>
     ...
@@ -2153,6 +2153,78 @@ Default: `WARN`
     <SelfIssuedOCSP Level="WARN" />
     ...
 </Revocation>
+----
+
+===== Evidence record constraints
+
+The `<EvidenceRecord>` block defines rules for validating an evidence record. The `<EvidenceRecord>` element shall be a child of `ConstraintsParameters`:
+
+[source,xml,indent=0]
+.EvidenceRecord element definition
+----
+<ConstraintsParameters>
+    ...
+    <EvidenceRecord>
+        ...
+    </EvidenceRecord>
+    ...
+</ConstraintsParameters>
+----
+
+* `DataObjectExistence` - this constraint checks whether the data object provided to the validation has been found within the evidence record's first data object group.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of DataObjectExistence usage (with FAIL validation level)
+----
+<EvidenceRecord>
+    ...
+    <DataObjectExistence Level="FAIL" />
+    ...
+</EvidenceRecord>
+----
+
+* `DataObjectIntact` - this constraint checks whether the digest of data object provided to the validation matches one of the digest present within first data object group of the evidence record.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of DataObjectIntact usage (with FAIL validation level)
+----
+<EvidenceRecord>
+    ...
+    <DataObjectIntact Level="FAIL" />
+    ...
+</EvidenceRecord>
+----
+
+* `DataObjectFound` - this constraint checks if at least one provided document has been found and identified within the evidence record's first data object group.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of DataObjectFound usage (with FAIL validation level)
+----
+<EvidenceRecord>
+    ...
+    <DataObjectFound Level="FAIL" />
+    ...
+</EvidenceRecord>
+----
+
+* `DataObjectGroup` - this constraint checks if the evidence record does not contain other hashes than hashes of the provided data objects at the first level data object group.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of DataObjectGroup usage (with WARN validation level)
+----
+<EvidenceRecord>
+    ...
+    <DataObjectGroup Level="FAIL" />
+    ...
+</EvidenceRecord>
 ----
 
 ===== Cryptographic Constraints

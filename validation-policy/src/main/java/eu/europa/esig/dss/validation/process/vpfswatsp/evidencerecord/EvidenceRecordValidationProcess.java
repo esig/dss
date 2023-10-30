@@ -12,6 +12,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -23,7 +24,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.AtLeastOneReferenceDataObjectFoundCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataGroupCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheck;
@@ -112,19 +115,31 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
         if (Utils.isCollectionNotEmpty(digestMatchers)) {
 
             for (XmlDigestMatcher digestMatcher : digestMatchers) {
+                // Evidence Records optionally allow additional digests to be present within first data group
+                if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != digestMatcher.getType()) {
 
-                ChainItem<XmlValidationProcessEvidenceRecord> referenceDataFound = referenceDataFound(digestMatcher);
-                if (item == null) {
-                    firstItem = item = referenceDataFound;
-                } else {
-                    item = item.setNextItem(referenceDataFound);
+                    ChainItem<XmlValidationProcessEvidenceRecord> referenceDataFound = referenceDataFound(digestMatcher);
+                    if (item == null) {
+                        firstItem = item = referenceDataFound;
+                    } else {
+                        item = item.setNextItem(referenceDataFound);
+                    }
+
+                    if (digestMatcher.isDataFound()) {
+                        item = item.setNextItem(referenceDataIntact(digestMatcher));
+                    }
+
                 }
-
-                if (digestMatcher.isDataFound()) {
-                    item = item.setNextItem(referenceDataIntact(digestMatcher));
-                }
-
             }
+
+            ChainItem<XmlValidationProcessEvidenceRecord> atLeastOneDataObjectFound = atLeastOneDataObjectFound(digestMatchers);
+            if (item == null) {
+                firstItem = item = atLeastOneDataObjectFound;
+            } else {
+                item = item.setNextItem(atLeastOneDataObjectFound);
+            }
+
+            item = item.setNextItem(referenceDataGroup(digestMatchers));
 
         }
 
@@ -227,6 +242,16 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
     private ChainItem<XmlValidationProcessEvidenceRecord> referenceDataIntact(XmlDigestMatcher digestMatcher) {
         LevelConstraint constraint = policy.getEvidenceRecordDataObjectIntactConstraint();
         return new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
+    }
+
+    private ChainItem<XmlValidationProcessEvidenceRecord> atLeastOneDataObjectFound(List<XmlDigestMatcher> digestMatchers) {
+        LevelConstraint constraint = policy.getEvidenceRecordDataObjectFoundConstraint();
+        return new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, digestMatchers, constraint);
+    }
+
+    private ChainItem<XmlValidationProcessEvidenceRecord> referenceDataGroup(List<XmlDigestMatcher> digestMatchers) {
+        LevelConstraint constraint = policy.getEvidenceRecordDataObjectGroupConstraint();
+        return new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> timestampValidationConclusive(

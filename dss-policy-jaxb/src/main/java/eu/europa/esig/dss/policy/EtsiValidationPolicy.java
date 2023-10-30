@@ -1265,6 +1265,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getEvidenceRecordDataObjectFoundConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getDataObjectFound();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getEvidenceRecordDataObjectGroupConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getDataObjectGroup();
+		}
+		return null;
+	}
+
+	@Override
 	public CryptographicConstraint getEvidenceRecordCryptographicConstraint() {
 		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
 		if (evidenceRecordConstraints != null) {

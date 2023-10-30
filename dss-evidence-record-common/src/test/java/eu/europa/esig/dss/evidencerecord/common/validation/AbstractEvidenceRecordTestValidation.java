@@ -74,8 +74,11 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
         for (EvidenceRecord evidenceRecord : detachedEvidenceRecords) {
             List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
             for (ReferenceValidation referenceValidation : referenceValidationList) {
-                assertTrue(referenceValidation.isFound());
-                assertTrue(referenceValidation.isIntact());
+                if (allArchiveDataObjectsProvidedToValidation() ||
+                        DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType()) {
+                    assertTrue(referenceValidation.isFound());
+                    assertTrue(referenceValidation.isIntact());
+                }
             }
 
             List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
@@ -100,9 +103,11 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
                             archiveTstDigestFound = true;
                         } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE.equals(referenceValidation.getType())) {
                             archiveTstSequenceDigestFound = true;
+                        } else if (allArchiveDataObjectsProvidedToValidation() ||
+                                    DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType()) {
+                            assertTrue(referenceValidation.isFound());
+                            assertTrue(referenceValidation.isIntact());
                         }
-                        assertTrue(referenceValidation.isFound());
-                        assertTrue(referenceValidation.isIntact());
                     }
 
                     if (tstReferenceValidationList.size() == 1) {

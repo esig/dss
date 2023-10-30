@@ -16,6 +16,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -24,6 +25,8 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.utils.Utils;
@@ -117,6 +120,8 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
         int dataObjectFoundCheckCounter = 0;
         int dataObjectIntactCheckCounter = 0;
+        int atLeastOneDataObjectFoundCounter = 0;
+        int dataObjectGroupCheckCounter = 0;
         int tstCheckCounter = 0;
         int dataObjectCryptoCheckCounter = 0;
         for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
@@ -124,6 +129,10 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
                 ++dataObjectFoundCheckCounter;
             } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
                 ++dataObjectIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ER_IODOF.getId().equals(xmlConstraint.getName().getKey())) {
+                ++atLeastOneDataObjectFoundCounter;
+            } else if (MessageTag.BBB_CV_ER_DFHVLCDOG.getId().equals(xmlConstraint.getName().getKey())) {
+                ++dataObjectGroupCheckCounter;
             } else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
                 ++tstCheckCounter;
             } else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
@@ -133,6 +142,8 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         }
         assertEquals(3, dataObjectFoundCheckCounter);
         assertEquals(3, dataObjectIntactCheckCounter);
+        assertEquals(1, atLeastOneDataObjectFoundCounter);
+        assertEquals(1, dataObjectGroupCheckCounter);
         assertEquals(2, tstCheckCounter);
         assertEquals(3, dataObjectCryptoCheckCounter);
 
@@ -1187,6 +1198,524 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         assertEquals(2, crlReportCounter);
         assertEquals(0, ocspReportCounter);
         assertEquals(3, signerDataReportCounter);
+
+        checkReports(reports);
+    }
+
+    @Test
+    public void erWithPartialDetachedDataWarnLevelTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        assertNotNull(diagnosticData);
+
+        eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+        evidenceRecord.getDigestMatchers().get(1).setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
+        evidenceRecord.getDigestMatchers().get(1).setDataFound(false);
+        evidenceRecord.getDigestMatchers().get(1).setDataIntact(false);
+        evidenceRecord.getDigestMatchers().get(2).setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
+        evidenceRecord.getDigestMatchers().get(2).setDataFound(false);
+        evidenceRecord.getDigestMatchers().get(2).setDataIntact(false);
+
+        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.WARN);
+        validationPolicy.getEvidenceRecordConstraints().setDataObjectGroup(constraint);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+        executor.setValidationPolicy(validationPolicy);
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.PASSED, simpleReport.getIndication(simpleReport.getFirstEvidenceRecordId()));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstEvidenceRecordId())));
+        assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstEvidenceRecordId())));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstEvidenceRecordId()),
+                i18nProvider.getMessage(MessageTag.BBB_CV_ER_DFHVLCDOG_ANS)));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(simpleReport.getFirstEvidenceRecordId())));
+
+        for (XmlTimestamp xmlTimestamp : simpleReport.getEvidenceRecordTimestamps(simpleReport.getFirstEvidenceRecordId())) {
+            assertEquals(Indication.PASSED, simpleReport.getIndication(xmlTimestamp.getId()));
+        }
+
+        eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp firstTimestamp = diagnosticData.getUsedTimestamps().get(0);
+        assertEquals(firstTimestamp.getProductionTime(), simpleReport.getEvidenceRecordPOE(simpleReport.getFirstEvidenceRecordId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        assertEquals(Indication.PASSED, detailedReport.getEvidenceRecordValidationIndication(detailedReport.getFirstEvidenceRecordId()));
+
+        List<XmlEvidenceRecord> evidenceRecords = detailedReport.getIndependentEvidenceRecords();
+        assertEquals(1, evidenceRecords.size());
+
+        XmlEvidenceRecord xmlEvidenceRecord = evidenceRecords.get(0);
+        assertNotNull(xmlEvidenceRecord.getId());
+
+        XmlConclusion conclusion = xmlEvidenceRecord.getConclusion();
+        assertNotNull(conclusion);
+        assertEquals(Indication.PASSED, conclusion.getIndication());
+
+        XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+        assertNotNull(validationProcessEvidenceRecord);
+        assertEquals(i18nProvider.getMessage(MessageTag.VPER), validationProcessEvidenceRecord.getTitle());
+
+        conclusion = validationProcessEvidenceRecord.getConclusion();
+        assertNotNull(conclusion);
+        assertEquals(Indication.PASSED, conclusion.getIndication());
+
+        XmlProofOfExistence proofOfExistence = validationProcessEvidenceRecord.getProofOfExistence();
+        assertNotNull(proofOfExistence);
+        assertEquals(firstTimestamp.getId(), proofOfExistence.getTimestampId());
+        assertEquals(firstTimestamp.getProductionTime(), proofOfExistence.getTime());
+
+        int dataObjectFoundCheckCounter = 0;
+        int dataObjectIntactCheckCounter = 0;
+        int atLeastOneDataObjectFoundCounter = 0;
+        int dataObjectGroupCheckCounter = 0;
+        int tstCheckCounter = 0;
+        int dataObjectCryptoCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectFoundCheckCounter;
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ER_IODOF.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++atLeastOneDataObjectFoundCounter;
+            } else if (MessageTag.BBB_CV_ER_DFHVLCDOG.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+                assertEquals(MessageTag.BBB_CV_ER_DFHVLCDOG_ANS.getId(), xmlConstraint.getWarning().getKey());
+                ++dataObjectGroupCheckCounter;
+            } else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++tstCheckCounter;
+            } else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectCryptoCheckCounter;
+            }
+        }
+        assertEquals(1, dataObjectFoundCheckCounter);
+        assertEquals(1, dataObjectIntactCheckCounter);
+        assertEquals(1, atLeastOneDataObjectFoundCounter);
+        assertEquals(1, dataObjectGroupCheckCounter);
+        assertEquals(2, tstCheckCounter);
+        assertEquals(3, dataObjectCryptoCheckCounter);
+
+        List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
+        assertEquals(2, timestamps.size());
+
+        boolean indeterminateBasicTstFound = false;
+        boolean passedBasicTstFound = false;
+        for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : timestamps) {
+            XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+            XmlCV cv = tstBBB.getCV();
+            assertNotNull(cv);
+
+            boolean messageImprintCheckFound = false;
+            boolean messageImprintIntactCheckFound = false;
+            int dataObjectTstFoundCheckCounter = 0;
+            int dataObjectTstIntactCheckCounter = 0;
+            int tstSequenceFoundCheckCounter = 0;
+            int tstSequenceIntactCheckCounter = 0;
+            for (XmlConstraint xmlConstraint : cv.getConstraint()) {
+                if (MessageTag.BBB_CV_TSP_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNull(xmlConstraint.getAdditionalInfo());
+                    messageImprintCheckFound = true;
+                } else if (MessageTag.BBB_CV_TSP_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNull(xmlConstraint.getAdditionalInfo());
+                    messageImprintIntactCheckFound = true;
+                } else if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNotNull(xmlConstraint.getAdditionalInfo());
+                    ++dataObjectTstFoundCheckCounter;
+                } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNotNull(xmlConstraint.getAdditionalInfo());
+                    ++dataObjectTstIntactCheckCounter;
+                } else if (MessageTag.BBB_CV_ER_ATSSRF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, MessageTag.TST_TYPE_REF_ER_ATST_SEQ), xmlConstraint.getAdditionalInfo());
+                    ++tstSequenceFoundCheckCounter;
+                } else if (MessageTag.BBB_CV_ER_ATSSRI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, MessageTag.TST_TYPE_REF_ER_ATST_SEQ), xmlConstraint.getAdditionalInfo());
+                    ++tstSequenceIntactCheckCounter;
+                }
+            }
+            assertTrue(messageImprintCheckFound);
+            assertTrue(messageImprintIntactCheckFound);
+
+            XmlValidationProcessBasicTimestamp basicTimestamp = xmlTimestamp.getValidationProcessBasicTimestamp();
+            assertNotNull(basicTimestamp);
+            if (Indication.PASSED.equals(basicTimestamp.getConclusion().getIndication())) {
+                assertEquals(3, dataObjectTstFoundCheckCounter);
+                assertEquals(3, dataObjectTstIntactCheckCounter);
+                assertEquals(1, tstSequenceFoundCheckCounter);
+                assertEquals(1, tstSequenceIntactCheckCounter);
+                passedBasicTstFound = true;
+
+            } else if (Indication.INDETERMINATE.equals(basicTimestamp.getConclusion().getIndication())) {
+                assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, basicTimestamp.getConclusion().getSubIndication());
+                assertEquals(0, dataObjectTstFoundCheckCounter);
+                assertEquals(0, dataObjectTstIntactCheckCounter);
+                assertEquals(0, tstSequenceFoundCheckCounter);
+                assertEquals(0, tstSequenceIntactCheckCounter);
+                indeterminateBasicTstFound = true;
+            }
+            XmlValidationProcessArchivalDataTimestamp ltaTimestamp = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+            assertNotNull(ltaTimestamp);
+            assertEquals(Indication.PASSED, ltaTimestamp.getConclusion().getIndication());
+
+        }
+        assertTrue(indeterminateBasicTstFound);
+        assertTrue(passedBasicTstFound);
+
+        checkReports(reports);
+    }
+
+    @Test
+    public void erWithPartialDetachedDataFailLevelTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        assertNotNull(diagnosticData);
+
+        eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+        evidenceRecord.getDigestMatchers().get(1).setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
+        evidenceRecord.getDigestMatchers().get(1).setDataFound(false);
+        evidenceRecord.getDigestMatchers().get(1).setDataIntact(false);
+        evidenceRecord.getDigestMatchers().get(2).setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
+        evidenceRecord.getDigestMatchers().get(2).setDataFound(false);
+        evidenceRecord.getDigestMatchers().get(2).setDataIntact(false);
+
+        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+        validationPolicy.getEvidenceRecordConstraints().setDataObjectGroup(constraint);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+        executor.setValidationPolicy(validationPolicy);
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstEvidenceRecordId()));
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstEvidenceRecordId()));
+        assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstEvidenceRecordId())));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstEvidenceRecordId()),
+                i18nProvider.getMessage(MessageTag.BBB_CV_ER_DFHVLCDOG_ANS)));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstEvidenceRecordId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(simpleReport.getFirstEvidenceRecordId())));
+
+        for (XmlTimestamp xmlTimestamp : simpleReport.getEvidenceRecordTimestamps(simpleReport.getFirstEvidenceRecordId())) {
+            assertEquals(Indication.PASSED, simpleReport.getIndication(xmlTimestamp.getId()));
+        }
+
+        eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp firstTimestamp = diagnosticData.getUsedTimestamps().get(0);
+        assertEquals(firstTimestamp.getProductionTime(), simpleReport.getEvidenceRecordPOE(simpleReport.getFirstEvidenceRecordId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        assertEquals(Indication.INDETERMINATE, detailedReport.getEvidenceRecordValidationIndication(detailedReport.getFirstEvidenceRecordId()));
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getEvidenceRecordValidationSubIndication(detailedReport.getFirstEvidenceRecordId()));
+
+        List<XmlEvidenceRecord> evidenceRecords = detailedReport.getIndependentEvidenceRecords();
+        assertEquals(1, evidenceRecords.size());
+
+        XmlEvidenceRecord xmlEvidenceRecord = evidenceRecords.get(0);
+        assertNotNull(xmlEvidenceRecord.getId());
+
+        XmlConclusion conclusion = xmlEvidenceRecord.getConclusion();
+        assertNotNull(conclusion);
+        assertEquals(Indication.INDETERMINATE, conclusion.getIndication());
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, conclusion.getSubIndication());
+
+        XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+        assertNotNull(validationProcessEvidenceRecord);
+        assertEquals(i18nProvider.getMessage(MessageTag.VPER), validationProcessEvidenceRecord.getTitle());
+
+        conclusion = validationProcessEvidenceRecord.getConclusion();
+        assertNotNull(conclusion);
+        assertEquals(Indication.INDETERMINATE, conclusion.getIndication());
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, conclusion.getSubIndication());
+
+        XmlProofOfExistence proofOfExistence = validationProcessEvidenceRecord.getProofOfExistence();
+        assertNotNull(proofOfExistence);
+        assertEquals(firstTimestamp.getId(), proofOfExistence.getTimestampId());
+        assertEquals(firstTimestamp.getProductionTime(), proofOfExistence.getTime());
+
+        int dataObjectFoundCheckCounter = 0;
+        int dataObjectIntactCheckCounter = 0;
+        int atLeastOneDataObjectFoundCounter = 0;
+        int dataObjectGroupCheckCounter = 0;
+        int tstCheckCounter = 0;
+        int dataObjectCryptoCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectFoundCheckCounter;
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ER_IODOF.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++atLeastOneDataObjectFoundCounter;
+            } else if (MessageTag.BBB_CV_ER_DFHVLCDOG.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+                assertEquals(MessageTag.BBB_CV_ER_DFHVLCDOG_ANS.getId(), xmlConstraint.getError().getKey());
+                ++dataObjectGroupCheckCounter;
+            } else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++tstCheckCounter;
+            } else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectCryptoCheckCounter;
+            }
+        }
+        assertEquals(1, dataObjectFoundCheckCounter);
+        assertEquals(1, dataObjectIntactCheckCounter);
+        assertEquals(1, atLeastOneDataObjectFoundCounter);
+        assertEquals(1, dataObjectGroupCheckCounter);
+        assertEquals(0, tstCheckCounter);
+        assertEquals(0, dataObjectCryptoCheckCounter);
+
+        List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
+        assertEquals(2, timestamps.size());
+
+        boolean indeterminateBasicTstFound = false;
+        boolean passedBasicTstFound = false;
+        for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : timestamps) {
+            XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+            XmlCV cv = tstBBB.getCV();
+            assertNotNull(cv);
+
+            boolean messageImprintCheckFound = false;
+            boolean messageImprintIntactCheckFound = false;
+            int dataObjectTstFoundCheckCounter = 0;
+            int dataObjectTstIntactCheckCounter = 0;
+            int tstSequenceFoundCheckCounter = 0;
+            int tstSequenceIntactCheckCounter = 0;
+            for (XmlConstraint xmlConstraint : cv.getConstraint()) {
+                if (MessageTag.BBB_CV_TSP_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNull(xmlConstraint.getAdditionalInfo());
+                    messageImprintCheckFound = true;
+                } else if (MessageTag.BBB_CV_TSP_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNull(xmlConstraint.getAdditionalInfo());
+                    messageImprintIntactCheckFound = true;
+                } else if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNotNull(xmlConstraint.getAdditionalInfo());
+                    ++dataObjectTstFoundCheckCounter;
+                } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNotNull(xmlConstraint.getAdditionalInfo());
+                    ++dataObjectTstIntactCheckCounter;
+                } else if (MessageTag.BBB_CV_ER_ATSSRF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, MessageTag.TST_TYPE_REF_ER_ATST_SEQ), xmlConstraint.getAdditionalInfo());
+                    ++tstSequenceFoundCheckCounter;
+                } else if (MessageTag.BBB_CV_ER_ATSSRI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, MessageTag.TST_TYPE_REF_ER_ATST_SEQ), xmlConstraint.getAdditionalInfo());
+                    ++tstSequenceIntactCheckCounter;
+                }
+            }
+            assertTrue(messageImprintCheckFound);
+            assertTrue(messageImprintIntactCheckFound);
+
+            XmlValidationProcessBasicTimestamp basicTimestamp = xmlTimestamp.getValidationProcessBasicTimestamp();
+            assertNotNull(basicTimestamp);
+            if (Indication.PASSED.equals(basicTimestamp.getConclusion().getIndication())) {
+                assertEquals(3, dataObjectTstFoundCheckCounter);
+                assertEquals(3, dataObjectTstIntactCheckCounter);
+                assertEquals(1, tstSequenceFoundCheckCounter);
+                assertEquals(1, tstSequenceIntactCheckCounter);
+                passedBasicTstFound = true;
+
+            } else if (Indication.INDETERMINATE.equals(basicTimestamp.getConclusion().getIndication())) {
+                assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, basicTimestamp.getConclusion().getSubIndication());
+                assertEquals(0, dataObjectTstFoundCheckCounter);
+                assertEquals(0, dataObjectTstIntactCheckCounter);
+                assertEquals(0, tstSequenceFoundCheckCounter);
+                assertEquals(0, tstSequenceIntactCheckCounter);
+                indeterminateBasicTstFound = true;
+            }
+            XmlValidationProcessArchivalDataTimestamp ltaTimestamp = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+            assertNotNull(ltaTimestamp);
+            assertEquals(Indication.PASSED, ltaTimestamp.getConclusion().getIndication());
+
+        }
+        assertTrue(indeterminateBasicTstFound);
+        assertTrue(passedBasicTstFound);
+
+        checkReports(reports);
+    }
+
+    @Test
+    public void erNoneOfTheProvidedObjectsFoundFailLevelTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        assertNotNull(diagnosticData);
+
+        eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+        evidenceRecord.getDigestMatchers().get(0).setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
+        evidenceRecord.getDigestMatchers().get(0).setDataFound(false);
+        evidenceRecord.getDigestMatchers().get(0).setDataIntact(false);
+        evidenceRecord.getDigestMatchers().get(1).setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
+        evidenceRecord.getDigestMatchers().get(1).setDataFound(false);
+        evidenceRecord.getDigestMatchers().get(1).setDataIntact(false);
+        evidenceRecord.getDigestMatchers().get(2).setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
+        evidenceRecord.getDigestMatchers().get(2).setDataFound(false);
+        evidenceRecord.getDigestMatchers().get(2).setDataIntact(false);
+
+        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+        validationPolicy.getEvidenceRecordConstraints().setDataObjectFound(constraint);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+        executor.setValidationPolicy(validationPolicy);
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstEvidenceRecordId()));
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstEvidenceRecordId()));
+        assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstEvidenceRecordId())));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstEvidenceRecordId()),
+                i18nProvider.getMessage(MessageTag.BBB_CV_ER_IODOF_ANS)));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstEvidenceRecordId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(simpleReport.getFirstEvidenceRecordId())));
+
+        for (XmlTimestamp xmlTimestamp : simpleReport.getEvidenceRecordTimestamps(simpleReport.getFirstEvidenceRecordId())) {
+            assertEquals(Indication.PASSED, simpleReport.getIndication(xmlTimestamp.getId()));
+        }
+
+        eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp firstTimestamp = diagnosticData.getUsedTimestamps().get(0);
+        assertEquals(firstTimestamp.getProductionTime(), simpleReport.getEvidenceRecordPOE(simpleReport.getFirstEvidenceRecordId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        assertEquals(Indication.INDETERMINATE, detailedReport.getEvidenceRecordValidationIndication(detailedReport.getFirstEvidenceRecordId()));
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, detailedReport.getEvidenceRecordValidationSubIndication(detailedReport.getFirstEvidenceRecordId()));
+
+        List<XmlEvidenceRecord> evidenceRecords = detailedReport.getIndependentEvidenceRecords();
+        assertEquals(1, evidenceRecords.size());
+
+        XmlEvidenceRecord xmlEvidenceRecord = evidenceRecords.get(0);
+        assertNotNull(xmlEvidenceRecord.getId());
+
+        XmlConclusion conclusion = xmlEvidenceRecord.getConclusion();
+        assertNotNull(conclusion);
+        assertEquals(Indication.INDETERMINATE, conclusion.getIndication());
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, conclusion.getSubIndication());
+
+        XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+        assertNotNull(validationProcessEvidenceRecord);
+        assertEquals(i18nProvider.getMessage(MessageTag.VPER), validationProcessEvidenceRecord.getTitle());
+
+        conclusion = validationProcessEvidenceRecord.getConclusion();
+        assertNotNull(conclusion);
+        assertEquals(Indication.INDETERMINATE, conclusion.getIndication());
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, conclusion.getSubIndication());
+
+        XmlProofOfExistence proofOfExistence = validationProcessEvidenceRecord.getProofOfExistence();
+        assertNotNull(proofOfExistence);
+        assertEquals(firstTimestamp.getId(), proofOfExistence.getTimestampId());
+        assertEquals(firstTimestamp.getProductionTime(), proofOfExistence.getTime());
+
+        int dataObjectFoundCheckCounter = 0;
+        int dataObjectIntactCheckCounter = 0;
+        int atLeastOneDataObjectFoundCounter = 0;
+        int dataObjectGroupCheckCounter = 0;
+        int tstCheckCounter = 0;
+        int dataObjectCryptoCheckCounter = 0;
+        for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
+            if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectFoundCheckCounter;
+            } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectIntactCheckCounter;
+            } else if (MessageTag.BBB_CV_ER_IODOF.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+                assertEquals(MessageTag.BBB_CV_ER_IODOF_ANS.getId(), xmlConstraint.getError().getKey());
+                ++atLeastOneDataObjectFoundCounter;
+            } else if (MessageTag.BBB_CV_ER_DFHVLCDOG.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectGroupCheckCounter;
+            } else if (MessageTag.ADEST_IBSVPTADC.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++tstCheckCounter;
+            } else if (MessageTag.ACCM.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                ++dataObjectCryptoCheckCounter;
+            }
+        }
+        assertEquals(0, dataObjectFoundCheckCounter);
+        assertEquals(0, dataObjectIntactCheckCounter);
+        assertEquals(1, atLeastOneDataObjectFoundCounter);
+        assertEquals(0, dataObjectGroupCheckCounter);
+        assertEquals(0, tstCheckCounter);
+        assertEquals(0, dataObjectCryptoCheckCounter);
+
+        List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
+        assertEquals(2, timestamps.size());
+
+        boolean indeterminateBasicTstFound = false;
+        boolean passedBasicTstFound = false;
+        for (eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp xmlTimestamp : timestamps) {
+            XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
+            XmlCV cv = tstBBB.getCV();
+            assertNotNull(cv);
+
+            boolean messageImprintCheckFound = false;
+            boolean messageImprintIntactCheckFound = false;
+            int dataObjectTstFoundCheckCounter = 0;
+            int dataObjectTstIntactCheckCounter = 0;
+            int tstSequenceFoundCheckCounter = 0;
+            int tstSequenceIntactCheckCounter = 0;
+            for (XmlConstraint xmlConstraint : cv.getConstraint()) {
+                if (MessageTag.BBB_CV_TSP_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNull(xmlConstraint.getAdditionalInfo());
+                    messageImprintCheckFound = true;
+                } else if (MessageTag.BBB_CV_TSP_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNull(xmlConstraint.getAdditionalInfo());
+                    messageImprintIntactCheckFound = true;
+                } else if (MessageTag.BBB_CV_IRDOF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNotNull(xmlConstraint.getAdditionalInfo());
+                    ++dataObjectTstFoundCheckCounter;
+                } else if (MessageTag.BBB_CV_IRDOI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertNotNull(xmlConstraint.getAdditionalInfo());
+                    ++dataObjectTstIntactCheckCounter;
+                } else if (MessageTag.BBB_CV_ER_ATSSRF.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, MessageTag.TST_TYPE_REF_ER_ATST_SEQ), xmlConstraint.getAdditionalInfo());
+                    ++tstSequenceFoundCheckCounter;
+                } else if (MessageTag.BBB_CV_ER_ATSSRI.getId().equals(xmlConstraint.getName().getKey())) {
+                    assertEquals(i18nProvider.getMessage(MessageTag.REFERENCE, MessageTag.TST_TYPE_REF_ER_ATST_SEQ), xmlConstraint.getAdditionalInfo());
+                    ++tstSequenceIntactCheckCounter;
+                }
+            }
+            assertTrue(messageImprintCheckFound);
+            assertTrue(messageImprintIntactCheckFound);
+
+            XmlValidationProcessBasicTimestamp basicTimestamp = xmlTimestamp.getValidationProcessBasicTimestamp();
+            assertNotNull(basicTimestamp);
+            if (Indication.PASSED.equals(basicTimestamp.getConclusion().getIndication())) {
+                assertEquals(3, dataObjectTstFoundCheckCounter);
+                assertEquals(3, dataObjectTstIntactCheckCounter);
+                assertEquals(1, tstSequenceFoundCheckCounter);
+                assertEquals(1, tstSequenceIntactCheckCounter);
+                passedBasicTstFound = true;
+
+            } else if (Indication.INDETERMINATE.equals(basicTimestamp.getConclusion().getIndication())) {
+                assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, basicTimestamp.getConclusion().getSubIndication());
+                assertEquals(0, dataObjectTstFoundCheckCounter);
+                assertEquals(0, dataObjectTstIntactCheckCounter);
+                assertEquals(0, tstSequenceFoundCheckCounter);
+                assertEquals(0, tstSequenceIntactCheckCounter);
+                indeterminateBasicTstFound = true;
+            }
+            XmlValidationProcessArchivalDataTimestamp ltaTimestamp = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+            assertNotNull(ltaTimestamp);
+            assertEquals(Indication.PASSED, ltaTimestamp.getConclusion().getIndication());
+
+        }
+        assertTrue(indeterminateBasicTstFound);
+        assertTrue(passedBasicTstFound);
 
         checkReports(reports);
     }

@@ -2,16 +2,16 @@ package eu.europa.esig.dss.evidencerecord.common.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.model.ManifestEntry;
-import eu.europa.esig.dss.model.ManifestFile;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,8 +161,9 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                                                                    ArchiveTimeStampChainObject archiveTimeStampChain,
                                                                    List<DSSDocument> detachedContents) {
         final List<ReferenceValidation> result = new ArrayList<>();
-        final List<String> foundManifestEntries = new ArrayList<>();
+        final List<String> foundDocuments = new ArrayList<>();
 
+        DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
         ManifestFile manifestFile = evidenceRecord.getManifestFile();
 
         // process ER data objects at first
@@ -171,9 +172,8 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             ReferenceValidation referenceValidation = new ReferenceValidation();
             referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
 
-            DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
             Digest digest = new Digest(digestAlgorithm, hashValue);
-            referenceValidation.setDigest(new Digest(digestAlgorithm, hashValue));
+            referenceValidation.setDigest(digest);
 
             DSSDocument matchingDocument = getMatchingDocument(digest, archiveTimeStampChain, detachedContents);
             ManifestEntry matchingManifestEntry = getMatchingManifestEntry(digest, matchingDocument);
@@ -184,24 +184,28 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                     referenceValidation.setIntact(matchingManifestEntry.isIntact() && matchingDocument != null);
                     referenceValidation.setDigest(matchingManifestEntry.getDigest());
                     referenceValidation.setName(matchingManifestEntry.getFileName());
-                    foundManifestEntries.add(matchingManifestEntry.getFileName());
+                    foundDocuments.add(matchingManifestEntry.getFileName());
 
                 } else if (matchingDocument != null) {
                     referenceValidation.setName(matchingDocument.getName());
+                    foundDocuments.add(matchingDocument.getName());
                 }
 
             } else if (matchingDocument != null) {
                 referenceValidation.setFound(true);
                 referenceValidation.setIntact(true);
                 referenceValidation.setName(matchingDocument.getName());
+                foundDocuments.add(matchingDocument.getName());
 
             } else if (Utils.collectionSize(digestValues) == 1 && Utils.collectionSize(detachedContents) == 1) {
                 // if one document is expected and provided -> assume it as a signed data
                 referenceValidation.setFound(true);
                 referenceValidation.setIntact(false);
                 referenceValidation.setName(detachedContents.get(0).getName());
+                foundDocuments.add(detachedContents.get(0).getName());
 
             } else {
+                referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
                 referenceValidation.setFound(false);
                 referenceValidation.setIntact(false);
             }
@@ -210,9 +214,9 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         }
 
         // create empty ReferenceValidations for not found manifest entries, when applicable
-        if (manifestFile != null && Utils.collectionSize(manifestFile.getEntries()) > Utils.collectionSize(foundManifestEntries)) {
+        if (manifestFile != null && Utils.collectionSize(manifestFile.getEntries()) > Utils.collectionSize(foundDocuments)) {
             List<ReferenceValidation> failedReferences = result.stream().filter(r -> r.getName() == null).collect(Collectors.toList());
-            if (Utils.collectionSize(manifestFile.getEntries()) - Utils.collectionSize(foundManifestEntries) >= Utils.collectionSize(failedReferences)) {
+            if (Utils.collectionSize(manifestFile.getEntries()) - Utils.collectionSize(foundDocuments) >= Utils.collectionSize(failedReferences)) {
                 // remove failed references
                 for (ReferenceValidation reference : failedReferences) {
                     result.remove(reference);
@@ -220,7 +224,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             }
             // add references from a manifest
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                if (!foundManifestEntries.contains(manifestEntry.getFileName())) {
+                if (!foundDocuments.contains(manifestEntry.getFileName())) {
                     LOG.warn("Manifest entry with name '{}' was not found within evidence record data objects!", manifestEntry.getFileName());
 
                     DSSDocument matchingDocument = getMatchingDocument(manifestEntry, detachedContents);
