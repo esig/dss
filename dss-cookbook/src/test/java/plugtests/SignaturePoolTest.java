@@ -35,6 +35,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -95,6 +96,7 @@ import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -268,6 +270,44 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 	}
 	
 	@Override
+	protected void checkRevocationData(DiagnosticData diagnosticData) {
+		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+			assertNotNull(revocationWrapper.getId());
+			assertNotNull(revocationWrapper.getRevocationType());
+			assertNotNull(revocationWrapper.getOrigin());
+			assertNotNull(revocationWrapper.getProductionDate());
+			assertNotNull(revocationWrapper.foundCertificates());
+			assertNotNull(revocationWrapper.foundCertificates().getRelatedCertificates());
+			assertNotNull(revocationWrapper.foundCertificates().getOrphanCertificates());
+
+			if (revocationWrapper.getSigningCertificate() != null) {
+				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.getCertificateChain()));
+
+				if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
+					assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificates()));
+					assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificateRefs()));
+
+					assertTrue(revocationWrapper.isSigningCertificateReferencePresent());
+					assertNotNull(revocationWrapper.getSigningCertificateReference());
+
+					boolean signingCertFound = false;
+					for (RelatedCertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
+						for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
+							if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refWrapper.getOrigin())) {
+								signingCertFound = true;
+							}
+							assertTrue(refWrapper.getSki() != null || refWrapper.getIssuerName() != null);
+							assertNull(refWrapper.getDigestAlgoAndValue());
+							assertNull(refWrapper.getIssuerSerial());
+						}
+					}
+					assertTrue(signingCertFound);
+				}
+			}
+		}
+	}
+
+	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			for (XmlSignatureScope signatureScope : signatureWrapper.getSignatureScopes()) {
@@ -403,8 +443,6 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 					assertEquals(revocationCertificateSource.getCertificates().size(), 
 							foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() + 
 							foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
-					assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size() + 
-							foundCertificates.getOrphanCertificateRefs().size());
 				}
 			}
 		}
