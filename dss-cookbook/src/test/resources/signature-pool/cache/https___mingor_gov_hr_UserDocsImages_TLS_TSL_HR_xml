@@ -1,0 +1,1796 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="HR-TSL" TSLTag="http://uri.etsi.org/19612/TSLTag">
+    <SchemeInformation>
+        <TSLVersionIdentifier>5</TSLVersionIdentifier>
+        <TSLSequenceNumber>48</TSLSequenceNumber>
+        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+        <SchemeOperatorName>
+            <Name xml:lang="en">Ministry of Economy and Sustainable Development</Name>
+            <Name xml:lang="hr">MINISTARSTVO GOSPODARSTVA I ODRŽIVOG RAZVOJA</Name>
+        </SchemeOperatorName>
+        <SchemeOperatorAddress>
+            <PostalAddresses>
+                <PostalAddress xml:lang="en">
+                    <StreetAddress>Ulica grada Vukovara 78</StreetAddress>
+                    <Locality>Zagreb</Locality>
+                    <PostalCode>10000</PostalCode>
+                    <CountryName>HR</CountryName>
+                </PostalAddress>
+                <PostalAddress xml:lang="hr">
+                    <StreetAddress>Ulica grada Vukovara 78</StreetAddress>
+                    <Locality>Zagreb</Locality>
+                    <PostalCode>10000</PostalCode>
+                    <CountryName>HR</CountryName>
+                </PostalAddress>
+            </PostalAddresses>
+            <ElectronicAddress>
+                <URI xml:lang="en">mailto:pouzdani.popis@mingor.hr</URI>
+                <URI xml:lang="hr">https://mingor.gov.hr/o-ministarstvu-1065/djelokrug/uprava-za-trgovinu-i-politiku-javne-nabave/digitalno-gospodarstvo/usluge-povjerenja/7023</URI>
+                <URI xml:lang="hr">mailto:pouzdani.popis@mingor.hr</URI>
+                <URI xml:lang="en">https://mingor.gov.hr/o-ministarstvu-1065/djelokrug/uprava-za-trgovinu-i-politiku-javne-nabave/digitalno-gospodarstvo/usluge-povjerenja/7023</URI>
+            </ElectronicAddress>
+        </SchemeOperatorAddress>
+        <SchemeName>
+            <Name xml:lang="en">HR:Trusted list including information related to the qualified trust service providers which are supervised by the issuing Member State, together with information related to the qualified trust services provided by them, in accordance with the relevant provisions laid down in Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC.</Name>
+            <Name xml:lang="hr">HR: Pouzdani popis, uključujući informacije vezane uz kvalificirane pružatelje usluga povjerenja koji su pod nadzorom države članice koja ih izdaje, zajedno s podacima koji se odnose na kvalificirane pružatelje usluga povjerenja dostavljenih od istih, u skladu s odgovarajućim odredbama propisanim u Uredbi (EU) br. 910/2014 Europskog parlamenta i Vijeća od 23. srpnja 2014. o elektroničkoj identifikaciji i i uslugama povjerenja za elektroničke transakcije na unutarnjem tržištu i stavljanju izvan snage Direktive 199/93/EC.</Name>
+        </SchemeName>
+        <SchemeInformationURI>
+            <URI xml:lang="en">https://mingor.gov.hr/UserDocsImages/ARHIVA%20DOKUMENATA/Scheme_information_en.pdf</URI>
+            <URI xml:lang="hr">https://mingor.gov.hr/UserDocsImages/ARHIVA%20DOKUMENATA/Scheme_information_hr.pdf</URI>
+        </SchemeInformationURI>
+        <StatusDeterminationApproach>http://uri.etsi.org/TrstSvc/TrustedList/StatusDetn/EUappropriate</StatusDeterminationApproach>
+        <SchemeTypeCommunityRules>
+            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/HR</URI>
+            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUcommon</URI>
+        </SchemeTypeCommunityRules>
+        <SchemeTerritory>HR</SchemeTerritory>
+        <PolicyOrLegalNotice>
+            <TSLLegalNotice xml:lang="en">The applicable legal framework for the present trusted list is Regulation (EU) No 910/2014 of the European Parliament and of the Council of 23 July 2014 on electronic identification and trust services for electronic transactions in the internal market and repealing Directive 1999/93/EC.</TSLLegalNotice>
+            <TSLLegalNotice xml:lang="hr">Primjenjivi pravni okvir za implementaciju sadašnjeg Pouzdanog popisa pružatelja usluga povjerenja  za Republiku Hrvatsku je Uredba (EU) br. 910/2014 Europskog parlamenta i Vijeća od 23. srpnja 2014. o elektroničkoj identifikaciji i uslugama povjerenja za elektroničke transakcije na unutarnjem tržištu i stavljanju izvan snage Direktive 199/93/EC.</TSLLegalNotice>
+        </PolicyOrLegalNotice>
+        <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+        <PointersToOtherTSL>
+            <OtherTSLPointer>
+                <ServiceDigitalIdentities>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>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</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>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</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>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</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>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</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>MIIHLjCCBRagAwIBAgIUP4a8WPhZN++7VkfYyuAcDGmTglEwDQYJKoZIhvcNAQELBQAwczELMAkGA1UEBhMCQkUxGTAXBgNVBGEMEE5UUkJFLTA1Mzc2OTgzMTgxIDAeBgNVBAoMF1F1b1ZhZGlzIFRydXN0bGluayBCVkJBMScwJQYDVQQDDB5RdW9WYWRpcyBCZWxnaXVtIElzc3VpbmcgQ0EgRzIwHhcNMjEwMTIxMDg0ODM4WhcNMjQwMTIxMDg1ODAwWjCBwDELMAkGA1UEBhMCQkUxLDAqBgNVBAsMI0RpcmVjdG9yYXRlLUdlbmVyYWwgZm9yIEluZm9ybWF0aWNzMRkwFwYDVQRhDBBOVFJCRS0wOTQ5MzgzMzQyMUowSAYDVQQKDEFDT01NSVNTSU9OIERFIEwnVU5JT04gRVVST1BFRU5ORSAtIENPTU1JU1NJRSBWQU4gREUgRVVST1BFU0UgVU5JRTEcMBoGA1UEAwwTRXVyb3BlYW4gQ29tbWlzc2lvbjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMCq40SQWaqRkbc5nsdPjLKyxghYzBLJCmeN3/ndD5mMzhy9tsP8WOpsfi8CnMD5tasEEmS5Fj73DQ+sL9PIyfmLzBJVhuCyzwKpDiFAhAa+ec/LTyVRa6+oCh918ZUcPDVXpCtGA3t6WS0pCgrIJNkZequ2yIWUZxiyVOACYmkxmWhWnGe7LRaLv80PCI0QERL2BzV+mKb2tQylUphPPI8hd9LG9EwCvSSXv0tb4rK1C+lIcxuYsui7dNyfw9UHDBnuI5452c3O18N5+GSI9uiEmOI8s++fbubn61RskePhk3ISURPGIAeDKV9pCZezBGysq5IlNkC1C4AtYS2eKFcCAwEAAaOCAmowggJmMB8GA1UdIwQYMBaAFIfJvDGXEnpzu37APUVRtAEllVGrMHcGCCsGAQUFBwEBBGswaTA4BggrBgEFBQcwAoYsaHR0cDovL3RydXN0LnF1b3ZhZGlzZ2xvYmFsLmNvbS9xdmJlY2FnMi5jcnQwLQYIKwYBBQUHMAGGIWh0dHA6Ly91dy5vY3NwLnF1b3ZhZGlzZ2xvYmFsLmNvbTBaBgNVHSAEUzBRMEQGCisGAQQBvlgBgxAwNjA0BggrBgEFBQcCARYoaHR0cDovL3d3dy5xdW92YWRpc2dsb2JhbC5jb20vcmVwb3NpdG9yeTAJBgcEAIvsQAEDMCkGA1UdJQQiMCAGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNwoDDDCBiwYIKwYBBQUHAQMEfzB9MBUGCCsGAQUFBwsCMAkGBwQAi+xJAQIwCAYGBACORgEBMAgGBgQAjkYBBDATBgYEAI5GAQYwCQYHBACORgEGAjA7BgYEAI5GAQUwMTAvFilodHRwczovL3d3dy5xdW92YWRpc2dsb2JhbC5jb20vcmVwb3NpdG9yeRMCZW4wOwYDVR0fBDQwMjAwoC6gLIYqaHR0cDovL2NybC5xdW92YWRpc2dsb2JhbC5jb20vcXZiZWNhZzIuY3JsMB0GA1UdDgQWBBQspnrB2Vq7SM99egtZxs2jZv1QOjAOBgNVHQ8BAf8EBAMCBsAwEwYKKoZIhvcvAQEJAgQFMAMCAQEwNAYKKoZIhvcvAQEJAQQmMCQCAQGGH2h0dHA6Ly90cy5xdW92YWRpc2dsb2JhbC5jb20vYmUwDQYJKoZIhvcNAQELBQADggIBACGQDYsjrM3nsKSpiW1SqzBlZOkvuiphSLNhv5o5V1W+maYLtXYH/fMadrP0+K2X5XB5e+8yMw4Sbrvxv4LRR/CQ2WX03KjYGcqdcIUAH+A/8phwA7eLyKd3ip8k8ukT9kUKMJxbqVR5O8x2vOlAM9VFirOenOI+MufFDSaNKIJKt+PDhcSxDyzjs2MRKHAJcTCs23T8fB6+Qvw3uKUgniVg4MTLFvWpL8bvMXX7QUyvsScskUCns918hHA4Ett7fxdWXJFFJuuculChJIf8jbXZQ/8SAoecPyADnJw0C4uGNI/zc9/DWqMSMMytFwGeOpQb0/pukdmNe3sai8SUQj4+vyhkCHKMD27cak9buDO7cu5yhKEuLCERTga2QvbGSeiFAa6KuyPGY1Ad9AOuz5KPyyfVG0h31FvNL0MnAib1IpZr7mPQgWOsEX9ipgQXoE2Rh11yydTiKwmyTTrp/uMOJp+6UD06IdgPkHmqnqaKkqzGu6RKiHLqYWX5qhWXt0EatHQ0YY+92B03cDTLMgjPHKY+wN6qPfetz0oQNmort+G2HIXb9P+Q43sqMjXpQY/I3YmM0VBmcYWUon11BOavnGGOCVVPBQFKU6Kt7r69li1CmfA7KgK7Jn2o/jb8BupWUPGej++MkkrFDS0T6tmNH9ZDteyO3dSyOcl1IHcs</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>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</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                </ServiceDigitalIdentities>
+                <TSLLocation>https://ec.europa.eu/tools/lotl/eu-lotl.xml</TSLLocation>
+                <AdditionalInformation>
+                    <OtherInformation>
+                        <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTerritory>EU</SchemeTerritory>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <ns3:MimeType>application/vnd.etsi.tsl+xml</ns3:MimeType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeOperatorName>
+                            <Name xml:lang="en">European Commission</Name>
+                            <Name xml:lang="hr">Europska komisija</Name>
+                        </SchemeOperatorName>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTypeCommunityRules>
+                            <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/schemerules/EUlistofthelists</URI>
+                        </SchemeTypeCommunityRules>
+                    </OtherInformation>
+                </AdditionalInformation>
+            </OtherTSLPointer>
+        </PointersToOtherTSL>
+        <ListIssueDateTime>2023-09-01T12:40:12Z</ListIssueDateTime>
+        <NextUpdate>
+            <dateTime>2024-03-01T13:40:12Z</dateTime>
+        </NextUpdate>
+    </SchemeInformation>
+    <TrustServiceProviderList>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">Financijska agencija</Name>
+                    <Name xml:lang="hr">Financijska agencija</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">VATHR-85821130368</Name>
+                    <Name xml:lang="en">FINA</Name>
+                    <Name xml:lang="hr">VATHR-85821130368</Name>
+                    <Name xml:lang="hr">FINA</Name>
+                    <Name xml:lang="en">FINA 00332852</Name>
+                    <Name xml:lang="hr">FINA 00332852</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="hr">
+                            <StreetAddress> Ulica grada Vukovara 70</StreetAddress>
+                            <Locality>Zagreb</Locality>
+                            <PostalCode>10000</PostalCode>
+                            <CountryName>HR</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress> Ulica grada Vukovara 70</StreetAddress>
+                            <Locality>Zagreb</Locality>
+                            <PostalCode>10000</PostalCode>
+                            <CountryName>HR</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">http://www.fina.hr/Default.aspx?sec=1864</URI>
+                        <URI xml:lang="en">mailto:info@fina.hr</URI>
+                        <URI xml:lang="hr">mailto:info@fina.hr</URI>
+                        <URI xml:lang="hr">http://www.fina.hr/finadigicert</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="hr">http://www.fina.hr/finadigicert</URI>
+                    <URI xml:lang="en">http://www.fina.hr/Default.aspx?sec=1864</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">FINA Digital Certificate Registry - QC</Name>
+                            <Name xml:lang="hr">FINA Registar digitalnih certifikata - QC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIETTCCAzWgAwIBAgIEPxvOITANBgkqhkiG9w0BAQUFADAqMQswCQYDVQQGEwJIUjENMAsGA1UEChMERklOQTEMMAoGA1UECxMDUkRDMB4XDTAzMDcyMTEwNTc0M1oXDTIzMDcyMTExMjc0M1owKjELMAkGA1UEBhMCSFIxDTALBgNVBAoTBEZJTkExDDAKBgNVBAsTA1JEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOhno+gYjlsPDZk6gIOtK4YkRKXTEibZ1L3aBOqiFSfno+aL10UKm9R8ysPJM94uafwlF/tgIG9NP1nqGgwFqn6uH/DCPB2d7mU0Zghq4DywCWEdDAfRpJg3JjxdPK/piADvMf3oSCPKzy0Da9XKCa69mB6vplikhyxzBeYtzfhC7Y/Bquj5q6EzK5krYvvHukdhfVDiz/PHp8n3GIJ01zRvm7YbHMRR0rW87lT8/wXe76HSzvV75fI9ksBWCddi+T3D5MRE+irkL1OIzfIDna09CYyeBRE7LDCo5ZNPuuxHshc4/FaAOhMpKz/rEdfXFitBS+bDD8LIDhZP5NQWoB0CAwEAAaOCAXkwggF1MA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMBEGCWCGSAGG+EIBAQQEAwIABzCBygYDVR0fBIHCMIG/MEGgP6A9pDswOTELMAkGA1UEBhMCSFIxDTALBgNVBAoTBEZJTkExDDAKBgNVBAsTA1JEQzENMAsGA1UEAxMEQ1JMMTBToFGgT4ZNbGRhcDovL3JkYy1sZGFwLmZpbmEuaHIvb3U9UkRDLG89RklOQSxjPUhSP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3QlM0JiaW5hcnkwJaAjoCGGH2h0dHA6Ly9yZGMuZmluYS5oci9jcmxzL3JkYy5jcmwwKwYDVR0QBCQwIoAPMjAwMzA3MjExMDU3NDNagQ8yMDIzMDcyMTExMjc0M1owEwYDVR0jBAwwCoAIR0UAbvBXpsAwEQYDVR0OBAoECEdFAG7wV6bAMB0GCSqGSIb2fQdBAAQQMA4bCFY2LjA6NC4wAwIEkDANBgkqhkiG9w0BAQUFAAOCAQEAVj5rqGDWAT5d84BZhC80ljoO8KH4pX/MtB5ugJ1vsJb+iIZYBMY2EORHMfLdqkMSi7TlRicvK4AxZstMtHqv6JjTkmeWiLBt2a6oHBf8EA1AkjPgIVlXGARu0/uvfkNBm4DUvRGpiJKsxG00jkAKKklTx2S2iAdcacj89IEv8ZEWi+alrdnW6ceuwd2K1ctmzovtXZl1BKckHdJ45TGk3mr9bJUvcIxPoWvPdquN7FAzoV3GFDttWGF0QMi7zymCdJW+8TbmH4xiriMxZn4NiWEUI92xX1jTs+7rf2JA2Z53JRGD4rfTaW+wTeYnIQ/LJ32rJoNd/Bv7FXOyLD6arA==</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2021-12-20T08:27:07Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<ns5:Qualifications>
+    <ns5:QualificationElement>
+        <ns5:Qualifiers>
+            <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+        </ns5:Qualifiers>
+        <ns5:CriteriaList assert="atLeastOne">
+            <ns5:KeyUsage>
+                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+            </ns5:KeyUsage>
+        </ns5:CriteriaList>
+    </ns5:QualificationElement>
+</ns5:Qualifications>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">FINA Digital Certificate Registry - QC</Name>
+<Name xml:lang="hr">FINA Registar digitalnih certifikata - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity/>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">FINA Digital Certificate Registry - QC</Name>
+<Name xml:lang="hr">FINA Registar digitalnih certifikata - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>OU=RDC, O=FINA, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R0UAbvBXpsA=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2003-07-18T10:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">FINA Digital Certificate Registry GOV - QC</Name>
+                            <Name xml:lang="hr">FINA Registar digitalnih certifikata TDU - QC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEZjCCA06gAwIBAgIEQdvxYTANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJIUjENMAsGA1UEChMERklOQTEQMA4GA1UECxMHUkRDLVREVTAeFw0wNTAxMDUxMzIzNDdaFw0yNTAxMDUxMzUzNDdaMC4xCzAJBgNVBAYTAkhSMQ0wCwYDVQQKEwRGSU5BMRAwDgYDVQQLEwdSREMtVERVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArx6W+/FTyp1jrIiC3oobZCEu7IQAsl5c3UA1cpytLEnz0dVPM/51ZoXnPAVLRD5QITWXtIOQdNmmUC2HB/ovlfg1eLAjprqvhOaAcqwUnCo3w7Y0xjDokDeTFWU+sEOfFkZJWltNwFscfv2x3VINmoxhd/mOZWGuU6ZTLaGXqOU4+oS9byaOZ02Z2gTybipfxxvicYQXRzQfC2g/D3dqpvzNa6/Ajekw923N9dHm8LpEIvLU2ypwKmIe4+Wbj3HMy+Q3HQJPaGW6UUyUIO6rLfsT79av3ZuC14bGLaIoQL7Q2kI1CQMC0DQeROrovmL1Mqqmd8HJytHmh+VnM2mGCQIDAQABo4IBijCCAYYwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwEQYJYIZIAYb4QgEBBAQDAgAHMIHbBgNVHR8EgdMwgdAwRaBDoEGkPzA9MQswCQYDVQQGEwJIUjENMAsGA1UEChMERklOQTEQMA4GA1UECxMHUkRDLVREVTENMAsGA1UEAxMEQ1JMMTCBhqCBg6CBgIZVbGRhcDovL3JkYy10ZHUtbGRhcC5maW5hLmhyL291PVJEQy1URFUsbz1GSU5BLGM9SFI/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdCUzQmJpbmFyeYYnaHR0cDovL3JkYy10ZHUuZmluYS5oci9jcmxzL3JkYy10ZHUuY3JsMCsGA1UdEAQkMCKADzIwMDUwMTA1MTMyMzQ3WoEPMjAyNTAxMDUxMzUzNDdaMBMGA1UdIwQMMAqACEdW+7Tjzj99MBEGA1UdDgQKBAhHVvu0484/fTAdBgkqhkiG9n0HQQAEEDAOGwhWNy4xOjQuMAMCBJAwDQYJKoZIhvcNAQEFBQADggEBAKruzEqRotyBHJqkeSdPuAqpT7d8zirHVqwDUN+qSFhD3Q/Xk4d53ckeDc4tH+1RKfRw8D+Ci0wr9DvhPGU4xvYtRmGSGKXKv+xRru8SZgVC1XZpmZrZolI3aVQcW67U2HxVLvn2qvG8BcJ34VuRvFLWXlsYiKUbq/HMzNyY2xoybNsIo64EWER98Xyn3sz+xSC3M3j7CqYMbHvqaHphL9OzbQN0bcKfubJxbHznXeecCCJaZln2giPpUUF5CcAjJtk8T9d0nWDwxbOgphRda7Z+t6QP6ocw3mS3RwsNGeMu8jo8EW0hTttAoAYIJL+JTmrQAXL0HT7Iqp9WDKWPeR8=</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2018-10-03T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<ns5:Qualifications>
+    <ns5:QualificationElement>
+        <ns5:Qualifiers>
+            <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+        </ns5:Qualifiers>
+        <ns5:CriteriaList assert="atLeastOne">
+            <ns5:KeyUsage>
+                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+            </ns5:KeyUsage>
+        </ns5:CriteriaList>
+    </ns5:QualificationElement>
+</ns5:Qualifications>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">FINA Digital Certificate Registry GOV - QC</Name>
+<Name xml:lang="hr">FINA Registar digitalnih certifikata TDU - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>OU=RDC-TDU, O=FINA, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R1b7tOPOP30=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">FINA Digital Certificate Registry GOV - QC</Name>
+<Name xml:lang="hr">FINA Registar digitalnih certifikata TDU - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>OU=RDC-TDU, O=FINA, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R1b7tOPOP30=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2005-01-05T14:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">FINA Digital Certificate Registry - NQC</Name>
+                            <Name xml:lang="hr">FINA Registar digitalnih certifikata - NQC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIETTCCAzWgAwIBAgIEPxvOITANBgkqhkiG9w0BAQUFADAqMQswCQYDVQQGEwJIUjENMAsGA1UEChMERklOQTEMMAoGA1UECxMDUkRDMB4XDTAzMDcyMTEwNTc0M1oXDTIzMDcyMTExMjc0M1owKjELMAkGA1UEBhMCSFIxDTALBgNVBAoTBEZJTkExDDAKBgNVBAsTA1JEQzCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAOhno+gYjlsPDZk6gIOtK4YkRKXTEibZ1L3aBOqiFSfno+aL10UKm9R8ysPJM94uafwlF/tgIG9NP1nqGgwFqn6uH/DCPB2d7mU0Zghq4DywCWEdDAfRpJg3JjxdPK/piADvMf3oSCPKzy0Da9XKCa69mB6vplikhyxzBeYtzfhC7Y/Bquj5q6EzK5krYvvHukdhfVDiz/PHp8n3GIJ01zRvm7YbHMRR0rW87lT8/wXe76HSzvV75fI9ksBWCddi+T3D5MRE+irkL1OIzfIDna09CYyeBRE7LDCo5ZNPuuxHshc4/FaAOhMpKz/rEdfXFitBS+bDD8LIDhZP5NQWoB0CAwEAAaOCAXkwggF1MA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMBEGCWCGSAGG+EIBAQQEAwIABzCBygYDVR0fBIHCMIG/MEGgP6A9pDswOTELMAkGA1UEBhMCSFIxDTALBgNVBAoTBEZJTkExDDAKBgNVBAsTA1JEQzENMAsGA1UEAxMEQ1JMMTBToFGgT4ZNbGRhcDovL3JkYy1sZGFwLmZpbmEuaHIvb3U9UkRDLG89RklOQSxjPUhSP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3QlM0JiaW5hcnkwJaAjoCGGH2h0dHA6Ly9yZGMuZmluYS5oci9jcmxzL3JkYy5jcmwwKwYDVR0QBCQwIoAPMjAwMzA3MjExMDU3NDNagQ8yMDIzMDcyMTExMjc0M1owEwYDVR0jBAwwCoAIR0UAbvBXpsAwEQYDVR0OBAoECEdFAG7wV6bAMB0GCSqGSIb2fQdBAAQQMA4bCFY2LjA6NC4wAwIEkDANBgkqhkiG9w0BAQUFAAOCAQEAVj5rqGDWAT5d84BZhC80ljoO8KH4pX/MtB5ugJ1vsJb+iIZYBMY2EORHMfLdqkMSi7TlRicvK4AxZstMtHqv6JjTkmeWiLBt2a6oHBf8EA1AkjPgIVlXGARu0/uvfkNBm4DUvRGpiJKsxG00jkAKKklTx2S2iAdcacj89IEv8ZEWi+alrdnW6ceuwd2K1ctmzovtXZl1BKckHdJ45TGk3mr9bJUvcIxPoWvPdquN7FAzoV3GFDttWGF0QMi7zymCdJW+8TbmH4xiriMxZn4NiWEUI92xX1jTs+7rf2JA2Z53JRGD4rfTaW+wTeYnIQ/LJ32rJoNd/Bv7FXOyLD6arA==</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">FINA Digital Certificate Registry - NQC</Name>
+<Name xml:lang="hr">FINA Registar digitalnih certifikata - NQC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>OU=RDC, O=FINA, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R0UAbvBXpsA=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2003-07-18T10:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">FINA Digital Certificate Registry GOV - NQC</Name>
+                            <Name xml:lang="hr">FINA Registar digitalnih certifikata TDU - NQC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEZjCCA06gAwIBAgIEQdvxYTANBgkqhkiG9w0BAQUFADAuMQswCQYDVQQGEwJIUjENMAsGA1UEChMERklOQTEQMA4GA1UECxMHUkRDLVREVTAeFw0wNTAxMDUxMzIzNDdaFw0yNTAxMDUxMzUzNDdaMC4xCzAJBgNVBAYTAkhSMQ0wCwYDVQQKEwRGSU5BMRAwDgYDVQQLEwdSREMtVERVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArx6W+/FTyp1jrIiC3oobZCEu7IQAsl5c3UA1cpytLEnz0dVPM/51ZoXnPAVLRD5QITWXtIOQdNmmUC2HB/ovlfg1eLAjprqvhOaAcqwUnCo3w7Y0xjDokDeTFWU+sEOfFkZJWltNwFscfv2x3VINmoxhd/mOZWGuU6ZTLaGXqOU4+oS9byaOZ02Z2gTybipfxxvicYQXRzQfC2g/D3dqpvzNa6/Ajekw923N9dHm8LpEIvLU2ypwKmIe4+Wbj3HMy+Q3HQJPaGW6UUyUIO6rLfsT79av3ZuC14bGLaIoQL7Q2kI1CQMC0DQeROrovmL1Mqqmd8HJytHmh+VnM2mGCQIDAQABo4IBijCCAYYwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwEQYJYIZIAYb4QgEBBAQDAgAHMIHbBgNVHR8EgdMwgdAwRaBDoEGkPzA9MQswCQYDVQQGEwJIUjENMAsGA1UEChMERklOQTEQMA4GA1UECxMHUkRDLVREVTENMAsGA1UEAxMEQ1JMMTCBhqCBg6CBgIZVbGRhcDovL3JkYy10ZHUtbGRhcC5maW5hLmhyL291PVJEQy1URFUsbz1GSU5BLGM9SFI/Y2VydGlmaWNhdGVSZXZvY2F0aW9uTGlzdCUzQmJpbmFyeYYnaHR0cDovL3JkYy10ZHUuZmluYS5oci9jcmxzL3JkYy10ZHUuY3JsMCsGA1UdEAQkMCKADzIwMDUwMTA1MTMyMzQ3WoEPMjAyNTAxMDUxMzUzNDdaMBMGA1UdIwQMMAqACEdW+7Tjzj99MBEGA1UdDgQKBAhHVvu0484/fTAdBgkqhkiG9n0HQQAEEDAOGwhWNy4xOjQuMAMCBJAwDQYJKoZIhvcNAQEFBQADggEBAKruzEqRotyBHJqkeSdPuAqpT7d8zirHVqwDUN+qSFhD3Q/Xk4d53ckeDc4tH+1RKfRw8D+Ci0wr9DvhPGU4xvYtRmGSGKXKv+xRru8SZgVC1XZpmZrZolI3aVQcW67U2HxVLvn2qvG8BcJ34VuRvFLWXlsYiKUbq/HMzNyY2xoybNsIo64EWER98Xyn3sz+xSC3M3j7CqYMbHvqaHphL9OzbQN0bcKfubJxbHznXeecCCJaZln2giPpUUF5CcAjJtk8T9d0nWDwxbOgphRda7Z+t6QP6ocw3mS3RwsNGeMu8jo8EW0hTttAoAYIJL+JTmrQAXL0HT7Iqp9WDKWPeR8=</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">FINA Digital Certificate Registry GOV - NQC</Name>
+<Name xml:lang="hr">FINA Registar digitalnih certifikata TDU - NQC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>OU=RDC-TDU, O=FINA, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>R1b7tOPOP30=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2005-01-05T14:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina QTSA 2015</Name>
+                            <Name xml:lang="hr">Fina QTSA 2015</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceSupplyPoints>
+                            <ServiceSupplyPoint>https://tsa.fina.hr/ts-rfc3161</ServiceSupplyPoint>
+                        </ServiceSupplyPoints>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina QTSA 2015</Name>
+<Name xml:lang="hr">Fina QTSA 2015</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina QTSA1 2015, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>ywuTb6Nhn7lTvaNm15jpoBb3Dxc=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2015-12-06T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry - QC</Name>
+                            <Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata - QC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2019-06-11T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<ns5:Qualifications>
+    <ns5:QualificationElement>
+        <ns5:Qualifiers>
+            <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+        </ns5:Qualifiers>
+        <ns5:CriteriaList assert="atLeastOne">
+            <ns5:KeyUsage>
+                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+            </ns5:KeyUsage>
+        </ns5:CriteriaList>
+    </ns5:QualificationElement>
+</ns5:Qualifications>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry - QC</Name>
+<Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina RDC 2015, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>FGMRu3szA2h0HBXt5izBPEgbmCE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2017-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry - QC</Name>
+<Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina RDC 2015, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>FGMRu3szA2h0HBXt5izBPEgbmCE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry - QC</Name>
+<Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina RDC 2015, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>FGMRu3szA2h0HBXt5izBPEgbmCE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2015-12-06T23:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry GOV - QC</Name>
+                            <Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata TDU - QC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2017-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<ns5:Qualifications>
+    <ns5:QualificationElement>
+        <ns5:Qualifiers>
+            <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+        </ns5:Qualifiers>
+        <ns5:CriteriaList assert="atLeastOne">
+            <ns5:KeyUsage>
+                <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+            </ns5:KeyUsage>
+        </ns5:CriteriaList>
+    </ns5:QualificationElement>
+</ns5:Qualifications>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry GOV - QC</Name>
+<Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata TDU - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina RDC-TDU 2015, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>9waPTthyR5wUJ1FC9mfZZuJvuQw=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry GOV - QC</Name>
+<Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata TDU - QC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina RDC-TDU 2015, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>9waPTthyR5wUJ1FC9mfZZuJvuQw=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2015-12-06T23:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <ns5:Qualifications>
+        <ns5:QualificationElement>
+            <ns5:Qualifiers>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+                <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD"/>
+            </ns5:Qualifiers>
+            <ns5:CriteriaList assert="atLeastOne">
+                <ns5:KeyUsage>
+                    <ns5:KeyUsageBit name="nonRepudiation">true</ns5:KeyUsageBit>
+                </ns5:KeyUsage>
+            </ns5:CriteriaList>
+        </ns5:QualificationElement>
+    </ns5:Qualifications>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry - NQC</Name>
+                            <Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata - NQC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry - NQC</Name>
+<Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata - NQC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina RDC 2015, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>FGMRu3szA2h0HBXt5izBPEgbmCE=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2015-12-06T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry GOV - NQC</Name>
+                            <Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata TDU - NQC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina RDC 2015 Digital Certificate Registry GOV - NQC</Name>
+<Name xml:lang="hr">Fina RDC 2015 Registar digitalnih certifikata TDU - NQC</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina RDC-TDU 2015, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>9waPTthyR5wUJ1FC9mfZZuJvuQw=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2015-12-06T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">FINA Time-Stamping Service</Name>
+                            <Name xml:lang="hr">FINA Servis vremenske ovjere</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIE3zCCA8egAwIBAgIEPxyKkzANBgkqhkiG9w0BAQUFADAqMQswCQYDVQQGEwJIUjENMAsGA1UEChMERklOQTEMMAoGA1UECxMDUkRDMB4XDTA2MDYwODEwMzMwOVoXDTE2MDYwODExMDMwOVowTDELMAkGA1UEBhMCSFIxFjAUBgNVBAoTDUZJTkEgMDAzMzI4NTIxJTAjBgNVBAMTHFNFUlZJUyBWUkVNRU5TS0UgT1ZKRVJFIFRTQTEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDU2wpQSDWs9spYu71ziaZAHBHfWDea02m3rjNknLGa3xBou9vCxyYBZ0EslRq07LlUmARBzm3yC0/TVhi2AFXonx4Tn9dBztBXOc5uCAKt7zbT7Kto8DHUgi9bbnvyiZfRaRJb4+PnaKIHoShWT2svKZz7LLaLtwcCdUDmdbCW2ReMzulG2gN4lMIqDblYVwJ5zfUWF8TjVsCkFT5TKBhuMa2AKd1h+RwmeGHfPjDN0S+mMPfjteHCG45OIcHOVLA5xq9SKAUj4aqcUeH59uIIrjdCGqylOATXtIpWoIyy7OVsoguL0OhJCUOokid80pQqDbtdhqnjfONDn0WQRZpzAgMBAAGjggHpMIIB5TAOBgNVHQ8BAf8EBAMCBsAwKwYDVR0QBCQwIoAPMjAwNjA2MDgxMDMzMDlagQ8yMDE2MDYwODExMDMwOVowFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwPAYDVR0gBDUwMzAxBgkrfIhQBQs0BAMwJDAiBggrBgEFBQcCARYWaHR0cDovL3JkYy5maW5hLmhyL2NwLzAdBgNVHREEFjAUhhJodHRwOi8vdHNhLmZpbmEuaHIwGwYDVR0JBBQwEjAQBgkqhkiG9n0HRB0xAwIBDTCBxQYDVR0fBIG9MIG6MEKgQKA+pDwwOjELMAkGA1UEBhMCSFIxDTALBgNVBAoTBEZJTkExDDAKBgNVBAsTA1JEQzEOMAwGA1UEAxMFQ1JMMjAwdKByoHCGTWxkYXA6Ly9yZGMtbGRhcC5maW5hLmhyL291PVJEQyxvPUZJTkEsYz1IUj9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0JTNCYmluYXJ5hh9odHRwOi8vcmRjLmZpbmEuaHIvY3Jscy9yZGMuY3JsMBMGA1UdIwQMMAqACEdFAG7wV6bAMBEGA1UdDgQKBAhJuUHu9MRj6DAJBgNVHRMEAjAAMBkGCSqGSIb2fQdBAAQMMAobBFY3LjEDAgSwMA0GCSqGSIb3DQEBBQUAA4IBAQAMc82S4wxY7RPVnG1pjMr+kCaOyox0Kgu6p66O2GQCpMJxBuef4jw8qY+e69R0l8uHAjstOUMh/EJHMlJAnFpo7w2JLa77CJjXUeC9fjVGCqHPmRZ1d/ZMAI0rwToWT+BkwJ3L320egSnNbQ9EmG2zfwJjRRiEwyrxsseD1C2xnnW3ZPhYKjDD2vzvi4KD9PGOCB4m8PQarIibRt+jN5X8szmR+Ro4aM6qhogupBvUHl17+oIMgRok9xGADY60IAnYNSHv06Do4W3TRmy8e8r4voj/TEd9x3QmpUyOFw3Q97guykPnFFF0iO/+rxLybaEMA0z3VF5gRdh53fBClaSf</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceSupplyPoints>
+                            <ServiceSupplyPoint>https://tsa.fina.hr/ts-rfc3161</ServiceSupplyPoint>
+                        </ServiceSupplyPoints>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">FINA Time-Stamping Service</Name>
+<Name xml:lang="hr">FINA Servis vremenske ovjere</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=SERVIS VREMENSKE OVJERE TSA1, O=FINA 00332852, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SblB7vTEY+g=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased</ServiceStatus>
+                            <StatusStartingTime>2015-12-06T23:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">FINA Time-Stamping Service</Name>
+<Name xml:lang="hr">FINA Servis vremenske ovjere</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=SERVIS VREMENSKE OVJERE TSA1,O=FINA 00332852,C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>SblB7vTEY+g=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2010-12-10T11:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina QTSA 2017</Name>
+                            <Name xml:lang="hr">Fina QTSA 2017</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Fina QTSA 2017 2, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>4OaWQQGKVlGeNFe4LrKYWUg+Luk=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2021-12-20T08:31:26Z</StatusStartingTime>
+                        <ServiceSupplyPoints>
+                            <ServiceSupplyPoint>https://tsa.fina.hr/ts-rfc3161</ServiceSupplyPoint>
+                        </ServiceSupplyPoints>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina QTSA 2017</Name>
+<Name xml:lang="hr">Fina QTSA 2017</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina QTSA 2017 2, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>4OaWQQGKVlGeNFe4LrKYWUg+Luk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2019-05-27T22:00:01Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina QTSA 2017</Name>
+<Name xml:lang="hr">Fina QTSA 2017</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina QTSA 2017 2, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>4OaWQQGKVlGeNFe4LrKYWUg+Luk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                            <StatusStartingTime>2019-05-27T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina QTSA 2017</Name>
+<Name xml:lang="hr">Fina QTSA 2017</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina QTSA 2017 2, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>4OaWQQGKVlGeNFe4LrKYWUg+Luk=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2017-09-17T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina QTSA 2017 4</Name>
+                            <Name xml:lang="hr">Fina QTSA 2017 4</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Fina QTSA 2017 4, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>0ss08+uHgbGvQULa0dDzJnJK5gs=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2019-05-27T22:00:01Z</StatusStartingTime>
+                        <ServiceSupplyPoints>
+                            <ServiceSupplyPoint>https://tsa.fina.hr/ts-rfc3161</ServiceSupplyPoint>
+                        </ServiceSupplyPoints>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Fina QTSA 2017_4</Name>
+<Name xml:lang="hr">Fina QTSA 2017_4</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Fina QTSA 2017 4, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>0ss08+uHgbGvQULa0dDzJnJK5gs=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2019-05-27T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">FINA QTSA 2017 5</Name>
+                            <Name xml:lang="hr">FINA QTSA 2017 5</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Fina QTSA 2017 5, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>bZJL9UXhhqJFKevv3m4lW3naCNM=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2020-02-05T23:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina RDC 2020 Digital Certificate Registry - QC</Name>
+                            <Name xml:lang="hr">Fina RDC 2020 Digital Certificate Registry - QC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Fina RDC 2020, O=Financijska agencija, C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>eiTw4nM5xYEUDBNTMCJzJ0jeK4s=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2020-12-21T23:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<ns5:Qualifications>
+    <ns5:QualificationElement>
+        <ns5:Qualifiers>
+            <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement"/>
+        </ns5:Qualifiers>
+        <ns5:CriteriaList assert="atLeastOne">
+            <ns5:KeyUsage>
+                <ns5:KeyUsageBit name="crlSign">true</ns5:KeyUsageBit>
+            </ns5:KeyUsage>
+            <ns5:Description/>
+        </ns5:CriteriaList>
+    </ns5:QualificationElement>
+</ns5:Qualifications>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/PKC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina RDC 2020 Digital Certificate Registry - NQC</Name>
+                            <Name xml:lang="hr">Fina RDC 2020 Digital Certificate Registry - NQC</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Fina RDC 2020, O=Financijska agencija, C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>eiTw4nM5xYEUDBNTMCJzJ0jeK4s=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</ServiceStatus>
+                        <StatusStartingTime>2020-12-21T23:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina QTSA 2017 6</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Fina QTSA 2017 6, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>RsbFDcOFzjwM01T1y5QB5BYfqIo=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2021-01-28T23:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina QTSA 2017 7</Name>
+                            <Name xml:lang="hr">Fina QTSA 2017 7</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Fina QTSA 2017 7, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>HGBbUs1m05oieVW57xHmf3jD2wU=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2022-02-16T09:18:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Fina QTSA 2017 8</Name>
+                            <Name xml:lang="hr">Fina QTSA 2017 8</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIHbjCCBVagAwIBAgIQfMFbat4HNfIAAAAAX7+wqjANBgkqhkiG9w0BAQsFADBEMQswCQYDVQQGEwJIUjEdMBsGA1UEChMURmluYW5jaWpza2EgYWdlbmNpamExFjAUBgNVBAMTDUZpbmEgUkRDIDIwMjAwHhcNMjMwMTE2MDkzODIwWhcNMjcwMTE2MDkwMDAwWjBjMQswCQYDVQQGEwJIUjEdMBsGA1UEChMURmluYW5jaWpza2EgYWdlbmNpamExGjAYBgNVBGETEVZBVEhSLTg1ODIxMTMwMzY4MRkwFwYDVQQDExBGaW5hIFFUU0EgMjAxNyA4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAur4FnVkYjLCrWYKArkD9um+CbyZu3DtORLIDOgxRJw1kd+BB9oLPFvG2G8GfNAYUBXxDxR1AxUmLGNottajuHDS1s5TyKeEdN2cNpzo+VK2vWZcnfS7VTJlwW65GK3T11jvQYaushHzFXvi70v2wykhDvV+9sqBSVbXFfShusblG+2YPKLK2y2t5oXF36QDgOgcLWjvZRgAcweV19XEHIP93ckZSq2kcluPp1IfeJ0iPeKD/O0Do5dpiOzHp2Y/HeZgFw0+FN4Y0fu/9zUWZuv0ljRZCMOI0ZahD8n6OkzMrc36pGIxXt6jVyuiJMa3qJTPFlvWvCY812OXZvU+GvQIDAQABo4IDOzCCAzcwDgYDVR0PAQH/BAQDAgbAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMIG/BgNVHSAEgbcwgbQwgbEGByt8iFAFDTQwgaUwTAYIKwYBBQUHAgEWQGh0dHBzOi8vd3d3LmZpbmEuaHIvcmVndWxhdGl2YS1kb2t1bWVudGktaS1wb3R2cmRlLW8tc3VrbGFkbm9zdGkwVQYIKwYBBQUHAgEWSWh0dHBzOi8vd3d3LmZpbmEuaHIvZW4vbGVnaXNsYXRpb24tZG9jdW1lbnRzLWFuZC1jb25mb3JtYW5jZS1jZXJ0aWZpY2F0ZXMwaQYIKwYBBQUHAQEEXTBbMB8GCCsGAQUFBzABhhNodHRwOi8vb2NzcC5maW5hLmhyMDgGCCsGAQUFBzAChixodHRwOi8vcmRjLmZpbmEuaHIvUkRDMjAyMC9GaW5hUkRDQ0EyMDIwLmNlcjCBlQYIKwYBBQUHAQMEgYgwgYUwCAYGBACORgEBMGQGBgQAjkYBBTBaMCsWJWh0dHBzOi8vcmRjLmZpbmEuaHIvcGRzL1BEU3F0cy1lbi5wZGYTAmVuMCsWJWh0dHBzOi8vcmRjLmZpbmEuaHIvcGRzL1BEU3F0cy1oci5wZGYTAmhyMBMGBgQAjkYBBjAJBgcEAI5GAQYCMBsGA1UdCQQUMBIwEAYJKoZIhvZ9B0QdMQMCARIwgbIGA1UdHwSBqjCBpzCBpKCBoaCBnoYsaHR0cDovL3JkYy5maW5hLmhyL1JEQzIwMjAvRmluYVJEQ0NBMjAyMC5jcmyGbmxkYXA6Ly9yZGMtbGRhcDIuZmluYS5oci9jbj1GaW5hJTIwUkRDJTIwMjAyMCxvPUZpbmFuY2lqc2thJTIwYWdlbmNpamEsYz1IUj9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0JTNCYmluYXJ5MCsGA1UdEAQkMCKADzIwMjMwMTE2MDkzODIwWoEPMjAyNDAxMTYwOTAwMDBaMB8GA1UdIwQYMBaAFHok8OJzOcWBFAwTUzAicydI3iuLMB0GA1UdDgQWBBSSpvsogQr0pJRVcBx4p6yD9HSCyzAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4ICAQARJi1jrWF02/P40gaGJb6e4WPCLZL2Nf66MJMX1uZUNSSP2R1IRRw8xMVWtD4q3vM6xQPQH/BZ5PIwTHq6RMXEdQdie85W1JoGxD1tn2cdkOS428sVPv2kwy67x0Ad5S5YNnFqaXG7npbJZbzn0jwaPGfyqPuGoG/joN38oHS+UPOVvc/7hooVhGWPRobjj+vFXavJX9yLR7wIFzUWaqNSIGHN7HzzsimzMq/LNngSJBZvOlQZjxo1WVgGT8tC6riJV74dzu2eqZDVruBF3vOzxL/Uvc4hPLoGyPtrdFn7iecBs+oUZVE2gBsmsZS5GTxYogm+kwSHirPVI15uTqABDWXYfS27j7s1H+okEuJBkTn6rLAMs/HtTPBya6Bif+GGpZKjjsOV5M3NCtELEFL6oGZIvjeA1ptrX78O1zSyHDwQNtthyxlUE34esEGW9vy9/Ks92kbmRWPYMSeE5dK/G7vfli+O0aqEVWg+J/1aJ9NjgQKixF22a/B1JJHWmUy2x7vCeYYD4IJCSvQPIYKNwQps5iVbakS0FrKrQSzc8IpZiYYcz4Ikx0rvd+7DwMu2sGyedZLN1G8+ZfPJbGNTqwovErSkvNaOtO0LvsUPJFd9w5qrdK0045Ap2CDgcQ7882zX9BM322luNx5yQKM1IdKC1jiFsWZIteP8+tdigg==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Fina QTSA 2017 8, OID.2.5.4.97=VATHR-85821130368, O=Financijska agencija, C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>kqb7KIEK9KSUVXAceKesg/R0gss=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-01-24T13:50:23Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">AKD d.o.o.</Name>
+                    <Name xml:lang="hr">AKD d.o.o.</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">AKD d.o.o.</Name>
+                    <Name xml:lang="hr">AKD d.o.o.</Name>
+                    <Name xml:lang="en">VATHR-58843087891</Name>
+                    <Name xml:lang="hr">VATHR-58843087891</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Savska cesta 31</StreetAddress>
+                            <Locality>Zagreb</Locality>
+                            <PostalCode>10000</PostalCode>
+                            <CountryName>HR</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="hr">
+                            <StreetAddress>Savska cesta 31</StreetAddress>
+                            <Locality>Zagreb</Locality>
+                            <PostalCode>10000</PostalCode>
+                            <CountryName>HR</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:pma@akd.hr</URI>
+                        <URI xml:lang="hr">mailto:pma@akd.hr</URI>
+                        <URI xml:lang="en">http://eid.hr/en</URI>
+                        <URI xml:lang="hr">http://eid.hr</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">http://www.eid.hr/en</URI>
+                    <URI xml:lang="hr">http://www.eid.hr</URI>
+                    <URI xml:lang="en">http://www.id.hr/cps/</URI>
+                    <URI xml:lang="hr">http://www.id.hr/cps/</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">HR electronic IDentity</Name>
+                            <Name xml:lang="hr">HR elektronički identitet</Name>
+                            <Name xml:lang="en">HR eID</Name>
+                            <Name xml:lang="hr">HR eID</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=HRIDCA, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>TVeKLno2yis22DaL4TLWbGDqNVY=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">HR electronic IDentity</Name>
+<Name xml:lang="hr">HR elektronički identitet</Name>
+<Name xml:lang="en">HR eID</Name>
+<Name xml:lang="hr">HR eID</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=HRIDCA, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>TVeKLno2yis22DaL4TLWbGDqNVY=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2016-06-27T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">HR commercial identity</Name>
+                            <Name xml:lang="hr">HR komercijalni identitet</Name>
+                            <Name xml:lang="en">HR kID</Name>
+                            <Name xml:lang="hr">HR kID</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=KIDCA, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>beShayNyipY9xdkqTIDKq7sa3Ss=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2018-07-19T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">HR commercial identity</Name>
+<Name xml:lang="hr">HR komercijalni identitet</Name>
+<Name xml:lang="en">HR kID</Name>
+<Name xml:lang="hr">HR kID</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=KIDCA, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>beShayNyipY9xdkqTIDKq7sa3Ss=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2017-06-05T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">AKD QTSA1</Name>
+                            <Name xml:lang="hr">AKD QTSA1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=AKD QTSA1, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>EG4jO4kP4rwq4+5G24S0CGCbAzE=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2018-02-12T23:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">AKD QTSA2</Name>
+                            <Name xml:lang="hr">AKD QTSA2</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=AKD QTSA2, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>K5h4UFe+W7k84tKUepivEZmaUDs=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2018-02-12T23:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">AKD QTSA 2019 1</Name>
+                            <Name xml:lang="hr">AKD QTSA 2019 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=AKD QTSA1, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>n/LO870AcVLFtBwy9NFK4Fqoyis=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2019-12-08T23:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">AKD QTSA 2019 2</Name>
+                            <Name xml:lang="hr">AKD QTSA 2019 2</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=AKD QTSA2, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>PxbAJ3FQwEty6/CpK6AowLN7kAs=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2019-12-08T23:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">AKD QTSA 2021 1 </Name>
+                            <Name xml:lang="hr">AKD QTSA 2021 1 </Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=AKD QTSA 2021 1, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>5VOveze//wtR2GsbU6vtDXZvNEM=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2021-09-16T06:43:29Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en"> AKD QTSA 2021 2 </Name>
+                            <Name xml:lang="hr"> AKD QTSA 2021 2 </Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=AKD QTSA 2021 2, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>m5tKAxyRlgg1d75Ow5QXQUV+YZA=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2021-09-16T06:44:31Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">CERTILIA</Name>
+                            <Name xml:lang="hr">CERTILIA</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEtzCCAp+gAwIBAgIIWnlzIy6SB8MwDQYJKoZIhvcNAQELBQAwUzELMAkGA1UEBhMCSFIxEzARBgNVBAoMCkFLRCBkLm8uby4xGjAYBgNVBGEMEVZBVEhSLTU4ODQzMDg3ODkxMRMwEQYDVQQDDApBS0RDQSBSb290MB4XDTIzMDUxMjExMDcyMFoXDTM4MDExOTAzMTQwN1owUTELMAkGA1UEBhMCSFIxEzARBgNVBAoMCkFLRCBkLm8uby4xGjAYBgNVBGEMEVZBVEhSLTU4ODQzMDg3ODkxMREwDwYDVQQDDAhDRVJUSUxJQTB2MBAGByqGSM49AgEGBSuBBAAiA2IABFiys25nE59TG+69QnozLEcFhLsu+mFM/j1Zjr3RJObuBbBwKCR91kM+gVyQkMT7cTcZjxcFyxqABC8ddPUdCrx4VVL0jw8wgMSm1coZywSjYHSpG9L1LW9KGJropqOoXKOCAT0wggE5MGgGCCsGAQUFBwEBBFwwWjAtBggrBgEFBQcwAoYhaHR0cHM6Ly9ha2QuaHIvY2VydC9ha2RjYXJvb3QuY3J0MCkGCCsGAQUFBzABhh1odHRwczovL29jc3AuYWtkLmhyL2FrZGNhcm9vdDAdBgNVHQ4EFgQUJL7kHfsD23rbp4jNzvFdTolg/GwwDwYDVR0TAQH/BAUwAwEB/zAfBgNVHSMEGDAWgBRT99o5rO5DOJRh/ly3qgNTtU7zujA5BgNVHSAEMjAwMC4GBFUdIAAwJjAkBggrBgEFBQcCARYYaHR0cHM6Ly9jZXJ0aWxpYS5jb20vY3BzMDEGA1UdHwQqMCgwJqAkoCKGIGh0dHBzOi8vY3JsLmFrZC5oci9ha2RjYXJvb3QuY3JsMA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAgEAkfug1q2w9VvkNT1tcx93bXOEkT73WHpgKnjuGcA5B6uin3aV0fieUIl0j5tMVfTeNf7bUq7b+0nTHbLKPdx1axOpewBCP4pxxdLtY6WAycm/J9ntronU/XwlA5lxpuUOrLDK8ItlQCCBPc18rvSGMVkQbJnJPgbJfTvc/dubchVyd7gUn5VbygIKgiO4l6JjQ0fnOSPxRVsX1+Wsf1VwiDETk0aUa6rHjnKL7gGq0bJi1Xp9uagVsdoEKUt+JXW0NfgEUz14HbHhZfVPr8b2ziiIKQQh7sKZwQLc+dgUt5sfNW3jS0lr5q8GuXIz86y+cgfpfwal6KsEySi6GpswboycjgRPCNiwJAb7Y1d+jToXn3bmdJJe6Sh5QQzv9CAQHk/nzGbtm6EzR8oTmMjDp7qjdtGLj4JNknjH1qtd/2plpBDOu9GxduuFmhDZHGFcEgpyH3g4Rs0JUT3zyzO3ZYGiCZ9Y/UuxSRm7xtTzkJ5Lr40ohKvskt0HL70d6W5zkHKFJY+S471rm9SM6/My7H3B64piHRb/xB4JSyc/jw4lFjPZoAMkPkTXSBI5A12SzJrlcpNDCiFGUvTkLri4wJ6ImoWAVkKJyLcBt8TYTRHEJQCUvSUp4Qp7ZyqgX6c2MY8B4SwKl3FbqTD39iy+QRZMcP31ARa66VhPc2zJK5U=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=CERTILIA, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>JL7kHfsD23rbp4jNzvFdTolg/Gw=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-06-27T06:19:22Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="hr">AKD QTSA 2023 1 </Name>
+                            <Name xml:lang="en">AKD QTSA 2023 1 </Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIGMDCCBBigAwIBAgIIa/qFNPNXYe0wDQYJKoZIhvcNAQELBQAwTjELMAkGA1UEBhMCSFIxEzARBgNVBAoMCkFLRCBkLm8uby4xGjAYBgNVBGEMEVZBVEhSLTU4ODQzMDg3ODkxMQ4wDAYDVQQDDAVLSURDQTAeFw0yMzA4MjkxMjA3NTBaFw0yODA4MjgxMjA3NTBaMFgxCzAJBgNVBAYTAkhSMRMwEQYDVQQKDApBS0QgZC5vLm8uMRowGAYDVQRhDBFWQVRIUi01ODg0MzA4Nzg5MTEYMBYGA1UEAwwPQUtEIFFUU0EgMjAyMyAxMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvYjIXeselBKhxAwUM3yLh+YmCPHOQqjoUFN418Ey4+BXIEWnBdOeJbSD1t6HYAacjffBozXbyDQJTQ5BvpN98gdU8z9zbETdHWEOachApaieR12RPgcP24iIfFvfDvQm0jDjn0V/o/FWJfqimbt1U4q+JKTwk9j/qQ7nYExebs+6UipMbN6RV/U9beopWGeE6YrSEgLRb5cLwaWRZcxZPCmj/uZHPJT+soLCsfdi4qzGJull5qRPd3OOzRQfwULt+F5aXyit17zVS6wqmIxv47roDHXBMPrhGtbSj4ioo4SqxEG7fkWL67NV5+ZKubcXM28FyUvzCQeHEh2W8pI2CQIDAQABo4ICBjCCAgIwYgYIKwYBBQUHAQEEVjBUMCcGCCsGAQUFBzAChhtodHRwOi8vaWQuaHIvY2VydC9raWRjYS5jcnQwKQYIKwYBBQUHMAGGHWh0dHA6Ly9vY3NwLWtpZGNhLmlkLmhyL2tpZGNhMB0GA1UdDgQWBBTzltdB6xegTagUh+xr1HXb+M3xLzAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFG3koWsjcoqWPcXZKkyAyqu7Gt0rMCsGA1UdEAQkMCKADzIwMjMwODI5MTIwNzUwWoEPMjAyNTA4MjgxMjA3NTBaMDsGA1UdIAQ0MDIwMAYOKwYBBAGC118FBAECAggwHjAcBggrBgEFBQcCARYQaHR0cDovL2lkLmhyL2NwczBPBgNVHR8ESDBGMCGgH6AdhhtodHRwOi8vY3JsMS5pZC5oci9raWRjYS5jcmwwIaAfoB2GG2h0dHA6Ly9jcmwyLmlkLmhyL2tpZGNhLmNybDAOBgNVHQ8BAf8EBAMCB4AwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwawYIKwYBBQUHAQMEXzBdMAgGBgQAjkYBATA8BgYEAI5GAQUwMjAXFhFodHRwczovL2lkLmhyL2NwcxMCZW4wFxYRaHR0cHM6Ly9pZC5oci9jcHMTAmhyMBMGBgQAjkYBBjAJBgcEAI5GAQYCMA0GCSqGSIb3DQEBCwUAA4ICAQBIGWaBIaCKFjl6CcyYRi2vsx8GtJi0wjEB7FCkKrk1k628+ISE1fec/zLbp5GN3pI+QOOGaJKTX2Z0FW/kaeheVKSmxRoqhe8rR3L3MHIwH5tD3AQjg3wyCy0SvrjqN42pZPPaREWmx7Rb8DLIGAmf9hUvyJcN6FaeTXe+qDXHMc4m6Ew7XWG2gDqNvD1BaOvbkrzIDDIL+X/09Bc5T6/ksTlMwga7fJy6g+nKLC+JDnS9ewglHiZ/GRZLs0TLZGhsdLWOVWKBgme/QSl+wbxUATRuCCD2l5rcvV2aMi+XB2wt3346zeT+ivoQcmueSG66HENPEWm3iOwtkJW5io/W1PUMwV6oB6YEqqv7wp3EeiIe62JjgUfKvB45j53sV6MQEsP5C500vWNVr7QH6CzWtzujlROzdEYPhaagVCvdPA63McGYEOCFTg1z+Fl66mYA6pWpYV6qPI6mo5h+w8we7eRghqhWC+cxghzhNnyKEi7wiQ/zsVdJ835gnZHVKWLB4rplzlWeG/iDdYqQoBOIw9o77EAr7pMGin7PS3kMb0RUCzZDdv++o6ZhC5m9wQdsBGt02v5er+bFnJcY+YmM6A3AWCIY2JsxhNh+b/a/CkfOIWEkmPM33hFkWBj8Wz5Qr52HP0PYOS1XbTRyCTSoYcxhXXiBVTIiKZXKz8cUyA==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=AKD QTSA 2023 1, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>85bXQesXoE2oFIfsa9R12/jN8S8=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-09-01T12:40:25Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="hr">AKD QTSA 2023 2</Name>
+                            <Name xml:lang="en">AKD QTSA 2023 2</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=AKD QTSA 2023 2, OID.2.5.4.97=VATHR-58843087891, O=AKD d.o.o., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>oi7taAwygd/GBAib4MSGZsCtKv8=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-09-01T12:41:22Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">Zagrebačka banka dioničko društvo</Name>
+                    <Name xml:lang="hr">Zagrebačka banka dioničko društvo</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">Zagrebacka banka d.d.</Name>
+                    <Name xml:lang="hr">Zagrebacka banka d.d.</Name>
+                    <Name xml:lang="en">VATHR-92963223473</Name>
+                    <Name xml:lang="hr">VATHR-92963223473</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Trg bana Josipa Jelačića 10</StreetAddress>
+                            <Locality>Zagreb</Locality>
+                            <PostalCode>10000</PostalCode>
+                            <CountryName>HR</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="hr">
+                            <StreetAddress>Trg bana Josipa Jelačića 10</StreetAddress>
+                            <Locality>zagreb</Locality>
+                            <PostalCode>10000</PostalCode>
+                            <CountryName>HR</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:pma@unicreditgroup.zaba.hr</URI>
+                        <URI xml:lang="hr">mailto:pma@unicreditgroup.zaba.hr</URI>
+                        <URI xml:lang="en">http://www.zaba.hr/cps</URI>
+                        <URI xml:lang="hr">http://www.zaba.hr/cps</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">http://www.zaba.hr/cps</URI>
+                    <URI xml:lang="hr">http://www.zaba.hr/cps</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Zaba QPKI</Name>
+                            <Name xml:lang="hr">Zaba QPKI</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Zaba QCA, O=Zagrebacka banka d.d., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>hbLD/phzyZjcTDJn5ICT0pg/r3I=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2019-10-01T22:00:00Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="true">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Zaba QPKI</Name>
+<Name xml:lang="hr">Zaba QPKI</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Zaba QCA, O=Zagrebacka banka d.d., C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>hbLD/phzyZjcTDJn5ICT0pg/r3I=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                            <StatusStartingTime>2018-07-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Zaba QPKI</Name>
+<Name xml:lang="hr">Zaba QPKI</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Zaba QCA, O=Zagrebacka banka d.d., C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>hbLD/phzyZjcTDJn5ICT0pg/r3I=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Zaba QPKI</Name>
+<Name xml:lang="hr">Zaba QPKI</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>CN=Zaba QCA, O=Zagrebacka banka d.d., C=HR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>hbLD/phzyZjcTDJn5ICT0pg/r3I=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</ServiceStatus>
+                            <StatusStartingTime>2016-06-27T22:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Zaba QTSA</Name>
+                            <Name xml:lang="hr">Zaba QTSA</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Zaba QTSA, O=Zagrebacka banka d.d., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>wCF6nOACJF9hHF0GgpEe7bg1qfY=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2019-10-01T22:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">HP d.d.</Name>
+                    <Name xml:lang="hr">HP d.d.</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">VATHR-87311810356</Name>
+                    <Name xml:lang="hr">VATHR-87311810356</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Jurišićeva ulica 13</StreetAddress>
+                            <Locality>Zagreb</Locality>
+                            <PostalCode>10000</PostalCode>
+                            <CountryName>HR</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="hr">
+                            <StreetAddress>Jurišićeva ulica 13</StreetAddress>
+                            <Locality>Zagreb</Locality>
+                            <PostalCode>10000</PostalCode>
+                            <CountryName>HR</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:ePreporuka@posta.hr</URI>
+                        <URI xml:lang="hr">mailto:ePreporuka@posta.hr</URI>
+                        <URI xml:lang="en">https://www.eposta.hr/info</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">https://www.eposta.hr/info</URI>
+                    <URI xml:lang="hr">https://www.eposta.hr/info</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/EDS/Q</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">HP d.d.</Name>
+                            <Name xml:lang="hr">HP d.d.</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=HP-HRVATSKA POŠTA, OU=RSeal, OID.2.5.4.97=VATHR-87311810356, O=HP d.d., C=HR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>LK6zq3P6+G3W1KtJsfbm87971Ww=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-03-02T10:42:02Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
+    </TrustServiceProviderList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-54306ce652e7e476edc89bb16dc14242"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>fOQAqKymSi/b5JSCBUx64ix/CP0UWfO1MwHc49kYfNE=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-54306ce652e7e476edc89bb16dc14242"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>TYDDqElqjsJ9kQ8/9lqzdKg+aLcCtIKuFUItEX+AQ0A=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-54306ce652e7e476edc89bb16dc14242">BgiI/o3HVxM03l5Y+ggIoPJirABZOxn22Brz0Py+8edAekPV2Qdx85bW26AGMol497EPwwUKR9sT9XK4HC9Kl7dpHx8EmLYpQ/d9Kvswr8mCH3h1AR2RiJyM/jFD1frzYUREwgoiqXAbmM2tMRev21nLqkGnrAaFld7sH07RvJqAxCYZMrskvnP1mre1pbj3Q52mcl7kAJvdJ/4gTU430OZDFiy7j/EqyugDng+2uvIB8elmbOoIKUgd2I3rTuTmod/cXXDESxACrIRWplK/SmaQ+l3QBvnJQJTKISHD/8ibON0E6AWeWuJhiHSgem2J9EyL37Sf/2bLasG9LPHFEA==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>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</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-54306ce652e7e476edc89bb16dc14242"><xades:SignedProperties Id="xades-id-54306ce652e7e476edc89bb16dc14242"><xades:SignedSignatureProperties><xades:SigningTime>2023-09-01T12:48:50Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>ZBeC2XROSpuPA4+9RswaxbaF7a01GdfIglCImCEvHPBv+HfMSLja3fvmxmpSDgsimxXGPXh07+WvbzchHIfT1g==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Fina RDC 2015,O=Financijska agencija,C=HR</ds:X509IssuerName><ds:X509SerialNumber>93401273431891365872373703169754915595</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

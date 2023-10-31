@@ -38,6 +38,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -45,7 +46,7 @@ import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -107,6 +108,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class SignaturePoolTest extends AbstractDocumentTestValidation {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SignaturePoolTest.class);
+
+	private static final String KEYSTORE_PATH = "src/main/resources/keystore.p12";
+	private static final String KEYSTORE_TYPE = "PKCS12";
+	private static final char[] KEYSTORE_PASSWORD = "dss-password".toCharArray();
+
+	private static final String CACHE_PATH = "src/test/resources/signature-pool/cache";
 	
 	private static DSSDocument document;
 	
@@ -125,11 +132,12 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 		
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
-		lotlSource.setCertificateSource(new CommonCertificateSource());
+		lotlSource.setCertificateSource(ojContentKeyStore());
+		lotlSource.setPivotSupport(true);
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		
 		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
-		fileCacheDataLoader.setFileCacheDirectory(new File("src/test/resources/signature-pool/cache"));
+		fileCacheDataLoader.setFileCacheDirectory(new File(CACHE_PATH));
 		fileCacheDataLoader.setCacheExpirationTime(-1);
 
 		fileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
@@ -138,6 +146,14 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 		tlValidationJob.offlineRefresh();
 		
 		LOG.info("TrustedListsCertificateSource size : " + trustedCertSource.getNumberOfCertificates());
+	}
+
+	private static KeyStoreCertificateSource ojContentKeyStore() {
+		try {
+			return new KeyStoreCertificateSource(new File(KEYSTORE_PATH), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+		} catch (IOException e) {
+			throw new DSSException("Unable to load the file " + KEYSTORE_PATH, e);
+		}
 	}
 
 	private static Stream<Arguments> data() throws IOException {
