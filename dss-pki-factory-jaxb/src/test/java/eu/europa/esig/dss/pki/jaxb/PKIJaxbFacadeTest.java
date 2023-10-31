@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.pki.jaxb;
 
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,6 +11,7 @@ import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -19,9 +21,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PKIJaxbFacadeTest extends AbstractTestJaxbPKI {
 
     public static Stream<Arguments> data() {
-        File folder = new File(PKIJaxbFacadeTest.class.getClassLoader().getResource(XML_FOLDER).getPath());
         List<Arguments> dataToRun = new ArrayList<>();
-        for (File file : folder.listFiles()) {
+        Collection<File> pkiFiles = Utils.listFiles(new File(XML_FOLDER), new String[]{"xml"}, false);
+        for (File file : pkiFiles) {
             dataToRun.add(Arguments.of(file));
         }
         return dataToRun.stream();
