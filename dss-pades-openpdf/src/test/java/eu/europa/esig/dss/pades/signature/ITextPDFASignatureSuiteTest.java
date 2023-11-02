@@ -20,9 +20,13 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-//@Suite
-// TODO : disabled due to OpenPdf issues (see PR #814, #815)
-//@SelectClasses({ PDFAPAdESLevelBTest.class, PDFAWithFontSubsetTest.class })
+import eu.europa.esig.dss.pdfa.signature.suite.PDFAPAdESLevelBTest;
+import eu.europa.esig.dss.pdfa.signature.suite.PDFAWithFontSubsetTest;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
+
+@Suite
+@SelectClasses({ PDFAPAdESLevelBTest.class, PDFAWithFontSubsetTest.class })
 public class ITextPDFASignatureSuiteTest {
 
 }

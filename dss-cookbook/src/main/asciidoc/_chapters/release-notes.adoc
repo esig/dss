@@ -24,7 +24,7 @@
                                             * Added qualification information messages to simple certificate report;
                                             * Added optional validation constraint for enforced time-stamp presence and validity verification;
                                             * Added Dockerfile to run DSS Demo WebApp;
-                                            * Dependencies update (BouncyCastle, Apache Santuario, PdfBox, etc.);
+                                            * Dependencies update (BouncyCastle, Apache Santuario, PdfBox, OpenPdf, etc.);
                                             * Documentation improvements;
                                             * Java 21 support.
 
