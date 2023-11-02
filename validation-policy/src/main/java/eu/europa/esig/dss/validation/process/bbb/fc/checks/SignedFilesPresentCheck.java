@@ -31,6 +31,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,20 +64,28 @@ public class SignedFilesPresentCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-		if (ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType())) { // ASiC-S one signed file in the root directory
+		if (ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType())) {
+			// ASiC-S one signed file in the root directory
 			message = MessageTag.BBB_FC_ISFP_ASICS;
 			error = MessageTag.BBB_FC_ISFP_ASICS_ANS;
-			List<String> contentFiles = containerInfo.getContentFiles();
-			if (Utils.isCollectionNotEmpty(contentFiles) && contentFiles.size() == 1) {
-				String fileName = contentFiles.iterator().next();
-				return isRootDirectoryFile(fileName);
-			}
-			return false;
-		} else { // ASiC-E one or more signed files outside META-INF
+			List<String> rootLevelFiles = getRootLevelFiles(containerInfo.getContentFiles());
+			return Utils.isCollectionNotEmpty(rootLevelFiles) && rootLevelFiles.size() == 1;
+		} else {
+			// ASiC-E one or more signed files outside META-INF
 			message = MessageTag.BBB_FC_ISFP_ASICE;
 			error = MessageTag.BBB_FC_ISFP_ASICE_ANS;
 			return Utils.isCollectionNotEmpty(containerInfo.getContentFiles());
 		}
+	}
+
+	private List<String> getRootLevelFiles(List<String> fileNames) {
+		List<String> result = new ArrayList<>();
+		for (String fileName : fileNames) {
+			if (isRootDirectoryFile(fileName)) {
+				result.add(fileName);
+			}
+		}
+		return result;
 	}
 	
 	private boolean isRootDirectoryFile(String fileName) {

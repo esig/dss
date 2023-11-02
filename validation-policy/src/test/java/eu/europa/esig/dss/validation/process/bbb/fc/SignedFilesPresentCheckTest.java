@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -36,14 +29,21 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void asicsValidTest() throws Exception {
+	public void asicsValidTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
-		xmlContainerInfo.setContentFiles(Arrays.asList("package.zip"));
+		xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
@@ -58,7 +58,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicsNoFileTest() throws Exception {
+	public void asicsNoFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
 
@@ -75,7 +75,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicsMultipleFilesTest() throws Exception {
+	public void asicsMultipleFilesTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
 		xmlContainerInfo.setContentFiles(Arrays.asList("hello.xml", "world.xml"));
@@ -93,10 +93,10 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicsNotRootFileTest() throws Exception {
+	public void asicsNotRootFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
-		xmlContainerInfo.setContentFiles(Arrays.asList("hello/world.xml"));
+		xmlContainerInfo.setContentFiles(Collections.singletonList("hello/world.xml"));
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
@@ -111,7 +111,43 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asiceValidTest() throws Exception {
+	public void asicsMultipleFilesOneNotRootLevelTest() {
+		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
+		xmlContainerInfo.setContentFiles(Arrays.asList("hello.xml", "hello/world.xml"));
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlFC result = new XmlFC();
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		sfpc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void asicsMultipleFilesBothNotRootLevelTest() {
+		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
+		xmlContainerInfo.setContentFiles(Arrays.asList("world/hello.xml", "hello/world.xml"));
+
+		LevelConstraint constraint = new LevelConstraint();
+		constraint.setLevel(Level.FAIL);
+
+		XmlFC result = new XmlFC();
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		sfpc.execute();
+
+		List<XmlConstraint> constraints = result.getConstraint();
+		assertEquals(1, constraints.size());
+		assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+	}
+
+	@Test
+	public void asiceValidTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
 		xmlContainerInfo.setContentFiles(Arrays.asList("hello.xml", "world.xml"));
@@ -129,10 +165,10 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asiceOneFileTest() throws Exception {
+	public void asiceOneFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
-		xmlContainerInfo.setContentFiles(Arrays.asList("package.zip"));
+		xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
@@ -147,7 +183,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asiceNoFileTest() throws Exception {
+	public void asiceNoFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
 
@@ -164,10 +200,10 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asiceNotRootFileTest() throws Exception {
+	public void asiceNotRootFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
-		xmlContainerInfo.setContentFiles(Arrays.asList("hello/world.xml"));
+		xmlContainerInfo.setContentFiles(Collections.singletonList("hello/world.xml"));
 
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
