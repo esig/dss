@@ -540,6 +540,8 @@ public final class ASiCUtils {
 	 * @return {@link ASiCContainerType}
 	 */
 	public static ASiCContainerType getContainerType(DSSDocument archiveContainer) {
+		Objects.requireNonNull(archiveContainer, "Archive container shall be provided!");
+
 		List<String> entryNames = ZipUtils.getInstance().extractEntryNames(archiveContainer);
 
 		DSSDocument mimetypeDocument = null;
@@ -579,11 +581,14 @@ public final class ASiCUtils {
 	 * @return {@link ASiCContainerType}
 	 */
 	public static ASiCContainerType getContainerType(ASiCContent asicContent) {
+		Objects.requireNonNull(asicContent, "ASiCContent shall be provided!");
+
 		if (asicContent.getContainerType() != null) {
 			return asicContent.getContainerType();
 		}
-		return getContainerType(asicContent.getAsicContainer().getMimeType(), asicContent.getMimeTypeDocument(),
-				asicContent.getZipComment(), Utils.collectionSize(asicContent.getRootLevelSignedDocuments()));
+		MimeType containerMimeType = asicContent.getAsicContainer() != null ? asicContent.getAsicContainer().getMimeType() : null;
+		return getContainerType(containerMimeType, asicContent.getMimeTypeDocument(), asicContent.getZipComment(),
+				Utils.collectionSize(asicContent.getRootLevelSignedDocuments()));
 	}
 
 	private static int getNumberOfSignedRootDocuments(List<String> containerEntryNames) {
@@ -598,22 +603,31 @@ public final class ASiCUtils {
 
 	private static ASiCContainerType getContainerType(MimeType containerMimeType, DSSDocument mimetypeDocument,
 			String zipComment, int rootSignedDocumentsNumber) {
-		ASiCContainerType containerType = getContainerTypeFromMimeType(containerMimeType);
-		if (containerType == null) {
-			containerType = getContainerTypeFromMimeTypeDocument(mimetypeDocument);
-			if (containerType == null) {
-				containerType = getContainerTypeFromZipComment(zipComment);
-			}
+		// 1. Identify container type based on the mimetype document
+		ASiCContainerType containerType = getContainerTypeFromMimeTypeDocument(mimetypeDocument);
+		if (containerType != null) {
+			return containerType;
 		}
-		if (containerType == null) {
-			LOG.info("Unable to define the ASiC Container type with its properties. Assume type based on root-level documents...");
-			if (rootSignedDocumentsNumber == 1) {
-				containerType = ASiCContainerType.ASiC_S;
-			} else if (rootSignedDocumentsNumber > 1) {
-				containerType = ASiCContainerType.ASiC_E;
-			} else {
-				LOG.warn("The provided container does not contain signer documents on the root level!");
-			}
+		// 2. Identify container type based on the zip comment
+		containerType = getContainerTypeFromZipComment(zipComment);
+		if (containerType != null) {
+			return containerType;
+		}
+		// 3. Check if the container contains more than one document at the root level (ASiC-E)
+		if (rootSignedDocumentsNumber > 1) {
+			return ASiCContainerType.ASiC_E;
+		}
+		// 4. Return enforced container type, when present
+		containerType = getContainerTypeFromMimeType(containerMimeType);
+		if (containerType != null) {
+			return containerType;
+		}
+		// 5. Check if the container contains one document at the root level (ASiC-S)
+		LOG.info("Unable to define the ASiC Container type with its properties. Assume type based on root-level documents...");
+		if (rootSignedDocumentsNumber == 1) {
+			containerType = ASiCContainerType.ASiC_S;
+		} else {
+			LOG.warn("The provided container does not contain signer documents on the root level!");
 		}
 		return containerType;
 	}
