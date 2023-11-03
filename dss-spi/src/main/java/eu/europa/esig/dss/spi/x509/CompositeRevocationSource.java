@@ -33,6 +33,9 @@ import java.util.Map.Entry;
 /**
  * This class allows to retrieve a RevocationToken with different sources. The composite will try all sources until to get a
  * non-empty response.
+ *
+ * @param <T> {@code Revocation}
+ * @param <R> {@code RevocationSource}
  */
 public class CompositeRevocationSource<T extends Revocation, R extends RevocationSource<T>> implements RevocationSource<T> {
 

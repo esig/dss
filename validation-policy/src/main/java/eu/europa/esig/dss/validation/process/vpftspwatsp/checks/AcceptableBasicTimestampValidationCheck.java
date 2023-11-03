@@ -37,6 +37,8 @@ import java.util.List;
 
 /**
  * Checks if a result of a Basic Signature Validation process for a timestamp token is acceptable
+ * 
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public class AcceptableBasicTimestampValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

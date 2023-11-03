@@ -35,6 +35,7 @@ import java.util.List;
 /**
  * Checks of the certificate used to issue a timestamp is QTST
  *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public class QTSTCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

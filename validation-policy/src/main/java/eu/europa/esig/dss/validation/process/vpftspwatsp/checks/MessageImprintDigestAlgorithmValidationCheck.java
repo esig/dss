@@ -36,6 +36,7 @@ import java.util.Date;
 /**
  * Verifies whether the result of {@code MessageImprintDigestAlgorithmValidation} is valid
  *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public class MessageImprintDigestAlgorithmValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

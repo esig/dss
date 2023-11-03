@@ -33,6 +33,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Checks if the referenced data is intact
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
