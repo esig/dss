@@ -27,21 +27,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EntityStoreTSPSourceTest {
+public class KeyEntityTSPSourceTest {
 
     private static final File KS_FILE = new File("src/test/resources/self-signed-tsa.p12");
     private static final String KS_TYPE = "PKCS12";
     private static final char[] KS_PASSWORD = "ks-password".toCharArray();
     private static final String ALIAS = "self-signed-tsa";
+    private static final String TSA_POLICY = "1.2.3.4";
 
     private static final byte[] DTBS = "Hello World!".getBytes();
 
     @Test
     public void test() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         assertTimestampValid(timeStampResponse, digest);
+    }
+
+    @Test
+    public void noPolicyTest() throws Exception {
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
+        Exception exception = assertThrows(NullPointerException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
+        assertEquals("TSAPolicy OID is not defined! Use #setTsaPolicy method.", exception.getMessage());
     }
 
     @Test
@@ -50,6 +60,7 @@ public class EntityStoreTSPSourceTest {
         keyStore.load(Files.newInputStream(KS_FILE.toPath()), KS_PASSWORD);
 
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(keyStore, ALIAS, KS_PASSWORD);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
@@ -59,6 +70,7 @@ public class EntityStoreTSPSourceTest {
     @Test
     public void acceptedDigestAlgorithmsTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, DTBS);
         Exception exception = assertThrows(DSSException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
@@ -83,6 +95,7 @@ public class EntityStoreTSPSourceTest {
     @Test
     public void productionDateTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
@@ -99,6 +112,7 @@ public class EntityStoreTSPSourceTest {
     @Test
     public void serialNumberTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponseOne = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampTokenOne = assertTimestampValid(timeStampResponseOne, digest);
@@ -110,6 +124,7 @@ public class EntityStoreTSPSourceTest {
     @Test
     public void digestAlgoTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
@@ -125,6 +140,7 @@ public class EntityStoreTSPSourceTest {
     @Test
     public void pssTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
@@ -153,11 +169,12 @@ public class EntityStoreTSPSourceTest {
         Exception exception = assertThrows(NullPointerException.class, () -> new KeyEntityTSPSource(keyStore, null, null));
         assertEquals("Alias is not defined!", exception.getMessage());
 
-        exception = assertThrows(DSSException.class, () -> new KeyEntityTSPSource(keyStore, ALIAS, null));
-      //  assertEquals("Alias is not defined!", exception.getMessage());
+        exception = assertThrows(NullPointerException.class, () -> new KeyEntityTSPSource(keyStore, ALIAS, null));
+        assertEquals("KeyEntry Password is not defined!", exception.getMessage());
 
-        KeyEntityTSPSource tspSource4 = new KeyEntityTSPSource(keyStore, ALIAS, KS_PASSWORD);
-        TimestampBinary timeStampResponse = tspSource4.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
+        KeyEntityTSPSource tspSource = new KeyEntityTSPSource(keyStore, ALIAS, KS_PASSWORD);
+        tspSource.setTsaPolicy(TSA_POLICY);
+        TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         assertTimestampValid(timeStampResponse, digest);
 
         exception = assertThrows(IllegalArgumentException.class, () -> new KeyEntityTSPSource(keyStore, "wrong-alias", KS_PASSWORD));

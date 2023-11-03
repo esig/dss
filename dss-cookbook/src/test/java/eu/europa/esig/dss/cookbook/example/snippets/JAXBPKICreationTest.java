@@ -209,6 +209,9 @@ public class JAXBPKICreationTest {
         // Instantiate PKITSPSource by providing the TSA CertEntity
         PKITSPSource pkiTspSource = new PKITSPSource(tsaCertEntity);
 
+        // Provide a TSA Policy OID (Mandatory)
+        pkiTspSource.setTsaPolicy("1.2.3.4");
+
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
         final byte[] toDigest = "Hello world".getBytes(StandardCharsets.UTF_8);
         final byte[] digestValue = DSSUtils.digest(digestAlgorithm, toDigest);
@@ -227,7 +230,6 @@ public class JAXBPKICreationTest {
         Date notBefore = calendar.getTime();
         calendar.add(Calendar.MONTH, 24);
         Date notAfter = calendar.getTime();
-
 
         // tag::add-pki-certificate[]
         // import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;

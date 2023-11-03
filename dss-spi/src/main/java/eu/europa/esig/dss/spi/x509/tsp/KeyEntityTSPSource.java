@@ -85,7 +85,7 @@ public class KeyEntityTSPSource implements TSPSource {
     /**
      * The TSA policy
      */
-    private String tsaPolicy = "1.2.3.4";
+    private String tsaPolicy;
 
     /**
      * The static production date of the timestamp
@@ -188,7 +188,7 @@ public class KeyEntityTSPSource implements TSPSource {
     public KeyEntityTSPSource(KeyStore keyStore, String alias, char[] keyEntryPassword) {
         Objects.requireNonNull(keyStore,"KeyStore is not defined!");
         Objects.requireNonNull(alias,"Alias is not defined!");
-        Objects.requireNonNull(keyStore,"key Entry Password is not defined!");
+        Objects.requireNonNull(keyEntryPassword,"KeyEntry Password is not defined!");
         KeyStore.PrivateKeyEntry privateKeyEntry = getPrivateKeyEntry(keyStore, alias, keyEntryPassword);
         this.privateKey = privateKeyEntry.getPrivateKey();
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -272,7 +272,7 @@ public class KeyEntityTSPSource implements TSPSource {
 
     /**
      * Sets the TSA policy
-     * NOTE: if not defined, a dummy "1.2.3.4" policy OID will be used
+     * NOTE: The property is mandatory for TimeStampToken generation.
      *
      * @param tsaPolicy {@link String}
      */
@@ -349,6 +349,8 @@ public class KeyEntityTSPSource implements TSPSource {
         Objects.requireNonNull(certificateChain, "Certificate chain is not defined! Use #setCertificateChain method.");
         Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm is not defined!");
         Objects.requireNonNull(digest, "digest is not defined!");
+        Objects.requireNonNull(tsaPolicy, "TSAPolicy OID is not defined! Use #setTsaPolicy method.");
+
         if (!acceptedDigestAlgorithms.contains(digestAlgorithm)) {
             throw new DSSException(String.format("DigestAlgorithm '%s' is not supported by the KeyEntityTSPSource implementation!", digestAlgorithm));
         }

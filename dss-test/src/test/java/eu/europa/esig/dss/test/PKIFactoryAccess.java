@@ -171,6 +171,7 @@ public abstract class PKIFactoryAccess {
     protected static final String ROOT_CA = "root-ca";
 
     private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
+    private static final String DEFAULT_TSA_POLICY = "1.2.3.4";
     private static final int TIMEOUT_MS = 10000;
     private static CommonTrustedCertificateSource trustedCertificateSource;
 
@@ -529,7 +530,9 @@ public abstract class PKIFactoryAccess {
     }
 
     protected PKITSPSource getPKITSPSourceByName(String tsaName) {
-        return new PKITSPSource(getPKICertEntity(tsaName));
+        PKITSPSource tspSource = new PKITSPSource(getPKICertEntity(tsaName));
+        tspSource.setTsaPolicy(DEFAULT_TSA_POLICY);
+        return tspSource;
     }
 
     private CertEntity getPKICertEntity(String certEntityName) {

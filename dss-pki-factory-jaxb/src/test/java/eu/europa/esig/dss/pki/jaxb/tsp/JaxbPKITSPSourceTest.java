@@ -38,10 +38,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
 
+    private static final String TSA_POLICY = "1.2.3.4";
+
     @Test
     public void testSuccess() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
         final byte[] toDigest = "Hello world".getBytes(StandardCharsets.UTF_8);
@@ -54,6 +57,7 @@ public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
     public void testTimestampUnsupportedDigestAlgo() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
         final byte[] toDigest = "Hello world good tsa".getBytes(StandardCharsets.UTF_8);
@@ -71,6 +75,7 @@ public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
     public void testTimestampSha3DigestAlgo() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA3_256;
         final byte[] toDigest = "Hello world good tsa".getBytes(StandardCharsets.UTF_8);

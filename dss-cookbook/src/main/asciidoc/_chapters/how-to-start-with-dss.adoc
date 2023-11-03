@@ -433,4 +433,4 @@ dss-demo-bundle:: Packaging module for dss-demo-webapp.
 dss-rest-doc-generation:: Provides a tool for automated generation of REST web service samples.
 dss-esig-validation-tests:: Provides a tool for processing of https://eidas.ec.europa.eu/efda/validation-tests/[eSignature validation test cases].
 
-NOTE: The module `dss-mock-tsa` has been removed from DSS `5.13` and replaced with <<KeyStoreTSPSource>>.
+NOTE: The module `dss-mock-tsa` has been removed from DSS `5.13` and replaced with <<KeyEntityTSPSource>>.
