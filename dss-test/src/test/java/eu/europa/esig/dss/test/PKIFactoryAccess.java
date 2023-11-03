@@ -215,15 +215,27 @@ public abstract class PKIFactoryAccess {
         return getCertificateVerifier(pKIOCSPSource, pkicrlSource, pkiAIASource(), getTrustedCertificateSource());
     }
 
+    protected CertificateVerifier getCachedCertificateVerifierWithSHA3_256() {
+        PKICRLSource pkiCRLSource = pkiCRLSource();
+        pkiCRLSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
+
+        PKIOCSPSource pkiOCSPSource = pkiOCSPSource();
+        pkiOCSPSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
+        pkiOCSPSource.setOcspResponder(getPKICertEntity(SHA3_OCSP_RESPONDER));
+
+        return getCertificateVerifier(cacheOCSPSource(pkiOCSPSource), cacheCRLSource(pkiCRLSource), pkiAIASource(),
+                getTrustedCertificateSource());
+    }
+
     protected CertificateVerifier getCertificateVerifierWithSHA3_256() {
-        PKICRLSource pkicrlSource = pkiCRLSource();
-        pkicrlSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
+        PKICRLSource pkiCRLSource = pkiCRLSource();
+        pkiCRLSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
 
-        PKIOCSPSource pKIOCSPSource = pkiOCSPSource();
-        pKIOCSPSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
-        pKIOCSPSource.setOcspResponder(getPKICertEntity(SHA3_OCSP_RESPONDER));
+        PKIOCSPSource pkiOCSPSource = pkiOCSPSource();
+        pkiOCSPSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
+        pkiOCSPSource.setOcspResponder(getPKICertEntity(SHA3_OCSP_RESPONDER));
 
-        return getCertificateVerifier(pKIOCSPSource, pkicrlSource, pkiAIASource(), getTrustedCertificateSource());
+        return getCertificateVerifier(pkiOCSPSource, pkiCRLSource, pkiAIASource(), getTrustedCertificateSource());
     }
 
     private CertificateVerifier getCertificateVerifier(OCSPSource ocspSource, CRLSource crlSource, AIASource aiaSource, CertificateSource certificateSource) {

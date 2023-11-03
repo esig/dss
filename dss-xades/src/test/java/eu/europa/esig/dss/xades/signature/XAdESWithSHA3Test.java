@@ -60,7 +60,6 @@ public class XAdESWithSHA3Test extends AbstractXAdESTestSignature {
         service.setTspSource(getSHA3GoodTsa());
     }
 
-
     @Override
     protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
         super.verifyDiagnosticData(diagnosticData);
