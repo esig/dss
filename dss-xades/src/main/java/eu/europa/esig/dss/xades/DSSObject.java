@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
 
 import java.io.Serializable;
 

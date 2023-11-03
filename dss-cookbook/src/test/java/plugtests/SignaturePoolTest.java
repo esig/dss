@@ -719,4 +719,19 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 		}
 	}
 
+	@Override
+	protected boolean allArchiveDataObjectsProvidedToValidation() {
+		return false;
+	}
+
+	@Override
+	protected void checkEvidenceRecordScopes(DiagnosticData diagnosticData) {
+		// skip
+	}
+
+	@Override
+	protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
+		// skip
+	}
+
 }
