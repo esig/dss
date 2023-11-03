@@ -257,7 +257,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 
 			logger.info("SIGNATURE VALUE : " + signatureValue);
 
-			Cipher cipher = Cipher.getInstance("RSA");
+			Cipher cipher = Cipher.getInstance("RSA", "SunJCE");
 			cipher.init(Cipher.DECRYPT_MODE, signerCertificate);
 			byte[] decrypted = cipher.doFinal(encryptedInfoOctedString.getOctets());
 

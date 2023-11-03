@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.test.signature;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -67,7 +66,6 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
-import eu.europa.esig.dss.token.KSPrivateKeyEntry;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -76,12 +74,9 @@ import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
 import eu.europa.esig.validationreport.jaxb.SASignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -101,7 +96,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSignatureParameters, 
-				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
+				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractPkiFactoryTestSignature.class);
 
@@ -188,7 +183,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		super.checkSigningCertificateValue(diagnosticData);
 		
 		String signingCertificateId = diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId());
-		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
+		CertificateToken certificate = getSigningCert();
 		String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
 		String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
 		assertEquals(certificate.getSubject().getRFC2253(), certificateDN);
@@ -206,7 +201,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		
 		String signingCertificateId = diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId());
 		String issuerDN = diagnosticData.getCertificateIssuerDN(signingCertificateId);
-		CertificateToken certificate = getPrivateKeyEntry().getCertificate();
+		CertificateToken certificate = getSigningCert();
 		assertEquals(certificate.getIssuer().getRFC2253(), issuerDN);
 	}
 
@@ -222,12 +217,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	@Override
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
 		super.checkCertificateChain(diagnosticData);
-		
-		KSPrivateKeyEntry entry = getPrivateKeyEntry();
+
 		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
 		assertTrue(Utils.isCollectionNotEmpty(signatureCertificateChain));
 		// upper certificate than trust anchors are ignored
-		assertTrue(entry.getCertificateChain().length >= signatureCertificateChain.size());
+		assertTrue(getCertificateChain().length >= signatureCertificateChain.size());
 	}
 
 	@Override
@@ -347,11 +341,13 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		assertEquals(Utils.collectionSize(signedAssertions), Utils.collectionSize(foundSignedAssertionRoles));
 		if (Utils.isCollectionNotEmpty(signedAssertions)) {
 			for (int i = 0; i < signedAssertions.size(); i++) {
-				Document expected = DomUtils.buildDOM(signedAssertions.get(i));
-				Document extracted = DomUtils.buildDOM(foundSignedAssertionRoles.get(i));
-				assertTrue(expected.isEqualNode(extracted));
+				assertTrue(areSignedAssertionsEqual(signedAssertions.get(i), foundSignedAssertionRoles.get(i)));
 			}
 		}
+	}
+
+	protected boolean areSignedAssertionsEqual(String signedAssertionOne, String signedAssertionTwo) {
+		return signedAssertionOne.equals(signedAssertionTwo);
 	}
 
 	@Override
@@ -557,23 +553,19 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		assertNotNull(signatureAttributes);
 		super.validateETSISignatureAttributes(signatureAttributes);
 
-		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-		for (Object signatureAttributeObj : signatureAttributeObjects) {
-			if (signatureAttributeObj instanceof JAXBElement) {
-				JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
-				Object value = jaxbElement.getValue();
-				
-				if (value instanceof SACommitmentTypeIndicationType) {
-					// TODO multiple value -> multiple tag in signatureattributes ??
-					SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
-					validateETSICommitment(commitment, parameters);
-				} else if (value instanceof SASignerRoleType) {
-					SASignerRoleType signerRoles = (SASignerRoleType) value;
-					validateETSISASignerRoleType(signerRoles, parameters);
-				} else if (value instanceof SASignatureProductionPlaceType) {
-					SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
-					validateETSISASignatureProductionPlaceType(productionPlace, parameters);
-				}
+		List<JAXBElement<?>> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		for (JAXBElement<?> signatureAttributeObj : signatureAttributeObjects) {
+			Object value = signatureAttributeObj.getValue();
+			if (value instanceof SACommitmentTypeIndicationType) {
+				// TODO multiple value -> multiple tag in signatureattributes ??
+				SACommitmentTypeIndicationType commitment = (SACommitmentTypeIndicationType) value;
+				validateETSICommitment(commitment, parameters);
+			} else if (value instanceof SASignerRoleType) {
+				SASignerRoleType signerRoles = (SASignerRoleType) value;
+				validateETSISASignerRoleType(signerRoles, parameters);
+			} else if (value instanceof SASignatureProductionPlaceType) {
+				SASignatureProductionPlaceType productionPlace = (SASignatureProductionPlaceType) value;
+				validateETSISASignatureProductionPlaceType(productionPlace, parameters);
 			}
 		}
 	}
@@ -606,12 +598,10 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		List<String> signedAssertions = parameters.bLevel().getSignedAssertions();
 		if (Utils.isCollectionNotEmpty(signedAssertions)) {
 			for (String signedAssertionToBeFound : signedAssertions) {
-				Document expected = DomUtils.buildDOM(signedAssertionToBeFound);
 				boolean found = false;
 				for (SAOneSignerRoleType saOneSignerRoleType : roleDetails) {
 					if (EndorsementType.SIGNED.equals(saOneSignerRoleType.getEndorsementType())) {
-						Document extracted = DomUtils.buildDOM(saOneSignerRoleType.getRole());
-						if (expected.isEqualNode(extracted)) {
+						if (areSignedAssertionsEqual(signedAssertionToBeFound, saOneSignerRoleType.getRole())) {
 							found = true;
 							break;
 						}
@@ -658,7 +648,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	/**
 	 * In some cases, PDF files finish with %%EOF + EOL and some other cases only
 	 * %%EOF
-	 * 
 	 * There's no technical way to extract the exact file ending.
 	 */
 	private boolean isOnlyTwoBytesDifferAtLastPosition(byte[] originalByteArray, byte[] retrievedByteArray) {
@@ -778,10 +767,9 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
 		boolean found = false;
-		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
-		String originalDigest = getDigest(original, toBeCanonicalized);
+		String originalDigest = getDigest(original);
 		for (DSSDocument retrieved : retrievedDocuments) {
-			String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
+			String retrievedDigest = getDigest(retrieved);
 			if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
 				found = true;
 				break;
@@ -790,19 +778,8 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		return found;
 	}
 
-	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+	protected String getDigest(DSSDocument doc) {
 		byte[] byteArray = DSSUtils.toByteArray(doc);
-		if (toBeCanonicalized && DomUtils.isDOM(doc)) {
-			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-				// we canonicalize to ignore the header (which is not covered by the signature)
-				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
-				c14n.canonicalize(byteArray, baos, true);
-				byteArray = baos.toByteArray();
-			} catch (XMLSecurityException | IOException e) {
-				// Not always able to canonicalize (more than one file can be covered (XML +
-				// something else) )
-			}
-		}
 		// LOG.info("Bytes : {}", new String(byteArray));
 		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
 	}

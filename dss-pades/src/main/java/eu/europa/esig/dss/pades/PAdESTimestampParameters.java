@@ -186,17 +186,6 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 		return timestampDate;
 	}
 
-	/**
-	 * Sets a password string
-	 * 
-	 * @param passwordProtection {@link String} password to set
-	 * @deprecated since DSS 5.12. Use {@code #setPasswordBinaries(passwordProtection.toCharArray())}
-	 */
-	@Deprecated
-	public void setPasswordProtection(String passwordProtection) {
-		this.passwordProtection = passwordProtection != null ? passwordProtection.toCharArray() : null;
-	}
-
 	@Override
 	public char[] getPasswordProtection() {
 		return passwordProtection;

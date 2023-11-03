@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,6 +48,11 @@ public class DataToValidateDTO {
 	private RemoteDocument policy;
 
 	/**
+	 * The detached evidence records applied to the signature file
+	 */
+	private List<RemoteDocument> evidenceRecords;
+
+	/**
 	 * The strategy for the token (certificate/timestamp/revocation data) extraction
 	 */
 	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
@@ -60,6 +66,7 @@ public class DataToValidateDTO {
 	 * Empty constructor
 	 */
 	public DataToValidateDTO() {
+		// empty
 	}
 
 	/**
@@ -82,7 +89,20 @@ public class DataToValidateDTO {
 	 */
 	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments,
 							 RemoteDocument policy) {
-		this(signedDocument, originalDocuments, policy, null);
+		this(signedDocument, originalDocuments, policy, Collections.emptyList(), null);
+	}
+
+	/**
+	 * Constructor to validate a document with applied evidence records
+	 *
+	 * @param signedDocument {@link RemoteDocument} to validate
+	 * @param originalDocuments list of {@link RemoteDocument} detached documents
+	 * @param policy {@link RemoteDocument} validation policy
+	 * @param evidenceRecords list of {@link RemoteDocument} detached evidence records
+	 */
+	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments,
+							 RemoteDocument policy, List<RemoteDocument> evidenceRecords) {
+		this(signedDocument, originalDocuments, policy, evidenceRecords, null);
 	}
 
 	/**
@@ -108,9 +128,24 @@ public class DataToValidateDTO {
 	 */
 	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments,
 							 RemoteDocument policy, String signatureId) {
+		this(signedDocument, originalDocuments, policy, Collections.emptyList(), signatureId);
+	}
+
+	/**
+	 * Constructor to extract original documents for validation with evidence records
+	 *
+	 * @param signedDocument {@link RemoteDocument} to validate
+	 * @param originalDocuments list of {@link RemoteDocument} detached documents
+	 * @param policy {@link RemoteDocument} validation policy
+	 * @param evidenceRecords list of  {@link RemoteDocument} detached evidence records
+	 * @param signatureId {@link String} to extract original documents for
+	 */
+	public DataToValidateDTO(RemoteDocument signedDocument, List<RemoteDocument> originalDocuments,
+							 RemoteDocument policy, List<RemoteDocument> evidenceRecords, String signatureId) {
 		this.signedDocument = signedDocument;
 		this.originalDocuments = originalDocuments;
 		this.policy = policy;
+		this.evidenceRecords = evidenceRecords;
 		this.signatureId = signatureId;
 	}
 
@@ -166,6 +201,24 @@ public class DataToValidateDTO {
 	 */
 	public void setPolicy(RemoteDocument policy) {
 		this.policy = policy;
+	}
+
+	/**
+	 * Gets a list of detached evidence records
+	 *
+	 * @return a list of {@link RemoteDocument}s
+	 */
+	public List<RemoteDocument> getEvidenceRecords() {
+		return evidenceRecords;
+	}
+
+	/**
+	 * Sets a list of detached evidence records applied to the signature
+	 *
+	 * @param evidenceRecords a list of {@link RemoteDocument}s
+	 */
+	public void setEvidenceRecords(List<RemoteDocument> evidenceRecords) {
+		this.evidenceRecords = evidenceRecords;
 	}
 
 	/**

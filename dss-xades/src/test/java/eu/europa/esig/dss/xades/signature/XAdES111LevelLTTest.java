@@ -43,7 +43,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.XAdES111Utils;
 
 public class XAdES111LevelLTTest extends AbstractXAdESTestSignature {
@@ -61,7 +61,7 @@ public class XAdES111LevelLTTest extends AbstractXAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		signatureParameters.setXadesNamespace(XAdESNamespaces.XADES_111);
+		signatureParameters.setXadesNamespace(XAdESNamespace.XADES_111);
 		signatureParameters.setEn319132(false);
 		// Mandatory
 		signatureParameters.bLevel().setSignaturePolicy(new Policy());

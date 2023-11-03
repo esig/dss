@@ -117,8 +117,8 @@ public class TLValidationJobSnippets {
 		return trustedListsCertificateSource;
 	}
 
-	private String getPassword() {
-		return "dss-password";
+	private char[] getPassword() {
+		return "dss-password".toCharArray();
 	}
 
 	public void jobConfig() {
@@ -546,7 +546,7 @@ public class TLValidationJobSnippets {
 
 	private CertificateSource getSigningCertificatesForEuropeanLOTL() {
 		try {
-			return new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12", "dss-password");
+			return new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12", getPassword());
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}

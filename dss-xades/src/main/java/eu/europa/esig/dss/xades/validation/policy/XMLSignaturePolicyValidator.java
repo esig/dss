@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
@@ -50,6 +50,13 @@ public class XMLSignaturePolicyValidator extends AbstractSignaturePolicyValidato
 
 	/** The error key to be used for XML processing related issues */
 	protected static final String XML_ERROR_KEY = "xmlProcessing";
+
+	/**
+	 * Default constructor
+	 */
+	public XMLSignaturePolicyValidator() {
+		// empty
+	}
 
 	@Override
 	public boolean canValidate(SignaturePolicy signaturePolicy) {

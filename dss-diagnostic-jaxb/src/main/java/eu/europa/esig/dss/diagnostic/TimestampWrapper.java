@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -265,6 +266,26 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 			}
 		}
 		return timestamps;
+	}
+
+	/**
+	 * Returns a list of evidence records covered be the current timestamp
+	 *
+	 * @return list of {@link EvidenceRecordWrapper}s
+	 */
+	public List<EvidenceRecordWrapper> getTimestampedEvidenceRecords() {
+		List<EvidenceRecordWrapper> evidenceRecords = new ArrayList<>();
+
+		List<XmlAbstractToken> timestampedObjectsByCategory = getTimestampedObjectsByCategory(TimestampedObjectType.EVIDENCE_RECORD);
+		for (XmlAbstractToken token : timestampedObjectsByCategory) {
+			if (token instanceof XmlEvidenceRecord) {
+				evidenceRecords.add(new EvidenceRecordWrapper((XmlEvidenceRecord) token));
+			} else {
+				throw new IllegalArgumentException(
+						String.format("Unexpected token of type [%s] found. Expected : %s", token.getClass(), TimestampedObjectType.EVIDENCE_RECORD));
+			}
+		}
+		return evidenceRecords;
 	}
 
 	/**

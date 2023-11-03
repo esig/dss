@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -36,18 +33,21 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XAdESElement;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Paths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xades.definition.XAdESElement;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xades.definition.XAdESPath;
+import eu.europa.esig.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.xades.definition.xades111.XAdES111Path;
+import eu.europa.esig.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.xades.definition.xades122.XAdES122Path;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +78,7 @@ public abstract class XAdESBuilder {
 	 * This variable holds the {@code XAdESPaths} which contains all constants and
 	 * queries needed to cope with the default signature schema.
 	 */
-	protected XAdESPaths xadesPaths;
+	protected XAdESPath xadesPath;
 
 	/**
 	 * This variable is a reference to the set of parameters relating to the structure and process of the creation or
@@ -200,7 +200,7 @@ public abstract class XAdESBuilder {
 	}
 
 	private DSSNamespace getDigestAlgAndValueNamespace() {
-		return XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
+		return XAdESNamespace.XADES_111.isSameUri(getXadesNamespace().getUri()) ?
 				getXadesNamespace() : getXmldsigNamespace();
 	}
 
@@ -300,16 +300,6 @@ public abstract class XAdESBuilder {
 	}
 	
 	/**
-	 * Returns params.referenceDigestAlgorithm if exists, params.digestAlgorithm otherwise
-	 *
-	 * @param params {@link XAdESSignatureParameters}
-	 * @return {@link DigestAlgorithm}
-	 */
-	protected DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
-		return params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
-	}
-	
-	/**
 	 * Creates {@link DSSDocument} from the current documentDom
 	 *
 	 * @return {@link DSSDocument}
@@ -318,9 +308,9 @@ public abstract class XAdESBuilder {
 		byte[] bytes;
 		if (SigningOperation.SIGN.equals(params.getContext().getOperationKind()) && params.isPrettyPrint()) {
 			alignNodes();
-			bytes = DSSXMLUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignature(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
+			bytes = DomUtils.serializeNode(DSSXMLUtils.getDocWithIndentedSignature(documentDom, params.getDeterministicId(), getNotIndentedObjectIds()));
 		} else {
-			bytes = DSSXMLUtils.serializeNode(documentDom);
+			bytes = DomUtils.serializeNode(documentDom);
 		}
 		final InMemoryDocument inMemoryDocument = new InMemoryDocument(bytes);
 		inMemoryDocument.setMimeType(MimeTypeEnum.XML);
@@ -366,11 +356,11 @@ public abstract class XAdESBuilder {
 	 */
 	protected XAdESElement getCurrentXAdESElements() {
 		String xadesURI = getXadesNamespace().getUri();
-		if (XAdESNamespaces.XADES_132.getUri().equals(xadesURI)) {
+		if (XAdESNamespace.XADES_132.getUri().equals(xadesURI)) {
 			return XAdES132Element.values()[0];
-		} else if (XAdESNamespaces.XADES_122.getUri().equals(xadesURI)) {
+		} else if (XAdESNamespace.XADES_122.getUri().equals(xadesURI)) {
 			return XAdES122Element.values()[0];
-		} else if (XAdESNamespaces.XADES_111.getUri().equals(xadesURI)) {
+		} else if (XAdESNamespace.XADES_111.getUri().equals(xadesURI)) {
 			return XAdES111Element.values()[0];
 		}
 		throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
@@ -379,16 +369,16 @@ public abstract class XAdESBuilder {
 	/**
 	 * Gets a relevant class containing the list of paths
 	 *
-	 * @return {@link XAdESPaths} implementation
+	 * @return {@link XAdESPath} implementation
 	 */
-	protected XAdESPaths getCurrentXAdESPaths() {
+	protected XAdESPath getCurrentXAdESPath() {
 		String xadesURI = getXadesNamespace().getUri();
-		if (Utils.areStringsEqual(XAdESNamespaces.XADES_132.getUri(), xadesURI)) {
-			return new XAdES132Paths();
-		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_122.getUri(), xadesURI)) {
-			return new XAdES122Paths();
-		} else if (Utils.areStringsEqual(XAdESNamespaces.XADES_111.getUri(), xadesURI)) {
-			return new XAdES111Paths();
+		if (Utils.areStringsEqual(XAdESNamespace.XADES_132.getUri(), xadesURI)) {
+			return new XAdES132Path();
+		} else if (Utils.areStringsEqual(XAdESNamespace.XADES_122.getUri(), xadesURI)) {
+			return new XAdES122Path();
+		} else if (Utils.areStringsEqual(XAdESNamespace.XADES_111.getUri(), xadesURI)) {
+			return new XAdES111Path();
 		} else {
 			throw new IllegalArgumentException("Unsupported URI : " + xadesURI);
 		}

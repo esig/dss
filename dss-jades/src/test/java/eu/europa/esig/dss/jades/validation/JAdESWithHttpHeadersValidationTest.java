@@ -39,6 +39,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidation {
 
@@ -192,6 +193,12 @@ public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidat
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature.getSigningCertificate());
 		assertEquals(2, signature.getCertificateChain().size());
+	}
+
+	@Override
+	protected void checkSignatureType(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		assertNull(signature.getSignatureType());
 	}
 
 	@Override

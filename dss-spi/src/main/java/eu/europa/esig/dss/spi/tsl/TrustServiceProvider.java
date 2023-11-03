@@ -25,6 +25,7 @@ import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class is a DTO representation for a trust service provider
@@ -65,7 +66,10 @@ public class TrustServiceProvider implements Serializable {
 
 	/**
 	 * Empty constructor
+	 *
+	 * @deprecated since DSS 5.13. Use {@code new TrustServiceProviderBuilder.build()} method
 	 */
+	@Deprecated
 	public TrustServiceProvider() {
 		// empty
 	}
@@ -76,6 +80,7 @@ public class TrustServiceProvider implements Serializable {
 	 * @param builder {@link TrustServiceProviderBuilder}
 	 */
 	public TrustServiceProvider(TrustServiceProviderBuilder builder) {
+		Objects.requireNonNull(builder, "TrustServiceProviderBuilder cannot be null!");
 		this.names = builder.getNames();
 		this.tradeNames = builder.getTradeNames();
 		this.registrationIdentifiers = builder.getRegistrationIdentifiers();

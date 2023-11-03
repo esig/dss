@@ -19,6 +19,13 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
+			<xs:element name="EvidenceRecords" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="EvidenceRecord" type="EvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
 			<xs:element name="UsedCertificates" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -140,17 +147,11 @@
 					<xs:element name="ErrorMessage" type="xs:string" minOccurs="0" />
 					<xs:element name="ClaimedSigningTime" type="xs:dateTime" minOccurs="0" />
 					<xs:element name="SignatureFormat" type="SignatureFormat" />
+					<xs:element name="SignatureType" type="xs:string" minOccurs="0" /> <!-- JAdES only -->
 		
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					
-					<xs:element name="DigestMatchers" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="DigestMatcher" type="DigestMatcher" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-					
+					<xs:element name="DigestMatchers" type="DigestMatchers" minOccurs="0" />
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain"	type="CertificateChain" minOccurs="0" />
@@ -182,6 +183,14 @@
 						<xs:complexType>
 							<xs:sequence>
 								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+
+					<xs:element name="FoundEvidenceRecords" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FoundEvidenceRecord" type="FoundEvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -432,10 +441,10 @@
 
 					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
 
-					<xs:element name="TrustedServiceProviders" minOccurs="0">
+					<xs:element name="TrustServiceProviders" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="TrustedServiceProvider" type="TrustedServiceProvider" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="TrustServiceProvider" type="TrustServiceProvider" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -865,6 +874,7 @@
 			<xs:enumeration value="DIGEST" />
 			<xs:enumeration value="ARCHIVED" />
 			<xs:enumeration value="COUNTER_SIGNATURE" />
+			<xs:enumeration value="SIGNATURE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -912,6 +922,7 @@
 			<xs:enumeration value="CERTIFICATE" />
 			<xs:enumeration value="REVOCATION" />
 			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="EVIDENCE_RECORD" />
 			<xs:enumeration value="ORPHAN_CERTIFICATE" />
 			<xs:enumeration value="ORPHAN_REVOCATION" />
 		</xs:restriction>
@@ -1045,6 +1056,12 @@
 			
 			<!-- TIMESTAMP -->
 			<xs:enumeration value="MESSAGE_IMPRINT" />
+
+			<!-- EVIDENCE_RECORD -->
+			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_OBJECT" />
+			<xs:enumeration value="EVIDENCE_RECORD_ORPHAN_REFERENCE" />
+			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_TIME_STAMP" />
+			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1093,6 +1110,7 @@
 			<xs:choice>
 				<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue"/>
 				<xs:element name="SerialInfo" type="SignerInfo" /> <!-- OCSP -->
+				<xs:element name="X509Url" type="xs:string" /> <!-- JAdES -->
 			</xs:choice>
 		</xs:sequence>
 	</xs:complexType>	
@@ -1114,6 +1132,7 @@
 			<xs:enumeration value="OTHER" />
 			<xs:enumeration value="AIA" />
 			<xs:enumeration value="TIMESTAMP" />
+			<xs:enumeration value="EVIDENCE_RECORD" />
 			<xs:enumeration value="UNKNOWN" />
 		</xs:restriction>
 	</xs:simpleType>
@@ -1128,6 +1147,7 @@
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
 			<xs:enumeration value="BASIC_OCSP_RESP" />
+			<xs:enumeration value="EVIDENCE_RECORD" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1136,7 +1156,8 @@
 			<xs:enumeration value="SIGNING_CERTIFICATE" />
 			<xs:enumeration value="COMPLETE_CERTIFICATE_REFS" />
 			<xs:enumeration value="ATTRIBUTE_CERTIFICATE_REFS" />
-			<xs:enumeration value="KEY_IDENTIFIER" />
+			<xs:enumeration value="KEY_IDENTIFIER" /> <!-- JWS/JAdES only -->
+			<xs:enumeration value="X509_URL" /> <!-- JWS/JAdES only -->
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1191,8 +1212,10 @@
 			<xs:enumeration value="VALIDATION_DATA_REFSONLY_TIMESTAMP" />
 			<xs:enumeration value="VALIDATION_DATA_TIMESTAMP" />
 			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
+			<xs:enumeration value="CONTAINER_TIMESTAMP" /> <!-- ASiC container Timestamp -->
 			<xs:enumeration value="DOCUMENT_TIMESTAMP" /> <!-- PDF Timestamp -->
 			<xs:enumeration value="VRI_TIMESTAMP" /> <!-- PDF Timestamp of a VRI dictionary -->
+			<xs:enumeration value="EVIDENCE_RECORD_TIMESTAMP" /> <!-- Evidence Record Timestamp -->
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1206,6 +1229,10 @@
 			<xs:enumeration value="CAdES_DETACHED" />
 			<xs:enumeration value="JAdES" />
 			<xs:enumeration value="PAdES" />
+
+			<!-- Evidence record time-stamps -->
+			<xs:enumeration value="XML_EVIDENCE_RECORD" />
+			<xs:enumeration value="ASN1_EVIDENCE_RECORD" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1340,6 +1367,7 @@
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
 			<xs:enumeration value="ADBE_REVOCATION_INFO_ARCHIVAL" />
+			<xs:enumeration value="EVIDENCE_RECORD" />
 			<xs:enumeration value="INPUT_DOCUMENT" />
 			<xs:enumeration value="EXTERNAL" />
 			<xs:enumeration value="CACHED" />
@@ -1414,6 +1442,61 @@
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
+
+	<xs:complexType name="FoundEvidenceRecord">
+		<xs:attribute name="EvidenceRecord" type="xs:IDREF" use="required" />
+	</xs:complexType>
+
+	<xs:complexType name="EvidenceRecord">
+		<xs:complexContent>
+			<xs:extension base="AbstractToken">
+				<xs:sequence>
+					<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
+					<xs:element name="Type"	type="EvidenceRecordType" minOccurs="0" />
+					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
+					<xs:element name="DigestMatchers" type="DigestMatchers" />
+					<xs:element name="EvidenceRecordTimestamps">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+
+					<xs:element name="FoundCertificates" type="FoundCertificates" />
+					<xs:element name="FoundRevocations" type="FoundRevocations" />
+
+					<xs:element name="TimestampedObjects" type="TimestampedObjects" />
+
+					<xs:element name="EvidenceRecordScopes">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="SignatureScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+
+					<xs:choice>
+						<xs:element name="Base64Encoded" type="xs:base64Binary" />
+						<xs:element name="DigestAlgoAndValue" type="DigestAlgoAndValue" />
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="DigestMatchers">
+		<xs:sequence>
+			<xs:element name="DigestMatcher" type="DigestMatcher" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="EvidenceRecordType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="XML Evidence Record" />
+			<xs:enumeration value="ASN.1 Evidence Record" />
+		</xs:restriction>
+	</xs:simpleType>
 	
 	<xs:complexType name="TrustedList">
 		<xs:sequence>
@@ -1433,12 +1516,12 @@
 		<xs:attribute name="mra" type="xs:boolean" use="optional" />
 	</xs:complexType>
 	
-	<xs:complexType name="TrustedServiceProvider">
+	<xs:complexType name="TrustServiceProvider">
 		<xs:sequence>
-			<xs:element name="TSPNames">
+			<xs:element name="TSPNames" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TSPName" type="LangAndValue" maxOccurs="unbounded" />
+						<xs:element name="TSPName" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1457,10 +1540,10 @@
 				</xs:complexType>
 			</xs:element>
 			
-			<xs:element name="TrustedServices">
+			<xs:element name="TrustServices" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="TrustedService" type="TrustedService" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="TrustService" type="TrustService" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1469,12 +1552,12 @@
 		<xs:attribute name="LOTL" type="xs:IDREF" use="optional" />
 	</xs:complexType>
 	
-	<xs:complexType name="TrustedService">
+	<xs:complexType name="TrustService">
 		<xs:sequence>
-			<xs:element name="ServiceNames">
+			<xs:element name="ServiceNames" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="ServiceName" type="LangAndValue" maxOccurs="unbounded" />
+						<xs:element name="ServiceName" type="LangAndValue" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -1517,8 +1600,16 @@
 
 	<xs:complexType name="CapturedQualifiers">
 		<xs:sequence>
-			<xs:element name="Qualifier" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="Qualifier" type="Qualifier" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Qualifier">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="critical" type="xs:boolean" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:complexType name="AdditionalServiceInfoUris">
@@ -1532,11 +1623,11 @@
 			<xs:element name="TrustServiceLegalIdentifier" type="xs:string" />
 			<xs:element name="EquivalenceStatusStartingTime" type="xs:dateTime" />
 			<xs:element name="EquivalenceStatusEndingTime" type="xs:dateTime" minOccurs="0" />
-			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustedServiceMapping" /> <!-- Information in TL before MRA applied -->
+			<xs:element name="OriginalThirdCountryMapping" type="OriginalThirdCountryTrustServiceMapping" /> <!-- Information in TL before MRA applied -->
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="OriginalThirdCountryTrustedServiceMapping">
+	<xs:complexType name="OriginalThirdCountryTrustServiceMapping">
 		<xs:sequence>
 			<xs:element name="ServiceType" type="xs:string" minOccurs="0" />
 			<xs:element name="Status" type="xs:string" minOccurs="0" />

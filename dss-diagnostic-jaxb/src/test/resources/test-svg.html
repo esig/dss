@@ -22,17 +22,38 @@
 		var svgHeight = parseInt(mySVG.height);
 		var padding = 40;
 	
+		mySVG.style.maxWidth = svgWidth + "px";
+
+		var representation = null;
+
 		mySVG.addEventListener("load",function() {
-			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight, padding);
-			
-			representation.displayFirstSignature();
-			
+			representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight, padding);
+
+			if (currentCertificateId != null) {
+				representation.displayCertificateChainById(currentCertificateId);
+			} else if (representation.isSignatureOrTimestampPresent()) {
+				representation.displayFirstSignatureOrTimestamp();
+			} else {
+				var svgContent = document.getElementById("svg-content");
+				svgContent.classList.add("d-none");
+				var svgEmpty = document.getElementById("svg-empty");
+				svgEmpty.classList.remove("d-none");
+			}
+
+			var svgElement = mySVG.contentDocument.documentElement;
+			svgElement.setAttribute("viewBox", "0 0 " + svgWidth + " " + svgHeight);
+
 			var signatureIds = mySVG.contentDocument.getSignatureIds();
 			initSignatureSelect(signatureIds);
 			
+			var evidenceRecordIds = mySVG.contentDocument.getEvidenceRecordIds();
+			initEvidenceRecordSelect(evidenceRecordIds);
+
+			var timestampIds = mySVG.contentDocument.getTimestampIds();
+			initTimestampSelect(timestampIds);
+
 			var certificateIds = mySVG.contentDocument.getCertificateIds();
 			initCertChainSelect(certificateIds);
-			
 		});
 	
 		function initSignatureSelect(signatureIds) {
@@ -51,6 +72,38 @@
 			}
 		}
 	
+		function initTimestampSelect(timestampIds) {
+			var optgroup = document.getElementById("select-visualrepresentation-tsts");
+			if (timestampIds == null || timestampIds.length == 0) {
+				optgroup.style.display="none";
+			} else {
+				optgroup.style.display="";
+				for (var elementIdx = 0;  elementIdx < timestampIds.length; elementIdx++) {
+					var tstId = timestampIds[elementIdx];
+					var option = document.createElement("option");
+					option.text = tstId;
+					option.className = "tst";
+					optgroup.appendChild(option);
+				}
+			}
+		}
+
+		function initEvidenceRecordSelect(evidenceRecordIds) {
+			var optgroup = document.getElementById("select-visualrepresentation-ers");
+			if (evidenceRecordIds == null || evidenceRecordIds.length == 0) {
+				optgroup.style.display="none";
+			} else {
+				optgroup.style.display="";
+				for (var elementIdx = 0;  elementIdx < evidenceRecordIds.length; elementIdx++) {
+					var erId = evidenceRecordIds[elementIdx];
+					var option = document.createElement("option");
+					option.text = erId;
+					option.className = "er";
+					optgroup.appendChild(option);
+				}
+			}
+		}
+
 		function initCertChainSelect(certificateIds) {
 			var optgroup = document.getElementById("select-visualrepresentation-chains");
 			if (certificateIds == null || certificateIds.length == 0) {
@@ -70,14 +123,17 @@
 		var selectVisual = document.getElementById("select-visualrepresentation");
 		
 		selectVisual.addEventListener("change", function() {
-			if (this.selectedOptions == null || this.selectedOptions.length != 1){
+			if (this.selectedOptions == null || this.selectedOptions.length != 1) {
 				return;
 			}
 			var option = this.selectedOptions[0];
-			var representation = mySVG.contentDocument.initSVG(svgWidth, svgHeight, padding);
 			if ("sig" == option.className) {
 				representation.displaySignatureById(option.value);
-			}else {
+			} else if ("tst" == option.className) {
+				representation.displayTimestampById(option.value);
+			} else if ("er" == option.className) {
+				representation.displayEvidenceRecordById(option.value);
+			} else {
 				representation.displayCertificateChainById(option.value);
 			}
 			

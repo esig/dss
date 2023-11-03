@@ -1,14 +1,14 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Mon, 06 Feb 2023 07:49:47 GMT
+Date: Fri, 03 Nov 2023 10:23:55 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Security-Policy: default-src 'self' http://localhost:9795 'unsafe-inline' data:;
+Content-Security-Policy: default-src 'self' http://localhost:9795 https://petstore.swagger.io 'unsafe-inline' data:;
 Server: ESIG-DSS
 Content-Type: application/json
 Transfer-Encoding: chunked

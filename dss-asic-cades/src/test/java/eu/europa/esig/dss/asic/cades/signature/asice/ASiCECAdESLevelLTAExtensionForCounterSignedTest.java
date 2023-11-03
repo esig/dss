@@ -30,6 +30,7 @@ import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -211,7 +212,8 @@ public class ASiCECAdESLevelLTAExtensionForCounterSignedTest extends AbstractASi
 						.contains(counterSignature.getSigningCertificate().getId()));
 				sigTstFound = true;
 				
-			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+			} else if (TimestampType.CONTAINER_TIMESTAMP.equals(timestampWrapper.getType())) {
+				assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestampWrapper.getArchiveTimestampType());
 				assertEquals(2, timestampWrapper.getTimestampedSignatures().size());
 				assertTrue(timestampWrapper.getTimestampedSignatures().stream().map(s -> s.getId()).collect(Collectors.toList())
 						.contains(counterSignature.getId()));

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyDigestAlgoAndValue;
@@ -285,6 +286,46 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 	}
 
 	/**
+	 * Returns a list of {@code EvidenceRecordWrapper}s associated with the signature
+	 *
+	 * @return a list of {@code EvidenceRecordWrapper}s
+	 */
+	public List<EvidenceRecordWrapper> getEvidenceRecords() {
+		List<EvidenceRecordWrapper> evidenceRecords = new ArrayList<>();
+		List<XmlFoundEvidenceRecord> foundEvidenceRecords = signature.getFoundEvidenceRecords();
+		for (XmlFoundEvidenceRecord xmlFoundEvidenceRecord : foundEvidenceRecords) {
+			evidenceRecords.add(new EvidenceRecordWrapper(xmlFoundEvidenceRecord.getEvidenceRecord()));
+		}
+		return evidenceRecords;
+	}
+
+	/**
+	 * Returns a list of associated evidence record identifiers
+	 *
+	 * @return a list of {@link String}
+	 */
+	public List<String> getEvidenceRecordIdsList() {
+		List<String> result = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecordWrapper : getEvidenceRecords()) {
+			result.add(evidenceRecordWrapper.getId());
+		}
+		return result;
+	}
+
+	/**
+	 * Returns identifiers of all embedded evidence record time-stamps
+	 *
+	 * @return a list of {@link String} time-stamp identifiers
+	 */
+	public List<String> getEvidenceRecordTimestampIds() {
+		List<String> result = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecordWrapper : getEvidenceRecords()) {
+			result.addAll(evidenceRecordWrapper.getTimestampIdsList());
+		}
+		return result;
+	}
+
+	/**
 	 * Gets if the signature production place is claimed within the signature
 	 *
 	 * @return TRUE if the signature production place is present, FALSE otherwise
@@ -384,6 +425,16 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 	 */
 	public SignatureLevel getSignatureFormat() {
 		return signature.getSignatureFormat();
+	}
+
+	/**
+	 * Returns the signature media type
+	 * NOTE: currently used only in JAdES
+	 *
+	 * @return {@link String}
+	 */
+	public String getSignatureType() {
+		return signature.getSignatureType();
 	}
 
 	/**
@@ -591,6 +642,7 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 	public List<TimestampWrapper> getALevelTimestamps() {
 		List<TimestampWrapper> timestamps = new ArrayList<>(getArchiveTimestamps());
 		timestamps.addAll(getDocumentTimestamps(true));
+		timestamps.addAll(getContainerTimestamps());
 		return timestamps;
 	}
 
@@ -677,6 +729,15 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 	 */
 	public List<TimestampWrapper> getDocumentTimestamps() {
 		return getTimestampListByType(TimestampType.DOCUMENT_TIMESTAMP);
+	}
+
+	/**
+	 * Returns all container detached timestamps (used for ASiC containers)
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
+	public List<TimestampWrapper> getContainerTimestamps() {
+		return getTimestampListByType(TimestampType.CONTAINER_TIMESTAMP);
 	}
 
 	/**

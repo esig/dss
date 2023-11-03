@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.apache.xml.security.signature.Reference;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -39,14 +29,23 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import org.apache.xml.security.signature.Reference;
+import org.junit.jupiter.api.BeforeEach;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdESTestSignature {
 
@@ -86,11 +85,15 @@ public class XAdESLevelBIndividualDataObjectTimeStampTest extends AbstractXAdEST
 //		byte[] toSignBytes = DSSXMLUtils.canonicalize(canonicalizationAlgo, DSSUtils.toByteArray(documentToSign));
 		byte[] toSignBytes = DSSUtils.toByteArray(documentToSign);
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, toSignBytes);
-		TimestampBinary timeStampResponse = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(EE_GOOD_TSA);
+		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
+
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBytes(), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
-		timestampToken.setTimestampIncludes(Arrays.asList(new TimestampInclude(referenceId, true)));
+		timestampToken.setTimestampIncludes(Collections.singletonList(new TimestampInclude(referenceId, true)));
 		timestampToken.setCanonicalizationMethod(canonicalizationAlgo);
-		signatureParameters.setContentTimestamps(Arrays.asList(timestampToken));
+		signatureParameters.setContentTimestamps(Collections.singletonList(timestampToken));
 
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}

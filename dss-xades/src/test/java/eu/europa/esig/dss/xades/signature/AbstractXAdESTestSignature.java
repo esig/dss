@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -29,37 +27,50 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -88,16 +99,88 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDOM);
 		for (int i = 0; i < signatureNodeList.getLength(); i++) {
 			Element signatureElement = (Element) signatureNodeList.item(i);
-			NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Paths().getDataObjectFormat());
-			for (int j = 0; j < dataObjectFormatList.getLength(); j++) {
-				Element dataObjectFormat = (Element) dataObjectFormatList.item(j);
+			NodeList dataObjectFormatNodeList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
+
+			List<DSSDataObjectFormat> dataObjectFormatList = getSignatureParameters().getDataObjectFormatList();
+			for (int j = 0; j < dataObjectFormatNodeList.getLength(); j++) {
+				Element dataObjectFormat = (Element) dataObjectFormatNodeList.item(j);
 				String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());
 				assertNotNull(objectReference);
 
 				Element elementById = DomUtils.getElementById(documentDOM, DomUtils.getId(objectReference));
 				assertNotNull(elementById);
 				assertTrue(XMLDSigElement.REFERENCE.isSameTagName(elementById.getLocalName()));
+
+				Element mimeTypeElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentMimeType());
+				assertNotNull(mimeTypeElement);
+				assertTrue(Utils.isStringNotEmpty(mimeTypeElement.getTextContent()));
+
+				if (dataObjectFormatList != null) {
+					DSSDataObjectFormat dssDOF = dataObjectFormatList.get(j);
+
+					Element descriptionElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentDescription());
+					if (dssDOF.getDescription() != null) {
+						assertNotNull(descriptionElement);
+						assertEquals(dssDOF.getDescription(), descriptionElement.getTextContent());
+					} else {
+						assertNull(descriptionElement);
+					}
+
+					Element objectIdentifierElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentObjectIdentifier());
+					if (dssDOF.getObjectIdentifier() != null) {
+						ObjectIdentifier oId = dssDOF.getObjectIdentifier();
+						assertNotNull(objectIdentifierElement);
+						checkObjectIdentifierType(oId, objectIdentifierElement);
+					} else {
+						assertNull(objectIdentifierElement);
+					}
+
+					mimeTypeElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentMimeType());
+					assertNotNull(mimeTypeElement);
+					assertEquals(dssDOF.getMimeType(), mimeTypeElement.getTextContent());
+
+					Element encodingElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentEncoding());
+					if (dssDOF.getEncoding() != null) {
+						assertNotNull(encodingElement);
+						assertEquals(dssDOF.getEncoding(), encodingElement.getTextContent());
+					} else {
+						assertNull(encodingElement);
+					}
+				}
 			}
+		}
+	}
+
+	protected void checkObjectIdentifierType(ObjectIdentifier objectIdentifier, Element objectIdentifierElement) {
+		assertNotNull(objectIdentifier);
+		if (Utils.isStringNotEmpty(objectIdentifier.getOid()) || Utils.isStringNotEmpty(objectIdentifier.getUri())) {
+			Element identifier = DomUtils.getElement(objectIdentifierElement, new XAdES132Path().getCurrentIdentifier());
+			assertNotNull(identifier);
+			assertTrue(identifier.getTextContent().equals(objectIdentifier.getOid()) || identifier.getTextContent().equals(objectIdentifier.getUri()));
+			if (objectIdentifier.getQualifier() != null) {
+				String qualifier = identifier.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
+				assertEquals(objectIdentifier.getQualifier().getValue(), qualifier);
+			}
+		}
+		Element description = DomUtils.getElement(objectIdentifierElement, new XAdES132Path().getCurrentDescription());
+		if (objectIdentifier.getDescription() != null) {
+			assertNotNull(description);
+			assertEquals(objectIdentifier.getDescription(), description.getTextContent());
+		} else {
+			assertNull(description);
+		}
+		NodeList docRefs = DomUtils.getNodeList(objectIdentifierElement, new XAdES132Path().getCurrentDocumentationReferenceElements());
+		assertNotNull(docRefs);
+		if (Utils.isArrayNotEmpty(objectIdentifier.getDocumentationReferences())) {
+			assertNotEquals(0, docRefs.getLength());
+			for (int i = 0; i < docRefs.getLength(); i++) {
+				Node ref = docRefs.item(i);
+				assertTrue(ref instanceof Element);
+				assertEquals(objectIdentifier.getDocumentationReferences()[i], ref.getTextContent());
+			}
+		} else {
+			assertNotNull(docRefs);
+			assertEquals(0, docRefs.getLength());
 		}
 	}
 
@@ -209,6 +292,44 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 				}
 			}
 		}
+	}
+
+	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
+		boolean found = false;
+		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
+		String originalDigest = getDigest(original, toBeCanonicalized);
+		for (DSSDocument retrieved : retrievedDocuments) {
+			String retrievedDigest = getDigest(retrieved, toBeCanonicalized);
+			if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+
+	protected String getDigest(DSSDocument doc, boolean toBeCanonicalized) {
+		byte[] byteArray = DSSUtils.toByteArray(doc);
+		if (toBeCanonicalized && DomUtils.isDOM(doc)) {
+			try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+				// we canonicalize to ignore the header (which is not covered by the signature)
+				Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod());
+				c14n.canonicalize(byteArray, baos, true);
+				byteArray = baos.toByteArray();
+			} catch (XMLSecurityException | IOException e) {
+				// Not always able to canonicalize (more than one file can be covered (XML +
+				// something else) )
+			}
+		}
+		// LOG.info("Bytes : {}", new String(byteArray));
+		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
+	}
+
+	@Override
+	protected boolean areSignedAssertionsEqual(String signedAssertionOne, String signedAssertionTwo) {
+		Document expected = DomUtils.buildDOM(signedAssertionOne);
+		Document extracted = DomUtils.buildDOM(signedAssertionTwo);
+		return expected.isEqualNode(extracted);
 	}
 
 }

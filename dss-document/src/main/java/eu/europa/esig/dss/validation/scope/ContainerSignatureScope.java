@@ -21,7 +21,10 @@
 package eu.europa.esig.dss.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.spi.DSSUtils;
 
 /**
  * This Signature Scope represents a "package.zip" container for ASiC-S signatures
@@ -30,30 +33,28 @@ import eu.europa.esig.dss.model.Digest;
 public class ContainerSignatureScope extends SignatureScope {
 
 	private static final long serialVersionUID = -2887585442963519410L;
-	
-	private static final String DEFAULT_CONTAINER_NAME = "package.zip";
 
 	/**
 	 * Default constructor
 	 *
-	 * @param digest {@link Digest}
+	 * @param document {@link DSSDocument}
 	 */
-	public ContainerSignatureScope(Digest digest) {
-		super(DEFAULT_CONTAINER_NAME, digest);
+	public ContainerSignatureScope(DSSDocument document) {
+		this(DSSUtils.decodeURI(document.getName()), document);
 	}
 
 	/**
-	 * Constructor with a container name
+	 * Default constructor
 	 *
-	 * @param name {@link String} filename
-	 * @param digest {@link Digest}
+	 * @param filename {@link String} name of the document
+	 * @param document {@link DSSDocument}
 	 */
-	public ContainerSignatureScope(String name, Digest digest) {
-		super(name, digest);
+	public ContainerSignatureScope(final String filename, final DSSDocument document) {
+		super(filename, document);
 	}
 
     @Override
-    public String getDescription() {
+    public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
         return "ASiCS archive";
     }
 

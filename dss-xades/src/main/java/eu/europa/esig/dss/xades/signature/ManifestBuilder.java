@@ -20,18 +20,18 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -62,7 +62,7 @@ public class ManifestBuilder {
 	/** Defines the default id for the Manifest element if none is provided */
 	private static final String DEFAULT_MANIFEST_ID = "manifest";
 
-	private static final DSSNamespace DEFAULT_NAMESPACE = XAdESNamespaces.XMLDSIG;
+	private static final DSSNamespace DEFAULT_NAMESPACE = XMLDSigNamespace.NS;
 
 	/** The manifest id */
 	private final String manifestId;
@@ -185,6 +185,15 @@ public class ManifestBuilder {
 		referenceProcessor.incorporateReferences(manifestDom, references, xmldsigNamespace);
 
 		return DomUtils.createDssDocumentFromDomDocument(documentDom, manifestId);
+	}
+
+	/**
+	 * Returns a list of {@code DSSReference}s
+	 *
+	 * @return list of {@link DSSReference}s
+	 */
+	public List<DSSReference> getManifestReferences() {
+		return references;
 	}
 
 }

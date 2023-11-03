@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -35,19 +35,19 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class ValidCAQCCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-    /** {@code TrustedServiceWrapper} */
-    private final TrustedServiceWrapper trustService;
+    /** {@code TrustServiceWrapper} */
+    private final TrustServiceWrapper trustService;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlValidationCertificateQualification}
-     * @param trustService {@link TrustedServiceWrapper}
+     * @param trustService {@link TrustServiceWrapper}
      * @param constraint {@link LevelConstraint}
      */
     public ValidCAQCCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
-                          TrustedServiceWrapper trustService, LevelConstraint constraint) {
+                          TrustServiceWrapper trustService, LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.trustService = trustService;
     }

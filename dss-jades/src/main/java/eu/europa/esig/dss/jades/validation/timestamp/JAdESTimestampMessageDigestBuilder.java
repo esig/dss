@@ -26,6 +26,7 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
+import eu.europa.esig.dss.jades.validation.JAdESAttribute;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -36,7 +37,7 @@ import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.jose4j.json.internal.json_simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,9 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 	/** The canonicalization algorithm to be used for message-imprint computation */
 	private String canonicalizationAlgorithm;
+
+	/** The signature element containing the time-stamp token */
+	private JAdESAttribute timestampAttribute;
 
 	/**
 	 * The constructor to compute message-imprint for timestamps related to the {@code signature}
@@ -114,9 +118,22 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	 * Sets the canonicalization algorithm to be used for message-digest computation
 	 *
 	 * @param canonicalizationAlgorithm {@link String}
+	 * @return this {@code JAdESTimestampMessageDigestBuilder}
 	 */
-	public void setCanonicalizationAlgorithm(String canonicalizationAlgorithm) {
+	public JAdESTimestampMessageDigestBuilder setCanonicalizationAlgorithm(String canonicalizationAlgorithm) {
 		this.canonicalizationAlgorithm = canonicalizationAlgorithm;
+		return this;
+	}
+
+	/**
+	 * Sets a signature attribute identifying the time-stamp token
+	 *
+	 * @param timestampAttribute {@link JAdESAttribute}
+	 * @return this {@code JAdESTimestampMessageDigestBuilder}
+	 */
+	public JAdESTimestampMessageDigestBuilder setTimestampAttribute(JAdESAttribute timestampAttribute) {
+		this.timestampAttribute = timestampAttribute;
+		return this;
 	}
 
 	@Override
@@ -249,7 +266,7 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
 
-					if (timestampToken != null && timestampToken.getTimestampAttribute().equals(etsiUComponent)) {
+					if (timestampAttribute != null && timestampAttribute.equals(etsiUComponent)) {
 						// the current timestamp is found, stop the iteration
 						break;
 					}
@@ -427,7 +444,7 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 				JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
 				for (EtsiUComponent etsiUComponent : etsiUHeader.getAttributes()) {
 
-					if (timestampToken != null && timestampToken.getTimestampAttribute().equals(etsiUComponent)) {
+					if (timestampAttribute != null && timestampAttribute.equals(etsiUComponent)) {
 						// the timestamp is reached, stop the iteration
 						break;
 					}

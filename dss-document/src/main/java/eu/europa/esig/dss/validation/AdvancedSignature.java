@@ -28,19 +28,24 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -437,6 +442,32 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * @return a {@code List} of {@code AdvancedSignatures} representing the counter signatures
 	 */
 	List<AdvancedSignature> getCounterSignatures();
+
+	/**
+	 * Returns a list of embedded evidence records
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getEmbeddedEvidenceRecords();
+
+	/**
+	 * Adds an evidence record covering the signature file
+	 */
+	void addExternalEvidenceRecord(EvidenceRecord evidenceRecord);
+
+	/**
+	 * Returns a list of detached evidence records
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getDetachedEvidenceRecords();
+
+	/**
+	 * Returns a list of all evidence records
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	List<EvidenceRecord> getAllEvidenceRecords();
 	
 	/**
 	 * This method returns the {@link SignatureIdentifier}.
@@ -485,13 +516,13 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * Runs SignatureScopeFinder
 	 * 
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use
+	 * @deprecated since DSS 5.13. Use {@code #getSignatureScopes} directly
 	 */
-	@SuppressWarnings("rawtypes")
-	void findSignatureScope(SignatureScopeFinder signatureScopeFinder);
+	@Deprecated
+	void findSignatureScope(SignatureScopeFinder<?> signatureScopeFinder);
 
 	/**
-	 * Returns a list of found SignatureScopes NOTE: the method
-	 * {@code findSignatureScope(signatureScopeFinder)} shall be called before
+	 * Returns a list of found SignatureScopes
 	 * 
 	 * @return a list of {@link SignatureScope}s
 	 */

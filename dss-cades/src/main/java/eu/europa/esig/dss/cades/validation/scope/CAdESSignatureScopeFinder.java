@@ -24,13 +24,19 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
+import eu.europa.esig.dss.validation.scope.ContainerContentSignatureScope;
+import eu.europa.esig.dss.validation.scope.ContainerSignatureScope;
 import eu.europa.esig.dss.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.validation.scope.DigestSignatureScope;
 import eu.europa.esig.dss.validation.scope.FullSignatureScope;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
+import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,17 +61,44 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 
     @Override
     public List<SignatureScope> findSignatureScope(final CAdESSignature cadesSignature) {
-        List<ReferenceValidation> referenceValidations = cadesSignature.getReferenceValidations();
-        if (Utils.isCollectionNotEmpty(referenceValidations)) {
-        	ReferenceValidation reference = referenceValidations.iterator().next(); // only one Reference is allowed in CAdES
-        	if (reference.isIntact()) {
-                DSSDocument originalDocument = getOriginalDocument(cadesSignature);
-                return getSignatureScopeFromOriginalDocument(cadesSignature, originalDocument);
-        	} else if (reference.isFound()) {
-                return getSignatureScopeFromReferenceValidation(reference);
-        	}
+        DSSDocument originalDocument = getOriginalDocument(cadesSignature);
+        if (originalDocument == null) {
+            return Collections.emptyList();
         }
-    	return Collections.emptyList();
+
+        final List<SignatureScope> result = new ArrayList<>();
+        if (isASiCSArchive(cadesSignature)) {
+            ContainerSignatureScope containerSignatureScope = new ContainerSignatureScope(originalDocument);
+            result.add(containerSignatureScope);
+            for (DSSDocument archivedDocument : cadesSignature.getContainerContents()) {
+                containerSignatureScope.addChildSignatureScope(new ContainerContentSignatureScope(archivedDocument));
+            }
+
+        } else if (isASiCEArchive(cadesSignature)) {
+            ManifestFile manifestFile = cadesSignature.getManifestFile();
+            ManifestSignatureScope manifestSignatureScope = new ManifestSignatureScope(manifestFile);
+            result.add(manifestSignatureScope);
+
+            for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+                if (manifestEntry.isIntact()) {
+                    manifestSignatureScope.addChildSignatureScope(new FullSignatureScope(
+                            manifestEntry.getFileName(), createDigestDocument(manifestEntry.getDigest())));
+                }
+            }
+
+        } else {
+            List<ReferenceValidation> referenceValidations = cadesSignature.getReferenceValidations();
+            if (Utils.isCollectionNotEmpty(referenceValidations)) {
+                ReferenceValidation reference = referenceValidations.iterator().next(); // only one Reference is allowed in CAdES
+                if (reference.isIntact()) {
+                    return getSignatureScopeFromOriginalDocument(cadesSignature, originalDocument);
+                } else if (reference.isFound()) {
+                    return getSignatureScopeFromReferenceValidation(reference);
+                }
+            }
+
+        }
+        return result;
     }
 
     /**
@@ -84,17 +117,14 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
         
         String fileName = originalDocument.getName();
         if (cadesSignature.isCounterSignature()) {
-    		return Collections.singletonList(new CounterSignatureScope(
-                    getTokenIdentifierProvider().getIdAsString(cadesSignature.getMasterSignature()), getDigest(originalDocument) ));
-    		
+            return Collections.singletonList(new CounterSignatureScope(cadesSignature.getMasterSignature(), originalDocument));
+
         } else if (originalDocument instanceof DigestDocument) {
-        	DigestDocument digestDocument = (DigestDocument) originalDocument;
-            result.add(new DigestSignatureScope(fileName != null ? fileName : "Digest document", 
-            		digestDocument.getExistingDigest()));
-            
+            DigestDocument digestDocument = (DigestDocument) originalDocument;
+            result.add(new DigestSignatureScope(fileName != null ? fileName : "Digest document", digestDocument));
+
         } else {
-			result.add(new FullSignatureScope(fileName != null ? fileName : "Full document", 
-					getDigest(originalDocument)));
+            result.add(new FullSignatureScope(fileName != null ? fileName : "Full document", originalDocument));
         }
         
         return result;
@@ -108,8 +138,11 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
      */
     protected List<SignatureScope> getSignatureScopeFromReferenceValidation(ReferenceValidation reference) {
         List<SignatureScope> result = new ArrayList<>();
-		result.add(new FullSignatureScope("Full document", reference.getDigest()));
-		return result;
+        DSSDocument digestDocument = createDigestDocument(reference.getDigest());
+        if (digestDocument != null) {
+            result.add(new FullSignatureScope("Full document", digestDocument));
+        }
+        return result;
     }
     
     /**
@@ -126,4 +159,9 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
         }
     }
     
+    @Override
+    protected boolean isASiCSArchive(AdvancedSignature advancedSignature) {
+        return super.isASiCSArchive(advancedSignature) && !super.isASiCEArchive(advancedSignature);
+    }
+
 }

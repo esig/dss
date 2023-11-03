@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.validation;
 
-import eu.europa.esig.dss.asic.common.SecureContainerHandler;
+import eu.europa.esig.dss.asic.common.SecureContainerHandlerBuilder;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.exception.IllegalInputException;
@@ -67,7 +67,7 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 
 	@AfterEach
 	public void reset() {
-		ZipUtils.getInstance().setZipContainerHandler(new SecureContainerHandler());
+		ZipUtils.getInstance().setZipContainerHandlerBuilder(new SecureContainerHandlerBuilder());
 	}
 
 	@Override
@@ -97,9 +97,9 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 		FileDocument doc = new FileDocument("src/test/resources/validation/one-level-zip-bombing.asice");
 
 		// decreased value to pass the test on low memory configuration (less than -Xmx3072m)
-		SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
-		secureContainerHandler.setMaxCompressionRatio(20);
-		ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
+		SecureContainerHandlerBuilder secureContainerHandler = new SecureContainerHandlerBuilder()
+				.setMaxCompressionRatio(20);
+		ZipUtils.getInstance().setZipContainerHandlerBuilder(secureContainerHandler);
 
 		Exception exception = assertThrows(IllegalInputException.class, () -> new ASiCContainerWithXAdESValidator(doc));
 		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());

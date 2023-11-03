@@ -32,7 +32,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.XAdES111Utils;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -66,7 +66,7 @@ public class XAdES111LevelBWithSigPolicyTest extends AbstractXAdESTestSignature 
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-        signatureParameters.setXadesNamespace(XAdESNamespaces.XADES_111);
+        signatureParameters.setXadesNamespace(XAdESNamespace.XADES_111);
         signatureParameters.setEn319132(false);
 
         Policy signaturePolicy = new Policy();

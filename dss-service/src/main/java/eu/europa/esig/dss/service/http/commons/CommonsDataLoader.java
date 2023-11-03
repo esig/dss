@@ -42,7 +42,6 @@ import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.auth.BasicScheme;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
@@ -61,9 +60,7 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.SocketConfig;
 import org.apache.hc.core5.http.io.entity.BufferedHttpEntity;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.InputStreamEntity;
-import org.apache.hc.core5.http.message.StatusLine;
 import org.apache.hc.core5.http.protocol.HttpContext;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.apache.hc.core5.ssl.TrustStrategy;
@@ -475,48 +472,6 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Returns a list of accepted HTTP status numbers
-	 *
-	 * @return a list of accepted HTTP status numbers
-	 * @deprecated since DSS 5.12. Use {@code
-	 * 		CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
-	 * 	    List<Integer> acceptedHttpStatus = httpClientResponseHandler.getAcceptedHttpStatuses();
-	 * }
-	 */
-	@Deprecated
-	public List<Integer> getAcceptedHttpStatus() {
-		LOG.info("Use of deprecated method! Use CommonsHttpClientResponseHandler.getAcceptedHttpStatuses() method.");
-		HttpClientResponseHandler<byte[]> responseHandler = getHttpClientResponseHandler();
-		if (responseHandler instanceof CommonsHttpClientResponseHandler) {
-			return ((CommonsHttpClientResponseHandler) responseHandler).getAcceptedHttpStatuses();
-		}
-		throw new UnsupportedOperationException(String.format("Unable to retrieve accepted HTTP status for " +
-				"unknown implementation of HttpClientResponseHandler : '%s'", responseHandler.getClass()));
-	}
-
-	/**
-	 * This allows to set a list of accepted http status. Example: 200 (OK)
-	 *
-	 * @param acceptedHttpStatus
-	 *            a list of integer which correspond to the http status code
-	 * @deprecated since DSS 5.12. Use {@code
-	 * 		CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
-	 * 		httpClientResponseHandler.setAcceptedHttpStatuses(acceptedHttpStatus);
-	 * 		commonsDataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
-	 * }
-	 */
-	@Deprecated
-	public void setAcceptedHttpStatus(List<Integer> acceptedHttpStatus) {
-		LOG.info("Use of deprecated method! Use CommonsHttpClientResponseHandler.setAcceptedHttpStatuses(...) method.");
-		HttpClientResponseHandler<byte[]> responseHandler = getHttpClientResponseHandler();
-		if (responseHandler instanceof CommonsHttpClientResponseHandler) {
-			((CommonsHttpClientResponseHandler) responseHandler).setAcceptedHttpStatuses(acceptedHttpStatus);
-		}
-		throw new UnsupportedOperationException(String.format("Unable to set accepted HTTP status for " +
-				"unknown implementation of HttpClientResponseHandler : '%s'", responseHandler.getClass()));
-	}
-
-	/**
 	 * Gets the proxy configuration
 	 *
 	 * @return associated {@code ProxyConfig}
@@ -573,17 +528,6 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Sets the KeyStore password
-	 *
-	 * @param sslKeystorePassword {@link String}
-	 * @deprecated since DSS 5.12. Use {@code #setSslKeystorePassword(char[] sslKeystorePassword)}
-	 */
-	@Deprecated
-	public void setSslKeystorePassword(String sslKeystorePassword) {
-		this.sslKeystorePassword = sslKeystorePassword != null ? sslKeystorePassword.toCharArray() : null;
-	}
-
-	/**
 	 * Sets the KeyStore password. Please note that the password shall be the same for the keystore and
 	 * the extraction of a corresponding key.
 	 *
@@ -602,17 +546,6 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	public void setSslTruststore(DSSDocument sslTrustStore) {
 		this.sslTruststore = sslTrustStore;
-	}
-
-	/**
-	 * Sets the password for SSL truststore
-	 *
-	 * @param sslTruststorePassword {@link String}
-	 * @deprecated since DSS 5.12. Use {@code #setSslTruststorePassword(char[] sslTruststorePassword)}
-	 */
-	@Deprecated
-	public void setSslTruststorePassword(String sslTruststorePassword) {
-		this.sslTruststorePassword = sslTruststorePassword != null ? sslTruststorePassword.toCharArray() : null;
 	}
 
 	/**
@@ -682,30 +615,6 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	public void setPreemptiveAuthentication(boolean preemptiveAuthentication) {
 		this.preemptiveAuthentication = preemptiveAuthentication;
-	}
-
-	/**
-	 * Adds authentication credentials to the existing {@code authenticationMap}
-	 *
-	 * @param host
-	 *            host
-	 * @param port
-	 *            port
-	 * @param scheme
-	 *            scheme
-	 * @param login
-	 *            login
-	 * @param password
-	 *            password
-	 * @return this (for fluent addAuthentication)
-	 * @deprecated since DSS 5.12. Use {@code #addAuthentication(
-	 * 												final String host, final int port, final String scheme,
-	 * 												final String login, final char[] password)}
-	 */
-	@Deprecated
-	public CommonsDataLoader addAuthentication(final String host, final int port, final String scheme,
-											   final String login, final String password) {
-		return addAuthentication(host, port, scheme, login, password != null ? password.toCharArray() : null);
 	}
 
 	/**
@@ -873,24 +782,6 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * This method is useful only with the cache handling implementation of the
-	 * {@code DataLoader}.
-	 *
-	 * @param url
-	 *            to access
-	 * @param refresh
-	 *            if true indicates that the cached data should be refreshed
-	 * @deprecated since 5.12. To be removed in DSS 5.13. Use {@code #get(url)} for no cache,
-	 *            or an alternative DataLoader providing caching functionality.
-	 * @return {@code byte} array of obtained data
-	 */
-	@Override
-	@Deprecated
-	public byte[] get(final String url, final boolean refresh) {
-		return get(url);
-	}
-
-	/**
 	 * This method retrieves data using LDAP protocol. - CRL from given LDAP
 	 * url, e.g. ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com
 	 * - ex URL from AIA
@@ -1032,23 +923,6 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Processes {@code httpRequest} and returns the {@code CloseableHttpResponse}
-	 *
-	 * @param client {@link CloseableHttpClient}
-	 * @param httpRequest {@link HttpUriRequest}
-	 * @return {@link CloseableHttpResponse}
-	 * @throws IOException if an exception occurs
-	 * @deprecated since DSS 5.12. See {@code execute(CloseableHttpClient client, HttpUriRequest httpRequest)}
-	 */
-	@Deprecated
-	protected CloseableHttpResponse getHttpResponse(final CloseableHttpClient client,
-													final HttpUriRequest httpRequest) throws IOException {
-		final HttpHost targetHost = getHttpHost(httpRequest);
-		final HttpContext localContext = getHttpContext(targetHost);
-		return client.execute(targetHost, httpRequest, localContext);
-	}
-
-	/**
 	 * Processes {@code httpRequest} and returns the byte array representing the response's content
 	 *
 	 * @param client {@link CloseableHttpClient}
@@ -1081,17 +955,6 @@ public class CommonsDataLoader implements DataLoader {
 	/**
 	 * Gets the {@code HttpContext}
 	 *
-	 * @return {@link HttpContext}
-	 * @deprecated since DSS 5.12. Use {@code getHttpContext(httpHost)} method instead
-	 */
-	@Deprecated
-	protected HttpContext getHttpContext() {
-		return HttpClientContext.create();
-	}
-
-	/**
-	 * Gets the {@code HttpContext}
-	 *
 	 * @param httpHost {@link HttpHost}
 	 * @return {@link HttpContext}
 	 */
@@ -1116,72 +979,6 @@ public class CommonsDataLoader implements DataLoader {
 			localContext.resetAuthExchange(httpHost, basicScheme);
 		}
 		return localContext;
-	}
-
-	/**
-	 * Reads the HTTP response
-	 *
-	 * @param httpResponse {@link CloseableHttpResponse}
-	 * @return the response's content
-	 * @throws IOException if an exception occurs
-	 * @deprecated since DSS 5.12. Use {@code CommonsHttpClientResponseHandler.handleResponse(CloseableHttpResponse httpResponse)}
-	 */
-	@Deprecated
-	protected byte[] readHttpResponse(final CloseableHttpResponse httpResponse) throws IOException {
-		final StatusLine statusLine = new StatusLine(httpResponse);
-		final int statusCode = statusLine.getStatusCode();
-		final String reasonPhrase = statusLine.getReasonPhrase();
-
-		if (!getAcceptedHttpStatus().contains(statusCode)) {
-			String reason = Utils.isStringNotEmpty(reasonPhrase) ? " / reason : " + reasonPhrase : "";
-			throw new IOException("Not acceptable HTTP Status (HTTP status code : " + statusCode + reason + ")");
-		}
-
-		final HttpEntity responseEntity = httpResponse.getEntity();
-		if (responseEntity == null) {
-			throw new IOException("No message entity for this response");
-		}
-
-		return getContent(responseEntity);
-	}
-
-	/**
-	 * Gets content of the response
-	 *
-	 * @param responseEntity {@link HttpEntity}
-	 * @return byte array
-	 * @throws IOException if an exception occurs
-	 * @deprecated since DSS 5.12. Use {@code CommonsHttpClientResponseHandler.getContent(HttpEntity responseEntity)}
-	 */
-	@Deprecated
-	protected byte[] getContent(final HttpEntity responseEntity) throws IOException {
-		try (InputStream content = responseEntity.getContent()) {
-			return DSSUtils.toByteArray(content);
-		}
-	}
-
-	/**
-	 * Closes all the parameters quietly
-	 *
-	 * @param httpRequest {@link HttpUriRequestBase}
-	 * @param httpResponse {@link CloseableHttpResponse}
-	 * @param client {@link CloseableHttpClient}
-	 * @deprecated since DSS 5.12. See {@code #closeQuietly(HttpUriRequestBase httpRequest, CloseableHttpClient client)}
-	 */
-	@Deprecated
-	protected void closeQuietly(HttpUriRequestBase httpRequest, CloseableHttpResponse httpResponse,
-								CloseableHttpClient client) {
-		try {
-			if (httpRequest != null) {
-				httpRequest.cancel();
-			}
-			if (httpResponse != null) {
-				EntityUtils.consumeQuietly(httpResponse.getEntity());
-				Utils.closeQuietly(httpResponse);
-			}
-		} finally {
-			Utils.closeQuietly(client);
-		}
 	}
 
 	/**
@@ -1438,12 +1235,24 @@ public class CommonsDataLoader implements DataLoader {
 
 				@Override
 				protected HttpHost determineProxy(HttpHost host, HttpContext context) throws HttpException {
-					String hostname = (host != null ? host.getHostName() : null);
+					String hostname = (host != null ? host.getHostName().toLowerCase() : null);
 					if (hostname != null) {
 						for (String h : excludedHosts) {
-							if (Utils.areStringsEqualIgnoreCase(hostname, h)) {
+							String hostnamePattern = h.toLowerCase();
+							if (hostname.equals(hostnamePattern)) {
 								// bypass proxy for that hostname
 								return null;
+
+							} else if (hostnamePattern.equals("*")) {
+								// bypass all hostnames
+								return null;
+
+							} else if (hostnamePattern.startsWith("*.")) {
+								String matchingEnd = hostnamePattern.substring(1).toLowerCase();
+								if (hostname.endsWith(matchingEnd)) {
+									// pattern matches, bypass proxy for that hostname
+									return null;
+								}
 							}
 						}
 					}

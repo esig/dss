@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Test;
 
@@ -47,7 +47,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     public void testValid() {
         ServiceByMRAEquivalenceStartingDateFilter filter = new ServiceByMRAEquivalenceStartingDateFilter(DATE2);
 
-        TrustedServiceWrapper service = new TrustedServiceWrapper();
+        TrustServiceWrapper service = new TrustServiceWrapper();
         service.setMraTrustServiceEquivalenceStatusStartingTime(DATE1);
 
         assertTrue(filter.isAcceptable(service));
@@ -57,7 +57,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     public void testInvalid() {
         ServiceByMRAEquivalenceStartingDateFilter filter = new ServiceByMRAEquivalenceStartingDateFilter(DATE2);
 
-        TrustedServiceWrapper service = new TrustedServiceWrapper();
+        TrustServiceWrapper service = new TrustServiceWrapper();
         service.setMraTrustServiceEquivalenceStatusStartingTime(DATE3);
 
         assertFalse(filter.isAcceptable(service));
@@ -67,7 +67,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     public void testSameTime() {
         ServiceByMRAEquivalenceStartingDateFilter filter = new ServiceByMRAEquivalenceStartingDateFilter(DATE1);
 
-        TrustedServiceWrapper service = new TrustedServiceWrapper();
+        TrustServiceWrapper service = new TrustServiceWrapper();
         service.setMraTrustServiceEquivalenceStatusStartingTime(DATE1);
 
         assertTrue(filter.isAcceptable(service));
@@ -77,7 +77,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     public void testNoDate() {
         ServiceByDateFilter filter = new ServiceByDateFilter(null);
 
-        TrustedServiceWrapper service = new TrustedServiceWrapper();
+        TrustServiceWrapper service = new TrustServiceWrapper();
         service.setMraTrustServiceEquivalenceStatusStartingTime(DATE1);
 
         assertFalse(filter.isAcceptable(service));
@@ -87,7 +87,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     public void testNoStartingDate() {
         ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
-        TrustedServiceWrapper service = new TrustedServiceWrapper();
+        TrustServiceWrapper service = new TrustServiceWrapper();
 
         assertFalse(filter.isAcceptable(service));
     }

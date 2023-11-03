@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 
 /**
  * The simple enveloped signature transform.
@@ -41,7 +41,7 @@ public final class XPathEnvelopedSignatureTransform extends XPathTransform {
 	 * Default constructor
 	 */
 	public XPathEnvelopedSignatureTransform() {
-		super(XAdESNamespaces.XMLDSIG, NOT_ANCESTOR_OR_SELF_DS_SIGNATURE);
+		super(XMLDSigNamespace.NS, NOT_ANCESTOR_OR_SELF_DS_SIGNATURE);
 	}
 
 	/**

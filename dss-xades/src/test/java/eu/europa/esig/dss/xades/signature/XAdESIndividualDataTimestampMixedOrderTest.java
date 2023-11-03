@@ -28,8 +28,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -65,7 +66,7 @@ public class XAdESIndividualDataTimestampMixedOrderTest extends AbstractXAdESMul
         byte[] firstDocBinaries = DSSUtils.toByteArray(firstFile);
         byte[] secondDocBinaries = DSSUtils.toByteArray(secondFile);
 
-        byte[] concatenatedResult = DSSUtils.concatenate(secondDocBinaries, firstDocBinaries);
+        byte[] concatenatedResult = Utils.concat(secondDocBinaries, firstDocBinaries);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, concatenatedResult);
         TimestampBinary timeStampResponse = getAlternateGoodTsa().getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         

@@ -40,8 +40,8 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.XAdESPath;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 import java.util.Date;
@@ -93,9 +93,9 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		xmlDocumentValidator.setSignaturePolicyProvider(new SignaturePolicyProvider()); // ignore signature policy loading
 
 		// To increase the security: the default {@code XAdESPaths} is used.
-		List<XAdESPaths> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();
+		List<XAdESPath> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();
 		xadesPathsHolders.clear();
-		xadesPathsHolders.add(new XAdES132Paths());
+		xadesPathsHolders.add(new XAdES132Path());
 
 		return xmlDocumentValidator.validateDocument(getTrustedListValidationPolicy());
 	}

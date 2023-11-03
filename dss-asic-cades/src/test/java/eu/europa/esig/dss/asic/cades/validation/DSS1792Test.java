@@ -20,26 +20,27 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.ASiCManifestTypeEnum;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestFile;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 	
@@ -57,7 +58,8 @@ public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 		assertEquals(2, diagnosticData.getTimestampList().size());
 		boolean archiveTimestampFound = false;
 		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
-			if (timestamp.getType().isArchivalTimestamp()) {
+			if (timestamp.getType().isContainerTimestamp()) {
+				assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestamp.getArchiveTimestampType());
 				archiveTimestampFound = true;
 			}
 		}
@@ -104,22 +106,20 @@ public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
         assertEquals(3, allManifestFiles.size());
         
         for (DSSDocument manifest : allManifestFiles) {
-        	ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifest);
+        	ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifest);
+			assertNotNull(manifestFile);
         	switch (manifestFile.getFilename()) {
         		case "META-INF/ASiCManifest.xml":
         			assertEquals("META-INF/signature001.p7s", manifestFile.getSignatureFilename());
-        			assertFalse(manifestFile.isTimestampManifest());
-        			assertFalse(manifestFile.isArchiveManifest());
+					assertEquals(ASiCManifestTypeEnum.SIGNATURE, manifestFile.getManifestType());
         			break;
         		case "META-INF/ASiCManifest1.xml":
         			assertEquals("META-INF/timestamp001.tst", manifestFile.getSignatureFilename());
-        			assertTrue(manifestFile.isTimestampManifest());
-        			assertFalse(manifestFile.isArchiveManifest());
+					assertEquals(ASiCManifestTypeEnum.TIMESTAMP, manifestFile.getManifestType());
         			break;
         		case "META-INF/ASiCManifest2.xml":
         			assertEquals("META-INF/signature002.p7s", manifestFile.getSignatureFilename());
-        			assertFalse(manifestFile.isTimestampManifest());
-        			assertFalse(manifestFile.isArchiveManifest());
+					assertEquals(ASiCManifestTypeEnum.SIGNATURE, manifestFile.getManifestType());
         			break;
         		default:
         			fail("Unexpected manifest found with name : " + manifestFile.getFilename());

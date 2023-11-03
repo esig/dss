@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -34,17 +36,20 @@ import java.util.Objects;
  */
 public final class ZipUtils {
 
+	private static final Logger LOG = LoggerFactory.getLogger(ZipUtils.class);
+
 	private static ZipUtils singleton;
 
 	/**
 	 * Provides utils for ZIP-archive content extraction
 	 */
-	private ZipContainerHandler zipContainerHandler = new SecureContainerHandler();
+	private ZipContainerHandlerBuilder<?> zipContainerHandlerBuilder = new SecureContainerHandlerBuilder();
 
 	/**
 	 * Singleton
 	 */
 	private ZipUtils() {
+		// empty
 	}
 
 	/**
@@ -60,15 +65,30 @@ public final class ZipUtils {
 	}
 
 	/**
+	 * Sets a builder to create an instance of a handler to process ZIP-content retrieving.
+	 * The handler will be created on each call of ZipUtils class.
+	 * Default : {@code SecureContainerHandlerBuilder}
+	 *
+	 * @param zipContainerHandlerBuilder {@link ZipContainerHandlerBuilder}
+	 */
+	public void setZipContainerHandlerBuilder(ZipContainerHandlerBuilder<?> zipContainerHandlerBuilder) {
+		Objects.requireNonNull(zipContainerHandlerBuilder, "ZipContainerHandlerBuilder shall be defined!");
+		this.zipContainerHandlerBuilder = zipContainerHandlerBuilder;
+	}
+
+	/**
 	 * Sets a handler to process ZIP-content retrieving
-	 * 
 	 * Default : {@code SecureContainerHandler}
 	 * 
 	 * @param zipContainerHandler {@link ZipContainerHandler}
+	 * @deprecated since DSS 5.13. Please use {@code #setZipContainerHandlerBuilder} instead
 	 */
+	@Deprecated
 	public void setZipContainerHandler(ZipContainerHandler zipContainerHandler) {
 		Objects.requireNonNull(zipContainerHandler, "zipContainerHandler shall be defined!");
-		this.zipContainerHandler = zipContainerHandler;
+		LOG.warn("Use of deprecated method #setZipContainerHandler(zipContainerHandler)! Not thread-safe! " +
+				"Please use #setZipContainerHandlerBuilder(zipContainerHandlerBuilder) method instead.");
+		this.zipContainerHandlerBuilder = (ZipContainerHandlerBuilder<ZipContainerHandler>) () -> zipContainerHandler;
 	}
 
 	/**
@@ -78,7 +98,7 @@ public final class ZipUtils {
 	 * @return a list of {@link DSSDocument}s
 	 */
 	public List<DSSDocument> extractContainerContent(DSSDocument zipPackage) {
-		return zipContainerHandler.extractContainerContent(zipPackage);
+		return getZipContainerHandler().extractContainerContent(zipPackage);
 	}
 
 	/**
@@ -88,7 +108,7 @@ public final class ZipUtils {
 	 * @return a list of {@link String} entry names
 	 */
 	public List<String> extractEntryNames(DSSDocument zipPackage) {
-		return zipContainerHandler.extractEntryNames(zipPackage);
+		return getZipContainerHandler().extractEntryNames(zipPackage);
 	}
 
 	/**
@@ -103,7 +123,17 @@ public final class ZipUtils {
 	 * @return {@link DSSDocument} ZIP-Archive
 	 */
 	public DSSDocument createZipArchive(List<DSSDocument> containerEntries, Date creationTime, String zipComment) {
-		return zipContainerHandler.createZipArchive(containerEntries, creationTime, zipComment);
+		return getZipContainerHandler().createZipArchive(containerEntries, creationTime, zipComment);
+	}
+
+	/**
+	 * Creates a ZIP-Archive with the given {@code asicContent}, indicating teh current creation time
+	 *
+	 * @param asicContent {@link ASiCContent} to create a new ZIP Archive from
+	 * @return {@link DSSDocument} ZIP-Archive
+	 */
+	public DSSDocument createZipArchive(ASiCContent asicContent) {
+		return createZipArchive(asicContent, new Date());
 	}
 
 	/**
@@ -117,6 +147,15 @@ public final class ZipUtils {
 	 */
 	public DSSDocument createZipArchive(ASiCContent asicContent, Date creationTime) {
 		return createZipArchive(asicContent.getAllDocuments(), creationTime, asicContent.getZipComment());
+	}
+
+	/**
+	 * Returns a new instance of {@code ZipContainerHandler}
+	 *
+	 * @return {@link ZipContainerHandler}
+	 */
+	private ZipContainerHandler getZipContainerHandler() {
+		return zipContainerHandlerBuilder.build();
 	}
 
 }

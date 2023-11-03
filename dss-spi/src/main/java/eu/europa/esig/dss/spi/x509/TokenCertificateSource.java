@@ -106,7 +106,7 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 	public List<CertificateRef> getReferencesForCertificateToken(CertificateToken certificateToken) {
 		List<CertificateRef> result = new ArrayList<>();
 		for (CertificateRef certificateRef : certificateRefOrigins.keySet()) {
-			if (certificateMatcher.match(certificateToken, certificateRef)) {
+			if (doesCertificateReferenceMatch(certificateToken, certificateRef)) {
 				result.add(certificateRef);
 			}
 		}
@@ -183,9 +183,15 @@ public abstract class TokenCertificateSource extends CommonCertificateSource {
 		return result;
 	}
 
-	private boolean isOrphan(CertificateRef certificateRef) {
+	/**
+	 * Verifies whether the {@code CertificateRef} is orphan (does not have related certificates embedded to the certificate source)
+	 *
+	 * @param certificateRef {@link CertificateRef} to check
+	 * @return TRUE if the certificate reference is orphan, FALSE otherwise
+	 */
+	protected boolean isOrphan(CertificateRef certificateRef) {
 		for (CertificateToken certificateToken : certificateOrigins.keySet()) {
-			if (certificateMatcher.match(certificateToken, certificateRef)) {
+			if (doesCertificateReferenceMatch(certificateToken, certificateRef)) {
 				return false;
 			}
 		}

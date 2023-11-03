@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.CertificateReorderer;
+import eu.europa.esig.dss.spi.x509.CertificateReorderer;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -39,6 +39,7 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.TokenIssuerSelector;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
@@ -46,11 +47,12 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSuppo
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
 import eu.europa.esig.dss.validation.status.SignatureStatus;
 import eu.europa.esig.dss.validation.status.TokenStatus;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -223,6 +225,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 		List<TimestampToken> timestamps = signature.getAllTimestamps();
 		prepareTimestamps(timestamps);
+
+		List<EvidenceRecord> allEvidenceRecords = signature.getAllEvidenceRecords();
+		for (EvidenceRecord evidenceRecord : allEvidenceRecords) {
+			addEvidenceRecordForVerification(evidenceRecord);
+		}
 
 		registerBestSignatureTime(signature); // to be done after timestamp POE extraction
 
@@ -460,7 +467,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private CertificateToken getIssuerFromProcessedCertificates(Token token) {
 		CertificateToken issuerCertificateToken = tokenIssuerMap.get(token);
-		// isSignedBy(...) check is required when a certificates is present in different sources
+		// isSignedBy(...) check is required when a certificate is present in different sources
 		// in order to instantiate a public key of the signer
 		if (issuerCertificateToken != null &&
 				(token.getPublicKeyOfTheSigner() != null || token.isSignedBy(issuerCertificateToken))) {
@@ -541,7 +548,7 @@ public class SignatureValidationContext implements ValidationContext {
 			Set<CertificateToken> issuerCandidates = new HashSet<>();
 			CertificateToken timestampSigner = theBestCandidate.getCertificateToken();
 			if (timestampSigner == null) {
-				issuerCandidates.addAll(allCertificateSources.getByCertificateIdentifier(theBestCandidate.getSignerInfo()));
+				issuerCandidates.addAll(allCertificateSources.getBySignerIdentifier(theBestCandidate.getSignerInfo()));
 			} else {
 				issuerCandidates.add(timestampSigner);
 			}
@@ -734,6 +741,14 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		return chain;
+	}
+
+	@Override
+	public void addEvidenceRecordForVerification(EvidenceRecord evidenceRecord) {
+		addDocumentCertificateSource(evidenceRecord.getCertificateSource());
+		addDocumentCRLSource(evidenceRecord.getCRLSource());
+		addDocumentOCSPSource(evidenceRecord.getOCSPSource());
+		prepareTimestamps(evidenceRecord.getTimestamps());
 	}
 
 	@Override
@@ -1020,21 +1035,6 @@ public class SignatureValidationContext implements ValidationContext {
 		if (!success) {
 			status.setMessage("Broken timestamp(s) detected.");
 			certificateVerifier.getAlertOnInvalidTimestamp().alert(status);
-		}
-		return success;
-	}
-
-	@Override
-	@Deprecated
-	public boolean checkAllCertificatesValid() {
-		TokenStatus status = new TokenStatus();
-		for (CertificateToken certificateToken : processedCertificates) {
-			checkCertificateIsNotRevokedRecursively(certificateToken, poeTimes.get(certificateToken.getDSSIdAsString()), status);
-		}
-		boolean success = status.isEmpty();
-		if (!success) {
-			status.setMessage("Revoked/Suspended certificate(s) detected.");
-			certificateVerifier.getAlertOnRevokedCertificate().alert(status);
 		}
 		return success;
 	}

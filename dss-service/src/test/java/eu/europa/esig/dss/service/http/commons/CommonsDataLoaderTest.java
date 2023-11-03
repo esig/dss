@@ -37,6 +37,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -207,8 +208,64 @@ public class CommonsDataLoaderTest {
 		Exception exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
 		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
 
-		proxyProperties.setExcludedHosts(Arrays.asList("certs.eid.belgium.be"));
+		proxyProperties.setExcludedHosts(Collections.singleton("certs.eid.belgium.be"));
 		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Arrays.asList("certs.eid.belgium.be", "google.com"));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("CERTS.EID.BELGIUM.BE"));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("*.eid.belgium.be"));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Arrays.asList("certs.eid.belgium.be", "*.eid.belgium.be"));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("*.EID.BELGIUM.BE"));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("*.belgium.be"));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("*"));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Arrays.asList("*.belgium.be", "*..belgium.be"));
+		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Arrays.asList("google.com", "wikipedia.org"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("*.*.belgium.be"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("certs.*.belgium.be"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("*s.eid.belgium.be"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("*..belgium.be"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("**.belgium.be"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Arrays.asList("*..belgium.be", "**.belgium.be"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
+
+		proxyProperties.setExcludedHosts(Collections.singleton("*.certs.eid.belgium.be"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertTrue(exception.getMessage().contains(String.format("Unable to process GET call for url [%s].", URL_TO_LOAD)));
 	}
 
 	@Test

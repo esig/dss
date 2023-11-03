@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
-import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
@@ -34,9 +33,9 @@ import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfPermissionsChecker;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -260,8 +259,9 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	public List<PdfAnnotation> getPdfAnnotations(int page) throws IOException {
 		List<PdfAnnotation> annotations = new ArrayList<>();
 		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);
+		int pageRotation = getPageRotation(page);
 		for (PDAnnotation pdAnnotation : pdAnnotations) {
-			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation);
+			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation, pageRotation);
 			if (pdfAnnotation != null) {
 				annotations.add(pdfAnnotation);
 			}
@@ -284,11 +284,14 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		return pdDocument.getPage(page - ImageUtils.DEFAULT_FIRST_PAGE);
 	}
 
-	private PdfAnnotation toPdfAnnotation(PDAnnotation pdAnnotation) {
+	private PdfAnnotation toPdfAnnotation(PDAnnotation pdAnnotation, int pageRotation) {
 		PDRectangle pdRect = pdAnnotation.getRectangle();
 		if (pdRect != null) {
 			AnnotationBox annotationBox = new AnnotationBox(pdRect.getLowerLeftX(), pdRect.getLowerLeftY(),
 					pdRect.getUpperRightX(), pdRect.getUpperRightY());
+			if (pdAnnotation.isNoRotate()) {
+				annotationBox = ImageRotationUtils.ensureNoRotate(annotationBox, pageRotation);
+			}
 			PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 			pdfAnnotation.setName(getSignatureFieldName(pdAnnotation));
 			return pdfAnnotation;
@@ -310,7 +313,8 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	public BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> annotations)
 			throws IOException {
 		List<PDAnnotation> pdAnnotations = getPageAnnotations(page);
-		pdAnnotations = getMatchingPDAnnotations(pdAnnotations, annotations);
+		int pageRotation = getPageRotation(page);
+		pdAnnotations = getMatchingPDAnnotations(pdAnnotations, annotations, pageRotation);
 		List<PDAnnotation> hiddenList = changeVisibility(pdAnnotations, true);
 		try {
 			return generateImageScreenshot(page);
@@ -320,10 +324,10 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		}
 	}
 
-	private List<PDAnnotation> getMatchingPDAnnotations(List<PDAnnotation> pdAnnotations, List<PdfAnnotation> annotationsToExtract) {
+	private List<PDAnnotation> getMatchingPDAnnotations(List<PDAnnotation> pdAnnotations, List<PdfAnnotation> annotationsToExtract, int pageRotation) {
 		List<PDAnnotation> result = new ArrayList<>();
 		for (PDAnnotation pdAnnotation : pdAnnotations) {
-			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation);
+			PdfAnnotation pdfAnnotation = toPdfAnnotation(pdAnnotation, pageRotation);
 			if (annotationsToExtract.contains(pdfAnnotation)) {
 				result.add(pdAnnotation);
 			}
@@ -347,13 +351,6 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 			}
 		}
 		return modifiedList;
-	}
-
-	@Override
-	@Deprecated
-	public void checkDocumentPermissions() {
-		PdfPermissionsChecker permissionsChecker = new PdfPermissionsChecker();
-		permissionsChecker.checkDocumentPermissions(this, new SignatureFieldParameters());
 	}
 
 	@Override

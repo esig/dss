@@ -169,7 +169,12 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public boolean isKnown(CertificateToken token) {
 		final CertificateSourceEntity poolEntity = entriesByPublicKeyHash.get(token.getEntityKey());
-		return poolEntity != null;
+		if (poolEntity != null) {
+			Set<CertificateToken> certsByPublicKey = poolEntity.getEquivalentCertificates();
+			Set<CertificateToken> certsBySubject = getBySubject(token.getSubject());
+			return Utils.containsAny(certsByPublicKey, certsBySubject);
+		}
+		return false;
 	}
 
 	/**
@@ -272,12 +277,23 @@ public class CommonCertificateSource implements CertificateSource {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
 			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
-				if (certificateMatcher.match(certificateToken, certificateRef)) {
+				if (doesCertificateReferenceMatch(certificateToken, certificateRef)) {
 					result.add(certificateToken);
 				}
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * This method verifies whether the {@code CertificateRef} does match to the {@code CertificateToken}
+	 *
+	 * @param certificateToken {@link CertificateToken} to be verified
+	 * @param certificateRef {@link CertificateRef} to be used to
+	 * @return TRUE if the certificate reference matches the certificate token, FALSE otherwise
+	 */
+	protected boolean doesCertificateReferenceMatch(CertificateToken certificateToken, CertificateRef certificateRef) {
+		return certificateMatcher.match(certificateToken, certificateRef);
 	}
 
 	/**

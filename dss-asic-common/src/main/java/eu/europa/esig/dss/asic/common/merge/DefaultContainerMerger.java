@@ -247,8 +247,12 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
                 Arrays.stream(asicContents).map(ASiCContent::getManifestDocuments).collect(Collectors.toList())));
         asicContent.setArchiveManifestDocuments(mergeDocumentLists(
                 Arrays.stream(asicContents).map(ASiCContent::getArchiveManifestDocuments).collect(Collectors.toList())));
+        asicContent.setEvidenceRecordManifestDocuments(mergeDocumentLists(
+                Arrays.stream(asicContents).map(ASiCContent::getEvidenceRecordManifestDocuments).collect(Collectors.toList())));
         asicContent.setTimestampDocuments(mergeDocumentLists(
                 Arrays.stream(asicContents).map(ASiCContent::getTimestampDocuments).collect(Collectors.toList())));
+        asicContent.setEvidenceRecordDocuments(mergeDocumentLists(
+                Arrays.stream(asicContents).map(ASiCContent::getEvidenceRecordDocuments).collect(Collectors.toList())));
         asicContent.setUnsupportedDocuments(mergeDocumentLists(
                 Arrays.stream(asicContents).map(ASiCContent::getUnsupportedDocuments).collect(Collectors.toList())));
         asicContent.setFolders(mergeDocumentLists(

@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
+import eu.europa.esig.dss.policy.jaxb.EvidenceRecordConstraints;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
@@ -200,7 +201,7 @@ public interface ValidationPolicy {
 	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if ContentTimeStamp element is present in the constraint file, null otherwise.
 	 */
-	LevelConstraint getContentTimestampConstraint(Context context);
+	LevelConstraint getContentTimeStampConstraint(Context context);
 
 	/**
 	 * Indicates if the signed property: content-time-stamp message-imprint should be checked.
@@ -210,7 +211,7 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if ContentTimeStampMessageImprint element is present in the constraint file,
 	 *                                 null otherwise.
 	 */
-	LevelConstraint getContentTimestampMessageImprintConstraint(Context context);
+	LevelConstraint getContentTimeStampMessageImprintConstraint(Context context);
 
 	/**
 	 * Indicates if the unsigned property: claimed-role should be checked. If ClaimedRoles element is absent within the
@@ -273,6 +274,13 @@ public interface ValidationPolicy {
 	CryptographicConstraint getCertificateCryptographicConstraint(Context context, SubContext subContext);
 
 	/**
+	 * This method returns cryptographic constraints for validation of Evidence Record
+	 *
+	 * @return {@link CryptographicConstraint}
+	 */
+	CryptographicConstraint getEvidenceRecordCryptographicConstraint();
+
+	/**
 	 * Returns certificate CA constraint
 	 *
 	 * @param context {@link Context}
@@ -281,6 +289,16 @@ public interface ValidationPolicy {
 	 *         null otherwise.
 	 */
 	LevelConstraint getCertificateCAConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate IssuerName constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if IssuerName for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateIssuerNameConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns certificate MaxPathLength constraint
@@ -532,8 +550,30 @@ public interface ValidationPolicy {
 	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if trusted service type identifier for a given context element is present in
 	 *                                 the constraint file, null otherwise.
+	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceTypeIdentifierConstraint} method instead.
 	 */
+	@Deprecated
 	MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context);
+
+	/**
+	 * Returns trusted service type identifier constraint
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if trusted service type identifier for a given context element is present in
+	 *                                 the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getTrustServiceTypeIdentifierConstraint(Context context);
+
+	/**
+	 * Returns trusted service status constraint
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if trusted service status for a given context element is present in
+	 *                                 the constraint file, null otherwise.
+	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceTypeIdentifierConstraint} method instead.
+	 */
+	@Deprecated
+	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
 
 	/**
 	 * Returns trusted service status constraint
@@ -542,7 +582,7 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if trusted service status for a given context element is present in
 	 *                                 the constraint file, null otherwise.
 	 */
-	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
+	MultiValuesConstraint getTrustServiceStatusConstraint(Context context);
 
 	/**
 	 * Returns CertificatePolicyIds constraint if present in the policy, null otherwise
@@ -975,6 +1015,14 @@ public interface ValidationPolicy {
 	TimeConstraint getTimestampDelayConstraint();
 
 	/**
+	 * Returns whether the time-stamp is valid (passed either basic signature validation process or past signature validation).
+	 * If TimestampValid element is absent within the constraint file then null is returned.
+	 *
+	 * @return {@code LevelConstraint} if TimestampValid element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTimestampValidConstraint();
+
+	/**
 	 * Indicates if the timestamp's TSTInfo.tsa field is present
 	 *
 	 * @return {@code LevelConstraint} if TSAGeneralNamePresent for a given context element is present
@@ -1009,6 +1057,42 @@ public interface ValidationPolicy {
 	LevelConstraint getRevocationTimeAgainstBestSignatureTimeConstraint();
 
 	/**
+	 * Returns whether the evidence record is valid (passed a complete evidence record validation process).
+	 * If EvidenceRecordValid element is absent within the constraint file then null is returned.
+	 *
+	 * @return {@code LevelConstraint} if EvidenceRecordValid element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getEvidenceRecordValidConstraint();
+
+	/**
+	 * Returns DataObjectExistence constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectExistence element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectExistenceConstraint();
+
+	/**
+	 * Returns DataObjectIntact constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectIntact element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectIntactConstraint();
+
+	/**
+	 * Returns DataObjectFound constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectFound element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectFoundConstraint();
+
+	/**
+	 * Returns DataObjectGroup constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if DataObjectGroup element is present
+	 */
+	LevelConstraint getEvidenceRecordDataObjectGroupConstraint();
+
+	/**
 	 * Returns CounterSignature constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}DiagnosticDataFacade
@@ -1016,6 +1100,69 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getCounterSignatureConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: signature-time-stamp should be checked.
+	 * If SignatureTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if SignatureTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getSignatureTimeStampConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: validation data timestamp should be checked.
+	 * If ValidationDataTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ValidationDataTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getValidationDataTimeStampConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: validation data references only timestamp should be checked.
+	 * If ValidationDataRefsOnlyTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ValidationDataRefsOnlyTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getValidationDataRefsOnlyTimeStampConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: archive-time-stamp should be checked.
+	 * If ArchiveTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ArchiveTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getArchiveTimeStampConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: document timestamp should be checked.
+	 * If DocumentTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if DocumentTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getDocumentTimeStampConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: signature-time-stamp or document timestamp
+	 * If TLevelTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if TLevelTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTLevelTimeStampConstraint(Context context);
+
+	/**
+	 * Indicates if the presence of unsigned property: archive-time-stamp or document timestamp covering the validation data
+	 * If LTALevelTimeStamp element is absent within the constraint file then null is returned.
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if LTALevelTimeStamp element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getLTALevelTimeStampConstraint(Context context);
 
 	/**
 	 * Returns SignatureFormat constraint if present in the policy, null otherwise
@@ -1273,7 +1420,6 @@ public interface ValidationPolicy {
 	 */
 	Model getValidationModel();
 
-
 	/**
 	 * Returns the constraint used for Signature validation
 	 *
@@ -1301,6 +1447,13 @@ public interface ValidationPolicy {
 	 * @return {@code RevocationConstraints}
 	 */
 	RevocationConstraints getRevocationConstraints();
+
+	/**
+	 * Returns the constraint used for Evidence Record validation
+	 *
+	 * @return {@link EvidenceRecordConstraints}
+	 */
+	EvidenceRecordConstraints getEvidenceRecordConstraints();
 
 	/**
 	 * Returns the constraint used for ASiC Container validation

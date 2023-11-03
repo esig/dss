@@ -21,7 +21,12 @@
 package eu.europa.esig.dss.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+
+import java.util.Objects;
 
 /**
  * This signature scope is used to refer a counter-signed SignatureValue
@@ -31,19 +36,33 @@ public class CounterSignatureScope extends SignatureScope {
 
     private static final long serialVersionUID = 8599151632129217473L;
 
+    /** The counter-signed parent signature */
+    private AdvancedSignature masterSignature;
+
     /**
      * Default constructor
      *
-     * @param masterSignatureId {@link String}
-     * @param digest {@link Digest}
+     * @param masterSignature {@link String}
+     * @param originalDocument {@link DSSDocument}
      */
-    public CounterSignatureScope(final String masterSignatureId, Digest digest) {
-        super(masterSignatureId, digest);
+    public CounterSignatureScope(final AdvancedSignature masterSignature, final DSSDocument originalDocument) {
+        super(originalDocument);
+        Objects.requireNonNull(masterSignature, "Master signature cannot be null!");
+        this.masterSignature = masterSignature;
     }
 
     @Override
-    public String getDescription() {
-        return String.format("Master signature with Id : %s", getName());
+    public String getName(TokenIdentifierProvider tokenIdentifierProvider) {
+        return getMasterSignatureId(tokenIdentifierProvider);
+    }
+
+    @Override
+    public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
+        return String.format("Master signature with Id : %s", getMasterSignatureId(tokenIdentifierProvider));
+    }
+
+    private String getMasterSignatureId(TokenIdentifierProvider tokenIdentifierProvider) {
+        return tokenIdentifierProvider.getIdAsString(masterSignature);
     }
 
 	@Override

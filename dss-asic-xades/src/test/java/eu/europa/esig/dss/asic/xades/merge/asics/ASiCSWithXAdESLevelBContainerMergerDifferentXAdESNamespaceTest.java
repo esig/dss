@@ -23,15 +23,15 @@ package eu.europa.esig.dss.asic.xades.merge.asics;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.merge.AbstractWithXAdESTestMerge;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collections;
@@ -58,14 +58,14 @@ public class ASiCSWithXAdESLevelBContainerMergerDifferentXAdESNamespaceTest exte
         firstSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
         firstSignatureParameters.bLevel().setSigningDate(new Date());
         firstSignatureParameters.setXmldsigNamespace(new DSSNamespace(XMLDSigNamespace.NS.getUri(), "ds"));
-        firstSignatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "xades"));
+        firstSignatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespace.XADES_132.getUri(), "xades"));
 
         secondSignatureParameters = new ASiCWithXAdESSignatureParameters();
         secondSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         secondSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
         secondSignatureParameters.bLevel().setSigningDate(new Date());
         secondSignatureParameters.setXmldsigNamespace(new DSSNamespace(XMLDSigNamespace.NS.getUri(), "sig"));
-        secondSignatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "xades132"));
+        secondSignatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespace.XADES_132.getUri(), "xades132"));
     }
 
     @Override

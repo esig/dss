@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.TransformsDescriptionBuilder;
 import org.apache.xml.security.exceptions.XMLSecurityException;

@@ -32,7 +32,7 @@ public class PAdESExtensionBToTWithFailTimestampTest extends AbstractPAdESTestEx
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
-		return getFailGoodTsa();
+		return getOnlineFailGoodTsa();
 	}
 
 	@Override

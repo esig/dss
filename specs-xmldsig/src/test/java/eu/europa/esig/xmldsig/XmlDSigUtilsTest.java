@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.xmldsig;
 
-import eu.europa.esig.dss.alert.Alert;
-import eu.europa.esig.dss.jaxb.common.DSSErrorHandler;
-import eu.europa.esig.dss.jaxb.common.ValidatorConfigurator;
-import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
-import eu.europa.esig.dss.jaxb.common.exception.XSDValidationException;
+import eu.europa.esig.dss.xml.common.ValidatorConfigurator;
+import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
+import eu.europa.esig.dss.xml.common.alert.DSSErrorHandlerAlert;
+import eu.europa.esig.dss.xml.common.exception.XSDValidationException;
 import eu.europa.esig.xmldsig.jaxb.SignatureType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
@@ -41,18 +41,28 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmlDSigUtilsTest {
 	
 	private static XmlDSigUtils xmlDSigUtils;
 	
+	private static StreamSource aliceFile;
+
+	private static StreamSource bobFile;
+
 	@BeforeAll
 	public static void init() {
 		xmlDSigUtils = XmlDSigUtils.getInstance();
+
+		aliceFile = new StreamSource(new File("src/test/resources/XmlAliceSig.xml"));
+		bobFile = new StreamSource(new File("src/test/resources/XmlBobSig.xml"));
 	}
 
 	@Test
@@ -100,40 +110,100 @@ public class XmlDSigUtilsTest {
 	}
 
 	@Test
-	public void validateTest() throws IOException, SAXException {
-		StreamSource aliceFile = new StreamSource(new File("src/test/resources/XmlAliceSig.xml"));
+	public void defaultConfigTest() throws IOException, SAXException {
 		xmlDSigUtils.validate(aliceFile, xmlDSigUtils.getSchema(), true);
 
-		StreamSource bobFile = new StreamSource(new File("src/test/resources/XmlBobSig.xml"));
 		XSDValidationException exception = assertThrows(XSDValidationException.class,
 				() -> xmlDSigUtils.validate(bobFile, xmlDSigUtils.getSchema(), true));
 		assertNotNull(exception.getMessage());
-		assertNotNull(exception.getAllMessages());
-		assertEquals(2, exception.getAllMessages().size());
+
+		List<String> allMessages = exception.getAllMessages();
+		assertNotNull(allMessages);
+		assertEquals(2, allMessages.size());
+
+		Throwable[] suppressed = exception.getSuppressed();
+		assertEquals(2, suppressed.length);
+
+		List<String> xsdValidationMessages = xmlDSigUtils.validateAgainstXSD(bobFile);
+		assertEquals(2, xsdValidationMessages.size());
+		assertEquals(allMessages, xsdValidationMessages);
+	}
+
+	@Test
+	public void dssErrorHandlerPositionTest() {
+		DSSErrorHandlerAlert dssErrorHandlerAlert = new DSSErrorHandlerAlert();
 
 		ValidatorConfigurator validatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
-		validatorConfigurator.setErrorHandlerAlert(new Alert<DSSErrorHandler>() {
-			@Override
-			public void alert(DSSErrorHandler errorHandler) {
-				if (!errorHandler.isValid()) {
-					throw new RuntimeException(errorHandler.getErrors().iterator().next());
-				}
+		validatorConfigurator.setErrorHandlerAlert(dssErrorHandlerAlert);
+
+		dssErrorHandlerAlert.setEnablePosition(false);
+
+		XmlDefinerUtils.getInstance().setValidatorConfigurator(validatorConfigurator);
+
+		XSDValidationException exception = assertThrows(XSDValidationException.class,
+				() -> xmlDSigUtils.validate(bobFile, xmlDSigUtils.getSchema(), true));
+
+		String completeMessage = exception.getMessage();
+		assertNotNull(completeMessage);
+
+		List<String> messagesNoPosition = exception.getAllMessages();
+		assertNotNull(messagesNoPosition);
+		assertEquals(2, messagesNoPosition.size());
+		for (String message : messagesNoPosition) {
+			assertTrue(completeMessage.contains(message));
+			assertFalse(message.contains("Line"));
+			assertFalse(message.contains("Column"));
+		}
+
+		dssErrorHandlerAlert.setEnablePosition(true);
+
+		exception = assertThrows(XSDValidationException.class,
+				() -> xmlDSigUtils.validate(bobFile, xmlDSigUtils.getSchema(), true));
+
+		completeMessage = exception.getMessage();
+		assertNotNull(completeMessage);
+
+		List<String> messagesWithPosition = exception.getAllMessages();
+		assertNotNull(messagesWithPosition);
+		assertEquals(2, messagesWithPosition.size());
+		for (String message : messagesWithPosition) {
+			assertTrue(completeMessage.contains(message));
+			assertTrue(message.contains("Line"));
+			assertTrue(message.contains("Column"));
+		}
+
+		assertTrue(messagesWithPosition.get(0).contains(messagesNoPosition.get(0)));
+		assertTrue(messagesWithPosition.get(1).contains(messagesNoPosition.get(1)));
+	}
+
+	@Test
+	public void customAlertWithRuntimeExceptionTest() {
+		ValidatorConfigurator validatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
+		validatorConfigurator.setErrorHandlerAlert(errorHandler -> {
+			if (!errorHandler.isValid()) {
+				throw new RuntimeException(errorHandler.getErrors().iterator().next());
 			}
 		});
 		XmlDefinerUtils.getInstance().setValidatorConfigurator(validatorConfigurator);
 		assertThrows(RuntimeException.class, () -> xmlDSigUtils.validate(bobFile, xmlDSigUtils.getSchema(), true));
+	}
 
-		validatorConfigurator.setErrorHandlerAlert(new Alert<DSSErrorHandler>() {
-			@Override
-			public void alert(DSSErrorHandler errorHandler) {
-				// do nothing
-			}
+	@Test
+	public void customAlertSilenceTest() throws IOException, SAXException {
+		ValidatorConfigurator validatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
+
+		validatorConfigurator.setErrorHandlerAlert(errorHandler -> {
+			// do nothing
 		});
+
 		XmlDefinerUtils.getInstance().setValidatorConfigurator(validatorConfigurator);
 		xmlDSigUtils.validate(bobFile, xmlDSigUtils.getSchema(), true);
+	}
 
-		// return settings
-		XmlDefinerUtils.getInstance().setValidatorConfigurator(ValidatorConfigurator.getSecureValidatorConfigurator());
+	@AfterEach
+	public void reset() {
+		ValidatorConfigurator secureValidatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
+		XmlDefinerUtils.getInstance().setValidatorConfigurator(secureValidatorConfigurator);
 	}
 
 }

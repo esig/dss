@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -141,7 +141,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
         if (currentSignatureDocument.getName() == null) {
             throw new IllegalInputException("Name shall be provided for a document!");
         }
-        DSSDocument manifest = ASiCWithCAdESManifestParser.getLinkedManifest(
+        DSSDocument manifest = ASiCManifestParser.getLinkedManifest(
                 currentASiCContent.getAllManifestDocuments(), currentSignatureDocument.getName());
         if (manifest == null) {
             throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
@@ -154,7 +154,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
             DSSDocument signatureToCompare = DSSUtils.getDocumentWithName(
                     asicContentToCompare.getSignatureDocuments(), currentSignatureDocument.getName());
             if (signatureToCompare != null) {
-                DSSDocument manifestToCompare = ASiCWithCAdESManifestParser.getLinkedManifest(
+                DSSDocument manifestToCompare = ASiCManifestParser.getLinkedManifest(
                         asicContentToCompare.getAllManifestDocuments(), signatureToCompare.getName());
                 if (manifestToCompare == null) {
                     throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +

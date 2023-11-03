@@ -52,6 +52,7 @@ public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
 		documents.add(new FileDocument("src/test/resources/validation/libreoffice.odt"));
 		documents.add(new FileDocument("src/test/resources/validation/open-document-signed.odt"));
 		documents.add(new FileDocument("src/test/resources/validation/open-document-resigned.odt"));
+		documents.add(new FileDocument("src/test/resources/validation/evidencerecord/xades-lt-with-er.sce"));
 		documents.add(new FileDocument("src/test/resources/signable/asic_xades.zip"));
 		return documents;
 	}
@@ -71,6 +72,12 @@ public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
 		return new FileDocument("src/test/resources/validation/no-signature.asics");
 	}
 
+	@Override
+	protected DSSDocument getXmlEvidenceRecordDocument() {
+		// not applicable
+		return null;
+	}
+
 	@Test
 	public void validateEmptyContainer() {
 		DSSDocument document = new FileDocument("src/test/resources/signable/empty.zip");
@@ -81,6 +88,13 @@ public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
 	@Test
 	public void validateZipContainer() {
 		DSSDocument document = new FileDocument("src/test/resources/signable/test.zip");
+		SignedDocumentValidator validator = initValidator(document);
+		validate(validator, false);
+	}
+
+	@Test
+	public void validateEvidenceRecordContainer() {
+		DSSDocument document = new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce");
 		SignedDocumentValidator validator = initValidator(document);
 		validate(validator, false);
 	}

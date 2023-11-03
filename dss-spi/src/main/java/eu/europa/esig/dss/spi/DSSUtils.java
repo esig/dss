@@ -80,7 +80,6 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -906,7 +905,9 @@ public final class DSSUtils {
 	 * @param dssDocument {@link DSSDocument} to read bytes from
 	 * @param preamble {@code byte} array to compare the beginning string with
 	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
+	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWith(inputStream, preamble)}
 	 */
+	@Deprecated
 	public static boolean startsWithBytes(final DSSDocument dssDocument, byte[] preamble) {
 		return startsWithBytes(dssDocument.openStream(), preamble);
 	}
@@ -917,10 +918,11 @@ public final class DSSUtils {
 	 * @param byteArray {@link DSSDocument} to compare bytes from
 	 * @param preamble {@code byte} array to compare the beginning string with
 	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
+	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWithBytes(byteArray, preamble)}
 	 */
+	@Deprecated
 	public static boolean startsWithBytes(final byte[] byteArray, byte[] preamble) {
-		byte[] subarray = Utils.subarray(byteArray, 0, preamble.length);
-		return Arrays.equals(preamble, subarray);
+		return Utils.startsWith(byteArray, preamble);
 	}
 
 	/**
@@ -929,58 +931,19 @@ public final class DSSUtils {
 	 * @param inputStream {@link InputStream} to read bytes from
 	 * @param preamble {@code byte} array to compare the beginning string with
 	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
+	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWith(inputStream, preamble)}
 	 */
+	@Deprecated
 	public static boolean startsWithBytes(final InputStream inputStream, byte[] preamble) {
 		try (InputStream is = inputStream) {
-			byte[] byteArray = new byte[preamble.length];
-			readAvailableBytes(is, byteArray);
-			return Arrays.equals(preamble, byteArray);
-
-		} catch (IllegalStateException e) {
-			LOG.warn("Cannot compare first bytes of the document. Reason : {}", e.getMessage());
-			return false;
-
+			return Utils.startsWith(is, preamble);
 		} catch (IOException e) {
-			throw new DSSException("Cannot read a sequence of bytes from the InputStream.", e);
+			throw new DSSException(String.format("Unable to read document : %s", e.getMessage()), e);
 		}
 	}
 
 	/**
-	 * Concatenates all the arrays into a new array. The new array contains all bytes of each array followed by
-	 * all bytes of the next array. When an array is returned, it is always a new array.
-	 *
-	 * @param arrays
-	 *            {@code byte} arrays to concatenate
-	 * @return the new {@code byte} array
-	 */
-	public static byte[] concatenate(byte[]... arrays) {
-		if ((arrays == null) || (arrays.length == 0) || ((arrays.length == 1) && (arrays[0] == null))) {
-			return null;
-		}
-		if (arrays.length == 1) {
-			return arrays[0].clone();
-		}
-		int joinedLength = 0;
-		for (final byte[] array : arrays) {
-			if (array != null) {
-				joinedLength += array.length;
-			}
-		}
-		byte[] joinedArray = new byte[joinedLength];
-		int destinationIndex = 0;
-		for (final byte[] array : arrays) {
-			if (array != null) {
-
-				System.arraycopy(array, 0, joinedArray, destinationIndex, array.length);
-				destinationIndex += array.length;
-			}
-		}
-		return joinedArray;
-	}
-
-
-	/**
-	 * This method decodes an URI to be compliant with the RFC 3986 (see DSS-2411 for details)
+	 * This method decodes a URI to be compliant with the RFC 3986 (see DSS-2411 for details)
 	 *
 	 * @param uri {@link String}
 	 * @return {@link String} UTF-8

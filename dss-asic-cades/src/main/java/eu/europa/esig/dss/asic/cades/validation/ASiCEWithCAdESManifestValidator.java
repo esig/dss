@@ -20,78 +20,45 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestEntry;
-import eu.europa.esig.dss.validation.ManifestFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class validates a manifest
+ *
+ * @deprecated since DSS 5.13. Please use
+ * 			   {@code eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator} class instead.
  */
+@Deprecated
 public class ASiCEWithCAdESManifestValidator {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestValidator.class);
-
-	/** Manifest to validate */
-	private final ManifestFile manifest;
-
-	/** A list of documents covered by the manifest */
-	private final List<DSSDocument> signedDocuments;
+	/** Manifest validator */
+	private final ASiCManifestValidator manifestValidator;
 
 	/**
 	 * The default constructor
 	 *
 	 * @param manifest {@link ManifestFile}
 	 * @param signedDocuments a list of {@link DSSDocument}s
+	 * @deprecated since DSS 5.13. Please use {@code new ASiCManifestValidator(manifest, signedDocuments)} instead
 	 */
+	@Deprecated
 	public ASiCEWithCAdESManifestValidator(final ManifestFile manifest, final List<DSSDocument> signedDocuments) {
-		Objects.requireNonNull(manifest, "ManifestFile must be defined!");
-		this.manifest = manifest;
-		this.signedDocuments = signedDocuments;
+		this.manifestValidator = new ASiCManifestValidator(manifest, signedDocuments);
 	}
 	
 	/**
 	 * Validates the manifest entries
 	 * @return list of validated {@link ManifestEntry}s
+	 * @deprecated since DSS 5.13. Please use {@code ASiCManifestValidator.validateEntries()} instead.
 	 */
+	@Deprecated
 	public List<ManifestEntry> validateEntries() {
-		List<ManifestEntry> manifestEntries = manifest.getEntries();
-		if (Utils.isCollectionEmpty(signedDocuments)) {
-			// no signed data to validate on
-			return manifestEntries;
-		}
-		for (ManifestEntry entry : manifestEntries) {
-			if (entry.getDigest() != null) {
-				DSSDocument signedDocument = DSSUtils.getDocumentWithName(signedDocuments, entry.getFileName());
-				if (signedDocument != null) {
-					entry.setFound(true);
-					String computedDigest = signedDocument.getDigest(entry.getDigest().getAlgorithm());
-					if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
-						entry.setIntact(true);
-					} else {
-						LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());
-						LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
-						LOG.warn("Computed : '{}'", computedDigest);
-					}
-				}
-				
-			} else {
-				LOG.warn("Digest is not defined for signed data with name '{}'", entry.getFileName());
-			}
-			
-			if (!entry.isFound()) {
-				LOG.warn("Signed data with name '{}' not found", entry.getFileName());
-			}
-		}
-		
-		return manifestEntries;
+		return manifestValidator.validateEntries();
 	}
 
 }

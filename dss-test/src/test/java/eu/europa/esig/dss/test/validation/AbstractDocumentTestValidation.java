@@ -20,15 +20,11 @@
  */
 package eu.europa.esig.dss.test.validation;
 
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.SerializableSignatureParameters;
-import eu.europa.esig.dss.model.SerializableTimestampParameters;
-import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
-
-public abstract class AbstractDocumentTestValidation<SP extends SerializableSignatureParameters, 
-				TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
+public abstract class AbstractDocumentTestValidation extends AbstractPkiFactoryTestValidation {
 	
 	protected abstract DSSDocument getSignedDocument();
 

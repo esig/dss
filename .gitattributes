@@ -8,6 +8,7 @@ dss-jades/src/test/resources/ObjectIdByURI-1.html         binary
 dss-jades/src/test/resources/ObjectIdByURI-2.html         binary
 dss-jades/src/test/resources/ObjectIdByURIHash-1.html         binary
 dss-jades/src/test/resources/ObjectIdByURIHash-2.html         binary
+dss-pades/src/test/resources/visualSignature/annots-no-rotate.pdf         binary
 dss-tsl-validation/src/test/resources/tl-ecdsa-brainpool.xml         binary
 dss-utils/src/test/resources/sample-cr-lf.xml         binary
 dss-utils/src/test/resources/sample-lf.xml         binary

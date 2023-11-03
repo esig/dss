@@ -20,20 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.signature.Reference;
-import org.junit.jupiter.api.BeforeEach;
-
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -46,12 +33,24 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.apache.xml.security.signature.Reference;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignature {
 
@@ -123,12 +122,12 @@ public class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignatur
 		DSSDocument orig2 = originals.get(1);
 
 		try {
-			String firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(doc1)));
-			String secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(orig1)));
+			String firstDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(doc1)));
+			String secondDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(orig1)));
 			assertEquals(firstDocument, secondDocument);
 	
-			firstDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(doc2)));
-			secondDocument = new String(DSSXMLUtils.canonicalize(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS, DSSUtils.toByteArray(orig2)));
+			firstDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(doc2)));
+			secondDocument = new String(XMLCanonicalizer.createInstance(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS).canonicalize(DSSUtils.toByteArray(orig2)));
 			assertEquals(firstDocument, secondDocument);
 		} catch (Exception e) {
 			fail(e);

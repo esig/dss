@@ -41,13 +41,19 @@ public enum ArchiveTimestampType {
 	/** archive-time-stamp-v3 */
 	CAdES_V3,
 	
-	/** Detached timestamp, used for For ASiC */
+	/** Detached timestamp, used for ASiC */
 	CAdES_DETACHED,
 
 	/** arcTst */
 	JAdES,
 
 	/** DOCUMENT_TIMESTAMP covering a DSS dictionary (revision) */
-	PAdES;
+	PAdES,
+
+	/** XML Evidence Record time-stamp */
+	XML_EVIDENCE_RECORD,
+
+	/** ASN.1 Evidence Record time-stamp */
+	ASN1_EVIDENCE_RECORD;
 
 }

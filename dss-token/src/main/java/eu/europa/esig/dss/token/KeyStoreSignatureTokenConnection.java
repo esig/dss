@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.DestroyFailedException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
 
@@ -78,14 +78,13 @@ public class KeyStoreSignatureTokenConnection extends AbstractKeyStoreTokenConne
 	 * @throws IOException if an exception occurs
 	 */
 	public KeyStoreSignatureTokenConnection(File ksFile, String ksType, PasswordProtection ksPassword) throws IOException {
-		this(new FileInputStream(ksFile), ksType, ksPassword);
+		this(Files.newInputStream(ksFile.toPath()), ksType, ksPassword);
 	}
 
 	/**
 	 * Construct a KeyStoreSignatureTokenConnection object.
 	 * Please note that the keystore password will also be used to retrieve the private key.
 	 * For each keystore entry (identifiable by alias) the same private key password will be used.
-	 * 
 	 * If you want to specify a separate private key password use the {@link #getKey(String, PasswordProtection)}
 	 * method.
 	 * 

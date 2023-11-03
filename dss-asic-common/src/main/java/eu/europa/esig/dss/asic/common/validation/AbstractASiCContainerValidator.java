@@ -21,21 +21,28 @@
 package eu.europa.esig.dss.asic.common.validation;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ContainerInfo;
 import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +53,8 @@ import java.util.List;
  */
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {
 
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerValidator.class);
+
 	/** The container extraction result */
 	protected ASiCContent asicContent;
 
@@ -54,6 +63,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	/** List of timestamp document validators */
 	protected List<DetachedTimestampValidator> timestampValidators;
+
+	/** List of evidence record document validators */
+	protected List<EvidenceRecordValidator> evidenceRecordValidators;
 
 	/** List of manifest files */
 	private List<ManifestFile> manifestFiles;
@@ -71,7 +83,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * @param document {@link DSSDocument} to be validated
 	 */
 	protected AbstractASiCContainerValidator(final DSSDocument document) {
-		this(document, null);
+		this.document = document;
+		this.asicContent = extractEntries();
 	}
 
 	/**
@@ -80,7 +93,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * @param asicContent {@link ASiCContent} to be validated
 	 */
 	protected AbstractASiCContainerValidator(final ASiCContent asicContent) {
-		this(asicContent, null);
+		this.document = asicContent.getAsicContainer();
+		this.asicContent = asicContent;
 	}
 
 	/**
@@ -88,12 +102,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * 
 	 * @param document             {@link DSSDocument} to be validated
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
+	 * @deprecated since DSS 5.13.
 	 */
+	@Deprecated
 	protected AbstractASiCContainerValidator(final DSSDocument document,
 			final SignatureScopeFinder<?> signatureScopeFinder) {
-		super(signatureScopeFinder);
-		this.document = document;
-		this.asicContent = extractEntries();
+		this(document);
 	}
 
 	/**
@@ -101,12 +115,12 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 *
 	 * @param asicContent          {@link ASiCContent} to be validated
 	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
+	 * @deprecated since DSS 5.13.
 	 */
+	@Deprecated
 	protected AbstractASiCContainerValidator(final ASiCContent asicContent,
 											 final SignatureScopeFinder<?> signatureScopeFinder) {
-		super(signatureScopeFinder);
-		this.document = asicContent.getAsicContainer();
-		this.asicContent = asicContent;
+		this(asicContent);
 	}
 
 	/**
@@ -133,10 +147,10 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	protected abstract AbstractASiCContainerExtractor getContainerExtractor();
 	
 	@Override
-	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
-																final List<AdvancedSignature> signatures) {
-		ASiCContainerDiagnosticDataBuilder builder = (ASiCContainerDiagnosticDataBuilder) super.createDiagnosticDataBuilder(
-				validationContext, signatures);
+	protected DiagnosticDataBuilder createDiagnosticDataBuilder(ValidationContext validationContext, List<AdvancedSignature> signatures,
+																List<EvidenceRecord> evidenceRecords) {
+		ASiCContainerDiagnosticDataBuilder builder = (ASiCContainerDiagnosticDataBuilder)
+				super.createDiagnosticDataBuilder(validationContext, signatures, evidenceRecords);
 		builder.containerInfo(getContainerInfo());
 		return builder;
 	}
@@ -273,12 +287,30 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	/**
+	 * Returns a list of embedded evidence record documents
+	 *
+	 * @return a list of evidence record {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getEvidenceRecordDocuments() {
+		return asicContent.getEvidenceRecordDocuments();
+	}
+
+	/**
 	 * Returns a list of embedded archive manifest documents
 	 *
 	 * @return a list of archive manifest {@link DSSDocument}s
 	 */
 	public List<DSSDocument> getArchiveManifestDocuments() {
 		return asicContent.getArchiveManifestDocuments();
+	}
+
+	/**
+	 * Returns a list of embedded evidence record manifest documents
+	 *
+	 * @return a list of evidence record manifest {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getEvidenceRecordManifestDocuments() {
+		return asicContent.getEvidenceRecordManifestDocuments();
 	}
 
 	/**
@@ -341,6 +373,137 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			return containerDocuments;
 		}
 		return retrievedDocs;
+	}
+
+	@Override
+	protected List<EvidenceRecord> buildDetachedEvidenceRecords() {
+		final List<EvidenceRecord> detachedEvidenceRecords = new ArrayList<>(super.buildDetachedEvidenceRecords());
+		for (EvidenceRecordValidator evidenceRecordValidator : getEvidenceRecordValidators()) {
+			EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordValidator);
+			if (evidenceRecord != null) {
+				detachedEvidenceRecords.add(evidenceRecord);
+			}
+		}
+		attachExternalEvidenceRecords(detachedEvidenceRecords);
+		return detachedEvidenceRecords;
+	}
+
+	/**
+	 * Appends detached evidence record provided to the validator to
+	 * the evidence records covered by the corresponding evidence records
+	 *
+	 * @param evidenceRecordList a list of {@link EvidenceRecord}s
+	 */
+	protected void attachExternalEvidenceRecords(List<EvidenceRecord> evidenceRecordList) {
+		if (Utils.isCollectionNotEmpty(evidenceRecordList)) {
+			for (EvidenceRecord coveredEvidenceRecord : evidenceRecordList) {
+				for (EvidenceRecord coveringEvidenceRecord : evidenceRecordList) {
+					if (coversEvidenceRecord(coveredEvidenceRecord, coveringEvidenceRecord)) {
+						coveredEvidenceRecord.addExternalEvidenceRecord(coveringEvidenceRecord);
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Builds and returns a list of evidence record validators
+	 *
+	 * @return a list of {@link EvidenceRecordValidator}
+	 */
+	protected List<EvidenceRecordValidator> getEvidenceRecordValidators() {
+		if (evidenceRecordValidators == null) {
+			evidenceRecordValidators = new ArrayList<>();
+			for (final DSSDocument evidenceRecordDocument : getEvidenceRecordDocuments()) {
+				EvidenceRecordValidator evidenceRecordValidator = getEvidenceRecordValidator(evidenceRecordDocument);
+				if (evidenceRecordValidator != null) {
+					evidenceRecordValidators.add(evidenceRecordValidator);
+				}
+			}
+		}
+		return evidenceRecordValidators;
+	}
+
+	private EvidenceRecordValidator getEvidenceRecordValidator(DSSDocument evidenceRecordDocument) {
+		try {
+			ManifestFile manifestFile = null;
+
+			DSSDocument evidenceRecordManifest = ASiCManifestParser.getLinkedManifest(
+					getAllManifestDocuments(), evidenceRecordDocument.getName());
+			if (evidenceRecordManifest != null) {
+				manifestFile = getValidatedManifestFile(evidenceRecordManifest);
+			}
+			if (manifestFile == null) {
+				LOG.warn("A linked manifest is not found for an evidence record with name [{}]!",
+						evidenceRecordDocument.getName());
+				return null;
+			}
+
+			final EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+			evidenceRecordValidator.setDetachedContents(getAllDocuments());
+			evidenceRecordValidator.setManifestFile(manifestFile);
+			evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
+			return evidenceRecordValidator;
+
+		} catch (Exception e) {
+			LOG.warn("Unable to load EvidenceRecordValidator for an evidence record document with name '{}' : {}",
+					evidenceRecordDocument.getName(), e.getMessage(), e);
+			return null;
+		}
+	}
+
+	@Override
+	protected boolean coversSignature(AdvancedSignature signature, EvidenceRecord evidenceRecord) {
+		ManifestFile evidenceRecordManifest = evidenceRecord.getManifestFile();
+		if (evidenceRecordManifest == null) {
+			// not embedded ER
+			return true;
+		}
+		return coversFile(evidenceRecordManifest, signature.getSignatureFilename());
+	}
+
+	private boolean coversEvidenceRecord(EvidenceRecord coveredEvidenceRecord, EvidenceRecord coveringEvidenceRecord) {
+		ManifestFile evidenceRecordManifest = coveringEvidenceRecord.getManifestFile();
+		if (evidenceRecordManifest == null) {
+			// not embedded ER
+			return true;
+		}
+		return coversFile(evidenceRecordManifest, coveredEvidenceRecord.getFilename());
+	}
+
+	private boolean coversFile(ManifestFile manifestFile, String filename) {
+		if (manifestFile != null) {
+			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+				if (Utils.areStringsEqual(filename, manifestEntry.getFileName())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Returns a validated {@code ManifestFile} for the given {@code manifest} document
+	 *
+	 * @param manifest {@link DSSDocument}
+	 * @return {@link ManifestFile}
+	 */
+	protected ManifestFile getValidatedManifestFile(DSSDocument manifest) {
+		List<ManifestFile> allManifestFiles = getManifestFiles();
+		if (Utils.isCollectionNotEmpty(allManifestFiles)) {
+			for (ManifestFile manifestFile : allManifestFiles) {
+				if (Utils.areStringsEqual(manifest.getName(), manifestFile.getFilename())) {
+					return manifestFile;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	protected boolean addReference(SignatureScope signatureScope) {
+		String fileName = signatureScope.getDocumentName();
+		return fileName == null || (!ASiCUtils.isSignature(fileName) && !ASiCUtils.isTimestamp(fileName) && !ASiCUtils.isEvidenceRecord(fileName));
 	}
 
 }

@@ -46,15 +46,16 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CMSCRLSource;
-import eu.europa.esig.dss.validation.CMSCertificateSource;
-import eu.europa.esig.dss.validation.CMSOCSPSource;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.x509.CMSCRLSource;
+import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
+import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -242,6 +243,12 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 
 	@Override
+	protected boolean isEvidenceRecord(CAdESAttribute unsignedAttribute) {
+		// TODO : not supported
+		return false;
+	}
+
+	@Override
 	protected TimestampToken makeTimestampToken(CAdESAttribute signatureAttribute, TimestampType timestampType,
 			List<TimestampedReference> references) {
 		TimeStampToken timestamp = signatureAttribute.toTimeStampToken();
@@ -249,6 +256,11 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 			return null;
 		}
 		return new TimestampToken(timestamp, timestampType, references);
+	}
+
+	@Override
+	protected List<EvidenceRecord> makeEvidenceRecords(CAdESAttribute signatureAttribute, List<TimestampedReference> references) {
+		throw new UnsupportedOperationException("Not implemented!");
 	}
 
 	@Override
@@ -279,9 +291,11 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 	
 	@Override
-	protected List<TimestampedReference> getArchiveTimestampOtherReferences(TimestampToken timestampToken) {
+	protected List<TimestampedReference> getArchiveTimestampReferences(List<TimestampToken> previousTimestamps) {
+		List<TimestampedReference> timestampedReferences = super.getArchiveTimestampReferences(previousTimestamps);
 		// executed for ArchiveTimestampV2 only
-		return getSignatureSignedDataReferences();
+		addReferences(timestampedReferences, getSignatureSignedDataReferences());
+		return timestampedReferences;
 	}
 	
 	private boolean isArchiveTimestampV2(TimestampToken timestampToken) {

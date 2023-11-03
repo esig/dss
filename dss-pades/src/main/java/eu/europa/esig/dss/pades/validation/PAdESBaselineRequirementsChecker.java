@@ -38,8 +38,8 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureValidationContext;
 import eu.europa.esig.dss.validation.ValidationContext;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.validation.timestamp.TimestampedReference;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import org.bouncycastle.cms.CMSTypedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,6 +169,15 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
 
     @Override
     public boolean hasBaselineLTProfile() {
+        return hasLTProfile();
+    }
+
+    /**
+     * Verifies a presence of LT-profile for a PDF signature
+     *
+     * @return TRUE if the LT-profile is present, FALSE otherwise
+     */
+    protected boolean hasLTProfile() {
         if (!minimalLTRequirement()) {
             return false;
         }
@@ -422,7 +431,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
      * @return TRUE if the signature has a PKCS#7-LT profile, FALSE otherwise
      */
     public boolean hasPKCS7LTProfile() {
-        return minimalLTRequirement();
+        return hasLTProfile();
     }
 
     /**

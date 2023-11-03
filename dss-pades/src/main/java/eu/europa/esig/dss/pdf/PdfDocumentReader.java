@@ -111,15 +111,6 @@ public interface PdfDocumentReader extends Closeable {
 	BufferedImage generateImageScreenshotWithoutAnnotations(int page, List<PdfAnnotation> addedAnnotations) throws IOException;
 
 	/**
-	 * This method checks if the document is not encrypted or with limited edition rights
-	 *
-	 * @deprecated since DSS 5.12. Please use {@code eu.europa.esig.dss.pdf.PdfPermissionsChecker} class.
-	 *             See also {code #canFillSignatureForm} and {@code #canCreateSignatureField} for custom handling.
-	 */
-	@Deprecated
-	void checkDocumentPermissions();
-
-	/**
 	 * This method checks whether the document is encrypted
 	 *
 	 * @return TRUE if the document is encrypted, FALSE otherwise

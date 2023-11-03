@@ -23,6 +23,7 @@ package eu.europa.esig.dss.service.ocsp;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.client.jdbc.query.SqlQuery;
 import eu.europa.esig.dss.spi.client.jdbc.query.SqlSelectQuery;
@@ -36,6 +37,8 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -47,7 +50,7 @@ import java.util.List;
  *
  */
 public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements OCSPSource {
-	
+	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheOCSPSource.class);
 	private static final long serialVersionUID = 10480458323923489L;
 
 	/**
@@ -186,7 +189,26 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 	public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken, boolean forceRefresh) {
 		return (OCSPToken) super.getRevocationToken(certificateToken, issuerCertificateToken, forceRefresh);
 	}
-	
+
+
+	@Override
+	protected String getRevocationSourceUrl(CertificateToken certificateToken, RevocationToken<OCSP> revocationToken) {
+
+		String sourceURL = revocationToken.getSourceURL();
+		if (sourceURL == null) {
+			List<String> ocspUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
+			if (ocspUrls.size() == 0) {
+				LOG.warn("No OCSP distribution points have been found for this certificate Token with ID {} ", certificateToken.getDSSIdAsString());
+
+			} else if (ocspUrls.size() == 1) {
+				sourceURL = ocspUrls.get(0);
+			} else {
+				sourceURL = ocspUrls.get(0);
+				LOG.debug("There are multiple OCSP distribution points for certificate token with ID {} , the first url will be used as Jdbc revocation source key", certificateToken.getDSSIdAsString());
+			}
+		}
+		return sourceURL;
+	}
 	@Override
 	protected String getRevocationTokenKey(CertificateToken certificateToken, String urlString) {
 		return DSSRevocationUtils.getOcspRevocationKey(certificateToken, urlString);

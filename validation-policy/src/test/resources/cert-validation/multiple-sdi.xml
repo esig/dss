@@ -35,12 +35,12 @@
                     <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">TSP-4.2 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203204628</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
                             <ServiceNames><ServiceName lang="en">TS-4.2.2 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -48,8 +48,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
                             <ServiceNames><ServiceName lang="en">TS-4.2.3 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -57,10 +57,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>MIIDZTCCAk2gAwIBAgIBEDANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktNC4yLjIxFTATBgNVBAoMDFRTUC00LjIgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCRlIwHhcNMTcwNjI3MDk0OTQ0WhcNMTkwNjI3MDk0OTQ0WjBQMRIwEAYDVQQDDAlTREktNC4yLjIxFTATBgNVBAoMDFRTUC00LjIgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCRlIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCbnEUhPhFM9TEZ2+wvXked8nomSbCL4rstGPGN9/oCsrAbk9WmgtAWVGgKooHSJ9uwAh+FOjNGLtBl/7QjTGXQmqMoiP0OApEn0Bc+BOSt4rVPhRegfAARaEZ+YqO7kx+Qv3xqEAmx5JVV4w/wmJJfocik6EpS02rhcOCut5oLlPdbKeyfNSSRf4ohFO3X0BpMwE3tMm5tv6buA9q2Z8hGsKMIo08mV/1+an11OH+Zl8agybWQlCQIw/c6pZ2oVeS6Npgz9nVZWlwehGZ8qoPY9T+Ofq4E8Qc4qQ0pfZploO/DDLVBNGamOZEif1AljOkag70Q2L4F2KWgyOyYo8anAgMBAAGjSjBIMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMJMB0GA1UdDgQWBBRQvok6730ttwLuedi5gueCuWgOUDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCRF1AK/Nu7GlLGs+SdVPPoTkNFCW8oRrf9oJMNEaXaTkSKidG+hTURe7H4a4xFy5Pt9Q0/KGD8WWfNh2l8RFfKnXetZH4pD/Ib5KbRVd1C3l337Ym7KFArGtFbD9VRgbnPST6mRXTShkKlXQEoGd0Hw50rdWevLGOKb32vvoTDIrsCYc+2AiUbyD6K6JRHA4mwNsMStYDRziualsI7vrtopDXc47da7HzN7yIhY29FxdI0qmPLXlZygmTn+d1LvGz7su7v6cxPGigF1eqaH7TsOA7gCnGK8olCJUevbEQZ24d9zyQx/XUJgkKuy2+wYO2H0LFBrp+ZuIPjOQl+kVvw</Base64Encoded>
         </Certificate>
@@ -114,12 +114,12 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-433E6C4CF87F07071EB1290A9D23E95C6D81F89E76233383457477747249118F" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
 					<TSPNames><TSPName lang="en">TSP-4.2 Name</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-203204628</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
                             <ServiceNames><ServiceName lang="en">TS-4.2.2 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -130,8 +130,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-083B05E17DDB9E83B08F3E1D0EDD4CD01915A8213AE76689205FC36C473E417B">
                             <ServiceNames><ServiceName lang="en">TS-4.2.3 Name</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -140,10 +140,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-c011f11e98aeff48798ad5874a7a7f0c8192add1ab6d37825fe42c2f9f5847ebc706b823277299734990996f5beb815915af1dc1a709a5351530fcd93ae49028">
                     <Status>GOOD</Status>

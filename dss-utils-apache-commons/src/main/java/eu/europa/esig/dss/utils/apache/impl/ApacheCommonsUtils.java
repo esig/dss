@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -102,6 +103,19 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public String joinStrings(Collection<String> strings, String separator) {
 		return StringUtils.join(strings, separator);
+	}
+
+	@Override
+	public byte[] concat(byte[]... byteArrays) {
+		if (byteArrays.length == 0) {
+			return new byte[0];
+		}
+		byte[] result = new byte[]{};
+		for (byte[] byteArray : byteArrays) {
+			Objects.requireNonNull(byteArray, "ByteArray is null!");
+			result = ArrayUtils.addAll(result, byteArray);
+		}
+		return result;
 	}
 
 	@Override
@@ -279,6 +293,32 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public boolean compareInputStreams(InputStream stream1, InputStream stream2) throws IOException {
 		return IOUtils.contentEquals(stream1, stream2);
+	}
+
+	@Override
+	public boolean startsWith(byte[] byteArray, byte[] prefixArray) {
+		if (byteArray == null || prefixArray == null) {
+			return false;
+		}
+		if (ArrayUtils.getLength(byteArray) >= ArrayUtils.getLength(prefixArray)) {
+			for (int i = 0; i < prefixArray.length; i++) {
+				if (byteArray[i] != prefixArray[i]) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean startsWith(InputStream inputStream, byte[] prefixArray) throws IOException {
+		if (inputStream == null || prefixArray == null) {
+			return false;
+		}
+		byte[] temp = new byte[prefixArray.length];
+		IOUtils.read(inputStream, temp);
+		return Arrays.equals(prefixArray, temp);
 	}
 
 	@Override

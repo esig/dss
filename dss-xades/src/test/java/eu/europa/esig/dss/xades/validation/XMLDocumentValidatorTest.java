@@ -87,4 +87,9 @@ public class XMLDocumentValidatorTest extends AbstractTestValidator {
 		return new FileDocument("src/test/resources/sample.xml");
 	}
 
+	@Override
+	protected DSSDocument getXmlEvidenceRecordDocument() {
+		return new FileDocument("src/test/resources/validation/evidence-record/evidence-record-5b5edd31-344d-4d66-8e95-79f9acaab566.xml");
+	}
+
 }

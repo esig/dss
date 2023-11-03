@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
  */
 public final class DigestAlgorithmParser {
 
+	/**
+	 * Default constructor
+	 */
 	private DigestAlgorithmParser() {
+		// empty
 	}
 
 	/**
@@ -38,6 +42,7 @@ public final class DigestAlgorithmParser {
 	 */
 	public static DigestAlgorithm parse(String v) {
 		if (v != null) {
+			v = v.replace("-", "_");
 			return DigestAlgorithm.valueOf(v);
 		}
 		return null;

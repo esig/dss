@@ -67,8 +67,8 @@
         <Certificate Id="C-10F66EA5C47E1702AFB04D725B93EC06875CAC7A35E86A6A934F7429B408061A">
             <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#72d383730393238373134341310504e4f424,l=sofia,c=bg,1.2.840.113549.1.9.1=#0696e666f6e6f746172792e636f6d16176d2e6976616e6f764,2.5.4.4=#976616e6f760c064,2.5.4.42=#6c7573680c064d69,cn=miakoish oleg,dc=#d6e61747572616c2d636116147175616c69666965642</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#72d383730393238373134341310504e4f424,L=Sofia,C=BG,1.2.840.113549.1.9.1=#0696e666f6e6f746172792e636f6d16176d2e6976616e6f764,2.5.4.4=#976616e6f760c064,2.5.4.42=#6c7573680c064d69,CN=miakoish oleg,DC=qualified-natural-ca</SubjectDistinguishedName>
-            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#33313237363832370c0f4e545242472d31,ou=qualified tsp,o=infonotary plc,l=sofia,c=bg,cn=infonotary qualified personal sign ca,dc=#16147175616c69666965642d6e61747572616c2d6361</IssuerDistinguishedName>
-            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#33313237363832370c0f4e545242472d31,OU=Qualified TSP,O=InfoNotary PLC,L=Sofia,C=BG,CN=InfoNotary Qualified Personal Sign CA,DC=qualified-natural-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#0c0f4e545242472d313331323736383237,ou=qualified tsp,o=infonotary plc,l=sofia,c=bg,cn=infonotary qualified personal sign ca,dc=#16147175616c69666965642d6e61747572616c2d6361</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#0c0f4e545242472d313331323736383237,OU=Qualified TSP,O=InfoNotary PLC,L=Sofia,C=BG,CN=InfoNotary Qualified Personal Sign CA,DC=qualified-natural-ca</IssuerDistinguishedName>
             <SerialNumber>76625480696682144224</SerialNumber>
             <CommonName>Miakoish Oleg</CommonName>
             <Locality>Sofia</Locality>
@@ -129,7 +129,7 @@
                     <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-4E731CCB0E0120CD6B81A52EF384C00C1BF2B3EBC8B7BC614A3DE974C27A4CE0">
                     <Status>GOOD</Status>
@@ -186,7 +186,7 @@
                     <ocspUrl>http://ocsp.infonotary.com/qualified</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-6DBDFC408C2B2F432F5C5AEA99D5CB1754A9F701B5ECDF3EA56E76F22E0D42B5">
                     <Status>GOOD</Status>
@@ -243,7 +243,7 @@
                     <ocspUrl>http://ocsp.infonotary.com/qualified</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -296,7 +296,7 @@
                     <ocspUrl>http://ocsp.infonotary.com/qualified</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

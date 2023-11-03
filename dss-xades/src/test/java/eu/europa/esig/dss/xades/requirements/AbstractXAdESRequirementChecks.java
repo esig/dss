@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.requirements;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -119,6 +119,8 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 		for (int i = 0; i < length; i++) {
 			Node node = nodeList.item(i);
 			String certificateBase64 = node.getTextContent();
+			assertNotNull(certificateBase64);
+			assertTrue(Utils.isBase64Encoded(certificateBase64));
 			byte[] decodeCertificate = Utils.fromBase64(certificateBase64);
 			CertificateToken certificateToken = DSSUtils.loadCertificate(decodeCertificate);
 			assertNotNull(certificateToken);

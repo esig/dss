@@ -46,6 +46,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCETripleTimestampTest extends AbstractASiCWithCAdESTestValidation {
@@ -86,7 +87,8 @@ public class ASiCETripleTimestampTest extends AbstractASiCWithCAdESTestValidatio
         int lastTimestampedRevocationDataAmount = -1;
         int lastTimestampedTimestampsAmount = -1;
         for (TimestampWrapper timestampWrapper : timestampList) {
-            assertEquals(TimestampType.CONTENT_TIMESTAMP, timestampWrapper.getType());
+            assertEquals(TimestampType.CONTAINER_TIMESTAMP, timestampWrapper.getType());
+            assertNull(timestampWrapper.getArchiveTimestampType());
 
             assertTrue(lastTimestampedSignedDataAmount < timestampWrapper.getTimestampedSignedData().size());
             lastTimestampedSignedDataAmount = timestampWrapper.getTimestampedSignedData().size();

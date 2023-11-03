@@ -29,8 +29,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestEntry;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +59,9 @@ public final class ASiCUtils {
 	/** The ASiC Archive Manifest name */
 	public static final String ASIC_ARCHIVE_MANIFEST_FILENAME = "ASiCArchiveManifest";
 
+	/** The ASiC Archive Manifest name */
+	public static final String ASIC_EVIDENCE_RECORD_MANIFEST_FILENAME = "ASiCEvidenceRecordManifest";
+
 	/** The ASiC-E with XAdES Manifest name */
 	public static final String ASIC_XAdES_MANIFEST_FILENAME = "manifest";
 
@@ -83,11 +86,17 @@ public final class ASiCUtils {
 	/** The timestamp filename */
 	public static final String TIMESTAMP_FILENAME = "timestamp";
 
+	/** The evidence record filename */
+	public static final String EVIDENCE_RECORD_FILENAME = "evidencerecord";
+
 	/** The signature file extension */
 	public static final String CADES_SIGNATURE_EXTENSION = ".p7s";
 
 	/** The timestamp file extension */
 	public static final String TST_EXTENSION = ".tst";
+
+	/** The evidence record IETF RFC 4998 file extension */
+	public static final String ER_ASN1_EXTENSION = ".ers";
 
 	/** The XML file extension */
 	public static final String XML_EXTENSION = ".xml";
@@ -122,10 +131,20 @@ public final class ASiCUtils {
 	/** The ASiC-S with CAdES timestamp document name (META-INF/timestamp.tst) */
 	public static final String TIMESTAMP_TST = META_INF_FOLDER + TIMESTAMP_FILENAME + TST_EXTENSION;
 
+	/** The ASiC with XAdES evidence record ASN.1 document name (META-INF/evidencerecord.ers) */
+	public static final String EVIDENCE_RECORD_ERS = META_INF_FOLDER + EVIDENCE_RECORD_FILENAME + ER_ASN1_EXTENSION;
+
+	/** The ASiC with XAdES evidence record ASN.1 document name (META-INF/evidencerecord.xml) */
+	public static final String EVIDENCE_RECORD_XML = META_INF_FOLDER + EVIDENCE_RECORD_FILENAME + XML_EXTENSION;
+
+	/** Identifies a first bytes of a zip archive document */
+	public static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
+
 	/**
 	 * Singleton
 	 */
 	private ASiCUtils() {
+		// empty
 	}
 
 	/**
@@ -146,6 +165,17 @@ public final class ASiCUtils {
 	 */
 	public static boolean isTimestamp(final String entryName) {
 		return entryName.startsWith(META_INF_FOLDER) && entryName.contains(TIMESTAMP_FILENAME) && entryName.endsWith(TST_EXTENSION);
+	}
+
+	/**
+	 * Verifies if the {@code entryName} represents a timestamp file name
+	 *
+	 * @param entryName {@link String} name to check
+	 * @return TRUE if the entryName represents a timestamp file name, FALSE otherwise
+	 */
+	public static boolean isEvidenceRecord(final String entryName) {
+		return entryName.startsWith(META_INF_FOLDER) && entryName.contains(EVIDENCE_RECORD_FILENAME) &&
+				(entryName.endsWith(XML_EXTENSION) || entryName.endsWith(ER_ASN1_EXTENSION));
 	}
 
 	/**
@@ -352,17 +382,11 @@ public final class ASiCUtils {
 	 */
 	public static boolean isZip(InputStream is) {
 		Objects.requireNonNull(is, "InputStream cannot be null!");
-		byte[] preamble = new byte[2];
 		try {
-			int r = is.read(preamble, 0, 2);
-			if (r != 2) {
-				return false;
-			}
+			return Utils.startsWith(is, ZIP_PREFIX);
 		} catch (IOException e) {
 			throw new IllegalInputException("Unable to read the 2 first bytes", e);
 		}
-
-		return (preamble[0] == 'P') && (preamble[1] == 'K');
 	}
 
 	/**
@@ -516,6 +540,8 @@ public final class ASiCUtils {
 	 * @return {@link ASiCContainerType}
 	 */
 	public static ASiCContainerType getContainerType(DSSDocument archiveContainer) {
+		Objects.requireNonNull(archiveContainer, "Archive container shall be provided!");
+
 		List<String> entryNames = ZipUtils.getInstance().extractEntryNames(archiveContainer);
 
 		DSSDocument mimetypeDocument = null;
@@ -555,11 +581,14 @@ public final class ASiCUtils {
 	 * @return {@link ASiCContainerType}
 	 */
 	public static ASiCContainerType getContainerType(ASiCContent asicContent) {
+		Objects.requireNonNull(asicContent, "ASiCContent shall be provided!");
+
 		if (asicContent.getContainerType() != null) {
 			return asicContent.getContainerType();
 		}
-		return getContainerType(asicContent.getAsicContainer().getMimeType(), asicContent.getMimeTypeDocument(),
-				asicContent.getZipComment(), Utils.collectionSize(asicContent.getRootLevelSignedDocuments()));
+		MimeType containerMimeType = asicContent.getAsicContainer() != null ? asicContent.getAsicContainer().getMimeType() : null;
+		return getContainerType(containerMimeType, asicContent.getMimeTypeDocument(), asicContent.getZipComment(),
+				Utils.collectionSize(asicContent.getRootLevelSignedDocuments()));
 	}
 
 	private static int getNumberOfSignedRootDocuments(List<String> containerEntryNames) {
@@ -574,22 +603,31 @@ public final class ASiCUtils {
 
 	private static ASiCContainerType getContainerType(MimeType containerMimeType, DSSDocument mimetypeDocument,
 			String zipComment, int rootSignedDocumentsNumber) {
-		ASiCContainerType containerType = getContainerTypeFromMimeType(containerMimeType);
-		if (containerType == null) {
-			containerType = getContainerTypeFromMimeTypeDocument(mimetypeDocument);
-			if (containerType == null) {
-				containerType = getContainerTypeFromZipComment(zipComment);
-			}
+		// 1. Identify container type based on the mimetype document
+		ASiCContainerType containerType = getContainerTypeFromMimeTypeDocument(mimetypeDocument);
+		if (containerType != null) {
+			return containerType;
 		}
-		if (containerType == null) {
-			LOG.info("Unable to define the ASiC Container type with its properties. Assume type based on root-level documents...");
-			if (rootSignedDocumentsNumber == 1) {
-				containerType = ASiCContainerType.ASiC_S;
-			} else if (rootSignedDocumentsNumber > 1) {
-				containerType = ASiCContainerType.ASiC_E;
-			} else {
-				LOG.warn("The provided container does not contain signer documents on the root level!");
-			}
+		// 2. Identify container type based on the zip comment
+		containerType = getContainerTypeFromZipComment(zipComment);
+		if (containerType != null) {
+			return containerType;
+		}
+		// 3. Check if the container contains more than one document at the root level (ASiC-E)
+		if (rootSignedDocumentsNumber > 1) {
+			return ASiCContainerType.ASiC_E;
+		}
+		// 4. Return enforced container type, when present
+		containerType = getContainerTypeFromMimeType(containerMimeType);
+		if (containerType != null) {
+			return containerType;
+		}
+		// 5. Check if the container contains one document at the root level (ASiC-S)
+		LOG.info("Unable to define the ASiC Container type with its properties. Assume type based on root-level documents...");
+		if (rootSignedDocumentsNumber == 1) {
+			containerType = ASiCContainerType.ASiC_S;
+		} else {
+			LOG.warn("The provided container does not contain signer documents on the root level!");
 		}
 		return containerType;
 	}
@@ -640,6 +678,17 @@ public final class ASiCUtils {
 	 */
 	public static boolean isArchiveManifest(String fileName) {
 		return fileName.startsWith(META_INF_FOLDER) && fileName.contains(ASIC_ARCHIVE_MANIFEST_FILENAME)
+				&& fileName.endsWith(XML_EXTENSION);
+	}
+
+	/**
+	 * Checks if the fileName matches to an Evidence Record Manifest name standard
+	 *
+	 * @param fileName {@link String} to check
+	 * @return TRUE if the given name matches ASiC Archive Manifest filename, FALSE otherwise
+	 */
+	public static boolean isEvidenceRecordManifest(String fileName) {
+		return fileName.startsWith(META_INF_FOLDER) && fileName.contains(ASIC_EVIDENCE_RECORD_MANIFEST_FILENAME)
 				&& fileName.endsWith(XML_EXTENSION);
 	}
 

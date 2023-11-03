@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.signature.HttpHeadersPayloadBuilder;
+import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
 import eu.europa.esig.dss.jades.validation.timestamp.JAdESTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
@@ -52,15 +54,15 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CommitmentTypeIndication;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.ReferenceValidation;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.validation.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignatureProductionPlace;
 import eu.europa.esig.dss.validation.SignerRole;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -243,28 +245,33 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public SignaturePolicyStore getSignaturePolicyStore() {
-		Map<?, ?> sigPStMap = getUnsignedPropertyAsMap(JAdESHeaderParameterNames.SIG_PST);
-		if (Utils.isMapNotEmpty(sigPStMap)) {
-			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
+		try {
+			Map<?, ?> sigPStMap = getUnsignedPropertyAsMap(JAdESHeaderParameterNames.SIG_PST);
+			if (Utils.isMapNotEmpty(sigPStMap)) {
+				SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 
-			String sigPolDocBase64 = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_DOC);
-			if (Utils.isStringNotEmpty(sigPolDocBase64)) {
-				DSSDocument policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
-				signaturePolicyStore.setSignaturePolicyContent(policyContent);
+				String sigPolDocBase64 = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_DOC);
+				if (Utils.isStringNotEmpty(sigPolDocBase64)) {
+					DSSDocument policyContent = new InMemoryDocument(Utils.fromBase64(sigPolDocBase64));
+					signaturePolicyStore.setSignaturePolicyContent(policyContent);
+				}
+
+				String sigPolLocalURI = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_LOCAL_URI);
+				if (Utils.isStringNotEmpty(sigPolLocalURI)) {
+					signaturePolicyStore.setSigPolDocLocalURI(sigPolLocalURI);
+				}
+
+				Object spDSpec = sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
+				if (spDSpec != null) {
+					SpDocSpecification spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
+					signaturePolicyStore.setSpDocSpecification(spDocSpecification);
+				}
+
+				return signaturePolicyStore;
 			}
 
-			String sigPolLocalURI = DSSJsonUtils.getAsString(sigPStMap, JAdESHeaderParameterNames.SIG_POL_LOCAL_URI);
-			if (Utils.isStringNotEmpty(sigPolLocalURI)) {
-				signaturePolicyStore.setSigPolDocLocalURI(sigPolLocalURI);
-			}
-
-			Object spDSpec = sigPStMap.get(JAdESHeaderParameterNames.SP_DSPEC);
-			if (spDSpec != null) {
-				SpDocSpecification spDocSpecification = DSSJsonUtils.parseSPDocSpecification(spDSpec);
-				signaturePolicyStore.setSpDocSpecification(spDocSpecification);
-			}
-
-			return signaturePolicyStore;
+		} catch (Exception e) {
+			LOG.warn("Cannot read signature policy store : {}", e.getMessage(), e);
 		}
 		return null;
 	}
@@ -301,22 +308,46 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public String getContentType() {
-		// TODO handle sigD
-		return jws.getContentTypeHeaderValue();
+		// not applicable for JAdES (see TS 119 102-2 v1.4.1)
+		return null;
 	}
 
 	@Override
 	public String getMimeType() {
 		/*
-		 * RFC 7515 :
-		 * A recipient using the media type value MUST treat it as if
-		 * "application/" were prepended to any "typ" value not containing a '/'.
+		 * TS 119 102-2 v1.4.1 :
+		 * The MimeType element shall contain the value of cty header parameter, prefixed with the string "application/"
+		 * when this prefix has been omitted in the cty header parameter.
 		 */
-		String typeValue = jws.getProtectedHeaderValueAsString(HeaderParameterNames.TYPE);
-		if (Utils.isStringNotEmpty(typeValue) && !typeValue.contains("/")) {
-			return DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX + typeValue;
+		String value = jws.getContentTypeHeaderValue();
+		/*
+		 * NOTE: The sigD header parameter has one member that contains information of the format and type of the
+		 * constituents of the JWS Payload.
+		 */
+		if (Utils.isStringEmpty(value)) {
+			// sigD: return the first one when present
+			List<String> ctys = getSignedDataContentTypeList();
+			if (Utils.isCollectionNotEmpty(ctys)) {
+				value = ctys.get(0);
+			}
 		}
-		return typeValue;
+		if (Utils.isStringNotEmpty(value)) {
+			return DSSJsonUtils.getMimeTypeString(value);
+		}
+		return null;
+	}
+
+	/**
+	 * Returns value of the "typ" header parameter, declaring the media type of the JWS, when present.
+	 *
+	 * @return {@link String}
+	 */
+	public String getSignatureType() {
+		String value = jws.getProtectedHeaderValueAsString(HeaderParameterNames.TYPE);
+		if (Utils.isStringNotEmpty(value)) {
+			return DSSJsonUtils.getMimeTypeString(value);
+		}
+		return null;
 	}
 
 	@Override
@@ -651,19 +682,19 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 						jws.setPayloadOctets(payload);
 						signatureValueReferenceValidation.setFound(detachedContents.size() == 1);
 
-					} else if (SigDMechanism.HTTP_HEADERS.equals(getSigDMechanism())) {
+					} else if (SigDMechanism.HTTP_HEADERS.equals(sigDMechanism)) {
 						// detached with HTTP_HEADERS mechanism
 						byte[] payload = getPayloadForHttpHeadersMechanism();
 						jws.setPayloadOctets(payload);
 						signatureValueReferenceValidation.setFound(payload != null);
 
-					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(getSigDMechanism())) {
+					} else if (SigDMechanism.OBJECT_ID_BY_URI.equals(sigDMechanism)) {
 						// detached with OBJECT_ID_BY_URI mechanism
 						byte[] payload = getPayloadForObjectIdByUriMechanism();
 						jws.setPayloadOctets(payload);
 						signatureValueReferenceValidation.setFound(payload != null);
 
-					} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(getSigDMechanism())) {
+					} else if (SigDMechanism.OBJECT_ID_BY_URI_HASH.equals(sigDMechanism)) {
 						// the sigD itself is signed with OBJECT_ID_BY_URI_HASH mechanism
 						signatureValueReferenceValidation.setFound(true);
 
@@ -982,6 +1013,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		return Collections.emptyList();
 	}
+
+	private List<String> getSignedDataContentTypeList() {
+		Map<?, ?> signatureDetached = jws.getProtectedHeaderValueAsMap(JAdESHeaderParameterNames.SIG_D);
+		if (Utils.isMapNotEmpty(signatureDetached)) {
+			List<?> pars = DSSJsonUtils.getAsList(signatureDetached, JAdESHeaderParameterNames.CTYS);
+			return DSSJsonUtils.toListOfStrings(pars);
+		}
+		return Collections.emptyList();
+	}
 	
 	private boolean isDocumentDigestMatch(DSSDocument document, DigestAlgorithm digestAlgorithm,
 			byte[] expectedDigest) {
@@ -1117,6 +1157,11 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			LOG.warn("Error(s) occurred during the JSON schema validation : {}", validationErrors);
 		}
 		return validationErrors;
+	}
+
+	@Override
+	protected List<SignatureScope> findSignatureScopes() {
+		return new JAdESSignatureScopeFinder().findSignatureScope(this);
 	}
 
 	@Override

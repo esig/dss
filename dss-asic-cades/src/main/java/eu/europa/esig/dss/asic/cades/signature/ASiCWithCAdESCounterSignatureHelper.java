@@ -21,15 +21,15 @@
 package eu.europa.esig.dss.asic.cades.signature;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.ManifestFile;
 
 import java.util.Collections;
 import java.util.List;
@@ -69,10 +69,10 @@ public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	
 	@Override
 	public ManifestFile getManifestFile(String signatureFilename) {
-		DSSDocument signatureManifest = ASiCWithCAdESManifestParser.getLinkedManifest(
+		DSSDocument signatureManifest = ASiCManifestParser.getLinkedManifest(
 				getAsicContent().getAllManifestDocuments(), signatureFilename);
 		if (signatureManifest != null) {
-			return ASiCWithCAdESManifestParser.getManifestFile(signatureManifest);
+			return ASiCManifestParser.getManifestFile(signatureManifest);
 		}
 		return null;
 	}

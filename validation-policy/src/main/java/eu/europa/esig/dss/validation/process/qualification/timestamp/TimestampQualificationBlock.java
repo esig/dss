@@ -23,28 +23,28 @@ package eu.europa.esig.dss.validation.process.qualification.timestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.GrantedStatusCheck;
-import eu.europa.esig.dss.validation.process.qualification.certificate.checks.RelatedToMraEnactedTrustServiceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.TrustedListReachedForCertificateChainCheck;
-import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.GrantedStatusAtProductionTimeCheck;
-import eu.europa.esig.dss.validation.process.qualification.timestamp.checks.QTSTCheck;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,11 +61,14 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	/** The list of all TL analyses */
 	private final List<XmlTLAnalysis> tlAnalysis;
 
+	/** Contains list of all POEs */
+	private final POEExtraction poe;
+
 	/** The list of related LOTL/TL analyses */
 	private final List<XmlTLAnalysis> relatedTLAnalyses = new ArrayList<>();
 
 	/** The determined timestamp qualification */
-	private TimestampQualification tstQualif = TimestampQualification.NA;
+	private TimestampQualification tstQualification = TimestampQualification.NA;
 
 	/**
 	 * Default constructor
@@ -73,12 +76,14 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param timestamp {@link TimestampWrapper} qualification of which will be verified
 	 * @param tlAnalysis a list of performed {@link XmlTLAnalysis}
+	 * @param poe {@link POEExtraction}
 	 */
 	public TimestampQualificationBlock(I18nProvider i18nProvider, TimestampWrapper timestamp,
-									   List<XmlTLAnalysis> tlAnalysis) {
+									   List<XmlTLAnalysis> tlAnalysis, POEExtraction poe) {
 		super(i18nProvider, new XmlValidationTimestampQualification());
 		this.timestamp = timestamp;
 		this.tlAnalysis = tlAnalysis;
+		this.poe = poe;
 	}
 	
 	@Override
@@ -94,7 +99,7 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		
 		if (signingCertificate != null && signingCertificate.isTrustedListReached()) {
 
-			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
+			List<TrustServiceWrapper> originalTSPs = signingCertificate.getTrustServices();
 			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
@@ -138,40 +143,21 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 			
 			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
 
-				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
-				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
-	
-				// Execute only for Trusted Lists with defined MRA
-				if (isMRAEnactedForTrustedList(acceptableServices)) {
-					filter = TrustedServicesFilterFactory.createMRAEnactedFilter();
-					acceptableServices = filter.filter(acceptableServices);
+				TrustServiceFilter filter = TrustServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
+				List<TrustServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 
-					item = item.setNextItem(hasMraEnactedTrustedService(acceptableServices));
-				}
+                TimestampQualificationAtTimeBlock tstQualificationAtGenerationTimeBlock = new TimestampQualificationAtTimeBlock(
+                        i18nProvider, ValidationTime.TIMESTAMP_GENERATION_TIME, timestamp, acceptableServices);
+                XmlValidationTimestampQualificationAtTime conclusionAtGenerationTime = tstQualificationAtGenerationTimeBlock.execute();
+                result.getValidationTimestampQualificationAtTime().add(conclusionAtGenerationTime);
 
-				// 1. filter by service for QTST
-				filter = TrustedServicesFilterFactory.createFilterByQTST();
-				List<TrustedServiceWrapper> qtstServices = filter.filter(acceptableServices);
-	
-				item = item.setNextItem(hasQTST(qtstServices));
-	
-				// 2. filter by granted
-				filter = TrustedServicesFilterFactory.createFilterByGranted();
-				List<TrustedServiceWrapper> grantedServices = filter.filter(qtstServices);
-	
-				item = item.setNextItem(hasGrantedStatus(grantedServices));
-	
-				// 3. filter by date (generation time)
-				filter = TrustedServicesFilterFactory.createFilterByDate(timestamp.getProductionTime());
-				List<TrustedServiceWrapper> grantedAtDateServices = filter.filter(grantedServices);
-	
-				item = item.setNextItem(hasGrantedStatusAtDate(grantedAtDateServices));
-	
-				if (Utils.isCollectionNotEmpty(grantedAtDateServices)) {
-					tstQualif = TimestampQualification.QTSA;
-				} else {
-					tstQualif = TimestampQualification.TSA;
-				}
+				Date timestampPOE = poe.getLowestPOETime(timestamp.getId());
+				TimestampQualificationAtTimeBlock tstQualificationAtPOETimeBlock = new TimestampQualificationAtTimeBlock(
+						i18nProvider, ValidationTime.TIMESTAMP_POE_TIME, timestampPOE, timestamp, acceptableServices);
+                XmlValidationTimestampQualificationAtTime conclusionAtPOETime = tstQualificationAtPOETimeBlock.execute();
+                result.getValidationTimestampQualificationAtTime().add(conclusionAtPOETime);
+
+                determineFinalQualification(conclusionAtGenerationTime.getTimestampQualification(), conclusionAtPOETime.getTimestampQualification());
 				
 			}
 		}
@@ -187,10 +173,18 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		return null;
 	}
 
+    private void determineFinalQualification(TimestampQualification qualAtGenerationTime, TimestampQualification qualAtPOETime) {
+        if (TimestampQualification.QTSA == qualAtGenerationTime && TimestampQualification.QTSA == qualAtPOETime) {
+			tstQualification = TimestampQualification.QTSA;
+        } else {
+			tstQualification = TimestampQualification.TSA;
+        }
+    }
+
 	@Override
 	protected void addAdditionalInfo() {
 		setIndication();
-		determineFinalQualification();
+		setTimestampQualification();
 	}
 
 	private void setIndication() {
@@ -206,12 +200,15 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 		}
 	}
 
-	private void determineFinalQualification() {
-		result.setTimestampQualification(tstQualif);
+	private void setTimestampQualification() {
+		result.setTimestampQualification(tstQualification);
 	}
 
 	@Override
 	protected void collectAdditionalMessages(XmlConclusion conclusion) {
+		for (XmlValidationTimestampQualificationAtTime tstQualAtTime : result.getValidationTimestampQualificationAtTime()) {
+			collectAllMessages(conclusion, tstQualAtTime.getConclusion());
+		}
 		for (XmlTLAnalysis relatedTLAnalysis : relatedTLAnalyses) {
 			collectAllMessages(conclusion, relatedTLAnalysis.getConclusion());
 		}
@@ -231,31 +228,6 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 
 	private ChainItem<XmlValidationTimestampQualification> isAcceptableTLPresent(Set<String> acceptableUrls) {
 		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
-	}
-
-	private ChainItem<XmlValidationTimestampQualification> hasMraEnactedTrustedService(List<TrustedServiceWrapper> services) {
-		return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, services, getFailLevelConstraint());
-	}
-
-	private ChainItem<XmlValidationTimestampQualification> hasQTST(List<TrustedServiceWrapper> services) {
-		return new QTSTCheck(i18nProvider, result, services, getFailLevelConstraint());
-	}
-
-	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatus(List<TrustedServiceWrapper> services) {
-		return new GrantedStatusCheck<>(i18nProvider, result, services, getFailLevelConstraint());
-	}
-
-	private ChainItem<XmlValidationTimestampQualification> hasGrantedStatusAtDate(List<TrustedServiceWrapper> services) {
-		return new GrantedStatusAtProductionTimeCheck(i18nProvider, result, services, getFailLevelConstraint());
-	}
-
-	private boolean isMRAEnactedForTrustedList(List<TrustedServiceWrapper> trustedServices) {
-		for (TrustedServiceWrapper trustedService : trustedServices) {
-			if (Utils.isTrue(trustedService.getTrustedList().isMra())) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }

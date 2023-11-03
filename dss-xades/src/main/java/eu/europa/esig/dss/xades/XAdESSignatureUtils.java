@@ -21,21 +21,23 @@
 package eu.europa.esig.dss.xades;
 
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,10 +118,17 @@ public final class XAdESSignatureUtils {
 		try {
 			if (reference.typeIsReferenceToObject() || Utils.isStringEmpty(reference.getType())) {
 				String objectId = DomUtils.getId(reference.getURI());
-				Node objectById = signature.getObjectById(objectId);
+				Node objectById = DSSXMLUtils.getObjectById(signature.getSignatureElement(), objectId);
 				if (objectById != null && objectById.hasChildNodes()) {
-					byte[] bytes = DSSXMLUtils.getNodeBytes(objectById.getFirstChild());
-					if (bytes != null) {
+					try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+						NodeList childNodes = objectById.getChildNodes();
+						for (int i = 0; i < childNodes.getLength(); i++) {
+							byte[] nodeBytes = DomUtils.getNodeBytes(childNodes.item(i));
+							if (nodeBytes != null) {
+								baos.write(nodeBytes);
+							}
+						}
+						byte[] bytes = baos.toByteArray();
 						return new InMemoryDocument(bytes, objectId, MimeTypeEnum.XML);
 					}
 				}
@@ -134,9 +143,9 @@ public final class XAdESSignatureUtils {
 		try {
 			if (reference.typeIsReferenceToManifest() || Utils.isStringEmpty(reference.getType())) {
 				String manifestId = DomUtils.getId(reference.getURI());
-				Node manifestById = signature.getManifestById(manifestId);
+				Node manifestById = DSSXMLUtils.getManifestById(signature.getSignatureElement(), manifestId);
 				if (manifestById != null) {
-					byte[] bytes = DSSXMLUtils.getNodeBytes(manifestById);
+					byte[] bytes = DomUtils.getNodeBytes(manifestById);
 					if (bytes != null) {
 						return new InMemoryDocument(bytes, manifestId, MimeTypeEnum.XML);
 					}

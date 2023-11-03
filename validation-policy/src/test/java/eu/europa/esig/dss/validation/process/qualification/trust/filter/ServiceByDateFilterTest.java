@@ -30,7 +30,7 @@ import javax.xml.bind.DatatypeConverter;
 
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 
 public class ServiceByDateFilterTest {
@@ -49,7 +49,7 @@ public class ServiceByDateFilterTest {
 	public void testInRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
 
@@ -60,7 +60,7 @@ public class ServiceByDateFilterTest {
 	public void testNoEndRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(DATE1);
 
 		assertTrue(filter.isAcceptable(service));
@@ -70,7 +70,7 @@ public class ServiceByDateFilterTest {
 	public void testNoDateRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		TrustServiceWrapper service = new TrustServiceWrapper();
 
 		assertFalse(filter.isAcceptable(service));
 	}
@@ -79,7 +79,7 @@ public class ServiceByDateFilterTest {
 	public void testNotInRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE3);
 
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE2);
 
@@ -90,7 +90,7 @@ public class ServiceByDateFilterTest {
 	public void testInRangeSameStartDate() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE1);
 
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
 
@@ -101,7 +101,7 @@ public class ServiceByDateFilterTest {
 	public void testInRangeSameEndDate() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE3);
 
-		TrustedServiceWrapper service = new TrustedServiceWrapper();
+		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setStartDate(DATE1);
 		service.setEndDate(DATE3);
 

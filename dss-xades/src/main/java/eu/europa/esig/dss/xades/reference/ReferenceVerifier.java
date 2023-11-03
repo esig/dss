@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -84,14 +84,17 @@ public class ReferenceVerifier {
                 if (Utils.isCollectionNotEmpty(transforms)) {
                     for (DSSTransform transform : transforms) {
                         if (Transforms.TRANSFORM_BASE64_DECODE.equals(transform.getAlgorithm())) {
-                            if (signatureParameters.isEmbedXML()) {
-                                throw new IllegalArgumentException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
-                            } else if (signatureParameters.isManifestSignature()) {
-                                throw new IllegalArgumentException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
-                            } else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
-                                throw new IllegalArgumentException(referenceWrongMessage +
-                                        String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
-                            } else if (transforms.size() > 1) {
+                            if (reference.getObject() == null || !DSSXMLUtils.isObjectReferenceType(reference.getType())) {
+                                if (signatureParameters.isEmbedXML()) {
+                                    throw new IllegalArgumentException(referenceWrongMessage + "The embedXML(true) parameter is not compatible with base64 transform.");
+                                } else if (signatureParameters.isManifestSignature()) {
+                                    throw new IllegalArgumentException(referenceWrongMessage + "Manifest signature is not compatible with base64 transform.");
+                                } else if (!SignaturePackaging.ENVELOPING.equals(signatureParameters.getSignaturePackaging())) {
+                                    throw new IllegalArgumentException(referenceWrongMessage +
+                                            String.format("Base64 transform is not compatible with %s signature format.", signatureParameters.getSignaturePackaging()));
+                                }
+                            }
+                            if (transforms.size() > 1) {
                                 throw new IllegalArgumentException(referenceWrongMessage + "Base64 transform cannot be used with other transformations.");
                             }
                         }

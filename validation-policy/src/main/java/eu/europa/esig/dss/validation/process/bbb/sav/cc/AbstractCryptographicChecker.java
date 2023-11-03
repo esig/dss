@@ -261,7 +261,12 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 		return ALGORITHM_UNIDENTIFIED_URN;
 	}
 
-	private Date getNotAfter() {
+	/**
+	 * Returns time after which the used cryptographic algorithm(s) is no longer considered secure
+	 *
+	 * @return {@link Date}
+	 */
+	protected Date getNotAfter() {
 		if (constraintWrapper.isDigestAlgorithmReliable(digestAlgorithm) &&
 				constraintWrapper.isEncryptionAlgorithmReliable(encryptionAlgorithm) &&
 				constraintWrapper.isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, keyLengthUsedToSignThisToken)) {

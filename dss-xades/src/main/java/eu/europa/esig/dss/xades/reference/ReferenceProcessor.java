@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -85,10 +85,8 @@ public class ReferenceProcessor {
         }
 
         byte[] referenceOutputResult = DSSXMLUtils.applyTransforms(nodeToTransform, reference.getTransforms());
+        // NodeSet canonicalization is performed by Santuario within #applyTransforms method
 
-        if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(referenceOutputResult)) {
-            referenceOutputResult = DSSXMLUtils.canonicalize(DSSXMLUtils.DEFAULT_XMLDSIG_C14N_METHOD, referenceOutputResult);
-        }
         if (LOG.isTraceEnabled()) {
             LOG.trace("Reference output : ");
             LOG.trace(new String(referenceOutputResult));
@@ -97,25 +95,38 @@ public class ReferenceProcessor {
     }
 
     private Node dereferenceNode(DSSReference reference) {
-        Node deReferencedNode = getNodeToTransform(reference);
-        if (deReferencedNode != null && DSSXMLUtils.isSameDocumentReference(reference.getUri())) {
-            deReferencedNode = DomUtils.excludeComments(deReferencedNode);
+        Document document = getDocumentToTransform(reference);
+        /*
+         * 4.4.3.3 Same-Document URI-References
+         *
+         * The application must behave as if the result of XPointer processing [XPTR-FRAMEWORK] were a node-set
+         * derived from the resultant subresource as follows:
+         * 1. include XPath nodes having full or partial content within the subresource
+         * 2. replace the root node with its children (if it is in the node-set)
+         * 3. replace any element node E with E plus all descendants of E (text, comment, PI, element) and
+         *    all namespace and attribute nodes of E and its descendant elements.
+         * 4. if the URI has no fragment identifier or the fragment identifier is a shortname XPointer,
+         *    then delete all comment nodes
+         */
+        if (document != null && DSSXMLUtils.isSameDocumentReference(reference.getUri()) && !DomUtils.isXPointerQuery(reference.getUri())) {
+            document = DomUtils.excludeComments(document);
         }
-        return deReferencedNode;
+        // extract the target Node after performing comments removal (otherwise the relation to parent nodes can be lost)
+        return getNodeToTransform(document, reference);
     }
 
-    private Node getNodeToTransform(DSSReference reference) {
+    private Document getDocumentToTransform(DSSReference reference) {
         DSSDocument contents = reference.getContents();
         if (!DomUtils.isDOM(contents)) {
             // cannot be transformed
             return null;
         }
+        return DomUtils.buildDOM(contents);
+    }
 
-        final Document doc = DomUtils.buildDOM(contents);
+    private Node getNodeToTransform(Document doc, DSSReference reference) {
         String uri = reference.getUri();
-
         if (signatureParameters != null && signatureParameters.isEmbedXML()) {
-            Element root = doc.getDocumentElement();
             final Document doc2 = DomUtils.buildDOM();
             final Element dom = DomUtils.createElementNS(doc2, signatureParameters.getXmldsigNamespace(), XMLDSigElement.OBJECT);
             final Element dom2 = DomUtils.createElementNS(doc2, signatureParameters.getXmldsigNamespace(), XMLDSigElement.OBJECT);
@@ -123,14 +134,12 @@ public class ReferenceProcessor {
             dom2.appendChild(dom);
             dom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), DomUtils.getId(uri));
 
-            Node adopted = doc2.adoptNode(root);
-            dom.appendChild(adopted);
+            DomUtils.adoptChildren(dom, doc);
             return dom;
 
         } else if (DomUtils.isElementReference(uri)) {
-            DSSXMLUtils.recursiveIdBrowse(doc.getDocumentElement());
             final String targetId = DomUtils.getId(uri);
-            Element elementById = doc.getElementById(targetId);
+            Element elementById = DomUtils.getElementById(doc, targetId);
             if (elementById != null) {
                 return elementById;
             }
@@ -138,13 +147,10 @@ public class ReferenceProcessor {
 
         }
         // TODO : add support of xPointer
-
         if (Utils.isCollectionNotEmpty(reference.getTransforms())) {
             return doc;
         }
-
         return null;
-
     }
 
     private boolean isUniqueBase64Transform(List<DSSTransform> transforms) {

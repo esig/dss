@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.cv;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -35,6 +29,11 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
 
@@ -48,7 +47,7 @@ public class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(i18nProvider, result, digestMatcher,
+		ReferenceDataExistenceCheck<XmlCV> rdec = new ReferenceDataExistenceCheck<>(i18nProvider, result, digestMatcher,
 				constraint);
 		rdec.execute();
 
@@ -67,7 +66,7 @@ public class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataExistenceCheck rdec = new ReferenceDataExistenceCheck(i18nProvider, result, digestMatcher,
+		ReferenceDataExistenceCheck<XmlCV> rdec = new ReferenceDataExistenceCheck<>(i18nProvider, result, digestMatcher,
 				constraint);
 		rdec.execute();
 

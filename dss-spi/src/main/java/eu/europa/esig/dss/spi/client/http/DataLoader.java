@@ -95,20 +95,6 @@ public interface DataLoader extends Serializable {
 	DataAndUrl get(final List<String> urlStrings);
 
 	/**
-	 * Execute a HTTP GET operation with indication concerning the mandatory nature of the operation.
-	 *
-	 * @param url
-	 *            to access
-	 * @param refresh
-	 *            if true indicates that the cached data should be refreshed
-	 * @return {@code byte} array of obtained data or null
-	 * @deprecated since 5.12. To be removed in DSS 5.13. Use {@code #get(url)} for no cache,
-	 * 				or an alternative DataLoader providing caching functionality.
-	 */
-	@Deprecated
-	byte[] get(String url, boolean refresh);
-
-	/**
 	 * Executes a HTTP POST operation
 	 *
 	 * @param url

@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -32,7 +33,7 @@ import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -125,7 +126,7 @@ public class AllDataObjectsTimeStampBuilder {
 			 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
 			 */
 			if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(binaries)) {
-				binaries = DSSXMLUtils.canonicalize(canonicalizationMethod, binaries);
+				binaries = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(binaries);
 			}
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Computed AllDataObjectsTimestampData reference bytes: {}", new String(binaries));

@@ -47,7 +47,7 @@ import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModifications;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -237,7 +237,7 @@ public class PAdESDiagnosticDataBuilder extends CAdESDiagnosticDataBuilder {
 	}
 
 	private void buildOrphanTokensFromDocumentSources() {
-		for (CertificateToken certificateToken : documentCertificateSource.getAllCertificateTokens()) {
+		for (CertificateToken certificateToken : documentCertificateSource.getCertificates()) {
 			String id = certificateToken.getDSSIdAsString();
 			if (!xmlCertsMap.containsKey(id) && !xmlOrphanCertificateTokensMap.containsKey(id)) {
 				buildXmlOrphanCertificateToken(certificateToken);

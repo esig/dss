@@ -30,6 +30,9 @@ import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
+import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -145,7 +148,11 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         signingAlias = GOOD_USER_UNKNOWN;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);
-
+        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getCertEntityRepository()));
+        certificateVerifier.setOcspSource(new UnknownPkiOCSPSource(getCertEntityRepository()));
+        service = new JAdESService(certificateVerifier);
+        service.setTspSource(getGoodTsa());
         exception = assertThrows(AlertException.class, () -> sign());
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
     }

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import org.w3c.dom.Node;
 
 /**
@@ -54,7 +54,14 @@ public class SPDocDigestAsInSpecificationTransform extends AbstractTransform {
     }
 
     @Override
+    @Deprecated
     public byte[] getBytesAfterTransformation(Node node) {
+        throw new IllegalArgumentException(
+                "The transform SPDocDigestAsInSpecificationTransform cannot be used for reference processing!");
+    }
+
+    @Override
+    public DSSTransformOutput performTransform(DSSTransformOutput transformOutput) {
         throw new IllegalArgumentException(
                 "The transform SPDocDigestAsInSpecificationTransform cannot be used for reference processing!");
     }

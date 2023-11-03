@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.Collections;
 import java.util.List;

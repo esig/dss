@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation.timestamp;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -34,9 +35,14 @@ import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampCRLSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampOCSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.ListRevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,6 +60,7 @@ public abstract class AbstractTimestampSource {
 	 * Default constructor
 	 */
 	protected AbstractTimestampSource() {
+		// empty
 	}
 
 	/**
@@ -138,6 +145,25 @@ public abstract class AbstractTimestampSource {
 		addReferences(references, createReferencesForOCSPRefs(timestampOCSPSource.getAllRevocationReferences(),
 				timestampOCSPSource, certificateSource, ocspSource));
 
+		return references;
+	}
+
+	/**
+	 * Creates a list of {@link TimestampedReference}s from a given list of {@code SignatureScope}s
+	 *
+	 * @param signatureScopes a list of {@link SignatureScope} to create {@link TimestampedReference}s for
+	 * @return a list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getSignerDataTimestampedReferences(List<SignatureScope> signatureScopes) {
+		final List<TimestampedReference> references = new ArrayList<>();
+		if (Utils.isCollectionNotEmpty(signatureScopes)) {
+			for (SignatureScope signatureScope : signatureScopes) {
+				addReference(references, new TimestampedReference(signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA));
+				if (Utils.isCollectionNotEmpty(signatureScope.getChildren())) {
+					addReferences(references, getSignerDataTimestampedReferences(signatureScope.getChildren()));
+				}
+			}
+		}
 		return references;
 	}
 
@@ -260,7 +286,7 @@ public abstract class AbstractTimestampSource {
 		for (CertificateRef certRef : certificateRefs) {
 			Set<CertificateToken> certificateTokens = currentCertificateSource.findTokensFromCertRef(certRef);
 			if (Utils.isCollectionEmpty(certificateTokens)) {
-				certificateTokens = listCertificateSource.findTokensFromRefs(certRef);
+				certificateTokens = listCertificateSource.findTokensFromCertRef(certRef);
 			}
 			if (Utils.isCollectionNotEmpty(certificateTokens)) {
 				addReferences(timestampedReferences, createReferencesForCertificates(certificateTokens));

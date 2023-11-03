@@ -183,7 +183,7 @@
                     <crlUrl>http://proxy.fineid.fi/arl/vrkroot2a.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>Oag1sUtrYxP3eDccectDTdUYyP0yW3Sdm+Zp3/IDhOg=</DigestValue>
@@ -242,7 +242,7 @@
                     <caIssuersUrl>http://proxy.fineid.fi/ca/vrkcqc3.crt</caIssuersUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>nm7isQI61S67qC4GQICfgJxkrsgBuqrdQzwaB6lp/ow=</DigestValue>
@@ -251,8 +251,8 @@
         <Certificate Id="C-FE41FE1675B6A266E9B8D9D3A14CAB92CA81FEE2D53806374CB50DAEECC6BD92">
             <SubjectDistinguishedName Format="CANONICAL">cn=pierre jean 55131434u,2.5.4.4=#4904950c07524e454e,2.5.4.42=#a4150c044249,2.5.4.5=#1343130933353531333455,c=fi</SubjectDistinguishedName>
             <SubjectDistinguishedName Format="RFC2253">CN=PIRINEN JARI 55131434u,2.5.4.4=#4904950c07524e454e,2.5.4.42=#a4150c044249,2.5.4.5=#1343130933353531333455,C=FI</SubjectDistinguishedName>
-            <IssuerDistinguishedName Format="CANONICAL">cn=ca for citizen certificates</IssuerDistinguishedName>
-            <IssuerDistinguishedName Format="RFC2253">CN=CA for Citizen Certificates </IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=vrk gov. ca for citizen certificates - g3,ou=valtion kansalaisvarmenteet,o=vaestorekisterikeskus ca,c=fi</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=VRK Gov. CA for Citizen Certificates - G3,OU=Valtion kansalaisvarmenteet,O=Vaestorekisterikeskus CA,C=FI</IssuerDistinguishedName>
             <SerialNumber>4791910074</SerialNumber>
             <SubjectSerialNumber>13414355U</SubjectSerialNumber>
             <CommonName>PIERRE JEAN 14355134U</CommonName>
@@ -304,7 +304,7 @@
                     <crlUrl>http://proxy.fineid.fi/crl/vrkcqc3c.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-816CFEA4CFFF0F0832DE88792963306CC8E74C8C582246B6961BCA51797BDA74">
                     <Status>GOOD</Status>

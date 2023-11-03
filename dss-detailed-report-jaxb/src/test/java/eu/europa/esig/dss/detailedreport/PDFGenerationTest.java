@@ -79,6 +79,16 @@ public class PDFGenerationTest {
 	public void generateSigAndTstDetailedReport() throws Exception {
 		createAndValidate("dr-sig-and-tst.xml");
 	}
+
+	@Test
+	public void generateSigAndErDetailedReport() throws Exception {
+		createAndValidate("dr-sig-lt-and-er.xml");
+	}
+
+	@Test
+	public void generateErDetailedReport() throws Exception {
+		createAndValidate("dr-er.xml");
+	}
 	
 	private void createAndValidate(String filename) throws Exception {
 		DetailedReportFacade facade = DetailedReportFacade.newFacade();
@@ -88,7 +98,6 @@ public class PDFGenerationTest {
 		String detailedReportString = facade.marshall(detailedReport);
 
 		try (FileOutputStream fos = new FileOutputStream("target/report.pdf")) {
-
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, fos);
 			Result result = new SAXResult(fop.getDefaultHandler());
 			facade.generatePdfReport(detailedReport, result);
@@ -103,7 +112,7 @@ public class PDFGenerationTest {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, foUserAgent, baos);
 			Result result = new SAXResult(fop.getDefaultHandler());
 			facade.generatePdfReport(detailedReportString, result);
-			assertTrue(baos.toByteArray().length >= 0);
+			assertTrue(baos.toByteArray().length > 0);
 		}
 		
 	}

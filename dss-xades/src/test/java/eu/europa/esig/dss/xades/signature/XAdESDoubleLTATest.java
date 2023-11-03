@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -50,6 +40,15 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESDoubleLTATest extends PKIFactoryAccess {
 	
@@ -102,7 +101,7 @@ public class XAdESDoubleLTATest extends PKIFactoryAccess {
         
         int archiveTimestampCounter = 0;
         for (String id : timestampIds) {
-            assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(id));
+            assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(id));
             TimestampWrapper timestamp = diagnosticData.getTimestampById(id);
             if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
             	assertEquals(ArchiveTimestampType.XAdES_141, timestamp.getArchiveTimestampType());

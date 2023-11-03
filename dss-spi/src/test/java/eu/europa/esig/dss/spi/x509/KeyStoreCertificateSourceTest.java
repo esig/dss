@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class KeyStoreCertificateSourceTest {
 
-	private static final String KEYSTORE_PASSWORD = "dss-password";
+	private static final char[] KEYSTORE_PASSWORD = "dss-password".toCharArray();
 	private static final String KEYSTORE_TYPE = "JKS";
 	private static final String KEYSTORE_FILEPATH = "src/test/resources/keystore.jks";
 
@@ -99,10 +99,10 @@ public class KeyStoreCertificateSourceTest {
 
 	@Test
 	public void loadKeystoreAndTruststore() throws IOException {
-		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/good-user.p12"), "PKCS12", "ks-password");
+		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/good-user.p12"), "PKCS12", "ks-password".toCharArray());
 		assertTrue(kscs.getCertificates().size() > 0);
 
-		kscs = new KeyStoreCertificateSource(new File("src/test/resources/trust-anchors.jks"), "JKS", "ks-password");
+		kscs = new KeyStoreCertificateSource(new File("src/test/resources/trust-anchors.jks"), "JKS", "ks-password".toCharArray());
 		assertTrue(kscs.getCertificates().size() > 0);
 	}
 
@@ -121,7 +121,7 @@ public class KeyStoreCertificateSourceTest {
 	@Test
 	public void wrongPassword() {
 		File ksFile = new File(KEYSTORE_FILEPATH);
-		assertThrows(DSSException.class, () -> new KeyStoreCertificateSource(ksFile, KEYSTORE_TYPE, "wrong password"));
+		assertThrows(DSSException.class, () -> new KeyStoreCertificateSource(ksFile, KEYSTORE_TYPE, "wrong password".toCharArray()));
 	}
 
 	@Test

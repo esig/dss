@@ -108,8 +108,8 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			CommonsDataLoader commonsHttpDataLoader = new CommonsDataLoader();
 			OCSPDataLoader ocspDataLoader = new OCSPDataLoader();
 
-			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12",
-					"dss-password");
+			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(
+					new File("src/main/resources/keystore.p12"), "PKCS12", getPassword());
 			
 			LOTLSource lotlSource = new LOTLSource();
 			lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
@@ -173,6 +173,10 @@ public class SignXmlXadesLTTest extends CookbookTools {
 
 			testFinalDocument(signedDocument);
 		}
+	}
+
+	private char[] getPassword() {
+		return "dss-password".toCharArray();
 	}
 
 }

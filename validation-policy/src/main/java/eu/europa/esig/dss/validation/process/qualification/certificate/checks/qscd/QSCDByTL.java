@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
@@ -36,7 +36,7 @@ import java.util.List;
 class QSCDByTL implements QSCDStrategy {
 
 	/** Trusted Service to extract QSCD status from */
-	private final TrustedServiceWrapper trustedService;
+	private final TrustServiceWrapper trustService;
 
 	/** Qualification status of the certificate */
 	private final CertificateQualifiedStatus qualified;
@@ -47,30 +47,30 @@ class QSCDByTL implements QSCDStrategy {
 	/**
 	 * Default constructor
 	 *
-	 * @param trustedService {@link TrustedServiceWrapper}
+	 * @param trustService {@link TrustServiceWrapper}
 	 * @param qualified {@link CertificateQualifiedStatus}
 	 * @param qscdFromCertificate {@link QSCDStrategy}
 	 */
-	public QSCDByTL(TrustedServiceWrapper trustedService, CertificateQualifiedStatus qualified,
+	public QSCDByTL(TrustServiceWrapper trustService, CertificateQualifiedStatus qualified,
 					QSCDStrategy qscdFromCertificate) {
-		this.trustedService = trustedService;
+		this.trustService = trustService;
 		this.qualified = qualified;
 		this.qscdFromCertificate = qscdFromCertificate;
 	}
 
 	@Override
 	public QSCDStatus getQSCDStatus() {
-		if (trustedService == null || !CertificateQualifiedStatus.isQC(qualified)) {
+		if (trustService == null || !CertificateQualifiedStatus.isQC(qualified)) {
 			return QSCDStatus.NOT_QSCD;
 
 		} else {
 
-			List<String> capturedQualifiers = trustedService.getCapturedQualifiers();
+			List<String> capturedQualifiers = trustService.getCapturedQualifierUris();
 
 			// If overrules
 			if (Utils.isCollectionNotEmpty(capturedQualifiers)) {
 
-				if (EIDASUtils.isPostEIDAS(trustedService.getStartDate())) {
+				if (EIDASUtils.isPostEIDAS(trustService.getStartDate())) {
 
 					if (ServiceQualification.isQcWithQSCD(capturedQualifiers) || ServiceQualification.isQcQSCDManagedOnBehalf(capturedQualifiers)) {
 						return QSCDStatus.QSCD;

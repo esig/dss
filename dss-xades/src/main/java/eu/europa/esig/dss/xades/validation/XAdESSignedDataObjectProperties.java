@@ -22,8 +22,8 @@ package eu.europa.esig.dss.xades.validation;
 
 import org.w3c.dom.Element;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xades.definition.XAdESPath;
 
 /**
  * Builds {@code XAdESSignedDataObjectProperties}
@@ -36,9 +36,9 @@ public class XAdESSignedDataObjectProperties extends XAdESSigProperties {
 	 * Default constructor
 	 *
 	 * @param signatureProperties {@link Element}
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 */
-	XAdESSignedDataObjectProperties(Element signatureProperties, XAdESPaths xadesPaths) {
+	XAdESSignedDataObjectProperties(Element signatureProperties, XAdESPath xadesPaths) {
 		super(signatureProperties, xadesPaths);
 	}
 
@@ -46,10 +46,10 @@ public class XAdESSignedDataObjectProperties extends XAdESSigProperties {
 	 * Builds {@code XAdESSignedDataObjectProperties}
 	 *
 	 * @param signatureElement {@link Element} signature element
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @return {@link XAdESSignedDataObjectProperties}
 	 */
-	public static XAdESSignedDataObjectProperties build(Element signatureElement, XAdESPaths xadesPaths) {
+	public static XAdESSignedDataObjectProperties build(Element signatureElement, XAdESPath xadesPaths) {
 		Element signedSignatureProperties = getSignedSignaturePropertiesDom(signatureElement, xadesPaths);
 		return new XAdESSignedDataObjectProperties(signedSignatureProperties, xadesPaths);
 	}
@@ -58,10 +58,10 @@ public class XAdESSignedDataObjectProperties extends XAdESSigProperties {
 	 * Gets xades:SignedDataObjectProperties element
 	 *
 	 * @param signatureElement {@link Element} signature element
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @return {@link Element}
 	 */
-	protected static Element getSignedSignaturePropertiesDom(Element signatureElement, XAdESPaths xadesPaths) {
+	protected static Element getSignedSignaturePropertiesDom(Element signatureElement, XAdESPath xadesPaths) {
 		return DomUtils.getElement(signatureElement, xadesPaths.getSignedDataObjectPropertiesPath());
 	}
 

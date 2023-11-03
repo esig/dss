@@ -44,7 +44,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToBeCo
     "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1675669786004,
+      "signingDate" : 1699007034396,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

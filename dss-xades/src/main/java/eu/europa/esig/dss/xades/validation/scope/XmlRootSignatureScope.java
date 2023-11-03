@@ -21,7 +21,8 @@
 package eu.europa.esig.dss.xades.validation.scope;
 
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 
 import java.util.List;
 
@@ -35,26 +36,26 @@ public class XmlRootSignatureScope extends XmlElementSignatureScope {
     /**
      * Default constructor
      *
+     * @param document {@link DSSDocument}
      * @param transformations a list of {@link String} transform descriptions
-     * @param digest {@link Digest} of the element
      */
-    protected XmlRootSignatureScope(final List<String> transformations, final Digest digest) {
-    	super("Full XML File", transformations, digest);
+    protected XmlRootSignatureScope(final DSSDocument document, final List<String> transformations) {
+    	super("Full XML File", document, transformations);
     }
 
     /**
      * Constructor with document name
      *
      * @param name {@link String} document name
+     * @param document {@link DSSDocument}
      * @param transformations a list of {@link String} transform descriptions
-     * @param digest {@link Digest} of the element
      */
-    protected XmlRootSignatureScope(final String name, final List<String> transformations, final Digest digest) {
-        super(name, transformations, digest);
+    protected XmlRootSignatureScope(final String name, final DSSDocument document, final List<String> transformations) {
+        super(name, document, transformations);
     }
 
     @Override
-    public String getDescription() {
+    public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
         String description = "The full XML file";
         return addTransformationIfNeeded(description);
     }

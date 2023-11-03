@@ -42,6 +42,8 @@ include::_chapters/eIDAS.adoc[]
 
 include::_chapters/webservices.adoc[]
 
+include::_chapters/pki-factory.adoc[]
+
 include::_chapters/internationalization.adoc[]
 
 include::_chapters/exceptions.adoc[]

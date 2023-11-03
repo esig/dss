@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -45,7 +45,7 @@ public class XAdESDoubleAv2Test extends XAdESDoubleATest {
         NodeList signaturesList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
         assertEquals(1, signaturesList.getLength());
 
-        XAdES132Paths paths = new XAdES132Paths();
+        XAdES132Path paths = new XAdES132Path();
 
         Node signature = signaturesList.item(0);
         NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificateChildren());

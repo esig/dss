@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.certificate.CertificateQualificationCalculator;
@@ -33,38 +33,38 @@ import java.util.EnumMap;
 import java.util.List;
 
 /**
- * This class is used to select a TrustedService that is unambiguous and does not have conflicts with other TrustedServices.
- * In case of a conflict for the given {@code endEntityCert}, none of the TrustedServices is returned.
+ * This class is used to select a TrustService that is unambiguous and does not have conflicts with other TrustServices.
+ * In case of a conflict for the given {@code endEntityCert}, none of the TrustServices is returned.
  *
  */
-public class UniqueServiceFilter implements TrustedServiceFilter {
+public class UniqueServiceFilter implements TrustServiceFilter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UniqueServiceFilter.class);
 
-	/** Certificate to check TrustedServices for */
+	/** Certificate to check TrustServices for */
 	private final CertificateWrapper endEntityCert;
 
 	/**
 	 * Default constructor
 	 *
-	 * @param endEntityCert {@link CertificateWrapper} to check TrustedServices for
+	 * @param endEntityCert {@link CertificateWrapper} to check TrustServices for
 	 */
 	public UniqueServiceFilter(CertificateWrapper endEntityCert) {
 		this.endEntityCert = endEntityCert;
 	}
 
 	@Override
-	public List<TrustedServiceWrapper> filter(List<TrustedServiceWrapper> trustServices) {
-		TrustedServiceWrapper selectedTrustedService = null;
+	public List<TrustServiceWrapper> filter(List<TrustServiceWrapper> trustServices) {
+		TrustServiceWrapper selectedTrustService = null;
 
 		if (Utils.collectionSize(trustServices) == 1) {
-			selectedTrustedService = trustServices.get(0);
+			selectedTrustService = trustServices.get(0);
 		} else if (Utils.isCollectionNotEmpty(trustServices)) {
 			LOG.info("More than one selected trust services");
 
 			EnumMap<CertificateQualification, List<String>> qualificationResults = new EnumMap<>(
 					CertificateQualification.class);
-			for (TrustedServiceWrapper trustService : trustServices) {
+			for (TrustServiceWrapper trustService : trustServices) {
 				CertificateQualificationCalculator calculator = new CertificateQualificationCalculator(endEntityCert, trustService);
 				CertificateQualification certQualification = calculator.getQualification();
 				if (!qualificationResults.containsKey(certQualification)) {
@@ -76,12 +76,12 @@ public class UniqueServiceFilter implements TrustedServiceFilter {
 				LOG.warn("Unable to select the trust service ! Several possible conclusions {}", qualificationResults);
 			} else {
 				LOG.info("All trust services conclude with the same result");
-				selectedTrustedService = trustServices.get(0);
+				selectedTrustService = trustServices.get(0);
 			}
 		}
 
-		if (selectedTrustedService != null) {
-			return Collections.singletonList(selectedTrustedService);
+		if (selectedTrustService != null) {
+			return Collections.singletonList(selectedTrustService);
 		} else {
 			return Collections.emptyList();
 		}

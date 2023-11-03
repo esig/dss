@@ -1,0 +1,14 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1'?>
+<HTML> 
+<HEAD> 
+<TITLE>Un Titulo para el Browser de turno </TITLE> 
+<div style="display: none;">
+<p id="signaturePlace">
+</p>
+</div>
+</HEAD> 
+<BODY> 
+<H1>Á É Í Ó Ú Ñ</H1> 
+<H3>á é í ó ú ñ</H3> 
+</BODY> 
+</HTML> 

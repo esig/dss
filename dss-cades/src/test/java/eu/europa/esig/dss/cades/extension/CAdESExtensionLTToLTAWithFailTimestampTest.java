@@ -32,7 +32,7 @@ public class CAdESExtensionLTToLTAWithFailTimestampTest extends AbstractCAdESTes
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
-		return getFailGoodTsa();
+		return getOnlineFailGoodTsa();
 	}
 
 	@Override

@@ -25,12 +25,9 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -65,7 +62,6 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
         trustedCertSource.addCertificate(getCertificate(OCSP_SKIP_CA));
 
         certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setAIASource(new DefaultAIASource());
         certificateVerifier.addTrustedCertSources(trustedCertSource);
 
         service = new XAdESService(certificateVerifier);
@@ -77,12 +73,12 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
         Exception exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
 
-        certificateVerifier.setOcspSource(new OnlineOCSPSource());
+        certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
 
         exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
 
-        certificateVerifier.setCrlSource(new OnlineCRLSource());
+        certificateVerifier.setCrlSource(pkiCRLSource());
 
         DSSDocument signedDocument = super.sign();
         assertNotNull(signedDocument);

@@ -25,12 +25,15 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
+import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.PivotInfo;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
@@ -41,14 +44,16 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.x500.X500Principal;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -115,6 +120,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /** The prefix to be used for an original document identifier creation */
     private String signedDataPrefix = "DOCUMENT";
+
+    /** The prefix to be used for an evidence record identifier creation */
+    private String evidenceRecordPrefix = "EVIDENCE-RECORD";
 
     /** The prefix to be used for a List of Trusted Lists identifier creation */
     private String lotlPrefix = "LOTL";
@@ -220,6 +228,17 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     }
 
     /**
+     * Sets the prefix to be used for evidence record identifiers
+     *
+     * Default = "EVIDENCE-RECORD"
+     *
+     * @param evidenceRecordPrefix {@link String}
+     */
+    public void setEvidenceRecordPrefix(String evidenceRecordPrefix) {
+        this.evidenceRecordPrefix = evidenceRecordPrefix;
+    }
+
+    /**
      * Sets the prefix to be used for a LOTL identifier
      *
      * Default = "LOTL"
@@ -293,6 +312,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         } else if (object instanceof EncapsulatedRevocationTokenIdentifier) {
             return getIdAsStringForRevTokenIdentifier((EncapsulatedRevocationTokenIdentifier<?>) object);
 
+        } else if (object instanceof EvidenceRecord) {
+            return getIdAsStringForEvidenceRecordIdentifier((EvidenceRecord) object);
+
         }
         LOG.warn("The class '{}' is not supported! Return the original identifier for the object.", object.getClass());
         return object.getDSSId().asXmlId();
@@ -349,8 +371,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     protected String getIdAsStringForSignatureScope(SignatureScope signatureScope) {
         StringBuilder stringBuilder = new StringBuilder(signedDataPrefix);
         stringBuilder.append(STRING_DELIMITER);
-        if (Utils.isStringNotBlank(signatureScope.getName())) {
-            stringBuilder.append(getUserFriendlyString(signatureScope.getName()));
+        String documentName = signatureScope.getName(this);
+        if (Utils.isStringNotBlank(documentName)) {
+            stringBuilder.append(getUserFriendlyString(documentName));
         } else {
             stringBuilder.append(signatureScope.getType().toString());
         }
@@ -365,15 +388,16 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
      */
     protected String getIdAsStringForTL(TLInfo tlInfo) {
         StringBuilder stringBuilder = new StringBuilder(getTlPrefix(tlInfo));
-        if (tlInfo.getParsingCacheInfo() != null &&
-                Utils.isStringNotBlank(tlInfo.getParsingCacheInfo().getTerritory())) {
-            stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(getUserFriendlyString(tlInfo.getParsingCacheInfo().getTerritory()));
-        }
-        if (tlInfo.getParsingCacheInfo() != null && tlInfo.getParsingCacheInfo().getIssueDate() != null) {
-            stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(DSSUtils.formatDateWithCustomFormat(
-                    tlInfo.getParsingCacheInfo().getIssueDate(), dateFormat));
+        ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
+        if (parsingCacheInfo != null) {
+            if (Utils.isStringNotBlank(parsingCacheInfo.getTerritory())) {
+                stringBuilder.append(STRING_DELIMITER);
+                stringBuilder.append(getUserFriendlyString(parsingCacheInfo.getTerritory()));
+            }
+            if (parsingCacheInfo.getIssueDate() != null) {
+                stringBuilder.append(STRING_DELIMITER);
+                stringBuilder.append(DSSUtils.formatDateWithCustomFormat(parsingCacheInfo.getIssueDate(), dateFormat));
+            }
         }
         return generateId(stringBuilder, tlInfo.getDSSIdAsString());
     }
@@ -439,9 +463,37 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         return generateId(stringBuilder, revocationIdentifier.asXmlId());
     }
 
+    /**
+     * Gets a {@code String} identifier for a given {@code EvidenceRecord}
+     *
+     * @param evidenceRecord {@link EvidenceRecord} to get String id for
+     * @return {@link String}
+     */
+    protected String getIdAsStringForEvidenceRecordIdentifier(EvidenceRecord evidenceRecord) {
+        StringBuilder stringBuilder = new StringBuilder(evidenceRecordPrefix);
+        stringBuilder.append(STRING_DELIMITER);
+        List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
+        if (Utils.isCollectionNotEmpty(timestamps)) {
+            stringBuilder.append(getDeterministicIdPart(timestamps.get(0)));
+        } else {
+            stringBuilder.append(Utils.toHex(((MultipleDigestIdentifier) evidenceRecord.getDSSId()).getDigestValue(DigestAlgorithm.SHA256)));
+        }
+        return generateId(stringBuilder, evidenceRecord.getId());
+    }
+
     private String createIdString(String prefix, X500PrincipalHelper subject, Date creationDate, String dssId) {
         StringBuilder stringBuilder = new StringBuilder(prefix);
         stringBuilder.append(STRING_DELIMITER);
+        stringBuilder.append(getDeterministicIdPart(subject, creationDate));
+        return generateId(stringBuilder, dssId);
+    }
+
+    private String getDeterministicIdPart(Token token) {
+        return getDeterministicIdPart(getTokenSubject(token), token.getCreationDate());
+    }
+
+    private String getDeterministicIdPart(X500PrincipalHelper subject, Date creationDate) {
+        StringBuilder stringBuilder = new StringBuilder();
         if (subject != null) {
             stringBuilder.append(getHumanReadableName(subject));
         } else {
@@ -451,7 +503,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
             stringBuilder.append(STRING_DELIMITER);
             stringBuilder.append(DSSUtils.formatDateWithCustomFormat(creationDate, dateFormat));
         }
-        return generateId(stringBuilder, dssId);
+        return stringBuilder.toString();
     }
 
     private String getHumanReadableName(X500PrincipalHelper subject) {

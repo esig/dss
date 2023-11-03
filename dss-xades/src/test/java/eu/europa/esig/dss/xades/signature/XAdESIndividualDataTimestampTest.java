@@ -38,14 +38,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 import eu.europa.esig.validationreport.jaxb.VOReferenceType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
+import eu.europa.esig.validationreport.jaxb.ValidationObjectRepresentationType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
@@ -156,14 +157,20 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 		List<ValidationObjectType> validationObjects = getValidationObjects(signersDocuments);
 		assertEquals(2, validationObjects.size());
 
-		DigestAlgAndValueType digestAlgAndValueFirstDoc = validationObjects.get(0).getValidationObjectRepresentation().getDigestAlgAndValue();
+		ValidationObjectRepresentationType validationObjectRepresentation = validationObjects.get(0).getValidationObjectRepresentation();
+		assertEquals(1, validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().size());
+		assertTrue(validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0) instanceof DigestAlgAndValueType);
+		DigestAlgAndValueType digestAlgAndValueFirstDoc = (DigestAlgAndValueType) validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0);
 		assertNotNull(digestAlgAndValueFirstDoc);
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestValue());
 		assertEquals(Utils.toBase64(digestAlgAndValueFirstDoc.getDigestValue()),
 				fileToBeIndividualTimestamped.getDigest(DigestAlgorithm.forXML(digestAlgAndValueFirstDoc.getDigestMethod().getAlgorithm())));
 
-		DigestAlgAndValueType digestAlgAndValueSecondDoc = validationObjects.get(1).getValidationObjectRepresentation().getDigestAlgAndValue();
+		validationObjectRepresentation = validationObjects.get(1).getValidationObjectRepresentation();
+		assertEquals(1, validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().size());
+		assertTrue(validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0) instanceof DigestAlgAndValueType);
+		DigestAlgAndValueType digestAlgAndValueSecondDoc = (DigestAlgAndValueType) validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0);
 		assertNotNull(digestAlgAndValueSecondDoc);
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestValue());

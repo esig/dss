@@ -186,6 +186,17 @@ public final class Utils {
 	}
 
 	/**
+	 * Concatenates byte arrays to a single byte array. The new array contains all bytes of each array followed by
+	 * all bytes of the next array. When an array is returned, it is always a new array.
+	 *
+	 * @param byteArrays an array of byte arrays to be concatenated
+	 * @return byte array
+	 */
+	public static byte[] concat(byte[]... byteArrays) {
+		return impl.concat(byteArrays);
+	}
+
+	/**
 	 * Returns a substring after the specified character
 	 * Ex. "aaaaa?bbb", "?" = "bbb"
 	 *
@@ -307,7 +318,7 @@ public final class Utils {
 	 *
 	 * @param array byte array to get subArray from
 	 * @param start the start index of the subArray
-	 * @param length the length of the subArray
+	 * @param length the final index of the subArray to be copied
 	 * @return subArray
 	 */
 	public static byte[] subarray(byte[] array, int start, int length) {
@@ -502,6 +513,29 @@ public final class Utils {
 	 */
 	public static boolean compareInputStreams(InputStream stream1, InputStream stream2) throws IOException {
 		return impl.compareInputStreams(stream1, stream2);
+	}
+
+	/**
+	 * Checks if the {@code byteArray} starts with {@code prefixArray}
+	 *
+	 * @param byteArray byte array to verify
+	 * @param prefixArray byte array used on verification
+	 * @return TRUE if the byte array starts with a prefix array, FALSE otherwise
+	 */
+	public static boolean startsWith(byte[] byteArray, byte[] prefixArray) {
+		return impl.startsWith(byteArray, prefixArray);
+	}
+
+	/**
+	 * Checks if the {@code inputStream} starts with {@code prefixArray}.
+	 *
+	 * @param inputStream byte array to verify
+	 * @param prefixArray byte array used on verification
+	 * @return TRUE if the InputStream starts with a prefix array, FALSE otherwise
+	 * @throws IOException if an exception occurs
+	 */
+	public static boolean startsWith(InputStream inputStream, byte[] prefixArray) throws IOException {
+		return impl.startsWith(inputStream, prefixArray);
 	}
 
 	/**

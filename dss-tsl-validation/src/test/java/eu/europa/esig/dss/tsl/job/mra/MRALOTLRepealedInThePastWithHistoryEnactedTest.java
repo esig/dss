@@ -23,7 +23,7 @@ package eu.europa.esig.dss.tsl.job.mra;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.MRAStatus;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -89,13 +89,13 @@ public class MRALOTLRepealedInThePastWithHistoryEnactedTest extends MRALOTLTest 
 
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         CertificateWrapper signingCertificate = signature.getSigningCertificate();
-        List<TrustedServiceWrapper> trustedServices = signingCertificate.getTrustedServices();
-        assertEquals(1, trustedServices.size());
+        List<TrustServiceWrapper> trustServices = signingCertificate.getTrustServices();
+        assertEquals(1, trustServices.size());
 
         int enactedCounter = 0;
         int repealedCounter = 0;
-        for (TrustedServiceWrapper trustedService : trustedServices) {
-            if (trustedService.isEnactedMRA()) {
+        for (TrustServiceWrapper trustService : trustServices) {
+            if (trustService.isEnactedMRA()) {
                 ++enactedCounter;
             } else {
                 ++repealedCounter;

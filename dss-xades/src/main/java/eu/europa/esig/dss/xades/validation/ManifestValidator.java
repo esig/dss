@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -102,7 +102,7 @@ public class ManifestValidator {
 
 	private static Manifest initManifest(final Element manifestElement) {
 		try {
-			return new Manifest(manifestElement, "");
+			return DSSXMLUtils.initManifest(manifestElement);
 		} catch (XMLSecurityException e) {
 			throw new DSSException(
 					String.format("Unable to instantiate a ManifestValidator. Reason : %s", e.getMessage()), e);
@@ -164,7 +164,7 @@ public class ManifestValidator {
 	
 	private List<String> getTransformNames(Element refNode) {
 		List<String> transformNames = new ArrayList<>();
-		NodeList nodeList = DomUtils.getNodeList(refNode, XMLDSigPaths.TRANSFORMS_TRANSFORM_PATH);
+		NodeList nodeList = DomUtils.getNodeList(refNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
 				Element transformElement = (Element) nodeList.item(ii);

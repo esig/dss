@@ -30,7 +30,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -53,15 +52,20 @@ public class DSS1443Test extends PKIFactoryAccess {
 
 	@Test
 	public void testSigWithAttached() {
+
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/DSS-1443.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
-		validator.setCertificateVerifier(getCertificateVerifier());
+
+		CertificateVerifier certificateVerifier = getCertificateVerifier();
+		certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
+
+		validator.setCertificateVerifier(certificateVerifier);
 		Reports reports = validator.validateDocument();
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureLevel.PAdES_BASELINE_T, simpleReport.getSignatureFormat(simpleReport.getFirstSignatureId()));
 
-		PAdESService service = new PAdESService(getCertificateVerifier());
+		PAdESService service = new PAdESService(certificateVerifier);
 		service.setTspSource(getCompositeTsa());
 
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
@@ -69,7 +73,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 		DSSDocument extendDocument = service.extendDocument(dssDocument, parameters);
 
 		validator = SignedDocumentValidator.fromDocument(extendDocument);
-		validator.setCertificateVerifier(getCertificateVerifier());
+		validator.setCertificateVerifier(certificateVerifier);
 		reports = validator.validateDocument();
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -100,7 +104,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
 
-		certificateVerifier.setCrlSource(new OnlineCRLSource());
+		certificateVerifier.setCrlSource(getCompositeCRLSource());
 
 		CertificateSource trustedCertSource = getTrustedCertificateSource();
 		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(

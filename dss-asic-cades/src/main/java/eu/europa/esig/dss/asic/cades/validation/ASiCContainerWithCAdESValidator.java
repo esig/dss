@@ -21,33 +21,35 @@
 package eu.europa.esig.dss.asic.cades.validation;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.cades.validation.scope.ASiCWithCAdESSignatureScopeFinder;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ASiCManifestTypeEnum;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.ManifestEntry;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 import eu.europa.esig.dss.validation.timestamp.TimestampValidator;
 import eu.europa.esig.dss.validation.timestamp.TimestampValidatorComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -72,7 +74,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	 * @param asicContainer {@link DSSDocument} to be validated
 	 */
 	public ASiCContainerWithCAdESValidator(final DSSDocument asicContainer) {
-		super(asicContainer, new ASiCWithCAdESSignatureScopeFinder());
+		super(asicContainer);
 	}
 
 	/**
@@ -81,7 +83,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	 * @param asicContent {@link ASiCContent} to be validated
 	 */
 	public ASiCContainerWithCAdESValidator(final ASiCContent asicContent) {
-		super(asicContent, new ASiCWithCAdESSignatureScopeFinder());
+		super(asicContent);
 	}
 
 	@Override
@@ -126,9 +128,9 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 					cadesValidator.setDetachedContents(Collections.singletonList(signedDocument));
 				}
 				
-				DSSDocument signatureManifest = ASiCWithCAdESManifestParser.getLinkedManifest(getAllManifestDocuments(), signature.getName());
+				DSSDocument signatureManifest = ASiCManifestParser.getLinkedManifest(getAllManifestDocuments(), signature.getName());
 				if (signatureManifest != null) {
-					ManifestFile manifestFile = toValidatedManifestFile(signatureManifest);
+					ManifestFile manifestFile = getValidatedManifestFile(signatureManifest);
 					cadesValidator.setManifestFile(manifestFile);
 				}
 				
@@ -159,16 +161,16 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 	private ASiCWithCAdESTimestampValidator getTimestampValidator(DSSDocument timestampDocument) {
 		DSSDocument timestampedDocument;
-		TimestampType timestampType = TimestampType.CONTENT_TIMESTAMP;
 		ManifestFile manifestFile = null;
+		ArchiveTimestampType archiveTimestampType = null;
 
-		DSSDocument archiveManifest = ASiCWithCAdESManifestParser.getLinkedManifest(
+		DSSDocument archiveManifest = ASiCManifestParser.getLinkedManifest(
 				getAllManifestDocuments(), timestampDocument.getName());
 		if (archiveManifest != null) {
 			timestampedDocument = archiveManifest;
-			manifestFile = toValidatedManifestFile(archiveManifest);
+			manifestFile = getValidatedManifestFile(archiveManifest);
 			if (manifestFile != null) {
-				timestampType = getTimestampType(manifestFile);
+				archiveTimestampType = isArchiveTimeStamp(manifestFile) ? ArchiveTimestampType.CAdES_DETACHED : null;
 			} else {
 				LOG.warn("A linked manifest is not found for a timestamp with name [{}]!",
 						archiveManifest.getName());
@@ -186,9 +188,10 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		}
 
 		final ASiCWithCAdESTimestampValidator timestampValidator = new ASiCWithCAdESTimestampValidator(
-				timestampDocument, timestampType);
+				timestampDocument, TimestampType.CONTAINER_TIMESTAMP);
 		timestampValidator.setTimestampedData(timestampedDocument);
 		timestampValidator.setManifestFile(manifestFile);
+		timestampValidator.setArchiveTimestampType(archiveTimestampType);
 		timestampValidator.setOriginalDocuments(getAllDocuments());
 		timestampValidator.setArchiveDocuments(getArchiveDocuments());
 		timestampValidator.setCertificateVerifier(certificateVerifier);
@@ -234,12 +237,10 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 	
 	private TimestampToken getExternalTimestamp(TimestampValidator tspValidator, List<AdvancedSignature> allSignatures) {
-
 		if (tspValidator instanceof ASiCWithCAdESTimestampValidator) {
 			ASiCWithCAdESTimestampValidator timestampValidator = (ASiCWithCAdESTimestampValidator) tspValidator;
-			TimestampToken timestamp = timestampValidator.getTimestamp();
-
-			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getTimeStampType())) {
+			final TimestampToken timestamp = timestampValidator.getTimestamp();
+			if (timestamp.getTimeStampType().isContainerTimestamp()) {
 				ManifestFile coveredManifest = timestampValidator.getCoveredManifest();
 				if (coveredManifest != null) {
 					for (ManifestEntry entry : coveredManifest.getEntries()) {
@@ -266,30 +267,19 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		return null;
 	}
 	
-	private ManifestFile toValidatedManifestFile(DSSDocument manifest) {
-		List<ManifestFile> manifestFiles = getManifestFiles();
-		if (Utils.isCollectionNotEmpty(manifestFiles)) {
-			for (ManifestFile manifestFile : manifestFiles) {
-				if (Utils.areStringsEqual(manifest.getName(), manifestFile.getFilename())) {
-					return manifestFile;
-				}
-			}
-		}
-		return null;
-	}
-	
-	private TimestampType getTimestampType(ManifestFile manifestFile) {
-		return ASiCUtils.coversSignature(manifestFile) ? TimestampType.ARCHIVE_TIMESTAMP : TimestampType.CONTENT_TIMESTAMP;
+	private boolean isArchiveTimeStamp(ManifestFile manifestFile) {
+		return ASiCUtils.coversSignature(manifestFile);
 	}
 
 	@Override
 	protected List<ManifestFile> getManifestFilesDescriptions() {
-		List<ManifestFile> descriptions = new ArrayList<>();
+		final List<ManifestFile> descriptions = new ArrayList<>();
+
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
 		for (DSSDocument manifestDocument : manifestDocuments) {
-			ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifestDocument);
+			ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifestDocument);
 			if (manifestFile != null) {
-				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getAllDocuments());
+				ASiCManifestValidator asiceWithCAdESManifestValidator = new ASiCManifestValidator(manifestFile, getAllDocuments());
 				asiceWithCAdESManifestValidator.validateEntries();
 				descriptions.add(manifestFile);
 			}
@@ -297,10 +287,21 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 
 		List<DSSDocument> archiveManifestDocuments = getArchiveManifestDocuments();
 		for (DSSDocument manifestDocument : archiveManifestDocuments) {
-			ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifestDocument);
+			ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifestDocument);
 			if (manifestFile != null) {
-				manifestFile.setArchiveManifest(true);
-				ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, getAllDocuments());
+				manifestFile.setManifestType(ASiCManifestTypeEnum.ARCHIVE_MANIFEST);
+				ASiCManifestValidator asiceWithCAdESManifestValidator = new ASiCManifestValidator(manifestFile, getAllDocuments());
+				asiceWithCAdESManifestValidator.validateEntries();
+				descriptions.add(manifestFile);
+			}
+		}
+
+		List<DSSDocument> evidenceRecordManifestDocuments = getEvidenceRecordManifestDocuments();
+		for (DSSDocument manifestDocument : evidenceRecordManifestDocuments) {
+			ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifestDocument);
+			if (manifestFile != null) {
+				manifestFile.setManifestType(ASiCManifestTypeEnum.EVIDENCE_RECORD);
+				ASiCManifestValidator asiceWithCAdESManifestValidator = new ASiCManifestValidator(manifestFile, getAllDocuments());
 				asiceWithCAdESManifestValidator.validateEntries();
 				descriptions.add(manifestFile);
 			}
@@ -313,17 +314,20 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
 		if (advancedSignature.isCounterSignature()) {
 			CAdESSignature cadesSignature = (CAdESSignature) advancedSignature;
-			return Arrays.asList(cadesSignature.getOriginalDocument());
+			return Collections.singletonList(cadesSignature.getOriginalDocument());
 		}
 		List<DSSDocument> retrievedDocs = advancedSignature.getDetachedContents();
 		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 			return getSignedDocumentsASiCS(retrievedDocs);
 		} else {
-			DSSDocument linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(getManifestDocuments(), advancedSignature.getSignatureFilename());
+			DSSDocument linkedManifest = ASiCManifestParser.getLinkedManifest(getManifestDocuments(), advancedSignature.getSignatureFilename());
 			if (linkedManifest == null) {
 				return Collections.emptyList();
 			}
-			ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(linkedManifest);
+			ManifestFile manifestFile = ASiCManifestParser.getManifestFile(linkedManifest);
+			if (manifestFile == null) {
+				return Collections.emptyList();
+			}
 			return getManifestedDocuments(manifestFile);
 		}
 	}

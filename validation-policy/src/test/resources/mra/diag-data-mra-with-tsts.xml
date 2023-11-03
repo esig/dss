@@ -242,8 +242,8 @@
                     </MRACertificateMapping>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
                         <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
@@ -256,8 +256,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
                             <ServiceNames>
                                 <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
                             </ServiceNames>
@@ -269,10 +269,10 @@
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Державне підприємство "ДІЯ"</TSPName>
                         <TSPName lang="uk">ДП "ДІЯ"</TSPName>
@@ -290,8 +290,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43395033</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
                             </ServiceNames>
@@ -314,8 +314,8 @@
                                     </AdditionalServiceInfoUris>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
                             </ServiceNames>
@@ -338,10 +338,10 @@
                                     </AdditionalServiceInfoUris>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-3C70CE2D3321FC5EC7B0E837DC14D14D71FF6E60BEBBDCEDF5EB3D3AD3D39103">
                     <Status>GOOD</Status>
@@ -433,8 +433,8 @@
                     </MRACertificateMapping>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
                         <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
@@ -447,8 +447,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
                             <ServiceNames>
                                 <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
                             </ServiceNames>
@@ -458,10 +458,10 @@
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Державне підприємство "ДІЯ"</TSPName>
                         <TSPName lang="uk">ДП "ДІЯ"</TSPName>
@@ -479,8 +479,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43395033</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
                             </ServiceNames>
@@ -501,8 +501,8 @@
                                     </AdditionalServiceInfoUris>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
                             </ServiceNames>
@@ -523,10 +523,10 @@
                                     </AdditionalServiceInfoUris>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>c7LkDP6nm9XPn2sQDsgmLeSzFJnIC9ffErxobDtvC2s=</DigestValue>
@@ -585,8 +585,8 @@
                     </QcTypes>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
                         <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
@@ -599,8 +599,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
                             <ServiceNames>
                                 <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
                             </ServiceNames>
@@ -610,10 +610,10 @@
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>lE8eAUCPD9CiCCC8uSBElx5fFaxdxphxFJv80LvzAW0=</DigestValue>
@@ -699,8 +699,8 @@
                     </MRACertificateMapping>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
                         <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
@@ -713,8 +713,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
                             <ServiceNames>
                                 <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
                             </ServiceNames>
@@ -724,10 +724,10 @@
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Державне підприємство "ДІЯ"</TSPName>
                         <TSPName lang="uk">ДП "ДІЯ"</TSPName>
@@ -745,8 +745,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43395033</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
                             </ServiceNames>
@@ -767,8 +767,8 @@
                                     </AdditionalServiceInfoUris>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-73B2E40CFEA79BD5CF9F6B100EC8262DE4B31499C80BD7DF12BC686C3B6F0B6B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">"DIIA". Qualified Trust Services Provider (UA-43395033-1110)</ServiceName>
                             </ServiceNames>
@@ -789,10 +789,10 @@
                                     </AdditionalServiceInfoUris>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>mtjdjNsIZWTY5VbcFFJ7abpsLAQUqhBLQYsWNBekglU=</DigestValue>
@@ -863,8 +863,8 @@
                     <ocspUrl>http://czo.gov.ua/services/ocsp/</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Міністерство цифрової трансформації України</TSPName>
                         <TSPName lang="en">Ministry of digital transformation of Ukraine</TSPName>
@@ -877,8 +877,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43220851</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-944F1E01408F0FD0A20820BCB92044971E5F15AC5DC69871149BFCD0BBF3016D">
                             <ServiceNames>
                                 <ServiceName lang="en">Central certification authority (UA-43220851-256)</ServiceName>
                             </ServiceNames>
@@ -890,10 +890,10 @@
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://czo.gov.ua/download/crls/CA-ECDSA-2020-Full.crl</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-                <TrustedServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-7F2F7B9229F99DCCBC977BB96543F15C4EA1A2A52ED23B8FFECBD6924380A42F" LOTL="LOTL-5DECB155F8B88825018D023D15B7D6122A80746B689004C5B64E28724F711463">
                     <TSPNames>
                         <TSPName lang="uk">Державне підприємство "ДІЯ"</TSPName>
                         <TSPName lang="uk">ДП "ДІЯ"</TSPName>
@@ -911,8 +911,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>NTRUA-43395033</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BBE4529D4E1BA2498C3603A667E3E3C94389BFB537C02D71CC104CCAE6BF5151">
                             <ServiceNames>
                                 <ServiceName lang="en">TSA-server "DIIA" (UA-43395033-2220)</ServiceName>
                             </ServiceNames>
@@ -921,10 +921,10 @@
                             <StartDate>2022-01-19T16:02:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>u+RSnU4bokmMNgOmZ+PjyUOJv7U3wC1xzBBMyua/UVE=</DigestValue>

@@ -29,10 +29,12 @@
 
 				<xsl:apply-templates select="dss:Signature"/>
 				<xsl:apply-templates select="dss:Timestamp"/>
+				<xsl:apply-templates select="dss:EvidenceRecord"/>
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
 				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='REVOCATION']"/>
+				<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='EVIDENCE_RECORD']"/>
 				
 				<xsl:apply-templates select="dss:TLAnalysis" />
 			</div>
@@ -75,7 +77,12 @@
 					<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
 					<xsl:attribute name="id">collapseSignatureValidationData<xsl:value-of select="@Id"/></xsl:attribute>
 					<xsl:apply-templates select="dss:ValidationProcessBasicSignature" />
-					<xsl:apply-templates select="dss:Timestamp" />
+					<xsl:apply-templates select="dss:Timestamp">
+						<xsl:with-param name="parentId" select="@Id"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="dss:EvidenceRecord">
+						<xsl:with-param name="parentId" select="@Id"/>
+					</xsl:apply-templates>
 					<xsl:apply-templates select="dss:ValidationProcessLongTermData" />
 					<xsl:apply-templates select="dss:ValidationProcessArchivalData" />
    					
@@ -86,15 +93,26 @@
 	</xsl:template>
 	
 	<xsl:template match="dss:Timestamp">
+		<xsl:param name="parentId" />
+
+		<xsl:variable name="idToken">
+			<xsl:choose>
+				<xsl:when test="$parentId"><xsl:value-of select="$parentId" />-<xsl:value-of select="@Id" /></xsl:when>
+				<xsl:otherwise><xsl:value-of select="@Id" /></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
 		<div>
 			<xsl:attribute name="class">card mb-2 mb-sm-3</xsl:attribute>
+			<xsl:attribute name="id"><xsl:value-of select="$idToken"/></xsl:attribute>
+
 			<div>
 				<xsl:attribute name="class">card-header</xsl:attribute>
-				<xsl:attribute name="data-target">#collapseTimestamp<xsl:value-of select="@Id"/></xsl:attribute>
+				<xsl:attribute name="data-target">#collapseTimestamp<xsl:value-of select="$idToken"/></xsl:attribute>
 				<xsl:attribute name="data-toggle">collapse</xsl:attribute>
 				
 				<xsl:call-template name="badge-conclusion">
-					<xsl:with-param name="Conclusion" select="dss:ValidationProcessTimestamp/dss:Conclusion" />
+					<xsl:with-param name="Conclusion" select="dss:Conclusion" />
 					<xsl:with-param name="AdditionalClass" select="' float-right ml-2'" />
 				</xsl:call-template>
 
@@ -111,9 +129,57 @@
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 				<div>
 					<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
-					<xsl:attribute name="id">collapseTimestamp<xsl:value-of select="@Id"/></xsl:attribute>
-   					<xsl:apply-templates select="dss:ValidationProcessTimestamp"/>
+					<xsl:attribute name="id">collapseTimestamp<xsl:value-of select="$idToken"/></xsl:attribute>
+   					<xsl:apply-templates select="dss:ValidationProcessBasicTimestamp"/>
+					<xsl:apply-templates select="dss:ValidationProcessArchivalDataTimestamp"/>
    					<xsl:apply-templates select="dss:ValidationTimestampQualification"/>
+				</div>
+			</xsl:if>
+		</div>
+	</xsl:template>
+
+	<xsl:template match="dss:EvidenceRecord">
+		<xsl:param name="parentId" />
+
+		<xsl:variable name="idToken">
+			<xsl:choose>
+				<xsl:when test="$parentId"><xsl:value-of select="$parentId" />-<xsl:value-of select="@Id" /></xsl:when>
+				<xsl:otherwise><xsl:value-of select="@Id" /></xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<div>
+			<xsl:attribute name="class">card mb-2 mb-sm-3</xsl:attribute>
+			<xsl:attribute name="id"><xsl:value-of select="$idToken"/></xsl:attribute>
+
+			<div>
+				<xsl:attribute name="class">card-header</xsl:attribute>
+				<xsl:attribute name="data-target">#collapseEvidenceRecord<xsl:value-of select="$idToken"/></xsl:attribute>
+				<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+
+				<xsl:call-template name="badge-conclusion">
+					<xsl:with-param name="Conclusion" select="dss:Conclusion" />
+					<xsl:with-param name="AdditionalClass" select="' float-right ml-2'" />
+				</xsl:call-template>
+
+				<span>Evidence Record <xsl:value-of select="@Id"/></span>
+				<i>
+					<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-dark border-0 p-2 ml-1 mr-1</xsl:attribute>
+					<xsl:attribute name="data-id"><xsl:value-of select="@Id"/></xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">right</xsl:attribute>
+					<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
+					<xsl:attribute name="title">Copy Id to clipboard</xsl:attribute>
+				</i>
+			</div>
+			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
+				<div>
+					<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
+					<xsl:attribute name="id">collapseEvidenceRecord<xsl:value-of select="$idToken"/></xsl:attribute>
+					<xsl:apply-templates select="dss:Timestamp">
+						<xsl:with-param name="parentId" select="$idToken"/>
+					</xsl:apply-templates>
+					<xsl:apply-templates select="dss:ValidationProcessEvidenceRecord"/>
 				</div>
 			</xsl:if>
 		</div>
@@ -197,9 +263,9 @@
 						<xsl:attribute name="class">constraint-tooltip fa fa-clock-o</xsl:attribute>
 						<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 						<xsl:attribute name="data-placement">top</xsl:attribute>
-						<xsl:attribute name="title">Best signature time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template></xsl:attribute>
+						<xsl:attribute name="title">Best-signature-time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template></xsl:attribute>
 	       			</i>
-					<span class="constraint-text d-none">(Best signature time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)</span>
+					<span class="constraint-text d-none">(Best-signature-time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)</span>
        			</xsl:if>
        			
 			</div>
@@ -213,37 +279,53 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template match="dss:ValidationProcessTimestamp">
+	<xsl:template match="dss:ValidationProcessBasicTimestamp|dss:ValidationProcessArchivalDataTimestamp|dss:ValidationProcessEvidenceRecord">
    		<div>
    			<xsl:attribute name="class">card mb-2 mb-sm-3</xsl:attribute>
+
     		<div>
     			<xsl:attribute name="class">card-header</xsl:attribute>
-	    		<xsl:attribute name="data-target">#collapseTimestampValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
+	    		<xsl:attribute name="data-target">#collapse<xsl:value-of select="name(.)"/><xsl:value-of select="../@Id"/></xsl:attribute>
 		       	<xsl:attribute name="data-toggle">collapse</xsl:attribute>
        			
 				<xsl:call-template name="badge-conclusion">
 					<xsl:with-param name="Conclusion" select="dss:Conclusion" />
 					<xsl:with-param name="AdditionalClass" select="' float-right'" />
 				</xsl:call-template>
-    			
-	 			<xsl:value-of select="@Title"/>
-	 			
-	 			<br />
-	 			
-	 			<xsl:value-of select="concat(@Type, ' ')"/>
+
+				<xsl:value-of select="concat(@Title, ' ')"/>
+
+				<xsl:if test="@Type">
+
+					<br />
+					<xsl:value-of select="concat(@Type, ' ')"/>
+
+				</xsl:if>
 		       
 				<i>
 					<xsl:attribute name="class">constraint-tooltip fa fa-clock-o</xsl:attribute>
 					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 					<xsl:attribute name="data-placement">top</xsl:attribute>
-					<xsl:attribute name="title">Production time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@ProductionTime"/></xsl:call-template></xsl:attribute>
+
+					<xsl:if test="@ProductionTime">
+						<xsl:attribute name="title">Production time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@ProductionTime"/></xsl:call-template></xsl:attribute>
+					</xsl:if>
+					<xsl:if test="dss:ProofOfExistence/dss:Time">
+						<xsl:attribute name="title">Lowest POE : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template></xsl:attribute>
+					</xsl:if>
 				</i>
-				<span class="constraint-text d-none">(Production time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@ProductionTime"/></xsl:call-template>)</span>
-	        </div>
+
+				<xsl:if test="@ProductionTime">
+					<span class="constraint-text d-none">(Production time : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@ProductionTime"/></xsl:call-template>)</span>
+				</xsl:if>
+				<xsl:if test="dss:ProofOfExistence/dss:Time">
+					<span class="constraint-text d-none">(Lowest POE : <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="dss:ProofOfExistence/dss:Time"/></xsl:call-template>)</span>
+				</xsl:if>
+			</div>
 			<xsl:if test="count(child::*[name(.)!='Conclusion']) &gt; 0">
 	    		<div>
-	    			<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
-		        	<xsl:attribute name="id">collapseTimestampValidationData<xsl:value-of select="../@Id"/></xsl:attribute>
+					<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
+		        	<xsl:attribute name="id">collapse<xsl:value-of select="name(.)"/><xsl:value-of select="../@Id"/></xsl:attribute>
 		        	<xsl:apply-templates/>
 	    		</div>
 	    	</xsl:if>
@@ -334,6 +416,38 @@
     		</div>
    		</div>
     </xsl:template>
+
+	<xsl:template match="dss:ValidationTimestampQualificationAtTime">
+		<div>
+			<xsl:attribute name="class">card mt-3</xsl:attribute>
+			<div>
+				<xsl:attribute name="class">card-header</xsl:attribute>
+				<xsl:attribute name="data-target">#collapseTstAnalysis-atTime-<xsl:value-of select="generate-id(.)"/></xsl:attribute>
+				<xsl:attribute name="data-toggle">collapse</xsl:attribute>
+
+				<span>
+					<xsl:attribute name="class">badge badge-secondary float-right</xsl:attribute>
+					<xsl:value-of select="@TimestampQualification"/>
+				</span>
+
+				<xsl:value-of select="concat(@Title, ' ')"/>
+
+				<i>
+					<xsl:attribute name="class">constraint-tooltip fa fa-clock-o</xsl:attribute>
+					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+					<xsl:attribute name="data-placement">top</xsl:attribute>
+					<xsl:attribute name="title"><xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@DateTime"/></xsl:call-template></xsl:attribute>
+				</i>
+				<span class="constraint-text d-none">(<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@DateTime"/></xsl:call-template>)</span>
+
+			</div>
+			<div>
+				<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
+				<xsl:attribute name="id">collapseTstAnalysis-atTime-<xsl:value-of select="generate-id(.)"/></xsl:attribute>
+				<xsl:apply-templates/>
+			</div>
+		</div>
+	</xsl:template>
     
     <xsl:template match="dss:ValidationCertificateQualification">
    		<div>
@@ -640,6 +754,9 @@
 								</xsl:when>
 								<xsl:when test="$BlockType='VTS'">
 									<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-VTS</xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='ER'">
+									<xsl:attribute name="href">#EvidenceRecord-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>

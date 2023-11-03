@@ -126,8 +126,8 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
                     <TSPNames>
                         <TSPName lang="en">Third Country QTSP Company</TSPName>
                     </TSPNames>
@@ -137,8 +137,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATZZ-31415926535</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-B784DD3BAC878B759BC964E43C24814986B1F9F5D8DF9F3A781F824BFF8FB97B" enactedMRA="true">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-B784DD3BAC878B759BC964E43C24814986B1F9F5D8DF9F3A781F824BFF8FB97B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">test qualified trust service provider 1 from zz</ServiceName>
                             </ServiceNames>
@@ -156,10 +156,10 @@
                                     <Status>http://zz-trusted-list.go.zz/TrstSvc/TrustedList/Svcstatus/granted</Status>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>NFNlNakcB1hv8ib4doARsEbjajlf1N9dzA5trPpA0tw=</DigestValue>
@@ -216,8 +216,8 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
                     <TSPNames>
                         <TSPName lang="en">Third Country QTSP Company</TSPName>
                     </TSPNames>
@@ -227,8 +227,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATZZ-31415926535</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-B784DD3BAC878B759BC964E43C24814986B1F9F5D8DF9F3A781F824BFF8FB97B" enactedMRA="true">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-B784DD3BAC878B759BC964E43C24814986B1F9F5D8DF9F3A781F824BFF8FB97B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">test qualified trust service provider 1 from zz</ServiceName>
                             </ServiceNames>
@@ -246,10 +246,10 @@
                                     <Status>http://zz-trusted-list.go.zz/TrstSvc/TrustedList/Svcstatus/granted</Status>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>gveJvrPi48b9u/emtIRzWTIRyTn4PI1ZRgMpD9k+E44=</DigestValue>
@@ -331,8 +331,8 @@
                     </MRACertificateMapping>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
                     <TSPNames>
                         <TSPName lang="en">Third Country QTSP Company</TSPName>
                     </TSPNames>
@@ -342,8 +342,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATZZ-31415926535</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-B784DD3BAC878B759BC964E43C24814986B1F9F5D8DF9F3A781F824BFF8FB97B" enactedMRA="true">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-B784DD3BAC878B759BC964E43C24814986B1F9F5D8DF9F3A781F824BFF8FB97B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">test qualified trust service provider 1 from zz</ServiceName>
                             </ServiceNames>
@@ -368,10 +368,10 @@
                                     <AdditionalServiceInfoUris/>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-C3E676075DFC379BEDA72AC74CEB17FFA2815BC5F61C39A06735D38D8AD12CDC">
                     <Status>GOOD</Status>
@@ -434,8 +434,8 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-656234C6B06C3CC5BCBCA0C7292671E633C1EEC4BECE2B10F71A0512A44FD403" LOTL="LOTL-D3E0E6D2C6EA3CE6DBD7ADED98AC671D10B8FD7F41C40F8DDC5A7D486A839E55">
                     <TSPNames>
                         <TSPName lang="en">Third Country QTSP Company</TSPName>
                     </TSPNames>
@@ -445,8 +445,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATZZ-31415926535</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-B784DD3BAC878B759BC964E43C24814986B1F9F5D8DF9F3A781F824BFF8FB97B" enactedMRA="true">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-B784DD3BAC878B759BC964E43C24814986B1F9F5D8DF9F3A781F824BFF8FB97B" enactedMRA="true">
                             <ServiceNames>
                                 <ServiceName lang="en">test qualified trust service provider 1 from zz</ServiceName>
                             </ServiceNames>
@@ -464,10 +464,10 @@
                                     <Status>http://zz-trusted-list.go.zz/TrstSvc/TrustedList/Svcstatus/granted</Status>
                                 </OriginalThirdCountryMapping>
                             </MRATrustServiceMapping>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>t4TdO6yHi3WbyWTkPCSBSYax+fXY3586eB+CS/+PuXs=</DigestValue>

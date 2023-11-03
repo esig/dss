@@ -64,8 +64,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSWithCAdESContainerMergerTest extends
-        AbstractPkiFactoryTestValidation<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> {
+public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation {
 
     @Test
     public void isSupportedTest() {

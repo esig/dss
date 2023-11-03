@@ -102,7 +102,7 @@
                     <certificatePolicy>1.3.6.1.4.1.10015.3.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>3f23ce0f83b1977a5a21501322b10ab33a11a52c</DigestValue>
@@ -152,7 +152,7 @@
                     <QcCompliance present="true"/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-DC0E71B7A59FAE435C3F3A8B10A7CB4BDC42973BD93D139B352D439B0F071ECD">
 	                <Status>UNKNOWN</Status>
@@ -199,7 +199,7 @@
                     <certificatePolicy>1.3.6.1.4.1.10015.3.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
             	<DigestMethod>SHA1</DigestMethod>
             	<DigestValue>a47192526bd1f4cc07dbca8849d7f0818e95f393</DigestValue>

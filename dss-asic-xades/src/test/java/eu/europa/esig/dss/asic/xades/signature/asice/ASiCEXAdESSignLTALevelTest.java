@@ -38,7 +38,6 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -49,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> {
+public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation {
 	
 	@Test
 	public void test() throws IOException {

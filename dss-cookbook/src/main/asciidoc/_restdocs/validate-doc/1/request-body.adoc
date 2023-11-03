@@ -12,6 +12,7 @@
     "name" : "sample.xml"
   } ],
   "policy" : null,
+  "evidenceRecords" : null,
   "tokenExtractionStrategy" : "NONE",
   "signatureId" : null
 }

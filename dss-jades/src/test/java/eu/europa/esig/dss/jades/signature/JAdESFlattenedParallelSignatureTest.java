@@ -60,6 +60,7 @@ public class JAdESFlattenedParallelSignatureTest extends AbstractJAdESTestValida
 		service.setTspSource(getGoodTsa());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected DSSDocument getSignedDocument() {
 		DSSDocument signedDocument = getFlattenedSignature(toBeSigned);

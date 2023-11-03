@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.CertificateType;
@@ -57,8 +57,8 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qu
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.qualified.QualificationStrategyFactory;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategy;
 import eu.europa.esig.dss.validation.process.qualification.certificate.checks.type.TypeStrategyFactory;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServicesFilterFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,14 +82,14 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	/** Certificate to get qualification for */
 	private final CertificateWrapper signingCertificate;
 
-	/** List of matching TrustedServices */
-	private final List<TrustedServiceWrapper> acceptableServices;
+	/** List of matching TrustServices */
+	private final List<TrustServiceWrapper> acceptableServices;
 
 	/** Internal cached variable, representing the qualification result */
 	private CertificateQualification certificateQualification = CertificateQualification.NA;
 
 	/** Internal cached variable, representing the filtered value trust services allowed to issue qualified certificates */
-	private List<TrustedServiceWrapper> filteredServices;
+	private List<TrustServiceWrapper> filteredServices;
 
 	/**
 	 * Constructor to instantiate the validation at the certificate's issuance time
@@ -97,10 +97,10 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param validationTime {@link ValidationTime}
 	 * @param signingCertificate {@link CertificateWrapper} to get qualification for
-	 * @param acceptableServices list of {@link TrustedServiceWrapper}s
+	 * @param acceptableServices list of {@link TrustServiceWrapper}s
 	 */
 	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime,
-										CertificateWrapper signingCertificate, List<TrustedServiceWrapper> acceptableServices) {
+										CertificateWrapper signingCertificate, List<TrustServiceWrapper> acceptableServices) {
 		this(i18nProvider, validationTime, null, signingCertificate, acceptableServices);
 	}
 
@@ -111,10 +111,10 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	 * @param validationTime {@link ValidationTime}
 	 * @param date {@link Date}
 	 * @param signingCertificate {@link CertificateWrapper} to get qualification for
-	 * @param acceptableServices list of {@link TrustedServiceWrapper}s
+	 * @param acceptableServices list of {@link TrustServiceWrapper}s
 	 */
 	public CertQualificationAtTimeBlock(I18nProvider i18nProvider, ValidationTime validationTime, Date date,
-										CertificateWrapper signingCertificate, List<TrustedServiceWrapper> acceptableServices) {
+										CertificateWrapper signingCertificate, List<TrustServiceWrapper> acceptableServices) {
 		super(i18nProvider, new XmlValidationCertificateQualification());
 		result.setId(signingCertificate.getId());
 
@@ -123,15 +123,15 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		this.acceptableServices = new ArrayList<>(acceptableServices);
 
 		switch (validationTime) {
-		case CERTIFICATE_ISSUANCE_TIME:
-			this.date = signingCertificate.getNotBefore();
-			break;
-		case VALIDATION_TIME:
-		case BEST_SIGNATURE_TIME:
-			this.date = date;
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
+			case CERTIFICATE_ISSUANCE_TIME:
+				this.date = signingCertificate.getNotBefore();
+				break;
+			case VALIDATION_TIME:
+			case BEST_SIGNATURE_TIME:
+				this.date = date;
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown qualification time : " + validationTime);
 		}
 	}
 
@@ -150,15 +150,15 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		ChainItem<XmlValidationCertificateQualification> item = null;
 
 		// 1a. Filter by date
-		TrustedServiceFilter filterByDate = TrustedServicesFilterFactory.createFilterByDate(date);
+		TrustServiceFilter filterByDate = TrustServicesFilterFactory.createFilterByDate(date);
 		filteredServices = filterByDate.filter(filteredServices);
 
 		// Execute only for Trusted Lists with defined MRA
 		if (isMRAEnactedForTrustedList(filteredServices)) {
-			TrustedServiceFilter filterByMRAEnacted = TrustedServicesFilterFactory.createMRAEnactedFilter();
+			TrustServiceFilter filterByMRAEnacted = TrustServicesFilterFactory.createMRAEnactedFilter();
 			filteredServices = filterByMRAEnacted.filter(filteredServices);
 
-			filterByMRAEnacted = TrustedServicesFilterFactory.createFilterByMRAEquivalenceStartingDate(date);
+			filterByMRAEnacted = TrustServicesFilterFactory.createFilterByMRAEquivalenceStartingDate(date);
 			filteredServices = filterByMRAEnacted.filter(filteredServices);
 
 			item = firstItem = hasMraEnactedTrustService(filteredServices);
@@ -172,8 +172,8 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		// 1b. Filter by service for CA/QC
 		item = item.setNextItem(hasCaQc(filteredServices));
 
-		TrustedServiceFilter filterByCaQc = TrustedServicesFilterFactory.createFilterByCaQc();
-		List<TrustedServiceWrapper> caqcServices = filterByCaQc.filter(filteredServices);
+		TrustServiceFilter filterByCaQc = TrustServicesFilterFactory.createFilterByCaQc();
+		List<TrustServiceWrapper> caqcServices = filterByCaQc.filter(filteredServices);
 
 		// continue validation with available trust services if CA/QC not found
 		if (Utils.isCollectionNotEmpty(caqcServices)) {
@@ -181,21 +181,21 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		}
 
 		// 2. Filter by cert type (current type or overruled)
-		TrustedServiceFilter filterByCertificateType = TrustedServicesFilterFactory.createFilterByCertificateType(signingCertificate);
+		TrustServiceFilter filterByCertificateType = TrustServicesFilterFactory.createFilterByCertificateType(signingCertificate);
 		filteredServices = filterByCertificateType.filter(filteredServices);
 
 		item = item.setNextItem(hasTrustServiceWithType(filteredServices));
 
 		// 3. Run consistency checks to get warnings
-		for (TrustedServiceWrapper trustedService : filteredServices) {
-			item = item.setNextItem(serviceConsistency(trustedService));
+		for (TrustServiceWrapper trustService : filteredServices) {
+			item = item.setNextItem(serviceConsistency(trustService));
 		}
 
 		if (filteredServices.size() > 1) {
 			// 4. Simulate with all CA/QC (granted + withdrawn) to detect conflict
 			Set<CertificateQualification> results = new HashSet<>();
-			for (TrustedServiceWrapper trustedService : filteredServices) {
-				CertificateQualificationCalculator calculator = new CertificateQualificationCalculator(signingCertificate, trustedService);
+			for (TrustServiceWrapper trustService : filteredServices) {
+				CertificateQualificationCalculator calculator = new CertificateQualificationCalculator(signingCertificate, trustService);
 				results.add(calculator.getQualification());
 			}
 			item = item.setNextItem(isNoConflictDetected(results));
@@ -208,14 +208,14 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		}
 
 		// 5a. Filter services with consistent status
-		TrustedServiceFilter filterConsistentByStatus = TrustedServicesFilterFactory.createConsistentServiceByStatusFilter();
+		TrustServiceFilter filterConsistentByStatus = TrustServicesFilterFactory.createConsistentServiceByStatusFilter();
 		filteredServices = filterConsistentByStatus.filter(filteredServices);
 
 		// 5b. Filter by Granted
 		item = item.setNextItem(hasGrantedStatus(filteredServices));
 
-		TrustedServiceFilter filterByGranted = TrustedServicesFilterFactory.createFilterByGranted();
-		List<TrustedServiceWrapper> grantedServices = filterByGranted.filter(filteredServices);
+		TrustServiceFilter filterByGranted = TrustServicesFilterFactory.createFilterByGranted();
+		List<TrustServiceWrapper> grantedServices = filterByGranted.filter(filteredServices);
 
 		// continue validation with available trust services if granted not found
 		if (Utils.isCollectionNotEmpty(grantedServices)) {
@@ -224,13 +224,13 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 
 		// 6. Filter one trust service
 		if (Utils.collectionSize(filteredServices) > 1) {
-			TrustedServiceFilter filterUnique = TrustedServicesFilterFactory.createUniqueServiceFilter(signingCertificate);
+			TrustServiceFilter filterUnique = TrustServicesFilterFactory.createUniqueServiceFilter(signingCertificate);
 			filteredServices = filterUnique.filter(filteredServices);
 
 			item = item.setNextItem(isAbleToSelectOneTrustService(filteredServices));
 		}
 
-		TrustedServiceWrapper selectedTrustService = !filteredServices.isEmpty() ? filteredServices.get(0) : null;
+		TrustServiceWrapper selectedTrustService = !filteredServices.isEmpty() ? filteredServices.get(0) : null;
 
 		// 7. Trusted certificate matches the trust service properties ?
 		if (selectedTrustService != null) {
@@ -246,8 +246,8 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		item = item.setNextItem(isValidCAQC(selectedTrustService));
 
 		// 8. QC?
-		TrustedServiceFilter filterConsistentByQC = TrustedServicesFilterFactory.createConsistentServiceByQCFilter();
-		List<TrustedServiceWrapper> trustServicesByQC = filterConsistentByQC.filter(filteredServices);
+		TrustServiceFilter filterConsistentByQC = TrustServicesFilterFactory.createConsistentServiceByQCFilter();
+		List<TrustServiceWrapper> trustServicesByQC = filterConsistentByQC.filter(filteredServices);
 
 		item = item.setNextItem(hasConsistentByQCTrustService(trustServicesByQC));
 
@@ -258,8 +258,8 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		item = item.setNextItem(isQualified(qualifiedStatus));
 
 		// 9. Type?
-		TrustedServiceFilter filterConsistentByType = TrustedServicesFilterFactory.createConsistentServiceByCertificateTypeFilter();
-		List<TrustedServiceWrapper> trustServicesByType = filterConsistentByType.filter(filteredServices);
+		TrustServiceFilter filterConsistentByType = TrustServicesFilterFactory.createConsistentServiceByCertificateTypeFilter();
+		List<TrustServiceWrapper> trustServicesByType = filterConsistentByType.filter(filteredServices);
 
 		item = item.setNextItem(hasCertificateTypeCoverage(trustServicesByType));
 
@@ -270,8 +270,8 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		item = item.setNextItem(certificateType(type));
 
 		// 11. QSCD ?
-		TrustedServiceFilter filterConsistentByQSCD = TrustedServicesFilterFactory.createConsistentServiceByQSCDFilter();
-		List<TrustedServiceWrapper> trustServicesByQSCD = filterConsistentByQSCD.filter(filteredServices);
+		TrustServiceFilter filterConsistentByQSCD = TrustServicesFilterFactory.createConsistentServiceByQSCDFilter();
+		List<TrustServiceWrapper> trustServicesByQSCD = filterConsistentByQSCD.filter(filteredServices);
 
 		item = item.setNextItem(hasConsistentByQSCDTrustService(trustServicesByQSCD));
 
@@ -288,9 +288,9 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	/**
 	 * Returns a list of filtered valid trust services allowed to issue qualified certificates
 	 *
-	 * @return list of {@link TrustedServiceWrapper}s
+	 * @return list of {@link TrustServiceWrapper}s
 	 */
-	public List<TrustedServiceWrapper> getFilteredServices() {
+	public List<TrustServiceWrapper> getFilteredServices() {
 		if (filteredServices == null) {
 			throw new IllegalStateException("execute() method shall be called first!");
 		}
@@ -304,7 +304,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		result.setDateTime(date);
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> hasMraEnactedTrustService(List<TrustedServiceWrapper> trustServices) {
+	private ChainItem<XmlValidationCertificateQualification> hasMraEnactedTrustService(List<TrustServiceWrapper> trustServices) {
 		return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, trustServices, getFailLevelConstraint());
 	}
 
@@ -312,15 +312,15 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		return new MRACertificateEquivalenceApplied<>(i18nProvider, result, signingCertificate, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> hasCaQc(List<TrustedServiceWrapper> trustServices) {
+	private ChainItem<XmlValidationCertificateQualification> hasCaQc(List<TrustServiceWrapper> trustServices) {
 		return new CaQcCheck(i18nProvider, result, trustServices, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> hasTrustServiceAtTime(List<TrustedServiceWrapper> trustServices) {
+	private ChainItem<XmlValidationCertificateQualification> hasTrustServiceAtTime(List<TrustServiceWrapper> trustServices) {
 		return new TrustServiceAtTimeCheck(i18nProvider, result, trustServices, validationTime, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> hasTrustServiceWithType(List<TrustedServiceWrapper> trustServices) {
+	private ChainItem<XmlValidationCertificateQualification> hasTrustServiceWithType(List<TrustServiceWrapper> trustServices) {
 		return new TrustServicesByCertificateTypeCheck(i18nProvider, result, trustServices, getFailLevelConstraint());
 	}
 
@@ -328,38 +328,38 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		return new IsNoQualificationConflictDetectedCheck(i18nProvider, result, certificateQualificationsAtTime, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> hasGrantedStatus(List<TrustedServiceWrapper> trustServices) {
+	private ChainItem<XmlValidationCertificateQualification> hasGrantedStatus(List<TrustServiceWrapper> trustServices) {
 		return new GrantedStatusCheck<>(i18nProvider, result, trustServices, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasCertificateTypeCoverage(
-			List<TrustedServiceWrapper> trustServices) {
+			List<TrustServiceWrapper> trustServices) {
 		return new CertificateTypeCoverageCheck(i18nProvider, result, trustServices, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasConsistentByQCTrustService(
-			List<TrustedServiceWrapper> trustServices) {
+			List<TrustServiceWrapper> trustServices) {
 		return new CertificateIssuedByConsistentByQCTrustServiceCheck(i18nProvider, result, trustServices, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasConsistentByQSCDTrustService(
-			List<TrustedServiceWrapper> trustServices) {
+			List<TrustServiceWrapper> trustServices) {
 		return new CertificateIssuedByConsistentByQSCDTrustServiceCheck(i18nProvider, result, trustServices, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> isAbleToSelectOneTrustService(List<TrustedServiceWrapper> trustServices) {
+	private ChainItem<XmlValidationCertificateQualification> isAbleToSelectOneTrustService(List<TrustServiceWrapper> trustServices) {
 		return new IsAbleToSelectOneTrustService(i18nProvider, result, trustServices, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> serviceConsistency(TrustedServiceWrapper selectedTrustService) {
+	private ChainItem<XmlValidationCertificateQualification> serviceConsistency(TrustServiceWrapper selectedTrustService) {
 		return new ServiceConsistencyCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustedServiceWrapper selectedTrustService) {
+	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustServiceWrapper selectedTrustService) {
 		return new TrustedCertificateMatchTrustServiceCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationCertificateQualification> isValidCAQC(TrustedServiceWrapper selectedTrustService) {
+	private ChainItem<XmlValidationCertificateQualification> isValidCAQC(TrustServiceWrapper selectedTrustService) {
 		return new ValidCAQCCheck(i18nProvider, result, selectedTrustService, getFailLevelConstraint());
 	}
 
@@ -375,9 +375,9 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 		return new QSCDCheck(i18nProvider, result, qscdStatus, validationTime, getWarnLevelConstraint());
 	}
 
-	private boolean isMRAEnactedForTrustedList(List<TrustedServiceWrapper> trustedServices) {
-		for (TrustedServiceWrapper trustedService : trustedServices) {
-			if (Utils.isTrue(trustedService.getTrustedList().isMra())) {
+	private boolean isMRAEnactedForTrustedList(List<TrustServiceWrapper> trustServices) {
+		for (TrustServiceWrapper trustService : trustServices) {
+			if (Utils.isTrue(trustService.getTrustedList().isMra())) {
 				return true;
 			}
 		}

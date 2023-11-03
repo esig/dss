@@ -20,32 +20,36 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.AbstractPaths;
-import eu.europa.esig.dss.definition.DSSElement;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Paths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xades.definition.XAdESPath;
+import eu.europa.esig.xades.definition.xades111.XAdES111Path;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.apache.xml.security.c14n.CanonicalizationException;
-import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Manifest;
@@ -64,16 +68,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -93,53 +91,35 @@ public final class DSSXMLUtils {
 	/** List of supported transforms */
 	private static final Set<String> transforms;
 
-	/** List of supported canonicalization methods */
-	private static final Set<String> canonicalizers;
-
 	/** List of transforms resulting to a NodeSet output */
 	private static final Set<String> transformsWithNodeSetOutput;
+
+	/** Value used to pretty print xades signature */
+	public static final int TRANSFORMER_INDENT_NUMBER = 4;
 
 	/** The Enveloped-signature transformation */
 	private static final String TRANSFORMATION_EXCLUDE_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
 
 	/** The XPath transform name */
 	private static final String TRANSFORMATION_XPATH_NODE_NAME = "XPath";
-	
-	/**
-	 * This is the default canonicalization method used for production of signatures
-	 * within DSS framework.
-	 * 
-	 * Another complication arises because of the way that the default
-	 * canonicalization algorithm handles namespace declarations; frequently a
-	 * signed XML document needs to be embedded in another document; in this case
-	 * the original canonicalization algorithm will not yield the same result as if
-	 * the document is treated alone. For this reason, the so-called Exclusive
-	 * Canonicalization, which serializes XML namespace declarations independently
-	 * of the surrounding XML, was created.
-	 */
-	public static final String DEFAULT_DSS_C14N_METHOD = CanonicalizationMethod.EXCLUSIVE;
-	
-	/**
-	 * This is the default canonicalization method for XMLDSIG used for signatures
-	 * and timestamps (see XMLDSIG 4.4.3.2) when one is not defined.
-	 */
-	public static final String DEFAULT_XMLDSIG_C14N_METHOD = CanonicalizationMethod.INCLUSIVE;
 
 	/** The SPDocDigestAsInSpecification transform algorithm URI for a custom SignaturePolicy processing */
 	public static final String SP_DOC_DIGEST_AS_IN_SPECIFICATION_ALGORITHM_URI =
 			"http://uri.etsi.org/01903/v1.3.2/SignaturePolicy/SPDocDigestAsInSpecification";
+
+	/** SAML namespace definition */
+	public static final DSSNamespace SAML_NAMESPACE = new DSSNamespace("urn:oasis:names:tc:SAML:2.0:assertion", "saml2");
 
 	static {
 		SantuarioInitializer.init();
 
 		transforms = new HashSet<>();
 		registerDefaultTransforms();
-
-		canonicalizers = new HashSet<>();
-		registerDefaultCanonicalizers();
 		
 		transformsWithNodeSetOutput = new HashSet<>();
 		registerTransformsWithNodeSetOutput();
+
+		registerXAdESNamespaces();
 	}
 
 	/**
@@ -155,25 +135,27 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method registers the default canonicalizers.
-	 */
-	private static void registerDefaultCanonicalizers() {
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_PHYSICAL);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_WITH_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N_EXCL_WITH_COMMENTS);
-		registerCanonicalizer(Canonicalizer.ALGO_ID_C14N11_WITH_COMMENTS);
-	}
-
-	/**
 	 * This method registers transforms resulting to a node-set according to XMLDSIG
 	 */
 	private static void registerTransformsWithNodeSetOutput() {
 		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
 		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_XPATH);
 		registerTransformWithNodeSetOutput(Transforms.TRANSFORM_XPATH2FILTER);
+	}
+
+	/**
+	 * Registers the XAdES namespaces
+	 */
+	public static void registerXAdESNamespaces() {
+		DomUtils.registerNamespace(XMLDSigNamespace.NS);
+
+		DomUtils.registerNamespace(XAdESNamespace.XADES_111);
+		DomUtils.registerNamespace(XAdESNamespace.XADES_122);
+		DomUtils.registerNamespace(XAdESNamespace.XADES_132);
+		DomUtils.registerNamespace(XAdESNamespace.XADES_141);
+		// DO NOT register "xades"
+
+		DomUtils.registerNamespace(SAML_NAMESPACE);
 	}
 
 	/**
@@ -200,9 +182,11 @@ public final class DSSXMLUtils {
 	 * @param c14nAlgorithmURI
 	 *            the URI of canonicalization algorithm
 	 * @return true if this set did not already contain the specified element
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.CanonicalizationUtils.registerCanonicalizer(c14nAlgorithmURI)}
 	 */
+	@Deprecated
 	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
-		return canonicalizers.add(c14nAlgorithmURI);
+		return XMLCanonicalizer.registerCanonicalizer(c14nAlgorithmURI);
 	}
 
 	/**
@@ -302,19 +286,19 @@ public final class DSSXMLUtils {
 	 */
 	public static Document getDocWithIndentedSignature(final Document documentDom, String signatureId,
 													   List<String> noIndentObjectIds) {
-		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
+		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPath.ALL_SIGNATURES_PATH);
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Element signature = (Element) signatures.item(i);
 			String signatureAttrIdValue = getIDIdentifier(signature);
 			if (Utils.isStringNotEmpty(signatureAttrIdValue) && signatureAttrIdValue.contains(signatureId)) {
 				Node unsignedSignatureProperties = DomUtils.getNode(signature,
-						AbstractPaths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
+						AbstractPath.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 				Node indentedSignature = getIndentedSignature(signature, noIndentObjectIds);
 				Node importedSignature = documentDom.importNode(indentedSignature, true);
 				signature.getParentNode().replaceChild(importedSignature, signature);
 				if (unsignedSignatureProperties != null) {
 					Node newUnsignedSignatureProperties = DomUtils.getNode(signature,
-							AbstractPaths.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
+							AbstractPath.allFromCurrentPosition(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 					newUnsignedSignatureProperties.getParentNode().replaceChild(unsignedSignatureProperties, newUnsignedSignatureProperties);
 				}
 			}
@@ -348,13 +332,13 @@ public final class DSSXMLUtils {
 	 * @return an indented {@link Node} xmlNode
 	 */
 	public static Node getIndentedNode(final Node documentDom, final Node xmlNode) {
-		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
+		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPath.ALL_SIGNATURES_PATH);
 
 		String pathAllFromCurrentPosition;
 		// TODO handle by namespace
 		DSSElement element = XAdES132Element.fromTagName(xmlNode.getLocalName());
 		if (element != null) {
-			pathAllFromCurrentPosition = AbstractPaths.allFromCurrentPosition(element);
+			pathAllFromCurrentPosition = AbstractPath.allFromCurrentPosition(element);
 		} else {
 			pathAllFromCurrentPosition = ".//" + xmlNode.getNodeName();
 		}
@@ -417,7 +401,7 @@ public final class DSSXMLUtils {
 					}
 				}
 				Node lastChild = parentNode.getLastChild();
-				targetIndent = targetIndent.substring(0, targetIndent.length() - DomUtils.TRANSFORMER_INDENT_NUMBER);
+				targetIndent = targetIndent.substring(0, targetIndent.length() - TRANSFORMER_INDENT_NUMBER);
 				switch (lastChild.getNodeType()) {
 				case Node.ELEMENT_NODE:
 					DomUtils.setTextNode(parentNode.getOwnerDocument(), (Element) parentNode, targetIndent);
@@ -443,38 +427,18 @@ public final class DSSXMLUtils {
 		return null;
 	}
 
+	// TODO : remove method later and re-use DomUtils.serializeNode(node)
 	/**
 	 * This method performs the serialization of the given node
 	 *
 	 * @param xmlNode
 	 *            The node to be serialized.
 	 * @return the serialized bytes
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.DomUtils.serializeNode(xmlNode)}
 	 */
+	@Deprecated
 	public static byte[] serializeNode(final Node xmlNode) {
-		try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-			Transformer transformer = DomUtils.getSecureTransformer();
-			Document document;
-			if (Node.DOCUMENT_NODE == xmlNode.getNodeType()) {
-				document = (Document) xmlNode;
-			} else {
-				document = xmlNode.getOwnerDocument();
-			}
-
-			if (document != null) {
-				String xmlEncoding = document.getXmlEncoding();
-				if (Utils.isStringNotBlank(xmlEncoding)) {
-					transformer.setOutputProperty(OutputKeys.ENCODING, xmlEncoding);
-				}
-			}
-
-			StreamResult result = new StreamResult(bos);
-			Source source = new DOMSource(xmlNode);
-			transformer.transform(source, result);
-			
-			return bos.toByteArray();
-		} catch (Exception e) {
-			throw new DSSException("An error occurred during a node serialization.", e);
-		}
+		return DomUtils.serializeNode(xmlNode);
 	}
 
 	/**
@@ -483,9 +447,11 @@ public final class DSSXMLUtils {
 	 * @param canonicalizationMethod
 	 *            the canonicalization method to be checked
 	 * @return true if it is possible to canonicalize false otherwise
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.CanonicalizationUtils.canCanonicalize(canonicalizationMethod)}
 	 */
+	@Deprecated
 	public static boolean canCanonicalize(final String canonicalizationMethod) {
-		return canonicalizers.contains(canonicalizationMethod);
+		return XMLCanonicalizer.canCanonicalize(canonicalizationMethod);
 	}
 
 	/**
@@ -498,15 +464,11 @@ public final class DSSXMLUtils {
 	 * @return array of canonicalized bytes
 	 * @throws DSSException
 	 *             if any error is encountered
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(toCanonicalizeBytes}
 	 */
+	@Deprecated
 	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
-			c14n.canonicalize(toCanonicalizeBytes, baos, true);
-			return baos.toByteArray();
-		} catch (Exception e) {
-			throw new DSSException("Cannot canonicalize the binaries", e);
-		}
+		return XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(toCanonicalizeBytes);
 	}
 
 	/**
@@ -518,15 +480,11 @@ public final class DSSXMLUtils {
 	 * @param node
 	 *            {@code Node} to canonicalize
 	 * @return array of canonicalized bytes
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node}}
 	 */
+	@Deprecated
 	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			final Canonicalizer c14n = Canonicalizer.getInstance(getCanonicalizationMethod(canonicalizationMethod));
-			c14n.canonicalizeSubtree(node, baos);
-			return baos.toByteArray();
-		} catch (Exception e) {
-			throw new DSSException("Cannot canonicalize the subtree", e);
-		}
+		return XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node);
 	}
 	
 	/**
@@ -534,13 +492,15 @@ public final class DSSXMLUtils {
 	 * 
 	 * @param canonicalizationMethod {@link String} canonicalization method (can be null)
 	 * @return canonicalizationMethod to be used
+	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.CanonicalizationUtils}
 	 */
+	@Deprecated
 	public static String getCanonicalizationMethod(String canonicalizationMethod) {
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
 			// The INCLUSIVE canonicalization is used by default (See DSS-2208)
 			LOG.warn("Canonicalization method is not defined. "
-					+ "An inclusive canonicalization '{}' will be used (see XMLDSIG 4.4.3.2).", DEFAULT_XMLDSIG_C14N_METHOD);
-			return DEFAULT_XMLDSIG_C14N_METHOD;
+					+ "An inclusive canonicalization '{}' will be used (see XMLDSIG 4.4.3.2).", XMLCanonicalizer.DEFAULT_XMLDSIG_C14N_METHOD);
+			return XMLCanonicalizer.DEFAULT_XMLDSIG_C14N_METHOD;
 		}
 		return canonicalizationMethod;
 	}
@@ -660,31 +620,11 @@ public final class DSSXMLUtils {
 	 * Returns bytes of the given {@code node}
 	 * @param node {@link Node} to get bytes for
 	 * @return byte array
+	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.DomUtils.getNodeBytes(node)} instead
 	 */
+	@Deprecated
 	public static byte[] getNodeBytes(Node node) {
-		switch (node.getNodeType()) {
-		case Node.ELEMENT_NODE:
-		case Node.DOCUMENT_NODE:
-			byte[] bytes = serializeNode(node);
-			String str = new String(bytes);
-			// TODO: better
-			// remove <?xml version="1.0" encoding="UTF-8"?>
-			if (str.startsWith("<?")) {
-				str = str.substring(str.indexOf("?>") + 2);
-			}
-			return str.getBytes();
-
-		case Node.TEXT_NODE:
-			String textContent = node.getTextContent();
-			if (Utils.isBase64Encoded(textContent)) {
-				return Utils.fromBase64(node.getTextContent());
-			} else {
-				return textContent.getBytes();
-			}
-
-		default:
-			return null;
-		}
+		return DomUtils.getNodeBytes(node);
 	}
 	
 	/**
@@ -769,12 +709,12 @@ public final class DSSXMLUtils {
 
 		String digestAlgorithmUri;
 		String digestValueBase64;
-		if (XAdESNamespaces.XADES_111.isSameUri(element.getNamespaceURI())) {
-			digestAlgorithmUri = DomUtils.getValue(element, XAdES111Paths.DIGEST_METHOD_ALGORITHM_PATH);
-			digestValueBase64 = DomUtils.getValue(element, XAdES111Paths.DIGEST_VALUE_PATH);
+		if (XAdESNamespace.XADES_111.isSameUri(element.getNamespaceURI())) {
+			digestAlgorithmUri = DomUtils.getValue(element, XAdES111Path.DIGEST_METHOD_ALGORITHM_PATH);
+			digestValueBase64 = DomUtils.getValue(element, XAdES111Path.DIGEST_VALUE_PATH);
 		} else {
-			digestAlgorithmUri = DomUtils.getValue(element, XMLDSigPaths.DIGEST_METHOD_ALGORITHM_PATH);
-			digestValueBase64 = DomUtils.getValue(element, XMLDSigPaths.DIGEST_VALUE_PATH);
+			digestAlgorithmUri = DomUtils.getValue(element, XMLDSigPath.DIGEST_METHOD_ALGORITHM_PATH);
+			digestValueBase64 = DomUtils.getValue(element, XMLDSigPath.DIGEST_VALUE_PATH);
 		}
 
 		final DigestAlgorithm digestAlgorithm = getDigestAlgorithm(digestAlgorithmUri);
@@ -820,10 +760,10 @@ public final class DSSXMLUtils {
 	 * Determines if the given {@code reference} refers to SignedProperties element
 	 *
 	 * @param reference {@link Reference} to check
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @return TRUE if the reference refers to the SignedProperties, FALSE otherwise
 	 */
-	public static boolean isSignedProperties(final Reference reference, final XAdESPaths xadesPaths) {
+	public static boolean isSignedProperties(final Reference reference, final XAdESPath xadesPaths) {
 		return xadesPaths.getSignedPropertiesUri().equals(reference.getType());
 	}
 
@@ -831,10 +771,10 @@ public final class DSSXMLUtils {
 	 * Determines if the given {@code reference} refers to CounterSignature element
 	 *
 	 * @param reference {@link Reference} to check
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
 	 */
-	public static boolean isCounterSignature(final Reference reference, final XAdESPaths xadesPaths) {
+	public static boolean isCounterSignature(final Reference reference, final XAdESPath xadesPaths) {
 		return xadesPaths.getCounterSignatureUri().equals(reference.getType());
 	}
 	
@@ -850,7 +790,7 @@ public final class DSSXMLUtils {
 	public static boolean isKeyInfoReference(final Reference reference, final Element signature) {
 		String uri = reference.getURI();
 		uri = DomUtils.getId(uri);
-		Element keyInfoElement = DomUtils.getElement(signature, XMLDSigPaths.KEY_INFO_PATH + DomUtils.getXPathByIdAttribute(uri));
+		Element keyInfoElement = DomUtils.getElement(signature, XMLDSigPath.KEY_INFO_PATH + DomUtils.getXPathByIdAttribute(uri));
 		return keyInfoElement != null;
 	}
 	
@@ -866,8 +806,8 @@ public final class DSSXMLUtils {
 	public static boolean isSignaturePropertiesReference(final Reference reference, final Element signature) {
 		String uri = reference.getURI();
 		uri = DomUtils.getId(uri);
-		Element signaturePropertiesElement = DomUtils.getElement(signature, XMLDSigPaths.SIGNATURE_PROPERTIES_PATH + DomUtils.getXPathByIdAttribute(uri));
-		Element signaturePropertyElement = DomUtils.getElement(signature, XMLDSigPaths.SIGNATURE_PROPERTY_PATH + DomUtils.getXPathByIdAttribute(uri));
+		Element signaturePropertiesElement = DomUtils.getElement(signature, XMLDSigPath.SIGNATURE_PROPERTIES_PATH + DomUtils.getXPathByIdAttribute(uri));
+		Element signaturePropertyElement = DomUtils.getElement(signature, XMLDSigPath.SIGNATURE_PROPERTY_PATH + DomUtils.getXPathByIdAttribute(uri));
 		return signaturePropertiesElement != null || signaturePropertyElement != null;
 	}
 	
@@ -877,7 +817,7 @@ public final class DSSXMLUtils {
 	 * @return TRUE if the provided {@code referenceType} is an Object type, FALSE otherwise
 	 */
 	public static boolean isObjectReferenceType(String referenceType) {
-		return XMLDSigPaths.OBJECT_TYPE.equals(referenceType);
+		return XMLDSigPath.OBJECT_TYPE.equals(referenceType);
 	}
 	
 	/**
@@ -886,7 +826,7 @@ public final class DSSXMLUtils {
 	 * @return TRUE if the provided {@code referenceType} is a Manifest type, FALSE otherwise
 	 */
 	public static boolean isManifestReferenceType(String referenceType) {
-		return XMLDSigPaths.MANIFEST_TYPE.equals(referenceType);
+		return XMLDSigPath.MANIFEST_TYPE.equals(referenceType);
 	}
 	
 	/**
@@ -895,7 +835,7 @@ public final class DSSXMLUtils {
 	 * @return TRUE if the provided {@code referenceType} is a Countersignature type, FALSE otherwise
 	 */
 	public static boolean isCounterSignatureReferenceType(String referenceType) {
-		return XMLDSigPaths.COUNTER_SIGNATURE_TYPE.equals(referenceType);
+		return XMLDSigPath.COUNTER_SIGNATURE_TYPE.equals(referenceType);
 	}
 	
 	/**
@@ -910,6 +850,65 @@ public final class DSSXMLUtils {
 	public static boolean isSameDocumentReference(String referenceUri) {
 		return Utils.EMPTY_STRING.equals(referenceUri) || DomUtils.startsFromHash(referenceUri);
 	}
+
+	/**
+	 * Gets ds:Object by its Id from the ds:Signature element
+	 *
+	 * @param signatureElement {@link Element} the signature element to extract the signed ds:Object from
+	 * @param id {@link String} object Id
+	 * @return {@link Element} Object element
+	 */
+	public static Element getObjectById(Element signatureElement, String id) {
+		if (Utils.isStringNotBlank(id)) {
+			try {
+				String objectById = XMLDSigPath.OBJECT_PATH + DomUtils.getXPathByIdAttribute(id);
+				return DomUtils.getElement(signatureElement, objectById);
+			} catch (Exception e) {
+				String errorMessage = "An error occurred on attempt to extract Object element with Id '{}' : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, id, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, id, e.getMessage());
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets ds:Manifest by its Id from the ds:Signature element
+	 *
+	 * @param signatureElement {@link Element} the signature element to extract the signed ds:Manifest from
+	 * @param id {@link String} manifest Id
+	 * @return {@link Element} Manifest element
+	 */
+	public static Element getManifestById(Element signatureElement, String id) {
+		if (Utils.isStringNotBlank(id)) {
+			try {
+				String manifestById = XMLDSigPath.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(id);
+				return DomUtils.getElement(signatureElement, manifestById);
+			} catch (Exception e) {
+				String errorMessage = "An error occurred on attempt to extract Manifest element with Id '{}' : {}";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(errorMessage, id, e.getMessage(), e);
+				} else {
+					LOG.warn(errorMessage, id, e.getMessage());
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Initializes a Manifest object from the provided ds:Manifest element
+	 *
+	 * @param manifestElement {@link Element} ds:Manifest element
+	 * @return {@link Manifest} object
+	 * @throws XMLSecurityException if en error occurs in an attempt to initialize the Manifest object
+	 */
+	public static Manifest initManifest(Element manifestElement) throws XMLSecurityException {
+		return new Manifest(manifestElement, "");
+	}
 	
 	/**
 	 * Extracts signing certificate's public key from KeyInfo element of a given signature if present
@@ -919,7 +918,7 @@ public final class DSSXMLUtils {
 	 * @return {@link PublicKey} of the signature extracted from KeyInfo element if present
 	 */
 	public static PublicKey getKeyInfoSigningCertificatePublicKey(final Element signatureElement) {
-		Element keyInfoElement = DomUtils.getElement(signatureElement, XMLDSigPaths.KEY_INFO_PATH);
+		Element keyInfoElement = DomUtils.getElement(signatureElement, XMLDSigPath.KEY_INFO_PATH);
 		if (keyInfoElement != null) {
 			try {
 				KeyInfo keyInfo = new KeyInfo(keyInfoElement, "");
@@ -947,7 +946,7 @@ public final class DSSXMLUtils {
 			 * The CounterSignature qualifying property shall contain one countersignature 
 			 * of the XAdES signature where CounterSignature is incorporated. 
 			 */
-			final Node counterSignatureNode = DomUtils.getNode(counterSignatureElement, XMLDSigPaths.SIGNATURE_PATH);
+			final Node counterSignatureNode = DomUtils.getNode(counterSignatureElement, XMLDSigPath.SIGNATURE_PATH);
 			
 			// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
 			final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignatureNode, masterSignature.getXAdESPathsHolders());
@@ -1002,7 +1001,7 @@ public final class DSSXMLUtils {
 	 * @return {@link NodeList}
 	 */
 	public static NodeList getAllSignaturesExceptCounterSignatures(Node documentNode) {
-		return DomUtils.getNodeList(documentNode, XAdES132Paths.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
+		return DomUtils.getNodeList(documentNode, XAdES132Path.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
 	}
 
 	/**
@@ -1012,7 +1011,7 @@ public final class DSSXMLUtils {
 	 * @return {@link NodeList}
 	 */
 	public static NodeList getReferenceNodeList(Node signatureElement) {
-		return DomUtils.getNodeList(signatureElement, XMLDSigPaths.SIGNED_INFO_REFERENCE_PATH);
+		return DomUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
 	}
 
 	/**
@@ -1072,33 +1071,35 @@ public final class DSSXMLUtils {
 	 * @return a byte array, representing a content obtained after transformations
 	 */
 	public static byte[] applyTransforms(final Node node, final List<DSSTransform> transforms) {
-		Node nodeToTransform = node;
+		byte[] bytes = DSSUtils.EMPTY_BYTE_ARRAY;
 		if (Utils.isCollectionNotEmpty(transforms)) {
-			byte[] transformedReferenceBytes = null;
+			DSSTransformOutput output = new DSSTransformOutput(node);
 			Iterator<DSSTransform> iterator = transforms.iterator();
 			while (iterator.hasNext()) {
 				DSSTransform transform = iterator.next();
-				transformedReferenceBytes = transform.getBytesAfterTransformation(nodeToTransform);
+				output = transform.performTransform(output);
+				bytes = output.getBytes();
 				if (iterator.hasNext()) {
-					if (Utils.isArrayEmpty(transformedReferenceBytes)) {
+					if (Utils.isArrayEmpty(bytes)) {
 						throw new IllegalInputException(String.format(
 								"Unable to perform the next transform. The %s produced an empty output!", transform));
 					}
-					nodeToTransform = DomUtils.buildDOM(transformedReferenceBytes);
 				}
 			}
+
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("Reference bytes after transforms: ");
-				LOG.debug(new String(transformedReferenceBytes));
+				LOG.debug(new String(bytes));
 			}
-			if (Utils.isArrayEmpty(transformedReferenceBytes)) {
+			if (Utils.isArrayEmpty(bytes)) {
 				LOG.warn("The output of reference transforms processing is an empty byte array!");
 			}
-			return transformedReferenceBytes;
+			return bytes;
 			
 		} else {
-			return DSSXMLUtils.getNodeBytes(nodeToTransform);
+			bytes = DomUtils.getNodeBytes(node);
 		}
+		return bytes;
 	}
 	/**
 	 * Applies transforms on document content and returns the byte array to be used for a
@@ -1124,7 +1125,7 @@ public final class DSSXMLUtils {
 	 */
 	public static List<DigestAlgorithm> getReferenceDigestAlgos(Element referenceContainer) {
 		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
-		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPaths.REFERENCE_PATH);
+		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPath.REFERENCE_PATH);
 		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 			Element referenceElement = (Element) referenceNodeList.item(ii);
 			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
@@ -1143,7 +1144,7 @@ public final class DSSXMLUtils {
 	 */
 	public static List<String> getReferenceTypes(Element referenceContainer) {
 		List<String> referenceTypes = new ArrayList<>();
-		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPaths.REFERENCE_PATH);
+		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPath.REFERENCE_PATH);
 		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 			Element referenceElement = (Element) referenceNodeList.item(ii);
 			String type = referenceElement.getAttribute(XMLDSigAttribute.TYPE.getAttributeName());
@@ -1258,7 +1259,7 @@ public final class DSSXMLUtils {
 	 */
 	public static void incorporateTransforms(final Element parentElement, List<DSSTransform> transforms, DSSNamespace namespace) {
 		if (Utils.isCollectionNotEmpty(transforms)) {
-			Document documentDom = parentElement.getOwnerDocument();
+			final Document documentDom = parentElement.getOwnerDocument();
 			final Element transformsDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.TRANSFORMS);
 			parentElement.appendChild(transformsDom);
 			for (final DSSTransform dssTransform : transforms) {
@@ -1284,7 +1285,7 @@ public final class DSSXMLUtils {
 	 *            {@link DSSNamespace} to use
 	 */
 	public static void incorporateDigestMethod(final Element parentElement, DigestAlgorithm digestAlgorithm, DSSNamespace namespace) {
-		Document documentDom = parentElement.getOwnerDocument();
+		final Document documentDom = parentElement.getOwnerDocument();
 		final Element digestMethodDom = DomUtils.addElement(documentDom, parentElement, namespace, XMLDSigElement.DIGEST_METHOD);
 		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
 	}
@@ -1306,12 +1307,27 @@ public final class DSSXMLUtils {
 	 *            {@link DSSNamespace}
 	 */
 	public static void incorporateDigestValue(final Element parentDom, String base64EncodedDigestBytes, DSSNamespace namespace) {
-		Document documentDom = parentDom.getOwnerDocument();
+		final Document documentDom = parentDom.getOwnerDocument();
 		final Element digestValueDom = DomUtils.createElementNS(documentDom, namespace, XMLDSigElement.DIGEST_VALUE);
 
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
 		parentDom.appendChild(digestValueDom);
+	}
+
+	/**
+	 * Returns params.referenceDigestAlgorithm if exists, params.digestAlgorithm otherwise
+	 *
+	 * @param params {@link XAdESSignatureParameters}
+	 * @return {@link DigestAlgorithm}
+	 */
+	public static DigestAlgorithm getReferenceDigestAlgorithmOrDefault(XAdESSignatureParameters params) {
+		DigestAlgorithm digestAlgorithm = params.getReferenceDigestAlgorithm() != null ? params.getReferenceDigestAlgorithm() : params.getDigestAlgorithm();
+		if (digestAlgorithm == null || digestAlgorithm.getUri() == null) {
+			throw new IllegalArgumentException(String.format("The Reference DigestAlgorithm '%s' is not supported for XAdES creation! " +
+					"Define another algorithm within #setReferenceDigestAlgorithm method.", digestAlgorithm));
+		}
+		return digestAlgorithm;
 	}
 
 }

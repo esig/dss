@@ -48,8 +48,8 @@ public class SignatureLevelValidationTest {
     public void validateXAdESBLevel() throws Exception {
 
         // See Trusted Lists loading
-        CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password");
-        CertificateSource adjunctCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password");
+        CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password".toCharArray());
+        CertificateSource adjunctCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password".toCharArray());
 
         // Create an instance of a trusted certificate source
         CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();

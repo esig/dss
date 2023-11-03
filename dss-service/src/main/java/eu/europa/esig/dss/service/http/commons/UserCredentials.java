@@ -47,19 +47,6 @@ public class UserCredentials implements Serializable {
      * Default constructor
      *
      * @param username {@link String}
-     * @param password {@link String}
-     * @deprecated since DSS 5.12. Use {@code new UserCredentials(String username, char[] password)}
-     */
-    @Deprecated
-    public UserCredentials(String username, String password) {
-        this.username = username;
-        this.password = password != null ? password.toCharArray() : null;
-    }
-
-    /**
-     * Default constructor
-     *
-     * @param username {@link String}
      * @param password a char array representing the password string
      */
     public UserCredentials(String username, char[] password) {
@@ -92,17 +79,6 @@ public class UserCredentials implements Serializable {
      */
     public char[] getPassword() {
         return password;
-    }
-
-    /**
-     * Sets the password
-     *
-     * @param password {@link String}
-     * @deprecated since DSS 5.12. Use {@code #setPassword(char[] password)}
-     */
-    @Deprecated
-    public void setPassword(String password) {
-        this.password = password != null ? password.toCharArray() : null;
     }
 
     /**

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.Collection;
 import java.util.HashMap;

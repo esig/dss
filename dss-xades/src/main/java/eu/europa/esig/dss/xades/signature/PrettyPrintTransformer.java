@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.utils.Utils;
 
 /**
  * Performs pretty-print transformations on an XML signature
@@ -42,7 +41,7 @@ public class PrettyPrintTransformer {
 	private Document ownerDocument;
 
 	/** The indent amount (4 by default) */
-	private int indentAmount = DomUtils.TRANSFORMER_INDENT_NUMBER;
+	private int indentAmount = DSSXMLUtils.TRANSFORMER_INDENT_NUMBER;
 
 	/**
 	 * Default constructor

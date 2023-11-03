@@ -209,7 +209,7 @@ public class DSS2049Test extends AbstractTestValidationExecutor {
 		assertEquals(1, timestamps.size());
 		XmlTimestamp xmlTimestamp = timestamps.get(0);
 		
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(xmlTimestamp.getId()));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(xmlTimestamp.getId()));
 		assertEquals(tstQual, detailedReport.getTimestampQualification(xmlTimestamp.getId()));
 		
 		XmlValidationTimestampQualification validationTimestampQualification = xmlTimestamp.getValidationTimestampQualification();

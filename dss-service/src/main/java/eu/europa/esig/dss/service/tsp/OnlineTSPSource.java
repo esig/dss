@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -155,7 +156,7 @@ public class OnlineTSPSource implements TSPSource {
 				LOG.trace("Timestamp digest value    : {}", Utils.toHex(digest));
 			}
 
-			// Setup the time stamp request
+			// Set up the time stamp request
 			final TimeStampRequestGenerator tsqGenerator = new TimeStampRequestGenerator();
 			tsqGenerator.setCertReq(true);
 			if (policyOid != null) {
@@ -167,7 +168,8 @@ public class OnlineTSPSource implements TSPSource {
 			if (nonceSource == null) {
 				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest);
 			} else {
-				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest, nonceSource.getNonce());
+				byte[] nonce = nonceSource.getNonceValue();
+				timeStampRequest = tsqGenerator.generate(asn1ObjectIdentifier, digest, new BigInteger(nonce));
 			}
 
 			final byte[] requestBytes = timeStampRequest.getEncoded();
@@ -200,6 +202,7 @@ public class OnlineTSPSource implements TSPSource {
 								"(TSP Status : %s / %s)", statusString, failInfo));
 			}
 			return new TimestampBinary(DSSASN1Utils.getDEREncoded(timeStampToken));
+
 		} catch (TSPException e) {
 			throw new DSSExternalResourceException(String.format("Invalid TSP response : %s", e.getMessage()), e);
 		} catch (IOException e) {

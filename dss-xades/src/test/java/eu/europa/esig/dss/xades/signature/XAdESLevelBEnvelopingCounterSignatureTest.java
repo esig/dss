@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
@@ -38,8 +38,8 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -98,17 +98,17 @@ public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCoun
 		super.onDocumentSigned(byteArray);
 		
 		Document document = DomUtils.buildDOM(byteArray);
-		NodeList counterSignaturesList = DomUtils.getNodeList(document, XAdES132Paths.all(XAdES132Element.COUNTER_SIGNATURE));
+		NodeList counterSignaturesList = DomUtils.getNodeList(document, XAdES132Path.all(XAdES132Element.COUNTER_SIGNATURE));
 		assertEquals(1, counterSignaturesList.getLength());
 		
 		Node counterSignature = counterSignaturesList.item(0);
-		NodeList signedDataObjectPropsList = DomUtils.getNodeList(counterSignature, XAdES132Paths.allFromCurrentPosition(XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES));
+		NodeList signedDataObjectPropsList = DomUtils.getNodeList(counterSignature, XAdES132Path.allFromCurrentPosition(XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES));
 		assertEquals(1, signedDataObjectPropsList.getLength());
 		
-		NodeList commitmentTypeIndicationList = DomUtils.getNodeList(signedDataObjectPropsList.item(0), XAdES132Paths.allFromCurrentPosition(XAdES132Element.COMMITMENT_TYPE_INDICATION));
+		NodeList commitmentTypeIndicationList = DomUtils.getNodeList(signedDataObjectPropsList.item(0), XAdES132Path.allFromCurrentPosition(XAdES132Element.COMMITMENT_TYPE_INDICATION));
 		assertEquals(1, commitmentTypeIndicationList.getLength());
 		
-		NodeList dataObjectFormatList = DomUtils.getNodeList(signedDataObjectPropsList.item(0), XAdES132Paths.allFromCurrentPosition(XAdES132Element.DATA_OBJECT_FORMAT));
+		NodeList dataObjectFormatList = DomUtils.getNodeList(signedDataObjectPropsList.item(0), XAdES132Path.allFromCurrentPosition(XAdES132Element.DATA_OBJECT_FORMAT));
 		assertEquals(0, dataObjectFormatList.getLength());
 	}
 	

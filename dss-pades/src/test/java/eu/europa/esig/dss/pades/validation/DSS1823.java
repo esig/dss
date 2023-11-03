@@ -30,8 +30,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
-import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -206,8 +204,8 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSources(getTrustedCertSource());
 		certificateVerifier.setAIASource(null);
-		certificateVerifier.setOcspSource(new OnlineOCSPSource());
-		certificateVerifier.setCrlSource(new OnlineCRLSource());
+		certificateVerifier.setOcspSource(getCompositeOCSPSource());
+		certificateVerifier.setCrlSource(getCompositeCRLSource());
 		return certificateVerifier;
 	}
 

@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.validation.scope.JAdESSignatureScopeFinder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignedDocumentDiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.NonASN1SignaturePolicyValidator;
@@ -50,6 +50,7 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 	 * Empty constructor
 	 */
 	protected AbstractJWSDocumentValidator() {
+		// empty
 	}
 
 	/**
@@ -58,11 +59,16 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 	 * @param document {@link DSSDocument} to validate
 	 */
 	protected AbstractJWSDocumentValidator(DSSDocument document) {
-		super(new JAdESSignatureScopeFinder());
+		super();
 		Objects.requireNonNull(document, "Document to be validated cannot be null!");
 
 		this.document = document;
 		this.jwsJsonSerializationObject = buildJwsJsonSerializationObject();
+	}
+
+	@Override
+	protected SignedDocumentDiagnosticDataBuilder initializeDiagnosticDataBuilder() {
+		return new JAdESDiagnosticDataBuilder();
 	}
 
 	@Override

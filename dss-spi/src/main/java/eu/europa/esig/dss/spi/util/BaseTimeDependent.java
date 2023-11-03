@@ -49,7 +49,6 @@ public class BaseTimeDependent implements TimeDependent {
 	 * @param endDate {@link Date} end of the validity
 	 */
 	public BaseTimeDependent(final Date startDate, final Date endDate) {
-		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}

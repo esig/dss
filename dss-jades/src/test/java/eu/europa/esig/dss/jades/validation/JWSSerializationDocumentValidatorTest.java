@@ -81,4 +81,9 @@ public class JWSSerializationDocumentValidatorTest extends AbstractTestValidator
 		return new FileDocument("src/test/resources/validation/jws-serialization-no-signatures.json");
 	}
 
+	@Override
+	protected DSSDocument getXmlEvidenceRecordDocument() {
+		return new FileDocument("src/test/resources/validation/evidence-record/evidence-record-a0baac29-c2b6-4544-abc5-d26ac6c8b655.xml");
+	}
+
 }

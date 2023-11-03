@@ -22,11 +22,12 @@ package eu.europa.esig.dss.asic.cades.validation;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestEntry;
-import eu.europa.esig.dss.validation.ManifestFile;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,7 @@ public class ASiCWithCAdESUtils {
 	 * Utils class
 	 */
 	private ASiCWithCAdESUtils() {
+		// empty
 	}
 	
 	/**
@@ -69,7 +71,7 @@ public class ASiCWithCAdESUtils {
 				return manifestDocuments.iterator().next();
 			}
 			// we need to check the manifest file and its digest
-			DSSDocument linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(extractResult.getManifestDocuments(), signatureFilename);
+			DSSDocument linkedManifest = ASiCManifestParser.getLinkedManifest(extractResult.getManifestDocuments(), signatureFilename);
 			if (linkedManifest != null) {
 				return linkedManifest;
 			} else {
@@ -90,10 +92,12 @@ public class ASiCWithCAdESUtils {
 	public static boolean isCoveredByManifest(List<DSSDocument> manifestDocuments, String filename) {
 		if (Utils.isCollectionNotEmpty(manifestDocuments)) {
 			for (DSSDocument archiveManifest : manifestDocuments) {
-				ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
-				for (ManifestEntry entry : manifestFile.getEntries()) {
-					if (filename != null && filename.equals(entry.getFileName())) {
-						return true;
+				ManifestFile manifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
+				if (manifestFile != null) {
+					for (ManifestEntry entry : manifestFile.getEntries()) {
+						if (filename != null && filename.equals(entry.getFileName())) {
+							return true;
+						}
 					}
 				}
 			}

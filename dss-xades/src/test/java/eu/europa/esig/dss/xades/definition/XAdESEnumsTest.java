@@ -20,36 +20,36 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.InputStream;
-
+import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xades.XAdES111Utils;
+import eu.europa.esig.xades.XAdES122Utils;
+import eu.europa.esig.xades.XAdES319132Utils;
+import eu.europa.esig.xades.XAdESUtils;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xades.definition.xades111.XAdES111Attribute;
+import eu.europa.esig.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.xades.definition.xades122.XAdES122Attribute;
+import eu.europa.esig.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades141.XAdES141Attribute;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSAttribute;
-import eu.europa.esig.dss.definition.DSSElement;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.xades.XAdES111Utils;
-import eu.europa.esig.xades.XAdES122Utils;
-import eu.europa.esig.xades.XAdES319132Utils;
-import eu.europa.esig.xades.XAdESUtils;
-import eu.europa.esig.xmldsig.XmlDSigUtils;
+import java.io.InputStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESEnumsTest {
 	
@@ -68,32 +68,32 @@ public class XAdESEnumsTest {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES111Element.values());
 
-			assertEquals(XAdESNamespaces.XADES_111, XAdES111Element.ANY.getNamespace());
-			assertEquals(XAdESNamespaces.XADES_111.getUri(), XAdES111Element.ANY.getURI());
+			assertEquals(XAdESNamespace.XADES_111, XAdES111Element.ANY.getNamespace());
+			assertEquals(XAdESNamespace.XADES_111.getUri(), XAdES111Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES122Utils.XADES_122_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES122Element.values());
 
-			assertEquals(XAdESNamespaces.XADES_122, XAdES122Element.ANY.getNamespace());
-			assertEquals(XAdESNamespaces.XADES_122.getUri(), XAdES122Element.ANY.getURI());
+			assertEquals(XAdESNamespace.XADES_122, XAdES122Element.ANY.getNamespace());
+			assertEquals(XAdESNamespace.XADES_122.getUri(), XAdES122Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES319132Utils.XADES_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES132Element.values());
 
-			assertEquals(XAdESNamespaces.XADES_132, XAdES132Element.ANY.getNamespace());
-			assertEquals(XAdESNamespaces.XADES_132.getUri(), XAdES132Element.ANY.getURI());
+			assertEquals(XAdESNamespace.XADES_132, XAdES132Element.ANY.getNamespace());
+			assertEquals(XAdESNamespace.XADES_132.getUri(), XAdES132Element.ANY.getURI());
 		}
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XAdES319132Utils.XADES_141_SCHEMA_LOCATION_EN_319_132)) {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, XAdES141Element.values());
 
-			assertEquals(XAdESNamespaces.XADES_141, XAdES141Element.ARCHIVE_TIMESTAMP.getNamespace());
-			assertEquals(XAdESNamespaces.XADES_141.getUri(), XAdES141Element.ARCHIVE_TIMESTAMP.getURI());
+			assertEquals(XAdESNamespace.XADES_141, XAdES141Element.ARCHIVE_TIMESTAMP.getNamespace());
+			assertEquals(XAdESNamespace.XADES_141.getUri(), XAdES141Element.ARCHIVE_TIMESTAMP.getURI());
 		}
 	}
 

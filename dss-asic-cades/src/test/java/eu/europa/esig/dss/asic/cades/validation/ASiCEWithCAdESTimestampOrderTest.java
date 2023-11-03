@@ -52,7 +52,7 @@ public class ASiCEWithCAdESTimestampOrderTest extends AbstractASiCWithCAdESTestV
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		assertEquals(2, timestampList.size());
 		assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestampList.get(0).getType());
-		assertEquals(TimestampType.ARCHIVE_TIMESTAMP, timestampList.get(1).getType());
+		assertEquals(TimestampType.CONTAINER_TIMESTAMP, timestampList.get(1).getType());
 	}
 	
 	@Override

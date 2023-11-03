@@ -24,20 +24,22 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ASiCManifestTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
-import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +64,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	 * @param asicContainer {@link DSSDocument} to be validated
 	 */
 	public ASiCContainerWithXAdESValidator(final DSSDocument asicContainer) {
-		super(asicContainer, new XAdESSignatureScopeFinder());
+		super(asicContainer);
 	}
 
 	/**
@@ -71,7 +73,7 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 	 * @param asicContent {@link ASiCContent} to be validated
 	 */
 	public ASiCContainerWithXAdESValidator(final ASiCContent asicContent) {
-		super(asicContent, new XAdESSignatureScopeFinder());
+		super(asicContent);
 	}
 
 	@Override
@@ -121,7 +123,8 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 
 	@Override
 	protected List<ManifestFile> getManifestFilesDescriptions() {
-		List<ManifestFile> descriptions = new ArrayList<>();
+		final List<ManifestFile> descriptions = new ArrayList<>();
+
 		List<DSSDocument> signatureDocuments = getSignatureDocuments();
 		List<DSSDocument> manifestDocuments = getManifestDocuments();
 		// All signatures use the same file : manifest.xml
@@ -131,6 +134,18 @@ public class ASiCContainerWithXAdESValidator extends AbstractASiCContainerValida
 				descriptions.add(manifestParser.getManifest());
 			}
 		}
+
+		List<DSSDocument> evidenceRecordManifestDocuments = getEvidenceRecordManifestDocuments();
+		for (DSSDocument manifestDocument : evidenceRecordManifestDocuments) {
+			ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifestDocument);
+			if (manifestFile != null) {
+				manifestFile.setManifestType(ASiCManifestTypeEnum.EVIDENCE_RECORD);
+				ASiCManifestValidator manifestValidator = new ASiCManifestValidator(manifestFile, getAllDocuments());
+				manifestValidator.validateEntries();
+				descriptions.add(manifestFile);
+			}
+		}
+
 		return descriptions;
 	}
 	

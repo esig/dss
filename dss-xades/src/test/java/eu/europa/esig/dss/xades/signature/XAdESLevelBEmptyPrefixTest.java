@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import org.junit.jupiter.api.BeforeEach;
-
-import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -30,7 +27,9 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import org.junit.jupiter.api.BeforeEach;
 
 public class XAdESLevelBEmptyPrefixTest extends AbstractXAdESTestSignature {
 
@@ -49,7 +48,7 @@ public class XAdESLevelBEmptyPrefixTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 //		signatureParameters.setXmldsigNamespace(new DSSNamespace(XAdESNamespaces.XMLDSIG.getUri(), ""));
 //		signatureParameters.setXadesNamespace(new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), ""));
-		signatureParameters.setXades141Namespace(new DSSNamespace(XAdESNamespaces.XADES_141.getUri(), ""));
+		signatureParameters.setXades141Namespace(new DSSNamespace(XAdESNamespace.XADES_141.getUri(), ""));
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

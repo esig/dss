@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;

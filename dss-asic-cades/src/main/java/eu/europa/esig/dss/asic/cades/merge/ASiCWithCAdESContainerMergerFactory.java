@@ -25,6 +25,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.merge.ASiCContainerMerger;
 import eu.europa.esig.dss.asic.common.merge.ASiCContainerMergerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Objects;
 
@@ -90,7 +91,7 @@ public class ASiCWithCAdESContainerMergerFactory implements ASiCContainerMergerF
                         "Unable to create an ASiCContainerMerger for documents of different ASiCContainer types!");
             }
         }
-        if (isASiCS != null && isASiCS) {
+        if (Utils.isTrue(isASiCS)) {
             return new ASiCSWithCAdESContainerMerger(containers);
         } else {
             return new ASiCEWithCAdESContainerMerger(containers);
@@ -145,7 +146,7 @@ public class ASiCWithCAdESContainerMergerFactory implements ASiCContainerMergerF
                         "Unable to create an ASiCContainerMerger for documents of different ASiCContainer types!");
             }
         }
-        if (isASiCS != null && isASiCS) {
+        if (Utils.isTrue(isASiCS)) {
             return new ASiCSWithCAdESContainerMerger(asicContents);
         } else {
             return new ASiCEWithCAdESContainerMerger(asicContents);

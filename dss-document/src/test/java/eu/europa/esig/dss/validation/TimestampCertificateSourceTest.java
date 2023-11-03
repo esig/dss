@@ -27,7 +27,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
 
 public class TimestampCertificateSourceTest {
 

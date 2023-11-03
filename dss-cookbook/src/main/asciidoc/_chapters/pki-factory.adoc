@@ -1,0 +1,91 @@
+:sectnums:
+:sectnumlevels: 5
+:sourcetestdir: ../../../test/java
+:samplesdir: ../_samples
+:imagesdir: ../images/
+
+[[pkiFactory]]
+== PKI Factory
+
+Since version `5.13` DSS provides a possibility of building and managing a local PKI.
+
+There are two modules provided within the scope of the framework:
+
+ * `dss-pki-factory` - contains common interfaces for working with PKI entities, as well as classes for managing provision of validation data and time-stamps.
+ * `dss-pki-factory-jaxb` - represents an implementation of `dss-pki-factory` module, providing a possibility to build a local PKI set-upm based on provided XML configuration.
+
+[[genericPkiFactory]]
+=== Generic PKI Factory
+
+Generic `dss-pki-factory` module provides the following interfaces and classes for working and managing the PKI:
+
+ * `CertEntity` - represents a cryptographic unit linked to an X509 Certificate and a private key connection.
+ * `CertEntityRepository` - represents a connection to a local PKI infrastructure for accessing a corresponding `CertEntity`, revocation status information about a certificate and its issuer certificate.
+ * `CertEntityRevocation` - represents a DTO containing a revocation information data about a particular certificate token.
+
+`CertEntity` and `CertEntityRepository` are interfaces and require an implementation to work with. By default, DSS provides a `dss-pki-factory-jaxb` module containing a JAXB implementation of the generic PKI factory. See <<jaxbPkiFactory>> for more details.
+
+The module provides the following classes for distributing a validation data:
+
+ * `PKICRLSource` - is an implementation of a `CRLSource` interface, providing a possibility to generate a CRL data for the given `CertificateToken` input. The class provides revocation information for certificates from the given `CertEntityRepository` with allowed CRL access option (i.e. having a CRL distribution point URL). The class can be configured to produce a revocation data with a certain `thisUpdate` and/or `nextUpdate` times or a signature algorithm. See below an example of class configuration and usage:
+
+[source,java,indent=0]
+.PKICRLSource class usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=crl-source]
+----
+
+ * `PKIOCSPSource` - is an implementation of an `OCSPSource` interface, providing a possibility to generate an OCSP response for the given `CertificateToken` input. The class provides revocation information for certificates from the given `CertEntityRepository` with allowed OCSP access option (i.e. having an OCSP access point URL). The class can be configured to produce a revocation data with a certain `producedAt`, `thisUpdate` and/or `nextUpdate` times or a signature algorithm. See below an example of class configuration and usage:
+
+[source,java,indent=0]
+.PKIOCSPSource class usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=ocsp-source]
+----
+
+ * `PKIDelegatedOCSPSource` - is an extension of `PKIOCSPSource` allowing to delegate OCSP issuing to a different certificate token, than the certificate's direct issuer. Configuration of the class is similar to `PKIOCSPSource`. See below an example of class configuration and usage:
+
+[source,java,indent=0]
+.PKIDelegatedOCSPSource class usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=ocsp-delegated-source]
+----
+
+ * `PKIAIASource` - is an implementation of an `AIASource` allowing to extract a given certificate's certificate chain or an issuer. See below an example of class configuration and usage:
+
+[source,java,indent=0]
+.PKIAIASource class usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=aia-source]
+----
+
+DSS also provides a class for a time-stamp creation using a local PKI. To generate a time-stamp token you may use the `PKITSPSource` class, which extends the `KeyEntityTSPSource` class and therefore benefits from all its available configuration (see <<KeyEntityTSPSource>> for more detail). See below an example of class usage:
+
+[source,java,indent=0]
+.PKITSPSource class usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=tsp-source]
+----
+
+[[jaxbPkiFactory]]
+=== JAXB PKI Factory
+
+JAXB PKI Factory is a default implementation of a <<genericPkiFactory>> module, provided within the DSS framework for a test PKI creation.
+
+The JAXB PKI Factory provides a possibility to generate a complete PKI repository from the provided XML configuration. The XML containing certificates to be created should be conformant to the https://github.com/esig/dss/blob/master/dss-pki-factory-jaxb/src/main/resources/xsd/pki.xsd[XSD schema]. Examples of JAXB PKI configuration can be found by the https://github.com/esig/dss/blob/master/dss-pki-factory-jaxb/src/test/resources/pki/[link].
+
+An example of a JAXB PKI generation can be found below:
+
+[source,java,indent=0]
+.JAXB PKI generation example
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=demo]
+----
+
+It is also possible to modify the PKI entries dynamically, for instance, add a new certificate or revoke a certificate. See below an example of adding a new certificate to the generated earlier PKI repository:
+
+[source,java,indent=0]
+.Add new certificate to PKI repository
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=add-pki-certificate]
+----

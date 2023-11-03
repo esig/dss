@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelBWithUnknownDigestAlgoTest extends AbstractXAdESTestValidation {
 
@@ -94,7 +95,9 @@ public class XAdESLevelBWithUnknownDigestAlgoTest extends AbstractXAdESTestValid
 
             ValidationObjectRepresentationType validationObjectRepresentation = validationObject.getValidationObjectRepresentation();
             assertNotNull(validationObjectRepresentation);
-            DigestAlgAndValueType digestAlgAndValue = validationObjectRepresentation.getDigestAlgAndValue();
+            assertEquals(1, validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().size());
+            assertTrue(validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0) instanceof DigestAlgAndValueType);
+            DigestAlgAndValueType digestAlgAndValue = (DigestAlgAndValueType) validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0);
             assertNotNull(digestAlgAndValue);
             assertNotNull(digestAlgAndValue.getDigestMethod());
             assertEquals("?", digestAlgAndValue.getDigestMethod().getAlgorithm());

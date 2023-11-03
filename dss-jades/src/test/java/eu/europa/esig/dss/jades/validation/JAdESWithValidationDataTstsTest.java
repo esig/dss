@@ -44,9 +44,9 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
@@ -207,6 +207,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		return GOOD_USER;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void validateStructure() throws Exception {
 
@@ -339,36 +340,33 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 		boolean completeRevocRefFound = false;
 		boolean attributeCertRefFound = false;
 
-		List<Object> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
-		for (Object signatureAttributeObj : signatureAttributeObjects) {
-			if (signatureAttributeObj instanceof JAXBElement) {
-				JAXBElement jaxbElement = (JAXBElement) signatureAttributeObj;
-				String xmlElementName = jaxbElement.getName().getLocalPart();
-				if ("SigningCertificate".equals(xmlElementName)) {
-					SACertIDListType certIdList = (SACertIDListType) jaxbElement.getValue();
-					assertTrue(certIdList.isSigned());
-					assertEquals(1, certIdList.getAttributeObject().size());
-					assertEquals(1, certIdList.getAttributeObject().get(0).getVOReference().size());
-					signCertRefFound = true;
-				}
-				if ("CompleteCertificateRefs".equals(xmlElementName)) {
-					SACertIDListType certIdList = (SACertIDListType) jaxbElement.getValue();
-					assertEquals(1, certIdList.getAttributeObject().size());
-					assertEquals(3, certIdList.getAttributeObject().get(0).getVOReference().size());
-					completeCertRefFound = true;
-				}
-				if ("CompleteRevocationRefs".equals(xmlElementName)) {
-					SARevIDListType revIdList = (SARevIDListType) jaxbElement.getValue();
-					assertEquals(0, revIdList.getAttributeObject().size());
-					assertEquals(2, revIdList.getCRLIDOrOCSPID().size());
-					completeRevocRefFound = true;
-				}
-				if ("AttributeCertificateRefs".equals(xmlElementName)) {
-					SACertIDListType certIdList = (SACertIDListType) jaxbElement.getValue();
-					assertEquals(0, certIdList.getAttributeObject().size());
-					assertEquals(1, certIdList.getCertID().size());
-					attributeCertRefFound = true;
-				}
+		List<JAXBElement<?>> signatureAttributeObjects = signatureAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat();
+		for (JAXBElement<?> signatureAttributeObj : signatureAttributeObjects) {
+			String xmlElementName = signatureAttributeObj.getName().getLocalPart();
+			if ("SigningCertificate".equals(xmlElementName)) {
+				SACertIDListType certIdList = (SACertIDListType) signatureAttributeObj.getValue();
+				assertTrue(certIdList.isSigned());
+				assertEquals(1, certIdList.getAttributeObject().size());
+				assertEquals(1, certIdList.getAttributeObject().get(0).getVOReference().size());
+				signCertRefFound = true;
+			}
+			if ("CompleteCertificateRefs".equals(xmlElementName)) {
+				SACertIDListType certIdList = (SACertIDListType) signatureAttributeObj.getValue();
+				assertEquals(1, certIdList.getAttributeObject().size());
+				assertEquals(3, certIdList.getAttributeObject().get(0).getVOReference().size());
+				completeCertRefFound = true;
+			}
+			if ("CompleteRevocationRefs".equals(xmlElementName)) {
+				SARevIDListType revIdList = (SARevIDListType) signatureAttributeObj.getValue();
+				assertEquals(0, revIdList.getAttributeObject().size());
+				assertEquals(2, revIdList.getCRLIDOrOCSPID().size());
+				completeRevocRefFound = true;
+			}
+			if ("AttributeCertificateRefs".equals(xmlElementName)) {
+				SACertIDListType certIdList = (SACertIDListType) signatureAttributeObj.getValue();
+				assertEquals(0, certIdList.getAttributeObject().size());
+				assertEquals(1, certIdList.getCertID().size());
+				attributeCertRefFound = true;
 			}
 		}
 		assertTrue(signCertRefFound);

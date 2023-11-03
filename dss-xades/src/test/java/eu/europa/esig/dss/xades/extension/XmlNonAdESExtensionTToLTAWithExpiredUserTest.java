@@ -20,11 +20,7 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.alert.exception.AlertException;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -34,8 +30,12 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XmlNonAdESExtensionTToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
 
-    private final DSSNamespace xmldsigNamespace = XAdESNamespaces.XMLDSIG;
+    private final DSSNamespace xmldsigNamespace = XMLDSigNamespace.NS;
 
     private XAdESService service;
 
@@ -91,10 +91,10 @@ public class XmlNonAdESExtensionTToLTAWithExpiredUserTest extends AbstractXAdEST
     protected DSSDocument getSignedDocument(DSSDocument doc) {
         DSSDocument signedDocument = super.getSignedDocument(doc);
         Document docDom = DomUtils.buildDOM(signedDocument);
-        NodeList signatures = DomUtils.getNodeList(docDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
+        NodeList signatures = DomUtils.getNodeList(docDom, XMLDSigPath.ALL_SIGNATURES_PATH);
         assertEquals(1, signatures.getLength());
         Node signatureElement = signatures.item(0);
-        Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
+        Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
         final Element keyInfoDom = DomUtils.createElementNS(docDom, xmldsigNamespace, XMLDSigElement.KEY_INFO);
         signatureValueNode.getParentNode().insertBefore(keyInfoDom, signatureValueNode.getNextSibling());
         for (CertificateToken token : getCertificateChain()) {

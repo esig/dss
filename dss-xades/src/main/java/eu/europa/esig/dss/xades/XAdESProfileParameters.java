@@ -55,6 +55,13 @@ public class XAdESProfileParameters extends ProfileParameters {
 	private List<DSSReference> references;
 
 	/**
+	 * Default constructor
+	 */
+	public XAdESProfileParameters() {
+		// empty
+	}
+
+	/**
 	 * Returns the current Profile used to generate the signature or its extension
 	 *
 	 * @return the SignatureProfile

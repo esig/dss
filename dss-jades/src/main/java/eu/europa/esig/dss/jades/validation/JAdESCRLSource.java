@@ -144,7 +144,7 @@ public class JAdESCRLSource extends OfflineCRLSource {
 		try {
 			addBinary(CRLUtils.buildCRLBinary(Utils.fromBase64(crlValueDerB64)), origin);
 		} catch (Exception e) {
-			LOG.warn("Unable to extract CRL from '{}'", crlValueDerB64, e);
+			LOG.warn("Unable to extract CRL from '{}'. Reason : {}", crlValueDerB64, e.getMessage(), e);
 		}
 	}
 

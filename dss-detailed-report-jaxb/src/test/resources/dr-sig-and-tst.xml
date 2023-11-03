@@ -149,7 +149,7 @@
         </Conclusion>
     </Signature>
     <Timestamp Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
-        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:31Z" Title="Validation Process for Timestamps">
+        <ValidationProcessBasicTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:31Z" Title="Validation Process for Timestamps">
             <Constraint Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
                 <Name Key="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                 <Status>OK</Status>
@@ -157,7 +157,7 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-        </ValidationProcessTimestamp>
+        </ValidationProcessBasicTimestamp>
         <ValidationTimestampQualification TimestampQualification="N/A" Title="Timestamp Qualification">
             <Constraint>
                 <Name Key="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
@@ -169,9 +169,12 @@
                 <Errors Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Errors>
             </Conclusion>
         </ValidationTimestampQualification>
+        <Conclusion>
+            <Indication>PASSED</Indication>
+        </Conclusion>
     </Timestamp>
     <Timestamp Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
-        <ValidationProcessTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:30Z" Title="Validation Process for Timestamps">
+        <ValidationProcessBasicTimestamp Type="CONTENT_TIMESTAMP" ProductionTime="2019-12-17T10:12:30Z" Title="Validation Process for Timestamps">
             <Constraint Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
                 <Name Key="ADEST_ROTVPIIC">Is the result of the timestamps validation process conclusive?</Name>
                 <Status>OK</Status>
@@ -179,7 +182,7 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-        </ValidationProcessTimestamp>
+        </ValidationProcessBasicTimestamp>
         <ValidationTimestampQualification TimestampQualification="N/A" Title="Timestamp Qualification">
             <Constraint>
                 <Name Key="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
@@ -191,6 +194,9 @@
                 <Errors Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain until a trusted list!</Errors>
             </Conclusion>
         </ValidationTimestampQualification>
+        <Conclusion>
+            <Indication>PASSED</Indication>
+        </Conclusion>
     </Timestamp>
     <BasicBuildingBlocks Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7" Type="TIMESTAMP">
         <ISC Title="Identification of the Signing Certificate">
@@ -916,5 +922,5 @@
     <Semantic Key="INDETERMINATE">The available information is insufficient to ascertain the signature to be TOTAL-PASSED or TOTAL-FAILED.</Semantic>
     <Semantic Key="PASSED">The validation process succeeded</Semantic>
     <Semantic Key="FAILED">The validation process failed</Semantic>
-    <Semantic Key="TRY_LATER">The signature validation process results into INDETERMINATE because not all constraints can be fulfilled using available information. However, it may be possible to do so using additional revocation information that will be available at a later point of time.</Semantic>    
+    <Semantic Key="TRY_LATER">The signature validation process results into INDETERMINATE because not all constraints can be fulfilled using available information. However, it may be possible to do so using additional revocation information that will be available at a later point of time.</Semantic>
 </DetailedReport>

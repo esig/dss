@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -97,7 +98,8 @@ public class ASiCEWithCAdESFileRemovedTest extends AbstractASiCWithCAdESTestVali
                 assertTrue(timestampWrapper.isMessageImprintDataFound());
                 assertTrue(timestampWrapper.isMessageImprintDataIntact());
                 sigTstFound = true;
-            } else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
+            } else if (TimestampType.CONTAINER_TIMESTAMP.equals(timestampWrapper.getType())) {
+                assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestampWrapper.getArchiveTimestampType());
                 assertTrue(timestampWrapper.isMessageImprintDataFound());
                 assertTrue(timestampWrapper.isMessageImprintDataIntact());
                 arcTstFound = true;

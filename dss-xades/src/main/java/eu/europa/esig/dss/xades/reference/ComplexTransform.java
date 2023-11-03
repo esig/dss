@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
@@ -54,8 +54,20 @@ public abstract class ComplexTransform extends AbstractTransform {
 	protected ComplexTransform(DSSNamespace xmlDSigNamespace, String algorithm) {
 		super(xmlDSigNamespace, algorithm);
 	}
-	
-	private void buildTransformObject() {
+
+	private Transform getTransformObject() {
+		if (this.transformObject == null) {
+			this.transformObject = buildTransformObject();
+		}
+		return this.transformObject;
+	}
+
+	/**
+	 * Builds a {@code Transform} object
+	 *
+	 * @return {@link Transform}
+	 */
+	protected Transform buildTransformObject() {
 		try {
 			final Document document = DomUtils.buildDOM();
 			final Element transformsDom = DomUtils.createElementNS(document, namespace, XMLDSigElement.TRANSFORMS);
@@ -66,23 +78,26 @@ public abstract class ComplexTransform extends AbstractTransform {
 			for (Entry<String, String> namespace : DomUtils.getCurrentNamespaces().entrySet()) {
 				transform.setXPathNamespaceContext(namespace.getKey(), namespace.getValue());
 			}
-			this.transformObject = transform;
+			return transform;
 		} catch (XMLSecurityException e) {
 			throw new DSSException(String.format("Cannot initialize a transform [%s]", algorithm), e);
 		}
 	}
 	
 	@Override
+	@Deprecated
 	public byte[] getBytesAfterTransformation(Node node) {
-		if (transformObject == null) {
-			buildTransformObject();
-		}
+		return performTransform(new DSSTransformOutput(node)).getBytes();
+	}
+
+	@Override
+	public DSSTransformOutput performTransform(DSSTransformOutput transformOutput) {
 		try {
-			final XMLSignatureInput xmlSignatureInput = getXMLSignatureInput(node);
-			final XMLSignatureInput xmlSignatureInputOut = transformObject.performTransform(xmlSignatureInput, true);
-			return xmlSignatureInputOut.getBytes();
+			Transform transform = getTransformObject();
+			XMLSignatureInput xmlSignatureOutput = transform.performTransform(transformOutput.getXmlSignatureInput(), true);
+			return new DSSTransformOutput(xmlSignatureOutput);
 		} catch (IOException | XMLSecurityException e) {
-			throw new DSSException(String.format("Cannot process transformation [%s] on the given DOM object. Reason : [%s]", 
+			throw new DSSException(String.format("Cannot process transformation [%s] on the given DOM object. Reason : [%s]",
 					algorithm, e.getMessage()), e);
 		}
 	}
@@ -92,7 +107,9 @@ public abstract class ComplexTransform extends AbstractTransform {
 	 *
 	 * @param node {@link Node}
 	 * @return {@link XMLSignatureInput}
+	 * @deprecated since DSS 5.13. To be removed.
 	 */
+	@Deprecated
 	protected XMLSignatureInput getXMLSignatureInput(Node node) {
 		return new XMLSignatureInput(node);
 	}

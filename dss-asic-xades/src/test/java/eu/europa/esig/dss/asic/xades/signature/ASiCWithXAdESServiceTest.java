@@ -94,6 +94,8 @@ public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
         
         exception = assertThrows(IllegalArgumentException.class, () -> signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B));
         assertEquals("Only XAdES form is allowed !", exception.getMessage());
+
+        getCertificateChain();
         
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         signAndValidate(documentToSign, signatureParameters);

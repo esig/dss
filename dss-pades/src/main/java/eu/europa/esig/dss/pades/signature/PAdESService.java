@@ -43,7 +43,7 @@ import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TSPException;
@@ -284,21 +284,6 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @param passwordProtection
 	 *            the password protection used to create the encrypted document
 	 * @return the list of empty signature fields
-	 * @deprecated since DSS 5.12. Use {@code #getAvailableSignatureFields(document, passwordProtection.toCharArray())}
-	 */
-	@Deprecated
-	public List<String> getAvailableSignatureFields(DSSDocument document, String passwordProtection) {
-		return getAvailableSignatureFields(document, passwordProtection != null ? passwordProtection.toCharArray() : null);
-	}
-
-	/**
-	 * This method returns not signed signature-fields from an encrypted document
-	 * 
-	 * @param document
-	 *            the pdf document
-	 * @param passwordProtection
-	 *            the password protection used to create the encrypted document
-	 * @return the list of empty signature fields
 	 */
 	public List<String> getAvailableSignatureFields(DSSDocument document, char[] passwordProtection) {
 		PDFSignatureService pdfSignatureService = getPAdESSignatureService();
@@ -316,24 +301,6 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 */
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
 		return addNewSignatureField(document, parameters, (char[]) null);
-	}
-
-	/**
-	 * This method allows to add a new signature field to an encrypted pdf document
-	 *
-	 * @param document
-	 *            the pdf document
-	 * @param parameters
-	 *            the parameters with the coordinates,... of the signature field
-	 * @param passwordProtection
-	 *            the password protection used to create the encrypted document
-	 * @return the pdf document with the new added signature field
-	 * @deprecated since DSS 5.12. Use {@code #addNewSignatureField(document, parameters, passwordProtection.getBytes())}
-	 */
-	@Deprecated
-	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters,
-											String passwordProtection) {
-		return addNewSignatureField(document, parameters, passwordProtection != null ? passwordProtection.toCharArray() : null);
 	}
 
 	/**

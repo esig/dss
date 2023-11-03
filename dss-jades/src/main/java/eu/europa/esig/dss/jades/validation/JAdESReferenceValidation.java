@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import eu.europa.esig.dss.validation.ReferenceValidation;
+import eu.europa.esig.dss.model.ReferenceValidation;
 
 import java.util.ArrayList;
 import java.util.List;

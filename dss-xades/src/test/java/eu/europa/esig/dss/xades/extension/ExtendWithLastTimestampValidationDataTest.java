@@ -32,8 +32,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -53,8 +53,8 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.XAdESPath;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
@@ -86,10 +86,10 @@ public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess 
 		
 		DSSDocument doubleExtendedDocument = service.extendDocument(extendedDocument, parameters);
 		
-		XAdESPaths xadesPaths = new XAdES132Paths();
+		XAdESPath xadesPaths = new XAdES132Path();
 
 		Document extendedDocDom = DomUtils.buildDOM(doubleExtendedDocument);
-		NodeList signatures = DomUtils.getNodeList(extendedDocDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
+		NodeList signatures = DomUtils.getNodeList(extendedDocDom, XMLDSigPath.ALL_SIGNATURES_PATH);
 		assertEquals(1, signatures.getLength());
 		Node signatureElement = signatures.item(0);
 		Node unsignedSignatureProperties = DomUtils.getNode(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());

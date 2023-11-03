@@ -124,7 +124,7 @@ public class ASiCSWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
         List<String> timestampIds = detailedReport.getTimestampIds();
         assertEquals(1, timestampIds.size());
         String timestampId = timestampIds.get(0);
-        assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(timestampId));
+        assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampId));
 
         XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(timestampId);
         assertNotNull(timestampBBB.getCertificateChain());

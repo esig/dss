@@ -120,7 +120,7 @@ public final class CMSUtils {
 	 * Generates a counter signature
 	 *
 	 * @param cmsSignedDataGenerator {@link CMSSignedDataGenerator} to extend the CMS SignedData
-	 * @param signerInfoToSign {@link SignerInformation} to be counter signed
+	 * @param signerInfoToSign {@link SignerInformation} to be counter-signed
 	 * @return {@link SignerInformationStore} with a counter signature
 	 */
 	public static SignerInformationStore generateCounterSigners(CMSSignedDataGenerator cmsSignedDataGenerator,

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="untrusted">
+
+    <certificate>
+        <serialNumber>1</serialNumber>
+        <subject>untrusted-root-ca</subject>
+        <issuer serialNumber="1">untrusted-root-ca</issuer>
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>2</serialNumber>
+        <subject>untrusted-ocsp-responder</subject>
+        <issuer serialNumber="1">untrusted-root-ca</issuer>
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.9</extendedKeyUsage> <!-- ocsp-signing -->
+        </extendedKeyUsages>
+        <ocspNoCheck/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>4</serialNumber>
+        <subject>untrusted-ca</subject>
+        <issuer serialNumber="1">untrusted-root-ca</issuer>
+        <ocspResponder serialNumber="2">untrusted-root-ca</ocspResponder>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>untrusted-root-ca</crl>
+        <caIssuers>untrusted-root-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>10</serialNumber>
+        <subject>untrusted-user</subject>
+        <issuer serialNumber="4">untrusted-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <ocsp>untrusted-ca</ocsp>
+        <caIssuers>untrusted-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>500</serialNumber>
+        <subject>untrusted-tsa</subject>
+        <issuer serialNumber="1">untrusted-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.8</extendedKeyUsage> <!-- time-stamping -->
+        </extendedKeyUsages>
+        <crl>untrusted-root-ca</crl>
+        <caIssuers>untrusted-root-ca</caIssuers>
+    </certificate>
+
+</pki>

@@ -4,10 +4,10 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.12.1</version>
+		<version>5.13.RC1</version>
 	</parent>
 
-	<name>DSS Server signing REST Client</name>
+	<name>DSS Server Signing REST Client</name>
 	<artifactId>dss-server-signing-rest-client</artifactId>
 
 	<properties>

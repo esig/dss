@@ -20,21 +20,20 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
+import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.asic.common.definition.ASiCAttribute;
-import eu.europa.esig.dss.asic.common.definition.ASiCElement;
-import eu.europa.esig.dss.asic.common.definition.ASiCNamespace;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigNamespace;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
-import eu.europa.esig.dss.spi.DSSUtils;
 
 /**
  * The abstract class to build a Manifest for ASiC with CAdES
@@ -57,9 +56,9 @@ public abstract class AbstractManifestBuilder {
 	 */
 	protected void addSigReference(final Document documentDom, final Element asicManifestDom,
 								   String uri, MimeType mimeType) {
-		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCElement.SIG_REFERENCE);
-		sigReferenceDom.setAttribute(ASiCAttribute.URI.getAttributeName(), DSSUtils.encodeURI(uri));
-		sigReferenceDom.setAttribute(ASiCAttribute.MIME_TYPE.getAttributeName(), mimeType.getMimeTypeString());
+		final Element sigReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCManifestNamespace.NS, ASiCManifestElement.SIG_REFERENCE);
+		sigReferenceDom.setAttribute(ASiCManifestAttribute.URI.getAttributeName(), DSSUtils.encodeURI(uri));
+		sigReferenceDom.setAttribute(ASiCManifestAttribute.MIME_TYPE.getAttributeName(), mimeType.getMimeTypeString());
 	}
 
 	/**
@@ -74,13 +73,13 @@ public abstract class AbstractManifestBuilder {
 	 */
 	protected Element addDataObjectReference(final Document documentDom, final Element asicManifestDom,
 											 DSSDocument document, DigestAlgorithm digestAlgorithm) {
-		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCNamespace.NS, ASiCElement.DATA_OBJECT_REFERENCE);
+		final Element dataObjectReferenceDom = DomUtils.addElement(documentDom, asicManifestDom, ASiCManifestNamespace.NS, ASiCManifestElement.DATA_OBJECT_REFERENCE);
 		
-		dataObjectReferenceDom.setAttribute(ASiCAttribute.URI.getAttributeName(), DSSUtils.encodeURI(document.getName()));
+		dataObjectReferenceDom.setAttribute(ASiCManifestAttribute.URI.getAttributeName(), DSSUtils.encodeURI(document.getName()));
 
 		MimeType mimeType = document.getMimeType();
 		if (mimeType != null) {
-			dataObjectReferenceDom.setAttribute(ASiCAttribute.MIME_TYPE.getAttributeName(), mimeType.getMimeTypeString());
+			dataObjectReferenceDom.setAttribute(ASiCManifestAttribute.MIME_TYPE.getAttributeName(), mimeType.getMimeTypeString());
 		}
 
 		final Element digestMethodDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLDSigNamespace.NS, XMLDSigElement.DIGEST_METHOD);

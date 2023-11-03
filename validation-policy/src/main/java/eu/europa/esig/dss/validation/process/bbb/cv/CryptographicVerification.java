@@ -93,6 +93,10 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
+				if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == digestMatcher.getType()) {
+					// Evidence Records optionally allow additional digests to be present within first data group
+					continue;
+				}
 				/*
 				 * 1) The building block shall obtain the signed data object(s) if not provided
 				 * in the inputs (e.g. by dereferencing an URI present in the signature). If the
@@ -154,12 +158,12 @@ public class CryptographicVerification extends Chain<XmlCV> {
 
 	private ChainItem<XmlCV> referenceDataFound(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataExistenceConstraint(context);
-		return new ReferenceDataExistenceCheck(i18nProvider, result, digestMatcher, constraint);
+		return new ReferenceDataExistenceCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> referenceDataIntact(XmlDigestMatcher digestMatcher) {
 		LevelConstraint constraint = validationPolicy.getReferenceDataIntactConstraint(context);
-		return new ReferenceDataIntactCheck(i18nProvider, result, digestMatcher, constraint);
+		return new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> manifestEntryExistence(List<XmlDigestMatcher> digestMatchers) {

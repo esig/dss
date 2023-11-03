@@ -39,12 +39,6 @@ public class ManifestFilePresentCheck extends ChainItem<XmlFC> {
 	/** ASiC container info */
 	private final XmlContainerInfo containerInfo;
 
-	/** The constraint message */
-	private MessageTag message;
-
-	/** The error message */
-	private MessageTag error;
-
 	/**
 	 * Default constructor
 	 *
@@ -61,25 +55,21 @@ public class ManifestFilePresentCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-		if (ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType())) { // ASiC-S no Manifest
-			message = MessageTag.BBB_FC_IMFP_ASICS;
-			error = MessageTag.BBB_FC_IMFP_ASICS_ANS;
-			return Utils.isCollectionEmpty(containerInfo.getManifestFiles());
-		} else { // ASiC-E one or more manifest
-			message = MessageTag.BBB_FC_IMFP_ASICE;
-			error = MessageTag.BBB_FC_IMFP_ASICE_ANS;
+		if (ASiCContainerType.ASiC_E.equals(containerInfo.getContainerType())) {
 			return Utils.isCollectionNotEmpty(containerInfo.getManifestFiles());
 		}
+		// ASiC-S container may contain a manifest file
+		return true;
 	}
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return message;
+		return MessageTag.BBB_FC_IMFP_ASICE;
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return error;
+		return MessageTag.BBB_FC_IMFP_ASICE_ANS;
 	}
 
 	@Override

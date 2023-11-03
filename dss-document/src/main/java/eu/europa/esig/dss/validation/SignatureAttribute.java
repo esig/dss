@@ -24,6 +24,7 @@ import java.io.Serializable;
 
 /**
  * Defines a child of "signed-signature-properties" or "unsigned-signature-properties" element
+ *
  */
 public interface SignatureAttribute extends Serializable {
 	

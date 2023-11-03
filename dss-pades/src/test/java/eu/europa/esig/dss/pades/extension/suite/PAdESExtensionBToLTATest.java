@@ -38,11 +38,11 @@ public class PAdESExtensionBToLTATest extends AbstractPAdESTestExtension {
 	protected SignatureLevel getFinalSignatureLevel() {
 		return SignatureLevel.PAdES_BASELINE_LTA;
 	}
-	
+
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		super.checkTimestamps(diagnosticData);
-		
+
 		String signatureId = diagnosticData.getFirstSignatureId();
 		for (TimestampWrapper wrapper : diagnosticData.getTimestampList(signatureId)) {
 			boolean found = false;

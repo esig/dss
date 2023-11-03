@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -46,17 +46,17 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
-import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xades.definition.xades111.XAdES111Attribute;
+import eu.europa.esig.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.xades.definition.xades122.XAdES122Attribute;
+import eu.europa.esig.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.slf4j.Logger;
@@ -525,8 +525,8 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	protected void createXAdESTimeStampType(final TimestampType timestampType, final String timestampC14nMethod, final DSSMessageDigest messageDigest) throws DSSException {
 
-		if ((XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())
-				|| XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri()))
+		if ((XAdESNamespace.XADES_111.isSameUri(getXadesNamespace().getUri())
+				|| XAdESNamespace.XADES_122.isSameUri(getXadesNamespace().getUri()))
 				&& TimestampType.SIGNATURE_TIMESTAMP != timestampType) {
 			throw new UnsupportedOperationException("Signature Timestamp creation is only supported for XAdES 1.1.1 and 1.2.2");
 		}		
@@ -573,12 +573,12 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, messageDigest.getValue());
 		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
 		
-		if (XAdESNamespaces.XADES_122.isSameUri(getXadesNamespace().getUri())) {
+		if (XAdESNamespace.XADES_122.isSameUri(getXadesNamespace().getUri())) {
 			incorporateXAdES122Include(timeStampDom);
 		}
 
 		final String timestampId = UUID.randomUUID().toString();
-		if (!XAdESNamespaces.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+		if (!XAdESNamespace.XADES_111.isSameUri(getXadesNamespace().getUri())) {
 			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "TS-" + timestampId);
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			incorporateC14nMethod(timeStampDom, timestampC14nMethod);

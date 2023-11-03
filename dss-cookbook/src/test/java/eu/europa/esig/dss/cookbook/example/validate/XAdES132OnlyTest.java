@@ -29,8 +29,8 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.XAdESPath;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import org.junit.jupiter.api.Test;
 
@@ -60,9 +60,9 @@ public class XAdES132OnlyTest {
 
 		// Restrict the current XMLDocumentValidator to XAdES 1.3.2 (and 1.4.1 for
 		// archival timestamps)
-		List<XAdESPaths> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();
+		List<XAdESPath> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();
 		xadesPathsHolders.clear();
-		xadesPathsHolders.add(new XAdES132Paths());
+		xadesPathsHolders.add(new XAdES132Path());
 
 		Reports reports = xmlDocumentValidator.validateDocument();
 		// end::demo[]

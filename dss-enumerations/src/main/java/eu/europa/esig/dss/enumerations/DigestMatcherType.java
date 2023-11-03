@@ -71,6 +71,18 @@ public enum DigestMatcherType {
 	COUNTER_SIGNED_SIGNATURE_VALUE,
 
 	/** Timestamp */
-	MESSAGE_IMPRINT
+	MESSAGE_IMPRINT,
+
+	/** Evidence record archive object */
+	EVIDENCE_RECORD_ARCHIVE_OBJECT,
+
+	/** Identifies evidence record archive object which has not been associated with any of the provided documents */
+	EVIDENCE_RECORD_ORPHAN_REFERENCE,
+
+	/** Evidence record previous archive time-stamp object */
+	EVIDENCE_RECORD_ARCHIVE_TIME_STAMP,
+
+	/** Evidence record previous archive time-stamp sequence */
+	EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE
 
 }

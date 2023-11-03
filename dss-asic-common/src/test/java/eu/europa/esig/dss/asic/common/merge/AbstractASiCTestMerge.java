@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractASiCTestMerge<SP extends SerializableSignatureParameters,
-        TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation<SP, TP> {
+        TP extends SerializableTimestampParameters> extends AbstractPkiFactoryTestValidation {
 
     private String signingAlias;
 

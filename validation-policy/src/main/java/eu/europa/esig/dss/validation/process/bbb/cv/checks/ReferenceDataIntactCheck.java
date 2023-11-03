@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -33,8 +33,10 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Checks if the referenced data is intact
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
-public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
+public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** The reference DigestMatcher */
 	private final XmlDigestMatcher digestMatcher;
@@ -47,7 +49,7 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 	 * @param digestMatcher {@link XmlDigestMatcher}
 	 * @param constraint {@link LevelConstraint}
 	 */
-	public ReferenceDataIntactCheck(I18nProvider i18nProvider, XmlCV result, XmlDigestMatcher digestMatcher, LevelConstraint constraint) {
+	public ReferenceDataIntactCheck(I18nProvider i18nProvider, T result, XmlDigestMatcher digestMatcher, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.digestMatcher = digestMatcher;
 	}
@@ -64,6 +66,10 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 				return MessageTag.BBB_CV_TSP_IRDOI;
 			case COUNTER_SIGNED_SIGNATURE_VALUE:
 				return MessageTag.BBB_CV_CS_CSPS;
+			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
+				return MessageTag.BBB_CV_ER_ATSRI;
+			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
+				return MessageTag.BBB_CV_ER_ATSSRI;
 			default:
 				return MessageTag.BBB_CV_IRDOI;
 		}
@@ -76,6 +82,10 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 				return MessageTag.BBB_CV_TSP_IRDOI_ANS;
 			case COUNTER_SIGNED_SIGNATURE_VALUE:
 				return MessageTag.BBB_CV_CS_CSPS_ANS;
+			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
+				return MessageTag.BBB_CV_ER_ATSRI_ANS;
+			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
+				return MessageTag.BBB_CV_ER_ATSSRI_ANS;
 			default:
 				return MessageTag.BBB_CV_IRDOI_ANS;
 		}
@@ -93,13 +103,22 @@ public class ReferenceDataIntactCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected String buildAdditionalInfo() {
-		if (!DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType()) &&
-				!DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE.equals(digestMatcher.getType())) {
-			String referenceName = Utils.isStringNotBlank(digestMatcher.getName()) ?
-					digestMatcher.getName() : digestMatcher.getType().name();
-			return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
+		Object referenceName;
+		switch (digestMatcher.getType()) {
+			case MESSAGE_IMPRINT:
+			case COUNTER_SIGNED_SIGNATURE_VALUE:
+				return null;
+			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
+				referenceName = MessageTag.TST_TYPE_REF_ER_ATST;
+				break;
+			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
+				referenceName = MessageTag.TST_TYPE_REF_ER_ATST_SEQ;
+				break;
+			default:
+				referenceName = Utils.isStringNotBlank(digestMatcher.getName()) ?
+						digestMatcher.getName() : digestMatcher.getType().name();
 		}
-		return null;
+		return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
 	}
 
 }

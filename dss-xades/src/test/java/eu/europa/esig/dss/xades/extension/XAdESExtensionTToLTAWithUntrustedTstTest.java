@@ -67,7 +67,7 @@ public class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestE
         calendar.setTime(getSigningCert().getNotAfter());
         calendar.add(Calendar.MONTH, -6);
         Date tstTime = calendar.getTime();
-        return getOnlineTSPSourceByNameAndTime(SELF_SIGNED_TSA, tstTime);
+        return getKeyStoreTSPSourceByNameAndTime(SELF_SIGNED_TSA, tstTime);
     }
 
     @Override

@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -49,7 +50,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -72,6 +72,9 @@ public class DiagnosticData {
 
 	/** List of found timestamps */
 	private List<TimestampWrapper> usedTimestamps;
+
+	/** List of found evidence records */
+	private List<EvidenceRecordWrapper> foundEvidenceRecords;
 
 	/**
 	 * Default constructor
@@ -504,6 +507,22 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * Returns a list of {@code TimestampWrapper}s for the given {@code TimestampType}
+	 *
+	 * @param timestampType {@link TimestampType} to get time-stamps for
+	 * @return a list of {@link TimestampWrapper}
+	 */
+	public List<TimestampWrapper> getTimestampsByType(TimestampType timestampType) {
+		List<TimestampWrapper> result = new ArrayList<>();
+		for (TimestampWrapper timestampWrapper : getTimestampList()) {
+			if (timestampType != null && timestampType == timestampWrapper.getType()) {
+				result.add(timestampWrapper);
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * This method indicates if the certificate signature is valid and the revocation status is valid.
 	 *
 	 * @param dssCertificateId
@@ -905,9 +924,9 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method retrieves a set of timestamp wrappers
+	 * This method retrieves a list of timestamp wrappers
 	 * 
-	 * @return a List of timestamp wrappers
+	 * @return a list of timestamp wrappers
 	 */
 	public List<TimestampWrapper> getTimestampList() {
 		if (usedTimestamps == null) {
@@ -920,6 +939,56 @@ public class DiagnosticData {
 			}
 		}
 		return usedTimestamps;
+	}
+
+	/**
+	 * Returns a list of time-stamp tokens which are not evidence record time-stamps
+	 *
+	 * @return a list of {@link TimestampWrapper}s
+	 */
+	public List<TimestampWrapper> getNonEvidenceRecordTimestamps() {
+		List<TimestampWrapper> result = new ArrayList<>();
+		for (TimestampWrapper timestampWrapper : getTimestampList()) {
+			if (!timestampWrapper.getType().isEvidenceRecordTimestamp()) {
+				result.add(timestampWrapper);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * This method retrieves a list of evidence record wrappers
+	 *
+	 * @return a list of evidence record wrappers
+	 */
+	public List<EvidenceRecordWrapper> getEvidenceRecords() {
+		if (foundEvidenceRecords == null) {
+			foundEvidenceRecords = new ArrayList<>();
+			List<XmlEvidenceRecord> xmlEvidenceRecords = wrapped.getEvidenceRecords();
+			if (xmlEvidenceRecords != null) {
+				for (XmlEvidenceRecord xmlEvidenceRecord : xmlEvidenceRecords) {
+					foundEvidenceRecords.add(new EvidenceRecordWrapper(xmlEvidenceRecord));
+				}
+			}
+		}
+		return foundEvidenceRecords;
+	}
+
+	/**
+	 * Returns the EvidenceRecordWrapper corresponding to the given id.
+	 *
+	 * @param id
+	 *            evidence record id
+	 * @return evidence record wrapper or null
+	 */
+	public EvidenceRecordWrapper getEvidenceRecordById(String id) {
+		List<EvidenceRecordWrapper> evidenceRecords = getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			if (id.equals(evidenceRecord.getId())) {
+				return evidenceRecord;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -986,17 +1055,6 @@ public class DiagnosticData {
 			}
 		}
 		return signatures;
-	}
-
-	/**
-	 * This method returns timestamps
-	 * 
-	 * @return a set of TimestampWrapper
-	 * @deprecated since 5.12. Use {@code Set<TimestampWrapper> timestampSet = new LinkedHashSet<>(getTimestampList());}
-	 */
-	@Deprecated
-	public Set<TimestampWrapper> getTimestampSet() {
-		return new LinkedHashSet<>(getTimestampList());
 	}
 
 	/**

@@ -34,7 +34,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -138,7 +138,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		this.signerInformation = signature.getSignerInformation();
 		this.detachedDocuments = signature.getDetachedContents();
 		this.timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(
-				cmsSignedData, certificateSource.getAllCertificateTokens());
+				cmsSignedData, certificateSource.getCertificates());
 	}
 
 	@Override

@@ -22,7 +22,7 @@ package eu.europa.esig.trustedlist.mra;
 
 import eu.europa.esig.trustedlist.TrustedListUtils;
 import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

@@ -55,10 +55,22 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 *
 	 * NOTE: a signing certificate shall be provided to embed the 'kid' header
 	 *
-	 * DEFAULT : TRUE ('kid' header parameter is included into the signed header, provided that
+	 * DEFAULT: TRUE ('kid' header parameter is included into the signed header, provided that
 	 *           the signing-certificate is defined within the signature parameters).
 	 */
 	private boolean includeKeyIdentifier = true;
+
+	/**
+	 * This property defines a value for the 'x5u' signed header parameter. The value shall refer to a URI where
+	 * the X.509 public key certificate or certificate chain corresponding to the key used to digitally sign the JWS
+	 * can be retrieved from.
+	 *
+	 * NOTE: use methods {@code #setSigningCertificate} and {@code #includeCertificateChain}
+	 *       to disable encapsulation of the signing certificate and certificate chain binaries
+	 *
+	 * DEFAULT: NULL (the 'x5u' header parameter is not included)
+	 */
+	private String x509Url;
 	
 	/**
 	 * Defines if the payload has to be base64url encoded
@@ -199,6 +211,31 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 */
 	public void setIncludeKeyIdentifier(boolean includeKeyIdentifier) {
 		this.includeKeyIdentifier = includeKeyIdentifier;
+	}
+
+	/**
+	 * Returns the value of the 'x5u' header parameter if present
+	 *
+	 * @return {@link String}
+	 */
+	public String getX509Url() {
+		return x509Url;
+	}
+
+	/**
+	 * Sets the value for the 'x5u' signed header parameter. The value shall refer to a URI where
+	 * the X.509 public key certificate or certificate chain corresponding to the key used to digitally sign the JWS
+	 * can be retrieved from.
+	 * <p>
+	 * NOTE: use methods {@code #setSigningCertificate} and {@code #includeCertificateChain}
+	 *       to disable encapsulation of the signing certificate and certificate chain binaries (included by default).
+	 * <p>
+	 * DEFAULT: NULL (the 'x5u' header parameter is not included)
+	 *
+	 * @param x509Url {@link String} value of 'x5u' header parameter
+	 */
+	public void setX509Url(String x509Url) {
+		this.x509Url = x509Url;
 	}
 
 	/**

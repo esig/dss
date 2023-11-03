@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
@@ -28,7 +28,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -49,11 +49,11 @@ public final class XAdESRevocationRefExtractionUtils {
 	/**
 	 * Extracts a {@code OCSPRef} from a {@code ocspRefElement}
 	 *
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @param ocspRefElement {@link Element} ocspRef element
 	 * @return {@link OCSPRef}
 	 */
-	public static OCSPRef createOCSPRef(final XAdESPaths xadesPaths, final Element ocspRefElement) {
+	public static OCSPRef createOCSPRef(final XAdESPath xadesPaths, final Element ocspRefElement) {
 
 		Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
 
@@ -72,7 +72,7 @@ public final class XAdESRevocationRefExtractionUtils {
 		return new OCSPRef(digest, producedAtDate, responderId);
 	}
 
-	private static Date getOCSPProducedAtDate(final XAdESPaths xadesPaths, final Element ocspRefElement) {
+	private static Date getOCSPProducedAtDate(final XAdESPath xadesPaths, final Element ocspRefElement) {
 		Date producedAtDate = null;
 		final Element producedAtEl = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefProducedAt());
 		if (producedAtEl != null) {
@@ -81,7 +81,7 @@ public final class XAdESRevocationRefExtractionUtils {
 		return producedAtDate;
 	}
 
-	private static ResponderId getOCSPResponderId(final XAdESPaths xadesPaths, final Element ocspRefElement) {
+	private static ResponderId getOCSPResponderId(final XAdESPath xadesPaths, final Element ocspRefElement) {
 		X500Principal responderName = null;
 		byte[] ski = null;
 		String currentOCSPRefResponderIDByName = xadesPaths.getCurrentOCSPRefResponderIDByName();
@@ -94,7 +94,12 @@ public final class XAdESRevocationRefExtractionUtils {
 
 			final Element responderIdByKey = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByKey);
 			if (responderIdByKey != null) {
-				ski = Utils.fromBase64(responderIdByKey.getTextContent());
+				String base64EncodedResponderId = responderIdByKey.getTextContent();
+				if (Utils.isBase64Encoded(base64EncodedResponderId)) {
+					ski = Utils.fromBase64(base64EncodedResponderId);
+				} else {
+					LOG.warn("OCSP ResponderId value is not represented by a base64-encoded string!");
+				}
 			}
 		} else {
 			final Element responderIdElement = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderID());
@@ -112,11 +117,11 @@ public final class XAdESRevocationRefExtractionUtils {
 	/**
 	 * Extracts a {@code CRLRef} from a {@code crlRefElement}
 	 *
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 * @param crlRefElement {@link Element} crlRef element
 	 * @return {@link OCSPRef}
 	 */
-	public static CRLRef createCRLRef(XAdESPaths xadesPaths, Element crlRefElement) {
+	public static CRLRef createCRLRef(XAdESPath xadesPaths, Element crlRefElement) {
 		final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(crlRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
 		if (digest == null) {
 			LOG.warn("Skipped CRLRef (missing DigestAlgAndValue)");

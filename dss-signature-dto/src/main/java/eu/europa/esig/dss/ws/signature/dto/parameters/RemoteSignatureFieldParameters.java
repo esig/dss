@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
+import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
+
 import java.io.Serializable;
 
 /**
@@ -45,6 +47,9 @@ public class RemoteSignatureFieldParameters implements Serializable {
 	/** The signature field height */
 	private Float height;
 
+	/** The rotation of the signature field */
+	private VisualSignatureRotation rotation;
+
 	/** The page number to create the field on */
     private Integer page;
 
@@ -52,6 +57,7 @@ public class RemoteSignatureFieldParameters implements Serializable {
 	 * Default constructor instantiating object with null values
 	 */
 	public RemoteSignatureFieldParameters() {
+		// empty
 	}
 	
 	/**
@@ -147,6 +153,24 @@ public class RemoteSignatureFieldParameters implements Serializable {
 	}
 
 	/**
+	 * Gets the signature field rotation
+	 *
+	 * @return {@link VisualSignatureRotation}
+	 */
+	public VisualSignatureRotation getRotation() {
+		return this.rotation;
+	}
+
+	/**
+	 * Sets the signature field rotation
+	 *
+	 * @param rotation {@link VisualSignatureRotation}
+	 */
+	public void setRotation(final VisualSignatureRotation rotation) {
+		this.rotation = rotation;
+	}
+
+	/**
 	 * Gets the page number to create the signature on
 	 *
 	 * @return {@link Integer}
@@ -169,11 +193,12 @@ public class RemoteSignatureFieldParameters implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((fieldId == null) ? 0 : fieldId.hashCode());
-		result = prime * result + ((height == null) ? 0 : height.hashCode());
 		result = prime * result + ((originX == null) ? 0 : originX.hashCode());
 		result = prime * result + ((originY == null) ? 0 : originY.hashCode());
-		result = prime * result + ((page == null) ? 0 : page.hashCode());
 		result = prime * result + ((width == null) ? 0 : width.hashCode());
+		result = prime * result + ((height == null) ? 0 : height.hashCode());
+		result = prime * result + ((rotation == null) ? 0 : rotation.hashCode());
+		result = prime * result + ((page == null) ? 0 : page.hashCode());
 		return result;
 	}
 
@@ -217,6 +242,9 @@ public class RemoteSignatureFieldParameters implements Serializable {
 		} else if (!originY.equals(other.originY)) {
 			return false;
 		}
+		if (rotation != other.rotation) {
+			return false;
+		}
 		if (page == null) {
 			if (other.page != null) {
 				return false;
@@ -237,7 +265,7 @@ public class RemoteSignatureFieldParameters implements Serializable {
 	@Override
 	public String toString() {
 		return "RemoteSignatureFieldParameters [fieldId=" + fieldId + ", originX=" + originX + ", originY=" + originY
-				+ ", width=" + width + ", height=" + height + ", page=" + page + "]";
+				+ ", width=" + width + ", height=" + height + ", rotation=" + rotation + ", page=" + page + "]";
 	}
 
 }

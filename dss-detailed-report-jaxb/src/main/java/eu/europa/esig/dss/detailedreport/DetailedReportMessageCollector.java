@@ -24,13 +24,15 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MessageType;
 import eu.europa.esig.dss.enumerations.ValidationTime;
@@ -203,6 +205,10 @@ public class DetailedReportMessageCollector {
 		if (timestampById != null) {
 			return collectTimestampValidation(type, timestampById);
 		}
+		XmlEvidenceRecord evidenceRecordById = detailedReport.getXmlEvidenceRecordById(tokenId);
+		if (evidenceRecordById != null) {
+			return collectEvidenceRecordValidation(type, evidenceRecordById);
+		}
 		XmlTLAnalysis tlAnalysisById = detailedReport.getTLAnalysisById(tokenId);
 		if (tlAnalysisById != null) {
 			return collectTLAnalysisValidation(type, tlAnalysisById);
@@ -250,20 +256,22 @@ public class DetailedReportMessageCollector {
 	}
 
 	private List<Message> collectTimestampValidation(MessageType type, XmlTimestamp xmlTimestamp) {
-		XmlValidationProcessTimestamp validationProcessTimestamps = xmlTimestamp.getValidationProcessTimestamp();
-
-		XmlConclusion conclusion = new XmlConclusion();
-		conclusion.getWarnings().addAll(validationProcessTimestamps.getConclusion().getWarnings());
-		conclusion.getInfos().addAll(validationProcessTimestamps.getConclusion().getInfos());
-
-		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
-		XmlPSV psv = tstBBB.getPSV();
-		if (psv == null || psv.getConclusion() == null || !Indication.PASSED.equals(psv.getConclusion().getIndication())) {
-			conclusion.getErrors().addAll(validationProcessTimestamps.getConclusion().getErrors());
-		}
-
 		List<Message> result = new ArrayList<>();
-		addMessages(result, getMessages(type, conclusion));
+
+		XmlValidationProcessBasicTimestamp timestampBasic = xmlTimestamp.getValidationProcessBasicTimestamp();
+		XmlValidationProcessArchivalDataTimestamp timestampArchivalData = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+		if (timestampArchivalData == null || MessageType.ERROR != type || !Indication.PASSED.equals(timestampArchivalData.getConclusion().getIndication())) {
+			addMessages(result, getMessages(type, timestampBasic));
+		}
+		addMessages(result, getMessages(type, timestampArchivalData));
+		return result;
+	}
+
+	private List<Message> collectEvidenceRecordValidation(MessageType type, XmlEvidenceRecord xmlEvidenceRecord) {
+		List<Message> result = new ArrayList<>();
+
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+		addMessages(result, getMessages(type, validationProcessEvidenceRecord));
 		return result;
 	}
 

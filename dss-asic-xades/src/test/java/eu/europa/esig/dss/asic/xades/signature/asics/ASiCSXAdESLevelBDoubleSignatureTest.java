@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -108,7 +108,7 @@ public class ASiCSXAdESLevelBDoubleSignatureTest extends AbstractASiCSXAdESTestS
                     Element element = (Element) node;
                     assertEquals("Signature", element.getLocalName());
 
-                    NodeList mimeTypeList = DomUtils.getNodeList(element, new XAdES132Paths().getDataObjectFormatMimeType());
+                    NodeList mimeTypeList = DomUtils.getNodeList(element, new XAdES132Path().getDataObjectFormatMimeType());
                     assertEquals(1, mimeTypeList.getLength());
                     assertEquals(MimeTypeEnum.TEXT.getMimeTypeString(), mimeTypeList.item(0).getTextContent());
 

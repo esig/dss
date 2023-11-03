@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -35,7 +34,6 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -43,8 +41,9 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -97,15 +96,15 @@ public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestVali
 
 		Node signature = signaturesList.item(0);
 		Element unsignedSignatureProperties = DomUtils.getElement(signature,
-				new XAdES132Paths().getUnsignedSignaturePropertiesPath());
+				new XAdES132Path().getUnsignedSignaturePropertiesPath());
 		assertNotNull(unsignedSignatureProperties);
 
-		Element signatureTimeStamp = DomUtils.getElement(signature, new XAdES132Paths().getSignatureTimestampPath());
+		Element signatureTimeStamp = DomUtils.getElement(signature, new XAdES132Path().getSignatureTimestampPath());
 		assertNotNull(signatureTimeStamp);
 
 		unsignedSignatureProperties.removeChild(signatureTimeStamp);
 
-		byte[] docBytesWithRemovedSignatureTst = DSSXMLUtils.serializeNode(dom);
+		byte[] docBytesWithRemovedSignatureTst = DomUtils.serializeNode(dom);
 		return new InMemoryDocument(docBytesWithRemovedSignatureTst);
 	}
 
@@ -113,7 +112,7 @@ public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestVali
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
-		certificateVerifier.setOcspSource(new OnlineOCSPSource());
+		certificateVerifier.setOcspSource(pkiOCSPSource());
 		validator.setCertificateVerifier(certificateVerifier);
 		return validator;
 	}

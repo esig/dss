@@ -26,11 +26,15 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -45,6 +49,7 @@ import org.junit.jupiter.api.Test;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -170,7 +175,7 @@ public class RemoteDocumentValidationServiceTest {
 
 		assertEquals(1, result.getSimpleReport().getSignaturesCount());
 		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getFoundTimestamps().size());
-		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestamp().get(0).getIndication());
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestampOrEvidenceRecord().get(0).getIndication());
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
 
@@ -241,6 +246,83 @@ public class RemoteDocumentValidationServiceTest {
 		assertArrayEquals(DSSUtils.toByteArray(RemoteDocumentConverter.toDSSDocument(originalDocument)), document.getBytes());
 	}
 
+	@Test
+	public void testValidateTimestamp() {
+		RemoteDocument timestampDocument = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/d-trust.tsr"));
+		RemoteDocument timestampedContent = RemoteDocumentConverter.toRemoteDocument(new InMemoryDocument("Test123".getBytes()));
+		DataToValidateDTO dto = new DataToValidateDTO(timestampDocument, timestampedContent, null);
+		
+		WSReportsDTO result = validationService.validateDocument(dto);
+		assertNotNull(result.getDiagnosticData());
+		assertNotNull(result.getDetailedReport());
+		assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getValidationReport());
+
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(0, simpleReport.getSignaturesCount());
+		assertEquals(1, simpleReport.getTimestampIdList().size());
+
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstTimestampId()));
+	}
+
+	@Test
+	public void testValidateEvidenceRecord() {
+		RemoteDocument erDocument = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/evidence-record.xml"));
+		RemoteDocument originalFile = new RemoteDocument(Utils.fromBase64("dCeyHarzzN3cWzVNTMKZyY00rW4gNGGto/2ZLfzpsXM="), DigestAlgorithm.SHA256, "signed-file");
+		DataToValidateDTO dto = new DataToValidateDTO(erDocument, originalFile, null);
+
+		WSReportsDTO result = validationService.validateDocument(dto);
+		assertNotNull(result.getDiagnosticData());
+		assertNotNull(result.getDetailedReport());
+		assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getValidationReport());
+
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(0, simpleReport.getSignaturesCount());
+		assertEquals(0, simpleReport.getTimestampIdList().size());
+		assertEquals(1, simpleReport.getEvidenceRecordIdList().size());
+
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstEvidenceRecordId()));
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstEvidenceRecordId()));
+	}
+
+	@Test
+	public void testValidateSignatureWithDetachedEvidenceRecord() {
+		RemoteDocument signatureDocument = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/Signature-X-LT.xml"));
+		RemoteDocument erDocument = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/evidence-record.xml"));
+
+		DataToValidateDTO dto = new DataToValidateDTO();
+		dto.setSignedDocument(signatureDocument);
+		dto.setEvidenceRecords(Collections.singletonList(erDocument));
+
+		WSReportsDTO result = validationService.validateDocument(dto);
+		assertNotNull(result.getDiagnosticData());
+		assertNotNull(result.getDetailedReport());
+		assertNotNull(result.getSimpleReport());
+		assertNotNull(result.getValidationReport());
+
+		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(2, simpleReport.getSignaturesCount());
+		assertEquals(0, simpleReport.getTimestampIdList().size());
+		assertEquals(0, simpleReport.getEvidenceRecordIdList().size());
+
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+		List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(simpleReport.getFirstSignatureId());
+		assertEquals(1, signatureEvidenceRecords.size());
+
+		assertEquals(Indication.INDETERMINATE, signatureEvidenceRecords.get(0).getIndication());
+		assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, signatureEvidenceRecords.get(0).getSubIndication());
+	}
+
 	private void validateReports(WSReportsDTO result) {
 		assertNotNull(result.getDiagnosticData());
 		assertNotNull(result.getDetailedReport());
@@ -249,7 +331,7 @@ public class RemoteDocumentValidationServiceTest {
 
 		assertEquals(1, result.getSimpleReport().getSignaturesCount());
 		assertEquals(2, result.getDiagnosticData().getSignatures().get(0).getFoundTimestamps().size());
-		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestamp().get(0).getIndication());
+		assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestampOrEvidenceRecord().get(0).getIndication());
 
 		Reports reports = new Reports(result.getDiagnosticData(), result.getDetailedReport(), result.getSimpleReport(), result.getValidationReport());
 

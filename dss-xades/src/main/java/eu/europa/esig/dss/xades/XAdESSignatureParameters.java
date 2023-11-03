@@ -21,14 +21,17 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.definition.DSSNamespace;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 import org.w3c.dom.Document;
 
 import java.util.List;
@@ -84,19 +87,19 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for KeyInfo.
 	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String keyInfoCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
+	private String keyInfoCanonicalizationMethod = XMLCanonicalizer.DEFAULT_DSS_C14N_METHOD;
 
 	/**
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedInfo.
 	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String signedInfoCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
+	private String signedInfoCanonicalizationMethod = XMLCanonicalizer.DEFAULT_DSS_C14N_METHOD;
 
 	/**
 	 * ds:CanonicalizationMethod indicates the canonicalization algorithm: Algorithm="..." for SignedProperties.
 	 * The EXCLUSIVE canonicalization is used by default
 	 */
-	private String signedPropertiesCanonicalizationMethod = DSSXMLUtils.DEFAULT_DSS_C14N_METHOD;
+	private String signedPropertiesCanonicalizationMethod = XMLCanonicalizer.DEFAULT_DSS_C14N_METHOD;
 
 	/**
 	 * This parameter allows producing a Manifest signature (https://www.w3.org/TR/xmldsig-core/#sec-o-Manifest).
@@ -146,17 +149,17 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * XMLDSig definition
 	 */
-	private DSSNamespace xmldsigNamespace = XAdESNamespaces.XMLDSIG;
+	private DSSNamespace xmldsigNamespace = XMLDSigNamespace.NS;
 	
 	/**
 	 * XAdES 1.1.1, 1.2.2 or 1.3.2 definition
 	 */
-	private DSSNamespace xadesNamespace = new DSSNamespace(XAdESNamespaces.XADES_132.getUri(), "xades");
+	private DSSNamespace xadesNamespace = new DSSNamespace(XAdESNamespace.XADES_132.getUri(), "xades");
 
 	/**
 	 * XAdES 1.4.1 definition
 	 */
-	private DSSNamespace xades141Namespace = XAdESNamespaces.XADES_141;
+	private DSSNamespace xades141Namespace = XAdESNamespace.XADES_141;
 
 	/**
 	 * List of custom ds:Object elements to be incorporated inside the signature
@@ -169,6 +172,11 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * Default: SHA256
 	 */
 	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA256;
+
+	/**
+	 * List of custom xades:DataObjectFormat elements incorporated within xades:SignedDataObjectProperties element of the signature
+	 */
+	private List<DSSDataObjectFormat> dataObjectFormatList;
 
 	/**
 	 * Default constructor instantiating object with null values
@@ -310,6 +318,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets a list of references to be incorporated into the signature
+	 * NOTE: This method overwrites a default behavior on ds:Reference's creation. It should be used only by experienced users.
 	 *
 	 * @param references a list of {@link DSSReference}s
 	 */
@@ -524,7 +533,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	public void setXmldsigNamespace(DSSNamespace xmldsigNamespace) {
 		Objects.requireNonNull(xmldsigNamespace);
 		String uri = xmldsigNamespace.getUri();
-		if (XAdESNamespaces.XMLDSIG.isSameUri(uri)) {
+		if (XMLDSigNamespace.NS.isSameUri(uri)) {
 			this.xmldsigNamespace = xmldsigNamespace;
 		} else {
 			throw new IllegalArgumentException("Not accepted URI");
@@ -551,7 +560,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	public void setXadesNamespace(DSSNamespace xadesNamespace) {
 		Objects.requireNonNull(xadesNamespace);
 		String uri = xadesNamespace.getUri();
-		if (XAdESNamespaces.XADES_111.isSameUri(uri) || XAdESNamespaces.XADES_122.isSameUri(uri) || XAdESNamespaces.XADES_132.isSameUri(uri)) {
+		if (XAdESNamespace.XADES_111.isSameUri(uri) || XAdESNamespace.XADES_122.isSameUri(uri) || XAdESNamespace.XADES_132.isSameUri(uri)) {
 			this.xadesNamespace = xadesNamespace;
 		} else {
 			throw new IllegalArgumentException("Not accepted URI");
@@ -578,7 +587,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	public void setXades141Namespace(DSSNamespace xades141Namespace) {
 		Objects.requireNonNull(xades141Namespace);
 		String uri = xades141Namespace.getUri();
-		if (XAdESNamespaces.XADES_141.isSameUri(uri)) {
+		if (XAdESNamespace.XADES_141.isSameUri(uri)) {
 			this.xades141Namespace = xades141Namespace;
 		} else {
 			throw new IllegalArgumentException("Not accepted URI");
@@ -620,7 +629,28 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * @param tokenReferencesDigestAlgorithm {@link DigestAlgorithm}
 	 */
 	public void setTokenReferencesDigestAlgorithm(DigestAlgorithm tokenReferencesDigestAlgorithm) {
+		Objects.requireNonNull(tokenReferencesDigestAlgorithm, "TokenReferencesDigestAlgorithm cannot be null!");
 		this.tokenReferencesDigestAlgorithm = tokenReferencesDigestAlgorithm;
+	}
+
+	/**
+	 * Gets a list of custom xades:DataObjectFormat elements
+	 *
+	 * @return list of {@link DSSDataObjectFormat}s
+	 */
+	public List<DSSDataObjectFormat> getDataObjectFormatList() {
+		return dataObjectFormatList;
+	}
+
+	/**
+	 * Sets a list of custom xades:DataObjectFormat elements to be incorporated within
+	 * xades:SignedDataObjectProperties element of the signature.
+	 * NOTE: this method overwrites default behavior on xades:DataObjectFormat creation. It should be used only by experienced users.
+	 *
+	 * @param dataObjectFormatList list of {@link DSSDataObjectFormat}s
+	 */
+	public void setDataObjectFormatList(List<DSSDataObjectFormat> dataObjectFormatList) {
+		this.dataObjectFormatList = dataObjectFormatList;
 	}
 
 	@Override

@@ -20,21 +20,9 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.RevocationWrapper;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.*;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
@@ -45,80 +33,87 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
 
-	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
-	private ASiCWithXAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+    private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
+    private ASiCWithXAdESSignatureParameters signatureParameters;
+    private DSSDocument documentToSign;
 
-	@BeforeEach
-	public void init() throws Exception {
-		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+    @BeforeEach
+    public void init() throws Exception {
+        documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
-		signatureParameters = new ASiCWithXAdESSignatureParameters();
-		signatureParameters.bLevel().setSigningDate(new Date());
-		signatureParameters.setSigningCertificate(getSigningCert());
-		signatureParameters.setCertificateChain(getCertificateChain());
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
-		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        signatureParameters = new ASiCWithXAdESSignatureParameters();
+        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+        signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+        signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+        signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getPSSGoodTsa());
-	}
-	
-	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		InMemoryDocument doc = new InMemoryDocument(byteArray);
+        service = new ASiCWithXAdESService(getCertificateVerifierWithMGF1());
+        service.setTspSource(getPSSGoodTsa());
+    }
 
-		SignedDocumentValidator validator = getValidator(doc);
+    @Override
+    protected void onDocumentSigned(byte[] byteArray) {
+        InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		Reports reports = validator.validateDocument();
+        SignedDocumentValidator validator = getValidator(doc);
 
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		verifyDiagnosticData(diagnosticData);
-		
-		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
-		for(SignatureWrapper wrapper: allSignatures) {
-			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
-		}
-		
-		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
-		for(CertificateWrapper wrapper: usedCertificates) {
-			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
-		}
-		
-		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
-		for(RevocationWrapper wrapper : allRevocationData) {
-			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
-		}
-		
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		for(TimestampWrapper wrapper : timestampList) {
-			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
-		}
-	}
+        Reports reports = validator.validateDocument();
 
-	@Override
-	protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
-		return service;
-	}
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        verifyDiagnosticData(diagnosticData);
 
-	@Override
-	protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
-		return signatureParameters;
-	}
+        Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+        for (SignatureWrapper wrapper : allSignatures) {
+            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+        }
 
-	@Override
-	protected String getSigningAlias() {
-		return PSS_GOOD_USER;
-	}
+        List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+        for (CertificateWrapper wrapper : usedCertificates) {
+            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+        }
 
-	@Override
-	protected DSSDocument getDocumentToSign() {
-		return documentToSign;
-	}
+        Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
+        for (RevocationWrapper wrapper : allRevocationData) {
+            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+        }
+
+        List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+        for (TimestampWrapper wrapper : timestampList) {
+            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+        }
+    }
+
+    @Override
+    protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
+        return service;
+    }
+
+    @Override
+    protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
+        return signatureParameters;
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return PSS_GOOD_USER;
+    }
+
+    @Override
+    protected DSSDocument getDocumentToSign() {
+        return documentToSign;
+    }
 
 }

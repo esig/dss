@@ -49,13 +49,23 @@ public class ASiCWithCAdESContainerExtractor extends AbstractASiCContainerExtrac
 	}
 
 	@Override
-	protected boolean isAllowedTimestamp(String entryName) {
-		return ASiCUtils.isTimestamp(entryName);
+	protected boolean isAllowedEvidenceRecordManifest(String entryName) {
+		return ASiCUtils.isEvidenceRecordManifest(entryName);
 	}
 
 	@Override
 	protected boolean isAllowedSignature(String entryName) {
 		return ASiCUtils.isCAdES(entryName);
+	}
+
+	@Override
+	protected boolean isAllowedTimestamp(String entryName) {
+		return ASiCUtils.isTimestamp(entryName);
+	}
+
+	@Override
+	protected boolean isAllowedEvidenceRecord(String entryName) {
+		return ASiCUtils.isEvidenceRecord(entryName);
 	}
 
 }

@@ -43,11 +43,11 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.signature.BaselineBCertificateSelector;
+import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.jwx.HeaderParameterNames;
@@ -196,7 +196,10 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.1.5 The x5u (X.509 URL) header parameter
 	 */
 	protected void incorporateSigningCertificateUri() {
-		// not supported
+		String x509Url = parameters.getX509Url();
+		if (Utils.isStringNotEmpty(x509Url)) {
+			addHeader(HeaderParameterNames.X509_URL, x509Url);
+		}
 	}
 	
 	/**
@@ -235,7 +238,9 @@ public class JAdESLevelBaselineB {
 			return;
 		}
 		
-		BaselineBCertificateSelector certificateSelector = new BaselineBCertificateSelector(certificateVerifier, parameters);
+		BaselineBCertificateSelector certificateSelector = new BaselineBCertificateSelector(parameters.getSigningCertificate(), parameters.getCertificateChain())
+				.setTrustAnchorBPPolicy(parameters.bLevel().isTrustAnchorBPPolicy())
+				.setTrustedCertificateSource(certificateVerifier.getTrustedCertSources());
 		List<CertificateToken> certificates = certificateSelector.getCertificates();
 		
 		List<String> base64Certificates = new ArrayList<>();

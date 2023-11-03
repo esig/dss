@@ -25,7 +25,6 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
-import java.io.Serializable;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +36,7 @@ import java.util.Set;
  * This class operates on several {@link CertificateSource} with the composite
  * design pattern.
  */
-public class ListCertificateSource implements Serializable {
+public class ListCertificateSource implements CertificateSource {
 
 	private static final long serialVersionUID = -7790810642120721289L;
 
@@ -50,6 +49,7 @@ public class ListCertificateSource implements Serializable {
 	 * Default constructor
 	 */
 	public ListCertificateSource() {
+		// empty
 	}
 	
 	/**
@@ -120,26 +120,22 @@ public class ListCertificateSource implements Serializable {
 	 * Returns a set of all containing certificate tokens
 	 * 
 	 * @return set of {@link CertificateToken}s
+	 * @deprecated since DSS 5.13. Use {@code #getCertificates} method instead
 	 */
+	@Deprecated
 	public Set<CertificateToken> getAllCertificateTokens() {
-		Set<CertificateToken> allTokens = new HashSet<>();
-		for (CertificateSource certificateSource : sources) {
-			allTokens.addAll(certificateSource.getCertificates());
-		}
-		return allTokens;
+		return new HashSet<>(getCertificates());
 	}
 
 	/**
 	 * Returns a set of all containing {@link CertificateSourceEntity}
 	 * 
 	 * @return set of {@link CertificateSourceEntity}s
+	 * @deprecated since DSS 5.13. Use {@code #getEntities} method instead
 	 */
+	@Deprecated
 	public Set<CertificateSourceEntity> getAllEntities() {
-		Set<CertificateSourceEntity> allEntities = new HashSet<>();
-		for (CertificateSource certificateSource : sources) {
-			allEntities.addAll(certificateSource.getEntities());
-		}
-		return allEntities;
+		return new HashSet<>(getEntities());
 	}
 
 	/**
@@ -179,15 +175,46 @@ public class ListCertificateSource implements Serializable {
 		return false;
 	}
 
+	@Override
+	public CertificateToken addCertificate(CertificateToken certificate) {
+		throw new UnsupportedOperationException("Cannot add a new certificate to a ListCertificateSource!");
+	}
+
+	@Override
+	public CertificateSourceType getCertificateSourceType() {
+		throw new UnsupportedOperationException("getCertificateSourceType() method is not supported in ListCertificateSource! " +
+				"Use getCertificateSourceType(CertificateToken certificate) method instead.");
+	}
+
+	@Override
+	public List<CertificateToken> getCertificates() {
+		Set<CertificateToken> allTokens = new HashSet<>();
+		for (CertificateSource certificateSource : sources) {
+			allTokens.addAll(certificateSource.getCertificates());
+		}
+		return new ArrayList<>(allTokens);
+	}
+
 	/**
 	 * This method checks in all sources in the given certificate is trusted
 	 * 
 	 * @param certificateToken the {@link CertificateToken} to be checked
 	 * @return true if the certificate is trusted
 	 */
+	@Override
 	public boolean isTrusted(CertificateToken certificateToken) {
 		for (CertificateSource source : sources) {
 			if (source.isTrusted(certificateToken)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isKnown(CertificateToken certificateToken) {
+		for (CertificateSource source : sources) {
+			if (source.isKnown(certificateToken)) {
 				return true;
 			}
 		}
@@ -199,6 +226,7 @@ public class ListCertificateSource implements Serializable {
 	 * 
 	 * @return true if all certificates from all sources are self-signed
 	 */
+	@Override
 	public boolean isAllSelfSigned() {
 		for (CertificateSource certificateSource : sources) {
 			if (!certificateSource.isAllSelfSigned()) {
@@ -208,14 +236,24 @@ public class ListCertificateSource implements Serializable {
 		return true;
 	}
 
+	@Override
+	public boolean isCertificateSourceEqual(CertificateSource certificateSource) {
+		return new HashSet<>(getCertificates()).equals(new HashSet<>(certificateSource.getCertificates()));
+	}
+
+	@Override
+	public boolean isCertificateSourceEquivalent(CertificateSource certificateSource) {
+		return new HashSet<>(getEntities()).equals(new HashSet<>(certificateSource.getEntities()));
+	}
+
 	/**
 	 * This method return the different {@link CertificateSourceType} where the
 	 * certificate is found
 	 * 
-	 * @param certificateToken the {@link CertificateToken} to be find
+	 * @param certificateToken the {@link CertificateToken} to be found
 	 * @return a Set with the different sources
 	 */
-	public Set<CertificateSourceType> getCertificateSource(CertificateToken certificateToken) {
+	public Set<CertificateSourceType> getCertificateSourceType(CertificateToken certificateToken) {
 		Set<CertificateSourceType> result = new HashSet<>();
 		for (CertificateSource source : sources) {
 			if (source.isKnown(certificateToken)) {
@@ -232,6 +270,7 @@ public class ListCertificateSource implements Serializable {
 	 * @param publicKey the {@link PublicKey} to find in the sources
 	 * @return a Set of found {@link CertificateToken}
 	 */
+	@Override
 	public Set<CertificateToken> getByPublicKey(PublicKey publicKey) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
@@ -248,12 +287,31 @@ public class ListCertificateSource implements Serializable {
 	 * @param ski the subject key identifier to find in the sources
 	 * @return a Set of found {@link CertificateToken}
 	 */
+	@Override
 	public Set<CertificateToken> getBySki(byte[] ski) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
 			result.addAll(source.getBySki(ski));
 		}
 		return result;
+	}
+
+	@Override
+	public Set<CertificateToken> findTokensFromCertRef(CertificateRef certificateRef) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSource source : sources) {
+			result.addAll(source.findTokensFromCertRef(certificateRef));
+		}
+		return result;
+	}
+
+	@Override
+	public List<CertificateSourceEntity> getEntities() {
+		Set<CertificateSourceEntity> allEntities = new HashSet<>();
+		for (CertificateSource certificateSource : sources) {
+			allEntities.addAll(certificateSource.getEntities());
+		}
+		return new ArrayList<>(allEntities);
 	}
 
 	/**
@@ -263,10 +321,20 @@ public class ListCertificateSource implements Serializable {
 	 * @param subject the {@link X500PrincipalHelper} to find in the sources
 	 * @return a Set of found {@link CertificateToken}
 	 */
+	@Override
 	public Set<CertificateToken> getBySubject(X500PrincipalHelper subject) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
 			result.addAll(source.getBySubject(subject));
+		}
+		return result;
+	}
+
+	@Override
+	public Set<CertificateToken> getBySignerIdentifier(SignerIdentifier signerIdentifier) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSource source : sources) {
+			result.addAll(source.getBySignerIdentifier(signerIdentifier));
 		}
 		return result;
 	}
@@ -278,13 +346,11 @@ public class ListCertificateSource implements Serializable {
 	 * @param signerIdentifier the {@link SignerIdentifier} to find in the
 	 *                              sources
 	 * @return a Set of found {@link CertificateToken}
+	 * @deprecated since DSS 5.13. Use {@code #getBySignerIdentifier(signerIdentifier)} method instead
 	 */
+	@Deprecated
 	public Set<CertificateToken> getByCertificateIdentifier(SignerIdentifier signerIdentifier) {
-		Set<CertificateToken> result = new HashSet<>();
-		for (CertificateSource source : sources) {
-			result.addAll(source.getBySignerIdentifier(signerIdentifier));
-		}
-		return result;
+		return getBySignerIdentifier(signerIdentifier);
 	}
 
 	/**
@@ -295,6 +361,7 @@ public class ListCertificateSource implements Serializable {
 	 *                              sources
 	 * @return a Set of found {@link CertificateToken}
 	 */
+	@Override
 	public Set<CertificateToken> getByCertificateDigest(Digest digest) {
 		Set<CertificateToken> result = new HashSet<>();
 		for (CertificateSource source : sources) {
@@ -310,13 +377,11 @@ public class ListCertificateSource implements Serializable {
 	 * @param certificateRef the {@link CertificateRef} to find in the
 	 *                              sources
 	 * @return a Set of found {@link CertificateToken}
+	 * @deprecated since DSS 5.13. Use {@code #findTokensFromCertRef(certificateRef)} method instead.
 	 */
+	@Deprecated
 	public Set<CertificateToken> findTokensFromRefs(CertificateRef certificateRef) {
-		Set<CertificateToken> result = new HashSet<>();
-		for (CertificateSource source : sources) {
-			result.addAll(source.findTokensFromCertRef(certificateRef));
-		}
-		return result;
+		return findTokensFromCertRef(certificateRef);
 	}
 
 	/**
@@ -335,7 +400,7 @@ public class ListCertificateSource implements Serializable {
 	 * @return the number of found {@link CertificateToken}
 	 */
 	public int getNumberOfCertificates() {
-		return getAllCertificateTokens().size();
+		return getCertificates().size();
 	}
 
 	/**
@@ -345,7 +410,7 @@ public class ListCertificateSource implements Serializable {
 	 * @return the number of found {@link CertificateSourceEntity}
 	 */
 	public int getNumberOfEntities() {
-		return getAllEntities().size();
+		return getEntities().size();
 	}
 
 }

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
@@ -41,8 +41,8 @@ import java.util.List;
  */
 public class TrustServiceAtTimeCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-    /** List of {@code TrustedServiceWrapper}s at control time */
-    private final List<TrustedServiceWrapper> trustServicesAtTime;
+    /** List of {@code TrustServiceWrapper}s at control time */
+    private final List<TrustServiceWrapper> trustServicesAtTime;
 
     /** The validation time type */
     private final ValidationTime validationTime;
@@ -52,12 +52,12 @@ public class TrustServiceAtTimeCheck extends ChainItem<XmlValidationCertificateQ
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlValidationCertificateQualification}
-     * @param trustServicesAtTime list of {@link TrustedServiceWrapper}s
+     * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
      * @param validationTime {@link ValidationTime}
      * @param constraint {@link LevelConstraint}
      */
     public TrustServiceAtTimeCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
-                     List<TrustedServiceWrapper> trustServicesAtTime, ValidationTime validationTime, LevelConstraint constraint) {
+                     List<TrustServiceWrapper> trustServicesAtTime, ValidationTime validationTime, LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.trustServicesAtTime = trustServicesAtTime;
         this.validationTime = validationTime;

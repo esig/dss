@@ -69,8 +69,8 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">GlobalSign NV/SA</TSPName>
                     </TSPNames>
@@ -80,8 +80,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATBE-0459134256</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
                             <ServiceNames>
                                 <ServiceName lang="en">GlobalSign Qualified CA 1</ServiceName>
                             </ServiceNames>
@@ -94,8 +94,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
                             <ServiceNames>
                                 <ServiceName lang="en">GlobalSign Qualified CA 1</ServiceName>
                             </ServiceNames>
@@ -108,10 +108,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-3E07BA6AF710887D844FD18DE4DA686F19C70DAA56BAD16D96C5F74246B8E528">
                     <Status>GOOD</Status>
@@ -166,8 +166,8 @@
                 </ExtendedKeyUsages>
                 <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">GlobalSign NV/SA</TSPName>
                     </TSPNames>
@@ -177,8 +177,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATBE-0459134256</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
                             <ServiceNames>
                                 <ServiceName lang="en">GlobalSign Qualified CA 1</ServiceName>
                             </ServiceNames>
@@ -191,8 +191,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
                             <ServiceNames>
                                 <ServiceName lang="en">GlobalSign Qualified CA 1</ServiceName>
                             </ServiceNames>
@@ -205,10 +205,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>d9AK7eyc+D0AWRmNaAVKDyk6N/e1MBNbh8pVOSSuB4U=</DigestValue>
@@ -256,7 +256,7 @@
                     <ocspUrl>http://ocsp2.globalsign.com/rootr6</ocspUrl>
                 </AuthorityInformationAccess>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -317,8 +317,8 @@
                     <crlUrl>http://crl.globalsign.com/ca/gsaatlsha2g4.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">GlobalSign NV/SA</TSPName>
                     </TSPNames>
@@ -328,8 +328,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATBE-0459134256</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
                             <ServiceNames>
                                 <ServiceName lang="en">GlobalSign Qualified CA 1</ServiceName>
                             </ServiceNames>
@@ -342,8 +342,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-F5709A2D2F68B53BF6F645BB178ADF95346F89FDA5C63BFDE08042A26492AAB2">
                             <ServiceNames>
                                 <ServiceName lang="en">GlobalSign Qualified CA 1</ServiceName>
                             </ServiceNames>
@@ -356,10 +356,10 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

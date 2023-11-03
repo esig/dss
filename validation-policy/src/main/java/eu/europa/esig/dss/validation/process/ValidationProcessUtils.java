@@ -65,6 +65,7 @@ public class ValidationProcessUtils {
 	 * Empty constructor
 	 */
 	private ValidationProcessUtils() {
+		// empty
 	}
 	
 	/**
@@ -374,36 +375,44 @@ public class ValidationProcessUtils {
 	 */
 	public static MessageTag getDigestMatcherCryptoPosition(XmlDigestMatcher digestMatcher) {
 		switch (digestMatcher.getType()) {
-		case OBJECT:
-		case REFERENCE:
-		case XPOINTER:
-			return MessageTag.ACCM_POS_REF;
-		case MANIFEST:
-			return MessageTag.ACCM_POS_MAN;
-		case MANIFEST_ENTRY:
-			return MessageTag.ACCM_POS_MAN_ENT;
-		case SIGNED_PROPERTIES:
-			return MessageTag.ACCM_POS_SIGND_PRT;
-		case KEY_INFO:
-			return MessageTag.ACCM_POS_KEY;
-		case SIGNATURE_PROPERTIES:
-			return MessageTag.ACCM_POS_SIGNTR_PRT;
-		case COUNTER_SIGNATURE:
-		case COUNTER_SIGNED_SIGNATURE_VALUE:
-			return MessageTag.ACCM_POS_CNTR_SIG;
-		case MESSAGE_DIGEST:
-			return MessageTag.ACCM_POS_MES_DIG;
-		case CONTENT_DIGEST:
-			return MessageTag.ACCM_POS_CON_DIG;
-		case JWS_SIGNING_INPUT_DIGEST:
-			return MessageTag.ACCM_POS_JWS;
-		case SIG_D_ENTRY:
-			return MessageTag.ACCM_POS_SIG_D_ENT;
-		case MESSAGE_IMPRINT:
-			return MessageTag.ACCM_POS_MESS_IMP;
-		default:
-			throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!",
-					digestMatcher.getType()));
+			case OBJECT:
+			case REFERENCE:
+			case XPOINTER:
+				return MessageTag.ACCM_POS_REF;
+			case MANIFEST:
+				return MessageTag.ACCM_POS_MAN;
+			case MANIFEST_ENTRY:
+				return MessageTag.ACCM_POS_MAN_ENT;
+			case SIGNED_PROPERTIES:
+				return MessageTag.ACCM_POS_SIGND_PRT;
+			case KEY_INFO:
+				return MessageTag.ACCM_POS_KEY;
+			case SIGNATURE_PROPERTIES:
+				return MessageTag.ACCM_POS_SIGNTR_PRT;
+			case COUNTER_SIGNATURE:
+			case COUNTER_SIGNED_SIGNATURE_VALUE:
+				return MessageTag.ACCM_POS_CNTR_SIG;
+			case MESSAGE_DIGEST:
+				return MessageTag.ACCM_POS_MES_DIG;
+			case CONTENT_DIGEST:
+				return MessageTag.ACCM_POS_CON_DIG;
+			case JWS_SIGNING_INPUT_DIGEST:
+				return MessageTag.ACCM_POS_JWS;
+			case SIG_D_ENTRY:
+				return MessageTag.ACCM_POS_SIG_D_ENT;
+			case MESSAGE_IMPRINT:
+				return MessageTag.ACCM_POS_MESS_IMP;
+			case EVIDENCE_RECORD_ARCHIVE_OBJECT:
+				return MessageTag.ACCM_POS_ER_ADO;
+			case EVIDENCE_RECORD_ORPHAN_REFERENCE:
+				return MessageTag.ACCM_POS_ER_OR;
+			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
+				return MessageTag.ACCM_POS_ER_TST;
+			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
+				return MessageTag.ACCM_POS_ER_TST_SEQ;
+			default:
+				throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!",
+						digestMatcher.getType()));
 		}
 	}
 
@@ -422,8 +431,12 @@ public class ValidationProcessUtils {
 			return MessageTag.TST_TYPE_VD_TST;
 		} else if (timestampType.isDocumentTimestamp()) {
 			return MessageTag.TST_TYPE_DOC_TST;
+		} else if (timestampType.isContainerTimestamp()) {
+			return MessageTag.TST_TYPE_CONTAINER_TST;
 		} else if (timestampType.isArchivalTimestamp()) {
 			return MessageTag.TST_TYPE_ARCHIVE_TST;
+		} else if (timestampType.isEvidenceRecordTimestamp()) {
+			return MessageTag.TST_TYPE_ER_TST;
 		} else {
 			throw new IllegalArgumentException(
 					String.format("The TimestampType '%s' is not supported!", timestampType));
@@ -450,7 +463,6 @@ public class ValidationProcessUtils {
 				throw new IllegalArgumentException("Unsupported context " + context);
 		}
 	}
-
 
 	/**
 	 * Returns the message tag for the given subContext
@@ -483,6 +495,10 @@ public class ValidationProcessUtils {
 				return MessageTag.VT_CERTIFICATE_ISSUANCE_TIME;
 			case VALIDATION_TIME:
 				return MessageTag.VT_VALIDATION_TIME;
+			case TIMESTAMP_GENERATION_TIME:
+				return MessageTag.VT_TST_GENERATION_TIME;
+			case TIMESTAMP_POE_TIME:
+				return MessageTag.VT_TST_POE_TIME;
 			default:
 				throw new IllegalArgumentException(String.format("The validation time [%s] is not supported", validationTime));
 		}
@@ -500,6 +516,19 @@ public class ValidationProcessUtils {
 			return null;
 		}
 		return URN_OID_PREFIX + oid;
+	}
+
+	/**
+	 * This method returns a domain name for any given valid URI
+	 *
+	 * @param uri {@link String} representing URI
+	 * @return {@link String} representing the extracted domain name, if applicable
+	 */
+	public static String getDomainName(String uri) {
+		if (uri == null) {
+			return null;
+		}
+		return uri.replaceAll("(^.*://)|(www\\.)|([?=:#/].*)", "");
 	}
 
 }

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -35,8 +35,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableListOfTrustedListsCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListCheck;
 import eu.europa.esig.dss.validation.process.qualification.signature.checks.AcceptableTrustedListPresenceCheck;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServiceFilter;
-import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustedServicesFilterFactory;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServiceFilter;
+import eu.europa.esig.dss.validation.process.qualification.trust.filter.TrustServicesFilterFactory;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -100,7 +100,7 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 
 		if (signingCertificate.isTrustedListReached()) {
 
-			List<TrustedServiceWrapper> originalTSPs = signingCertificate.getTrustedServices();
+			List<TrustServiceWrapper> originalTSPs = signingCertificate.getTrustServices();
 			
 			Set<String> listOfTrustedListUrls = originalTSPs.stream().filter(t -> t.getListOfTrustedLists() != null)
 					.map(t -> t.getListOfTrustedLists().getUrl()).collect(Collectors.toSet());
@@ -141,8 +141,8 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 			if (Utils.isCollectionNotEmpty(acceptableTLUrls)) {
 
 				// 1. filter by service for CAQC
-				TrustedServiceFilter filter = TrustedServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
-				List<TrustedServiceWrapper> acceptableServices = filter.filter(originalTSPs);
+				TrustServiceFilter filter = TrustServicesFilterFactory.createFilterByUrls(acceptableTLUrls);
+				List<TrustServiceWrapper> acceptableServices = filter.filter(originalTSPs);
 
 				CertQualificationAtTimeBlock certQualAtIssuanceBlock = new CertQualificationAtTimeBlock(i18nProvider, ValidationTime.CERTIFICATE_ISSUANCE_TIME,
 						signingCertificate, acceptableServices);

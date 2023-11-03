@@ -261,14 +261,14 @@ Default: `FAIL` (`NO_POLICY` and `ANY_POLICY`)
 
 * `PolicyAvailable` - this constraint is used to check whether the signature policy's document is accessible (e.g. from online source or from unsigned property SignaturePolicyStore). If the signature policy document is not accessible, the check will fail.
 
-Default: `FAIL`
+Default: `INFORM`
 
 [source,xml,indent=0]
-.Example of PolicyAvailable usage (with FAIL validation level)
+.Example of PolicyAvailable usage (with INFORM validation level)
 ----
 <SignatureConstraints>
     ...
-    <PolicyAvailable Level="FAIL" />
+    <PolicyAvailable Level="INFORM" />
     ...
 </SignatureConstraints>
 ----
@@ -289,14 +289,14 @@ Default: not executed
 
 * `PolicyHashMatch` - this constraint is used to check whether the hash of the signature policy defined within the signed property of the signature matched the computed hash of the actual extracted signature policy document. If the hash does not match, the check will fail.
 
-Default: `FAIL`
+Default: `WARN`
 
 [source,xml,indent=0]
-.Example of PolicyHashMatch usage (with FAIL validation level)
+.Example of PolicyHashMatch usage (with WARN validation level)
 ----
 <SignatureConstraints>
     ...
-    <PolicyHashMatch Level="FAIL" />
+    <PolicyHashMatch Level="WARN" />
     ...
 </SignatureConstraints>
 ----
@@ -637,35 +637,35 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
-* `TrustedServiceTypeIdentifier` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceTypeIdentifier corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceTypeIdentifier corresponding to one of the acceptable values, the check will fail.
+* `TrustServiceTypeIdentifier` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceTypeIdentifier corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceTypeIdentifier corresponding to one of the acceptable values, the check will fail.
 
 Default: not executed
 
 [source,xml,indent=0]
-.Example of TrustedServiceTypeIdentifier usage (with WARN validation level)
+.Example of TrustServiceTypeIdentifier usage (with WARN validation level)
 ----
 <BasicSignatureConstraints>
     ...
-    <TrustedServiceTypeIdentifier Level="WARN">
+    <TrustServiceTypeIdentifier Level="WARN">
         <Id>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</Id>
-    </TrustedServiceTypeIdentifier>
+    </TrustServiceTypeIdentifier>
     ...
 </BasicSignatureConstraints>
 ----
 
-* `TrustedServiceStatus` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceStatus corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceStatus corresponding to one of the acceptable values, the check will fail.
+* `TrustServiceStatus` - this constraint is used to check whether the signing-certificate corresponds to one of the Trusted Services defined with ServiceStatus corresponding to one of the defined values. If the signing-certificate does not correspond to one of the Trusted Services having ServiceStatus corresponding to one of the acceptable values, the check will fail.
 
 Default: not executed
 
 [source,xml,indent=0]
-.Example of TrustedServiceStatus usage (with FAIL validation level)
+.Example of TrustServiceStatus usage (with FAIL validation level)
 ----
 <BasicSignatureConstraints>
     ...
-    <TrustedServiceStatus Level="FAIL">
+    <TrustServiceStatus Level="FAIL">
         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Id>
         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
-    </TrustedServiceStatus>
+    </TrustServiceStatus>
     ...
 </BasicSignatureConstraints>
 ----
@@ -1086,6 +1086,20 @@ Default: not executed
     <Country Level="WARN">
         <Id>USA</Id>
     </Country>
+    ...
+</SigningCertificate>
+----
+
+* `IssuerName` - this constraint is used to check whether the issuer distinguished name found in the certificate does match the subject distinguished name of its issuer certificate. If the certificate's issuer DN does not match the subject DN of the issuer certificate, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of IssuerName usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <IssuerName Level="FAIL" />
     ...
 </SigningCertificate>
 ----
@@ -1827,6 +1841,106 @@ Default: not executed
 </UnsignedAttributes>
 ----
 
+* `SignatureTimeStamp` - this constraint checks whether the `signature-time-stamp` attribute is present within the unsigned properties of the signature. If the signature does not contain `signature-time-stamp` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of SignatureTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <SignatureTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `ValidationDataTimeStamp` - this constraint checks whether the `validation-data-time-stamp` attribute is present within the unsigned properties of the signature. If the signature does not contain `validation-data-time-stamp` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ValidationDataTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <ValidationDataTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `ValidationDataRefsOnlyTimeStamp` - this constraint checks whether the `validation-data-refs-only-time-stamp` attribute is present within the unsigned properties of the signature. If the signature does not contain `validation-data-refs-only-time-stamp` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ValidationDataRefsOnlyTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <ValidationDataRefsOnlyTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `ArchiveTimeStamp` - this constraint checks whether the `archive-time-stamp` attribute is present within the unsigned properties of the signature. If the signature does not contain `archive-time-stamp` attribute, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of ArchiveTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <ArchiveTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `DocumentTimeStamp` - this constraint checks whether the `document-time-stamp` is present within the structure of the PDF document. If the signature does not contain `document-time-stamp`, the check will fail.
+
+Default: not executed
+
+Note: executed for PAdES only
+
+[source,xml,indent=0]
+.Example of DocumentTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <DocumentTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `TLevelTimeStamp` - this constraint checks whether the signature contains at least one valid T-level timestamp (i.e. `signature-time-stamp` or `document-time-stamp`), passing either "5.4 Time-stamp Validation Block" or "5.6.2.4 Past Signature Validation" process. If the signature does not contain a valid T-level timestamp, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of TLevelTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <TLevelTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
+* `LTALevelTimeStamp` - this constraint checks whether the signature contains at least one valid LTA-level timestamp (i.e. `archive-time-stamp` or `document-time-stamp` covering LT-level), passing either "5.4 Time-stamp Validation Block" or "5.6.2.4 Past Signature Validation" process. If the signature does not contain a valid LTA-level timestamp, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of LTALevelTimeStamp usage (with WARN validation level)
+----
+<UnsignedAttributes>
+    ...
+    <LTALevelTimeStamp Level="WARN" />
+    ...
+</UnsignedAttributes>
+----
+
 ===== Timestamp constraints
 
 The `<Timestamp>` block defines rules for checking timestamp applicability rules. The `<Timestamp>` element shall be a child of `ConstraintsParameters`:
@@ -1899,6 +2013,20 @@ Default: `WARN` (`DAYS=0`)
 </Timestamp>
 ----
 
+* `TimestampValid` - this constraint checks whether the time-stamp within a signature is valid (passed either "5.4 Time-stamp Validation Block" or the corresponding "Past Signature Validation" as per clause 5.6.2.4). The check is performed on every time-stamp within a signature. The check is executed during the "5.6.3 Validation Process for Signatures providing Long Term Availability and Integrity of Validation Material". If the signature's time-stamp is invalid, the check will fail.
+
+Default: executed but no validation message returned (no constraint)
+
+[source,xml,indent=0]
+.Example of TimestampValid usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <TimestampValid Level="WARN" />
+    ...
+</Timestamp>
+----
+
 * `TSAGeneralNamePresent` - this constraint checks if the TSTInfo.tsa field is present for the timestamp. If the field TSTInfo.tsa is not present within the timestamp, the check will fail.
 
 Default: not executed
@@ -1946,7 +2074,7 @@ Default: not executed
 The `<Revocation>` block defines rules for checking revocation data applicability rules (CRLs and OCSPs). The `<Revocation>` element shall be a child of `ConstraintsParameters`:
 
 [source,xml,indent=0]
-.TimestampConstraints element definition
+.Revocation element definition
 ----
 <ConstraintsParameters>
     ...
@@ -2025,6 +2153,78 @@ Default: `WARN`
     <SelfIssuedOCSP Level="WARN" />
     ...
 </Revocation>
+----
+
+===== Evidence record constraints
+
+The `<EvidenceRecord>` block defines rules for validating an evidence record. The `<EvidenceRecord>` element shall be a child of `ConstraintsParameters`:
+
+[source,xml,indent=0]
+.EvidenceRecord element definition
+----
+<ConstraintsParameters>
+    ...
+    <EvidenceRecord>
+        ...
+    </EvidenceRecord>
+    ...
+</ConstraintsParameters>
+----
+
+* `DataObjectExistence` - this constraint checks whether the data object provided to the validation has been found within the evidence record's first data object group.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of DataObjectExistence usage (with FAIL validation level)
+----
+<EvidenceRecord>
+    ...
+    <DataObjectExistence Level="FAIL" />
+    ...
+</EvidenceRecord>
+----
+
+* `DataObjectIntact` - this constraint checks whether the digest of data object provided to the validation matches one of the digest present within first data object group of the evidence record.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of DataObjectIntact usage (with FAIL validation level)
+----
+<EvidenceRecord>
+    ...
+    <DataObjectIntact Level="FAIL" />
+    ...
+</EvidenceRecord>
+----
+
+* `DataObjectFound` - this constraint checks if at least one provided document has been found and identified within the evidence record's first data object group.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of DataObjectFound usage (with FAIL validation level)
+----
+<EvidenceRecord>
+    ...
+    <DataObjectFound Level="FAIL" />
+    ...
+</EvidenceRecord>
+----
+
+* `DataObjectGroup` - this constraint checks if the evidence record does not contain other hashes than hashes of the provided data objects at the first level data object group.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of DataObjectGroup usage (with WARN validation level)
+----
+<EvidenceRecord>
+    ...
+    <DataObjectGroup Level="FAIL" />
+    ...
+</EvidenceRecord>
 ----
 
 ===== Cryptographic Constraints
@@ -2293,8 +2493,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |SigFieldLock                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |UndefinedChanges                |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |TrustedServiceTypeIdentifier    |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
-                                  |TrustedServiceStatus            |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |TrustServiceTypeIdentifier      |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+                                  |TrustServiceStatus              |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
@@ -2375,19 +2575,27 @@ This table defines the correspondence between the enforced validation policy con
                                   |CertifiedRoles                  |MultiValuesConstraint             |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |ContentTimeStamp                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |ContentTimeStampMessageImprint  |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-|UnsignedAttributesConstraints    |CounterSignature                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.9+|TimestampConstraints          |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.8+|UnsignedAttributesConstraints |CounterSignature                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |SignatureTimeStamp              |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ValidationDataTimeStamp         |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ValidationDataRefsOnlyTimeStamp |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ArchiveTimeStamp                |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |DocumentTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |TLevelTimeStamp                 |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |LTALevelTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.10+|TimestampConstraints         |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |RevocationTimeAgainstBestSignatureTime   |LevelConstraint          |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                   |BestSignatureTimeBeforeExpirationDateOfSigningCertificate |LevelConstraint  |FAILED       |NOT_YET_VALID
                                   |Coherence                       |LevelConstraint                   |INDETERMINATE         |TIMESTAMP_ORDER_FAILURE
+                                  |TimestampValid                  |LevelConstraint                   |Indication from timestamp |SubIndication from timestamp
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
                                   |SignedAttributes                |SignedAttributesConstraints     2+|See SignedAttributesConstraints
                                   |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
 .6+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
-                                  |OCSPResponderIdMatch             |LevelConstraint                   |INDETERMINATE        |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |OCSPResponderIdMatch            |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE

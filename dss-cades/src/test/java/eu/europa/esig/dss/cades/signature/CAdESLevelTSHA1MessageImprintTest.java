@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -40,6 +32,15 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignature {
 
@@ -61,7 +62,11 @@ public class CAdESLevelTSHA1MessageImprintTest extends AbstractCAdESTestSignatur
 		signatureParameters.setSignatureTimestampParameters(signatureTimestampParameters);
 
 		service = new CAdESService(getOfflineCertificateVerifier());
-		service.setTspSource(getGoodTsa());
+
+		KeyEntityTSPSource tspSource = getPKITSPSourceByName(GOOD_TSA);
+		tspSource.setAcceptedDigestAlgorithms(Collections.singletonList(DigestAlgorithm.SHA1));
+
+		service.setTspSource(tspSource);
 	}
 
 	@Override

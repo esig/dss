@@ -23,25 +23,26 @@ package eu.europa.esig.dss.asic.cades.extension.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ASiCManifestTypeEnum;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ManifestEntry;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -137,13 +137,13 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		List<DSSDocument> signedDocuments = result.getSignedDocuments();
 		assertEquals(2, signedDocuments.size());
 
-		DSSDocument linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(manifestDocuments, signatureDocument.getName());
+		DSSDocument linkedManifest = ASiCManifestParser.getLinkedManifest(manifestDocuments, signatureDocument.getName());
 		assertNotNull(linkedManifest);
-		ManifestFile linkedManifestFile = ASiCWithCAdESManifestParser.getManifestFile(linkedManifest);
+		ManifestFile linkedManifestFile = ASiCManifestParser.getManifestFile(linkedManifest);
 		assertNotNull(linkedManifestFile);
-		assertFalse(linkedManifestFile.isArchiveManifest());
+		assertEquals(ASiCManifestTypeEnum.SIGNATURE, linkedManifestFile.getManifestType());
 		
-		ASiCEWithCAdESManifestValidator linkedManifestFileValidator = new ASiCEWithCAdESManifestValidator(linkedManifestFile, signedDocuments);
+		ASiCManifestValidator linkedManifestFileValidator = new ASiCManifestValidator(linkedManifestFile, signedDocuments);
 		List<ManifestEntry> linkedManifestFileEntries = linkedManifestFileValidator.validateEntries();
 		validateEntries(linkedManifestFileEntries);
 
@@ -152,13 +152,13 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 
 		ManifestFile lastCreatedArchiveManifestFile = null;
 		for (DSSDocument timestamp : timestamps) {
-			linkedManifest = ASiCWithCAdESManifestParser.getLinkedManifest(archiveManifestDocuments, timestamp.getName());
+			linkedManifest = ASiCManifestParser.getLinkedManifest(archiveManifestDocuments, timestamp.getName());
 			assertNotNull(linkedManifest);
-			lastCreatedArchiveManifestFile = ASiCWithCAdESManifestParser.getManifestFile(linkedManifest);
+			lastCreatedArchiveManifestFile = ASiCManifestParser.getManifestFile(linkedManifest);
 			assertNotNull(lastCreatedArchiveManifestFile);
-			assertTrue(lastCreatedArchiveManifestFile.isArchiveManifest());
-			ASiCEWithCAdESManifestValidator archiveManifestValidator = 
-					new ASiCEWithCAdESManifestValidator(lastCreatedArchiveManifestFile, result.getAllDocuments());
+			assertEquals(ASiCManifestTypeEnum.ARCHIVE_MANIFEST, lastCreatedArchiveManifestFile.getManifestType());
+			ASiCManifestValidator archiveManifestValidator =
+					new ASiCManifestValidator(lastCreatedArchiveManifestFile, result.getAllDocuments());
 			List<ManifestEntry> archiveManifestEntries = archiveManifestValidator.validateEntries();
 			validateEntries(archiveManifestEntries);
 			

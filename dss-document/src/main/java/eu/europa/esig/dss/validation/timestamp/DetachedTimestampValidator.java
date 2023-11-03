@@ -23,8 +23,10 @@ package eu.europa.esig.dss.validation.timestamp;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -55,6 +57,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 	 * Empty constructor
 	 */
 	DetachedTimestampValidator() {
+		// empty
 	}
 
 	/**
@@ -101,9 +104,9 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 		if (timestampToken == null) {
 			timestampToken = createTimestampToken();
 
-			DetachedTimestampScopeFinder timestampScopeFinder = getTimestampScopeFinder();
-			prepareDetachedTimestampScopeFinder(timestampScopeFinder);
-			findTimestampScopes(timestampToken, timestampScopeFinder);
+			List<SignatureScope> timestampScopes = getTimestampScopes(timestampToken);
+			timestampToken.setTimestampScopes(getTimestampScopes(timestampToken));
+			timestampToken.getTimestampedReferences().addAll(getTimestampedReferences(timestampScopes));
 		}
 		return timestampToken;
 	}
@@ -158,20 +161,16 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 		return detachedContents.iterator().next();
 	}
 
-	@Override
-	protected DetachedTimestampScopeFinder getTimestampScopeFinder() {
-		return new DetachedTimestampScopeFinder();
-	}
-
 	/**
-	 * This method is used to prepare a {@code DetachedTimestampScopeFinder} for execution
+	 * Finds timestamp scopes
 	 *
-	 * @param timestampScopeFinder {@link DetachedTimestampScopeFinder}
+	 * @param timestampToken {@link TimestampToken}
+	 * @return a list of {@link SignatureScope}s
 	 */
-	protected void prepareDetachedTimestampScopeFinder(DetachedTimestampScopeFinder timestampScopeFinder) {
-		timestampScopeFinder.setDefaultDigestAlgorithm(getDefaultDigestAlgorithm());
-		timestampScopeFinder.setTokenIdentifierProvider(getTokenIdentifierProvider());
+	protected List<SignatureScope> getTimestampScopes(TimestampToken timestampToken) {
+		DetachedTimestampScopeFinder timestampScopeFinder = new DetachedTimestampScopeFinder();
 		timestampScopeFinder.setTimestampedData(getTimestampedData());
+		return timestampScopeFinder.findTimestampScope(timestampToken);
 	}
 
 	@Override

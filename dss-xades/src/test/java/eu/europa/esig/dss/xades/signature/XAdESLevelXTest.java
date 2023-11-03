@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -35,10 +35,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -72,6 +73,13 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 	}
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+		certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
+		return certificateVerifier;
+	}
+
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -81,7 +89,7 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 		NodeList signaturesList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
 		assertEquals(1, signaturesList.getLength());
 
-		XAdES132Paths paths = new XAdES132Paths();
+		XAdES132Path paths = new XAdES132Path();
 
 		Node signature = signaturesList.item(0);
 		NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificateChildren());
@@ -196,5 +204,6 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 	protected DSSDocument getDocumentToSign() {
 		return documentToSign;
 	}
+
 
 }

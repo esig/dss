@@ -26,7 +26,7 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum TimestampType {
 	
-	/** CAdES: id-aa-ets-contentTimestamp */
+	/** CAdES: id-aa-ets-contentTimestamp, JAdES: adoTst */
 	CONTENT_TIMESTAMP(0, false),
 
 	/** XAdES: AllDataObjectsTimestamp */
@@ -35,23 +35,29 @@ public enum TimestampType {
 	/** XAdES: IndividualDataObjectsTimeStamp */
 	INDIVIDUAL_DATA_OBJECTS_TIMESTAMP(0, false),
 
-	/** CAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp */
+	/** CAdES/PAdES: id-aa-signatureTimeStampToken, XAdES: SignatureTimeStamp, JAdES: sigTst */
 	SIGNATURE_TIMESTAMP(1, true),
 
 	/** PAdES: /VRI/TS */
 	VRI_TIMESTAMP(1, true),
 
-	/** CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp */
+	/** CAdES: id-aa-ets-certCRLTimestamp, XAdES: RefsOnlyTimeStamp, JAdES: rfsTst */
 	VALIDATION_DATA_REFSONLY_TIMESTAMP(2, false),
 
-	/** CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp */
+	/** CAdES: id-aa-ets-escTimeStamp, XAdES: SigAndRefsTimeStamp, JAdES: sigRTst */
 	VALIDATION_DATA_TIMESTAMP(2, true),
+
+	/** ASiC detached timestamp */
+	CONTAINER_TIMESTAMP(3, true),
 
 	/** PAdES-LTV "document timestamp" */
 	DOCUMENT_TIMESTAMP(3, true),
 
-	/** CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp */
-	ARCHIVE_TIMESTAMP(3, true);
+	/** CAdES: id-aa-ets-archiveTimestamp, XAdES: ArchiveTimeStamp, JAdES: arcTst */
+	ARCHIVE_TIMESTAMP(3, true),
+
+	/** An evidence record time-stamp */
+	EVIDENCE_RECORD_TIMESTAMP(3, true);
 	
 	/**
 	 * Specifies a presence order of the timestamp in a signature
@@ -63,9 +69,17 @@ public enum TimestampType {
 	 */
 	private final Integer order;
 	
-	/* TRUE if the timestamp covers a Signature */
+	/**
+	 * Defines if the timestamp covers a Signature
+	 */
 	private final boolean coversSignature;
 	
+	/**
+	 * Default constructor
+	 *
+	 * @param order defines the expected order of the timestamp type
+	 * @param coversSignature defines if the timestamp covers the signature
+	 */
 	TimestampType(int order, boolean coversSignature) {
 		this.order = order;
 		this.coversSignature = coversSignature;
@@ -99,6 +113,15 @@ public enum TimestampType {
 	}
 
 	/**
+	 * Checks if the timestamp type is a container timestamp (used for ASiC)
+	 *
+	 * @return TRUE if the type is a container timestamp, FALSE otherwise
+	 */
+	public boolean isContainerTimestamp() {
+		return CONTAINER_TIMESTAMP == this;
+	}
+
+	/**
 	 * Checks if the timestamp type is a document timestamp (used for PAdES)
 	 *
 	 * @return TRUE if the type is a document timestamp, FALSE otherwise
@@ -115,6 +138,15 @@ public enum TimestampType {
 	public boolean isArchivalTimestamp() {
 		return ARCHIVE_TIMESTAMP == this;
 	}
+
+	/**
+	 * Checks if the timestamp type is an evidence record timestamp
+	 *
+	 * @return TRUE if the type is an evidence record timestamp, FALSE otherwise
+	 */
+	public boolean isEvidenceRecordTimestamp() {
+		return EVIDENCE_RECORD_TIMESTAMP == this;
+	}
 	
 	/**
 	 * Checks if a timestamp of this type covers a signature
@@ -130,7 +162,7 @@ public enum TimestampType {
 	 * Must be in the order: Content - Signature - ValidationData - Archival
 	 * 
 	 * @param timestampType {@link TimestampType} to compare with
-	 * @return TRUE if the this timestampType must follow before the provided {@code timestampType}, FALSE otherwise
+	 * @return TRUE if this timestampType must follow before the provided {@code timestampType}, FALSE otherwise
 	 */
 	public int compare(TimestampType timestampType) {
 		return order.compareTo(timestampType.order);

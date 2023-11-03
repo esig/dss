@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns="urn:ietf:params:xml:ns:ers"
+               targetNamespace="urn:ietf:params:xml:ns:ers"
+               elementFormDefault="qualified"
+               attributeFormDefault="unqualified">
+   <xs:element name="EvidenceRecord" type="EvidenceRecordType"/>
+
+   <!-- TYPE DEFINITIONS-->
+
+   <xs:complexType name="EvidenceRecordType">
+      <xs:sequence>
+         <xs:element name="EncryptionInformation"
+                     type="EncryptionInfo" minOccurs="0"/>
+         <xs:element name="SupportingInformationList"
+                     type="SupportingInformationType" minOccurs="0"/>
+         <xs:element name="ArchiveTimeStampSequence"
+                     type="ArchiveTimeStampSequenceType"/>
+      </xs:sequence>
+      <xs:attribute name="Version" type="xs:decimal" use="required"
+                                                       fixed="1.0"/>
+   </xs:complexType>
+
+   <xs:complexType name="EncryptionInfo">
+      <xs:sequence>
+         <xs:element name="EncryptionInformationType"
+                     type="ObjectIdentifier"/>
+         <xs:element name="EncryptionInformationValue">
+           <xs:complexType mixed="true">
+               <xs:sequence>
+                  <xs:any minOccurs="0"/>
+               </xs:sequence>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="ArchiveTimeStampSequenceType">
+      <xs:sequence>
+         <xs:element name="ArchiveTimeStampChain" maxOccurs="unbounded">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="DigestMethod"
+                              type="DigestMethodType"/>
+                  <xs:element name="CanonicalizationMethod"
+                              type="CanonicalizationMethodType"/>
+                  <xs:element name="ArchiveTimeStamp"
+                              type="ArchiveTimeStampType"
+                              maxOccurs="unbounded" />
+               </xs:sequence>
+               <xs:attribute name="Order" type="OrderType"
+                             use="required"/>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="ArchiveTimeStampType">
+      <xs:sequence>
+         <xs:element name="HashTree" type="HashTreeType" minOccurs="0"/>
+         <xs:element name="TimeStamp" type="TimeStampType"/>
+         <xs:element name="Attributes" type="Attributes" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="Order" type="OrderType" use="required"/>
+   </xs:complexType>
+
+   <xs:complexType name="DigestMethodType" mixed="true">
+      <xs:sequence>
+         <xs:any namespace="##other" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="Algorithm" type="xs:anyURI" use="required"/>
+   </xs:complexType>
+
+   <xs:complexType name="CanonicalizationMethodType" mixed="true">
+      <xs:sequence minOccurs="0">
+         <xs:any namespace="##any" minOccurs="0"/>
+         </xs:sequence>
+      <xs:attribute name="Algorithm" type="xs:anyURI" use="required"/>
+   </xs:complexType>
+
+   <xs:complexType name="TimeStampType">
+      <xs:sequence>
+         <xs:element name="TimeStampToken">
+            <xs:complexType mixed="true">
+               <xs:complexContent mixed="true">
+                  <xs:restriction base="xs:anyType">
+                     <xs:sequence>
+                        <xs:any processContents="lax" minOccurs="0"
+                                maxOccurs="unbounded"/>
+                     </xs:sequence>
+                     <xs:attribute name="Type" type="xs:NMTOKEN"
+                                   use="required"/>
+                  </xs:restriction>
+               </xs:complexContent>
+            </xs:complexType>
+         </xs:element>
+         <xs:element name="CryptographicInformationList"
+                     type="CryptographicInformationType" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="HashTreeType">
+      <xs:sequence>
+         <xs:element name="Sequence" maxOccurs="unbounded">
+            <xs:complexType>
+               <xs:sequence>
+                  <xs:element name="DigestValue" type="xs:base64Binary"
+                              maxOccurs="unbounded"/>
+               </xs:sequence>
+               <xs:attribute name="Order" type="OrderType"
+                             use="required"/>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="Attributes">
+      <xs:sequence>
+         <xs:element name="Attribute" maxOccurs="unbounded">
+            <xs:complexType mixed="true">
+               <xs:complexContent mixed="true">
+                  <xs:restriction base="xs:anyType">
+                     <xs:sequence>
+                        <xs:any processContents="lax" minOccurs="0"
+                                maxOccurs="unbounded"/>
+                                 </xs:sequence>
+                     <xs:attribute name="Order" type="OrderType"
+                                   use="required"/>
+                     <xs:attribute name="Type" type="xs:string"
+                                   use="optional"/>
+                  </xs:restriction>
+               </xs:complexContent>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="CryptographicInformationType">
+      <xs:sequence>
+         <xs:element name="CryptographicInformation"
+               maxOccurs="unbounded">
+            <xs:complexType mixed="true">
+               <xs:complexContent mixed="true">
+                  <xs:restriction base="xs:anyType">
+                     <xs:sequence>
+                        <xs:any processContents="lax" minOccurs="0"
+                                maxOccurs="unbounded"/>
+                     </xs:sequence>
+                     <xs:attribute name="Order" type="OrderType"
+                                   use="required"/>
+                     <xs:attribute name="Type" type="xs:NMTOKEN"
+                                   use="required"/>
+                  </xs:restriction>
+               </xs:complexContent>
+            </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:complexType name="SupportingInformationType">
+      <xs:sequence>
+         <xs:element name="SupportingInformation"
+               maxOccurs="unbounded">
+            <xs:complexType mixed="true">
+               <xs:complexContent mixed="true">
+                  <xs:restriction base="xs:anyType">
+                     <xs:sequence>
+                        <xs:any processContents="lax" minOccurs="0"
+                                maxOccurs="unbounded"/>
+                     </xs:sequence>
+                     <xs:attribute name="Type" type="xs:string"
+                                   use="required"/>
+                  </xs:restriction>
+               </xs:complexContent>
+                 </xs:complexType>
+         </xs:element>
+      </xs:sequence>
+   </xs:complexType>
+
+   <xs:simpleType name="ObjectIdentifier">
+      <xs:restriction base="xs:token">
+         <xs:pattern value="[0-2](\.[1-3]?[0-9]?(\.\d+)*)?"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+   <xs:simpleType name="OrderType">
+      <xs:restriction base="xs:int">
+         <xs:minInclusive value="1"/>
+      </xs:restriction>
+   </xs:simpleType>
+   </xs:schema>

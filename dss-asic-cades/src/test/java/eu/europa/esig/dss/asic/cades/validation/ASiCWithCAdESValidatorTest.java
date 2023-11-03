@@ -48,6 +48,7 @@ public class ASiCWithCAdESValidatorTest extends AbstractTestValidator {
 		documents.add(new FileDocument("src/test/resources/validation/onefile-ok.asics"));
 		documents.add(new FileDocument("src/test/resources/validation/multifiles-ok.asice"));
 		documents.add(new FileDocument("src/test/resources/validation/multifiles-ok.asics"));
+		documents.add(new FileDocument("src/test/resources/validation/evidencerecord/cades-lt-with-er.sce"));
 		documents.add(new FileDocument("src/test/resources/signable/asic_cades.zip"));
 		return documents;
 	}
@@ -68,6 +69,12 @@ public class ASiCWithCAdESValidatorTest extends AbstractTestValidator {
 		return null;
 	}
 
+	@Override
+	protected DSSDocument getXmlEvidenceRecordDocument() {
+		// not applicable
+		return null;
+	}
+
 	@Test
 	public void validateEmptyContainer() {
 		DSSDocument document = new FileDocument("src/test/resources/signable/empty.zip");
@@ -78,6 +85,13 @@ public class ASiCWithCAdESValidatorTest extends AbstractTestValidator {
 	@Test
 	public void validateZipContainer() {
 		DSSDocument document = new FileDocument("src/test/resources/signable/test.zip");
+		SignedDocumentValidator validator = initValidator(document);
+		validate(validator, false);
+	}
+
+	@Test
+	public void validateEvidenceRecordContainer() {
+		DSSDocument document = new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.asice");
 		SignedDocumentValidator validator = initValidator(document);
 		validate(validator, false);
 	}

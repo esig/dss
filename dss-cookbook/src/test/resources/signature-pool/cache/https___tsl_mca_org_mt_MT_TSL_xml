@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="MT-TL-0001" TSLTag="http://uri.etsi.org/19612/TSLTag">
     <SchemeInformation>
         <TSLVersionIdentifier>5</TSLVersionIdentifier>
-        <TSLSequenceNumber>43</TSLSequenceNumber>
+        <TSLSequenceNumber>46</TSLSequenceNumber>
         <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
         <SchemeOperatorName>
             <Name xml:lang="en">Malta Communications Authority</Name>
@@ -95,9 +95,9 @@
                 </AdditionalInformation>
             </OtherTSLPointer>
         </PointersToOtherTSL>
-        <ListIssueDateTime>2022-08-25T10:02:14Z</ListIssueDateTime>
+        <ListIssueDateTime>2023-08-29T12:03:57Z</ListIssueDateTime>
         <NextUpdate>
-            <dateTime>2023-02-25T11:02:14Z</dateTime>
+            <dateTime>2024-02-29T13:03:57Z</dateTime>
         </NextUpdate>
         <DistributionPoints>
             <URI>https://tsl.mca.org.mt/MT_TSL.xml</URI>
@@ -116,15 +116,9 @@
                 <TSPAddress>
                     <PostalAddresses>
                         <PostalAddress xml:lang="en">
-                            <StreetAddress>Onda Building, Aldo Moro Street,</StreetAddress>
-                            <Locality>MARSA</Locality>
-                            <PostalCode>MRS 9065</PostalCode>
-                            <CountryName>MT</CountryName>
-                        </PostalAddress>
-                        <PostalAddress xml:lang="mt">
-                            <StreetAddress>Gattard House - National Road</StreetAddress>
-                            <Locality>BLATA L-BAJDA</Locality>
-                            <PostalCode>HMR 9010</PostalCode>
+                            <StreetAddress>Identity Malta Agency, Head Office, Valley Road</StreetAddress>
+                            <Locality>MSIDA</Locality>
+                            <PostalCode>MSD 9020</PostalCode>
                             <CountryName>MT</CountryName>
                         </PostalAddress>
                     </PostalAddresses>
@@ -134,7 +128,6 @@
                     </ElectronicAddress>
                 </TSPAddress>
                 <TSPInformationURI>
-                    <URI xml:lang="mt">http://repository.qca.gov.mt</URI>
                     <URI xml:lang="en">http://repository.qca.gov.mt</URI>
                 </TSPInformationURI>
             </TSPInformation>
@@ -148,6 +141,15 @@
                         <ServiceDigitalIdentity>
                             <DigitalId>
 <X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Malta Citizen Electronic Identity CA, OU=Class Qualified, O=Government of Malta, C=MT</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>DPWIkbbrsLiD55+ZYFE8Q3xOq8c=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
                         <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
@@ -188,6 +190,15 @@
                         <ServiceDigitalIdentity>
                             <DigitalId>
 <X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=Malta Resident Electronic Identity CA, OU=Class Qualified, O=Government of Malta, C=MT</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>o7uhPupAwFEsPOjnDCt5sBQT37U=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
                         <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
@@ -699,11 +710,12 @@
                 </TSPName>
                 <TSPTradeName>
                     <Name xml:lang="en">NTRMT-C88445</Name>
+                    <Name xml:lang="en">VATMT-25589001</Name>
                 </TSPTradeName>
                 <TSPAddress>
                     <PostalAddresses>
                         <PostalAddress xml:lang="en">
-                            <StreetAddress>The Penthause Caroline Court, Giuseppe Cali Street</StreetAddress>
+                            <StreetAddress>The Penthouse, Carolina Court, Giuseppe Cali Street</StreetAddress>
                             <Locality>Ta’ Xbiex</Locality>
                             <PostalCode>XBX 1425</PostalCode>
                             <CountryName>MT</CountryName>
@@ -736,8 +748,8 @@
 <X509SKI>cCq25dvOgvvZyDeHnopgN53pI8w=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
-                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                        <StatusStartingTime>2020-02-13T23:00:00Z</StatusStartingTime>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2023-03-16T11:00:28Z</StatusStartingTime>
                         <ServiceInformationExtensions>
                             <Extension Critical="true">
 <AdditionalServiceInformation>
@@ -751,8 +763,71 @@
                             </Extension>
                         </ServiceInformationExtensions>
                     </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/PSES/Q</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Preservation Services</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>DNQ=RE1568817490510, CN=Riccardo Genghini, SERIALNUMBER=TINIT-GNGRCR61D29F704D, GIVENNAME=Riccardo, SURNAME=Genghini, T=Manager responsible for Long-Term Preservation, O=eWitness Malta Ltd, OID.2.5.4.97=VATMT-25589001, C=MT</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>cCq25dvOgvvZyDeHnopgN53pI8w=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2020-02-13T23:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+    </AdditionalServiceInformation>
+</Extension>
+<Extension Critical="true">
+    <AdditionalServiceInformation>
+        <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+    </AdditionalServiceInformation>
+</Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/PSES/Q</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Preservation Services</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>DNQ=RE1672756733902, CN=Riccardo Genghini, SERIALNUMBER=TINIT-GNGRCR61D29F704D, GIVENNAME=Riccardo, SURNAME=Genghini, T=Manager responsible for Long-Term Preservation, O=eWitness Malta Ltd, OID.2.5.4.97=VATMT-25589001, C=MT</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>8p3vIcCwNpagVfXHa87BenlnnU4=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-01-04T01:01:18Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
                 </TSPService>
             </TSPServices>
         </TrustServiceProvider>
     </TrustServiceProviderList>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-c12576318b37531cd98d16888c0a0dc5"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>+vMG29mx94+s24kNABcZ7tbQ2dAjwCYdVp4R/yOLZtU=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-c12576318b37531cd98d16888c0a0dc5"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>RTbb7TELnpZ+Q9psDtI/F2HkTZ6gQhurcRXGyMNZ5d0=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-c12576318b37531cd98d16888c0a0dc5">SVML3kQDrqrllOLuW/AAxjsACywBEIzW63x6i/5y0vJvFD5tFKTfnwlzv5DfYhL0ys09N2ilYMwAQLm1G31MQDmnY0rdqdMcZS6g/QQyjmRPN/qlGJvdoeEQldnPadf64fFsHsE4EenJe7A0YOB5ERl7yorj5HrIUGU+3m4109MVfMNpgXSBY+Z6+aIcJ4d/ZNKt/0cvOjh4zo9g0IzIbCEMA87TToMiobmlJTW3TK2js/Tv5cnnY35Qlss/6YxuxAftCzIUt4yZBlMSdaRd/5Y4MBLtl0Acse5hqNytCY7Eb09f59sPYeX4tkUB9N8DrDjNkP71Th0WzD/p5MJgiv1iyYIdXqHOokSHAa/JZTUIGsj+enJz2lksqXdPMYJrgouw0Epv34y0oAJ4Xx5E0TowC5NFge6EUOm+JIUw28PKSwlGN5/V4S0L5uRc1DHbnrXXPLxJ7PlJS8i5fSVeGM2QJJIMTEogWuhN4++XKi3VvNfgJ1GxZbRem4zfn+grJMj2zPJvnaqW0A8NrbbvO0MlMWc/ZTfPjFQe39erbcJo/Zo9H5YTi43bz6+cs7Cqtuk78l7F21rlTr7o7FzPdJCwNRQLetOE3ryXFJYd2QFfhyiWbyNh/EgWXphO1l0t4J3aa+j3A7+xZM89q+H1twJR/3miLW82Is42S+DA6mE=</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>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</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-c12576318b37531cd98d16888c0a0dc5"><xades:SignedProperties Id="xades-id-c12576318b37531cd98d16888c0a0dc5"><xades:SignedSignatureProperties><xades:SigningTime>2022-08-25T10:03:51Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>tu1F23vv6dINIjGPSsVWdAsINg+YGxQcccp9GLRGDOuoaK6qsTo9Hp9WzTlaL4AlayrvGxgLiIGSSEEgdy88mA==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>O=Malta Communications Authority,L=Floriana,C=MT</ds:X509IssuerName><ds:X509SerialNumber>276804024997974164945002632831657838212546759914</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-165795d839cbc61a77ce023651fe4888"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>03fsvVX+nuL2xgJUDtDS/jCyOwXFLZq+/JRTNck9DRc=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-165795d839cbc61a77ce023651fe4888"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>sTYIlmVcFuWOnFpUlDd+DoimCPJIjea/dhZXBydRj3A=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-165795d839cbc61a77ce023651fe4888">A7bvRyJCuBJuwXyB+Y7feh6D2OqJyOaMqAfk19qMLV8EM2/gUZSQHisbsxw4mL3uDqJHEtncz4zXbrB+ka28l2RMrDHoBTK29Pdbq7LyAAM38Tjzbn1Qt6rQroMXC2RvN0Wt9wA+rk88CBThE7JiQUi+llPtR1Wixv/fPw73xdyTxUUi2JfExahp3DlzdFZq5DGKk80KuInQv25REtLaQNRJz7S2jX2CtjeRPQADp4sUv2LZpDHALzQfKpRnmizSRm5tvq8ccmFd1A7Kzthgwy0dceVNtFrkm4PfwOEwbrZ6w4UH2FtYrXa3zXCxoJ34XH+VeyiEryIQDn1GL6PxxUOpuHjKyoDsXk8bkQUos/ueIAMsqnOzCzYP0ksGCh+DM1A4Jns7rBD2xlyQgDmpfiH4LRkrULA6XlGXKxvL6tVQm8+jp/W2myV0xcVNJaAsymNCkKxhUc/3JWjfXvbZbgikvFblBbPQh6hYnY3lkwZtjcv/1lPiZ9ifNBfs8FIbA/FmsM4Mtqzp2pEkbkTEPkB0n6O7LcehRrmtGfkbGy2aRhk/8lXs8oO9KLFgXKEg0TPJJ26tKc9RkCLqOKfjgC6v7F1cTcu6iAMIhppUOJWITtg8b9/rfw7/HlX0UKvhAFarDTCA9XGC7WJFKOAszWbpVfgK2KUCCy/jgum9zrA=</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>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</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-165795d839cbc61a77ce023651fe4888"><xades:SignedProperties Id="xades-id-165795d839cbc61a77ce023651fe4888"><xades:SignedSignatureProperties><xades:SigningTime>2023-08-29T12:17:35Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>tu1F23vv6dINIjGPSsVWdAsINg+YGxQcccp9GLRGDOuoaK6qsTo9Hp9WzTlaL4AlayrvGxgLiIGSSEEgdy88mA==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>O=Malta Communications Authority,L=Floriana,C=MT</ds:X509IssuerName><ds:X509SerialNumber>276804024997974164945002632831657838212546759914</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

@@ -72,14 +72,6 @@ public class PAdESVisibleSignatureSnippet {
 		   _BOTTOM_ (the signature is aligned to a bottom side, coordinated are counted from the bottom page side). */
 		signatureImageParameters.setAlignmentVertical(VisualSignatureAlignmentVertical.TOP);
 		
-		// Rotates the signature field and changes the coordinates' origin respectively to its values as following:
-		/* _NONE_ (_DEFAULT value._ No rotation is applied. The origin of coordinates begins from the top left corner of a page);
-		   _AUTOMATIC_ (Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as defined in a PDF page);
-		   _ROTATE_90_ (Rotates a signature field for a 90&#176; clockwise. Coordinates' origin begins from top right page corner);
-		   _ROTATE_180_ (Rotates a signature field for a 180&#176; clockwise. Coordinates' origin begins from the bottom right page corner);
-		   _ROTATE_270_ (Rotates a signature field for a 270&#176; clockwise. Coordinates' origin begins from the bottom left page corner). */
-		signatureImageParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
-		
 		// Defines a zoom of the image. The value is applied to width and height of a signature field. 
 		// The value must be defined in percentage (default value is 100, no zoom is applied).
 		signatureImageParameters.setZoom(50);
@@ -124,6 +116,14 @@ public class PAdESVisibleSignatureSnippet {
 		// Allows specifying of a precise signature field's height in pixels. 
 		// If not defined, the default image/text height will be used.
 		fieldParameters.setHeight(125);
+
+		// Rotates the signature field and changes the coordinates' origin respectively to its values as following:
+		/* _NONE_ (_DEFAULT value._ No rotation is applied. The origin of coordinates begins from the top left corner of a page);
+		   _AUTOMATIC_ (Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as defined in a PDF page);
+		   _ROTATE_90_ (Rotates a signature field for a 90&#176; clockwise. Coordinates' origin begins from top right page corner);
+		   _ROTATE_180_ (Rotates a signature field for a 180&#176; clockwise. Coordinates' origin begins from the bottom right page corner);
+		   _ROTATE_270_ (Rotates a signature field for a 270&#176; clockwise. Coordinates' origin begins from the bottom left page corner). */
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
 		
 		// end::dimensions[]
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();

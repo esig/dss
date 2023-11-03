@@ -186,7 +186,7 @@
                     <QcCClegislation/>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <Revocations>
                 <CertificateRevocation Revocation="R-1D509D65FB5806266FCA8935FD527B55BDD11CDDD09FC193CB29DB4A7A63F8DF">
                     <Status>GOOD</Status>
@@ -255,7 +255,7 @@
                     <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>OmcwWucQu1w76jPw4Jwh/U+H65dyzpzElJxTAGpkius=</DigestValue>
@@ -309,7 +309,7 @@
                     <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</DigestValue>
@@ -377,7 +377,7 @@
                     <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_aca2.pdf">1.3.158.35975946.0.0.1.0.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>fPqeGNSyhzbNqsRuUmxPyY4Yz3WJgLvg1oQvJDTug9g=</DigestValue>
@@ -436,7 +436,7 @@
                     <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>lqVEdQJp/EAjc7mTBfk7EbgeMz1OS4gr2FNH+tps00A=</DigestValue>
@@ -494,7 +494,7 @@
                     <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>onfwYYsRYDtXap2bBFP6qp7CFgFyxW+mPYydQl+iyaU=</DigestValue>
@@ -542,7 +542,7 @@
                     <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>8bE/XJoyZAOw8xu+dpnNF8fRwLmBWG3Rp7IZxSUI/pk=</DigestValue>

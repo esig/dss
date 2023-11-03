@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.cookbook.example.snippets;
 
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
-import eu.europa.esig.dss.jaxb.common.DocumentBuilderFactoryBuilder;
-import eu.europa.esig.dss.jaxb.common.TransformerFactoryBuilder;
-import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+import eu.europa.esig.dss.xml.common.DocumentBuilderFactoryBuilder;
+import eu.europa.esig.dss.xml.common.TransformerFactoryBuilder;
+import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 
@@ -39,8 +39,8 @@ public class XMLSecuritiesConfigTest {
 
 		// tag::demo[]
 		// import eu.europa.esig.dss.alert.LogOnStatusAlert;
-		// import eu.europa.esig.dss.jaxb.common.TransformerFactoryBuilder;
-		// import eu.europa.esig.dss.jaxb.common.XmlDefinerUtils;
+		// import eu.europa.esig.dss.xml.common.TransformerFactoryBuilder;
+		// import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
 		// import org.slf4j.event.Level;
 		// import javax.xml.XMLConstants;
 		// import javax.xml.transform.TransformerFactory;

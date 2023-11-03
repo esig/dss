@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -38,6 +34,11 @@ import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -88,8 +89,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		xadesSignature = extractSignatureById(parameters);
 
 		Element signatureValueElement = getSignatureValueElement(xadesSignature);
-		byte[] canonicalizedSignatureValue = DSSXMLUtils.canonicalizeSubtree(
-				parameters.getCounterSignatureCanonicalizationMethod(), signatureValueElement);
+		byte[] canonicalizedSignatureValue = XMLCanonicalizer.createInstance(parameters.getCounterSignatureCanonicalizationMethod()).canonicalize(signatureValueElement);
 		
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalized SignatureValue:");
@@ -119,10 +119,10 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		referenceIdProvider.setSignatureParameters(parameters);
 		reference.setId(referenceIdProvider.getReferenceId());
 
-		byte[] signatureElementBinaries = DSSXMLUtils.serializeNode(xadesSignature.getSignatureElement());
+		byte[] signatureElementBinaries = DomUtils.serializeNode(xadesSignature.getSignatureElement());
 		reference.setContents(new InMemoryDocument(signatureElementBinaries));
-		reference.setDigestMethodAlgorithm(getReferenceDigestAlgorithmOrDefault(parameters));
-		reference.setType(xadesPaths.getCounterSignatureUri());
+		reference.setDigestMethodAlgorithm(DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(parameters));
+		reference.setType(xadesPath.getCounterSignatureUri());
 
 		String signatureValueId = xadesSignature.getSignatureValueId();
 		if (Utils.isStringNotEmpty(signatureValueId)) {
@@ -223,7 +223,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	private Element getSignatureValueElement(XAdESSignature xadesSignature) {
 		Element signatureElement = xadesSignature.getSignatureElement();
 
-		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
+		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
 		if (signatureValueElement != null) {
 			return signatureValueElement;
 		}

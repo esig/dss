@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.12.1</version>
+		<version>5.13.RC1</version>
 	</parent>
 	
 	<artifactId>dss-asic-cades</artifactId>
@@ -38,7 +38,7 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>specs-asic-manifest</artifactId>
+			<artifactId>dss-evidence-record-xml</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

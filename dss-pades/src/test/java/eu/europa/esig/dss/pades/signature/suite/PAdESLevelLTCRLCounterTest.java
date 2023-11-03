@@ -28,9 +28,10 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.pki.model.CertEntityRepository;
+import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
+import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -65,16 +66,19 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
         signatureParameters.bLevel().setSigningDate(signingTime);
 
-        certificateVerifier = getOfflineCertificateVerifier();
-        certificateVerifier.setCrlSource(new OnlineCRLSourceCounter());
-        certificateVerifier.setAIASource(new DefaultAIASource(getFileCacheDataLoader()));
+        certificateVerifier = getCompleteCertificateVerifier();
+        certificateVerifier.setCrlSource(new PKICRLSourceCounter(getCertEntityRepository()));
+        certificateVerifier.setOcspSource(null);
 
         service = new PAdESService(certificateVerifier);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(signingTime);
         calendar.add(Calendar.SECOND, -1);
-        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
+        // ensure the same time is used for TSA and revocation data
+        PKITSPSource pkitspSource = getGoodTsa();
+        pkitspSource.setProductionTime(calendar.getTime());
+        service.setTspSource(pkitspSource);
     }
 
     @Override
@@ -145,9 +149,13 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
         return GOOD_USER_WITH_CRL_AND_OCSP;
     }
 
-    private class OnlineCRLSourceCounter extends OnlineCRLSource {
+    private class PKICRLSourceCounter extends PKICRLSource {
 
         private static final long serialVersionUID = 7677238056219199658L;
+
+        public PKICRLSourceCounter(CertEntityRepository certEntityRepository) {
+            super(certEntityRepository);
+        }
 
         @Override
         public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {

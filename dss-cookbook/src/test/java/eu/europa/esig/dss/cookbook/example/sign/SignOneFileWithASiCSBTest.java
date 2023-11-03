@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import eu.europa.esig.dss.asic.common.SecureContainerHandler;
+import eu.europa.esig.dss.asic.common.SecureContainerHandlerBuilder;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -110,27 +110,27 @@ public class SignOneFileWithASiCSBTest extends CookbookTools {
 			// import eu.europa.esig.dss.asic.common.SecureContainerHandler;
 			// import eu.europa.esig.dss.asic.common.ZipUtils;
 
-			// Instantiate a SecureContainerHandler in order to configure ZIP securities
-			SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
+			// Instantiate a SecureContainerHandlerBuilder in order to configure ZIP securities
+			SecureContainerHandlerBuilder secureContainerHandlerBuilder = new SecureContainerHandlerBuilder();
 
 			// Sets the maximum allowed number of files within an archive. (Default : 1000)
 			// If the number exceeds, an exception will be thrown.
-			secureContainerHandler.setMaxAllowedFilesAmount(1000);
+			secureContainerHandlerBuilder.setMaxAllowedFilesAmount(1000);
 
 			// Sets the maximum allowed number of malformed/corrupted files within an archive. (Default : 100)
 			// If the number exceeds, an exception will be thrown.
-			secureContainerHandler.setMaxMalformedFiles(100);
+			secureContainerHandlerBuilder.setMaxMalformedFiles(100);
 
 			// Sets a maximum allowed ratio of decompressed data to compressed data within an archive.
 			// This check allows z ZIP-bomb detection. (Default : 100)
 			// If the number exceeds, an exception will be thrown.
-			secureContainerHandler.setMaxCompressionRatio(100);
+			secureContainerHandlerBuilder.setMaxCompressionRatio(100);
 
 			// Sets the maximum size of uncompressed data, exceeding which aforementioned security check is enforced.
 			// Default : 1000000 (1MB).
 			// NOTE : ZIP-bomb check can be not necessary for very small documents,
 			// as it still should not cause memory overhead.
-			secureContainerHandler.setThreshold(1000000);
+			secureContainerHandlerBuilder.setThreshold(1000000);
 
 			// As a limitation of JDK, when reading an archive from memory (e.g. using `InMemoryDocument`),
 			// it is not possible to read comments from a ZIP entry of an archive.
@@ -139,10 +139,10 @@ public class SignOneFileWithASiCSBTest extends CookbookTools {
 			// When this property is set to `true`, a new stream will be open to the file,
 			// to extract comments associated with the container's entries.
 			// Default : false (do not read comments)
-			secureContainerHandler.setExtractComments(true);
+			secureContainerHandlerBuilder.setExtractComments(true);
 
-			// As a singleton, the provided handler will be used across the whole DSS code.
-			ZipUtils.getInstance().setZipContainerHandler(secureContainerHandler);
+			// As a singleton, the provided handler builder will be used across the whole DSS code.
+			ZipUtils.getInstance().setZipContainerHandlerBuilder(secureContainerHandlerBuilder);
 
 			// end::zipUtils[]
 

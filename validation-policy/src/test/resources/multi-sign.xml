@@ -318,12 +318,12 @@
                     <certificatePolicy>2.5.29.32.0</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
                     		<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -334,17 +334,17 @@
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://193.178.164.4/repozytorium/ca1_2015.crl</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
                             <ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-05-08T07:01:06Z</StartDate>
                             <EndDate>2016-07-01T00:00:00Z</EndDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <Base64Encoded>MIIEojCCA4qgAwIBAgIUNeN40cSHa36BsyxjuXatrlDVOpAwDQYJKoZIhvcNAQEFBQAwbjELMAkGA1UEBhMCUEwxLjAsBgNVBAoMJU1pbmlzdGVyIHdsYXNjaXd5IGRvIHNwcmF3IGdvc3BvZGFya2kxLzAtBgNVBAMMJk5hcm9kb3dlIENlbnRydW0gQ2VydHlmaWthY2ppIChOQ0NlcnQpMB4XDTE1MDUwODA3MDEwNloXDTIwMDUwODIzNTk1OVowfzELMAkGA1UEBhMCUEwxODA2BgNVBAoML1BvbHNrYSBXeXR3w7NybmlhIFBhcGllcsOzdyBXYXJ0b8WbY2lvd3ljaCBTLkEuMRQwEgYDVQQFEwtOciB3cGlzdTogMzEgMB4GA1UEAwwXUFdQVyAtIGt3YWxpZmlrb3dhbnkgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQColDaw623BwvbfqxECbWaywZ4ZMr1BzU47+HBdmOlJUXpe2NscwluNBUhjgcoPJ6vkNBpXujVOV7veSWHT+hmnMeN1yS6LmiUfzIeYT8SDVtrwt7B3IHAiwvpcQV2FoKggFf3D1r3Xao5WCCD/1ki3KiSJIWuUs2MYWhcJ3YOcmAMIhXbjkKWv7tUSehu7aeRtiNqF0jHH5CP9WmJOmJVQQEYNQzXsZEtBarnRdTV/NRn6pqlS6uSJEdkdzCnawpEG+aYOHi060HKTzdCqmY5MsclBIGUBRynqMcZaVC7KPkSaGobdU5tgYHkWzJw6Cl+MI+r0nS2cSavJtPC+lQdNAgMBAAGjggElMIIBITAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zCBqwYDVR0jBIGjMIGggBRZNAz7fedFAW/JcJbCTgb4D4FD9qFypHAwbjELMAkGA1UEBhMCUEwxLjAsBgNVBAoMJU1pbmlzdGVyIHdsYXNjaXd5IGRvIHNwcmF3IGdvc3BvZGFya2kxLzAtBgNVBAMMJk5hcm9kb3dlIENlbnRydW0gQ2VydHlmaWthY2ppIChOQ0NlcnQpghRipw0EwyS41CdWzD+Ba/LrMu8HGTAxBgNVHSABAf8EJzAlMCMGBFUdIAAwGzAZBggrBgEFBQcCARYNd3d3Lm5jY2VydC5wbDAdBgNVHQ4EFgQU5wDTZ3UiQ8Ix89pK830vlFReKVswDQYJKoZIhvcNAQEFBQADggEBAM5HiL3//znlj4nBXyDSrzshltn+7VURAo9DRqUTPjtDvhfw5mQG/68MYVyaRG7x/x4SnzeICJW5oJdNnUKl7LbWeC34Axzh2nS46SnwkTOm+/xKmmffTqD5A5qlnrYRio4f5xjQrqHJEqel26hMAEilyaT9HIF62fhPZU0mSfWfhBHB+rJdgYHmLqZRDCO1+GF866D5MMpu7SbWXcJUUp+6AlJoxGcvdZIAUGScxvgZyD0uV7oe+SUqOYSdMXdjfa566fca0VY3M+oRZplbAJ2bigKNX63GJMcOXHAU6nKzsubzysinbUFDcGyoNaHiXnRPwW3v+ChKmJA6XHBr/LI=</Base64Encoded>
         </Certificate>
@@ -383,7 +383,7 @@
                     <keyUsageBit>nonRepudiation</keyUsageBit>
                 </KeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <Base64Encoded>MIIDujCCAqKgAwIBAgIIBRchbrVWi6EwDQYJKoZIhvcNAQELBQAwXzELMAkGA1UEBhMCUEwxHjAcBgNVBAoMFUVOSUdNQSBTT0kgU3AuIHogby5vLjEwMC4GA1UEAwwnQ2VuQ2VydCBDZW50cnVtIENlcnR5ZmlrYXTDs3cgRmlybW93eWNoMB4XDTE2MDgyNDE0NDcwNFoXDTE4MDgyNDE0NDcwNFowPTELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF01pbmlzdGVyc3R3byBDeWZyeXphY2ppMQwwCgYDVQQDDANQWjMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV2Mt1nzPu8W2eN6eT2GVWh3HPXCqopQJVag+3nN0H8TOQCg8s6sVlHnqA117e/xUiOd1c8jgKOsDYixKb7eO3S2Bm+UyBX5jh1K5pGw362VVEfDs0kpQ5DRTm/eBGsT+98CGS9sIrvZujg9iRLVmyOWbx7Mj3iPAsfDqwnJAUQe3SURkN2uVq/OFCCem5SQEkl5sXLunPLmsZAlQmIvjo1e2sArw3XOL07TzEGD9Wgmg+uh+CXLwLPAbdIPuoEGx9pmVFeoMmDhSN1QwwiV3kZM57BvufmntWhXEbbUXX8DN6JzVTk7SC1+lR9be8opa2JwzyugrgZDu8qPmsj/QFAgMBAAGjgZswgZgwDgYDVR0PAQH/BAQDAgZAMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUbXBJHtX51FFd7dGblde1mdERGjswHQYDVR0OBBYEFMG6bAQisupd5Zp8LubkPlZ4he9qMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly93d3cuY2VuY2VydC5wbC9jcmwvQ0NmaXJtb3d5LmNybDANBgkqhkiG9w0BAQsFAAOCAQEAbUq6RgY3//2ozVKQ6J1yE05z6E2gvw7QSvwI002Ee6Np7pGvwkR4kSd4yJzSFuFv5zUYq9zaFGCYpCvIpTwHGJpoa9oxvYe8KNxaDiGkqiVU2SVEXX2GrVF/qqJmqMre4NxBr04fhWCKro135fESmv0kvjDYNWzDqUgy9AbIC4VQ46KOwuxBDlnj1KbYn4EJoQG+2ZhQMcuUbM1qY3/FlY+M/60c2FQvgIo6u9J5/Ew7YFPpczWjLetK9PKLvfQfPQBU/sszQ6rXRKxyoaEwbzQjhQ8W5SlyUwePay1lAtlzJIo5x7NN/NB1+S/vr71HLq3/mFoOgCNdFDVdGD8XUw==</Base64Encoded>
         </Certificate>
@@ -428,12 +428,12 @@
                     <certificatePolicy>1.2.616.1.113560.10.1.1.0</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
                     <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
                     <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
                         	<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
@@ -449,8 +449,8 @@
                             <ServiceSupplyPoints>
                                 <ServiceSupplyPoint>http://193.178.164.4/repozytorium/ca1_2015.crl</ServiceSupplyPoint>
                             </ServiceSupplyPoints>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
                         	<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
                             <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
@@ -461,10 +461,10 @@
                                 <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
                             </CapturedQualifiers>
                             <AdditionalServiceInfoUris/>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-d30fa7d4fa90904884ddeed35b989da84d82d742580e2625d56625c07c572ff8c3e145f6a7765097e9f92aaff292e4f09bad7e2613dc2b6448f607c03e5ada91">
                     <Status>GOOD</Status>

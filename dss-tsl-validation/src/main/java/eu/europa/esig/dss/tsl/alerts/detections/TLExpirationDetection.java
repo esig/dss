@@ -41,10 +41,12 @@ public class TLExpirationDetection implements AlertDetector<TLInfo> {
 	@Override
 	public boolean detect(TLInfo info) {
 		ParsingInfoRecord parsingCacheInfo = info.getParsingCacheInfo();
-		Date nextUpdateDate = parsingCacheInfo.getNextUpdateDate();
-		Date currentDate = new Date();
-		
-		return (nextUpdateDate != null && nextUpdateDate.before(currentDate));
+		if (parsingCacheInfo != null) {
+			Date nextUpdateDate = parsingCacheInfo.getNextUpdateDate();
+			Date currentDate = new Date();
+			return (nextUpdateDate != null && nextUpdateDate.before(currentDate));
+		}
+		return false;
 	}
 	
 }

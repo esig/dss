@@ -38,37 +38,40 @@ package eu.europa.esig.dss.enumerations;
 public enum KeyUsageBit {
 
 	/** digitalSignature */
-	DIGITAL_SIGNATURE("digitalSignature",0),
+	DIGITAL_SIGNATURE("digitalSignature",0, 128),
 
 	/** nonRepudiation */
-	NON_REPUDIATION("nonRepudiation",1),
+	NON_REPUDIATION("nonRepudiation",1, 64),
 
 	/** keyEncipherment */
-	KEY_ENCIPHERMENT("keyEncipherment",2),
+	KEY_ENCIPHERMENT("keyEncipherment",2, 32),
 
 	/** dataEncipherment */
-	DATA_ENCIPHERMENT("dataEncipherment",3),
+	DATA_ENCIPHERMENT("dataEncipherment",3, 16),
 
 	/** keyAgreement */
-	KEY_AGREEMENT("keyAgreement",4),
+	KEY_AGREEMENT("keyAgreement",4, 8),
 
 	/** keyCertSign */
-	KEY_CERT_SIGN("keyCertSign",5),
+	KEY_CERT_SIGN("keyCertSign",5, 4),
 
 	/** crlSign */
-	CRL_SIGN("crlSign",6),
+	CRL_SIGN("crlSign",6, 2),
 
 	/** encipherOnly */
-	ENCIPHER_ONLY("encipherOnly",7),
+	ENCIPHER_ONLY("encipherOnly",7, 1),
 
 	/** decipherOnly */
-	DECIPHER_ONLY("decipherOnly",8);
+	DECIPHER_ONLY("decipherOnly",8, 32768);
 
 	/** Name of the key usage */
 	private final String value;
 
-	/** The bit value */
+	/** The index */
 	private final int index;
+
+	/** The bit value */
+	private final int bit;
 
 	/**
 	 * Default constructor
@@ -76,9 +79,10 @@ public enum KeyUsageBit {
 	 * @param value {@link String} name
 	 * @param index bit value
 	 */
-	KeyUsageBit(String value, int index) {
+	KeyUsageBit(String value, int index, int bit) {
 		this.value = value;
 		this.index = index;
+		this.bit = bit;
 	}
 
 	/**
@@ -91,12 +95,21 @@ public enum KeyUsageBit {
 	}
 
 	/**
-	 * Returns the key usage bit value
+	 * Returns the key usage index
 	 *
-	 * @return key usage bit
+	 * @return key usage index
 	 */
 	public int getIndex() {
 		return index;
 	}
 	
+	/**
+	 * Returns the key usage bit value
+	 *
+	 * @return key usage bit
+	 */
+	public int getBit() {
+		return bit;
+	}
+
 }

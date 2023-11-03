@@ -66,7 +66,7 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 			ParsingCacheDTO parsingResult = getCacheAccessByKey().getParsingReadOnlyResult();
 			OtherTSLPointer xmllotlPointer = ParsingUtils.getXMLLOTLPointer(parsingResult);
 			if (xmllotlPointer != null) {
-				return new PivotProcessingResult(pivot, getLOTLAnnouncedCertificateSource(xmllotlPointer), xmllotlPointer.getLocation());
+				return new PivotProcessingResult(pivot, getLOTLAnnouncedCertificateSource(xmllotlPointer), xmllotlPointer.getTSLLocation());
 			}
 		}
 		return null;
@@ -79,7 +79,7 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 
 	private CertificateSource getLOTLAnnouncedCertificateSource(OtherTSLPointer currentLOTLPointer) {
 		CertificateSource certificateSource = new CommonCertificateSource();
-		for (CertificateToken certificate : currentLOTLPointer.getCertificates()) {
+		for (CertificateToken certificate : currentLOTLPointer.getSdiCertificates()) {
 			certificateSource.addCertificate(certificate);
 		}
 		return certificateSource;

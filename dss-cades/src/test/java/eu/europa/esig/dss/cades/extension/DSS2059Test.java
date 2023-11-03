@@ -60,21 +60,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2060/DSS-2061
 public class DSS2059Test extends AbstractCAdESTestExtension {
-	
+
 	private DSSDocument document;
 	private CAdESService service;
-	
+
 	@BeforeEach
 	public void init() {
 		document = new FileDocument("src/test/resources/validation/dss2059.p7s");
-		
-		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
+
+		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setCheckRevocationForUntrustedChains(true);
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnInvalidTimestamp(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.WARN));
 		// certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
-		
+
+		certificateVerifier.setCrlSource(getCompositeCRLSource());
+
 		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		CertificateToken tstV2CA = DSSUtils.loadCertificateFromBase64EncodedString("MIID/zCCAuegAwIBAgIQP8umE0YUpE/yhLiMgaeopDANBgkqhkiG9w0BAQsFADB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwHhcNMTUwMTI5MTQwMzE1WhcNMjUwMTI5MTQwMzE1WjB3MQswCQYDVQQGEwJGUjEgMB4GA1UEChMXQ3J5cHRvbG9nIEludGVybmF0aW9uYWwxHDAaBgNVBAsTEzAwMDIgNDM5MTI5MTY0MDAwMjYxKDAmBgNVBAMTH1VuaXZlcnNpZ24gVGltZXN0YW1waW5nIENBIDIwMTUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDYc1VJ69W70ojewtKbCLZ+P8bDAVJ1qujzgIZEvm15GYX7Jp+Hl9rwxBdswSZ8S5A/x+0j6YMOHH0Z+iGl649+0GGX1gdAuovQKShsvLSzD/waINxkXXTVXpAW3V4dnCgcb3qaV/pO9NTk/sdRJxM8lUtWuD7TEAfLzz7Ucl6gBjDTA0Gz+AtUkNWPcofCWuDfiSDOOpyKwSxovde6SRwHdTXXIiC2Dphffjrr74MvLb0La5JAUwmJLIH42j/frgZeWk148wLMwBW+lvrIJtPz7eHNtTlNfQLrmmJHW4l+yvTsdJJDs7QYtfzBTNg1zqV8eo/hHxFTFJ8/T9wTmENJAgMBAAGjgYYwgYMwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwQQYDVR0gBDowODA2BgorBgEEAftLBQEBMCgwJgYIKwYBBQUHAgEWGmh0dHA6Ly9kb2NzLnVuaXZlcnNpZ24uZXUvMB0GA1UdDgQWBBT6Te1XO70/85Ezmgs5pH9dEt0HRjANBgkqhkiG9w0BAQsFAAOCAQEAc7ud6793wgdjR8Xc1L47ufdVTamI5SHfOThtROfn8JL0HuNHKdRgv6COpdjtt6RwQEUUX/km7Q+Pn+A2gA/XoPfqD0iMfP63kMMyqgalEPRv+lXbFw3GSC9BQ9s2FL7ScvSuPm7VDZhpYN5xN6H72y4z7BgsDVNhkMu5AiWwbaWF+BHzZeiuvYHX0z/OgY2oH0hluovuRAanQd4dOa73bbZhTJPFUzkgeIzOiuYS421IiAqsjkFwu3+k4dMDqYfDKUSITbMymkRDszR0WGNzIIy2NsTBcKYCHmbIV9S+165i8YjekraBjTTSbpfbty87A1S53CzA2EN1qnmQPwqFfg==");
 		commonTrustedCertificateSource.addCertificate(tstV2CA);
@@ -84,52 +86,52 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		service = new CAdESService(certificateVerifier);
 		service.setTspSource(getUsedTSPSourceAtExtensionTime());
 	}
-	
+
 	@Test
 	@Override
 	public void extendAndVerify() throws Exception {
 		DSSDocument extendedDocument = extendSignature(document);
 		verify(extendedDocument);
 	}
-	
+
 	@Test
 	public void counterSignTest() {
 		// see DSS-2178
-		
+
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertEquals(1, signatures.size());
-		
+
 		CAdESCounterSignatureParameters counterSignatureParameters = new CAdESCounterSignatureParameters();
 		counterSignatureParameters.setSigningCertificate(getSigningCert());
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
 		counterSignatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		counterSignatureParameters.setSignatureIdToCounterSign(signatures.get(0).getId());
-		
+
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(document, counterSignatureParameters));
 		assertEquals("Cannot add a counter signature to a CAdES containing an archiveTimestampV2", exception.getMessage());
 	}
-	
+
 	@Test
 	public void signaturePolicyStoreTest() {
 		// see DSS-2172
-		
+
 		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 		signaturePolicyStore.setSignaturePolicyContent(new FileDocument("src/test/resources/validation/signature-policy.der"));
 		SpDocSpecification spDocSpec = new SpDocSpecification();
 		spDocSpec.setId("1.2.3.4.5.6");
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);
-		
+
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.addSignaturePolicyStore(document, signaturePolicyStore));
 		assertEquals("Cannot add signature policy store to a CAdES containing an archiveTimestampV2", exception.getMessage());
 	}
-	
+
 	@Override
 	protected CAdESService getSignatureServiceToExtend() {
 		return service;
 	}
-	
+
 	@Override
 	protected void checkRevocationData(DiagnosticData diagnosticData) {
 		super.checkRevocationData(diagnosticData);
@@ -143,12 +145,12 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 			revoked = revoked || revocationData.isRevoked();
 		}
 		assertTrue(revoked);
-		
+
 		List<String> signatureRevocationIds = signature.foundRevocations().getRelatedRevocationData()
 				.stream().map(r -> r.getId()).collect(Collectors.toList());
 		signatureRevocationIds.addAll(signature.foundRevocations().getOrphanRevocationData()
 				.stream().map(r -> r.getId()).collect(Collectors.toList()));
-		
+
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			if (ArchiveTimestampType.CAdES_V2.equals(timestampWrapper.getArchiveTimestampType())) {
 				// the last ATSTv2 must be extended
@@ -160,7 +162,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 			}
 		}
 	}
-	
+
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		super.checkTimestamps(diagnosticData);

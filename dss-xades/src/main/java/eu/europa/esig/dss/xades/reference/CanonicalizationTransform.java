@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.definition.DSSNamespace;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
 
 /**
  * Performs a canonicalization transform on XML NodeSet
@@ -37,7 +37,7 @@ public class CanonicalizationTransform extends ComplexTransform {
 	 * @param canonicalizationAlgorithm {@link String} url
 	 */
 	public CanonicalizationTransform(String canonicalizationAlgorithm) {
-		this(XAdESNamespaces.XMLDSIG, canonicalizationAlgorithm);
+		this(XMLDSigNamespace.NS, canonicalizationAlgorithm);
 	}
 
 	/**
@@ -48,7 +48,7 @@ public class CanonicalizationTransform extends ComplexTransform {
 	 */
 	public CanonicalizationTransform(DSSNamespace xmlDSigNamespace, String canonicalizationAlgorithm) {
 		super(xmlDSigNamespace, canonicalizationAlgorithm);
-		if (!DSSXMLUtils.canCanonicalize(canonicalizationAlgorithm)) {
+		if (!XMLCanonicalizer.canCanonicalize(canonicalizationAlgorithm)) {
 			throw new UnsupportedOperationException(String.format("The provided canonicalization method [%s] is not supported!",
 					canonicalizationAlgorithm));
 		}

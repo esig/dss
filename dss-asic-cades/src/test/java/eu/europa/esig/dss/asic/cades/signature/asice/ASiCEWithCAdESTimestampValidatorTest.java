@@ -23,11 +23,11 @@ package eu.europa.esig.dss.asic.cades.signature.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCEWithCAdESManifestValidator;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESTimestampValidator;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
@@ -40,13 +40,13 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
@@ -103,16 +103,16 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		assertEquals(1, archiveManifestDocuments.size());
 		DSSDocument archiveManifest = archiveManifestDocuments.get(0);
 		
-		ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
+		ManifestFile manifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
 		assertNotNull(manifestFile);
-		
-		ASiCEWithCAdESManifestValidator asiceWithCAdESManifestValidator = new ASiCEWithCAdESManifestValidator(manifestFile, asicContent.getAllDocuments());
-		asiceWithCAdESManifestValidator.validateEntries();
+
+		ASiCManifestValidator manifestValidator = new ASiCManifestValidator(manifestFile, asicContent.getAllDocuments());
+		manifestValidator.validateEntries();
 		
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 		
 		ASiCWithCAdESTimestampValidator asicWithCAdESTimestampValidator = new ASiCWithCAdESTimestampValidator(
-				archiveTimestamp, TimestampType.ARCHIVE_TIMESTAMP);
+				archiveTimestamp, TimestampType.CONTAINER_TIMESTAMP);
 		asicWithCAdESTimestampValidator.setTimestampedData(archiveManifest);
 		asicWithCAdESTimestampValidator.setManifestFile(manifestFile);
 		asicWithCAdESTimestampValidator.setOriginalDocuments(documentsToSign);
@@ -143,7 +143,7 @@ public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdEST
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(1, timestampIds.size());
 		String timestampId = timestampIds.get(0);
-		assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(timestampId));
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampId));
 		
 		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(timestampId);
 		assertNotNull(timestampBBB.getCertificateChain());

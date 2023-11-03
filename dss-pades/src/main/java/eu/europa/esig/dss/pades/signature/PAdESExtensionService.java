@@ -29,7 +29,7 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,22 +85,6 @@ public class PAdESExtensionService {
      */
     public DSSDocument incorporateValidationData(DSSDocument document) {
         return incorporateValidationData(document, (char[]) null);
-    }
-
-    /**
-     * This method adds a DSS dictionary revision to the given {@code document} protected by a {@code passwordProtection}
-     * with the required validation data if needed.
-     *
-     * NOTE: This method does not check the validity of the provided signatures/timestamps (e.g. a T-level, ...)
-     *
-     * @param document {@link DSSDocument} to extend
-     * @param passwordProtection {@link String} a password protection for the PDF document, when present
-     * @return {@link DSSDocument} extended document
-     * @deprecated since DSS 5.12. Use {@code #incorporateValidationData(document, passwordProtection.toCharArray())}
-     */
-    @Deprecated
-    public DSSDocument incorporateValidationData(DSSDocument document, String passwordProtection) {
-        return incorporateValidationData(document, passwordProtection != null ? passwordProtection.toCharArray() : null);
     }
 
     /**

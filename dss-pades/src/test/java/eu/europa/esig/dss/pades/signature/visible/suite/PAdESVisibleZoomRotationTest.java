@@ -113,10 +113,10 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	    fieldParameters.setOriginY(50);
 	    fieldParameters.setWidth(100);
 	    fieldParameters.setHeight(300);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 	    imageParameters.setFieldParameters(fieldParameters);
 	    imageParameters.setBackgroundColor(Color.PINK);
-		
-		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
 		signatureParameters.setImageParameters(imageParameters);
 
 		super.signAndVerify();
@@ -132,12 +132,12 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	    fieldParameters.setOriginY(50);
 	    fieldParameters.setWidth(100);
 	    fieldParameters.setHeight(300);
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 	    imageParameters.setFieldParameters(fieldParameters);
 		imageParameters.setBackgroundColor(Color.PINK);
 		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
 		
 		imageParameters.setZoom(200);
-		imageParameters.setRotation(VisualSignatureRotation.ROTATE_90);
 		signatureParameters.setImageParameters(imageParameters);
 
 		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.TrustedServiceWrapper;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -36,13 +36,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Checks if the ServiceDigitalIdentifier of the TrustedService matches the TrustedService name
+ * Checks if the ServiceDigitalIdentifier of the TrustService matches the TrustService name
  *
  */
 public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValidationCertificateQualification> {
 
 	/** Trusted Service to check */
-	private final TrustedServiceWrapper trustService;
+	private final TrustServiceWrapper trustService;
 
 	/** Internal cached error status message */
 	private MessageTag errorMessage = MessageTag.EMPTY;
@@ -52,12 +52,12 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationCertificateQualification}
-	 * @param trustService {@link TrustedServiceWrapper}
+	 * @param trustService {@link TrustServiceWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public TrustedCertificateMatchTrustServiceCheck(I18nProvider i18nProvider,
 													XmlValidationCertificateQualification result,
-													TrustedServiceWrapper trustService, LevelConstraint constraint) {
+													TrustServiceWrapper trustService, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustService = trustService;

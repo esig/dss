@@ -339,7 +339,11 @@ public final class PAdESUtils {
 	 * @return TRUE if the document is a PDF, FALSE otherwise
 	 */
 	public static boolean isPDFDocument(DSSDocument document) {
-		return DSSUtils.startsWithBytes(document, PDF_PREAMBLE);
+		try (InputStream is = document.openStream()) {
+			return Utils.startsWith(is, PDF_PREAMBLE);
+		} catch (IOException e) {
+			throw new DSSException("Cannot read a sequence of bytes from the InputStream.", e);
+		}
 	}
 
 	/**

@@ -20,23 +20,22 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
-import eu.europa.esig.dss.enumerations.TimestampType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class POEComparatorTest {
 	
@@ -54,46 +53,46 @@ public class POEComparatorTest {
 		xmlTimestamp.setProductionTime(currentTime);
 		TimestampWrapper firstTimestamp = new TimestampWrapper(xmlTimestamp);
 		
-		assertFalse(comparator.before(currentTimePoe, new POE(firstTimestamp)));
-		assertTrue(comparator.before(new POE(firstTimestamp), currentTimePoe));
+		assertFalse(comparator.before(currentTimePoe, new TimestampPOE(firstTimestamp)));
+		assertTrue(comparator.before(new TimestampPOE(firstTimestamp), currentTimePoe));
 		
 		XmlTimestamp xmlTimestamp2 = new XmlTimestamp();
 		xmlTimestamp2.setType(TimestampType.SIGNATURE_TIMESTAMP);
 		xmlTimestamp2.setProductionTime(currentTime);
 		TimestampWrapper secondTimestamp = new TimestampWrapper(xmlTimestamp2);
-		assertTrue(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
+		assertTrue(comparator.before(new TimestampPOE(firstTimestamp), new TimestampPOE(secondTimestamp)));
 		
 		calendar.add(Calendar.SECOND, 1);
 		xmlTimestamp.setProductionTime(calendar.getTime());
-		assertFalse(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
-		assertTrue(comparator.before(new POE(secondTimestamp), new POE(firstTimestamp)));
+		assertFalse(comparator.before(new TimestampPOE(firstTimestamp), new TimestampPOE(secondTimestamp)));
+		assertTrue(comparator.before(new TimestampPOE(secondTimestamp), new TimestampPOE(firstTimestamp)));
 		
 		xmlTimestamp.setType(TimestampType.ARCHIVE_TIMESTAMP);
 		xmlTimestamp2.setType(TimestampType.ARCHIVE_TIMESTAMP);
 		xmlTimestamp2.setProductionTime(xmlTimestamp.getProductionTime());
 		
-		assertFalse(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
-		assertFalse(comparator.before(new POE(secondTimestamp), new POE(firstTimestamp)));
-		assertEquals(0, comparator.compare(new POE(firstTimestamp), new POE(secondTimestamp)));
+		assertFalse(comparator.before(new TimestampPOE(firstTimestamp), new TimestampPOE(secondTimestamp)));
+		assertFalse(comparator.before(new TimestampPOE(secondTimestamp), new TimestampPOE(firstTimestamp)));
+		assertEquals(0, comparator.compare(new TimestampPOE(firstTimestamp), new TimestampPOE(secondTimestamp)));
 		
 		xmlTimestamp.setTimestampedObjects(new ArrayList<>());
 		xmlTimestamp2.setTimestampedObjects(Arrays.asList(new XmlTimestampedObject()));
 		
-		assertTrue(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
-		assertFalse(comparator.before(new POE(secondTimestamp), new POE(firstTimestamp)));
-		assertNotEquals(0, comparator.compare(new POE(firstTimestamp), new POE(secondTimestamp)));
+		assertTrue(comparator.before(new TimestampPOE(firstTimestamp), new TimestampPOE(secondTimestamp)));
+		assertFalse(comparator.before(new TimestampPOE(secondTimestamp), new TimestampPOE(firstTimestamp)));
+		assertNotEquals(0, comparator.compare(new TimestampPOE(firstTimestamp), new TimestampPOE(secondTimestamp)));
 		
 		xmlTimestamp2.setType(TimestampType.VALIDATION_DATA_TIMESTAMP);
-		assertFalse(comparator.before(new POE(firstTimestamp), new POE(secondTimestamp)));
-		assertTrue(comparator.before(new POE(secondTimestamp), new POE(firstTimestamp)));
+		assertFalse(comparator.before(new TimestampPOE(firstTimestamp), new TimestampPOE(secondTimestamp)));
+		assertTrue(comparator.before(new TimestampPOE(secondTimestamp), new TimestampPOE(firstTimestamp)));
 		
 	}
 	
 	@Test
 	public void nullPointerTest() {
-		Exception exception = assertThrows(NullPointerException.class, () -> new POE((Date) null));
+		Exception exception = assertThrows(NullPointerException.class, () -> new POE(null));
 		assertEquals("The controlTime must be defined!", exception.getMessage());
-		exception = assertThrows(NullPointerException.class, () -> new POE((TimestampWrapper) null));
+		exception = assertThrows(NullPointerException.class, () -> new TimestampPOE(null));
 		assertEquals("The timestampWrapper must be defined!", exception.getMessage());
 	}
 

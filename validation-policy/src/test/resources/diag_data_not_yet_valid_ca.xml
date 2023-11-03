@@ -133,7 +133,7 @@
                     <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>FrG2pD5OD7mfnmEA7MF9wg+v/5n6SUQy7pIbiyrqrxY=</DigestValue>
@@ -179,7 +179,7 @@
                     <crlUrl>http://localhost:9999/pki-factory/crl/ocsp-skip-not-yet-valid-ca.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations>
                 <CertificateRevocation Revocation="R-5CA71AC2ACB5D144AE1C70400A5143A734C34D566D602D6A48FD235C9A081051">
                     <Status>GOOD</Status>

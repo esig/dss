@@ -69,7 +69,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,6 +115,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		PdfStamper stp = PdfStamper.createSignature(reader, output, '\0', null, true);
 		stp.setIncludeFileID(true);
 		stp.setOverrideFileId(documentReader.generateDocumentId(parameters));
+		// See https://github.com/LibrePDF/OpenPDF/pull/814 for settings below
+		stp.setUpdateDocInfo(false);
+		stp.setUpdateMetadata(false);
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(parameters.getSigningDate());
@@ -152,7 +155,12 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			}
 
 			cal.setTimeZone(signatureParameters.getSigningTimeZone());
+
+			// TODO : remove later (left for backward-compatibility)
 			signatureDictionary.put(PdfName.M, new PdfDate(cal));
+
+			// Set data SignDate directly within PdfSignatureAppearance (since OpenPdf 1.3.32)
+			sap.setSignDate(cal);
 		}
 
 		sap.setCryptoDictionary(signatureDictionary);

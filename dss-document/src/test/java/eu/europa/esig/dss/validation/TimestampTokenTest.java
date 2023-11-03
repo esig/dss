@@ -64,10 +64,10 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.TimestampCRLSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampCertificateSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampOCSPSource;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampCRLSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampOCSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 public class TimestampTokenTest {
 

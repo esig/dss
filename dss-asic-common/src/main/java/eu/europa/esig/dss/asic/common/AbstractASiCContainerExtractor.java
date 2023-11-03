@@ -86,8 +86,12 @@ public abstract class AbstractASiCContainerExtractor {
 					result.getManifestDocuments().add(currentDocument);
 				} else if (isAllowedArchiveManifest(entryName)) {
 					result.getArchiveManifestDocuments().add(currentDocument);
+				} else if (isAllowedEvidenceRecordManifest(entryName)) {
+					result.getEvidenceRecordManifestDocuments().add(currentDocument);
 				} else if (isAllowedTimestamp(entryName)) {
 					result.getTimestampDocuments().add(currentDocument);
+				} else if (isAllowedEvidenceRecord(entryName)) {
+					result.getEvidenceRecordDocuments().add(currentDocument);
 				} else if (!isFolder(entryName)) {
 					result.getUnsupportedDocuments().add(currentDocument);
 				}
@@ -154,13 +158,13 @@ public abstract class AbstractASiCContainerExtractor {
 	protected abstract boolean isAllowedArchiveManifest(String entryName);
 
 	/**
-	 * Checks if the given {@code String} file name represents an allowed timestamp document name
+	 * Checks if the given {@code String} file name represents an allowed evidence record manifest name
 	 * for the current ASiC container format
 	 *
 	 * @param entryName {@link String} document name to check
-	 * @return TRUE if the name represents an allowed timestamp document name, FALSE otherwise
+	 * @return TRUE if the name represents an allowed evidence record manifest document name, FALSE otherwise
 	 */
-	protected abstract boolean isAllowedTimestamp(String entryName);
+	protected abstract boolean isAllowedEvidenceRecordManifest(String entryName);
 
 	/**
 	 * Checks if the given {@code String} file name represents an allowed signature document name
@@ -170,5 +174,23 @@ public abstract class AbstractASiCContainerExtractor {
 	 * @return TRUE if the name represents an allowed signature document name, FALSE otherwise
 	 */
 	protected abstract boolean isAllowedSignature(String entryName);
+
+	/**
+	 * Checks if the given {@code String} file name represents an allowed timestamp document name
+	 * for the current ASiC container format
+	 *
+	 * @param entryName {@link String} document name to check
+	 * @return TRUE if the name represents an allowed timestamp document name, FALSE otherwise
+	 */
+	protected abstract boolean isAllowedTimestamp(String entryName);
+
+	/**
+	 * Checks if the given {@code String} file name represents an allowed evidence record document name
+	 * for the current ASiC container format
+	 *
+	 * @param entryName {@link String} document name to check
+	 * @return TRUE if the name represents an allowed evidence record document name, FALSE otherwise
+	 */
+	protected abstract boolean isAllowedEvidenceRecord(String entryName);
 
 }

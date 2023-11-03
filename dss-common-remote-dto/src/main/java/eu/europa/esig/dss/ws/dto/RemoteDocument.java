@@ -44,6 +44,7 @@ public class RemoteDocument implements Serializable {
 	 * Empty constructor
 	 */
 	public RemoteDocument() {
+		// empty
 	}
 
 	/**

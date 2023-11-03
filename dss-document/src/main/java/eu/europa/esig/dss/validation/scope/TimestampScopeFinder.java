@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.validation.scope;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.List;
 
@@ -38,12 +38,5 @@ public interface TimestampScopeFinder {
      * @return a list of {@link SignatureScope}s
      */
     List<SignatureScope> findTimestampScope(TimestampToken timestampToken);
-
-    /**
-     * Sets the default DigestAlgorithm to use for {@code SignatureScope} digest computation
-     *
-     * @param digestAlgorithm {@link DigestAlgorithm} to use
-     */
-    void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
 
 }

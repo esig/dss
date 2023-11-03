@@ -529,6 +529,8 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                |_class XAdESSignatureParameters_ +
                                                                 *#setReferences*                                        |SignedInfo/Reference                 |/                                        |/                                                          |/
 .5+|B-Level      .5+|Signed attributes                         |_class XAdESSignatureParameters_ +
+                                                                *#setDataObjectFormatList*                              |DataObjectFormat                     |/                                        |/                                                          |/
+                                                               |_class XAdESSignatureParameters_ +
                                                                 *#setSignedAdESObject*                                  |Object                               |/                                        |/                                                          |/
                                                                |_class CAdESSignatureParameters_ +
                                                                 *#setContentHintsType* +
@@ -538,9 +540,9 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                 *#setContentIdentifierSuffix*                           |/                                    |content-identifier                       |/                                                          |/
                                                                |_class PAdESSignatureParameters_ +
                                                                 *#setReason*                                            |/                                    |/                                        |/Reason                                                    |/
-                                                               |_class PAdESSignatureParameters_ +
+.6+|B-Level      .6+|Signed attributes                         |_class PAdESSignatureParameters_ +
                                                                 *#setContentSize*                                       |/                                    |/                                        |/Contents (length)                                         |/
-.5+|B-Level      .5+|Signed attributes                         |_class PAdESSignatureParameters_ +
+                                                               |_class PAdESSignatureParameters_ +
                                                                 *#setFilter*                                            |/                                    |/                                        |/Filter                                                    |/
                                                                |_class PAdESSignatureParameters_ +
                                                                 *#setSubFilter*                                         |/                                    |/                                        |/SubFilter                                                 |/
@@ -557,17 +559,19 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                |_class JAdESSignatureParameters_ +
                                                                 *#setIncludeKeyIdentifier*                              |/                                    |/                                        |/                                                          |kid
                                                                |_class JAdESSignatureParameters_ +
+                                                                *#setX509Url*                                           |/                                    |/                                        |/                                                          |x5u
+                                                               |_class JAdESSignatureParameters_ +
                                                                 *#setSigningCertificateDigestMethod* +
                                                                 *(DigestAlgorithm.SHA256)*                              |/                                    |/                                        |/                                                          |x5t#S256
-                                                               |_class JAdESSignatureParameters_ +
+.3+|B-Level      .3+|Signed attributes                         |_class JAdESSignatureParameters_ +
                                                                 *#setSigDMechanism*                                     |/                                    |/                                        |/                                                          |sigD
-.5+|B-Level      .2+|Signed attributes                         |_class JAdESSignatureParameters_ +
+                                                               |_class JAdESSignatureParameters_ +
                                                                 *#setBase64UrlEncodedPayload*                           |/                                    |/                                        |/                                                          |b64
                                                                |_class DSSDocument_ (for signer document) +
                                                                 *#setMimeType*                                          |DataObjectFormat/MimeType            |mime-type                                |/                                                          |cty
 
 
-                 .3+|Unsigned attributes                       |_class *AdESService_ +
+.3+|B-Level      .3+|Unsigned attributes                       |_class *AdESService_ +
                                                                 **#getDataToBeCounterSigned** +
                                                                 **#counterSignSignature**                               |CounterSignature                     |countersignature                         |/                                                          |cSig
                                                                |_class *AdESService_ +
@@ -726,6 +730,7 @@ DSS allows defining canonicalization algorithms to be used on signature or times
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=demoCanonicalization]
 ----
 
+[[References]]
 ====== References
 
 In order to compute digest for original document(s) in a custom way, a class `DSSReference` can be used to define a `ds:Reference` element's content:
@@ -736,7 +741,33 @@ In order to compute digest for original document(s) in a custom way, a class `DS
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoReference]
 ----
 
+WARNING: The parameter modifies default behavior on ds:Reference's computation and its incorrect definition may cause production of invalid signatures. The parameter is recommended to be used only by experienced users.
+
 For more information about `DSSReference` configuration, please refer the section <<RefTransformations>>.
+
+====== Data Object Format
+
+Since version `5.13` DSS provides a possibility to identify signed data objects in a customized way by setting a configuration for created `DataObjectFormat` signed elements. The individual configuration can be achieved by providing a list of `DSSDataObjectFormat` objects corresponding the signed data objects within the `XAdESSignatureParameters`:
+
+[source,java,indent=0]
+.DSSDataObjectFormat definition
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoDataObjectFormat]
+----
+
+WARNING: The parameter modifies default behavior the xades:DataObjectFormat elements are created. It is up to the implementor to ensure the validity of the defined configuration. The parameter is recommended to be used only by experienced users.
+
+====== Objects
+
+It is possible to provide a list of custom data objects to be incorporated within a created signature as `ds:Object` elements (which is similar to signed data objects in `ENVELOPING` XAdES signature packaging). For this a list of `DSSObject` objects should be provided within the used `XAdESSignatureParameters` instance:
+
+[source,java,indent=0]
+.DSSObject definition
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesBWithTransformsTest.java[tags=demoObjects]
+----
+
+NOTE: The provided objects are not signed by default. To sign the data, the corresponding configuration can be achieved with a help of <<References>> parameter. Such configuration is considered as advanced and not covered within the documentation.
 
 ===== PAdES
 The framework allows creation of PDF files with visible signature as specified in ETSI EN 319 142 (cf. <<R03>>) and allows the insertion of a visible signature to an existing field.

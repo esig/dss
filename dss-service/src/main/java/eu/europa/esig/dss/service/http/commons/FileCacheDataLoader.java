@@ -200,7 +200,6 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	 *            if true indicates that the cached data should be refreshed
 	 * @return binaries of the extracted data object
 	 */
-	@Override
 	public byte[] get(final String url, final boolean refresh) {
 		DSSDocument document = getDocument(url, refresh);
 		return DSSUtils.toByteArray(document);

@@ -42,7 +42,6 @@ import java.util.stream.Collectors;
 
 /**
  * The class represents a JDBC cached AIA Source
- *
  */
 public class JdbcCacheAIASource extends RepositoryAIASource {
 
@@ -208,28 +207,26 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
             return certificateTokens;
 
         } catch (Exception e) {
-            throw new DSSExternalResourceException(String.format("An error occurred during an attempt to get " +
-                    "a certificate token from cache. Reason : %s", e.getMessage()), e);
+            throw new DSSExternalResourceException(String.format("An error occurred during an attempt to get " + "a certificate token from cache. Reason : %s", e.getMessage()), e);
         }
     }
 
+    @Deprecated
     @Override
-    protected void insertCertificates(final String aiaUrl, final Collection<CertificateToken> certificateTokens) {
+    protected void insertCertificates(final String aiaKey, final Collection<CertificateToken> certificateTokens) {
         if (Utils.isCollectionNotEmpty(certificateTokens)) {
             for (CertificateToken certificate : certificateTokens) {
-                jdbcCacheConnector.execute(getInsertCertificateTokenEntryQuery(), getUniqueCertificateAiaId(certificate, aiaUrl),
-                        getAiaUrlIdentifier(aiaUrl), certificate.getEncoded());
-                LOG.debug("AIA Certificate with Id '{}' successfully inserted in DB", certificate.getDSSIdAsString());
+                insertCertificate(aiaKey, certificate);
             }
         }
     }
 
-    private String getUniqueCertificateAiaId(final CertificateToken certificateToken, String aiaUrl) {
-        return DSSUtils.getSHA1Digest(certificateToken.getDSSIdAsString() + aiaUrl);
-    }
-
-    private String getAiaUrlIdentifier(final String aiaUrl) {
-        return DSSUtils.getSHA1Digest(aiaUrl);
+    @Override
+    protected void insertCertificate(final String aiaKey, final CertificateToken certificateTokens) {
+        if (certificateTokens != null && aiaKey != null) {
+            jdbcCacheConnector.execute(getInsertCertificateTokenEntryQuery(), getUniqueCertificateAiaId(certificateTokens, aiaKey), aiaKey, certificateTokens.getEncoded());
+            LOG.debug("AIA Certificate with Id '{}' successfully inserted in DB", certificateTokens.getDSSIdAsString());
+        }
     }
 
     @Override
@@ -298,13 +295,19 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
      */
     protected static class SqlAIAResponse implements SqlRecord {
 
-        /** ID of the record */
+        /**
+         * ID of the record
+         */
         protected String id;
 
-        /** AIA internal key */
+        /**
+         * AIA internal key
+         */
         protected String aiaKey;
 
-        /** Certificate binaries */
+        /**
+         * Certificate binaries
+         */
         protected byte[] certificateBinary;
 
         /**

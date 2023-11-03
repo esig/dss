@@ -53,14 +53,24 @@ public class ASiCWithXAdESContainerExtractor extends AbstractASiCContainerExtrac
 	}
 
 	@Override
+	protected boolean isAllowedEvidenceRecordManifest(String entryName) {
+		return ASiCUtils.isEvidenceRecordManifest(entryName);
+	}
+
+	@Override
+	protected boolean isAllowedSignature(String entryName) {
+		return ASiCUtils.isXAdES(entryName);
+	}
+
+	@Override
 	protected boolean isAllowedTimestamp(String entryName) {
 		// No timestamp file in ASiC with XAdES
 		return false;
 	}
 
 	@Override
-	protected boolean isAllowedSignature(String entryName) {
-		return ASiCUtils.isXAdES(entryName);
+	protected boolean isAllowedEvidenceRecord(String entryName) {
+		return ASiCUtils.EVIDENCE_RECORD_ERS.equals(entryName) || ASiCUtils.EVIDENCE_RECORD_XML.equals(entryName);
 	}
 
 }

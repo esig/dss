@@ -51,8 +51,8 @@ public class ValidateSignedXmlXadesBTest {
 	public void validateXAdESBaselineB() throws Exception {
 
 		// See Trusted Lists loading
-		CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password");
-		CertificateSource adjunctCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password");
+		CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password".toCharArray());
+		CertificateSource adjunctCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password".toCharArray());
 
 		// tag::demo[]
 		// import eu.europa.esig.dss.detailedreport.DetailedReport;

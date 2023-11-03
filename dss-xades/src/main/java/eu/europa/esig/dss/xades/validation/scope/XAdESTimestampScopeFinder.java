@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
-import eu.europa.esig.dss.validation.scope.SignatureScope;
-import eu.europa.esig.dss.validation.timestamp.TimestampInclude;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
-import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import org.apache.xml.security.signature.Reference;
+import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,13 +49,13 @@ public class XAdESTimestampScopeFinder extends EncapsulatedTimestampScopeFinder 
         final List<TimestampInclude> timestampIncludes = timestampToken.getTimestampIncludes();
         if (Utils.isCollectionNotEmpty(timestampIncludes)) {
             List<SignatureScope> individualSignatureScopes = new ArrayList<>();
-            XAdESSignature xadesSignature = (XAdESSignature) signature;
-            for (Reference reference : xadesSignature.getReferences()) {
-                if (isContentTimestampedReference(reference, timestampIncludes)) {
-                    List<SignatureScope> signatureScopes = signature.getSignatureScopes();
-                    if (Utils.isCollectionNotEmpty(signatureScopes)) {
+            List<SignatureScope> signatureScopes = signature.getSignatureScopes();
+            if (Utils.isCollectionNotEmpty(signatureScopes)) {
+                for (ReferenceValidation referenceValidation : signature.getReferenceValidations()) {
+                    XAdESReferenceValidation xadesReferenceValidation = (XAdESReferenceValidation) referenceValidation;
+                    if (isContentTimestampedReference(xadesReferenceValidation, timestampIncludes)) {
                         for (SignatureScope signatureScope : signatureScopes) {
-                            if (Utils.endsWithIgnoreCase(reference.getURI(), signatureScope.getName())) {
+                            if (Utils.endsWithIgnoreCase(xadesReferenceValidation.getUri(), signatureScope.getDocumentName())) {
                                 individualSignatureScopes.add(signatureScope);
                             }
                         }
@@ -67,9 +67,9 @@ public class XAdESTimestampScopeFinder extends EncapsulatedTimestampScopeFinder 
         return super.filterCoveredSignatureScopes(timestampToken);
     }
 
-    private boolean isContentTimestampedReference(Reference reference, List<TimestampInclude> includes) {
+    private boolean isContentTimestampedReference(XAdESReferenceValidation xadesReferenceValidation, List<TimestampInclude> includes) {
         for (TimestampInclude timestampInclude : includes) {
-            if (reference.getId().equals(timestampInclude.getURI())) {
+            if (xadesReferenceValidation.getId().equals(timestampInclude.getURI())) {
                 return true;
             }
         }

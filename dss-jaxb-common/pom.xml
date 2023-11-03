@@ -3,7 +3,7 @@
     <parent>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>sd-dss</artifactId>
-        <version>5.12.1</version>
+        <version>5.13.RC1</version>
     </parent>
 
     <artifactId>dss-jaxb-common</artifactId>
@@ -17,11 +17,7 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-enumerations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-alert</artifactId>
+            <artifactId>dss-xml-common</artifactId>
         </dependency>
 
         <dependency>

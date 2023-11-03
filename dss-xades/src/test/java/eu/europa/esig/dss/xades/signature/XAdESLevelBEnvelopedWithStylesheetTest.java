@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -32,8 +33,8 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,7 +77,7 @@ public class XAdESLevelBEnvelopedWithStylesheetTest extends AbstractXAdESTestSig
         assertEquals(1, signatureNodeList.getLength());
 
         Element signatureElement = (Element) signatureNodeList.item(0);
-        NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Paths().getDataObjectFormat());
+        NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
         assertEquals(1, dataObjectFormatList.getLength());
 
         Element dataObjectFormat = (Element) dataObjectFormatList.item(0);
@@ -96,8 +97,8 @@ public class XAdESLevelBEnvelopedWithStylesheetTest extends AbstractXAdESTestSig
         assertEquals(1, originalDocuments.size());
         Document signedElement = DomUtils.buildDOM(originalDocuments.get(0));
 
-        assertArrayEquals(DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.EXCLUSIVE, originalDocument),
-                DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.EXCLUSIVE, signedElement));
+        assertArrayEquals(XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(originalDocument),
+                XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(signedElement));
     }
 
     @Override

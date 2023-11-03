@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -40,15 +40,15 @@ public abstract class XAdESSigProperties implements SignatureProperties<XAdESAtt
 	private final Element signaturePropertiesDom;
 
 	/** The XAdES XPaths */
-	private final XAdESPaths xadesPaths;
+	private final XAdESPath xadesPaths;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param signatureProperties {@link Element}
-	 * @param xadesPaths {@link XAdESPaths}
+	 * @param xadesPaths {@link XAdESPath}
 	 */
-	XAdESSigProperties(Element signatureProperties, XAdESPaths xadesPaths) {
+	XAdESSigProperties(Element signatureProperties, XAdESPath xadesPaths) {
 		this.signaturePropertiesDom = signatureProperties;
 		this.xadesPaths = xadesPaths;
 	}

@@ -33,21 +33,26 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.ArchiveTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentHintsCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.DocumentTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.KeyIdentifierMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.KeyIdentifierPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageDigestOrSignedPropertiesCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
-import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.ValidationDataRefsOnlyTimeStampCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.ValidationDataTimeStampCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintWithIdCheck;
 
 import java.util.Date;
 
@@ -150,24 +155,41 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		// signer-location
 		item = item.setNextItem(signerLocation());
 
+		// claimed-roles
+		item = item.setNextItem(claimedRoles());
+
+		// certified-roles
+		item = item.setNextItem(certifiedRoles());
+
 		// TODO signer-attributes
 
 		// content-timestamp
-		item = item.setNextItem(contentTimestamp());
+		item = item.setNextItem(contentTimeStamp());
 
 		// content-timestamp message-imprint
 		for (TimestampWrapper contentTimestamp : token.getContentTimestamps()) {
 			item = item.setNextItem(contentTimestampMessageImprint(contentTimestamp));
 		}
 
-		// countersignature
-		item = item.setNextItem(countersignature());
+		// counter-signature
+		item = item.setNextItem(counterSignature());
 
-		// claimed-roles
-		item = item.setNextItem(claimedRoles());
+		// signature-time-stamp
+		item = item.setNextItem(signatureTimeStamp());
 
-		// certified-roles
-		item = item.setNextItem(certifiedRoles());
+		// validation-data-time-stamp
+		item = item.setNextItem(validationDataTimeStamp());
+
+		// validation-data-refs-only-time-stamp
+		item = item.setNextItem(validationDataRefsOnlyTimeStamp());
+
+		// archive-time-stamp
+		item = item.setNextItem(archiveTimeStamp());
+
+		// document-time-stamp (PAdES only)
+		if (SignatureForm.PAdES.equals(token.getSignatureFormat().getSignatureForm())) {
+			item = item.setNextItem(documentTimeStamp());
+		}
 
 		// cryptographic check
 		item = cryptographic(item);
@@ -226,19 +248,14 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		return new SignerLocationCheck(i18nProvider, result, token, constraint);
 	}
 
-	private ChainItem<XmlSAV> contentTimestamp() {
-		LevelConstraint constraint = validationPolicy.getContentTimestampConstraint(context);
-		return new ContentTimestampCheck(i18nProvider, result, token, constraint);
+	private ChainItem<XmlSAV> contentTimeStamp() {
+		LevelConstraint constraint = validationPolicy.getContentTimeStampConstraint(context);
+		return new ContentTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentTimestampMessageImprint(TimestampWrapper contentTimestamp) {
-		LevelConstraint constraint = validationPolicy.getContentTimestampMessageImprintConstraint(context);
-		return new TimestampMessageImprintCheck<>(i18nProvider, result, contentTimestamp, constraint);
-	}
-
-	private ChainItem<XmlSAV> countersignature() {
-		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint(context);
-		return new CounterSignatureCheck(i18nProvider, result, diagnosticData, token, constraint);
+		LevelConstraint constraint = validationPolicy.getContentTimeStampMessageImprintConstraint(context);
+		return new TimestampMessageImprintWithIdCheck<>(i18nProvider, result, contentTimestamp, constraint);
 	}
 
 	private ChainItem<XmlSAV> claimedRoles() {
@@ -249,6 +266,36 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> certifiedRoles() {
 		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint(context);
 		return new CertifiedRolesCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> counterSignature() {
+		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint(context);
+		return new CounterSignatureCheck(i18nProvider, result, diagnosticData, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> signatureTimeStamp() {
+		LevelConstraint constraint = validationPolicy.getSignatureTimeStampConstraint(context);
+		return new SignatureTimeStampCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> validationDataTimeStamp() {
+		LevelConstraint constraint = validationPolicy.getValidationDataTimeStampConstraint(context);
+		return new ValidationDataTimeStampCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> validationDataRefsOnlyTimeStamp() {
+		LevelConstraint constraint = validationPolicy.getValidationDataRefsOnlyTimeStampConstraint(context);
+		return new ValidationDataRefsOnlyTimeStampCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> archiveTimeStamp() {
+		LevelConstraint constraint = validationPolicy.getArchiveTimeStampConstraint(context);
+		return new ArchiveTimeStampCheck(i18nProvider, result, token, constraint);
+	}
+
+	private ChainItem<XmlSAV> documentTimeStamp() {
+		LevelConstraint constraint = validationPolicy.getDocumentTimeStampConstraint(context);
+		return new DocumentTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
 }

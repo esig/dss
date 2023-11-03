@@ -130,8 +130,8 @@
                     <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="cs">Česká pošta, s.p.</TSPName>
                         <TSPName lang="en">The Czech Post, s.p.</TSPName>
@@ -139,8 +139,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
                             <ServiceNames>
                                 <ServiceName lang="cs">(21) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
                                 <ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName>
@@ -153,8 +153,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
                             <ServiceNames>
                                 <ServiceName lang="cs">(21) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
                                 <ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName>
@@ -166,8 +166,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
                             <ServiceNames>
                                 <ServiceName lang="cs">(21) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
                                 <ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName>
@@ -176,10 +176,10 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
                             <StartDate>2010-01-19T11:31:20Z</StartDate>
                             <EndDate>2016-06-30T22:00:00Z</EndDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -246,8 +246,8 @@
                     <crlUrl>http://postsignum.ttc.cz/crl/psqualifiedca2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="cs">Česká pošta, s.p.</TSPName>
                         <TSPName lang="en">The Czech Post, s.p.</TSPName>
@@ -255,8 +255,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC">
                             <ServiceNames>
                                 <ServiceName lang="cs">(21) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
                                 <ServiceName lang="en">(21) PostSignum - issuing qualified certificates</ServiceName>
@@ -272,10 +272,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForWebSiteAuthentication</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-D53E84F350FF6FECDC6DD74DFD52298950DF169B104732A411FF3A2F9F341E50">
                     <Status>GOOD</Status>
@@ -327,7 +327,7 @@
                     <crlUrl>http://postsignum.ttc.cz/crl/psrootqca2.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

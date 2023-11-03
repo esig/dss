@@ -105,11 +105,6 @@ public class MultiThreadsCertificateValidatorTest {
 				}
 
 				@Override
-				public byte[] get(String url, boolean refresh) {
-					throw new DSSException("Not implemented");
-				}
-
-				@Override
 				public byte[] post(String url, byte[] content) {
 					throw new DSSException("Not implemented");
 				}

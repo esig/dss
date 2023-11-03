@@ -23,24 +23,25 @@ package eu.europa.esig.dss.asic.cades.extension.asice;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESManifestParser;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ASiCManifestTypeEnum;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -51,8 +52,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
 	
@@ -103,7 +103,7 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(3, timestampIds.size());
 		for (String id : timestampIds) {
-			assertEquals(Indication.PASSED, detailedReport.getTimestampValidationIndication(id));
+			assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(id));
 		}
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -122,17 +122,17 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
         List<DSSDocument> manifestFiles = result.getManifestDocuments();
         assertEquals(1, manifestFiles.size());
         
-    	ManifestFile manifestFile = ASiCWithCAdESManifestParser.getManifestFile(manifestFiles.get(0));
-		assertFalse(manifestFile.isTimestampManifest());
-		assertFalse(manifestFile.isArchiveManifest());
+    	ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifestFiles.get(0));
+		assertNotNull(manifestFile);
+		assertEquals(ASiCManifestTypeEnum.SIGNATURE, manifestFile.getManifestType());
         
         List<DSSDocument> archiveManifestFiles = result.getArchiveManifestDocuments();
         assertEquals(2, archiveManifestFiles.size());
         
         for (DSSDocument archiveManifest : archiveManifestFiles) {
-        	manifestFile = ASiCWithCAdESManifestParser.getManifestFile(archiveManifest);
-			assertTrue(manifestFile.isTimestampManifest());
-			assertTrue(manifestFile.isArchiveManifest());
+        	manifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
+			assertNotNull(manifestFile);
+			assertEquals(ASiCManifestTypeEnum.ARCHIVE_MANIFEST, manifestFile.getManifestType());
         }
         
         List<DSSDocument> allManifestFiles = result.getAllManifestDocuments();

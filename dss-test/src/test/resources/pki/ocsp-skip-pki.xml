@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="ocsp-skip-pki">
+
+    <certificate>
+        <serialNumber>1000</serialNumber>
+        <subject>ocsp-skip-root-ca</subject>
+        <issuer serialNumber="1000">ocsp-skip-root-ca</issuer>
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA512</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <trustAnchor/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1001</serialNumber>
+        <subject>ocsp-skip-ocsp-responder</subject>
+        <issuer serialNumber="1000">ocsp-skip-root-ca</issuer>
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.9</extendedKeyUsage> <!-- ocsp-signing -->
+        </extendedKeyUsages>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1002</serialNumber>
+        <subject>ocsp-skip-ca</subject>
+        <issuer serialNumber="1000">ocsp-skip-root-ca</issuer>
+        <ocspResponder serialNumber="1001">ocsp-skip-root-ca</ocspResponder>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>ocsp-skip-root-ca</crl>
+        <caIssuers>ocsp-skip-root-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1003</serialNumber>
+        <subject>ocsp-skip-expired-responder</subject>
+        <issuer serialNumber="1000">ocsp-skip-root-ca</issuer>
+        <notBefore month="-3"/>
+        <notAfter month="-1"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.9</extendedKeyUsage> <!-- ocsp-signing -->
+        </extendedKeyUsages>
+        <ocspNoCheck/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1004</serialNumber>
+        <subject>ocsp-skip-valid-ca</subject>
+        <issuer serialNumber="1000">ocsp-skip-root-ca</issuer>
+        <ocspResponder serialNumber="1003">ocsp-skip-root-ca</ocspResponder>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>ocsp-skip-root-ca</crl>
+        <caIssuers>ocsp-skip-root-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1005</serialNumber>
+        <subject>ocsp-skip-not-yet-valid-ca</subject>
+        <issuer serialNumber="1000">ocsp-skip-root-ca</issuer>
+        <ocspResponder serialNumber="1001">ocsp-skip-root-ca</ocspResponder>
+        <notBefore year="1"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>ocsp-skip-root-ca</crl>
+        <caIssuers>ocsp-skip-root-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1010</serialNumber>
+        <subject>ocsp-skip-user</subject>
+        <issuer serialNumber="1002">ocsp-skip-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <ocsp>ocsp-skip-ca</ocsp>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1011</serialNumber>
+        <subject>ocsp-skip-user-with-crl</subject>
+        <issuer serialNumber="1002">ocsp-skip-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <crl>ocsp-skip-ca</crl>
+        <ocsp>ocsp-skip-ca</ocsp>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1012</serialNumber>
+        <subject>ocsp-skip-expired-ocsp-user</subject>
+        <issuer serialNumber="1004">ocsp-skip-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <crl>ocsp-skip-valid-ca</crl>
+        <ocsp>ocsp-skip-valid-ca</ocsp>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1013</serialNumber>
+        <subject>ocsp-skip-not-yet-valid-ca-user</subject>
+        <issuer serialNumber="1005">ocsp-skip-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <crl>ocsp-skip-not-yet-valid-ca</crl>
+    </certificate>
+
+</pki>

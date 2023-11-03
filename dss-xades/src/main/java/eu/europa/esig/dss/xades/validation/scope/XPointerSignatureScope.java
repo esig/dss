@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.validation.scope.SignatureScopeWithTransformations;
 
 import java.util.List;
@@ -44,11 +45,11 @@ public class XPointerSignatureScope extends SignatureScopeWithTransformations {
 	 * Default constructor
 	 *
 	 * @param uri {@link String}
+	 * @param document {@link DSSDocument}
 	 * @param transformations a list of {@link String} transform descriptions
-	 * @param digest {@link Digest}
 	 */
-	protected XPointerSignatureScope(final String uri, final List<String> transformations, final Digest digest) {
-		super(getDocumentNameFromXPointer(uri), digest, transformations);
+	protected XPointerSignatureScope(final String uri, final DSSDocument document, final List<String> transformations) {
+		super(getDocumentNameFromXPointer(uri), document, transformations);
 		this.uri = uri;
 	}
 
@@ -57,13 +58,13 @@ public class XPointerSignatureScope extends SignatureScopeWithTransformations {
 	}
 
 	@Override
-	public String getDescription() {
+	public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
 		StringBuilder sb = new StringBuilder("XPointer query to ");
 		if (DomUtils.isRootXPointer(uri)) {
 			sb.append("root XML element");
 		} else {
 			sb.append("element with Id '");
-			sb.append(getName());
+			sb.append(getDocumentName());
 			sb.append("'");
 		}
 		return addTransformationIfNeeded(sb.toString());

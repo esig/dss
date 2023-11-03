@@ -22,8 +22,9 @@ package eu.europa.esig.dss.validation.scope;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,10 +73,10 @@ public class DetachedTimestampScopeFinder extends AbstractSignatureScopeFinder i
         String documentName = document.getName();
         if (document instanceof DigestDocument) {
             return Arrays.asList(new DigestSignatureScope(Utils.isStringNotEmpty(documentName) ? documentName : "Digest document",
-                    ((DigestDocument) document).getExistingDigest()));
+                    document));
         } else {
             return Arrays.asList(new FullSignatureScope(Utils.isStringNotEmpty(documentName) ? documentName : "Full document",
-                    getDigest(document)));
+                    document));
         }
     }
 

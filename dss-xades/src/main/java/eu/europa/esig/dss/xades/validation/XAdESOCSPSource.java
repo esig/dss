@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
-import eu.europa.esig.dss.xades.definition.XAdESPaths;
+import eu.europa.esig.xades.definition.XAdESPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -48,7 +48,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	private final Element signatureElement;
 
 	/** The XAdES XPaths */
-	private final XAdESPaths xadesPaths;
+	private final XAdESPath xadesPaths;
 
 	/**
 	 * The default constructor for XAdESOCSPSource.
@@ -58,7 +58,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 	 * @param xadesPaths
 	 *                         adapted {@code XAdESPaths}
 	 */
-	public XAdESOCSPSource(final Element signatureElement, final XAdESPaths xadesPaths) {
+	public XAdESOCSPSource(final Element signatureElement, final XAdESPath xadesPaths) {
 		Objects.requireNonNull(signatureElement, "Signature element cannot be null");
 		Objects.requireNonNull(xadesPaths, "XAdESPaths cannot be null");
 

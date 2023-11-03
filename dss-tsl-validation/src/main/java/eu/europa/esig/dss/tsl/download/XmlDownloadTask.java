@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.tsl.download;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import org.w3c.dom.Document;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -65,7 +65,7 @@ public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 			assertDocumentIsValidXML(dssDocument);
 
 			final Document dom = DomUtils.buildDOM(dssDocument);
-			final byte[] canonicalizedContent = DSSXMLUtils.canonicalizeSubtree(CanonicalizationMethod.EXCLUSIVE, dom);
+			final byte[] canonicalizedContent = XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(dom);
 			return new XmlDownloadResult(dssDocument, new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedContent)));
 		} catch (DSSException e) {
 			throw e;

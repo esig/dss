@@ -238,7 +238,7 @@ public class InfiniteLoopDSS621Test {
 
 					logger.debug("SIGNATURE VALUE : " + signatureValue);
 
-					Cipher cipher = Cipher.getInstance(encryptionAlgorithm.getName());
+					Cipher cipher = Cipher.getInstance(encryptionAlgorithm.getName(),"SunJCE");
 					cipher.init(Cipher.DECRYPT_MODE, signerCertificate);
 					byte[] decrypted = cipher.doFinal(encryptedInfoOctedString.getOctets());
 

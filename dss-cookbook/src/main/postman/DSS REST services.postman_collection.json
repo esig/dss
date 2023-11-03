@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f762ece0-45e3-49a8-bae2-55454f59353b",
+		"_postman_id": "31ffd01f-4ce0-4d65-94c2-35a08947cf65",
 		"name": "DSS REST services",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "3881138"
@@ -85,7 +85,72 @@
 			"response": []
 		},
 		{
+			"name": "localhost:8080/services/rest/server-signing/sign/certificate/SHA256/MGF1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"bytes\": \"wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro=\"}"
+				},
+				"url": {
+					"raw": "localhost:8080/services/rest/server-signing/sign/certificate/SHA256",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"rest",
+						"server-signing",
+						"sign",
+						"certificate",
+						"SHA256"
+					]
+				},
+				"description": "Signs a digest on the server with the key 'certificate' and digest algorithm SHA256"
+			},
+			"response": []
+		},
+		{
 			"name": "localhost:8080/services/rest/server-signing/sign-digest/certificate",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"algorithm\": \"SHA256\",\r\n    \"value\": \"MDEwDQYJYIZIAWUDBAIBBQAEIHT4H+Fn2ZtMtB1tDM2oInjK7p8+LyXV5aOTb/Pc7GDQ\"\r\n}"
+				},
+				"url": {
+					"raw": "localhost:8080/services/rest/server-signing/sign-digest/certificate",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"services",
+						"rest",
+						"server-signing",
+						"sign-digest",
+						"certificate"
+					]
+				},
+				"description": "Signs a digest on the server with the key 'certificate' and digest algorithm SHA256"
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/services/rest/server-signing/sign-digest/certificate/MGF1",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -384,7 +449,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"algorithm\" : \"SHA1\",\r\n  \"value\" : \"Ir3ZcUPfazmmWvrSr2vYvyDNT3s=\"\r\n}"
+					"raw": "{\r\n  \"algorithm\" : \"SHA256\",\r\n  \"value\" : \"V/1gGgWDuN89MJPmERpJIpn+s7GtK9Iek1d9Y+wd9EA=\"\r\n}"
 				},
 				"url": {
 					"raw": "localhost:8080/services/rest/timestamp-service/getTimestampResponse",

@@ -20,12 +20,10 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.definition.xmldsig.XMLDSigPaths;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -41,8 +39,10 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.XAdESNamespaces;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -82,25 +82,25 @@ public class XmlNotAdESExtensionTToLTARevokedUserAndRevokedTSPTest extends Abstr
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotBefore());
         calendar.add(Calendar.MONTH, 6);
-        return getOnlineTSPSourceByNameAndTime(REVOKED_TSA, calendar.getTime());
+        return getKeyStoreTSPSourceByNameAndTime(REVOKED_TSA, calendar.getTime());
     }
 
     @Override
     protected DSSDocument getSignedDocument(DSSDocument doc) {
         DSSDocument signedDocument = super.getSignedDocument(doc);
         Document docDom = DomUtils.buildDOM(signedDocument);
-        NodeList signatures = DomUtils.getNodeList(docDom, XMLDSigPaths.ALL_SIGNATURES_PATH);
+        NodeList signatures = DomUtils.getNodeList(docDom, XMLDSigPath.ALL_SIGNATURES_PATH);
         assertEquals(1, signatures.getLength());
         Node signatureElement = signatures.item(0);
-        Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPaths.SIGNATURE_VALUE_PATH);
-        final Element keyInfoDom = DomUtils.createElementNS(docDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.KEY_INFO);
+        Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
+        final Element keyInfoDom = DomUtils.createElementNS(docDom, XMLDSigNamespace.NS, XMLDSigElement.KEY_INFO);
         signatureValueNode.getParentNode().insertBefore(keyInfoDom, signatureValueNode.getNextSibling());
         for (CertificateToken token : getCertificateChain()) {
             // <ds:X509Data>
-            final Element x509DataDom = DomUtils.createElementNS(docDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.X509_DATA);
+            final Element x509DataDom = DomUtils.createElementNS(docDom, XMLDSigNamespace.NS, XMLDSigElement.X509_DATA);
             keyInfoDom.appendChild(x509DataDom);
-            DomUtils.addTextElement(docDom, x509DataDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.X509_SUBJECT_NAME, token.getSubject().getRFC2253());
-            DomUtils.addTextElement(docDom, x509DataDom, XAdESNamespaces.XMLDSIG, XMLDSigElement.X509_CERTIFICATE, Utils.toBase64(token.getEncoded()));
+            DomUtils.addTextElement(docDom, x509DataDom, XMLDSigNamespace.NS, XMLDSigElement.X509_SUBJECT_NAME, token.getSubject().getRFC2253());
+            DomUtils.addTextElement(docDom, x509DataDom, XMLDSigNamespace.NS, XMLDSigElement.X509_CERTIFICATE, Utils.toBase64(token.getEncoded()));
         }
         return DomUtils.createDssDocumentFromDomDocument(docDom, signedDocument.getName());
     }

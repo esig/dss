@@ -22,7 +22,7 @@ package eu.europa.esig.validationreport;
 
 import eu.europa.esig.trustedlist.TrustedListUtils;
 import eu.europa.esig.validationreport.jaxb.ObjectFactory;
-import eu.europa.esig.xmldsig.XSDAbstractUtils;
+import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -47,6 +47,9 @@ public final class ValidationReportUtils extends XSDAbstractUtils {
 	/** JAXBContext */
 	private JAXBContext jc;
 
+	/**
+	 * Empty constructor
+	 */
 	private ValidationReportUtils() {
 		// empty
 	}

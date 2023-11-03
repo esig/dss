@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
 
 import java.io.Serializable;
 
@@ -104,17 +103,6 @@ public class DSSObject implements Serializable {
      */
     public String getMimeType() {
         return mimeType;
-    }
-
-    /**
-     * Sets the value for the "MimeType" attribute
-     *
-     * @param mimeType {@link MimeType}
-     * @deprecated since DSS 5.12. Use {@code #setMimeType(MimeType.getMimeTypeString())}
-     */
-    @Deprecated
-    public void setMimeType(MimeType mimeType) {
-        setMimeType(mimeType.getMimeTypeString());
     }
 
     /**

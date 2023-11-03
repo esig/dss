@@ -57,9 +57,11 @@ public class OpenDocumentWithSHA3Test extends AbstractOpenDocumentTestSignature 
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		
-		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service = new ASiCWithXAdESService(getCertificateVerifierWithSHA3_256());
 		service.setTspSource(getSHA3GoodTsa());
 	}
+
+
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {

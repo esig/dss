@@ -31,6 +31,7 @@ import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.tsl.alerts.LOTLAlert;
 import eu.europa.esig.dss.tsl.alerts.TLAlert;
 import eu.europa.esig.dss.tsl.alerts.detections.LOTLLocationChangeDetection;
@@ -47,7 +48,6 @@ import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -151,7 +151,7 @@ public class EuropeanLOTLSnippets {
 
 	public CertificateSource officialJournalContentKeyStore() {
 		try {
-			return new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12", "dss-password");
+			return new KeyStoreCertificateSource(new File("src/main/resources/keystore.p12"), "PKCS12", getPassword());
 		} catch (IOException e) {
 			throw new DSSException("Unable to load the keystore", e);
 		}
@@ -231,6 +231,10 @@ public class EuropeanLOTLSnippets {
 		dataLoader.setSupportedSSLProtocols(new String[] { "TLSv1.2", "TLSv1.3" });
 		// end::data-loader-tls-v3[]
 		return dataLoader;
+	}
+
+	private char[] getPassword() {
+		return "dss-password".toCharArray();
 	}
 
 }

@@ -34,7 +34,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 
 import java.util.List;
 
@@ -113,7 +113,7 @@ public class PAdESExtensionBToLTADocWithVRITstTest extends AbstractPAdESTestVali
                     docTstFound = true;
 
                 } else if (Utils.collectionSize(timestampWrapper.getTimestampedTimestamps()) == 2) {
-                    assertEquals(2, timestampWrapper.getTimestampedSignedData().size());
+                    assertEquals(3, timestampWrapper.getTimestampedSignedData().size());
                     assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
                     assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedCertificates()));
                     assertTrue(Utils.isCollectionNotEmpty(timestampWrapper.getTimestampedRevocations()));

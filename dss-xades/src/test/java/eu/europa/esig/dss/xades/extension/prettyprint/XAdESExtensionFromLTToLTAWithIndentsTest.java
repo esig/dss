@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.xades.extension.prettyprint;
 
-import eu.europa.esig.dss.DomUtils;
-import eu.europa.esig.dss.definition.AbstractPaths;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -39,8 +37,10 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -116,7 +116,7 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	
 	private DSSDocument addCustomIndents(DSSDocument document) {
 		Document documentDom = DomUtils.buildDOM(document);
-		Node unsignedSignaturePropertiesNode = DomUtils.getNode(documentDom, AbstractPaths.all(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
+		Node unsignedSignaturePropertiesNode = DomUtils.getNode(documentDom, AbstractPath.all(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 		Text customIndents = documentDom.createTextNode("\n\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\n");
 		Node firstChild = getFirstElement(unsignedSignaturePropertiesNode);
 		unsignedSignaturePropertiesNode.insertBefore(customIndents, firstChild);
@@ -195,11 +195,11 @@ public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		if (Utils.isCollectionNotEmpty(timestampIds)) {
 			for (String tspId : timestampIds) {
-				Indication timestampIndication = detailedReport.getTimestampValidationIndication(tspId);
+				Indication timestampIndication = detailedReport.getBasicTimestampValidationIndication(tspId);
 				assertNotNull(timestampIndication);
 				assertNotEquals(Indication.FAILED, timestampIndication);
 				if (!Indication.PASSED.equals(timestampIndication)) {
-					assertNotNull(detailedReport.getTimestampValidationSubIndication(tspId));
+					assertNotNull(detailedReport.getBasicTimestampValidationSubIndication(tspId));
 				}
 			}
 		}

@@ -84,7 +84,7 @@
                     <certificatePolicy>1.3.6.1.4.1.11290.1.1.3</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-6FA33A27510825642B995F3A377396F43DE6C34204EA08EBD080D6AE935F6E91">
 	                <Status>GOOD</Status>
@@ -131,7 +131,7 @@
                     <certificatePolicy>1.3.6.1.4.1.11290.1.1.1</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-                        <TrustedServiceProviders />
+                        <TrustServiceProviders />
             <DigestAlgoAndValue>
                 <DigestMethod>SHA1</DigestMethod>
                 <DigestValue>WWHsRoGqE5OpLRI6fW4j7D4API4=</DigestValue>
@@ -183,7 +183,7 @@
                     <SemanticsIdentifier Description="Semantics identifier for natural person">0.4.0.194121.1.1</SemanticsIdentifier>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders />
+            <TrustServiceProviders />
 			<Revocations>
 	            <CertificateRevocation Revocation="R-47DB90134AA46D1F36475B286BECB476FE6CED6AE5D74E39D4C623AF8FC9F499">
 	                <Status>GOOD</Status>

@@ -49,7 +49,7 @@ public class RevocationIssuedBeforeControlTimeCheckTest extends AbstractTestChec
         xmlRevocation.setThisUpdate(new Date(controlTime.getTime() - 86400000));  // 24 hours ago
 
         XmlVTS result = new XmlVTS();
-        RevocationIssuedBeforeControlTimeCheck ribctc = new RevocationIssuedBeforeControlTimeCheck(i18nProvider, result,
+        RevocationIssuedBeforeControlTimeCheck<?> ribctc = new RevocationIssuedBeforeControlTimeCheck<>(i18nProvider, result,
                 new RevocationWrapper(xmlRevocation), controlTime, constraint);
         ribctc.execute();
 
@@ -69,7 +69,7 @@ public class RevocationIssuedBeforeControlTimeCheckTest extends AbstractTestChec
         xmlRevocation.setThisUpdate(new Date(controlTime.getTime() + 86400000));  // 24 hours after
 
         XmlVTS result = new XmlVTS();
-        RevocationIssuedBeforeControlTimeCheck ribctc = new RevocationIssuedBeforeControlTimeCheck(i18nProvider, result,
+        RevocationIssuedBeforeControlTimeCheck<?> ribctc = new RevocationIssuedBeforeControlTimeCheck<>(i18nProvider, result,
                 new RevocationWrapper(xmlRevocation), controlTime, constraint);
         ribctc.execute();
 

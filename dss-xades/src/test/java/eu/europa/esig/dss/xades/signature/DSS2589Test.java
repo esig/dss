@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -30,7 +31,6 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,7 +86,7 @@ public class DSS2589Test extends AbstractXAdESTestSignature {
         signatureNode = newDom.importNode(signatureNode, true);
         documentNode.appendChild(signatureNode);
 
-        DSSDocument wrappedSignatureDoc = new InMemoryDocument(DSSXMLUtils.serializeNode(newDom));
+        DSSDocument wrappedSignatureDoc = new InMemoryDocument(DomUtils.serializeNode(newDom));
         documentToSign = wrappedSignatureDoc;
 
         signatureParameters = initSignatureParameters();
@@ -116,11 +116,11 @@ public class DSS2589Test extends AbstractXAdESTestSignature {
         for (String sigId : diagnosticData.getSignatureIdList()) {
             List<DSSDocument> originalDocuments = validator.getOriginalDocuments(sigId);
             assertEquals(1, originalDocuments.size());
-            if (Arrays.equals(DSSXMLUtils.canonicalize(CanonicalizationMethod.EXCLUSIVE, DSSUtils.toByteArray(ORIGINAL_DOC)),
-                    DSSXMLUtils.canonicalize(CanonicalizationMethod.EXCLUSIVE, DSSUtils.toByteArray(originalDocuments.get(0))))) {
+            if (Arrays.equals(XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(DSSUtils.toByteArray(ORIGINAL_DOC)),
+                    XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(DSSUtils.toByteArray(originalDocuments.get(0))))) {
                 originalDocSigFound = true;
-            } else if (Arrays.equals(DSSXMLUtils.canonicalize(CanonicalizationMethod.EXCLUSIVE, DSSUtils.toByteArray(documentToSign)),
-                    DSSXMLUtils.canonicalize(CanonicalizationMethod.EXCLUSIVE, DSSUtils.toByteArray(originalDocuments.get(0))))) {
+            } else if (Arrays.equals(XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(DSSUtils.toByteArray(documentToSign)),
+                    XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(DSSUtils.toByteArray(originalDocuments.get(0))))) {
                 sigDocSigFound = true;
             }
         }

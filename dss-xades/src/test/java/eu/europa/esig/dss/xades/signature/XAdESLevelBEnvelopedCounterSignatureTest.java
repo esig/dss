@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import eu.europa.esig.dss.DomUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -39,8 +39,8 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Paths;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 
 public class XAdESLevelBEnvelopedCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
@@ -83,14 +83,14 @@ public class XAdESLevelBEnvelopedCounterSignatureTest extends AbstractXAdESCount
 		super.onDocumentSigned(byteArray);
 		
 		Document document = DomUtils.buildDOM(byteArray);
-		NodeList counterSignaturesList = DomUtils.getNodeList(document, XAdES132Paths.all(XAdES132Element.COUNTER_SIGNATURE));
+		NodeList counterSignaturesList = DomUtils.getNodeList(document, XAdES132Path.all(XAdES132Element.COUNTER_SIGNATURE));
 		assertEquals(1, counterSignaturesList.getLength());
 		
 		Node counterSignature = counterSignaturesList.item(0);
-		NodeList signedDataObjectPropsList = DomUtils.getNodeList(counterSignature, XAdES132Paths.allFromCurrentPosition(XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES));
+		NodeList signedDataObjectPropsList = DomUtils.getNodeList(counterSignature, XAdES132Path.allFromCurrentPosition(XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES));
 		assertEquals(0, signedDataObjectPropsList.getLength());
 		
-		NodeList dataObjectFormatList = DomUtils.getNodeList(counterSignature, XAdES132Paths.allFromCurrentPosition(XAdES132Element.DATA_OBJECT_FORMAT));
+		NodeList dataObjectFormatList = DomUtils.getNodeList(counterSignature, XAdES132Path.allFromCurrentPosition(XAdES132Element.DATA_OBJECT_FORMAT));
 		assertEquals(0, dataObjectFormatList.getLength());
 	}
 

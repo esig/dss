@@ -150,8 +150,8 @@
                     <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
                 </QcStatements>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">Firmaprofesional, S.A.</TSPName>
                         <TSPName lang="es">Firmaprofesional, S.A.</TSPName>
@@ -159,8 +159,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATES-A62634068</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -173,8 +173,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -188,8 +188,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -202,8 +202,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -214,10 +214,10 @@
                             <EndDate>2016-06-30T22:00:00Z</EndDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations>
                 <CertificateRevocation Revocation="R-CC56408DFD42F7A741D2819E745E7F1C609328268C237D55ED96D48E094AA868">
                     <Status>GOOD</Status>
@@ -280,8 +280,8 @@
                     <crlUrl>http://crl.firmaprofesional.com/fproot.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">Firmaprofesional, S.A.</TSPName>
                         <TSPName lang="es">Firmaprofesional, S.A.</TSPName>
@@ -289,8 +289,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATES-A62634068</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -302,8 +302,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -316,8 +316,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -329,8 +329,8 @@
                             <AdditionalServiceInfoUris>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -339,10 +339,10 @@
                             <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
                             <StartDate>2015-07-26T22:00:00Z</StartDate>
                             <EndDate>2016-06-30T22:00:00Z</EndDate>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -398,8 +398,8 @@
                     <crlUrl>http://crl.firmaprofesional.com/fproot.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">Firmaprofesional, S.A.</TSPName>
                         <TSPName lang="es">Firmaprofesional, S.A.</TSPName>
@@ -407,8 +407,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATES-A62634068</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-4CCF17C0C8C1C10D5876EC5E3280FE8D134DF36AEDD8444289B990BC3741E74F">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-4CCF17C0C8C1C10D5876EC5E3280FE8D134DF36AEDD8444289B990BC3741E74F">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -420,8 +420,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-4CCF17C0C8C1C10D5876EC5E3280FE8D134DF36AEDD8444289B990BC3741E74F">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-4CCF17C0C8C1C10D5876EC5E3280FE8D134DF36AEDD8444289B990BC3741E74F">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -434,10 +434,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -495,8 +495,8 @@
                     <crlUrl>http://crl.firmaprofesional.com/cualificados.crl</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">Firmaprofesional, S.A.</TSPName>
                         <TSPName lang="es">Firmaprofesional, S.A.</TSPName>
@@ -504,8 +504,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATES-A62634068</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -517,8 +517,8 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                        <TrustedService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-2B75CC4F36759CFC4C6637B1E0E54359457DB57E74DE4D2DC5D02CDDFF2960CF">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified certificates issued by “AC Firmaprofesional – CUALIFICADOS”</ServiceName>
                                 <ServiceName lang="es">Certificados reconocidos emitidos por la “AC Firmaprofesional - CUALIFICADOS”</ServiceName>
@@ -531,10 +531,10 @@
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
                                 <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
                             </AdditionalServiceInfoUris>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -576,7 +576,7 @@
                     <certificatePolicy cpsUrl="http://www.firmaprofesional.com/cps">2.5.29.32.0</certificatePolicy>
                 </CertificatePolicies>
             </CertificateExtensions>
-            <TrustedServiceProviders/>
+            <TrustServiceProviders/>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>
@@ -626,8 +626,8 @@
                     <crlUrl>http://crl.izenpe.com/cgi-bin/arl2</crlUrl>
                 </CRLDistributionPoints>
             </CertificateExtensions>
-            <TrustedServiceProviders>
-                <TrustedServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-A348CD1F4FF4EEC3A8C6EBB2AE4A5C0DD8638A4A64C836CAA61EAEA7277AF014" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
                     <TSPNames>
                         <TSPName lang="en">Ziurtapen eta Zerbitzu Enpresa-Empresa de Certificación y Servicios, Izenpe, S.A.</TSPName>
                         <TSPName lang="es">Ziurtapen eta Zerbitzu Enpresa-Empresa de Certificación y Servicios, Izenpe, S.A.</TSPName>
@@ -635,8 +635,8 @@
                     <TSPRegistrationIdentifiers>
                         <TSPRegistrationIdentifier>VATES-A01337260</TSPRegistrationIdentifier>
                     </TSPRegistrationIdentifiers>
-                    <TrustedServices>
-                        <TrustedService ServiceDigitalIdentifier="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219">
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-CD770A3BA5005BAC3F6EF29E7FA4C7BEA1EF41BE52125356DA0DD18F045C9219">
                             <ServiceNames>
                                 <ServiceName lang="en">Qualified timestamps issued by tsa.izenpe.com</ServiceName>
                                 <ServiceName lang="es">Sellos de tiempo cualificados emitidos por tsa.izenpe.com</ServiceName>
@@ -646,10 +646,10 @@
                             <StartDate>2017-07-21T00:00:00Z</StartDate>
                             <CapturedQualifiers/>
                             <AdditionalServiceInfoUris/>
-                        </TrustedService>
-                    </TrustedServices>
-                </TrustedServiceProvider>
-            </TrustedServiceProviders>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
             <Revocations/>
             <DigestAlgoAndValue>
                 <DigestMethod>SHA256</DigestMethod>

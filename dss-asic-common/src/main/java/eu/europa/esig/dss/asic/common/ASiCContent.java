@@ -61,8 +61,14 @@ public class ASiCContent implements Serializable {
 	/** The list of archive manifest documents embedded into the container (ASiC with CAdES) */
 	private List<DSSDocument> archiveManifestDocuments = new ArrayList<>();
 
+	/** The list of evidence record manifest documents embedded into the container */
+	private List<DSSDocument> evidenceRecordManifestDocuments = new ArrayList<>();
+
 	/** The list of timestamp documents embedded into the container (ASiC with CAdES) */
 	private List<DSSDocument> timestampDocuments = new ArrayList<>();
+
+	/** The list of evidence record documents embedded into the container */
+	private List<DSSDocument> evidenceRecordDocuments = new ArrayList<>();
 
 	/** The list of unsupported documents embedded into the container */
 	private List<DSSDocument> unsupportedDocuments = new ArrayList<>();
@@ -207,6 +213,24 @@ public class ASiCContent implements Serializable {
 	}
 
 	/**
+	 * Gets evidence record manifest documents
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getEvidenceRecordManifestDocuments() {
+		return evidenceRecordManifestDocuments;
+	}
+
+	/**
+	 * Sets a list of evidence record manifest documents
+	 *
+	 * @param evidenceRecordManifestDocuments a list of {@link DSSDocument}s
+	 */
+	public void setEvidenceRecordManifestDocuments(List<DSSDocument> evidenceRecordManifestDocuments) {
+		this.evidenceRecordManifestDocuments = evidenceRecordManifestDocuments;
+	}
+
+	/**
 	 * Gets timestamp documents (ASiC with CAdES only)
 	 *
 	 * @return a list of {@link DSSDocument}s
@@ -222,6 +246,24 @@ public class ASiCContent implements Serializable {
 	 */
 	public void setTimestampDocuments(List<DSSDocument> timestampDocuments) {
 		this.timestampDocuments = timestampDocuments;
+	}
+
+	/**
+	 * Gets evidence record documents
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getEvidenceRecordDocuments() {
+		return evidenceRecordDocuments;
+	}
+
+	/**
+	 * Sets a list of evidence record documents
+	 *
+	 * @param evidenceRecordDocuments a list of {@link DSSDocument}s
+	 */
+	public void setEvidenceRecordDocuments(List<DSSDocument> evidenceRecordDocuments) {
+		this.evidenceRecordDocuments = evidenceRecordDocuments;
 	}
 
 	/**
@@ -323,6 +365,7 @@ public class ASiCContent implements Serializable {
 		List<DSSDocument> allManifestsList = new ArrayList<>();
 		allManifestsList.addAll(getManifestDocuments());
 		allManifestsList.addAll(getArchiveManifestDocuments());
+		allManifestsList.addAll(getEvidenceRecordManifestDocuments());
 		return allManifestsList;
 	}
 
@@ -349,8 +392,14 @@ public class ASiCContent implements Serializable {
 		if (Utils.isCollectionNotEmpty(archiveManifestDocuments)) {
 			allDocuments.addAll(archiveManifestDocuments);
 		}
+		if (Utils.isCollectionNotEmpty(evidenceRecordManifestDocuments)) {
+			allDocuments.addAll(evidenceRecordManifestDocuments);
+		}
 		if (Utils.isCollectionNotEmpty(timestampDocuments)) {
 			allDocuments.addAll(timestampDocuments);
+		}
+		if (Utils.isCollectionNotEmpty(evidenceRecordDocuments)) {
+			allDocuments.addAll(evidenceRecordDocuments);
 		}
 		if (Utils.isCollectionNotEmpty(unsupportedDocuments)) {
 			allDocuments.addAll(unsupportedDocuments);
