@@ -28,7 +28,7 @@
                                             * Documentation improvements;
                                             * Java 21 support.
 
-Bug fixes :
+|v5.13.RC1         |November 2023           a|Bug fixes :
 
                                             * XAdES : fixed signing of XML documents with comments / non UTF-8 encoding;
                                             * XAdES : fixed signature creation with custom DSSReference definition;
