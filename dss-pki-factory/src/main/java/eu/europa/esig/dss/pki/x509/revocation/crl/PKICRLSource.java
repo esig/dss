@@ -241,8 +241,8 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
 
         try {
             // Obtain the CRL bytes based on the productionDate and nextUpdate parameters.
-            CertEntity crlIssuer = getCRLIssuer(certificateToken, issuerCertificateToken);
-            CRLBinary crlBinary = generateCRL(crlIssuer);
+            CertEntity currentCRLIssuer = getCRLIssuer(certificateToken, issuerCertificateToken);
+            CRLBinary crlBinary = generateCRL(currentCRLIssuer);
 
             // Build the CRLValidity using CRLUtils from the retrieved CRL bytes and the issuerCertificateToken.
             final CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerCertificateToken);

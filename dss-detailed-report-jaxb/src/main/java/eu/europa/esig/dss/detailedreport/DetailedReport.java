@@ -345,12 +345,10 @@ public class DetailedReport {
 	 */
 	public Date getEvidenceRecordLowestPOETime(String evidenceRecordId) {
 		XmlEvidenceRecord xmlEvidenceRecord = getXmlEvidenceRecordById(evidenceRecordId);
-		if (xmlEvidenceRecord != null) {
-			if (xmlEvidenceRecord.getValidationProcessEvidenceRecord() != null) {
-				XmlProofOfExistence poe = xmlEvidenceRecord.getValidationProcessEvidenceRecord().getProofOfExistence();
-				if (poe != null) {
-					return poe.getTime();
-				}
+		if (xmlEvidenceRecord != null && xmlEvidenceRecord.getValidationProcessEvidenceRecord() != null) {
+			XmlProofOfExistence poe = xmlEvidenceRecord.getValidationProcessEvidenceRecord().getProofOfExistence();
+			if (poe != null) {
+				return poe.getTime();
 			}
 		}
 		return null;

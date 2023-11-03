@@ -489,9 +489,9 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * @return {@link ManifestFile}
 	 */
 	protected ManifestFile getValidatedManifestFile(DSSDocument manifest) {
-		List<ManifestFile> manifestFiles = getManifestFiles();
-		if (Utils.isCollectionNotEmpty(manifestFiles)) {
-			for (ManifestFile manifestFile : manifestFiles) {
+		List<ManifestFile> allManifestFiles = getManifestFiles();
+		if (Utils.isCollectionNotEmpty(allManifestFiles)) {
+			for (ManifestFile manifestFile : allManifestFiles) {
 				if (Utils.areStringsEqual(manifest.getName(), manifestFile.getFilename())) {
 					return manifestFile;
 				}

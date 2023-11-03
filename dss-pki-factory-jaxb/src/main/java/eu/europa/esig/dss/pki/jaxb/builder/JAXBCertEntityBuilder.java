@@ -195,20 +195,20 @@ public class JAXBCertEntityBuilder {
     public JAXBCertEntity build() {
         final JAXBCertEntity certEntity = getCertEntity();
 
-        final CertificateToken certificateToken;
+        final CertificateToken certificate;
         if (certEntity.getCertificateToken() == null) {
             Objects.requireNonNull(this.certificateToken, "CertificateToken shall be provided!");
-            certificateToken = this.certificateToken;
+            certificate = this.certificateToken;
             certEntity.setCertificateToken(this.certificateToken);
         } else {
-            certificateToken = certEntity.getCertificateToken();
+            certificate = certEntity.getCertificateToken();
         }
 
         if (certEntity.getSubject() == null) {
-            certEntity.setSubject(DSSASN1Utils.getSubjectCommonName(certificateToken));
+            certEntity.setSubject(DSSASN1Utils.getSubjectCommonName(certificate));
         }
         if (certEntity.getSerialNumber() == null) {
-            certEntity.setSerialNumber(certificateToken.getSerialNumber().longValue());
+            certEntity.setSerialNumber(certificate.getSerialNumber().longValue());
         }
         if (certEntity.getPrivateKeyBinaries() == null) {
             Objects.requireNonNull(privateKey, "PrivateKey shall be provided!");

@@ -465,8 +465,8 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
             } else if (isSigAndRefsTimestamp(unsignedAttribute)) {
                 final List<TimestampedReference> references = new ArrayList<>();
 
-                List<TimestampToken> signatureTimestamps = filterSignatureTimestamps(allTimestamps);
-                addReferences(references, getEncapsulatedReferencesFromTimestamps(signatureTimestamps));
+                List<TimestampToken> processedSignatureTimestamps = filterSignatureTimestamps(allTimestamps);
+                addReferences(references, getEncapsulatedReferencesFromTimestamps(processedSignatureTimestamps));
                 addReferences(references, unsignedPropertiesReferences);
 
                 timestampTokens = makeTimestampTokens(unsignedAttribute, TimestampType.VALIDATION_DATA_TIMESTAMP, references);
@@ -1186,11 +1186,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     private List<TimestampToken> getTimestampsCoveredByManifest(ManifestFile manifestFile) {
         List<TimestampToken> result = new ArrayList<>();
         for (TimestampToken timestampToken : getAllTimestamps()) {
-            if (detachedTimestamps.contains(timestampToken)) {
-                if (manifestFile == null || !manifestFile.isDocumentCovered(timestampToken.getFileName())) {
-                    // the detached timestamp is not covered, continue
-                    continue;
-                }
+            if (detachedTimestamps.contains(timestampToken) &&
+                    (manifestFile == null || !manifestFile.isDocumentCovered(timestampToken.getFileName()))) {
+                // the detached timestamp is not covered, continue
+                continue;
             }
             result.add(timestampToken);
         }

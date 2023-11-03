@@ -656,12 +656,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	private List<EvidenceRecord> getAllEvidenceRecords(final List<AdvancedSignature> signatures,
 													   final List<EvidenceRecord> detachedEvidenceRecords) {
-		List<EvidenceRecord> evidenceRecords = new ArrayList<>();
+		List<EvidenceRecord> result = new ArrayList<>();
 		for (AdvancedSignature signature : signatures) {
-			evidenceRecords.addAll(signature.getEmbeddedEvidenceRecords());
+			result.addAll(signature.getEmbeddedEvidenceRecords());
 		}
-		evidenceRecords.addAll(detachedEvidenceRecords);
-		return evidenceRecords;
+		result.addAll(detachedEvidenceRecords);
+		return result;
 	}
 
 	/**
@@ -916,30 +916,38 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if (Utils.isCollectionNotEmpty(detachedEvidenceRecordDocuments)) {
 			List<EvidenceRecord> result = new ArrayList<>();
 			for (DSSDocument evidenceRecordDocument : detachedEvidenceRecordDocuments) {
-				try {
-					EvidenceRecordValidator evidenceRecordValidator = null;
-					try {
-						evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
-						evidenceRecordValidator.setDetachedContents(Collections.singletonList(document));
-						evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
-					} catch (UnsupportedOperationException e) {
-						LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}" +
-								"Please ensure the corresponding module is loaded.", document.getName(), e.getMessage());
-					}
-					if (evidenceRecordValidator != null) {
-						EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordValidator);
-						if (evidenceRecord != null) {
-							result.add(evidenceRecord);
-						}
-					}
-				} catch (Exception e) {
-					LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}",
-							document.getName(), e.getMessage(), e);
+				EvidenceRecord evidenceRecord = buildEvidenceRecord(evidenceRecordDocument);
+				if (evidenceRecord != null) {
+					result.add(evidenceRecord);
 				}
 			}
 			return result;
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Builds an evidence record from the given {@code DSSDocument}
+	 *
+	 * @param evidenceRecordDocument {@link DSSDocument} containing an evidence record
+	 * @return {@link EvidenceRecord}
+	 */
+	protected EvidenceRecord buildEvidenceRecord(DSSDocument evidenceRecordDocument) {
+		try {
+			try {
+				EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+				evidenceRecordValidator.setDetachedContents(Collections.singletonList(document));
+				evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
+				return getEvidenceRecord(evidenceRecordValidator);
+			} catch (UnsupportedOperationException e) {
+				LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}" +
+						"Please ensure the corresponding module is loaded.", evidenceRecordDocument.getName(), e.getMessage());
+			}
+		} catch (Exception e) {
+			LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}",
+					evidenceRecordDocument.getName(), e.getMessage(), e);
+		}
+		return null;
 	}
 
 	/**
