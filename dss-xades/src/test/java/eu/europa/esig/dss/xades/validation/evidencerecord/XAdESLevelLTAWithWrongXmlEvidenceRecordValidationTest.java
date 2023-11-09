@@ -343,4 +343,9 @@ public class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends Abstr
         }
     }
 
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 1;
+    }
+
 }
