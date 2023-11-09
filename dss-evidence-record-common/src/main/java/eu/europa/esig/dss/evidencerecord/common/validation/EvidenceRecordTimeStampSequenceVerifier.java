@@ -125,6 +125,10 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                             timestampValidations = validateArchiveTimeStampDigest(archiveDataObjectValidations, lastTimeStampHash);
                         }
 
+                        // for the first time-stamp only
+                        if (manifestFile != null && firstArchiveTimeStampChain) {
+                            validateManifestEntries(archiveDataObjectValidations, manifestFile);
+                        }
                     }
                     // Validation of each followingHashTree/Sequence
                     lastMessageDigest = computeDigestValueGroupHash(digestAlgorithm, digestValueGroup, lastMessageDigest);
@@ -172,6 +176,28 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         return referenceValidations;
     }
 
+    private void validateManifestEntries(List<ReferenceValidation> referenceValidations, ManifestFile manifestFile) {
+        /*
+         * 4) One or more ASiCEvidenceRecordManifest files may be present. They shall contain one ASiCManifest
+         * element instance conformant to clause A.4 that shall reference in the SigReference element a file containing
+         * an ER and the ds:DigestMethod element shall match the digest algorithm used to create the initial Archive
+         * Time-stamp protecting the first ReducedHashTree element as defined in IETF RFC 4998 [8] or IETF RFC 6283 [9].
+         */
+        for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+            for (ReferenceValidation reference : referenceValidations) {
+                if (manifestEntry.getFileName().equals(reference.getName()) &&
+                        manifestEntry.getDigest() != null && reference.getDigest() != null &&
+                        !manifestEntry.getDigest().getAlgorithm().equals(reference.getDigest().getAlgorithm())) {
+                    LOG.warn("The digest algorithm '{}' defined in a manifest file with name '{}' does not match " +
+                                    "the digest algorithm '{}' used within an evidence record for file with name '{}'",
+                            manifestEntry.getDigest().getAlgorithm(), manifestFile.getFilename(),
+                            reference.getDigest().getAlgorithm(), manifestEntry.getFileName());
+                    reference.setIntact(false);
+                }
+            }
+        }
+    }
+
     /**
      * This method is used to verify archive data objects for presence document digests within {@code digestValueGroup}.
      *
@@ -206,13 +232,17 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 if (matchingManifestEntry != null) {
                     referenceValidation.setFound(matchingManifestEntry.isFound() || matchingDocument != null);
                     referenceValidation.setIntact(matchingManifestEntry.isIntact() && matchingDocument != null);
-                    referenceValidation.setDigest(matchingManifestEntry.getDigest());
                     referenceValidation.setName(matchingManifestEntry.getFileName());
                     foundDocuments.add(matchingManifestEntry.getFileName());
 
                 } else if (matchingDocument != null) {
                     referenceValidation.setName(matchingDocument.getName());
                     foundDocuments.add(matchingDocument.getName());
+
+                } else {
+                    referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
+                    referenceValidation.setFound(false);
+                    referenceValidation.setIntact(false);
                 }
 
             } else if (matchingDocument != null) {
