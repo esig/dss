@@ -128,4 +128,9 @@ public class XAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractXAd
         }
     }
 
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 1;
+    }
+
 }

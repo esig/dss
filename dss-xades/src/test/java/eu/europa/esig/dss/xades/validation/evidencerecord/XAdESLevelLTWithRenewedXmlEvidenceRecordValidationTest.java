@@ -164,4 +164,9 @@ public class XAdESLevelLTWithRenewedXmlEvidenceRecordValidationTest extends Abst
         }
     }
 
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 1;
+    }
+
 }
