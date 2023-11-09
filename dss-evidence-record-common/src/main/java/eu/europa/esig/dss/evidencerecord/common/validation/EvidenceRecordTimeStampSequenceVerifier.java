@@ -103,9 +103,11 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                     if (lastMessageDigest.isEmpty()) {
                         List<DSSDocument> detachedContents = lastTimeStampHash.isEmpty() ?
                                 evidenceRecord.getDetachedContents() : Collections.emptyList();
+                        ManifestFile manifestFile = lastTimeStampHash.isEmpty() ?
+                                evidenceRecord.getManifestFile() : null;
                         // execute for all time-stamps in order to create reference validations
                         List<ReferenceValidation> archiveDataObjectValidations =
-                                validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain, detachedContents);
+                                validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain, detachedContents, manifestFile);
 
                         // if first time-stamp in a next ArchiveTimeStampChain
                         if (lastTimeStampHash.isEmpty()) {
@@ -175,16 +177,18 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param digestValueGroup {@link DigestValueGroup} to find document corresponding digest in
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
+     * @param detachedContents a list of detached {@link DSSDocument}s
+     * @param manifestFile {@link ManifestFile}, when present
      * @return a list of {@link ReferenceValidation}s
      */
     protected List<ReferenceValidation> validateArchiveDataObjects(DigestValueGroup digestValueGroup,
                                                                    ArchiveTimeStampChainObject archiveTimeStampChain,
-                                                                   List<DSSDocument> detachedContents) {
+                                                                   List<DSSDocument> detachedContents,
+                                                                   ManifestFile manifestFile) {
         final List<ReferenceValidation> result = new ArrayList<>();
         final List<String> foundDocuments = new ArrayList<>();
 
         DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
-        ManifestFile manifestFile = evidenceRecord.getManifestFile();
 
         // process ER data objects at first
         List<byte[]> digestValues = digestValueGroup.getDigestValues();
@@ -196,7 +200,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             referenceValidation.setDigest(digest);
 
             DSSDocument matchingDocument = getMatchingDocument(digest, archiveTimeStampChain, detachedContents);
-            ManifestEntry matchingManifestEntry = getMatchingManifestEntry(digest, matchingDocument);
+            ManifestEntry matchingManifestEntry = getMatchingManifestEntry(manifestFile, digest, matchingDocument);
 
             if (manifestFile != null) {
                 if (matchingManifestEntry != null) {
@@ -270,8 +274,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      * @param document {@link DSSDocument}
      * @return {@link ManifestEntry}, if found
      */
-    protected ManifestEntry getMatchingManifestEntry(Digest digest, DSSDocument document) {
-        ManifestFile manifestFile = evidenceRecord.getManifestFile();
+    protected ManifestEntry getMatchingManifestEntry(ManifestFile manifestFile, Digest digest, DSSDocument document) {
         if (manifestFile != null) {
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
                 Digest manifestEntryDigest = manifestEntry.getDigest();
@@ -282,7 +285,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                     return manifestEntry;
                 }
             }
-            LOG.warn("No manifest entry found matching the archive data object with digest value '{}'", digest.getHexValue());
+            LOG.debug("No manifest entry found matching the archive data object with digest value '{}'", digest.getHexValue());
         }
         return null;
     }
