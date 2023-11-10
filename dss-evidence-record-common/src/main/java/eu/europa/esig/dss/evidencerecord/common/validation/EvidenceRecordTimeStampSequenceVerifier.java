@@ -1,5 +1,15 @@
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -12,15 +22,6 @@ import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This class performs a verification of complete Evidence Record Archive Time-Stamp Sequence
@@ -78,7 +79,26 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 List<ReferenceValidation> timestampValidations = new ArrayList<>();
                 DSSMessageDigest lastMessageDigest = DSSMessageDigest.createEmptyDigest();
                 List<? extends DigestValueGroup> hashTree = archiveTimeStamp.getHashTree();
-                for (DigestValueGroup digestValueGroup : hashTree) {
+                
+				// if no HashTree, the DocumentHash is the MessageImprint of the TimeStamp
+                // prepare a virtual HashTree with only one single hash
+				if (hashTree.isEmpty()) {
+					List<DSSDocument> detachedContents = lastTimeStampHash.isEmpty() ? evidenceRecord.getDetachedContents() : Collections.emptyList();
+					List<byte[]> digestValues = new ArrayList<>();
+
+					if (!firstArchiveTimeStampChain) {
+						DSSMessageDigest lastTimeStampSequenceHash = computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain, detachedContents);
+						digestValues.add(lastTimeStampSequenceHash.getValue());
+					} else {
+						digestValues.add(Utils.fromBase64(detachedContents.get(0).getDigest(digestAlgorithm)));
+					}
+
+					DigestValueGroup digestValueGroup = new DigestValueGroup();
+					digestValueGroup.setDigestValues(digestValues);
+					hashTree = Arrays.asList(digestValueGroup);
+				}
+
+				for (DigestValueGroup digestValueGroup : hashTree) {
                     // Validation of first HashTree/Sequence
                     if (lastMessageDigest.isEmpty()) {
                         List<DSSDocument> detachedContents = lastTimeStampHash.isEmpty() ?
