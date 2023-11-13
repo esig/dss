@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
+import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -40,6 +41,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -96,6 +98,26 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     protected String getCanonicalizationMethod(ArchiveTimeStampChainObject archiveTimeStampChain) {
         XmlArchiveTimeStampChainObject xmlArchiveTimeStampChainObject = (XmlArchiveTimeStampChainObject) archiveTimeStampChain;
         return xmlArchiveTimeStampChainObject.getCanonicalizationMethod();
+    }
+
+    @Override
+    protected List<? extends DigestValueGroup> getHashTree(
+            List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents,
+            DigestAlgorithm digestAlgorithm, DSSMessageDigest lastTimeStampHash, DSSMessageDigest lastTimeStampSequenceHash) {
+        final List<? extends DigestValueGroup> hashTree = super.getHashTree(
+                originalHashTree, detachedContents, digestAlgorithm, lastTimeStampHash, lastTimeStampSequenceHash);
+
+        // HashTree renewal time-stamp shall cover one or more data objects
+        if (lastTimeStampSequenceHash != null && !lastTimeStampSequenceHash.isEmpty()) {
+            DigestValueGroup firstDigestValueGroup = hashTree.get(0);
+            if (Utils.collectionSize(firstDigestValueGroup.getDigestValues()) == 1) {
+                List<byte[]> newDigestValuesGroup = new ArrayList<>(firstDigestValueGroup.getDigestValues());
+                newDigestValuesGroup.add(DSSUtils.EMPTY_BYTE_ARRAY);
+                firstDigestValueGroup.setDigestValues(newDigestValuesGroup);
+            }
+        }
+
+        return hashTree;
     }
 
     @Override
