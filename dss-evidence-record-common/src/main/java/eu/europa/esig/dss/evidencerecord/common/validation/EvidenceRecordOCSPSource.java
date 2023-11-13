@@ -80,8 +80,8 @@ public class EvidenceRecordOCSPSource extends OfflineOCSPSource {
                 }
             }
         }
-        if (LOG.isInfoEnabled()) {
-            LOG.info("+EvidenceRecordCertificateSource");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("+EvidenceRecordOCSPSource");
         }
     }
 

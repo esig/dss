@@ -80,8 +80,8 @@ public class EvidenceRecordCRLSource extends OfflineCRLSource {
                 }
             }
         }
-        if (LOG.isInfoEnabled()) {
-            LOG.info("+EvidenceRecordCertificateSource");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("+EvidenceRecordCRLSource");
         }
     }
 
