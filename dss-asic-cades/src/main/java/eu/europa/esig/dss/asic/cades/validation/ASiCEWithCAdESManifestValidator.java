@@ -24,8 +24,6 @@ import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -37,8 +35,6 @@ import java.util.List;
  */
 @Deprecated
 public class ASiCEWithCAdESManifestValidator {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithCAdESManifestValidator.class);
 
 	/** Manifest validator */
 	private final ASiCManifestValidator manifestValidator;

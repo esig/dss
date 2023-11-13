@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
@@ -58,8 +78,11 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
         for (EvidenceRecord evidenceRecord : detachedEvidenceRecords) {
             List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
             for (ReferenceValidation referenceValidation : referenceValidationList) {
-                assertTrue(referenceValidation.isFound());
-                assertTrue(referenceValidation.isIntact());
+                if (allArchiveDataObjectsProvidedToValidation() ||
+                        DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType()) {
+                    assertTrue(referenceValidation.isFound());
+                    assertTrue(referenceValidation.isIntact());
+                }
             }
 
             int tstCounter = 0;
@@ -81,9 +104,11 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                             archiveTstDigestFound = true;
                         } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE.equals(referenceValidation.getType())) {
                             archiveTstSequenceDigestFound = true;
+                        } else if (allArchiveDataObjectsProvidedToValidation() ||
+                                DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType()) {
+                            assertTrue(referenceValidation.isFound());
+                            assertTrue(referenceValidation.isIntact());
                         }
-                        assertTrue(referenceValidation.isFound());
-                        assertTrue(referenceValidation.isIntact());
                     }
 
                     if (tstReferenceValidationList.size() == 1) {
@@ -177,9 +202,9 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                 assertTrue(coversSignature);
                 assertTrue(coversSignedData);
                 assertTrue(coversCertificates);
-                if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
+                if (SignatureLevel.CAdES_BASELINE_B != signature.getSignatureFormat()) {
                     assertTrue(coversTimestamps);
-                } else if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
+                } else if (SignatureLevel.CAdES_BASELINE_T != signature.getSignatureFormat()) {
                     assertTrue(coversRevocationData);
                 }
 
@@ -266,9 +291,9 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                     assertTrue(coversSignature);
                     assertTrue(coversSignedData);
                     assertTrue(coversCertificates);
-                    if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
+                    if (SignatureLevel.CAdES_BASELINE_B != signature.getSignatureFormat()) {
                         assertTrue(coversTimestamps);
-                    } else if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
+                    } else if (SignatureLevel.CAdES_BASELINE_T != signature.getSignatureFormat()) {
                         assertTrue(coversRevocationData);
                     }
 
@@ -276,6 +301,7 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                         List<XmlDigestMatcher> tstDigestMatcherList = timestamp.getDigestMatchers();
                         assertTrue(Utils.isCollectionNotEmpty(tstDigestMatcherList));
 
+                        int referenceCounter = 0;
                         boolean archiveTstDigestFound = false;
                         boolean archiveTstSequenceDigestFound = false;
                         for (XmlDigestMatcher digestMatcher : tstDigestMatcherList) {
@@ -283,12 +309,14 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                                 archiveTstDigestFound = true;
                             } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE.equals(digestMatcher.getType())) {
                                 archiveTstSequenceDigestFound = true;
+                            } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT.equals(digestMatcher.getType())) {
+                                ++referenceCounter;
                             }
                             assertTrue(digestMatcher.isDataFound());
                             assertTrue(digestMatcher.isDataIntact());
                         }
 
-                        if (tstDigestMatcherList.size() == 1) {
+                        if (referenceCounter == 0) {
                             assertTrue(archiveTstDigestFound);
                         } else {
                             assertTrue(archiveTstSequenceDigestFound);

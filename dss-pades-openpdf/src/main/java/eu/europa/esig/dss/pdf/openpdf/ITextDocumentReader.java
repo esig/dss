@@ -377,7 +377,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	@Override
 	public CertificationPermission getCertificationPermission() {
 		int certificationLevel = pdfReader.getCertificationLevel();
-		if (certificationLevel != 0) {
+		if (certificationLevel > 0) {
 			return CertificationPermission.fromCode(certificationLevel);
 		}
 		return null;

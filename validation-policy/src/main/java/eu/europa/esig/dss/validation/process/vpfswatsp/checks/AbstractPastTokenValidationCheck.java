@@ -31,6 +31,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Abstract class containing the main logic for PastSignatureValidation result check
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public abstract class AbstractPastTokenValidationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

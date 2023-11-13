@@ -206,7 +206,7 @@ public class DataToValidateDTO {
 	/**
 	 * Gets a list of detached evidence records
 	 *
-	 * @return a list of {@Link RemoteDocument}s
+	 * @return a list of {@link RemoteDocument}s
 	 */
 	public List<RemoteDocument> getEvidenceRecords() {
 		return evidenceRecords;
@@ -215,7 +215,7 @@ public class DataToValidateDTO {
 	/**
 	 * Sets a list of detached evidence records applied to the signature
 	 *
-	 * @param evidenceRecords a list of {@Link RemoteDocument}s
+	 * @param evidenceRecords a list of {@link RemoteDocument}s
 	 */
 	public void setEvidenceRecords(List<RemoteDocument> evidenceRecords) {
 		this.evidenceRecords = evidenceRecords;

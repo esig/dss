@@ -59,7 +59,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICre
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JAXBPKICreationTest.java[tags=aia-source]
 ----
 
-DSS also provides a class for a time-stamp creation using a local PKI. To generate a time-stamp token you may use the `PKITSPSource` class, which extends the `KeyEntityTSPSource` class and therefore benefits from all its available configuration (see <<KeyStoreTSPSource>> for more detail). See below an example of class usage:
+DSS also provides a class for a time-stamp creation using a local PKI. To generate a time-stamp token you may use the `PKITSPSource` class, which extends the `KeyEntityTSPSource` class and therefore benefits from all its available configuration (see <<KeyEntityTSPSource>> for more detail). See below an example of class usage:
 
 [source,java,indent=0]
 .PKITSPSource class usage

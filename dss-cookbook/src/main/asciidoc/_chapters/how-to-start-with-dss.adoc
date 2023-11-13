@@ -19,7 +19,7 @@ This section explains the usage and build requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
-* Java 11 and higher (tested up to Java 19) for the build is required. For usage Java 8 is a minimum requirement;
+* Java 11 and higher (tested up to Java 21) for the build is required. For usage Java 8 is a minimum requirement;
 * Maven 3.6 and higher;
 * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
 * Operating system: no specific requirements (tested on Windows and Linux).
@@ -41,7 +41,7 @@ The simplest way to include DSS to your project is to use https://central.sonaty
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
-        <version>5.12.1</version>
+        <version>5.13.RC1</version>
     </dependency>
     ...
 </dependencies>
@@ -86,7 +86,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>5.12.1</version>
+            <version>5.13.RC1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -164,7 +164,7 @@ This section explains the build and use requirements for the https://github.com/
 
 The minimal requirements to build/run DSS Demonstrations:
 
-* Java 8 and higher (tested up to Java 19) is required;
+* Java 8 and higher (tested up to Java 21) is required;
 * Maven 3.6 and higher (if build required);
 * Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
 * Memory and Disk: see minimal requirements for the used JVM. In general the highest available is the best;
@@ -434,4 +434,4 @@ dss-demo-bundle:: Packaging module for dss-demo-webapp.
 dss-rest-doc-generation:: Provides a tool for automated generation of REST web service samples.
 dss-esig-validation-tests:: Provides a tool for processing of https://eidas.ec.europa.eu/efda/validation-tests/[eSignature validation test cases].
 
-NOTE: The module `dss-mock-tsa` has been removed from DSS `5.13` and replaced with <<KeyStoreTSPSource>>.
+NOTE: The module `dss-mock-tsa` has been removed from DSS `5.13` and replaced with <<KeyEntityTSPSource>>.

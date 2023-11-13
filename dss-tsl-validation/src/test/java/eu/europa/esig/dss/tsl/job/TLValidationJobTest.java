@@ -38,11 +38,13 @@ import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
+import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
@@ -251,7 +253,7 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		List<TrustServiceProvider> czTrustServiceProviders = czTL.getParsingCacheInfo().getTrustServiceProviders();
-		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider();
+		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider(new TrustServiceProviderBuilder());
 		assertThrows(UnsupportedOperationException.class, () -> czTrustServiceProviders.add(emptyTrustServiceProvider));
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		
@@ -296,6 +298,134 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getValidationCacheInfo().getSigningTime());
 		assertNotNull(czTL.getValidationCacheInfo().getSigningCertificate());
 		assertEquals(czSigningCertificate, czTL.getValidationCacheInfo().getSigningCertificate());
+	}
+
+	@Test
+	public void getSummaryFromCertificateSourceTest() {
+		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.offlineRefresh();
+
+		TLValidationJobSummary summary = trustedListsCertificateSource.getSummary();
+
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+
+		TLInfo czTL = tlInfos.get(0);
+		assertNotNull(czTL.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertNotNull(czTL.getDownloadCacheInfo().getLastSuccessSynchronizationTime());
+		assertFalse(czTL.getDownloadCacheInfo().getLastSuccessSynchronizationTime().after(czTL.getDownloadCacheInfo().getLastStateTransitionTime()));
+
+		assertTrue(czTL.getDownloadCacheInfo().isSynchronized());
+		assertTrue(czTL.getParsingCacheInfo().isSynchronized());
+		assertTrue(czTL.getValidationCacheInfo().isSynchronized());
+
+		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertNotNull(czTL.getUrl());
+
+		assertNotNull(czTL.getParsingCacheInfo().getSequenceNumber());
+		assertNotNull(czTL.getParsingCacheInfo().getVersion());
+		assertEquals("CZ", czTL.getParsingCacheInfo().getTerritory());
+		assertNotNull(czTL.getParsingCacheInfo().getIssueDate());
+		assertNotNull(czTL.getParsingCacheInfo().getNextUpdateDate());
+		assertTrue(czTL.getParsingCacheInfo().getIssueDate().before(czTL.getParsingCacheInfo().getNextUpdateDate()));
+		assertNotNull(czTL.getParsingCacheInfo().getDistributionPoints());
+		List<String> czDistributionPoints = czTL.getParsingCacheInfo().getDistributionPoints();
+		assertThrows(UnsupportedOperationException.class, () -> czDistributionPoints.add("bla"));
+		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
+		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
+		List<TrustServiceProvider> czTrustServiceProviders = czTL.getParsingCacheInfo().getTrustServiceProviders();
+		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider(new TrustServiceProviderBuilder());
+		assertThrows(UnsupportedOperationException.class, () -> czTrustServiceProviders.add(emptyTrustServiceProvider));
+		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
+
+		TrustServiceProvider trustServiceProvider = czTL.getParsingCacheInfo().getTrustServiceProviders().get(0);
+		Map<String, List<String>> electronicAddresses = trustServiceProvider.getElectronicAddresses();
+		String key = "bla";
+		List<String> emptyList = Collections.emptyList();
+		assertThrows(UnsupportedOperationException.class, () -> electronicAddresses.put(key, emptyList));
+		Map<String, List<String>> names = trustServiceProvider.getNames();
+		assertThrows(UnsupportedOperationException.class, () -> names.put(key, emptyList));
+		Map<String, List<String>> tradeNames = trustServiceProvider.getTradeNames();
+		assertThrows(UnsupportedOperationException.class, () -> tradeNames.put(key, emptyList));
+		Map<String, String> information = trustServiceProvider.getInformation();
+		assertThrows(UnsupportedOperationException.class, () -> information.put(key, key));
+		Map<String, String> postalAddresses = trustServiceProvider.getPostalAddresses();
+		assertThrows(UnsupportedOperationException.class, () -> postalAddresses.put(key, "value"));
+		List<String> registrationIdentifiers = trustServiceProvider.getRegistrationIdentifiers();
+		assertThrows(UnsupportedOperationException.class, () -> registrationIdentifiers.add(key));
+		List<TrustService> services = trustServiceProvider.getServices();
+		TrustService trustService1 = trustServiceProvider.getServices().get(0);
+		assertThrows(UnsupportedOperationException.class, () -> services.add(trustService1));
+
+		TrustService trustService = trustServiceProvider.getServices().get(0);
+		List<CertificateToken> certificates = trustService.getCertificates();
+		assertThrows(UnsupportedOperationException.class, () -> certificates.add(czSigningCertificate));
+
+		TimeDependentValues<TrustServiceStatusAndInformationExtensions> timeDependentValues = trustService.getStatusAndInformationExtensions();
+		TrustServiceStatusAndInformationExtensions latest = timeDependentValues.getLatest();
+		List<String> additionalServiceInfoUris = latest.getAdditionalServiceInfoUris();
+		assertThrows(UnsupportedOperationException.class, () -> additionalServiceInfoUris.add(key));
+		List<ConditionForQualifiers> conditionsForQualifiers = latest.getConditionsForQualifiers();
+		ConditionForQualifiers conditionForQualifiers = new ConditionForQualifiers(new CompositeCondition(), new ArrayList<>());
+		assertThrows(UnsupportedOperationException.class, () -> conditionsForQualifiers.add(conditionForQualifiers));
+		Map<String, List<String>> latestNames = latest.getNames();
+		assertThrows(UnsupportedOperationException.class, () -> latestNames.put(key, emptyList));
+		List<String> serviceSupplyPoints = latest.getServiceSupplyPoints();
+		assertThrows(UnsupportedOperationException.class, () -> serviceSupplyPoints.add(key));
+
+		assertTrue(czTL.getValidationCacheInfo().isValid());
+		assertEquals(Indication.TOTAL_PASSED, czTL.getValidationCacheInfo().getIndication());
+		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+		assertNotNull(czTL.getValidationCacheInfo().getSigningTime());
+		assertNotNull(czTL.getValidationCacheInfo().getSigningCertificate());
+		assertEquals(czSigningCertificate, czTL.getValidationCacheInfo().getSigningCertificate());
+	}
+
+	@Test
+	public void testNoSynchronization() {
+		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		// trustedCertificateSource is not provied -> no synchronization
+		tlValidationJob.offlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+
+		TLInfo czTL = tlInfos.get(0);
+		assertTrue(czTL.getDownloadCacheInfo().isDesynchronized());
+		assertTrue(czTL.getParsingCacheInfo().isDesynchronized());
+		assertTrue(czTL.getValidationCacheInfo().isDesynchronized());
+		assertFalse(czTL.getDownloadCacheInfo().isSynchronized());
+		assertFalse(czTL.getParsingCacheInfo().isSynchronized());
+		assertFalse(czTL.getValidationCacheInfo().isSynchronized());
 	}
 	
 	@Test
@@ -352,29 +482,174 @@ public class TLValidationJobTest {
 		
 		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
 		assertEquals(1, lotlInfos.size());
-		List<CertificateToken> potentialSigners = lotlInfos.get(0).getValidationCacheInfo().getPotentialSigners();
+
+		LOTLInfo lotlInfo = lotlInfos.get(0);
+		List<CertificateToken> potentialSigners = lotlInfo.getValidationCacheInfo().getPotentialSigners();
 		assertTrue(Utils.isCollectionNotEmpty(potentialSigners));
 		List<CertificateToken> keyStoreCertificates = lotlSource.getCertificateSource().getCertificates();
 		assertEquals(keyStoreCertificates.size(), potentialSigners.size());
 		for (CertificateToken certificate : potentialSigners) {
 			assertTrue(keyStoreCertificates.contains(certificate));
 		}
+
+		assertNotNull(lotlInfo.getDownloadCacheInfo());
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getDownloadCacheInfo().isSynchronized());
+		assertFalse(lotlInfo.getDownloadCacheInfo().isDesynchronized());
+		assertFalse(lotlInfo.getDownloadCacheInfo().isRefreshNeeded());
+		assertFalse(lotlInfo.getDownloadCacheInfo().isToBeDeleted());
+		assertFalse(lotlInfo.getDownloadCacheInfo().isError());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime(), lotlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertEquals(lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime(), lotlInfo.getDownloadCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(CacheStateEnum.SYNCHRONIZED.name(), lotlInfo.getDownloadCacheInfo().getStatusName());
+
+		assertNotNull(lotlInfo.getParsingCacheInfo());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isSynchronized());
+		assertFalse(lotlInfo.getParsingCacheInfo().isDesynchronized());
+		assertFalse(lotlInfo.getParsingCacheInfo().isRefreshNeeded());
+		assertFalse(lotlInfo.getParsingCacheInfo().isToBeDeleted());
+		assertFalse(lotlInfo.getParsingCacheInfo().isError());
+		assertNotNull(lotlInfo.getParsingCacheInfo().getLastStateTransitionTime());
+		assertNotNull(lotlInfo.getParsingCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(lotlInfo.getParsingCacheInfo().getLastStateTransitionTime(), lotlInfo.getParsingCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(CacheStateEnum.SYNCHRONIZED.name(), lotlInfo.getParsingCacheInfo().getStatusName());
+
+		assertNotNull(lotlInfo.getValidationCacheInfo());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isSynchronized());
+		assertFalse(lotlInfo.getValidationCacheInfo().isDesynchronized());
+		assertFalse(lotlInfo.getValidationCacheInfo().isRefreshNeeded());
+		assertFalse(lotlInfo.getValidationCacheInfo().isToBeDeleted());
+		assertFalse(lotlInfo.getValidationCacheInfo().isError());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getLastStateTransitionTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(lotlInfo.getValidationCacheInfo().getLastStateTransitionTime(), lotlInfo.getValidationCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(CacheStateEnum.SYNCHRONIZED.name(), lotlInfo.getValidationCacheInfo().getStatusName());
 		
-		List<TLInfo> tlInfos = lotlInfos.get(0).getTLInfos();
-			assertEquals(31, tlInfos.size());
+		List<TLInfo> tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size());
 		
 		for (TLInfo tlInfo : tlInfos) {
 			if (tlInfo.getDownloadCacheInfo().isResultExist()) {
+				assertTrue(tlInfo.getDownloadCacheInfo().isSynchronized());
 				assertNull(tlInfo.getDownloadCacheInfo().getExceptionMessage());
 				assertNull(tlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+				assertNotNull(tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+				assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+				assertNotNull(tlInfo.getDownloadCacheInfo().getLastSuccessSynchronizationTime());
+				assertTrue(tlInfo.getParsingCacheInfo().isSynchronized());
 				assertNull(tlInfo.getParsingCacheInfo().getExceptionMessage());
 				assertNull(tlInfo.getParsingCacheInfo().getExceptionStackTrace());
+				assertNotNull(tlInfo.getParsingCacheInfo().getLastStateTransitionTime());
+				assertNotNull(tlInfo.getParsingCacheInfo().getLastSuccessSynchronizationTime());
+				assertTrue(tlInfo.getValidationCacheInfo().isSynchronized());
 				assertNull(tlInfo.getValidationCacheInfo().getExceptionMessage());
 				assertNull(tlInfo.getValidationCacheInfo().getExceptionStackTrace());
+				assertNotNull(tlInfo.getValidationCacheInfo().getLastStateTransitionTime());
+				assertNotNull(tlInfo.getValidationCacheInfo().getLastSuccessSynchronizationTime());
 				assertTrue(Utils.isCollectionNotEmpty(tlInfo.getValidationCacheInfo().getPotentialSigners()));
 			}
 		}
-		
+	}
+
+	@Test
+	public void lotlGetSummaryFromCertificateSourceTest() {
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.offlineRefresh();
+
+		TLValidationJobSummary summary = trustedListsCertificateSource.getSummary();
+
+		assertEquals(1, summary.getNumberOfProcessedLOTLs());
+		assertEquals(31, summary.getNumberOfProcessedTLs());
+
+		List<TLInfo> otherTLInfos = summary.getOtherTLInfos();
+		assertEquals(0, otherTLInfos.size());
+
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+
+		LOTLInfo lotlInfo = lotlInfos.get(0);
+		List<CertificateToken> potentialSigners = lotlInfo.getValidationCacheInfo().getPotentialSigners();
+		assertTrue(Utils.isCollectionNotEmpty(potentialSigners));
+		List<CertificateToken> keyStoreCertificates = lotlSource.getCertificateSource().getCertificates();
+		assertEquals(keyStoreCertificates.size(), potentialSigners.size());
+		for (CertificateToken certificate : potentialSigners) {
+			assertTrue(keyStoreCertificates.contains(certificate));
+		}
+
+		assertNotNull(lotlInfo.getDownloadCacheInfo());
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getDownloadCacheInfo().isSynchronized());
+		assertFalse(lotlInfo.getDownloadCacheInfo().isDesynchronized());
+		assertFalse(lotlInfo.getDownloadCacheInfo().isRefreshNeeded());
+		assertFalse(lotlInfo.getDownloadCacheInfo().isToBeDeleted());
+		assertFalse(lotlInfo.getDownloadCacheInfo().isError());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertNotNull(lotlInfo.getDownloadCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime(), lotlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+		assertEquals(lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime(), lotlInfo.getDownloadCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(CacheStateEnum.SYNCHRONIZED.name(), lotlInfo.getDownloadCacheInfo().getStatusName());
+
+		assertNotNull(lotlInfo.getParsingCacheInfo());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isSynchronized());
+		assertFalse(lotlInfo.getParsingCacheInfo().isDesynchronized());
+		assertFalse(lotlInfo.getParsingCacheInfo().isRefreshNeeded());
+		assertFalse(lotlInfo.getParsingCacheInfo().isToBeDeleted());
+		assertFalse(lotlInfo.getParsingCacheInfo().isError());
+		assertNotNull(lotlInfo.getParsingCacheInfo().getLastStateTransitionTime());
+		assertNotNull(lotlInfo.getParsingCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(lotlInfo.getParsingCacheInfo().getLastStateTransitionTime(), lotlInfo.getParsingCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(CacheStateEnum.SYNCHRONIZED.name(), lotlInfo.getParsingCacheInfo().getStatusName());
+
+		assertNotNull(lotlInfo.getValidationCacheInfo());
+		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isSynchronized());
+		assertFalse(lotlInfo.getValidationCacheInfo().isDesynchronized());
+		assertFalse(lotlInfo.getValidationCacheInfo().isRefreshNeeded());
+		assertFalse(lotlInfo.getValidationCacheInfo().isToBeDeleted());
+		assertFalse(lotlInfo.getValidationCacheInfo().isError());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getLastStateTransitionTime());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(lotlInfo.getValidationCacheInfo().getLastStateTransitionTime(), lotlInfo.getValidationCacheInfo().getLastSuccessSynchronizationTime());
+		assertEquals(CacheStateEnum.SYNCHRONIZED.name(), lotlInfo.getValidationCacheInfo().getStatusName());
+
+		List<TLInfo> tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size());
+
+		for (TLInfo tlInfo : tlInfos) {
+			if (tlInfo.getDownloadCacheInfo().isResultExist()) {
+				assertTrue(tlInfo.getDownloadCacheInfo().isSynchronized());
+				assertNull(tlInfo.getDownloadCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+				assertNotNull(tlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+				assertNotNull(tlInfo.getDownloadCacheInfo().getLastStateTransitionTime());
+				assertNotNull(tlInfo.getDownloadCacheInfo().getLastSuccessSynchronizationTime());
+				assertTrue(tlInfo.getParsingCacheInfo().isSynchronized());
+				assertNull(tlInfo.getParsingCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getParsingCacheInfo().getExceptionStackTrace());
+				assertNotNull(tlInfo.getParsingCacheInfo().getLastStateTransitionTime());
+				assertNotNull(tlInfo.getParsingCacheInfo().getLastSuccessSynchronizationTime());
+				assertTrue(tlInfo.getValidationCacheInfo().isSynchronized());
+				assertNull(tlInfo.getValidationCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getValidationCacheInfo().getExceptionStackTrace());
+				assertNotNull(tlInfo.getValidationCacheInfo().getLastStateTransitionTime());
+				assertNotNull(tlInfo.getValidationCacheInfo().getLastSuccessSynchronizationTime());
+				assertTrue(Utils.isCollectionNotEmpty(tlInfo.getValidationCacheInfo().getPotentialSigners()));
+			}
+		}
 	}
 	
 	@Test
@@ -1364,6 +1639,7 @@ public class TLValidationJobTest {
 		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
 		tlValidationJob.offlineRefresh();
 		return tlValidationJob;
 	}

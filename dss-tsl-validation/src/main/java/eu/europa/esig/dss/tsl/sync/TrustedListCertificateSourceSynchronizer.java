@@ -106,13 +106,16 @@ public class TrustedListCertificateSourceSynchronizer {
 	public void sync() {
 		try {
 			ValidationJobSummaryBuilder summaryBuilder = new ValidationJobSummaryBuilder(cacheAccess, tlSources, lotlSources);
-			TLValidationJobSummary summary = summaryBuilder.build();
-			certificateSource.setSummary(summary);
 
+			TLValidationJobSummary summary = summaryBuilder.build();
 			if (isCertificateSyncNeeded(summary)) {
 				synchronizeCertificates(summary);
 			}
 			syncCache(summary);
+
+			// re-build summary after synchronization
+			summary = summaryBuilder.build();
+			certificateSource.setSummary(summary);
 
 		} catch (Exception e) {
 			LOG.error("Unable to synchronize the TrustedListsCertificateSource", e);

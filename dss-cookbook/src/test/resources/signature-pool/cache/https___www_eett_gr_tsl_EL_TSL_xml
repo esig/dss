@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="EL-TL-039" TSLTag="http://uri.etsi.org/19612/TSLTag">
     <SchemeInformation>
         <TSLVersionIdentifier>5</TSLVersionIdentifier>
-        <TSLSequenceNumber>67</TSLSequenceNumber>
+        <TSLSequenceNumber>69</TSLSequenceNumber>
         <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
         <SchemeOperatorName>
             <Name xml:lang="en">Hellenic Telecommunications and Post Commission, EETT</Name>
@@ -106,9 +106,9 @@
                 </AdditionalInformation>
             </OtherTSLPointer>
         </PointersToOtherTSL>
-        <ListIssueDateTime>2022-11-23T10:00:08Z</ListIssueDateTime>
+        <ListIssueDateTime>2023-07-24T12:30:21Z</ListIssueDateTime>
         <NextUpdate>
-            <dateTime>2023-05-23T09:00:08Z</dateTime>
+            <dateTime>2024-01-24T13:30:21Z</dateTime>
         </NextUpdate>
         <DistributionPoints>
             <URI>https://www.eett.gr/tsl/EL-TSL.xml</URI>
@@ -2701,6 +2701,62 @@
                     <ServiceInformation>
                         <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
                         <ServiceName>
+                            <Name xml:lang="en">HARICA Document Signing ECC 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEGzCCA6KgAwIBAgIQQeldDwDAfdKJ9jNzl3fdpDAKBggqhkjOPQQDAzCBuTELMAkGA1UEBhMCR1IxKzApBgNVBAoMIkdyZWVrIFVuaXZlcnNpdGllcyBOZXR3b3JrIChHVW5ldCkxGDAWBgNVBGEMD1ZBVEdSLTA5OTAyODIyMDE3MDUGA1UECwwuSGVsbGVuaWMgQWNhZGVtaWMgYW5kIFJlc2VhcmNoIEluc3RpdHV0aW9ucyBDQTEqMCgGA1UEAwwhSEFSSUNBIFF1YWxpZmllZCBFQ0MgUm9vdCBDQSAyMDIxMB4XDTIzMDcxODA5MjgyM1oXDTM4MDcxNDA5MjgyMlowgbUxCzAJBgNVBAYTAkdSMSswKQYDVQQKDCJHcmVlayBVbml2ZXJzaXRpZXMgTmV0d29yayAoR1VuZXQpMRgwFgYDVQRhDA9WQVRHUi0wOTkwMjgyMjAxNzA1BgNVBAsMLkhlbGxlbmljIEFjYWRlbWljIGFuZCBSZXNlYXJjaCBJbnN0aXR1dGlvbnMgQ0ExJjAkBgNVBAMMHUhBUklDQSBEb2N1bWVudCBTaWduaW5nIEVDQyAxMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEN51UODSkDouU1eNVtDNP1qddHApWvTOeQbQKsJJUyCwCPrB3T7qC21AdFlzEx8ZFUKbVxa1o4OrMotGbFgtEPiVFeqqgyGwLwzBJ4PlIJPHq2HP5KQR0e8b8DqAWWrIso4IBbzCCAWswEgYDVR0TAQH/BAgwBgEB/wIBADAfBgNVHSMEGDAWgBQfNfpmw7TQmkokgn+bKI3am+7hpjBTBggrBgEFBQcBAQRHMEUwQwYIKwYBBQUHMAKGN2h0dHA6Ly9jcnQuaGFyaWNhLmdyL0hBUklDQS1RdWFsaWZpZWQtUm9vdC0yMDIxLUVDQy5jZXIwRAYDVR0gBD0wOzA5BgRVHSAAMDEwLwYIKwYBBQUHAgEWI2h0dHA6Ly9yZXBvLmhhcmljYS5nci9kb2N1bWVudHMvQ1BTMCAGA1UdJQQZMBcGCisGAQQBgjcKAwwGCSqGSIb3LwEBBTBIBgNVHR8EQTA/MD2gO6A5hjdodHRwOi8vY3JsLmhhcmljYS5nci9IQVJJQ0EtUXVhbGlmaWVkLVJvb3QtMjAyMS1FQ0MuY3JsMB0GA1UdDgQWBBTajoJWzLJ2m5bXNda4X69KG2hF4TAOBgNVHQ8BAf8EBAMCAYYwCgYIKoZIzj0EAwMDZwAwZAIwceZkb3p7VLpbiVtdsuV48t7PApRvVQ8L9tMqR+5XE/pdDSQqpmG0mjuf5uQ2ya0PAjAFbUC2fgeYesZ7f/b/T30YUS+Vxt93TM2Ezh4jkR3poh+ZNsqPfrE3wz36hFsR13s=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=HARICA Document Signing ECC 1, OU=Hellenic Academic and Research Institutions CA, OID.2.5.4.97=VATGR-099028220, O=Greek Universities Network (GUnet), C=GR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>2o6CVsyydpuW1zXWuF+vShtoReE=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-08-01T10:00:42Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">HARICA Document Signing RSA 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=HARICA Document Signing RSA 1, OU=Hellenic Academic and Research Institutions CA, OID.2.5.4.97=VATGR-099028220, O=Greek Universities Network (GUnet), C=GR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>k2d8BYNJnTO1H1p6TqPWc1B1AqI=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-08-01T10:00:21Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
                             <Name xml:lang="en">HARICA Institutional Client SubCA R1</Name>
                         </ServiceName>
                         <ServiceDigitalIdentity>
@@ -2721,6 +2777,94 @@
 <AdditionalServiceInformation>
     <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
 </AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">HARICA Institutional eSignature ECC 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIIEJTCCA6qgAwIBAgIQDaBPkdh36HP0lyhyAUphcDAKBggqhkjOPQQDAzCBuTELMAkGA1UEBhMCR1IxKzApBgNVBAoMIkdyZWVrIFVuaXZlcnNpdGllcyBOZXR3b3JrIChHVW5ldCkxGDAWBgNVBGEMD1ZBVEdSLTA5OTAyODIyMDE3MDUGA1UECwwuSGVsbGVuaWMgQWNhZGVtaWMgYW5kIFJlc2VhcmNoIEluc3RpdHV0aW9ucyBDQTEqMCgGA1UEAwwhSEFSSUNBIFF1YWxpZmllZCBFQ0MgUm9vdCBDQSAyMDIxMB4XDTIzMDcxODA5Mjk1N1oXDTM4MDcxNDA5Mjk1Nlowgb0xCzAJBgNVBAYTAkdSMSswKQYDVQQKDCJHcmVlayBVbml2ZXJzaXRpZXMgTmV0d29yayAoR1VuZXQpMRgwFgYDVQRhDA9WQVRHUi0wOTkwMjgyMjAxNzA1BgNVBAsMLkhlbGxlbmljIEFjYWRlbWljIGFuZCBSZXNlYXJjaCBJbnN0aXR1dGlvbnMgQ0ExLjAsBgNVBAMMJUhBUklDQSBJbnN0aXR1dGlvbmFsIGVTaWduYXR1cmUgRUNDIDEwdjAQBgcqhkjOPQIBBgUrgQQAIgNiAARkgOBVNjoqf29rgokJw8vtKGXDs/x9Udv1x9eVPSJC1ESBHbi+6cX8Jiw5T5QynV4ZTof28JMNFPeR6idZMYeT3jjwainplr6OgGU9cHWpJi2m0pxDzkq6fKmLr+eFDcOjggFvMIIBazASBgNVHRMBAf8ECDAGAQH/AgEAMB8GA1UdIwQYMBaAFB81+mbDtNCaSiSCf5sojdqb7uGmMFMGCCsGAQUFBwEBBEcwRTBDBggrBgEFBQcwAoY3aHR0cDovL2NydC5oYXJpY2EuZ3IvSEFSSUNBLVF1YWxpZmllZC1Sb290LTIwMjEtRUNDLmNlcjBEBgNVHSAEPTA7MDkGBFUdIAAwMTAvBggrBgEFBQcCARYjaHR0cDovL3JlcG8uaGFyaWNhLmdyL2RvY3VtZW50cy9DUFMwIAYDVR0lBBkwFwYKKwYBBAGCNwoDDAYJKoZIhvcvAQEFMEgGA1UdHwRBMD8wPaA7oDmGN2h0dHA6Ly9jcmwuaGFyaWNhLmdyL0hBUklDQS1RdWFsaWZpZWQtUm9vdC0yMDIxLUVDQy5jcmwwHQYDVR0OBBYEFF5HYPxeaAO5Z1QdxoqOfixuQRtxMA4GA1UdDwEB/wQEAwIBhjAKBggqhkjOPQQDAwNpADBmAjEAg2/laQSvo6pUYUNZeE9Gbt2YpkbKSVb1jKnZ4Av3Z5Vmyn4HUu25Yz2YFbESYsINAjEAgRLGRBXgb+a+hDpOgum18hrLu14EI6qHm+lSl6S1eC5PZ4/g6cxIkVB5JctWC5HX</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=HARICA Institutional eSignature ECC 1, OU=Hellenic Academic and Research Institutions CA, OID.2.5.4.97=VATGR-099028220, O=Greek Universities Network (GUnet), C=GR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>Xkdg/F5oA7lnVB3Gio5+LG5BG3E=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-08-01T10:00:39Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<ns5:Qualifications>
+    <ns5:QualificationElement>
+        <ns5:Qualifiers>
+            <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
+        </ns5:Qualifiers>
+        <ns5:CriteriaList assert="all">
+            <ns5:PolicySet>
+                <ns5:PolicyIdentifier>
+                    <ns4:Identifier Qualifier="OIDAsURI">1.3.6.1.4.1.26513.1.1.8</ns4:Identifier>
+                </ns5:PolicyIdentifier>
+            </ns5:PolicySet>
+        </ns5:CriteriaList>
+    </ns5:QualificationElement>
+</ns5:Qualifications>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">HARICA Institutional eSignature RSA 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=HARICA Institutional eSignature RSA 1, OU=Hellenic Academic and Research Institutions CA, OID.2.5.4.97=VATGR-099028220, O=Greek Universities Network (GUnet), C=GR</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>sr0TS5SN88rVlrUv5sOwSectQqM=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-08-01T10:00:16Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<ns5:Qualifications>
+    <ns5:QualificationElement>
+        <ns5:Qualifiers>
+            <ns5:Qualifier uri="http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDManagedOnBehalf"/>
+        </ns5:Qualifiers>
+        <ns5:CriteriaList assert="all">
+            <ns5:PolicySet>
+                <ns5:PolicyIdentifier>
+                    <ns4:Identifier Qualifier="OIDAsURI">1.3.6.1.4.1.26513.1.1.8</ns4:Identifier>
+                </ns5:PolicyIdentifier>
+            </ns5:PolicySet>
+        </ns5:CriteriaList>
+    </ns5:QualificationElement>
+</ns5:Qualifications>
                             </Extension>
                         </ServiceInformationExtensions>
                     </ServiceInformation>
@@ -5087,9 +5231,27 @@
 <X509SKI>TxWXMJX4uaw=</X509SKI>
                             </DigitalId>
                         </ServiceDigitalIdentity>
-                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
-                        <StatusStartingTime>2017-10-18T21:00:00Z</StatusStartingTime>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</ServiceStatus>
+                        <StatusStartingTime>2023-05-08T13:00:29Z</StatusStartingTime>
                     </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceTypeIdentifier>
+                            <ServiceName>
+<Name xml:lang="en">Athex Qualified Timestamping Authority</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+<DigitalId>
+    <X509SubjectName>L=Athens, CN=Athex Qualified Timestamping Authority, O=Athens Stock Exchange, C=GR</X509SubjectName>
+</DigitalId>
+<DigitalId>
+    <X509SKI>TxWXMJX4uaw=</X509SKI>
+</DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                            <StatusStartingTime>2017-10-18T21:00:00Z</StatusStartingTime>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
                 </TSPService>
                 <TSPService>
                     <ServiceInformation>
@@ -6023,4 +6185,4 @@
             </TSPServices>
         </TrustServiceProvider>
     </TrustServiceProviderList>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-6e5e2a3da794e98672e35889b7b8bbe3"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>4QkBs7cdpwX++X4REMrfbnqc2iMW1cn2q4cHR5MuNvA=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-6e5e2a3da794e98672e35889b7b8bbe3"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>2F+ETIGMCF7tGKeQloYp41K2sjbU2U4aXFLh7DGrflQ=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-6e5e2a3da794e98672e35889b7b8bbe3">pv+o+LQEsD5HcJSOXKSf7HXc2gOrZ7qru/KMPotTlspR0UGS0yhvOQXXymrs4Ccgat7GJViUx1SiCjL00/ZvZg==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIICZjCCAgugAwIBAgIJANeHQWATgt+cMAoGCCqGSM49BAMEMIGQMQswCQYDVQQGEwJFTDEPMA0GA1UEBwwGQXRoZW5zMT4wPAYDVQQKDDVIZWxsZW5pYyBUZWxlY29tbXVuaWNhdGlvbnMgYW5kIFBvc3QgQ29tbWlzc2lvbiwgRUVUVDEwMC4GA1UEAwwnSGVsbGVuaWMgVHJ1c3RlZCBMaXN0IFNjaGVtZSBPcGVyYXRvci0xMB4XDTIxMDMwNTA3MzUwOVoXDTI2MDkwMzA3MzUwOVowgZAxCzAJBgNVBAYTAkVMMQ8wDQYDVQQHDAZBdGhlbnMxPjA8BgNVBAoMNUhlbGxlbmljIFRlbGVjb21tdW5pY2F0aW9ucyBhbmQgUG9zdCBDb21taXNzaW9uLCBFRVRUMTAwLgYDVQQDDCdIZWxsZW5pYyBUcnVzdGVkIExpc3QgU2NoZW1lIE9wZXJhdG9yLTEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAR7MlwDiLTryq1z4tJ/6V3ZBeBjA3YVrpuA25ddLyfBaNXKdNGxJaavWtH+u3exNSxIsxJYj++3D/UyQBsiToG3o0wwSjAdBgNVHQ4EFgQUpRIBCdaHCtohtG3o2p2BsPIcZFwwCQYDVR0TBAIwADALBgNVHQ8EBAMCBsAwEQYDVR0lBAowCAYGBACRNwMAMAoGCCqGSM49BAMEA0kAMEYCIQCiQVBWUFSUMDyPd2EY1PmCAmfkOBgswnzqOsSe4WutigIhAM7d4W05/9tdgOjbbgLwkd6WKTqVYpFMrTG6l/ahLAlV</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-6e5e2a3da794e98672e35889b7b8bbe3"><xades:SignedProperties Id="xades-id-6e5e2a3da794e98672e35889b7b8bbe3"><xades:SignedSignatureProperties><xades:SigningTime>2022-11-23T09:45:55Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>D6rx4OvtzjgVp/l2e8UwD8EWmHHyCZThnBNyUiZ1PyrECmy36byqQxcaHa3yVexpXStgNVr6PUnEb7vjK72FvQ==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Hellenic Trusted List Scheme Operator-1,O=Hellenic Telecommunications and Post Commission\, EETT,L=Athens,C=EL</ds:X509IssuerName><ds:X509SerialNumber>15530453720910454684</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-bcf2b58b52da0441da947aeab2868782"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256"/><ds:Reference Id="xml_ref_id" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>FGP7JrXZBnnt2e8wVUqk1oALPqlWdsCarUpLw2GqtDY=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-bcf2b58b52da0441da947aeab2868782"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>USoGUOHaCGvSfVy/xXnBS0iJUA1MfYXuOccnKJYWlxE=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-bcf2b58b52da0441da947aeab2868782">eytAa1ryatUYc/Y7NSyLLzNJNQgXGC/2ao0DceRemsHGeM0kxFAkCIDJ607GGeWW3Xh3Ai2ac8rIBXYxo69HNw==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIICZjCCAgugAwIBAgIJANeHQWATgt+cMAoGCCqGSM49BAMEMIGQMQswCQYDVQQGEwJFTDEPMA0GA1UEBwwGQXRoZW5zMT4wPAYDVQQKDDVIZWxsZW5pYyBUZWxlY29tbXVuaWNhdGlvbnMgYW5kIFBvc3QgQ29tbWlzc2lvbiwgRUVUVDEwMC4GA1UEAwwnSGVsbGVuaWMgVHJ1c3RlZCBMaXN0IFNjaGVtZSBPcGVyYXRvci0xMB4XDTIxMDMwNTA3MzUwOVoXDTI2MDkwMzA3MzUwOVowgZAxCzAJBgNVBAYTAkVMMQ8wDQYDVQQHDAZBdGhlbnMxPjA8BgNVBAoMNUhlbGxlbmljIFRlbGVjb21tdW5pY2F0aW9ucyBhbmQgUG9zdCBDb21taXNzaW9uLCBFRVRUMTAwLgYDVQQDDCdIZWxsZW5pYyBUcnVzdGVkIExpc3QgU2NoZW1lIE9wZXJhdG9yLTEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAR7MlwDiLTryq1z4tJ/6V3ZBeBjA3YVrpuA25ddLyfBaNXKdNGxJaavWtH+u3exNSxIsxJYj++3D/UyQBsiToG3o0wwSjAdBgNVHQ4EFgQUpRIBCdaHCtohtG3o2p2BsPIcZFwwCQYDVR0TBAIwADALBgNVHQ8EBAMCBsAwEQYDVR0lBAowCAYGBACRNwMAMAoGCCqGSM49BAMEA0kAMEYCIQCiQVBWUFSUMDyPd2EY1PmCAmfkOBgswnzqOsSe4WutigIhAM7d4W05/9tdgOjbbgLwkd6WKTqVYpFMrTG6l/ahLAlV</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-bcf2b58b52da0441da947aeab2868782"><xades:SignedProperties Id="xades-id-bcf2b58b52da0441da947aeab2868782"><xades:SignedSignatureProperties><xades:SigningTime>2023-07-24T11:58:27Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>D6rx4OvtzjgVp/l2e8UwD8EWmHHyCZThnBNyUiZ1PyrECmy36byqQxcaHa3yVexpXStgNVr6PUnEb7vjK72FvQ==</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Hellenic Trusted List Scheme Operator-1,O=Hellenic Telecommunications and Post Commission\, EETT,L=Athens,C=EL</ds:X509IssuerName><ds:X509SerialNumber>15530453720910454684</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#xml_ref_id"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>
