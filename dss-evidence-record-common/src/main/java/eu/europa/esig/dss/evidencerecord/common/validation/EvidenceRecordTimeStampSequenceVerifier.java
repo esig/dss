@@ -151,7 +151,17 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         }
     }
 
-    private List<? extends DigestValueGroup> getHashTree(
+    /**
+     * This method returns a relevant HashTree, and created a "virtual" HashTree when a  HashTree is omitted in the TimeStamp
+     *
+     * @param originalHashTree a list of {@link DigestValueGroup}, representing an original HashTree extracted from a time-stamp token
+     * @param detachedContents a list of {@link DSSDocument}s, provided to the validation as a detached content
+     * @param digestAlgorithm {@link DigestAlgorithm} to be used within the archive-time-stamp-sequence
+     * @param lastTimeStampHash {@link DSSMessageDigest} digest of the previous archive-time-stamp, when applicable
+     * @param lastTimeStampSequenceHash  {@link DSSMessageDigest} digest of the previous archive-time-stamp-sequence, when applicable
+     * @return a list of {@link DigestValueGroup}, representing a HashTree to be used for an archive-time-stamp validation
+     */
+    protected List<? extends DigestValueGroup> getHashTree(
             List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents,
             DigestAlgorithm digestAlgorithm, DSSMessageDigest lastTimeStampHash, DSSMessageDigest lastTimeStampSequenceHash) {
         List<? extends DigestValueGroup> hashTree;
@@ -188,15 +198,6 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             hashTree = Collections.singletonList(digestValueGroup);
         }
 
-        // HashTree renewal time-stamp shall cover one or more data objects
-        if (lastTimeStampSequenceHash != null && !lastTimeStampSequenceHash.isEmpty()) {
-            DigestValueGroup firstDigestValueGroup = hashTree.get(0);
-            if (Utils.collectionSize(firstDigestValueGroup.getDigestValues()) == 1) {
-                List<byte[]> newDigestValuesGroup = new ArrayList<>(firstDigestValueGroup.getDigestValues());
-                newDigestValuesGroup.add(DSSUtils.EMPTY_BYTE_ARRAY);
-                firstDigestValueGroup.setDigestValues(newDigestValuesGroup);
-            }
-        }
         return hashTree;
     }
 
