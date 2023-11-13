@@ -97,8 +97,8 @@ public class Asn1EvidenceRecordChainRenewalValidationTest extends AbstractEviden
 
             } else if (digestMatchers.size() == 3) {
                 assertEquals(1, messageImprintCounter);
-                assertEquals(0, archiveDataObjectCounter);
-                assertEquals(1, orphanRefsCounter);
+                assertEquals(1, archiveDataObjectCounter);
+                assertEquals(0, orphanRefsCounter);
                 assertEquals(0, archiveTimeStampCounter);
                 assertEquals(1, previousChainCounter);
 

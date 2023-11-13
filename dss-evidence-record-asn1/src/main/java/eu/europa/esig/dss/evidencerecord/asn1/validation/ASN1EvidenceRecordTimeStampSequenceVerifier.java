@@ -8,6 +8,8 @@ import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -19,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,6 +41,43 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
         super(evidenceRecord);
     }
 
+    /**
+     * This method returns a document with matching {@code Digest} from a provided list of {@code detachedContents}
+     *
+     * @param digest {@link Digest} to check
+     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
+     * @return {@link DSSDocument} if matching document found, NULL otherwise
+     */
+    @Override
+    protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
+                                              List<DSSDocument> detachedContents) {
+        if (Utils.isCollectionNotEmpty(detachedContents)) {
+            for (DSSDocument document : detachedContents) {
+            	byte[] documentDigest;
+               
+            	if (archiveTimeStampChain.getOrder() <= 1)
+            	{
+	                if (!(document instanceof DigestDocument)) {
+	                    documentDigest = DSSUtils.digest(digest.getAlgorithm(), document.openStream());
+	                } else {
+	                    String base64Digest = document.getDigest(digest.getAlgorithm());
+	                    documentDigest = Utils.fromBase64(base64Digest);
+	                }
+            	}
+            	else
+            	{
+            		DSSMessageDigest documentChainDigest = computePrecedingTimeStampSequenceHash(digest.getAlgorithm(), archiveTimeStampChain,detachedContents);
+            		documentDigest = documentChainDigest.getValue();
+            	}
+            	
+                if (Arrays.equals(digest.getValue(), documentDigest)) {
+                    return document;
+                }
+            }
+        }
+        return null;
+    }
+    
     @Override
     protected DSSMessageDigest computeTimeStampHash(DigestAlgorithm digestAlgorithm,
     		ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain) {
