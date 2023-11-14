@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.pki.jaxb.builder;
 
 import eu.europa.esig.dss.enumerations.RevocationReason;
@@ -175,20 +195,20 @@ public class JAXBCertEntityBuilder {
     public JAXBCertEntity build() {
         final JAXBCertEntity certEntity = getCertEntity();
 
-        final CertificateToken certificateToken;
+        final CertificateToken certificate;
         if (certEntity.getCertificateToken() == null) {
             Objects.requireNonNull(this.certificateToken, "CertificateToken shall be provided!");
-            certificateToken = this.certificateToken;
+            certificate = this.certificateToken;
             certEntity.setCertificateToken(this.certificateToken);
         } else {
-            certificateToken = certEntity.getCertificateToken();
+            certificate = certEntity.getCertificateToken();
         }
 
         if (certEntity.getSubject() == null) {
-            certEntity.setSubject(DSSASN1Utils.getSubjectCommonName(certificateToken));
+            certEntity.setSubject(DSSASN1Utils.getSubjectCommonName(certificate));
         }
         if (certEntity.getSerialNumber() == null) {
-            certEntity.setSerialNumber(certificateToken.getSerialNumber().longValue());
+            certEntity.setSerialNumber(certificate.getSerialNumber().longValue());
         }
         if (certEntity.getPrivateKeyBinaries() == null) {
             Objects.requireNonNull(privateKey, "PrivateKey shall be provided!");

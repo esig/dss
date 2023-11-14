@@ -39,6 +39,7 @@ import java.util.List;
  * Verifies of the certificate has related TrustServices which have been 'granted'
  * at the given validation time
  *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public class GrantedStatusAtTimeCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

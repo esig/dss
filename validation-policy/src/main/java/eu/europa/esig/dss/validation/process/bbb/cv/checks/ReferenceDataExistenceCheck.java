@@ -32,6 +32,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Checks if the referenced data is found
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public class ReferenceDataExistenceCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

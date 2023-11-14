@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * <p>
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- * <p>
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * <p>
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * <p>
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -171,6 +171,7 @@ public abstract class PKIFactoryAccess {
     protected static final String ROOT_CA = "root-ca";
 
     private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
+    private static final String DEFAULT_TSA_POLICY = "1.2.3.4";
     private static final int TIMEOUT_MS = 10000;
     private static CommonTrustedCertificateSource trustedCertificateSource;
 
@@ -214,15 +215,27 @@ public abstract class PKIFactoryAccess {
         return getCertificateVerifier(pKIOCSPSource, pkicrlSource, pkiAIASource(), getTrustedCertificateSource());
     }
 
+    protected CertificateVerifier getCachedCertificateVerifierWithSHA3_256() {
+        PKICRLSource pkiCRLSource = pkiCRLSource();
+        pkiCRLSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
+
+        PKIOCSPSource pkiOCSPSource = pkiOCSPSource();
+        pkiOCSPSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
+        pkiOCSPSource.setOcspResponder(getPKICertEntity(SHA3_OCSP_RESPONDER));
+
+        return getCertificateVerifier(cacheOCSPSource(pkiOCSPSource), cacheCRLSource(pkiCRLSource), pkiAIASource(),
+                getTrustedCertificateSource());
+    }
+
     protected CertificateVerifier getCertificateVerifierWithSHA3_256() {
-        PKICRLSource pkicrlSource = pkiCRLSource();
-        pkicrlSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
+        PKICRLSource pkiCRLSource = pkiCRLSource();
+        pkiCRLSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
 
-        PKIOCSPSource pKIOCSPSource = pkiOCSPSource();
-        pKIOCSPSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
-        pKIOCSPSource.setOcspResponder(getPKICertEntity(SHA3_OCSP_RESPONDER));
+        PKIOCSPSource pkiOCSPSource = pkiOCSPSource();
+        pkiOCSPSource.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
+        pkiOCSPSource.setOcspResponder(getPKICertEntity(SHA3_OCSP_RESPONDER));
 
-        return getCertificateVerifier(pKIOCSPSource, pkicrlSource, pkiAIASource(), getTrustedCertificateSource());
+        return getCertificateVerifier(pkiOCSPSource, pkiCRLSource, pkiAIASource(), getTrustedCertificateSource());
     }
 
     private CertificateVerifier getCertificateVerifier(OCSPSource ocspSource, CRLSource crlSource, AIASource aiaSource, CertificateSource certificateSource) {
@@ -529,7 +542,9 @@ public abstract class PKIFactoryAccess {
     }
 
     protected PKITSPSource getPKITSPSourceByName(String tsaName) {
-        return new PKITSPSource(getPKICertEntity(tsaName));
+        PKITSPSource tspSource = new PKITSPSource(getPKICertEntity(tsaName));
+        tspSource.setTsaPolicy(DEFAULT_TSA_POLICY);
+        return tspSource;
     }
 
     private CertEntity getPKICertEntity(String certEntityName) {

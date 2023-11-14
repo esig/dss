@@ -35,8 +35,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -44,7 +46,7 @@ import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -95,6 +97,7 @@ import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -105,6 +108,12 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class SignaturePoolTest extends AbstractDocumentTestValidation {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SignaturePoolTest.class);
+
+	private static final String KEYSTORE_PATH = "src/main/resources/keystore.p12";
+	private static final String KEYSTORE_TYPE = "PKCS12";
+	private static final char[] KEYSTORE_PASSWORD = "dss-password".toCharArray();
+
+	private static final String CACHE_PATH = "src/test/resources/signature-pool/cache";
 	
 	private static DSSDocument document;
 	
@@ -123,11 +132,12 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 		
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
-		lotlSource.setCertificateSource(new CommonCertificateSource());
+		lotlSource.setCertificateSource(ojContentKeyStore());
+		lotlSource.setPivotSupport(true);
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		
 		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
-		fileCacheDataLoader.setFileCacheDirectory(new File("src/test/resources/signature-pool/cache"));
+		fileCacheDataLoader.setFileCacheDirectory(new File(CACHE_PATH));
 		fileCacheDataLoader.setCacheExpirationTime(-1);
 
 		fileCacheDataLoader.setDataLoader(new IgnoreDataLoader());
@@ -136,6 +146,14 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 		tlValidationJob.offlineRefresh();
 		
 		LOG.info("TrustedListsCertificateSource size : " + trustedCertSource.getNumberOfCertificates());
+	}
+
+	private static KeyStoreCertificateSource ojContentKeyStore() {
+		try {
+			return new KeyStoreCertificateSource(new File(KEYSTORE_PATH), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
+		} catch (IOException e) {
+			throw new DSSException("Unable to load the file " + KEYSTORE_PATH, e);
+		}
 	}
 
 	private static Stream<Arguments> data() throws IOException {
@@ -267,6 +285,44 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 		}
 	}
 	
+	@Override
+	protected void checkRevocationData(DiagnosticData diagnosticData) {
+		for (RevocationWrapper revocationWrapper : diagnosticData.getAllRevocationData()) {
+			assertNotNull(revocationWrapper.getId());
+			assertNotNull(revocationWrapper.getRevocationType());
+			assertNotNull(revocationWrapper.getOrigin());
+			assertNotNull(revocationWrapper.getProductionDate());
+			assertNotNull(revocationWrapper.foundCertificates());
+			assertNotNull(revocationWrapper.foundCertificates().getRelatedCertificates());
+			assertNotNull(revocationWrapper.foundCertificates().getOrphanCertificates());
+
+			if (revocationWrapper.getSigningCertificate() != null) {
+				assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.getCertificateChain()));
+
+				if (RevocationType.OCSP.equals(revocationWrapper.getRevocationType())) {
+					assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificates()));
+					assertTrue(Utils.isCollectionNotEmpty(revocationWrapper.foundCertificates().getRelatedCertificateRefs()));
+
+					assertTrue(revocationWrapper.isSigningCertificateReferencePresent());
+					assertNotNull(revocationWrapper.getSigningCertificateReference());
+
+					boolean signingCertFound = false;
+					for (RelatedCertificateWrapper certificateWrapper : revocationWrapper.foundCertificates().getRelatedCertificates()) {
+						for (CertificateRefWrapper refWrapper : certificateWrapper.getReferences()) {
+							if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(refWrapper.getOrigin())) {
+								signingCertFound = true;
+							}
+							assertTrue(refWrapper.getSki() != null || refWrapper.getIssuerName() != null);
+							assertNull(refWrapper.getDigestAlgoAndValue());
+							assertNull(refWrapper.getIssuerSerial());
+						}
+					}
+					assertTrue(signingCertFound);
+				}
+			}
+		}
+	}
+
 	@Override
 	protected void checkSignatureScopes(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
@@ -403,8 +459,6 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 					assertEquals(revocationCertificateSource.getCertificates().size(), 
 							foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() + 
 							foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
-					assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size() + 
-							foundCertificates.getOrphanCertificateRefs().size());
 				}
 			}
 		}

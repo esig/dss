@@ -3707,7 +3707,40 @@
          <alias>certificate</alias>\r
       </tok:sign>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://token.dss.esig.europa.eu/SoapSignatureTokenConnection/sign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="592a2c82-4b55-4b51-a845-c7a143841a03" isOneWay="false" action="" name="signDigestWithMask" bindingOperationName="signDigestWithMask" type="Request-Response" outputName="signDigestWithMaskResponse" inputName="signDigestWithMask" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/></con:operation><con:operation id="ffe1c912-7fe1-4acb-b7d7-ddfb4befdb0f" isOneWay="false" action="" name="signWithMask" bindingOperationName="signWithMask" type="Request-Response" outputName="signWithMaskResponse" inputName="signWithMask" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/></con:operation><con:operation id="6339e13b-f188-4b98-94e5-d45fba0e0a83" isOneWay="false" action="" name="signDigestWithSignatureAlgo" bindingOperationName="signDigestWithSignatureAlgo" type="Request-Response" outputName="signDigestWithSignatureAlgoResponse" inputName="signDigestWithSignatureAlgo" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="7ee4d562-87b8-4c65-9c95-3247f756b3fd" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://server-signing.dss.esig.europa.eu/">\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://token.dss.esig.europa.eu/SoapSignatureTokenConnection/sign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="592a2c82-4b55-4b51-a845-c7a143841a03" isOneWay="false" action="" name="signDigestWithMask" bindingOperationName="signDigestWithMask" type="Request-Response" outputName="signDigestWithMaskResponse" inputName="signDigestWithMask" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="451f4519-5a62-4683-b256-4195655d703f" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://server-signing.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <ser:signDigestWithMask>\r
+         <!--Optional:-->\r
+        <digest>
+            <!--Optional:-->
+            <algorithm>SHA256</algorithm>
+            <!--Optional:-->
+            <value>MDEwDQYJYIZIAWUDBAIBBQAEIHT4H+Fn2ZtMtB1tDM2oInjK7p8+LyXV5aOTb/Pc7GDQ</value>
+         </digest>
+         <!--Optional:-->\r
+         <maskGenerationFunction>MGF1</maskGenerationFunction>\r
+         <!--Optional:-->\r
+         <alias>certificate</alias>\r
+      </ser:signDigestWithMask>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signing.server.ws.dss.esig.europa.eu/SoapSignatureTokenConnection/signDigestWithMask"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="ffe1c912-7fe1-4acb-b7d7-ddfb4befdb0f" isOneWay="false" action="" name="signWithMask" bindingOperationName="signWithMask" type="Request-Response" outputName="signWithMaskResponse" inputName="signWithMask" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="65882657-b2cf-4f1c-b5f0-e5f3793e286f" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://server-signing.dss.esig.europa.eu/">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <ser:signWithMask>\r
+         <!--Optional:-->\r
+         <toBeSigned>
+            <bytes>wFNeS+K3n/2TKRMFQ2v4iTFOSj+uwF7P/Lt98xrZ5Ro=</bytes>
+         </toBeSigned>
+         <!--Optional:-->\r
+         <digestAlgorithm>SHA256</digestAlgorithm>\r
+         <!--Optional:-->\r
+         <maskGenerationFunction>MGF1</maskGenerationFunction>\r
+         <!--Optional:-->\r
+         <alias>certificate</alias>\r
+      </ser:signWithMask>\r
+   </soapenv:Body>\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signing.server.ws.dss.esig.europa.eu/SoapSignatureTokenConnection/signWithMask"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="6339e13b-f188-4b98-94e5-d45fba0e0a83" isOneWay="false" action="" name="signDigestWithSignatureAlgo" bindingOperationName="signDigestWithSignatureAlgo" type="Request-Response" outputName="signDigestWithSignatureAlgoResponse" inputName="signDigestWithSignatureAlgo" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="7ee4d562-87b8-4c65-9c95-3247f756b3fd" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/server-signing</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://server-signing.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
       <ser:signDigestWithSignatureAlgo>\r

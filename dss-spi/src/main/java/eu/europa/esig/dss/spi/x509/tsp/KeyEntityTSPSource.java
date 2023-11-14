@@ -1,3 +1,23 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -85,7 +105,7 @@ public class KeyEntityTSPSource implements TSPSource {
     /**
      * The TSA policy
      */
-    private String tsaPolicy = "1.2.3.4";
+    private String tsaPolicy;
 
     /**
      * The static production date of the timestamp
@@ -188,7 +208,7 @@ public class KeyEntityTSPSource implements TSPSource {
     public KeyEntityTSPSource(KeyStore keyStore, String alias, char[] keyEntryPassword) {
         Objects.requireNonNull(keyStore,"KeyStore is not defined!");
         Objects.requireNonNull(alias,"Alias is not defined!");
-        Objects.requireNonNull(keyStore,"key Entry Password is not defined!");
+        Objects.requireNonNull(keyEntryPassword,"KeyEntry Password is not defined!");
         KeyStore.PrivateKeyEntry privateKeyEntry = getPrivateKeyEntry(keyStore, alias, keyEntryPassword);
         this.privateKey = privateKeyEntry.getPrivateKey();
         this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -272,7 +292,7 @@ public class KeyEntityTSPSource implements TSPSource {
 
     /**
      * Sets the TSA policy
-     * NOTE: if not defined, a dummy "1.2.3.4" policy OID will be used
+     * NOTE: The property is mandatory for TimeStampToken generation.
      *
      * @param tsaPolicy {@link String}
      */
@@ -349,6 +369,8 @@ public class KeyEntityTSPSource implements TSPSource {
         Objects.requireNonNull(certificateChain, "Certificate chain is not defined! Use #setCertificateChain method.");
         Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm is not defined!");
         Objects.requireNonNull(digest, "digest is not defined!");
+        Objects.requireNonNull(tsaPolicy, "TSAPolicy OID is not defined! Use #setTsaPolicy method.");
+
         if (!acceptedDigestAlgorithms.contains(digestAlgorithm)) {
             throw new DSSException(String.format("DigestAlgorithm '%s' is not supported by the KeyEntityTSPSource implementation!", digestAlgorithm));
         }

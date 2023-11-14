@@ -20,53 +20,51 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import com.lowagie.text.exceptions.InvalidPdfException;
+import com.lowagie.text.pdf.PdfReader;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.jupiter.api.Test;
-
-import com.lowagie.text.pdf.PdfReader;
-
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1444Test {
 
 	@Test
 	public void test() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
-			assertThrows(NullPointerException.class, () -> new PdfReader(is));
+			assertThrows(InvalidPdfException.class, () -> new PdfReader(is));
 		}
-
 	}
 
 	@Test
 	public void testValidation() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is, "corrupted.pdf"));
 			Exception exception = assertThrows(DSSException.class, () -> val.getSignatures());
-			assertTrue(exception.getMessage().contains("Cannot analyze signatures :"));
+			assertTrue(exception.getMessage().contains("The document with name [corrupted.pdf] is either not accessible or not PDF compatible. Reason :"));
 		}
 	}
 
 	@Test
 	public void test2() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
-			assertThrows(NullPointerException.class, () -> new PdfReader(is));
+			assertThrows(InvalidPdfException.class, () -> new PdfReader(is));
 		}
 	}
 
 	@Test
 	public void test2Validation() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is));
+			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is, "corrupted.pdf"));
 			Exception exception = assertThrows(DSSException.class, () -> val.getSignatures());
-			assertTrue(exception.getMessage().contains("Cannot analyze signatures :"));
+			assertTrue(exception.getMessage().contains("The document with name [corrupted.pdf] is either not accessible or not PDF compatible. Reason :"));
 		}
 	}
 

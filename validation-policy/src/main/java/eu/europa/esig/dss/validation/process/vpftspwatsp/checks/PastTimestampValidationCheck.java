@@ -32,6 +32,8 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.AbstractPastTokenV
 
 /**
  * Checks if timestamp's past validation is acceptable
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
 public class PastTimestampValidationCheck<T extends XmlConstraintsConclusion> extends AbstractPastTokenValidationCheck<T> {
 

@@ -2,7 +2,7 @@
 <TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" TSLTag="http://uri.etsi.org/19612/TSLTag">
 	<SchemeInformation>
 		<TSLVersionIdentifier>5</TSLVersionIdentifier>
-		<TSLSequenceNumber>38</TSLSequenceNumber>
+		<TSLSequenceNumber>40</TSLSequenceNumber>
 		<TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
 		<SchemeOperatorName>
 			<Name xml:lang="en">Office for Communications</Name>
@@ -107,9 +107,9 @@
 				</AdditionalInformation>
 			</OtherTSLPointer>
 		</PointersToOtherTSL>
-		<ListIssueDateTime>2022-10-18T08:40:42Z</ListIssueDateTime>
+		<ListIssueDateTime>2023-09-27T10:15:49Z</ListIssueDateTime>
 		<NextUpdate>
-			<dateTime>2023-04-18T08:40:42Z</dateTime>
+			<dateTime>2024-03-27T11:15:49Z</dateTime>
 		</NextUpdate>
 		<DistributionPoints>
 			<URI>https://www.llv.li/files/ak/xml-llv-ak-tsl.xml</URI>
@@ -1059,14 +1059,14 @@
 				</TSPService>
 			</TSPServices>
 		</TrustServiceProvider>
-	</TrustServiceProviderList><dsig:Signature Id="Signature-63347735-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo Id="SignedInfo-63347735-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><dsig:Reference Id="Reference-63347735-1" URI=""><dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>17jecC2yhBlg7k+DvPd0dtCdZ9f6StrNXqJQoQ2fr08=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-63347735-2" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-63347735-1"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>O3R9LnRO8MWSpXCnB7oQJ+2jtRS3T9UuqvtlgiwIZRs=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-63347735-1">oD2jsQJM/TKhWfUugBwG9AJQw0Xb8BGHlfAd7o0w9oincLu5yIstjI65TE4M/9p9
-WJxrgha6crKajSEjZZDD/FBsFFVCARwdlbR3Oc+oknclFDQq9HLUv6KNcTr3klDp
-aezhXKxdI81aDr6NQwu01QD0aJCQ0KEedB3NaWt1E/90e1ceOOzEPNdPZuhqDvB7
-JTb6uFiG+lkbnENy7o9EG7R6IdY4GDCoZT3g7vEQ2eJvlmI6I1RJhql1KIM4dgTv
-Z5z7MWBlZnmrhFP2azS2tXxOvxl1SpbszzSyjuW2aXWvTQ82LOpm3+9q0nkyec3v
-v5jP0dfFd+KeOQafVwDRoaRFyeNvxRwXEvOlAUyRg7vhIn4FCHe77KUU5IIOMHRk
-+/6WaLQtRaUjeQMMvq3ZfmSX5rSAjmTizkrB3su83OX/m7tx3qLgec4G7Jldg8qz
-YzAbzNxg2PMUi7Nhr60J2dYxKfcpngj1McUkcYx+V5EYiILSQf5nMMPkSKyOSBlY</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIFsjCCA5qgAwIBAgIJANWyu7iEuYtUMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNV
+	</TrustServiceProviderList><dsig:Signature Id="Signature-909692fb-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:SignedInfo Id="SignedInfo-909692fb-1"><dsig:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><dsig:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><dsig:Reference Id="Reference-909692fb-1" URI=""><dsig:Transforms xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"><dsig:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><dsig:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></dsig:Transforms><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>B218OVGuwjOG2QXMWFAiLYBEdNjsW8Z3e7lNyv19bpM=</dsig:DigestValue></dsig:Reference><dsig:Reference Id="Reference-909692fb-2" Type="http://uri.etsi.org/01903#SignedProperties" URI="#SignedProperties-909692fb-1"><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>eQjGfqcBfeNKVnUjNUVpevWWyzIqdTWpcJ0TOQ1pY0M=</dsig:DigestValue></dsig:Reference></dsig:SignedInfo><dsig:SignatureValue Id="SignatureValue-909692fb-1">dF7FC+1KIWtctBNjS8lTN+q8PiMqGGRvoWrrJxlJW8/nKhrYZA+QONLUIfijrVzW
+15Kd5h0YahvpGlsybHH5gvdYNFtLdlwU4bPBEZWlACPHPBsqH4G0v6nTMBdFRoWy
+MAriCteqAriMvjYHhHkHjwElrf5I8WCiJylAWbECY3DW4RXhkF1xp62h6iseWAOh
+4ggFT0VmeVhQJcwu0hitjwRq55jVD9+dmRFn9xtXvwAoirY+ZLZh/R1SG5mNCRVr
+NLY4BZHT8e7yoDkKLvGPamyAE/hkrWh79XCForYyhLctuKAVTBuVuuEw3CZ6LlXi
+LZK4kYy6BuPy3ijhZznj4+x4lofEIVhdGQLqwfMy7nRPqqwWO1kLeBqHoYZ/7lem
+XW/zxaIjdrpJGa25Q5Qnw4DsFbz0xTADbQCcDJHge51TgDjGPdnQ48oUjRn55YMC
+QNpHd1gj6IveTg+/MbF6iYyUghzpiEl+evbruDW6l5szETkvMPTND2vzsPndFPtm</dsig:SignatureValue><dsig:KeyInfo><dsig:X509Data><dsig:X509Certificate>MIIFsjCCA5qgAwIBAgIJANWyu7iEuYtUMA0GCSqGSIb3DQEBCwUAMEoxCzAJBgNV
 BAYTAkxJMR8wHQYDVQQKDBZBbXQgZsO8ciBLb21tdW5pa2F0aW9uMRowGAYDVQQD
 DBFUcnVzdGVkIExpc3QgQ0EgMjAeFw0yMTAxMDgxMzAxMDBaFw0yNTAxMDgxMzAx
 MDBaMEcxCzAJBgNVBAYTAkxJMR8wHQYDVQQKDBZBbXQgZsO8ciBLb21tdW5pa2F0
@@ -1096,5 +1096,5 @@ LecaVrURObjEP+wfNt5EhuQaVLXc2uaj8WR19x8/yfP3OUQntqz3eE8iAc5y25z3
 5Pz11ylf6y78wmBKe3qcuOAS36KLj5MJHbLaMY6CUigFrny7zNATW7zaIxBwNt4m
 CF/fHGa9DsZIeV5UkzYDt3E21ucsLnBn/0uuesalcR8LpljdU3DqH+mLbMYtgXgP
 XWAdJkmpW9uKEyGffHnaYrpKTRqRWtDCdiHD6DAlZL4IPDl7iM1XFQPj8fSN90xf
-25qMDa7cBthf7KYgZjiSQ2xN8kByJw==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-63347735-1"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns3="http://uri.etsi.org/01903/v1.4.1#" Target="#Signature-63347735-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#"><xades:SignedProperties Id="SignedProperties-63347735-1"><xades:SignedSignatureProperties><xades:SigningTime>2022-10-18T09:15:03Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>s+BZmpxgRumIpyx7BMO+EhAEGJ4OIw8JckllywlgqSU=</dsig:DigestValue></xades:CertDigest><xades:IssuerSerial><dsig:X509IssuerName>CN=Trusted List CA 2,O=Amt für Kommunikation,C=LI</dsig:X509IssuerName><dsig:X509SerialNumber>15398576477108276052</dsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-63347735-1"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature>
+25qMDa7cBthf7KYgZjiSQ2xN8kByJw==</dsig:X509Certificate></dsig:X509Data></dsig:KeyInfo><dsig:Object Id="Object-909692fb-1"><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns3="http://uri.etsi.org/01903/v1.4.1#" Target="#Signature-909692fb-1" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:sl="http://www.buergerkarte.at/namespaces/securitylayer/1.2#"><xades:SignedProperties Id="SignedProperties-909692fb-1"><xades:SignedSignatureProperties><xades:SigningTime>2023-09-27T10:25:19Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><dsig:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><dsig:DigestValue>s+BZmpxgRumIpyx7BMO+EhAEGJ4OIw8JckllywlgqSU=</dsig:DigestValue></xades:CertDigest><xades:IssuerSerial><dsig:X509IssuerName>CN=Trusted List CA 2,O=Amt für Kommunikation,C=LI</dsig:X509IssuerName><dsig:X509SerialNumber>15398576477108276052</dsig:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate><xades:SignaturePolicyIdentifier><xades:SignaturePolicyImplied/></xades:SignaturePolicyIdentifier></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#Reference-909692fb-1"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></dsig:Object></dsig:Signature>
 </TrustServiceStatusList>

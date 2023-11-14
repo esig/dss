@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.xml.common;
 
-import eu.europa.esig.dss.xml.common.DocumentBuilderFactoryBuilder;
-import eu.europa.esig.dss.xml.common.SchemaFactoryBuilder;
-import eu.europa.esig.dss.xml.common.TransformerFactoryBuilder;
-import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 

@@ -63,11 +63,11 @@ $ curl 'http://localhost:8080/services/rest/signature/external-cms/signMessageDi
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "EIbMgiZcxTIfyE/uYrGNSCQkX4WEBf5rMQ7bpKSBGaz17MrXCcY568N2WIk6SaAS02GbjuvTkZvKzFI1vZELA/le2vXtZMkyizp0rsHOj0He3EsnRKDsvjf1y+jybPpy16nikNTGI60sVAKD6kKKv3p9WLJpU0tZmA0KXYvysnVnEIZi889JFdIK3ZIzOwu+ut/y0rPNHwoXokVo+Av8wUQANUSntUvbO7vexJFChr605CH1/vkRTGu9AoInHTZz21NVJotZhV99aiuqfE7Z/VRNTbzN6GrCWKaOV5xUnP/8maq9vZ31gNKQBXhMPW5YyZa9qR+q1SbJR5iGI6oOkQ=="
+    "value" : "oO7Qyddvt7jF0LMTX9WD+qQKpzuiMlrnD6RJcnq4aPpV2Nyc68e/UN5ebHb67nU0KVCU5rhoG4zGhYaLD+QJgtKcAfdIiTblEAIMLQ6eu+TfjXtSLixWbpvifRUZ2jKeT9dxxghHM689YUJskK8gUA905e5mFiyR/+Jy1jROBbpFBnwYtHLNKQuUviB7U3ArrgaIFTqXZYDC/MDd97QuBrF2/areJN+GONE5HQINRMa8+AvncciBt6b27r2trEKDbW1urbThr1UBVWuYNT9gIGFBMyPfnGVMb+vJOI6oXZQKU5BTs/7vMmSrhTxQKc4T0FMFRyrmDOqmwo8bsJNdDQ=="
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "B9t95hFCx2FHHI94vO5KP4U1vihnx0srsa4Y+Ui7V6Q="
+    "value" : "7EGy4/lhFvZgebvB/2KReviIwQXnl2xt39ltnqtezyc="
   }
 }'
 ----

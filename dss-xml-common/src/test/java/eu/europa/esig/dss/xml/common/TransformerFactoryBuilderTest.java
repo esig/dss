@@ -25,7 +25,6 @@ import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.alert.handler.LogHandler;
 import eu.europa.esig.dss.alert.status.Status;
-import eu.europa.esig.dss.xml.common.TransformerFactoryBuilder;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 

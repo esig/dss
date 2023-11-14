@@ -138,7 +138,10 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
      */
     protected List<SignatureScope> getSignatureScopeFromReferenceValidation(ReferenceValidation reference) {
         List<SignatureScope> result = new ArrayList<>();
-        result.add(new FullSignatureScope("Full document", createDigestDocument(reference.getDigest())));
+        DSSDocument digestDocument = createDigestDocument(reference.getDigest());
+        if (digestDocument != null) {
+            result.add(new FullSignatureScope("Full document", digestDocument));
+        }
         return result;
     }
     

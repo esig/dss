@@ -27,6 +27,8 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.zip.ZipEntry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -109,6 +111,94 @@ public class ASiCUtilsTest {
 		assertEquals("mimetype", new String(DSSUtils.toByteArray(mimeTypeDocument)));
 
 		assertEquals("zip-comment", asicContent.getZipComment());
+	}
+
+	@Test
+	public void getContainerTypeTest() {
+		Exception exception = assertThrows(NullPointerException.class, () -> ASiCUtils.getContainerType((ASiCContent) null));
+		assertEquals("ASiCContent shall be provided!", exception.getMessage());
+		exception = assertThrows(NullPointerException.class, () -> ASiCUtils.getContainerType((DSSDocument) null));
+		assertEquals("Archive container shall be provided!", exception.getMessage());
+
+		ASiCContent asicContent = new ASiCContent();
+		assertNull(ASiCUtils.getContainerType(asicContent));
+		assertNull(ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setSignedDocuments(Collections.singletonList(
+				new InMemoryDocument("Hello".getBytes(), "hello.txt")));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setSignedDocuments(Collections.singletonList(
+				new InMemoryDocument("Hello".getBytes(), "world/hello.txt")));
+		assertNull(ASiCUtils.getContainerType(asicContent));
+		assertNull(ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setSignedDocuments(Arrays.asList(
+				new InMemoryDocument("Hello".getBytes(), "hello.txt"), new InMemoryDocument("World".getBytes(), "world.txt")));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setSignedDocuments(Arrays.asList(
+				new InMemoryDocument("Hello".getBytes(), "hello.txt"), new InMemoryDocument("World".getBytes(), "hello/world.txt")));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setAsicContainer(new InMemoryDocument("ASiC container".getBytes(), "container", MimeTypeEnum.ODT));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(asicContent));
+		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContent);
+		zipArchive.setMimeType(MimeTypeEnum.ODT);
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(zipArchive));
+
+		asicContent.setAsicContainer(new InMemoryDocument("ASiC container".getBytes(), "container", MimeTypeEnum.ASICE));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(asicContent));
+		zipArchive = ZipUtils.getInstance().createZipArchive(asicContent);
+		zipArchive.setMimeType(MimeTypeEnum.ASICE);
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(zipArchive));
+
+		asicContent.setAsicContainer(new InMemoryDocument("ASiC container".getBytes(), "container", MimeTypeEnum.ASICS));
+		asicContent.setSignedDocuments(Collections.emptyList());
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(asicContent));
+		zipArchive = ZipUtils.getInstance().createZipArchive(asicContent);
+		zipArchive.setMimeType(MimeTypeEnum.ASICS);
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(zipArchive));
+
+		asicContent.setSignedDocuments(Arrays.asList(
+				new InMemoryDocument("Hello".getBytes(), "hello.txt"), new InMemoryDocument("World".getBytes(), "world.txt")));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(asicContent));
+		zipArchive = ZipUtils.getInstance().createZipArchive(asicContent);
+		zipArchive.setMimeType(MimeTypeEnum.ASICS);
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(zipArchive));
+
+		asicContent.setAsicContainer(new InMemoryDocument("ASiC container".getBytes(), "container", MimeTypeEnum.ODT));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(asicContent));
+		zipArchive = ZipUtils.getInstance().createZipArchive(asicContent);
+		zipArchive.setMimeType(MimeTypeEnum.ODT);
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(zipArchive));
+
+		asicContent.setZipComment("mimetype=" + MimeTypeEnum.ODT.getMimeTypeString());
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setZipComment("mimetype=" + MimeTypeEnum.ASICS.getMimeTypeString());
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setZipComment("mimetype=" + MimeTypeEnum.ASICE.getMimeTypeString());
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setMimeTypeDocument(new InMemoryDocument(MimeTypeEnum.ODT.getMimeTypeString().getBytes(), "mimetype"));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setMimeTypeDocument(new InMemoryDocument(MimeTypeEnum.ASICS.getMimeTypeString().getBytes(), "mimetype"));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
+
+		asicContent.setMimeTypeDocument(new InMemoryDocument(MimeTypeEnum.ASICE.getMimeTypeString().getBytes(), "mimetype"));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(asicContent));
+		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getContainerType(ZipUtils.getInstance().createZipArchive(asicContent)));
 	}
 
 }

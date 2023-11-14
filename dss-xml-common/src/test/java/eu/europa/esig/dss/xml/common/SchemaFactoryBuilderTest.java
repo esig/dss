@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.xml.validation.SchemaFactory;
 
-import eu.europa.esig.dss.xml.common.SchemaFactoryBuilder;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;

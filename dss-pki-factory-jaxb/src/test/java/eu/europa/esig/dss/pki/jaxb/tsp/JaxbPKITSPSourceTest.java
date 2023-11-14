@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * <p>
+ * 
  * This file is part of the "DSS - Digital Signature Services" project.
- * <p>
+ * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * <p>
+ * 
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * <p>
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,10 +38,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
 
+    private static final String TSA_POLICY = "1.2.3.4";
+
     @Test
     public void testSuccess() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
         final byte[] toDigest = "Hello world".getBytes(StandardCharsets.UTF_8);
@@ -54,6 +57,7 @@ public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
     public void testTimestampUnsupportedDigestAlgo() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA1;
         final byte[] toDigest = "Hello world good tsa".getBytes(StandardCharsets.UTF_8);
@@ -71,6 +75,7 @@ public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
     public void testTimestampSha3DigestAlgo() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
+        tspSource.setTsaPolicy(TSA_POLICY);
 
         final DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA3_256;
         final byte[] toDigest = "Hello world good tsa".getBytes(StandardCharsets.UTF_8);

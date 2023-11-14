@@ -1159,9 +1159,15 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
 			List<XmlDigestMatcher> digestMatchers = evidenceRecord.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+			DigestAlgorithm digestAlgorithm = null;
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
 				assertNotNull(digestMatcher.getDigestMethod());
 				assertNotNull(digestMatcher.getDigestValue());
+				if (digestAlgorithm != null) {
+					assertEquals(digestAlgorithm, digestMatcher.getDigestMethod());
+				} else {
+					digestAlgorithm = digestMatcher.getDigestMethod();
+				}
 				if (allArchiveDataObjectsProvidedToValidation()) {
 					assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
 					assertTrue(digestMatcher.isDataFound());
@@ -1182,6 +1188,16 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
 			assertTrue(Utils.isCollectionNotEmpty(timestamps));
 			for (TimestampWrapper timestampWrapper : timestamps) {
+				List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
+				assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+				DigestAlgorithm digestAlgorithm = null;
+				for (XmlDigestMatcher digestMatcher : digestMatchers) {
+					if (digestAlgorithm != null) {
+						assertEquals(digestAlgorithm, digestMatcher.getDigestMethod());
+					} else {
+						digestAlgorithm = digestMatcher.getDigestMethod();
+					}
+				}
 				if (allArchiveDataObjectsProvidedToValidation()) {
 					checkTimestamp(diagnosticData, timestampWrapper);
 				}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns4="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="LT-TSL" TSLTag="http://uri.etsi.org/19612/TSLTag">
     <SchemeInformation>
         <TSLVersionIdentifier>5</TSLVersionIdentifier>
-        <TSLSequenceNumber>64</TSLSequenceNumber>
+        <TSLSequenceNumber>66</TSLSequenceNumber>
         <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
         <SchemeOperatorName>
             <Name xml:lang="en">Communications Regulatory Authority of the Republic of Lithuania</Name>
@@ -104,9 +104,9 @@
                 </AdditionalInformation>
             </OtherTSLPointer>
         </PointersToOtherTSL>
-        <ListIssueDateTime>2022-12-19T06:41:52Z</ListIssueDateTime>
+        <ListIssueDateTime>2023-06-02T10:38:04Z</ListIssueDateTime>
         <NextUpdate>
-            <dateTime>2023-06-19T05:41:52Z</dateTime>
+            <dateTime>2023-12-02T11:38:04Z</dateTime>
         </NextUpdate>
         <DistributionPoints>
             <URI>https://elektroninisparasas.lt/LT-TSL.xml</URI>
@@ -4926,6 +4926,35 @@
                         </ServiceHistoryInstance>
                     </ServiceHistory>
                 </TSPService>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">ADIC_Qualified certificates for electronic signature-7 (ECC)</Name>
+                            <Name xml:lang="lt">ADIC_Kvalifikuoti elektroninio parašo sertifikatai-7 (ECC)</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>MIID1jCCAzegAwIBAgIOM0i8MpOGfZcAAAAAAAkwCgYIKoZIzj0EAwQwdDELMAkGA1UEBhMCTFQxEjAQBgNVBGETCTE4ODc3ODMxNTE2MDQGA1UEChMtQXNtZW5zIGRva3VtZW50dSBpc3Jhc3ltbyBjZW50cmFzIHByaWUgTFIgVlJNMRkwFwYDVQQDExBBRElDIFJvb3QgQ0EgRUNDMB4XDTIzMDUyOTEzMzMzOFoXDTMzMDUyOTEzMzMzOFowbzELMAkGA1UEBhMCTFQxEjAQBgNVBGETCTE4ODc3ODMxNTE2MDQGA1UEChMtQXNtZW5zIGRva3VtZW50dSBpc3Jhc3ltbyBjZW50cmFzIHByaWUgTFIgVlJNMRQwEgYDVQQDEwtBRElDIENBIEVDQzB2MBAGByqGSM49AgEGBSuBBAAiA2IABBc30l6hpH10KYdIweC9UWWPBmawsdYVe3ltcpLexxcTFY0iIWv63soBW3qb1cagvnGE/cFfo89ep0iOvlIZrdnkAVCa0Ub3ph+01KDSEGV6P/zOeDKf+kGuB5EjnMB4i6OCAZMwggGPMA4GA1UdDwEB/wQEAwIBBjAQBgkrBgEEAYI3FQEEAwIBADAdBgNVHQ4EFgQU4+ty8vYtClEMk/E7Vf+rYpo8m6kwRAYDVR0gBD0wOzA5BgRVHSAAMDEwLwYIKwYBBQUHAgEWI2h0dHBzOi8vd3d3Lm5zYy52cm0ubHQvcG9saWNpZXMuaHRtMBkGCSsGAQQBgjcUAgQMHgoAUwB1AGIAQwBBMA8GA1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAUmrrAN6kvrTwf3Ste+yZqBIPdeUowOwYDVR0fBDQwMjAwoC6gLIYqaHR0cDovL25zYy52cm0ubHQvY2RwL0FESUNfUm9vdF9DQV9FQ0MuY3JsMHwGCCsGAQUFBwEBBHAwbjA0BggrBgEFBQcwAYYoaHR0cDovL25zYy52cm0ubHQvT0NTUC9vY3NwcmVzcG9uZGVyLm5zYzA2BggrBgEFBQcwAoYqaHR0cDovL25zYy52cm0ubHQvYWlhL0FESUNfUm9vdF9DQV9FQ0MuY3J0MAoGCCqGSM49BAMEA4GMADCBiAJCAMh/OczW1xa2cYGnUq1pAZcmNfc8/8U/StP8ceojrnoPmoLQC2b4QkK9UK1498Ton9tASWPmS5oAQ6zmpCTZC8o2AkIB2rDrkBqw+S6BAW5mZ4wdm41386Tg6iAf56UkhsfqWT5E/6S9j6YLFKwrOXY9DqzE7f6XNfde2s+wSRB9HE6Y/7I=</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=ADIC CA ECC, O=Asmens dokumentu israsymo centras prie LR VRM, OID.2.5.4.97=188778315, C=LT</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>4+ty8vYtClEMk/E7Vf+rYpo8m6k=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-06-02T10:38:18Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
             </TSPServices>
         </TrustServiceProvider>
         <TrustServiceProvider>
@@ -5073,5 +5102,78 @@
                 </TSPService>
             </TSPServices>
         </TrustServiceProvider>
+        <TrustServiceProvider>
+            <TSPInformation>
+                <TSPName>
+                    <Name xml:lang="en">UAB Mit-Soft</Name>
+                    <Name xml:lang="lt">UAB Mit-Soft</Name>
+                </TSPName>
+                <TSPTradeName>
+                    <Name xml:lang="en">UAB Mit-Soft</Name>
+                    <Name xml:lang="en">NTRLT-120792080</Name>
+                    <Name xml:lang="en">UAB "MIT-SOFT"</Name>
+                </TSPTradeName>
+                <TSPAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>Kalvariju st. 276-100</StreetAddress>
+                            <Locality>Vilnius</Locality>
+                            <PostalCode>LT-08316</PostalCode>
+                            <CountryName>LT</CountryName>
+                        </PostalAddress>
+                        <PostalAddress xml:lang="lt">
+                            <StreetAddress>Kalvarijų g. 276-100</StreetAddress>
+                            <Locality>Vilnius</Locality>
+                            <PostalCode>LT-08316</PostalCode>
+                            <CountryName>LT</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:info@mitsoft.lt</URI>
+                        <URI xml:lang="en">https://www.mitsoft.lt/lt</URI>
+                    </ElectronicAddress>
+                </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">https://www.mitsoft.lt/qtsp-repo/</URI>
+                    <URI xml:lang="en">https://qtsp.mitsoft.lt/lps</URI>
+                </TSPInformationURI>
+            </TSPInformation>
+            <TSPServices>
+                <TSPService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/PSES/Q</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Qualified long-term preservation service for qualified electronic signatures and qualified electronic seals</Name>
+                            <Name xml:lang="lt">Kvalifikuotų elektroninių parašų ir kvalifikuotų elektroninių spaudų kvalifikuotos ilgalaikės apsaugos paslaugos </Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+<X509SubjectName>CN=qtsp.mitsoft.lt, O="UAB \"MIT-SOFT\"", L=Vilnius, C=LT, SERIALNUMBER=120792080, OID.2.5.4.15=Private Organization, OID.1.3.6.1.4.1.311.60.2.1.3=LT</X509SubjectName>
+                            </DigitalId>
+                            <DigitalId>
+<X509SKI>zfOtFKBhAFCriCUTNm+lO7gHkIM=</X509SKI>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
+                        <StatusStartingTime>2023-05-12T13:28:43Z</StatusStartingTime>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                            <Extension Critical="false">
+<AdditionalServiceInformation>
+    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</URI>
+</AdditionalServiceInformation>
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                </TSPService>
+            </TSPServices>
+        </TrustServiceProvider>
     </TrustServiceProviderList>
-<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-fe931278ff9995c3f22e1ecafb946e99"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="tl_signing_tool" Type="" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>TK5MYp4y2jGS0NoNAy/uk46ZNDINRl2WuqEpWAniahQ=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-fe931278ff9995c3f22e1ecafb946e99"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>2ej4nIPkh9TcruN++kPTgbmzNqiuyLpDd2VrQysFvqc=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-fe931278ff9995c3f22e1ecafb946e99">dkyqILGme3UKm8MQG/UbnBp0k2jDlIsxBEIbf4HYBNw+5Y5DX1XE3FKgutZrEacOvIxydzHoq71Eo/XuEhaZcEiErVLt8vzEtTz7D2GlJIdeA1H1hZipw3U99dDU/fZZJwP3DBiFrY+jHez2JfR5rZnXs6tZXT308cwDP8zizzEPb6/zUBpIBhhHIrH9KRSTCVtNaImpxXPWsb9n5pODLrrIuJSXKy8wtFCCiwtBzFWndgBfen2eMrj4iRaOrUbfGaiNlO0Glfqf0xR05mCjaohUNy4f9aj+kubV8P5HEIc5xwzItENPFUYZDYY0OaFs3Eicp0YB+LkGtIFppgMQ3w==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDzTCCArWgAwIBAgIFEoYLwCswDQYJKoZIhvcNAQELBQAwcTELMAkGA1UEBhMCTFQxSTBHBgNVBAoMQENvbW11bmljYXRpb25zIFJlZ3VsYXRvcnkgQXV0aG9yaXR5IG9mIHRoZSBSZXB1YmxpYyBvZiBMaXRodWFuaWExFzAVBgNVBAMMDlBhdWxpdXMgRGlja3VzMB4XDTIwMTExODAwMDAwMFoXDTIzMTExODAwMDAwMFowcTELMAkGA1UEBhMCTFQxSTBHBgNVBAoMQENvbW11bmljYXRpb25zIFJlZ3VsYXRvcnkgQXV0aG9yaXR5IG9mIHRoZSBSZXB1YmxpYyBvZiBMaXRodWFuaWExFzAVBgNVBAMMDlBhdWxpdXMgRGlja3VzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7aOCWrjGdsVuEr+puEPVo30qRLi/P/KzVkWij5SHYX4cWbDhhUSWS+TMCNSP/jjx2cdL72D5b63vN5TOxsSJYnJ7pdngAyjQO/LWLvd610xQpvAZ0b2QEWp3f7891vIzIUuHWDCi6yUcF6Td4PlIN4tg0MwCFjkXfnNsxoRc6TZF+YpMYSdDcyWQHshk7vOcerYK+N/sIDA35SOvGcEpeXd7jj1kdz5Qz5JzSlpolQB2T22GzySCBRwxAD//MIgjWH5KJR1LtIxOOP9WIFfc3dDWrndU2oynZ5GiGgBkRAinNMNUzSfj8EKVnd5QFQc7nHsNGBa69cNWRkB5lo6RnQIDAQABo2wwajAdBgNVHQ4EFgQU1Nf+1u4c8YB0xa2xkQdg+B/ZaV8wCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCBsAwEQYDVR0gBAowCDAGBgRVHSAAMBsGA1UdJQQUMBIGCCsGAQUFBwMDBgYEAJE3AwAwDQYJKoZIhvcNAQELBQADggEBAHw4vmZnVaafUjG+IwzSGJ6sWWyIa0BKkjrSXlH1q+ZdCg1taU3VIRaz8Zab5bdB0U7bsIX1/gbSioeBvCbNB/MDz+cHO/eb5y/nT+MG4xgSkmDFvrKrzSeHeZgBYdVoR+3iIi0qgbhVFsSKz+gObNPPj7lQWnl8SgY3Io+LkL98QxY0xDGMdxYarOImUspSryIgr6TRmoZ7Bk7a6eELHaGT4smPvt4QN8dhobtq0iQHPLg7/zDwyFVt0HSAmVnu+csCilTswnUdXqeOKGNKgg2wdPy9Tn6NCTxENS4N+MtVr6ECTadFhwZuUXuTkEqbnKvRrbFgD+Nz6CTS0CJIrns=</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-fe931278ff9995c3f22e1ecafb946e99"><xades:SignedProperties Id="xades-id-fe931278ff9995c3f22e1ecafb946e99"><xades:SignedSignatureProperties><xades:SigningTime>2022-12-19T07:22:25Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>t2DxPkieIjT9BWGxZW1DFxJCoEE=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Paulius Dickus,O=Communications Regulatory Authority of the Republic of Lithuania,C=LT</ds:X509IssuerName><ds:X509SerialNumber>79558328363</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#tl_signing_tool"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-cd473c6469737dfbacad35c2fd351504"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="tl_signing_tool" Type="" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>bThIN3afOUjPXhBx16xxq26qZXjApMa5L7ExrK4RwmY=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-cd473c6469737dfbacad35c2fd351504"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>ZdKBhEeIyWeVg8L12kcXLdPWs7vB+PvqWxbv1QJn1hk=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-cd473c6469737dfbacad35c2fd351504">oTBF0Ap/n5B8+EHLeVUhIxwWcO899MxFQKBOUqOtC782XqJzDiK4QHw+KznBVQE5OQBBrtoOGFHuduXLbYh3cNIbU2iE9mAs83cAhthpQtfx2UwmlX4erHl3vePM7TFbCrMn1cEH2SE9NhAQl2SoF054282MH2iOsSjtA0zyPwiq4QTGbYovDJYbSSsxZKEtLYuGusnRDlCDlIYSlouEAAU16a5OnwQfK7w6qXWOFfMgzR+U2XSVuNAT+F9u644C4ru9GrTtl46QUZ++qZb+B3jaOr+ATA6UXKspfRZUhkgNB+9kO0SnHl+lHakG6/eML8nQs+VXNf1fhJO2R4bcAQ==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIDzTCCArWgAwIBAgIFEoYLwCswDQYJKoZIhvcNAQELBQAwcTELMAkGA1UEBhMCTFQxSTBHBgNVBAoMQENvbW11bmljYXRpb25zIFJlZ3VsYXRvcnkgQXV0aG9yaXR5IG9mIHRoZSBSZXB1YmxpYyBvZiBMaXRodWFuaWExFzAVBgNVBAMMDlBhdWxpdXMgRGlja3VzMB4XDTIwMTExODAwMDAwMFoXDTIzMTExODAwMDAwMFowcTELMAkGA1UEBhMCTFQxSTBHBgNVBAoMQENvbW11bmljYXRpb25zIFJlZ3VsYXRvcnkgQXV0aG9yaXR5IG9mIHRoZSBSZXB1YmxpYyBvZiBMaXRodWFuaWExFzAVBgNVBAMMDlBhdWxpdXMgRGlja3VzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA7aOCWrjGdsVuEr+puEPVo30qRLi/P/KzVkWij5SHYX4cWbDhhUSWS+TMCNSP/jjx2cdL72D5b63vN5TOxsSJYnJ7pdngAyjQO/LWLvd610xQpvAZ0b2QEWp3f7891vIzIUuHWDCi6yUcF6Td4PlIN4tg0MwCFjkXfnNsxoRc6TZF+YpMYSdDcyWQHshk7vOcerYK+N/sIDA35SOvGcEpeXd7jj1kdz5Qz5JzSlpolQB2T22GzySCBRwxAD//MIgjWH5KJR1LtIxOOP9WIFfc3dDWrndU2oynZ5GiGgBkRAinNMNUzSfj8EKVnd5QFQc7nHsNGBa69cNWRkB5lo6RnQIDAQABo2wwajAdBgNVHQ4EFgQU1Nf+1u4c8YB0xa2xkQdg+B/ZaV8wCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCBsAwEQYDVR0gBAowCDAGBgRVHSAAMBsGA1UdJQQUMBIGCCsGAQUFBwMDBgYEAJE3AwAwDQYJKoZIhvcNAQELBQADggEBAHw4vmZnVaafUjG+IwzSGJ6sWWyIa0BKkjrSXlH1q+ZdCg1taU3VIRaz8Zab5bdB0U7bsIX1/gbSioeBvCbNB/MDz+cHO/eb5y/nT+MG4xgSkmDFvrKrzSeHeZgBYdVoR+3iIi0qgbhVFsSKz+gObNPPj7lQWnl8SgY3Io+LkL98QxY0xDGMdxYarOImUspSryIgr6TRmoZ7Bk7a6eELHaGT4smPvt4QN8dhobtq0iQHPLg7/zDwyFVt0HSAmVnu+csCilTswnUdXqeOKGNKgg2wdPy9Tn6NCTxENS4N+MtVr6ECTadFhwZuUXuTkEqbnKvRrbFgD+Nz6CTS0CJIrns=</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-cd473c6469737dfbacad35c2fd351504"><xades:SignedProperties Id="xades-id-cd473c6469737dfbacad35c2fd351504"><xades:SignedSignatureProperties><xades:SigningTime>2023-06-02T10:47:17Z</xades:SigningTime><xades:SigningCertificate><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>t2DxPkieIjT9BWGxZW1DFxJCoEE=</ds:DigestValue></xades:CertDigest><xades:IssuerSerial><ds:X509IssuerName>CN=Paulius Dickus,O=Communications Regulatory Authority of the Republic of Lithuania,C=LT</ds:X509IssuerName><ds:X509SerialNumber>79558328363</ds:X509SerialNumber></xades:IssuerSerial></xades:Cert></xades:SigningCertificate></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#tl_signing_tool"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></TrustServiceStatusList>

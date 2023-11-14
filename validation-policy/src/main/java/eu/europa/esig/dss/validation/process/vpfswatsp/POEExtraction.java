@@ -170,12 +170,10 @@ public class POEExtraction {
 	 * @param poeTime to be provided for timestamped objects
 	 */
 	public void extractPOE(List<XmlTimestampedObject> timestampedObjects, Date poeTime) {
-		if (Utils.isCollectionNotEmpty(timestampedObjects)) {
-			if (poeTime != null) {
-				POE poe = new POE(poeTime);
-				for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
-					addPOE(xmlTimestampedObject.getToken().getId(), poe);
-				}
+		if (Utils.isCollectionNotEmpty(timestampedObjects) && poeTime != null) {
+			POE poe = new POE(poeTime);
+			for (XmlTimestampedObject xmlTimestampedObject : timestampedObjects) {
+				addPOE(xmlTimestampedObject.getToken().getId(), poe);
 			}
 		}
 	}
