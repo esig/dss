@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class AbstractASiCEWithEvidenceRecordTestValidation extends AbstractDocumentTestValidation {
+public abstract class AbstractASiCWithEvidenceRecordTestValidation extends AbstractDocumentTestValidation {
 
     @Override
     protected List<AdvancedSignature> getSignatures(DocumentValidator validator) {
@@ -84,8 +84,11 @@ public abstract class AbstractASiCEWithEvidenceRecordTestValidation extends Abst
         for (EvidenceRecord evidenceRecord : detachedEvidenceRecords) {
             List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
             for (ReferenceValidation referenceValidation : referenceValidationList) {
-                assertTrue(referenceValidation.isFound());
-                assertTrue(referenceValidation.isIntact());
+                if (allArchiveDataObjectsProvidedToValidation() ||
+                        DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType()) {
+                    assertTrue(referenceValidation.isFound());
+                    assertTrue(referenceValidation.isIntact());
+                }
             }
 
             List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
@@ -110,9 +113,11 @@ public abstract class AbstractASiCEWithEvidenceRecordTestValidation extends Abst
                             archiveTstDigestFound = true;
                         } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE.equals(referenceValidation.getType())) {
                             archiveTstSequenceDigestFound = true;
+                        } else if (allArchiveDataObjectsProvidedToValidation() ||
+                                DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType()) {
+                            assertTrue(referenceValidation.isFound());
+                            assertTrue(referenceValidation.isIntact());
                         }
-                        assertTrue(referenceValidation.isFound());
-                        assertTrue(referenceValidation.isIntact());
                     }
 
                     if (tstReferenceValidationList.size() == 1) {

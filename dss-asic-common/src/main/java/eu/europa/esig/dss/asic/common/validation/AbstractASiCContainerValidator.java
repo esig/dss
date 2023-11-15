@@ -377,14 +377,17 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 
 	@Override
 	protected List<EvidenceRecord> buildDetachedEvidenceRecords() {
-		final List<EvidenceRecord> detachedEvidenceRecords = new ArrayList<>(super.buildDetachedEvidenceRecords());
+		final List<EvidenceRecord> embeddedEvidenceRecords = new ArrayList<>();
 		for (EvidenceRecordValidator evidenceRecordValidator : getEvidenceRecordValidators()) {
 			EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordValidator);
 			if (evidenceRecord != null) {
-				detachedEvidenceRecords.add(evidenceRecord);
+				embeddedEvidenceRecords.add(evidenceRecord);
 			}
 		}
-		attachExternalEvidenceRecords(detachedEvidenceRecords);
+		final List<EvidenceRecord> detachedEvidenceRecords = new ArrayList<>(super.buildDetachedEvidenceRecords());
+		attachExternalEvidenceRecords(embeddedEvidenceRecords, detachedEvidenceRecords);
+		// return all
+		detachedEvidenceRecords.addAll(embeddedEvidenceRecords);
 		return detachedEvidenceRecords;
 	}
 
@@ -392,15 +395,20 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * Appends detached evidence record provided to the validator to
 	 * the evidence records covered by the corresponding evidence records
 	 *
-	 * @param evidenceRecordList a list of {@link EvidenceRecord}s
+	 * @param embeddedEvidenceRecords a list of {@link EvidenceRecord}s extracted from the ASiC container
+	 * @param detachedEvidenceRecords a list of {@link EvidenceRecord}s provided externally to the validation
 	 */
-	protected void attachExternalEvidenceRecords(List<EvidenceRecord> evidenceRecordList) {
-		if (Utils.isCollectionNotEmpty(evidenceRecordList)) {
-			for (EvidenceRecord coveredEvidenceRecord : evidenceRecordList) {
-				for (EvidenceRecord coveringEvidenceRecord : evidenceRecordList) {
+	protected void attachExternalEvidenceRecords(List<EvidenceRecord> embeddedEvidenceRecords, List<EvidenceRecord> detachedEvidenceRecords) {
+		if (Utils.isCollectionNotEmpty(embeddedEvidenceRecords)) {
+			for (EvidenceRecord coveredEvidenceRecord : embeddedEvidenceRecords) {
+				for (EvidenceRecord coveringEvidenceRecord : embeddedEvidenceRecords) {
 					if (coversEvidenceRecord(coveredEvidenceRecord, coveringEvidenceRecord)) {
 						coveredEvidenceRecord.addExternalEvidenceRecord(coveringEvidenceRecord);
 					}
+				}
+				// assert all detached evidence records cover embedded data
+				for (EvidenceRecord coveringEvidenceRecord : detachedEvidenceRecords) {
+					coveredEvidenceRecord.addExternalEvidenceRecord(coveringEvidenceRecord);
 				}
 			}
 		}
@@ -427,20 +435,26 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	private EvidenceRecordValidator getEvidenceRecordValidator(DSSDocument evidenceRecordDocument) {
 		try {
 			ManifestFile manifestFile = null;
+			List<DSSDocument> detachedContents = getAllDocuments();
 
 			DSSDocument evidenceRecordManifest = ASiCManifestParser.getLinkedManifest(
-					getAllManifestDocuments(), evidenceRecordDocument.getName());
+					getEvidenceRecordManifestDocuments(), evidenceRecordDocument.getName());
 			if (evidenceRecordManifest != null) {
 				manifestFile = getValidatedManifestFile(evidenceRecordManifest);
 			}
 			if (manifestFile == null) {
-				LOG.warn("A linked manifest is not found for an evidence record with name [{}]!",
-						evidenceRecordDocument.getName());
-				return null;
+				List<DSSDocument> rootLevelSignedDocuments = ASiCUtils.getRootLevelSignedDocuments(asicContent);
+				if (Utils.collectionSize(rootLevelSignedDocuments) == 1) {
+					detachedContents = rootLevelSignedDocuments;
+				} else {
+					LOG.warn("A linked manifest is not found for an evidence record with name [{}]! Evidence record is skipped.",
+							evidenceRecordDocument.getName());
+					return null;
+				}
 			}
 
 			final EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
-			evidenceRecordValidator.setDetachedContents(getAllDocuments());
+			evidenceRecordValidator.setDetachedContents(detachedContents);
 			evidenceRecordValidator.setManifestFile(manifestFile);
 			evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
 			return evidenceRecordValidator;
@@ -465,8 +479,7 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	private boolean coversEvidenceRecord(EvidenceRecord coveredEvidenceRecord, EvidenceRecord coveringEvidenceRecord) {
 		ManifestFile evidenceRecordManifest = coveringEvidenceRecord.getManifestFile();
 		if (evidenceRecordManifest == null) {
-			// not embedded ER
-			return true;
+			return false;
 		}
 		return coversFile(evidenceRecordManifest, coveredEvidenceRecord.getFilename());
 	}
