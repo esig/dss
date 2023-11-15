@@ -1,15 +1,17 @@
-<?xml version="1.0"?>
-<jaxb:bindings 
+<jaxb:bindings
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
-	version="2.1" jaxb:extensionBindingPrefixes="xjc">
+	version="3.0">
     
     <jaxb:globalBindings localScoping="toplevel">
 		<xjc:serializable uid="1" />
     </jaxb:globalBindings>
 
 	<jaxb:bindings schemaLocation="policy.xsd" node="/xs:schema">
+		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.dss.policy.jaxb" />
+		</jaxb:schemaBindings>
 
 		<jaxb:bindings node="//xs:complexType[@name='ListAlgo']//xs:element[@name='Algo']">
 			<jaxb:property name="Algos" />

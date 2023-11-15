@@ -22,9 +22,9 @@ package eu.europa.esig.dss.ws.signature.soap.client;
 
 import java.io.Serializable;
 
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebResult;
+import jakarta.jws.WebService;
 
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;

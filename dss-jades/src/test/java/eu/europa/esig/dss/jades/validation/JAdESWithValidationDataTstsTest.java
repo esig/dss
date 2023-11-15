@@ -56,7 +56,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import org.jose4j.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

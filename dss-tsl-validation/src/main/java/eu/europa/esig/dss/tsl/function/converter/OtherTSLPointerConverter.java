@@ -33,7 +33,7 @@ import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointerType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceDigitalIdentityListType;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

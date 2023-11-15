@@ -56,9 +56,9 @@ import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.transform.TransformerException;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.stream.XMLStreamException;
+import jakarta.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;

@@ -30,8 +30,8 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;

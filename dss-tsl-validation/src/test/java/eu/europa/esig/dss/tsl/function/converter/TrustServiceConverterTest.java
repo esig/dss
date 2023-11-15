@@ -36,7 +36,7 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;

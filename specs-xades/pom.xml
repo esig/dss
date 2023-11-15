@@ -62,17 +62,17 @@
 					</schemaIncludes>
 					<catalog>src/main/resources/xsd/catalog.cat</catalog>
 					<bindingIncludes>
-						<include>bindings.xml</include>
+						<include>bindings.xjb</include>
 					</bindingIncludes>
 
 					<extension>true</extension>
 					<useDependenciesAsEpisodes>true</useDependenciesAsEpisodes>
 
 					<strict>false</strict>
-					<specVersion>2.1</specVersion>
+					<specVersion>3.0</specVersion>
 					<episode>true</episode>
 					<locale>en</locale>
-										
+
 					<disableXmlSecurity>false</disableXmlSecurity>
 					<accessExternalSchema>file</accessExternalSchema>
 					<accessExternalDTD>file</accessExternalDTD>
@@ -81,7 +81,7 @@
 					<dependency>
 						<groupId>org.glassfish.jaxb</groupId>
 						<artifactId>jaxb-runtime</artifactId>
-						<version>2.3.9</version>
+						<version>4.0.1</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -133,7 +133,7 @@
                 <jdk>[9,13)</jdk>
             </activation>
             <properties>
-				<!-- specs-xmldsig\target\generated-sources\xjc\eu\europa\esig\xmldsig\jaxb\package-info.java:8: error: unknown tag: javax.xml.bind.annotation.XmlSchema -->
+				<!-- specs-xmldsig\target\generated-sources\xjc\eu\europa\esig\xmldsig\jaxb\package-info.java:8: error: unknown tag: jakarta.xml.bind.annotation.XmlSchema -->
 				<maven.javadoc.skip>true</maven.javadoc.skip>
             </properties>
 		</profile>
