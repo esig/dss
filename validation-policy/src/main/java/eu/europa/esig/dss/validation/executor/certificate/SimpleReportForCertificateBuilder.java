@@ -44,6 +44,7 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -177,7 +178,7 @@ public class SimpleReportForCertificateBuilder {
 			}
 			item.setTrustAnchors(trustAnchors);
 		} else {
-			item.setTrustAnchors(null);
+			item.setTrustAnchors(Collections.emptyList());
 		}
 
 		XmlConclusion conclusion = detailedReport.getCertificateXCVConclusion(certificate.getId());

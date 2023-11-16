@@ -57,8 +57,8 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 import jakarta.xml.bind.JAXBException;
-import jakarta.xml.stream.XMLStreamException;
-import jakarta.xml.transform.TransformerException;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
