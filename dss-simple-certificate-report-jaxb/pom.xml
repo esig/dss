@@ -50,7 +50,7 @@
 								<schemaInclude>SimpleCertificateReport.xsd</schemaInclude>
 							</schemaIncludes>
 							<bindingIncludes>
-								<include>bindings.xjb</include>
+								<include>bindings.xml</include>
 							</bindingIncludes>
 							<specVersion>3.0</specVersion>
 							<encoding>UTF-8</encoding>

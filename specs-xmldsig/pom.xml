@@ -54,7 +54,7 @@
 					</schemaIncludes>
 					<catalog>src/main/resources/xsd/catalog.cat</catalog>
 					<bindingIncludes>
-						<include>bindings.xjb</include>
+						<include>bindings.xml</include>
 					</bindingIncludes>
 					<strict>false</strict>
 					<specVersion>3.0</specVersion>
