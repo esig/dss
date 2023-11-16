@@ -40,7 +40,7 @@
 
         <dependency>
             <groupId>org.verapdf</groupId>
-            <artifactId>validation-model</artifactId>
+            <artifactId>validation-model-jakarta</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>javax.xml.bind</groupId>
@@ -50,7 +50,15 @@
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-databind</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.jaxb</groupId>
+                    <artifactId>jaxb-core</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-core</artifactId>
         </dependency>
 
         <dependency>
