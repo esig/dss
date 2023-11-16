@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
-import eu.europa.esig.dss.asic.common.validation.AbstractASiCEWithEvidenceRecordTestValidation;
+import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithEvidenceRecordTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCEWithEvidenceRecordTest extends AbstractASiCEWithEvidenceRecordTestValidation {
+public class ASiCEWithCAdESEvidenceRecordValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
