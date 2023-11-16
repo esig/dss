@@ -15,7 +15,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ByteArrayComparator;
-import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
@@ -67,8 +66,10 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
             	}
             	else
             	{
-            		DSSMessageDigest documentChainDigest = computePrecedingTimeStampSequenceHash(digest.getAlgorithm(), archiveTimeStampChain,detachedContents);
-            		documentDigest = documentChainDigest.getValue();
+            		List<DSSDocument> docDigests = new ArrayList<DSSDocument>();
+            		docDigests.add(document);
+            		List<DSSMessageDigest> documentChainDigests = computePrecedingTimeStampSequenceHash(digest.getAlgorithm(), archiveTimeStampChain, docDigests);
+            		documentDigest = documentChainDigests.get(0).getValue();
             	}
             	
                 if (Arrays.equals(digest.getValue(), documentDigest)) {
@@ -86,9 +87,9 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
         byte[] digestValue = DSSUtils.digest(digestAlgorithm, asn1ArchiveTimeStampObject.getTimestampToken().getEncoded());
         return new DSSMessageDigest(digestAlgorithm, digestValue);
     }
-
+    
     @Override
-    protected DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm,
+    protected List<DSSMessageDigest> computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm,
             ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents) {
         ASN1ArchiveTimeStampChainObject asn1ArchiveTimeStampChainObject = (ASN1ArchiveTimeStampChainObject) archiveTimeStampChain;
 
@@ -112,16 +113,14 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
 		}
 
 		// get hash from document(s)
-		List<byte[]> digestValues = new ArrayList<>();
-		for (DSSDocument document : detachedContents) {
-			digestValues.add(Utils.fromBase64(document.getDigest(digestAlgorithm)));
-		}
-		DigestValueGroup digestValueGroup = new DigestValueGroup();
-		digestValueGroup.setDigestValues(digestValues);
-		DSSMessageDigest documentHash = computeDigestValueGroupHash(digestAlgorithm, digestValueGroup);
-
 		// sort both hashes in ascending order, concat hashes and create a new digest
-        return computeChainAndDocumentHash(digestAlgorithm, documentHash, new DSSMessageDigest(digestAlgorithm, digestValue), false);
+		List<DSSMessageDigest> digestValues = new ArrayList<>();
+		for (DSSDocument document : detachedContents) {
+			DSSMessageDigest chainAndDocumentHash = computeChainAndDocumentHash(digestAlgorithm,  new DSSMessageDigest(digestAlgorithm,Utils.fromBase64(document.getDigest(digestAlgorithm))), new DSSMessageDigest(digestAlgorithm, digestValue), false);
+			digestValues.add( chainAndDocumentHash );
+		}
+
+        return digestValues;
     }
 
     private ArchiveTimeStampSequence getArchiveTimeStampSequence() {

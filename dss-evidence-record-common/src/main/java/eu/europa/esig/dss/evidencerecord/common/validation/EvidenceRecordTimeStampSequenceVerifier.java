@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -93,8 +94,8 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
             List<DSSDocument> detachedContents = lastTimeStampHash.isEmpty() ?
                     evidenceRecord.getDetachedContents() : Collections.emptyList();
-            DSSMessageDigest lastTimeStampSequenceHash = firstArchiveTimeStampChain ?
-                    DSSMessageDigest.createEmptyDigest() : computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain, detachedContents);
+            List<DSSMessageDigest> lastTimeStampSequenceHashes = firstArchiveTimeStampChain ?
+            		Collections.emptyList() : computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain, detachedContents);
 
             List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChain.getArchiveTimeStamps();
             Iterator<? extends ArchiveTimeStampObject> archiveTimeStampsIt = archiveTimeStamps.iterator();
@@ -105,7 +106,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 DSSMessageDigest lastMessageDigest = DSSMessageDigest.createEmptyDigest();
 
                 List<? extends DigestValueGroup> hashTree = getHashTree(archiveTimeStamp.getHashTree(), detachedContents,
-                        archiveTimeStampChain.getDigestAlgorithm(), lastTimeStampHash, lastTimeStampSequenceHash);
+                        archiveTimeStampChain.getDigestAlgorithm(), lastTimeStampHash, lastTimeStampSequenceHashes);
                 for (DigestValueGroup digestValueGroup : hashTree) {
                     // Validation of first HashTree/Sequence
                     if (lastMessageDigest.isEmpty()) {
@@ -120,9 +121,10 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                             timestampValidations = validateArchiveTimeStampDigest(archiveDataObjectValidations, lastTimeStampHash);
                         }
                         // if first time-stamp in a next ArchiveTimeStampChain
-                        else if (!lastTimeStampSequenceHash.isEmpty()) {
+                        else if (!lastTimeStampSequenceHashes.isEmpty()) {
                             // validate first time-stamp in ArchiveTimeStampChain
-                            timestampValidations = validateArchiveTimeStampSequenceDigest(archiveDataObjectValidations, lastTimeStampSequenceHash);
+                        	// TODO: PLEASE CHANGE!!! get(0) is only a hack
+                            timestampValidations = validateArchiveTimeStampSequenceDigest(archiveDataObjectValidations, lastTimeStampSequenceHashes.get(0));
                         }
                         if (manifestFile != null) {
                             archiveDataObjectValidations = validateManifestEntries(archiveDataObjectValidations, manifestFile, firstArchiveTimeStampChain);
@@ -163,7 +165,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      */
     protected List<? extends DigestValueGroup> getHashTree(
             List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents,
-            DigestAlgorithm digestAlgorithm, DSSMessageDigest lastTimeStampHash, DSSMessageDigest lastTimeStampSequenceHash) {
+            DigestAlgorithm digestAlgorithm, DSSMessageDigest lastTimeStampHash, List<DSSMessageDigest> lastTimeStampSequenceHash) {
         List<? extends DigestValueGroup> hashTree;
         if (Utils.isCollectionNotEmpty(originalHashTree)) {
             hashTree = new ArrayList<>(originalHashTree);
@@ -181,7 +183,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
 
             } else if (lastTimeStampSequenceHash != null && !lastTimeStampSequenceHash.isEmpty()) {
                 // HashTree renewal
-                digestValues.add(lastTimeStampSequenceHash.getValue());
+                digestValues.add(lastTimeStampSequenceHash.get(0).getValue());
 
             } else if (Utils.collectionSize(detachedContents) == 1) {
                 // Initial time-stamp
@@ -201,14 +203,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         return hashTree;
     }
 
-    private List<ReferenceValidation> validateArchiveTimeStampSequenceDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampSequenceHash) {
-        return validateAdditionalDigest(referenceValidations, lastTimeStampSequenceHash, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE);
+    private List<ReferenceValidation> validateArchiveTimeStampSequenceDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampSequenceHashes) {
+        return validateAdditionalDigest(referenceValidations, lastTimeStampSequenceHashes, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE);
     }
 
     private List<ReferenceValidation> validateArchiveTimeStampDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampHash) {
         return validateAdditionalDigest(referenceValidations, lastTimeStampHash, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP);
     }
-
+    
     private List<ReferenceValidation> validateAdditionalDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest messageDigest, DigestMatcherType type) {
         List<ReferenceValidation> invalidReferences = referenceValidations.stream().filter(r -> !r.isIntact()).collect(Collectors.toList());
         for (ReferenceValidation reference : invalidReferences) {
@@ -436,10 +438,11 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      * @param digestAlgorithm {@link DigestAlgorithm} to be used for hash computation
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} to compute hash for
      * @param detachedContents a list of {@link DSSDocument}s provided within a container
-     * @return {@link DSSMessageDigest}
+     * @return a list of {@link DSSMessageDigest}
      */
-    protected abstract DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents);
+    protected abstract List<DSSMessageDigest> computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents);
 
+    
     /**
      * Computes a hash value for a group of hashes
      *
