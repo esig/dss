@@ -37,7 +37,11 @@ public final class DateParser extends XmlAdapter<String, Date> {
 	/** The default timezone (UTC) */
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
+	/**
+	 * Default constructor
+	 */
 	public DateParser() {
+		// empty
 	}
 
 	/**
