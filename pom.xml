@@ -54,13 +54,13 @@
 		<verapdf.version>1.24.1</verapdf.version>
 		<httpclient5.version>5.2.1</httpclient5.version>
 
-		<jakarta.bind-api.version>4.0.0</jakarta.bind-api.version> <!-- Synchronized with santuario -->
+		<jakarta.bind-api.version>3.0.1</jakarta.bind-api.version> <!-- Version 4 requires JDK 11+ -->
 		<jakarta.activation-api.version>2.1.0</jakarta.activation-api.version> <!-- Synchronized with santuario -->
-		<jaxb-runtime.version>4.0.1</jaxb-runtime.version>
+		<jaxb-runtime.version>3.0.2</jaxb-runtime.version>
 
 		<!-- REST/SOAP API -->
 		<jakarta.rs-api.version>3.1.0</jakarta.rs-api.version>
-		<jakarta.ws-api.version>4.0.0</jakarta.ws-api.version>
+		<jakarta.ws-api.version>3.0.1</jakarta.ws-api.version>
 
 		<junit.version>5.10.0</junit.version>
 
@@ -418,7 +418,7 @@
 				<plugin>
 					<groupId>org.jvnet.jaxb</groupId>
 					<artifactId>jaxb-maven-plugin</artifactId>
-					<version>4.0.0</version>
+					<version>3.0.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
