@@ -71,6 +71,11 @@ public enum TokenExtractionStrategy {
     EXTRACT_CERTIFICATES_AND_REVOCATION_DATA(true, false, true, false),
 
     /**
+     * Extract certificates, timestamps and evidence records
+     */
+    EXTRACT_CERTIFICATES_AND_TIMESTAMPS_AND_REVOCATION_DATA(true, true, true, false),
+
+    /**
      * Extract certificates, revocation data and evidence records
      */
     EXTRACT_CERTIFICATES_AND_REVOCATION_DATA_AND_EVIDENCE_RECORDS(true, false, true, true),
