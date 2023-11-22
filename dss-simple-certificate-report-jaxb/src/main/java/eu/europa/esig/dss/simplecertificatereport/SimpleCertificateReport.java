@@ -579,8 +579,10 @@ public class SimpleCertificateReport {
 		XmlChainItem cert = getTrustAnchorCertificate();
 		if (cert != null) {
 			List<XmlTrustAnchor> trustAnchors = cert.getTrustAnchors();
-			for (XmlTrustAnchor xmlTrustAnchor : trustAnchors) {
-				result.add(xmlTrustAnchor.getTrustServiceProviderRegistrationId());
+			if (trustAnchors != null) {
+				for (XmlTrustAnchor xmlTrustAnchor : trustAnchors) {
+					result.add(xmlTrustAnchor.getTrustServiceProviderRegistrationId());
+				}
 			}
 		}
 		return result;
@@ -589,7 +591,7 @@ public class SimpleCertificateReport {
 	private XmlChainItem getTrustAnchorCertificate() {
 		List<XmlChainItem> chain = simpleReport.getChain();
 		for (XmlChainItem xmlChainItem : chain) {
-			if (xmlChainItem.getTrustAnchors() != null) {
+			if (xmlChainItem.getTrustAnchors() != null && !xmlChainItem.getTrustAnchors().isEmpty()) {
 				return xmlChainItem;
 			}
 		}
