@@ -220,10 +220,11 @@ The documentation and javadoc will be copied automatically from the built DSS Co
 * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
 * Javadoc : `http://localhost:8080/apidocs/index.html`.
 
-In order to build a bundle for JDK 19, the following profile can be used from the `dss-demo-bundle` module:
+In order to build a bundle for JDK 21, the following profile can be used from the `dss-demo-bundle` module:
 
+.Maven command to create a JDK 21 bundle
 ----
-mvn clean install -P java19
+mvn clean install -P java21
 ----
 
 This will create a bundle with Tomcat 9.
