@@ -65,7 +65,7 @@ WARNING: The demonstrations use a fake timestamp service (Mock) so that is not r
 === License
 For the DSS core: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)].
 
-For the DSS demo: Dual license https://joinup.ec.europa.eu/licence/european-union-public-licence-version-11-or-later-eupl[MOCCA EUPL] and https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)]. For more information please see https://github.com/esig/dss-demonstrations/blob/master/LICENSE[DSS demonstration LICENSE].
+For the DSS demo: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU Lesser General Public License version 2.1 (LGPL)]. For more information please see https://github.com/esig/dss-demonstrations/blob/master/LICENSE[DSS demonstration LICENSE].
 
 === Abbreviations and Acronyms
 
