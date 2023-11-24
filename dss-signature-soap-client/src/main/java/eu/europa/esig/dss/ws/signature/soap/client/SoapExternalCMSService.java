@@ -27,9 +27,9 @@ import eu.europa.esig.dss.ws.signature.dto.SignMessageDigestExternalCmsDTO;
 
 import java.io.Serializable;
 
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
+import jakarta.jws.WebParam;
+import jakarta.jws.WebResult;
+import jakarta.jws.WebService;
 
 /**
  * This SOAP interface provides a possibility of CMS signature creation suitable for PAdES signing

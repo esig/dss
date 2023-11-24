@@ -27,7 +27,7 @@ import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.DatatypeConverter;
+import jakarta.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;

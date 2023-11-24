@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0"?>
-<jaxb:bindings xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" version="2.1"
-	jaxb:extensionBindingPrefixes="xjc">
+<jaxb:bindings xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" version="3.0">
 
 	<jaxb:globalBindings localScoping="toplevel">
 		<xjc:serializable uid="1" />
-		<jaxb:javaType name="java.util.Date" xmlType="xs:dateTime" parseMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.parse" printMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.print" />
+		<xjc:javaType name="java.util.Date" xmlType="xs:dateTime" adapter="eu.europa.esig.dss.jaxb.parsers.DateParser" />
 	</jaxb:globalBindings>
 
 	<jaxb:bindings schemaLocation="SimpleCertificateReport.xsd" node="/xs:schema">
 		<jaxb:schemaBindings>
+			<jaxb:package name="eu.europa.esig.dss.simplecertificatereport.jaxb"/>
 			<jaxb:nameXmlTransform>
 				<jaxb:typeName prefix="Xml" />
 				<jaxb:anonymousTypeName prefix="Xml" />

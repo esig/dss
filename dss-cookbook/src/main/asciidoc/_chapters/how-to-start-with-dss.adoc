@@ -19,12 +19,13 @@ This section explains the usage and build requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
-* Java 11 and higher (tested up to Java 21) for the build is required. For usage Java 8 is a minimum requirement;
-* Maven 3.6 and higher;
+* Java 8 or higher (tested up to Java 21) is required for usage;
+* Java 11 or higher is required for the build. Java 15 is the minimal requirement for a build with unit tests;
+* Maven 3.6 or higher;
 * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
 * Operating system: no specific requirements (tested on Windows and Linux).
 
-NOTE: We strongly recommend using the latest available version of JDK, in order to have the most recent security fixes and cryptographical algorithm updates.
+NOTE: We strongly recommend using the latest available version of JDK, in order to have the most recent security fixes and cryptographical algorithm updates. We also recommend to use JDK 11+.
 
 WARNING: Before processing the integration steps, please ensure you have successfully installed Maven and JVM with a required version.
 
@@ -164,11 +165,13 @@ This section explains the build and use requirements for the https://github.com/
 
 The minimal requirements to build/run DSS Demonstrations:
 
-* Java 8 and higher (tested up to Java 21) is required;
-* Maven 3.6 and higher (if build required);
-* Tomcat 8.5+ for Java 8 and Tomcat 9+ for Java 9 and higher (for Web-application);
+* Java 17 or higher (tested up to Java 21) is required;
+* Maven 3.6 or higher (if build required);
+* Tomcat 10 or higher (for Web-application);
 * Memory and Disk: see minimal requirements for the used JVM. In general the highest available is the best;
 * Operating system: no specific requirements (tested on Windows and Linux).
+
+NOTE: Since DSS `6.0`, the minimal requirement to use `dss-demo-webapp` has been increased to JDK 17, because of Spring-Boot 3 migration.
 
 ===== Ready to use solutions
 
@@ -205,28 +208,36 @@ NOTE: Please ensure that you build modules that you really need. Ignore build fa
 
 ====== DSS Web Application build
 
-To build the DSS Web Application the following modules are required:
+To build the DSS Web Application the following modules are provided:
 
 * `dss-demo-webapp`;
 * `dss-demo-bundle`.
 
-After a successful build, in the directory `/dss-demo-bundle/target/` you will be able to find two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the different container type, the content of both containers is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be available at the address `http://localhost:8080/`.
+`dss-demo-webapp` represents a Spring-Boot application, allowing to build the application either in a `war` package (default option, to be deployed in a Tomcat Server), or in an executable `jar` package.
+
+To build a `jar` package, the following command shall be used:
+
+.Maven command to build a jar package
+----
+mvn clean install -P jar
+----
+
+If you continue with a default `war` packaging option, you may benefit from `dss-demo-bundle` module, encapsulating the created package within a Tomcat 10 bundle. After a successful build, in the directory `/dss-demo-bundle/target/` you will be able to find two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the different container type, the content of both containers is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be available at the address `http://localhost:8080/`.
 
 If during TL/LOTL loading you experience problems with some particular Trusted Lists, please refer the <<KeyStore>> chapter for a resolution.
 
-The documentation and javadoc will be copied automatically from the built DSS Core and made available on the following addresses respectively:
+The documentation and javadoc will be copied automatically (limited to `war` packaging) from the built DSS Core and made available on the following addresses respectively:
 
 * HTML documentation : `http://localhost:8080/doc/dss-documentation.html`;
 * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
 * Javadoc : `http://localhost:8080/apidocs/index.html`.
 
-In order to build a bundle for JDK 19, the following profile can be used from the `dss-demo-bundle` module:
+In order to build a bundle for JDK 21, the following profile can be used from the `dss-demo-bundle` module:
 
+.Maven command to create a JDK 21 bundle
 ----
-mvn clean install -P java19
+mvn clean install -P java21
 ----
-
-This will create a bundle with Tomcat 9.
 
 ====== Integration tests
 
@@ -426,7 +437,6 @@ The modules contain common interfaces, used in other DSS modules, as well as uni
 This chapter provides an overview on modules available within https://github.com/esig/dss-demonstrations[demonstrations project].
 
 [horizontal]
-sscd-mocca-adapter:: Adapter for the MOCCA connection.
 dss-standalone-app:: Standalone application which allows signing a document with different formats and tokens (JavaFX).
 dss-standalone-app-package:: Packaging module for dss-standalone-app.
 dss-demo-webapp:: Demonstration web application which presents basic DSS functionalities.
@@ -434,4 +444,6 @@ dss-demo-bundle:: Packaging module for dss-demo-webapp.
 dss-rest-doc-generation:: Provides a tool for automated generation of REST web service samples.
 dss-esig-validation-tests:: Provides a tool for processing of https://eidas.ec.europa.eu/efda/validation-tests/[eSignature validation test cases].
 
-NOTE: The module `dss-mock-tsa` has been removed from DSS `5.13` and replaced with <<KeyEntityTSPSource>>.
+NOTE: The module `dss-mock-tsa` has been removed since DSS `5.13` and replaced with <<KeyEntityTSPSource>>.
+
+NOTE: The module `sscd-mocca-adapter` has been removed since DSS `6.0`.

@@ -41,7 +41,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 import javax.xml.transform.Templates;
 import javax.xml.validation.Schema;
 import java.util.Arrays;
@@ -187,7 +187,7 @@ public class SignedDocumentValidatorTest {
 		// import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 		// import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
 		// import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
-		// import javax.xml.bind.JAXBContext;
+		// import jakarta.xml.bind.JAXBContext;
 		// import javax.xml.transform.Templates;
 		// import javax.xml.validation.Schema;
 

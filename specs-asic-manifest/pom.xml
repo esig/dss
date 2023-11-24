@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.14-SNAPSHOT</version>
+		<version>6.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>specs-asic-manifest</artifactId>
@@ -45,7 +45,6 @@
 				<artifactId>jaxb-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>generate-classes</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
@@ -66,10 +65,8 @@
 					<useDependenciesAsEpisodes>true</useDependenciesAsEpisodes>
 
 					<strict>false</strict>
-					<specVersion>2.1</specVersion>
+					<specVersion>3.0</specVersion>
 					<episode>true</episode>
-					<locale>en</locale>
-										
 					<disableXmlSecurity>false</disableXmlSecurity>
 					<accessExternalSchema>file</accessExternalSchema>
 					<accessExternalDTD>file</accessExternalDTD>
@@ -78,7 +75,7 @@
 					<dependency>
 						<groupId>org.glassfish.jaxb</groupId>
 						<artifactId>jaxb-runtime</artifactId>
-						<version>2.3.9</version>
+						<version>3.0.2</version>
 					</dependency>
 				</dependencies>
 			</plugin>

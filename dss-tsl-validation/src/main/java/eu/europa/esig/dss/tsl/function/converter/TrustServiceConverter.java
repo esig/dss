@@ -45,7 +45,7 @@ import eu.europa.esig.trustedlist.jaxb.tsl.ServiceSupplyPointsType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.Collections;

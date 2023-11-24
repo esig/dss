@@ -1,32 +1,25 @@
-<?xml version="1.0"?>
-<jaxb:bindings version="1.0"
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
-	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
+<jaxb:bindings version="3.0"
+	xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-	<jaxb:globalBindings>
-		<jaxb:serializable uid="1" />
-	</jaxb:globalBindings>
-
-	<jaxb:bindings schemaLocation="XAdESv141.xsd" node="/xs:schema">
+	<jaxb:bindings schemaLocation="XAdESv141.xsd" node="//xs:schema">
 		<jaxb:schemaBindings>
 			<jaxb:package name="eu.europa.esig.xades.jaxb.xades141" />
 		</jaxb:schemaBindings>
 		<jaxb:bindings
-			schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"	node="/xs:schema">
+			schemaLocation="http://uri.etsi.org/01903/v1.3.2/XAdES.xsd"	node="//xs:schema">
 			<jaxb:schemaBindings>
 				<jaxb:package name="eu.europa.esig.xades.jaxb.xades132" />
 			</jaxb:schemaBindings>
 		</jaxb:bindings>
 	
-		<jaxb:bindings schemaLocation="XAdESv122.xsd" node="/xs:schema">
+		<jaxb:bindings schemaLocation="XAdESv122.xsd" node="//xs:schema">
 			<jaxb:schemaBindings>
 				<jaxb:package name="eu.europa.esig.xades.jaxb.xades122" />
 			</jaxb:schemaBindings>
 		</jaxb:bindings>
 		
-		<jaxb:bindings schemaLocation="XAdESv111.xsd" node="/xs:schema">
+		<jaxb:bindings schemaLocation="XAdESv111.xsd" node="//xs:schema">
 			<jaxb:schemaBindings>
 				<jaxb:package name="eu.europa.esig.xades.jaxb.xades111" />
 			</jaxb:schemaBindings>

@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.validationreport.jaxb.AttributeBaseType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

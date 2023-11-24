@@ -337,6 +337,8 @@ A JWS signature can be represented in different forms which are supported by the
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlJadesBTest.java[tags=serialization]
 ----
 
+NOTE: While `COMPACT_SERIALIZATION` signature type does not support augmentation, it is possible to change a format of existing signature to allow its extension. For that, provide a target JWS signature type within signature parameters on signature extension, for instance use `setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION)` to transform the signature to a `JSON_SERIALIZATION` type and augment it to the target level.
+
 ==== SigD header parameter
 
 JAdES signatures allow two types of JWS Payload (signed data) inclusion: `ENVELOPING` and `DETACHED`.

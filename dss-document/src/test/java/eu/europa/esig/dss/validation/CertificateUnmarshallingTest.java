@@ -30,7 +30,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import javax.xml.bind.JAXBException;
+import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,7 +44,6 @@ import org.xml.sax.SAXException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
@@ -172,7 +172,7 @@ public class CertificateUnmarshallingTest {
 
 	private static ObjectMapper getObjectMapper() {
 		ObjectMapper om = new ObjectMapper();
-		JaxbAnnotationIntrospector jai = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
+		JakartaXmlBindAnnotationIntrospector jai = new JakartaXmlBindAnnotationIntrospector(TypeFactory.defaultInstance());
 		om.setAnnotationIntrospector(jai);
 		om.enable(SerializationFeature.INDENT_OUTPUT);
 		return om;

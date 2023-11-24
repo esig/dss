@@ -1,20 +1,15 @@
-﻿<?xml version="1.0"?>
-<jaxb:bindings version="1.0"
-	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+﻿<jaxb:bindings version="3.0"
+	xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd">
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc">
 
 	<jaxb:globalBindings>
-		<jaxb:serializable uid="1" />
-
-		<jaxb:javaType name="java.util.Date" xmlType="xs:dateTime"
-					   parseMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.parse"
-					   printMethod="eu.europa.esig.dss.jaxb.parsers.DateParser.print" />
+		<xjc:serializable uid="-1"/>
+		<xjc:javaType name="java.util.Date" xmlType="xs:dateTime"
+					  adapter="eu.europa.esig.dss.jaxb.parsers.DateParser"/>
 	</jaxb:globalBindings>
 	
-	<jaxb:bindings
-		schemaLocation="1910202xmlSchema.xsd" node="/xs:schema">
+	<jaxb:bindings schemaLocation="1910202xmlSchema.xsd" node="//xs:schema">
 		<jaxb:schemaBindings>
 			<jaxb:package name="eu.europa.esig.validationreport.jaxb" />
 		</jaxb:schemaBindings>

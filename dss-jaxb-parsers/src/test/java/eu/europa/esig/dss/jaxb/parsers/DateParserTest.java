@@ -32,28 +32,30 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DateParserTest {
 
+	private final DateParser dateParser = new DateParser();
+
 	@Test
-	public void testValid() {
+	public void testValid() throws Exception {
 		String validDateString = "2015-07-05T22:00:00Z";
-		Date date = DateParser.parse(validDateString);
+		Date date = dateParser.unmarshal(validDateString);
 		assertNotNull(date);
-		String print = DateParser.print(date);
+		String print = dateParser.marshal(date);
 		assertEquals(validDateString, print);
 
-		String printNewDate = DateParser.print(new Date());
+		String printNewDate = dateParser.marshal(new Date());
 		assertNotNull(printNewDate);
 	}
 
 	@Test
 	public void testInvalid() {
 		String invalidDateString = "aaa";
-		assertThrows(IllegalArgumentException.class, () -> DateParser.parse(invalidDateString));
+		assertThrows(IllegalArgumentException.class, () -> dateParser.unmarshal(invalidDateString));
 	}
 
 	@Test
-	public void testNull() {
-		assertNull(DateParser.parse(null));
-		assertNull(DateParser.print(null));
+	public void testNull() throws Exception {
+		assertNull(dateParser.marshal(null));
+		assertNull(dateParser.unmarshal(null));
 	}
 
 }

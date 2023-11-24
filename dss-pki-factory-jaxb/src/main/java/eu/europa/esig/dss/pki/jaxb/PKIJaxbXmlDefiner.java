@@ -23,8 +23,8 @@ package eu.europa.esig.dss.pki.jaxb;
 import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;

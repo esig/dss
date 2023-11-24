@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.jaxb.parsers;
 
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -27,7 +29,7 @@ import java.util.TimeZone;
 /**
  * Parses a date
  */
-public final class DateParser {
+public final class DateParser extends XmlAdapter<String, Date> {
 
 	/** Default used date format */
 	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -35,40 +37,46 @@ public final class DateParser {
 	/** The default timezone (UTC) */
 	private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
-	private DateParser() {
+	/**
+	 * Default constructor
+	 */
+	public DateParser() {
+		// empty
 	}
 
 	/**
 	 * Parses the date
 	 *
-	 * @param v {@link String} date in the format "yyyy-MM-dd'T'HH:mm:ss'Z'"
+	 * @param s {@link String} date in the format "yyyy-MM-dd'T'HH:mm:ss'Z'"
 	 * @return {@link Date}, null if not able to parse
 	 */
-	public static Date parse(String v) {
-		if (v == null) {
+	@Override
+	public Date unmarshal(String s) throws Exception {
+		if (s == null) {
 			return null;
 		}
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 			sdf.setTimeZone(UTC);
 			sdf.setLenient(false);
-			return sdf.parse(v);
+			return sdf.parse(s);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(String.format("String '%s' doesn't follow the pattern '%s'", v, DATE_FORMAT));
+			throw new IllegalArgumentException(String.format("String '%s' doesn't follow the pattern '%s'", s, DATE_FORMAT));
 		}
 	}
 
 	/**
 	 * Prints the date according to the format "yyyy-MM-dd'T'HH:mm:ss'Z'"
 	 *
-	 * @param v {@link Date}
+	 * @param date {@link Date}
 	 * @return {@link String}
 	 */
-	public static String print(Date v) {
-		if (v != null) {
+	@Override
+	public String marshal(Date date) throws Exception {
+		if (date != null) {
 			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 			sdf.setTimeZone(UTC);
-			return sdf.format(v);
+			return sdf.format(date);
 		}
 		return null;
 	}
