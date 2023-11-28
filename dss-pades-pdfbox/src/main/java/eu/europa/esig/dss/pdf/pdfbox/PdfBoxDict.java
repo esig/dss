@@ -94,11 +94,11 @@ class PdfBoxDict implements PdfDict {
 
 	@Override
 	public PdfArray getAsArray(String name) {
-		COSArray array = (COSArray) wrapped.getDictionaryObject(name);
-		if (array == null) {
-			return null;
+		COSBase val = wrapped.getDictionaryObject(name);
+		if (val instanceof COSArray) {
+			return new PdfBoxArray((COSArray) val, document);
 		}
-		return new PdfBoxArray(array, document);
+		return null;
 	}
 
 	@Override
