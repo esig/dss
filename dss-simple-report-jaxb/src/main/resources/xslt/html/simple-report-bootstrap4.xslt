@@ -103,7 +103,7 @@
 				</span>
 				<i>
 					<xsl:attribute name="class">id-copy fa fa-clipboard btn btn-outline-light cursor-pointer text-<xsl:value-of select="$copyIdBtnColor"/> border-0 p-2 ml-1 mr-1</xsl:attribute>
-					<xsl:attribute name="data-id"><xsl:value-of select="$idToken"/></xsl:attribute>
+					<xsl:attribute name="data-id"><xsl:value-of select="@Id"/></xsl:attribute>
 					<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 					<xsl:attribute name="data-placement">right</xsl:attribute>
 					<xsl:attribute name="data-success-text">Id copied successfully!</xsl:attribute>
