@@ -614,7 +614,6 @@
 					</xsl:variable>
 					<xsl:variable name="erPosition">
 						<xsl:choose>
-							<xsl:when test="$nodeName = 'EvidenceRecord' and $sigCounter"><xsl:value-of select="$sigCounter" /></xsl:when>
 							<xsl:when test="$nodeName = 'EvidenceRecord'"><xsl:value-of select="$counter" /></xsl:when>
 						</xsl:choose>
 					</xsl:variable>
