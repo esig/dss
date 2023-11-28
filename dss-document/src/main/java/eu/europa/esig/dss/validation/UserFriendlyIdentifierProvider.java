@@ -410,7 +410,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
      */
     protected String getIdAsStringForCertRef(CertificateRef certificateRef) {
         StringBuilder stringBuilder = new StringBuilder(certificatePrefix);
-        if (certificateRef.getResponderId() != null) {
+        if (certificateRef.getResponderId() != null && certificateRef.getResponderId().getX500Principal() != null) {
             stringBuilder.append(STRING_DELIMITER);
             X500PrincipalHelper x500PrincipalHelper = new X500PrincipalHelper(
                     certificateRef.getResponderId().getX500Principal());

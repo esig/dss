@@ -23,6 +23,7 @@ package eu.europa.esig.dss.model.x509;
 import eu.europa.esig.dss.enumerations.X520Attributes;
 
 import javax.security.auth.x500.X500Principal;
+import java.util.Objects;
 
 /**
  * This class contain utility methods to extract String representation of a {@code X500Principal} distinguishing name
@@ -41,6 +42,7 @@ public class X500PrincipalHelper {
 	 * @param principal {@link X500Principal}
 	 */
 	public X500PrincipalHelper(X500Principal principal) {
+		Objects.requireNonNull(principal, "X500Principal cannot be null!");
 		this.principal = principal;
 	}
 
