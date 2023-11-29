@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
@@ -110,6 +111,10 @@ public final class PAdESUtils {
 	 * @return revision binaries
 	 */
 	public static DSSDocument getRevisionContent(DSSDocument dssDocument, ByteRange byteRange) {
+		Objects.requireNonNull(dssDocument, "DSSDocument cannot be null!");
+		Objects.requireNonNull(byteRange, "ByteRange cannot be null!");
+		assertPdfDocument(dssDocument);
+
 		int beginning = byteRange.getFirstPartStart();
 		int endSigValueContent = byteRange.getSecondPartStart();
 		int endValue = byteRange.getSecondPartEnd();
@@ -126,7 +131,10 @@ public final class PAdESUtils {
 	 * @param revisions a collection of {@link PdfByteRangeDocument} revisions
 	 * @return {@link DSSDocument} previous revision content if found, empty document otherwise
 	 */
-	public static DSSDocument getPreviousRevision(ByteRange byteRange,  Collection<PdfByteRangeDocument> revisions) {
+	public static DSSDocument getPreviousRevision(ByteRange byteRange, Collection<PdfByteRangeDocument> revisions) {
+		Objects.requireNonNull(byteRange, "ByteRange cannot be null!");
+		Objects.requireNonNull(revisions, "Revisions cannot be null!");
+
 		PdfByteRangeDocument bestCandidate = null;
 		int firstPartLength = byteRange.getFirstPartStart() + byteRange.getFirstPartEnd();
 		for (PdfByteRangeDocument byteRangeDocument : revisions) {
@@ -149,6 +157,10 @@ public final class PAdESUtils {
 	 * @return signatureValue binaries
 	 */
 	public static byte[] getSignatureValue(DSSDocument dssDocument, ByteRange byteRange) {
+		Objects.requireNonNull(dssDocument, "DSSDocument cannot be null!");
+		Objects.requireNonNull(byteRange, "ByteRange cannot be null!");
+		assertPdfDocument(dssDocument);
+
 		int startSigValueContent = byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() + 1;
 		int endSigValueContent = byteRange.getSecondPartStart() - 1;
 
@@ -169,8 +181,10 @@ public final class PAdESUtils {
 	 */
 	public static DSSDocument replaceSignature(final DSSDocument toBeSignedDocument, final byte[] cmsSignedData,
 											   DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
-		Objects.requireNonNull(toBeSignedDocument, "toBeSignedDocument cannot be null!");
+		Objects.requireNonNull(toBeSignedDocument, "DSSDocument cannot be null!");
 		Objects.requireNonNull(cmsSignedData, "cmsSignedData cannot be null!");
+		assertPdfDocument(toBeSignedDocument);
+
 		if (resourcesHandlerBuilder == null) {
 			resourcesHandlerBuilder = DEFAULT_RESOURCES_HANDLER_BUILDER;
 		}
@@ -249,6 +263,8 @@ public final class PAdESUtils {
 	 * @return a list of {@link PdfByteRangeDocument}s representing extracted revisions
 	 */
 	public static List<PdfByteRangeDocument> extractRevisions(DSSDocument document) {
+		assertPdfDocument(document);
+
 		final List<PdfByteRangeDocument> revisions = new ArrayList<>();
 
 		int position = 0;
@@ -343,6 +359,25 @@ public final class PAdESUtils {
 			return Utils.startsWith(is, PDF_PREAMBLE);
 		} catch (IOException e) {
 			throw new DSSException("Cannot read a sequence of bytes from the InputStream.", e);
+		}
+	}
+
+	/**
+	 * This method verifies whether the provided document is a PDF.
+	 * If the document is not a PDF, it throws an exception
+	 *
+	 * @param document {@link DSSDocument}
+	 * @throws IllegalArgumentException if a document of a wrong class is provided
+	 * @throws IllegalInputException if a document of a different format is provided
+	 */
+	public static void assertPdfDocument(DSSDocument document) {
+		Objects.requireNonNull(document, "DSSDocument cannot be null!");
+		if (document instanceof DigestDocument) {
+			throw new IllegalArgumentException("DigestDocument cannot be used! PDF document is expected!");
+		}
+		if (!PAdESUtils.isPDFDocument(document)) {
+			throw new IllegalInputException(String.format("The document with name '%s' is not a PDF. " +
+					"PDF document is expected!", document.getName()));
 		}
 	}
 

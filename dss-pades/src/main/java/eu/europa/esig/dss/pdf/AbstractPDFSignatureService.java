@@ -184,6 +184,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public DSSMessageDigest messageDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "DSSDocument shall be provided!");
+		Objects.requireNonNull(parameters, "PAdESCommonParameters cannot be null!");
+
 		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
 		if (pdfSignatureCache.getMessageDigest() == null) {
 			final DSSMessageDigest messageDigest = computeDigest(toSignDocument, parameters);
@@ -204,6 +207,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] cmsSignedData, PAdESCommonParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "DSSDocument shall be provided!");
+		Objects.requireNonNull(cmsSignedData, "CMSSignedData cannot be null!");
+		Objects.requireNonNull(parameters, "PAdESCommonParameters cannot be null!");
+
 		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
 		DSSDocument signedDocument = null;
 		if (pdfSignatureCache.getToBeSignedDocument() != null) {
@@ -265,6 +272,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public List<PdfRevision> getRevisions(final DSSDocument document, final char[] pwd) {
+		Objects.requireNonNull(document, "DSSDocument shall be provided!");
+
 		final List<PdfRevision> revisions = new ArrayList<>();
 		final List<PdfByteRangeDocument> revisionDocuments = PAdESUtils.extractRevisions(document);
 

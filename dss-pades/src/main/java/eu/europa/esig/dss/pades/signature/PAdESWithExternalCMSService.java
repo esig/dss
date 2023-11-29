@@ -31,6 +31,7 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.CMSForPAdESBaselineRequirementsChecker;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
@@ -147,7 +148,7 @@ public class PAdESWithExternalCMSService implements Serializable {
     public DSSMessageDigest getMessageDigest(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
         Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-        assertDocumentValid(toSignDocument);
+        PAdESUtils.assertPdfDocument(toSignDocument);
 
         final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
         return pdfSignatureService.messageDigest(toSignDocument, parameters);
@@ -172,8 +173,8 @@ public class PAdESWithExternalCMSService implements Serializable {
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
         Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel shall be defined within parameters!");
         Objects.requireNonNull(cmsDocument, "CMSDocument cannot be null!");
-        assertDocumentValid(toSignDocument);
-        assertDocumentValid(cmsDocument);
+        PAdESUtils.assertPdfDocument(toSignDocument);
+        assertNotDigestDocument(cmsDocument);
 
         final CMSSignedData cmsSignedData = toCMSSignedData(cmsDocument);
         byte[] derEncodedCMS = DSSASN1Utils.getDEREncoded(cmsSignedData);
@@ -237,9 +238,9 @@ public class PAdESWithExternalCMSService implements Serializable {
                 .setSignaturePackaging(SignaturePackaging.ENVELOPED).setMimeType(MimeTypeEnum.PDF).build();
     }
 
-    private void assertDocumentValid(DSSDocument document) {
+    private void assertNotDigestDocument(DSSDocument document) {
         if (document instanceof DigestDocument) {
-            throw new IllegalArgumentException("DigestDocument cannot be used for PAdES!");
+            throw new IllegalArgumentException("DigestDocument is not allowed for current operation!");
         }
     }
 

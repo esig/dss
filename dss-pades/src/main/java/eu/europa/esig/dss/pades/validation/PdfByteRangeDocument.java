@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.CommonDocument;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * Internal representation of a PDF document. Used to reduce memory overloading during the execution.
@@ -46,6 +47,9 @@ public class PdfByteRangeDocument extends CommonDocument {
      * @param byteRange {@link ByteRange} of the revision to be read
      */
     public PdfByteRangeDocument(final DSSDocument pdfDocument, final ByteRange byteRange) {
+        Objects.requireNonNull(pdfDocument, "PdfDocument cannot be null!");
+        Objects.requireNonNull(byteRange, "ByteRange cannot be null!");
+
         this.pdfDocument = pdfDocument;
         this.byteRange = byteRange;
     }
