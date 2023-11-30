@@ -190,25 +190,11 @@ public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements O
 		return (OCSPToken) super.getRevocationToken(certificateToken, issuerCertificateToken, forceRefresh);
 	}
 
-
 	@Override
-	protected String getRevocationSourceUrl(CertificateToken certificateToken, RevocationToken<OCSP> revocationToken) {
-
-		String sourceURL = revocationToken.getSourceURL();
-		if (sourceURL == null) {
-			List<String> ocspUrls = CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
-			if (ocspUrls.size() == 0) {
-				LOG.warn("No OCSP distribution points have been found for this certificate Token with ID {} ", certificateToken.getDSSIdAsString());
-
-			} else if (ocspUrls.size() == 1) {
-				sourceURL = ocspUrls.get(0);
-			} else {
-				sourceURL = ocspUrls.get(0);
-				LOG.debug("There are multiple OCSP distribution points for certificate token with ID {} , the first url will be used as Jdbc revocation source key", certificateToken.getDSSIdAsString());
-			}
-		}
-		return sourceURL;
+	protected List<String> getRevocationAccessUrls(CertificateToken certificateToken) {
+		return CertificateExtensionsUtils.getOCSPAccessUrls(certificateToken);
 	}
+
 	@Override
 	protected String getRevocationTokenKey(CertificateToken certificateToken, String urlString) {
 		return DSSRevocationUtils.getOcspRevocationKey(certificateToken, urlString);

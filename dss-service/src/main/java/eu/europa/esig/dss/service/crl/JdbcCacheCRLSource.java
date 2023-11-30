@@ -200,22 +200,8 @@ public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRL
     }
 
     @Override
-    protected String getRevocationSourceUrl(CertificateToken certificateToken, RevocationToken<CRL> revocationToken) {
-
-        String sourceUrl = revocationToken.getSourceURL();
-        if (sourceUrl == null) {
-            List<String> crlUrls = CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
-            if (crlUrls.size() == 0) {
-                LOG.warn("No CRL distribution points have been found for this certificate Token with ID {} ", certificateToken.getDSSIdAsString());
-
-            } else if (crlUrls.size() == 1) {
-                sourceUrl = crlUrls.get(0);
-            } else {
-                sourceUrl = crlUrls.get(0);
-                LOG.debug("There are multiple CRL distribution points for certificate token with ID {} , the first url will be used as Jdbc revocation source key", certificateToken.getDSSIdAsString());
-            }
-        }
-        return sourceUrl;
+    protected List<String> getRevocationAccessUrls(CertificateToken certificateToken) {
+        return CertificateExtensionsUtils.getCRLAccessUrls(certificateToken);
     }
 
     @Override
