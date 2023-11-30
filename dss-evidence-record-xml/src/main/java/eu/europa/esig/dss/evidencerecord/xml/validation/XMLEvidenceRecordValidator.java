@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.ers.xmlers.jaxb.EvidenceRecordType;
+import eu.europa.esig.xmlers.jaxb.EvidenceRecordType;
 import eu.europa.esig.xmlers.XMLEvidenceRecordFacade;
 import eu.europa.esig.xmlers.definition.XMLERSNamespace;
 import eu.europa.esig.xmlers.definition.XMLERSPath;
