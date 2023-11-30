@@ -21,12 +21,12 @@
 package eu.europa.esig.xmlers;
 
 import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
-import eu.europa.esig.ers.xmlers.jaxb.EvidenceRecordType;
-import org.xml.sax.SAXException;
-
+import eu.europa.esig.xmlers.jaxb.EvidenceRecordType;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
+import org.xml.sax.SAXException;
+
 import javax.xml.validation.Schema;
 
 /**
