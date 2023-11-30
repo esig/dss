@@ -339,7 +339,31 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
      * @param revocationToken {@link  RevocationToken}
      * @return {@link String}
      */
-    protected abstract String getRevocationSourceUrl(CertificateToken certificateToken, RevocationToken<R> revocationToken);
+    protected String getRevocationSourceUrl(CertificateToken certificateToken, RevocationToken<R> revocationToken) {
+        String sourceURL = revocationToken.getSourceURL();
+        if (sourceURL == null) {
+            List<String> urls = getRevocationAccessUrls(certificateToken);
+            if (urls.size() == 0) {
+                LOG.warn("No revocation distribution points have been found for this certificate Token with ID {} ", certificateToken.getDSSIdAsString());
+
+            } else if (urls.size() == 1) {
+                sourceURL = urls.get(0);
+            } else {
+                sourceURL = urls.get(0);
+                LOG.debug("There are multiple revocation distribution points for certificate token with ID {}, " +
+                        "the first url will be used as Jdbc revocation source key", certificateToken.getDSSIdAsString());
+            }
+        }
+        return sourceURL;
+    }
+
+    /**
+     * Returns a revocation access URLs of the given revocation type for the provided {@code CertificateToken}
+     *
+     * @param certificateToken {@link CertificateToken} to get revocation URLs for
+     * @return a list of {@link String} URLs
+     */
+    protected abstract List<String> getRevocationAccessUrls(CertificateToken certificateToken);
 
     /**
      * Gets a unique revocation token identifier used to store the revocation token
