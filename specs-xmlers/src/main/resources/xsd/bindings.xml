@@ -12,7 +12,7 @@
     <jaxb:bindings
             schemaLocation="rfc6283_ers.xsd" node="/xs:schema">
         <jaxb:schemaBindings>
-            <jaxb:package name="eu.europa.esig.ers.xmlers.jaxb" />
+            <jaxb:package name="eu.europa.esig.xmlers.jaxb" />
         </jaxb:schemaBindings>
     </jaxb:bindings>
 

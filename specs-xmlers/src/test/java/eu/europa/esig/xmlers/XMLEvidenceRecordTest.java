@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.xmlers;
 
-import eu.europa.esig.ers.xmlers.jaxb.EvidenceRecordType;
+import eu.europa.esig.xmlers.jaxb.EvidenceRecordType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
