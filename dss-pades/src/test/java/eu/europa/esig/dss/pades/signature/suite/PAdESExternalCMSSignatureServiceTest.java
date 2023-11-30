@@ -75,7 +75,7 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
 
         exception = assertThrows(IllegalArgumentException.class, () ->
                 service.getMessageDigest(digestDocument, parameters));
-        assertEquals("DigestDocument cannot be used for PAdES!", exception.getMessage());
+        assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());
 
         DSSMessageDigest messageDigest = service.getMessageDigest(documentToSign, parameters);
         assertNotNull(messageDigest);
@@ -155,11 +155,11 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
 
         exception = assertThrows(IllegalArgumentException.class, () ->
                 service.signDocument(digestDocument, parameters, digestDocument));
-        assertEquals("DigestDocument cannot be used for PAdES!", exception.getMessage());
+        assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());
 
         exception = assertThrows(IllegalArgumentException.class, () ->
                 service.signDocument(documentToSign, parameters, digestDocument));
-        assertEquals("DigestDocument cannot be used for PAdES!", exception.getMessage());
+        assertEquals("DigestDocument is not allowed for current operation!", exception.getMessage());
 
         DSSDocument signedDocument = service.signDocument(documentToSign, parameters, cmsSignature);
         assertNotNull(signedDocument);

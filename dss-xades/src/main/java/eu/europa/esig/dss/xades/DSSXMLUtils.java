@@ -358,7 +358,12 @@ public final class DSSXMLUtils {
 				if (idAttribute != null) {
 					indentedXmlNode = DomUtils.getElementById(indentedSignature, idAttribute);
 				} else {
-					indentedXmlNode = DomUtils.getNode(indentedSignature, pathAllFromCurrentPosition);
+					NodeList indentedXmlNodes = DomUtils.getNodeList(indentedSignature, pathAllFromCurrentPosition);
+					if (indentedXmlNodes.getLength() == 0) {
+						throw new IllegalStateException(String.format("No elements found matching the '%s' XPath expression!", pathAllFromCurrentPosition));
+					}
+					// return the last item
+					indentedXmlNode = indentedXmlNodes.item(indentedXmlNodes.getLength() - 1);
 				}
 				if (indentedXmlNode != null) {
 					return indentedXmlNode;

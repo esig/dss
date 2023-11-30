@@ -46,7 +46,7 @@ public class PAdESExtensionNonPDFToLTALevelTest extends AbstractPAdESTestExtensi
         DSSDocument documentToExtend = new InMemoryDocument(
                 getClass().getResourceAsStream("/signature-image.png"), "toExtend");
         Exception exception = assertThrows(IllegalInputException.class, () -> extendSignature(documentToExtend));
-        assertEquals("Unable to extend the document with name 'toExtend'. PDF document is expected!",
+        assertEquals("The document with name 'toExtend' is not a PDF. PDF document is expected!",
                 exception.getMessage());
     }
 

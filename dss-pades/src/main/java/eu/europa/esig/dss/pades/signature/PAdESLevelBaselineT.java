@@ -25,7 +25,6 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
@@ -81,7 +80,8 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 
 	@Override
 	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) {
-		assertExtensionPossible(document);
+		Objects.requireNonNull(document, "DSSDocument cannot be null!");
+		Objects.requireNonNull(params, "SignatureParameters cannot be null!");
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 		PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, params);
 		return extendSignatures(document, pdfDocumentValidator, params);
@@ -162,18 +162,6 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
 		pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
 		return pdfDocumentValidator;
-	}
-
-	/**
-	 * Checks if the document can be extended
-	 *
-	 * @param document {@link DSSDocument}
-	 */
-	protected void assertExtensionPossible(DSSDocument document) {
-		if (!PAdESUtils.isPDFDocument(document)) {
-			throw new IllegalInputException(String.format("Unable to extend the document with name '%s'. " +
-					"PDF document is expected!", document.getName()));
-		}
 	}
 
 	private boolean requiresDocumentTimestamp(PAdESSignature signature, PAdESSignatureParameters signatureParameters) {

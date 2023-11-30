@@ -30,13 +30,16 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -177,8 +180,31 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         
         signatureParameters.setSignerName(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
-        
-        signatureParameters.setImageParameters(new SignatureImageParameters());
+
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        imageParameters.setImage(null);
+
+        exception = assertThrows(IllegalArgumentException.class, () -> imageParameters.setImage(new DigestDocument()));
+        assertEquals("DigestDocument cannot be used as an image!", exception.getMessage());
+
+        imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png")));
+
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+
+        exception = assertThrows(NullPointerException.class, () -> new DSSFileFont((DSSDocument) null));
+        assertEquals("Font document cannot be null!", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> new DSSFileFont(new DigestDocument()));
+        assertEquals("DigestDocument cannot be used as a font document!", exception.getMessage());
+
+        textParameters.setFont(null);
+
+        DSSFileFont dssFileFont = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf"));
+        textParameters.setFont(dssFileFont);
+
+        imageParameters.setTextParameters(textParameters);
+
+        signatureParameters.setImageParameters(imageParameters);
         signAndValidate(documentToSign, signatureParameters);
 
         signatureParameters.setImageParameters(null);

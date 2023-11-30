@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -61,11 +62,15 @@ public class PAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
     public void test() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> service.getDataToSign(documentToSign, signatureParameters));
-        assertEquals("DigestDocument cannot be used for PAdES!", exception.getMessage());
+        assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class,
+                () -> service.signDocument(documentToSign, signatureParameters, new SignatureValue()));
+        assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());
 
         exception = assertThrows(IllegalArgumentException.class,
                 () -> service.getContentTimestamp(documentToSign, signatureParameters));
-        assertEquals("DigestDocument cannot be used for PAdES!", exception.getMessage());
+        assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());
     }
 
     @Override

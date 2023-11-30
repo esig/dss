@@ -74,8 +74,7 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 
 	@Override
 	public PdfArray getAsArray(String name) {
-		com.lowagie.text.pdf.PdfArray asArray = wrapped.getAsArray(new PdfName(
-				name));
+		com.lowagie.text.pdf.PdfArray asArray = wrapped.getAsArray(new PdfName(name));
 		if (asArray == null) {
 			return null;
 		} else {

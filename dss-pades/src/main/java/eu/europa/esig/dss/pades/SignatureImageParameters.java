@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.pdf.visible.DPIUtils;
 
 import java.awt.Color;
@@ -110,6 +111,9 @@ public class SignatureImageParameters implements Serializable {
 	 * @param image {@link DSSDocument}
 	 */
 	public void setImage(DSSDocument image) {
+		if (image instanceof DigestDocument) {
+			throw new IllegalArgumentException("DigestDocument cannot be used as an image!");
+		}
 		this.image = image;
 	}
 

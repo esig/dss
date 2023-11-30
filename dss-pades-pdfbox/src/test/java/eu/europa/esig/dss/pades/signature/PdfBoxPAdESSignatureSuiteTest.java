@@ -48,6 +48,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBEncryptedDocumentTest
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBExternalSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBHugeTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBLoopTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBNonPdfDocumentTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBNotEnoughSpaceForSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBOnlySigningCertTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBSignWithTempFileHandlerTest;
@@ -133,7 +134,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESExternalCMSSignatureTLevelDocTstTest.class, PAdESExternalCMSSignatureLTLevelDocTstTest.class,
 		PAdESExternalCMSSignatureLTALevelDocTstTest.class, PAdESExternalCMSSignatureServiceTest.class, CMSForPAdESGenerationServiceTest.class,
 		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class, PAdESLevelLTWithVRIDictTest.class,
-		PAdESDoubleSignatureLTWithVRIAndLTTest.class, PAdESDoubleSignatureLTAndLTWithVRITest.class })
+		PAdESDoubleSignatureLTWithVRIAndLTTest.class, PAdESDoubleSignatureLTAndLTWithVRITest.class, PAdESLevelBNonPdfDocumentTest.class })
 public class PdfBoxPAdESSignatureSuiteTest {
 
 }
