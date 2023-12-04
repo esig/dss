@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    public void validTest() {
         Date revocationTime = new Date();
 
         Calendar calendar = Calendar.getInstance();
@@ -65,12 +65,56 @@ public class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends Abst
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    public void invalidTest() {
         Date revocationTime = new Date();
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(revocationTime);
         calendar.add(Calendar.MONTH, 1);
+
+        XmlTimestamp xmlTimestamp = new XmlTimestamp();
+        xmlTimestamp.setProductionTime(calendar.getTime());
+
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
+        TimestampGenerationTimeNotAfterCertificateExpirationCheck tgtnartc = new TimestampGenerationTimeNotAfterCertificateExpirationCheck<>(
+                i18nProvider, result, new TimestampWrapper(xmlTimestamp), revocationTime, constraint);
+        tgtnartc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+    }
+
+    @Test
+    public void sameTimeTest() {
+        Date datetime = new Date();
+
+        XmlTimestamp xmlTimestamp = new XmlTimestamp();
+        xmlTimestamp.setProductionTime(datetime);
+
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
+        TimestampGenerationTimeNotAfterCertificateExpirationCheck tgtnartc = new TimestampGenerationTimeNotAfterCertificateExpirationCheck<>(
+                i18nProvider, result, new TimestampWrapper(xmlTimestamp), datetime, constraint);
+        tgtnartc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+    }
+
+    @Test
+    public void contentTstMillisecondAfterTest() {
+        Date revocationTime = new Date();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(revocationTime);
+        calendar.add(Calendar.MILLISECOND, 1);
 
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setProductionTime(calendar.getTime());
