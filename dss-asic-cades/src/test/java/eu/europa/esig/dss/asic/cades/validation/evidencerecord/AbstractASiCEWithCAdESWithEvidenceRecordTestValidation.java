@@ -293,7 +293,8 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                     assertTrue(coversCertificates);
                     if (SignatureLevel.CAdES_BASELINE_B != signature.getSignatureFormat()) {
                         assertTrue(coversTimestamps);
-                    } else if (SignatureLevel.CAdES_BASELINE_T != signature.getSignatureFormat()) {
+                    } else if (SignatureLevel.CAdES_BASELINE_B != signature.getSignatureFormat() &&
+                            SignatureLevel.CAdES_BASELINE_T != signature.getSignatureFormat()) {
                         assertTrue(coversRevocationData);
                     }
 

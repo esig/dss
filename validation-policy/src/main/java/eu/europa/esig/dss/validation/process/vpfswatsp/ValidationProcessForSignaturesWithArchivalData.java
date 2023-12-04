@@ -409,6 +409,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 					return new TimestampPOE(timestamp);
 				}
 			}
+			// Should not happen, as current revision of the standard does not handle ERs within LTV process.
+			for (EvidenceRecordWrapper evidenceRecordWrapper : diagnosticData.getEvidenceRecords()) {
+				if (timestampId.equals(evidenceRecordWrapper.getId())) {
+					return new EvidenceRecordPOE(evidenceRecordWrapper);
+				}
+			}
 		}
 		return new POE(xmlProofOfExistence.getTime());
 	}
