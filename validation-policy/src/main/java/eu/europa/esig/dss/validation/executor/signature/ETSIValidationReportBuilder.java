@@ -330,7 +330,13 @@ public class ETSIValidationReportBuilder {
 		String timestampId = proofOfExistence.getTimestampId();
 		if (Utils.isStringNotEmpty(timestampId)) {
 			TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampId);
-			poeType.setPOEObject(getVOReference(getTimestampValidationObject(timestampWrapper)));
+			if (timestampWrapper != null) {
+				poeType.setPOEObject(getVOReference(getTimestampValidationObject(timestampWrapper)));
+			}
+			EvidenceRecordWrapper evidenceRecordWrapper = diagnosticData.getEvidenceRecordById(timestampId);
+			if (evidenceRecordWrapper != null) {
+				poeType.setPOEObject(getVOReference(getEvidenceRecordValidationObject(evidenceRecordWrapper)));
+			}
 		}
 		validationTimeInfoType.setBestSignatureTime(poeType);
 		return validationTimeInfoType;
