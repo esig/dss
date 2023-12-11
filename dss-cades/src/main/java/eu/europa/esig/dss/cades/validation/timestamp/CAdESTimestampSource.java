@@ -53,6 +53,7 @@ import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
@@ -255,7 +256,11 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		if (timestamp == null) {
 			return null;
 		}
-		return new TimestampToken(timestamp, timestampType, references);
+		final SignatureTimestampIdentifierBuilder identifierBuilder = new SignatureTimestampIdentifierBuilder(timestamp)
+				.setSignature(signature)
+				.setAttribute(signatureAttribute)
+				.setOrderOfAttribute(getAttributeOrder(signatureAttribute));
+		return new TimestampToken(timestamp, timestampType, references, identifierBuilder);
 	}
 
 	@Override

@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.model.identifier.IdentifierBuilder;
+
 /**
  * Builds a deterministic Signature Identifier for the produced reports
  */
-public interface SignatureIdentifierBuilder {
+public interface SignatureIdentifierBuilder extends IdentifierBuilder {
 	
 	/**
 	 * Builds {@code SignatureIdentifier} for the provided {@code AdvancedSignature}
