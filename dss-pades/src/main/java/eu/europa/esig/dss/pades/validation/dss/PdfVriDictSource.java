@@ -29,6 +29,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -80,7 +81,9 @@ public class PdfVriDictSource {
             try {
                 byte[] tsStream = pdfVriDict.getTSStream();
                 if (Utils.isArrayNotEmpty(tsStream)) {
-                    return new TimestampToken(pdfVriDict.getTSStream(), TimestampType.VRI_TIMESTAMP);
+                    VriDictionaryTimestampIdentifierBuilder identifierBuilder =
+                            new VriDictionaryTimestampIdentifierBuilder(tsStream, pdfVriDict.getNumber());
+                    return new TimestampToken(pdfVriDict.getTSStream(), TimestampType.VRI_TIMESTAMP, new ArrayList<>(), identifierBuilder);
                 }
 
             } catch (Exception e) {

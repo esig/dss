@@ -167,6 +167,7 @@ public class XAdESAttribute implements SignatureAttribute {
 	 *
 	 * @return {@link XAdESAttributeIdentifier}
 	 */
+	@Override
 	public XAdESAttributeIdentifier getIdentifier() {
 		if (identifier == null) {
 			identifier = XAdESAttributeIdentifier.build(element);

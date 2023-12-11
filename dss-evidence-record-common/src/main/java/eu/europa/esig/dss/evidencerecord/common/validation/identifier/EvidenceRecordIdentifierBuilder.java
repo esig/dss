@@ -30,6 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -67,12 +68,7 @@ public class EvidenceRecordIdentifierBuilder {
      */
     protected byte[] buildBinaries() {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
-            ArchiveTimeStampChainObject archiveTimeStampChainObject = archiveTimeStampSequence.get(0);
-            List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChainObject.getArchiveTimeStamps();
-            ArchiveTimeStampObject archiveTimeStampObject = archiveTimeStamps.get(0);
-
-            List<? extends DigestValueGroup> hashTree = archiveTimeStampObject.getHashTree();
+            List<? extends DigestValueGroup> hashTree = getFirstReducedHashTree();
             if (Utils.isCollectionNotEmpty(hashTree)) {
                 for (DigestValueGroup digestValueGroup : hashTree) {
                     List<byte[]> digestValues = digestValueGroup.getDigestValues();
@@ -83,16 +79,50 @@ public class EvidenceRecordIdentifierBuilder {
                     }
                 }
             }
-            List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
-            if (Utils.isCollectionNotEmpty(timestamps)) {
+
+            byte[] encodedTimestamp = getFirstEncodedTimestamp();
+            if (encodedTimestamp != null) {
                 // first time-stamp identifies the signature
-                baos.write(timestamps.get(0).getEncoded());
+                baos.write(encodedTimestamp);
+            }
+            if (Utils.isStringNotEmpty(evidenceRecord.getFilename())) {
+                baos.write(evidenceRecord.getFilename().getBytes());
             }
             return baos.toByteArray();
 
         } catch (IOException e) {
             throw new DSSException(String.format("An error occurred while building an Identifier : %s", e.getMessage()), e);
         }
+    }
+
+    private List<? extends DigestValueGroup> getFirstReducedHashTree() {
+        List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
+        if (Utils.isCollectionNotEmpty(archiveTimeStampSequence)) {
+            ArchiveTimeStampChainObject archiveTimeStampChainObject = archiveTimeStampSequence.get(0);
+            List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChainObject.getArchiveTimeStamps();
+            if (Utils.isCollectionNotEmpty(archiveTimeStamps)) {
+                ArchiveTimeStampObject archiveTimeStampObject = archiveTimeStamps.get(0);
+                return archiveTimeStampObject.getHashTree();
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private byte[] getFirstEncodedTimestamp() {
+        // returns time-stamp binaries only in order to avoid recursion on time-stamp processing
+        List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
+        if (Utils.isCollectionNotEmpty(archiveTimeStampSequence)) {
+            ArchiveTimeStampChainObject archiveTimeStampChainObject = archiveTimeStampSequence.get(0);
+            List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChainObject.getArchiveTimeStamps();
+            if (Utils.isCollectionNotEmpty(archiveTimeStamps)) {
+                ArchiveTimeStampObject archiveTimeStampObject = archiveTimeStamps.get(0);
+                TimestampToken timestampToken = archiveTimeStampObject.getTimestampToken();
+                if (timestampToken != null) {
+                    return timestampToken.getEncoded();
+                }
+            }
+        }
+        return null;
     }
 
 }

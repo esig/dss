@@ -45,6 +45,7 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureProperties;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
@@ -298,7 +299,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			return Collections.emptyList();
 		}
 
-		/**
+		/*
 		 * 6.3 Requirements on XAdES signature's elements, qualifying properties and
 		 * services n) Requirement for SignatureTimeStamp. Each SignatureTimeStamp
 		 * element shall contain only one electronic time-stamp.
@@ -310,7 +311,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 		final List<TimestampToken> result = new ArrayList<>();
 		for (int ii = 0; ii < encapsulatedTimestamps.getLength(); ii++) {
 			final Element encapsulatedTimeStamp = (Element) encapsulatedTimestamps.item(ii);
-			TimestampToken timestampToken = createTimestampToken(encapsulatedTimeStamp, timestampType, references);
+			TimestampToken timestampToken = createTimestampToken(encapsulatedTimeStamp, timestampType, references, signatureAttribute, ii);
 			if (timestampToken != null) {
 				timestampToken.setCanonicalizationMethod(signatureAttribute.getTimestampCanonicalizationMethod());
 				timestampToken.setTimestampIncludes(signatureAttribute.getTimestampIncludedReferences());
@@ -325,10 +326,16 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	private TimestampToken createTimestampToken(final Element encapsulatedTimeStamp, TimestampType timestampType,
-			List<TimestampedReference> references) {
+			List<TimestampedReference> references, XAdESAttribute signatureAttribute, Integer orderWithinAttribute) {
 		try {
 			String base64EncodedTimestamp = encapsulatedTimeStamp.getTextContent();
-			return new TimestampToken(Utils.fromBase64(base64EncodedTimestamp), timestampType, references);
+			byte[] binaries = Utils.fromBase64(base64EncodedTimestamp);
+			final SignatureTimestampIdentifierBuilder identifierBuilder = new SignatureTimestampIdentifierBuilder(binaries)
+					.setSignature(signature)
+					.setAttribute(signatureAttribute)
+					.setOrderOfAttribute(getAttributeOrder(signatureAttribute))
+					.setOrderWithinAttribute(orderWithinAttribute);
+			return new TimestampToken(binaries, timestampType, references, identifierBuilder);
 
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
