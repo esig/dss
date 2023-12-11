@@ -31,13 +31,23 @@ public abstract class TokenIdentifier extends MultipleDigestIdentifier {
 	private static final long serialVersionUID = 1201653840828853681L;
 
 	/**
-	 * Default constructor
+	 * Default constructor, to compute an identifier from the given {@code Token}
 	 *
 	 * @param prefix {@link String} identifier prefix
 	 * @param token {@link Token}
 	 */
 	protected TokenIdentifier(final String prefix, Token token) {
-		super(prefix, token.getEncoded());
+		this(prefix, token.getEncoded());
+	}
+
+	/**
+	 * Constructor to build an identifier from provided token binaries
+	 *
+	 * @param prefix {@link String} identifier prefix
+	 * @param binaries byte array representing Token binaries
+	 */
+	protected TokenIdentifier(final String prefix, byte[] binaries) {
+		super(prefix, binaries);
 	}
 
 }

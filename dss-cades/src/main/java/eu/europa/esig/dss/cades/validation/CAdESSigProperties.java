@@ -59,7 +59,7 @@ public abstract class CAdESSigProperties implements SignatureProperties<CAdESAtt
 			ASN1EncodableVector asn1EncodableVector = attributeTable.toASN1EncodableVector();
 			for (int ii = 0; ii < asn1EncodableVector.size(); ii++) {
 				Attribute attribute = (Attribute) asn1EncodableVector.get(ii);
-				attributes.add(new CAdESAttribute(attribute));
+				attributes.add(new CAdESAttribute(attribute, ii));
 			}
 		}
 		return attributes;

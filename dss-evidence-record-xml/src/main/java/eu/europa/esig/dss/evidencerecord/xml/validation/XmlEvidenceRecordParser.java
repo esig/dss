@@ -26,6 +26,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObjec
 import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformation;
 import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformationType;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
+import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampIdentifierBuilder;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -53,6 +54,9 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     /** Element containing the root EvidenceRecord element */
     private final Element evidenceRecordElement;
 
+    /** The name of the file document containing the evidence record */
+    private String filename;
+
     /**
      * Default constructor
      *
@@ -60,6 +64,17 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
      */
     public XmlEvidenceRecordParser(final Element evidenceRecordElement) {
         this.evidenceRecordElement = evidenceRecordElement;
+    }
+
+    /**
+     * Sets a filename of the document containing the evidence record
+     *
+     * @param filename {@link String}
+     * @return this {@link XmlEvidenceRecordParser}
+     */
+    public XmlEvidenceRecordParser setFilename(String filename) {
+        this.filename = filename;
+        return this;
     }
 
     /**
@@ -75,7 +90,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
             XmlArchiveTimeStampChainObject[] result = new XmlArchiveTimeStampChainObject[archiveTimeStampSequenceList.getLength()];
             for (int i = 0; i < archiveTimeStampSequenceList.getLength(); i++) {
                 final Element archiveTimeStampChainElement = (Element) archiveTimeStampSequenceList.item(i);
-                XmlArchiveTimeStampChainObject archiveTimeStampChain = getXmlArchiveTimeStampChainObject(archiveTimeStampChainElement);
+                XmlArchiveTimeStampChainObject archiveTimeStampChain = getXmlArchiveTimeStampChainObject(archiveTimeStampChainElement, i);
                 int order = archiveTimeStampChain.getOrder();
                 // TODO : verify order validity
                 result[order - 1] = archiveTimeStampChain;
@@ -86,22 +101,22 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
         return Collections.emptyList();
     }
 
-    private XmlArchiveTimeStampChainObject getXmlArchiveTimeStampChainObject(Element archiveTimeStampChain) {
+    private XmlArchiveTimeStampChainObject getXmlArchiveTimeStampChainObject(Element archiveTimeStampChain, int archiveTimeStampChainOrder) {
         XmlArchiveTimeStampChainObject archiveTimeStampChainObject = new XmlArchiveTimeStampChainObject(archiveTimeStampChain);
         archiveTimeStampChainObject.setDigestAlgorithm(getDigestAlgorithm(archiveTimeStampChain));
         archiveTimeStampChainObject.setCanonicalizationMethod(getCanonicalizationMethod(archiveTimeStampChain));
         archiveTimeStampChainObject.setOrder(getOrderAttributeValue(archiveTimeStampChain));
-        archiveTimeStampChainObject.setArchiveTimeStamps(getXmlArchiveTimeStamps(archiveTimeStampChain));
+        archiveTimeStampChainObject.setArchiveTimeStamps(getXmlArchiveTimeStamps(archiveTimeStampChain, archiveTimeStampChainOrder));
         return archiveTimeStampChainObject;
     }
 
-    private List<? extends ArchiveTimeStampObject> getXmlArchiveTimeStamps(Element archiveTimeStampChain) {
+    private List<? extends ArchiveTimeStampObject> getXmlArchiveTimeStamps(Element archiveTimeStampChain, int archiveTimeStampChainOrder) {
         final NodeList archiveTimeStampList = DomUtils.getNodeList(archiveTimeStampChain, XMLERSPath.ARCHIVE_TIME_STAMP_PATH);
         if (archiveTimeStampList != null && archiveTimeStampList.getLength() > 0) {
             XmlArchiveTimeStampObject[] result = new XmlArchiveTimeStampObject[archiveTimeStampList.getLength()];
             for (int i = 0; i < archiveTimeStampList.getLength(); i++) {
                 final Element archiveTimeStampElement = (Element) archiveTimeStampList.item(i);
-                XmlArchiveTimeStampObject archiveTimeStamp = getXmlArchiveTimeStampObject(archiveTimeStampElement);
+                XmlArchiveTimeStampObject archiveTimeStamp = getXmlArchiveTimeStampObject(archiveTimeStampElement, archiveTimeStampChainOrder, i);
                 int order = archiveTimeStamp.getOrder();
                 result[order - 1] = archiveTimeStamp;
             }
@@ -110,16 +125,16 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
         return Collections.emptyList();
     }
 
-    private XmlArchiveTimeStampObject getXmlArchiveTimeStampObject(Element archiveTimeStampElement) {
+    private XmlArchiveTimeStampObject getXmlArchiveTimeStampObject(Element archiveTimeStampElement, int archiveTimeStampChainOrder, int archieTimeStampOrder) {
         XmlArchiveTimeStampObject archiveTimeStampObject = new XmlArchiveTimeStampObject(archiveTimeStampElement);
         archiveTimeStampObject.setHashTree(getHashTree(archiveTimeStampElement));
-        archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStampElement));
+        archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStampElement, archiveTimeStampChainOrder, archieTimeStampOrder));
         archiveTimeStampObject.setCryptographicInformationList(getCryptographicInformationList(archiveTimeStampElement));
-        archiveTimeStampObject.setOrder(getOrderAttributeValue(archiveTimeStampElement));
+        archiveTimeStampObject.setOrder(getOrderAttributeValue(archiveTimeStampElement)); // set order attribute value
         return archiveTimeStampObject;
     }
 
-    private TimestampToken getTimestampToken(Element archiveTimeStampElement) {
+    private TimestampToken getTimestampToken(Element archiveTimeStampElement, int archiveTimeStampChainOrder, int archieTimeStampOrder) {
         Element timeStampTokenElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPath.TIME_STAMP_TOKEN_PATH);
         if (timeStampTokenElement == null) {
             throw new IllegalInputException("TimeStampToken shall be defined!");
@@ -129,7 +144,12 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
             throw new IllegalInputException("The content of TimeStampToken shall be represented by a base64-encoded value!");
         }
         try {
-            return new TimestampToken(Utils.fromBase64(base64EncodedTimeStamp), TimestampType.EVIDENCE_RECORD_TIMESTAMP);
+            byte[] binaries = Utils.fromBase64(base64EncodedTimeStamp);
+            EvidenceRecordTimestampIdentifierBuilder identifierBuilder = new EvidenceRecordTimestampIdentifierBuilder(binaries)
+                    .setArchiveTimeStampChainOrder(archiveTimeStampChainOrder)
+                    .setArchiveTimeStampOrder(archieTimeStampOrder)
+                    .setFilename(filename);
+            return new TimestampToken(binaries, TimestampType.EVIDENCE_RECORD_TIMESTAMP, new ArrayList<>(), identifierBuilder);
         } catch (Exception e) {
             LOG.warn("Unable to create a time-stamp token. Reason : {}", e.getMessage(), e);
             return null;

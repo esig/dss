@@ -27,5 +27,12 @@ import java.io.Serializable;
  *
  */
 public interface SignatureAttribute extends Serializable {
+
+    /**
+     * Gets the attribute identifier
+     *
+     * @return {@link SignatureAttributeIdentifier}
+     */
+    SignatureAttributeIdentifier getIdentifier();
 	
 }

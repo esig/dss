@@ -1302,4 +1302,26 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         return false;
     }
 
+    /**
+     * Gets position of the {@code signatureAttribute} either within signed or unsigned properties
+     *
+     * @param signatureAttribute {@link SignatureAttribute} to search for
+     * @return position of the attribute within properties, NULL if not found
+     */
+    protected Integer getAttributeOrder(SA signatureAttribute) {
+        for (int i = 0; i < getSignedSignatureProperties().getAttributes().size(); i++) {
+            SA property = getSignedSignatureProperties().getAttributes().get(i);
+            if (signatureAttribute.equals(property)) {
+                return i;
+            }
+        }
+        for (int i = 0; i < getUnsignedSignatureProperties().getAttributes().size(); i++) {
+            SA property = getUnsignedSignatureProperties().getAttributes().get(i);
+            if (signatureAttribute.equals(property)) {
+                return i;
+            }
+        }
+        return null;
+    }
+
 }
