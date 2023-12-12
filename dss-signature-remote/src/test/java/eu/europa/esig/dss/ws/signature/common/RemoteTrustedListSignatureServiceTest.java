@@ -20,7 +20,13 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -39,8 +45,11 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 
@@ -103,7 +112,65 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         assertNotNull(signedDocument);
 
         DSSDocument iMD = new InMemoryDocument(signedDocument.getBytes());
-        validate(iMD, null);
+        DiagnosticData diagnosticData = validate(iMD, null);
+
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertEquals(SignatureAlgorithm.RSA_SHA256, signature.getSignatureAlgorithm());
+
+        boolean lotlRefFound = false;
+        List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+        for (XmlDigestMatcher digestMatcher : digestMatchers) {
+            if (digestMatcher.getName().equals("lotl")) {
+                assertEquals(DigestAlgorithm.SHA512, digestMatcher.getDigestMethod());
+                lotlRefFound = true;
+            }
+        }
+        assertTrue(lotlRefFound);
+    }
+
+    @Test
+    public void testWithCustomSignatureAlgorithmParams() {
+        DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
+        RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
+
+        RemoteCertificate signingCertificate = RemoteCertificateConverter.toRemoteCertificate(getSigningCert());
+
+        RemoteTrustedListSignatureParameters parameters = new RemoteTrustedListSignatureParameters();
+        parameters.setSigningCertificate(signingCertificate);
+        parameters.setReferenceId("lotl");
+        parameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
+
+        parameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+        parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+        parameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+
+        RemoteBLevelParameters bLevelParams = new RemoteBLevelParameters();
+        bLevelParams.setSigningDate(signingTime);
+        parameters.setBLevelParameters(bLevelParams);
+
+        ToBeSignedDTO dataToSign = tlSigningService.getDataToSign(toSignDocument, parameters);
+        assertNotNull(dataToSign);
+
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1, getPrivateKeyEntry());
+        RemoteDocument signedDocument = tlSigningService.signDocument(toSignDocument, parameters,
+                new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+        assertNotNull(signedDocument);
+
+        DSSDocument iMD = new InMemoryDocument(signedDocument.getBytes());
+        DiagnosticData diagnosticData = validate(iMD, null);
+
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, signature.getSignatureAlgorithm());
+
+        boolean lotlRefFound = false;
+        List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
+        for (XmlDigestMatcher digestMatcher : digestMatchers) {
+            if (digestMatcher.getName().equals("lotl")) {
+                assertEquals(DigestAlgorithm.SHA256, digestMatcher.getDigestMethod());
+                lotlRefFound = true;
+            }
+        }
+        assertTrue(lotlRefFound);
     }
 
 }
