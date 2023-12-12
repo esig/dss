@@ -60,7 +60,7 @@ $ echo '{
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "7EGy4/lhFvZgebvB/2KReviIwQXnl2xt39ltnqtezyc="
+    "value" : "x7Jt1Mo+nDags4083ToouLZlMPDHO6uV11DSNx7RcAY="
   }
 }' | http POST 'http://localhost:8080/services/rest/signature/external-cms/getDataToSign' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
