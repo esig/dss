@@ -5,6 +5,6 @@ $ curl 'http://localhost:8080/services/rest/server-signing/sign-digest/certifica
     -H 'Content-Type: application/json; charset=UTF-8' \
     -d '{
   "algorithm" : "SHA256",
-  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIJehciU1M/odyqkN1yTVsQaRbGV6wcOxl5djhVNH2RBo"
+  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIEitnl2Xtyc1CRRLuRt3kzKBzVxtFiss7Oq8ZugpaP6W"
 }'
 ----

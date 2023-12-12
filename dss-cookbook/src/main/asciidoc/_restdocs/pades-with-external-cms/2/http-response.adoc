@@ -1,14 +1,14 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Fri, 03 Nov 2023 10:23:56 GMT
+Date: Tue, 12 Dec 2023 15:35:02 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Security-Policy: default-src 'self' http://localhost:9795 https://petstore.swagger.io 'unsafe-inline' data:;
+Content-Security-Policy: default-src 'self' http://localhost:9795 'unsafe-inline' data:;
 Server: ESIG-DSS
 Content-Type: application/json
 Transfer-Encoding: chunked
@@ -17,6 +17,6 @@ Connection: keep-alive
 Content-Length: 288
 
 {
-  "bytes" : "MYHEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwLwYJKoZIhvcNAQkEMSIEIOxBsuP5YRb2YHm7wf9ikXr4iMEF55dsbd/ZbZ6rXs8nMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
+  "bytes" : "MYHEMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwLwYJKoZIhvcNAQkEMSIEIMeybdTKPpw2oLONPN06KLi2ZTDwxzurlddQ0jce0XAGMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
 }
 ----

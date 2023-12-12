@@ -1,14 +1,14 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Fri, 03 Nov 2023 10:23:58 GMT
+Date: Tue, 12 Dec 2023 15:35:07 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Security-Policy: default-src 'self' http://localhost:9795 https://petstore.swagger.io 'unsafe-inline' data:;
+Content-Security-Policy: default-src 'self' http://localhost:9795 'unsafe-inline' data:;
 Server: ESIG-DSS
 Content-Type: application/json
 Transfer-Encoding: chunked
@@ -18,6 +18,6 @@ Content-Length: 408
 
 {
   "algorithm" : "RSA_SSA_PSS_SHA256_MGF1",
-  "value" : "Xf7OIrKx4A9fRHUgHOKSWBOaVcIhNmLdw1c8nPWHGgPG+LjKszE61CpcgeBZOoK3f55AmpsBfczlcD5XgQN5ge5t+aaHllp3n7aZEW+ZOdVeo+rDfRP22iJdP2se6rhjpAorXFBbOhu3gIJVmmH4bOFmdQbDBRhhvl80nPtHOQI5shnQbiT0huFPmUpElg0OoEV8aaFk1T3G50TFnN/e44GwJztLx0yaGx6+YDFBnHbbjgOn9o3jT3OcmLjMYH7hlAaD25GqV8ljaeHkUL4fkc7NGrjcwUzdKIOaq7dcrQhxV5vTBy3YwHkxk90n4e7e/M1Z/Yc3Wr5ezjbDUiJt0A=="
+  "value" : "e8D3nY6xR1439LFRqsRjEw/62HNDVCVNPF65x6aEfsEtFabSc+CIny0DmF4u/XXr5N04dDco3tno/rNal0/1UjZydyZO8SG22OKYshRqKhaKW/DPjsurTKBDDbUG5JDtZdYbjMVn1ASVduCUOYS8is3WPenTJt2s9xsNGGWtnxFDKgGBcBa/KAXhrf5epKG12NbmSrb8actrwja4Lg3i5IK0bdqquGKHIAXz2PvlA8bmCvH5ow3Ks4EQdYakKOi8BorlqOcyHduWhAvlpUpCmXGvSlepbgqfL2+IQHhv50CMqfqkODDqkXhIIKODhUkVY59m7NQwmSbl1wmVkNbNHw=="
 }
 ----
