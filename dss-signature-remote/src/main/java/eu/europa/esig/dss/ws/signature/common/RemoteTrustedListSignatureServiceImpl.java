@@ -109,6 +109,15 @@ public class RemoteTrustedListSignatureServiceImpl extends AbstractRemoteSignatu
         CertificateToken certificateToken = RemoteCertificateConverter.toCertificateToken(parameters.getSigningCertificate());
         TrustedListSignatureParametersBuilder tlParametersBuilder = new TrustedListSignatureParametersBuilder(certificateToken, tlDocument);
 
+        if (parameters.getEncryptionAlgorithm() != null) {
+            tlParametersBuilder.setEncryptionAlgorithm(parameters.getEncryptionAlgorithm());
+        }
+        if (parameters.getDigestAlgorithm() != null) {
+            tlParametersBuilder.setDigestAlgorithm(parameters.getDigestAlgorithm());
+        }
+        if (parameters.getMaskGenerationFunction() != null) {
+            tlParametersBuilder.setMaskGenerationFunction(parameters.getMaskGenerationFunction());
+        }
         if (parameters.getBLevelParameters() != null) {
             tlParametersBuilder.setBLevelParams(toBLevelParameters(parameters.getBLevelParameters()));
         }

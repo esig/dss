@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.SignatureParametersBuilder;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -44,6 +47,21 @@ public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSign
 	 * A certificate chain of the signing certificate
 	 */
 	private List<CertificateToken> certificateChain;
+
+	/**
+	 * The encryption algorithm used for a signature creation by the current signing-certificate
+	 */
+	private EncryptionAlgorithm encryptionAlgorithm;
+
+	/**
+	 * The digest algorithm used to hash signed data on signing
+	 */
+	private DigestAlgorithm digestAlgorithm;
+
+	/**
+	 * The mask generation function used on signing
+	 */
+	private MaskGenerationFunction maskGenerationFunction;
 	
 	/**
 	 * BLevelParameters
@@ -78,6 +96,39 @@ public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSign
 	protected abstract SP initParameters();
 	
 	/**
+	 * Sets an encryption algorithm used by the signing-certificate's key pair.
+	 *
+	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
+	 * @return this {@link AbstractSignatureParametersBuilder}
+	 */
+	public AbstractSignatureParametersBuilder setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
+		this.encryptionAlgorithm = encryptionAlgorithm;
+		return this;
+	}
+
+	/**
+	 * Sets a digest algorithm to be used to hash the signed data
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @return this {@link AbstractSignatureParametersBuilder}
+	 */
+	public AbstractSignatureParametersBuilder setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		this.digestAlgorithm = digestAlgorithm;
+		return this;
+	}
+
+	/**
+	 * Sets a mask generation function, when required
+	 *
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 * @return this {@link AbstractSignatureParametersBuilder}
+	 */
+	public AbstractSignatureParametersBuilder setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+		this.maskGenerationFunction = maskGenerationFunction;
+		return this;
+	}
+
+	/**
 	 * Returns {@code BLevelParameters}
 	 * 
 	 * @return {@link BLevelParameters}
@@ -100,10 +151,19 @@ public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSign
 	@Override
 	@SuppressWarnings("unchecked")
 	public SP build() {
-		SP signatureParameters = initParameters();
+		final SP signatureParameters = initParameters();
 		signatureParameters.setSigningCertificate(signingCertificate);
 		signatureParameters.setCertificateChain(certificateChain);
 		signatureParameters.setBLevelParams(bLevelParams);
+		if (encryptionAlgorithm != null) {
+			signatureParameters.setEncryptionAlgorithm(encryptionAlgorithm);
+		}
+		if (digestAlgorithm != null) {
+			signatureParameters.setDigestAlgorithm(digestAlgorithm);
+		}
+		if (maskGenerationFunction != null) {
+			signatureParameters.setMaskGenerationFunction(maskGenerationFunction);
+		}
 		return signatureParameters;
 	}
 

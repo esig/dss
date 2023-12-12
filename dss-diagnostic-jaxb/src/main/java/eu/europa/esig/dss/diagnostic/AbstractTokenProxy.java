@@ -122,8 +122,9 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
 		DigestAlgorithm digestAlgorithm = getDigestAlgorithm();
-		if (encryptionAlgorithm != null && digestAlgorithm != null) {
-			return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		MaskGenerationFunction maskGenerationFunction = getMaskGenerationFunction();
+		if (encryptionAlgorithm != null && digestAlgorithm != null) { // MGF can be null
+			return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
 		}
 		return null;
 	}
