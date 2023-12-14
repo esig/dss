@@ -144,11 +144,6 @@ public class OpenDocumentSignWithAtomicMethodsTest extends AbstractOpenDocumentT
     }
 
     @Override
-    public void test(DSSDocument fileToTest) {
-        // skip
-    }
-
-    @Override
     public void signAndVerify() {
         // do nothing
     }
