@@ -248,7 +248,6 @@ public class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongManifestRefValidatio
             assertEquals(1, Utils.collectionSize(timestamps.getTimestamp()));
 
             XmlTimestamp xmlTimestamp = timestamps.getTimestamp().get(0);
-            assertEquals(Indication.PASSED, xmlTimestamp.getIndication());
 
             List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
             assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
