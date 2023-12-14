@@ -25,7 +25,6 @@ import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.AcroFields.Item;
 import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PdfArray;
-import com.lowagie.text.pdf.PdfDate;
 import com.lowagie.text.pdf.PdfDictionary;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfObject;
@@ -66,10 +65,10 @@ import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -155,9 +154,6 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			}
 
 			cal.setTimeZone(signatureParameters.getSigningTimeZone());
-
-			// TODO : remove later (left for backward-compatibility)
-			signatureDictionary.put(PdfName.M, new PdfDate(cal));
 
 			// Set data SignDate directly within PdfSignatureAppearance (since OpenPdf 1.3.32)
 			sap.setSignDate(cal);
