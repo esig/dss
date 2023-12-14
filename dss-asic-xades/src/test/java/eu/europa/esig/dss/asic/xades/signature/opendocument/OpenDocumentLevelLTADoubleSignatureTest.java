@@ -35,7 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class OpenDocumentLevelLTADoubleSignatureTest extends AbstractOpenDocumentTestSignature {
+public class OpenDocumentLevelLTADoubleSignatureTest extends AbstractOpenDocumentSetTestSignature {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;

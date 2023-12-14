@@ -36,7 +36,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class OpenDocumentDoubleSignAndExtendToLTATest extends AbstractOpenDocumentTestSignature {
+public class OpenDocumentDoubleSignAndExtendToLTATest extends AbstractOpenDocumentSetTestSignature {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
