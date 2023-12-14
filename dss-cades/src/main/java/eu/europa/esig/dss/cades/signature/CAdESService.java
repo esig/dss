@@ -277,7 +277,7 @@ public class CAdESService extends
 		CMSSignedData cmsSignedData = null;
 		if (!(dssDocument instanceof DigestDocument) && DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
 			try {
-				cmsSignedData = new CMSSignedData(DSSUtils.toByteArray(dssDocument));
+				cmsSignedData = DSSUtils.toCMSSignedData(dssDocument);
 				if (SignaturePackaging.ENVELOPING == parameters.getSignaturePackaging() && cmsSignedData.getSignedContent().getContent() == null) {
 					cmsSignedData = null;
 				}
