@@ -63,7 +63,7 @@
 		<jakarta.rs-api.version>2.1.6</jakarta.rs-api.version>
 		<jakarta.ws-api.version>2.3.3</jakarta.ws-api.version>
 
-		<junit.version>5.10.0</junit.version>
+		<junit.version>5.10.1</junit.version>
 
 		<awaitility.version>4.2.0</awaitility.version>
 		<mockito.version>4.11.0</mockito.version> <!-- Version 5 requires JDK 11+ -->

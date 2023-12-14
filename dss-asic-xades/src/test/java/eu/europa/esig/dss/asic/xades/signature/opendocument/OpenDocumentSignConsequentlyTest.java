@@ -65,14 +65,14 @@ public class OpenDocumentSignConsequentlyTest extends AbstractOpenDocumentTestSi
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
     }
 
-    protected static Stream<Arguments> data() {
+    protected static Stream<Arguments> dataContainer() {
         SignatureLevel[] levels = { SignatureLevel.XAdES_BASELINE_B, SignatureLevel.XAdES_BASELINE_T,
                 SignatureLevel.XAdES_BASELINE_LT, SignatureLevel.XAdES_BASELINE_LTA };
         String[] signers = { GOOD_USER, RSA_SHA3_USER };
         File folder = new File("src/test/resources/opendocument");
         Collection<File> listFiles = Utils.listFiles(folder,
                 new String[] { "odt", "ods", "odp", "odg" }, true);
-        DSSDocument[] documents= listFiles.stream().map(FileDocument::new).collect(Collectors.toList()).toArray(new DSSDocument[]{});
+        DSSDocument[] documents = listFiles.stream().map(FileDocument::new).collect(Collectors.toList()).toArray(new DSSDocument[]{});
         return random(levels, signers, documents);
     }
 
@@ -89,7 +89,7 @@ public class OpenDocumentSignConsequentlyTest extends AbstractOpenDocumentTestSi
     }
 
     @ParameterizedTest(name = "Sign XAdES {index} : {0} - {1} - {2}")
-    @MethodSource("data")
+    @MethodSource("dataContainer")
     public void init(SignatureLevel level, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
@@ -107,11 +107,6 @@ public class OpenDocumentSignConsequentlyTest extends AbstractOpenDocumentTestSi
         service.setTspSource(getGoodTsa());
 
         super.signAndVerify();
-    }
-
-    @Override
-    public void test(DSSDocument fileToTest) {
-        // skip
     }
 
     @Override

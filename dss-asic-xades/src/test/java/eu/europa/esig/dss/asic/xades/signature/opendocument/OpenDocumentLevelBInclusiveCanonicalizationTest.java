@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -38,8 +30,14 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
 
-public class OpenDocumentLevelBInclusiveCanonicalizationTest extends AbstractOpenDocumentTestSignature {
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class OpenDocumentLevelBInclusiveCanonicalizationTest extends AbstractOpenDocumentSetTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;

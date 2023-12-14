@@ -49,7 +49,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	
-	private static Stream<Arguments> externalData() {
+	private static Stream<Arguments> data() {
 		File file = new File("src/test/resources/signable/open-document-external-data.odt");
 		List<Arguments> args = new ArrayList<>();
 		args.add(Arguments.of(new FileDocument(file)));
@@ -71,11 +71,12 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 		service.setTspSource(getGoodTsa());
 	}
 
-	@Override
 	@ParameterizedTest(name = "Validation {index} : {0}")
-	@MethodSource("externalData")
+	@MethodSource("data")
 	public void test(DSSDocument fileToTest) {
-		super.test(fileToTest);
+		this.fileToTest = fileToTest;
+
+		super.signAndVerify();
 	}
 
 	@Override
