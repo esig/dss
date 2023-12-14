@@ -25,7 +25,13 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.jupiter.api.Test;
@@ -63,7 +69,14 @@ public class KeyEntityTSPSourceTest {
         tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
-        assertTimestampValid(timeStampResponse, digest);
+        TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
+
+        AttributeTable signedAttributes = timeStampToken.getSignedAttributes();
+        Attribute signingTimeAttr = signedAttributes.get(CMSAttributes.signingTime);
+        final ASN1Set attrValues = signingTimeAttr.getAttrValues();
+        final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+
+        assertEquals(0, timeStampToken.getTimeStampInfo().getGenTime().compareTo(DSSASN1Utils.getDate(attrValue)));
     }
 
     @Test
@@ -127,6 +140,12 @@ public class KeyEntityTSPSourceTest {
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
         assertEquals(0, time.compareTo(timeStampToken.getTimeStampInfo().getGenTime()));
+
+        AttributeTable signedAttributes = timeStampToken.getSignedAttributes();
+        Attribute signingTimeAttr = signedAttributes.get(CMSAttributes.signingTime);
+        final ASN1Set attrValues = signingTimeAttr.getAttrValues();
+        final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+        assertEquals(0, time.compareTo(DSSASN1Utils.getDate(attrValue)));
     }
 
     @Test
