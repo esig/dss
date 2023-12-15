@@ -28,6 +28,11 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
+/**
+ * Verifies time-stamp's basic building block and returns its identifier within additional info
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
+ */
 public class BasicTimestampValidationWithIdCheck<T extends XmlConstraintsConclusion> extends BasicTimestampValidationCheck<T> {
 
     /**

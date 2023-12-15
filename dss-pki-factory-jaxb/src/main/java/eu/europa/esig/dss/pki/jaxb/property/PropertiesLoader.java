@@ -46,6 +46,13 @@ public final class PropertiesLoader {
     private static Properties prop;
 
     /**
+     * Default constructor
+     */
+    private PropertiesLoader() {
+        // empty
+    }
+
+    /**
      * Loads properties from the "pki.properties" file located in the classpath.
      *
      * @return {@link Properties} object containing the loaded properties.

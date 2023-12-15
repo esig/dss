@@ -373,6 +373,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
     /**
      * Returns a validated manifest entry matching the given {@code digest} or {@code document}
      *
+     * @param manifestFile {@link ManifestFile}
      * @param digest {@link Digest}
      * @param document {@link DSSDocument}
      * @return {@link ManifestEntry}, if found
@@ -398,6 +399,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param digest {@link Digest} to check
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
+     * @param detachedContents a list of {@link DSSDocument}s
      * @return {@link DSSDocument} if matching document found, NULL otherwise
      */
     protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,

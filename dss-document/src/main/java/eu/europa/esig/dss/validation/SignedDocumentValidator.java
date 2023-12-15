@@ -714,6 +714,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 	}
 
+	/**
+	 * Prepares the {@code validationContext} for the evidence record validation process
+	 *
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param evidenceRecords
+	 *                          a collection of detached evidence records
+	 */
 	protected void prepareDetachedEvidenceRecordValidationContext(
 			final ValidationContext validationContext, Collection<EvidenceRecord> evidenceRecords) {
 		for (EvidenceRecord evidenceRecord : evidenceRecords) {

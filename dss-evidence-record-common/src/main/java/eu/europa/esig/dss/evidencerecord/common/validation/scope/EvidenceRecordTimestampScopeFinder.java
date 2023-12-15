@@ -37,6 +37,8 @@ public class EvidenceRecordTimestampScopeFinder extends EvidenceRecordScopeFinde
 
     /**
      * Default constructor
+     *
+     * @param evidenceRecord {@link EvidenceRecord}
      */
     public EvidenceRecordTimestampScopeFinder(final EvidenceRecord evidenceRecord) {
         super(evidenceRecord);

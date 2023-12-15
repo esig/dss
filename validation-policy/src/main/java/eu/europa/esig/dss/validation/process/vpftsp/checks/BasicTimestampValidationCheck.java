@@ -66,7 +66,9 @@ public class BasicTimestampValidationCheck<T extends XmlConstraintsConclusion> e
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
      * @param timestamp {@link TimestampWrapper}
+     * @param timestampValidationResult {@link XmlValidationProcessBasicTimestamp}
      * @param constraint {@link LevelConstraint}
+     * @param bbbId {@link String} id of the corresponding Basic Building Block
      */
     protected BasicTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
                                            XmlValidationProcessBasicTimestamp timestampValidationResult,
