@@ -8,6 +8,8 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampIdentifierBuilder;
  */
 public class VriDictionaryTimestampIdentifierBuilder extends TimestampIdentifierBuilder {
 
+    private static final long serialVersionUID = 1258485021800079377L;
+
     /** Number of the corresponding VRI dictionary in the PDF document */
     private final Integer dictionaryNumber;
 

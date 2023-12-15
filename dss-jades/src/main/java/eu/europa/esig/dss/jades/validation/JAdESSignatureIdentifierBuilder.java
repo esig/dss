@@ -29,6 +29,8 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
  */
 public class JAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
+	private static final long serialVersionUID = -3147216480139711930L;
+
 	/**
 	 * Default constructor
 	 *

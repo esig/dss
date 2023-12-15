@@ -37,8 +37,6 @@ import eu.europa.esig.dss.spi.x509.revocation.JdbcRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,7 +48,6 @@ import java.util.List;
 public class JdbcCacheCRLSource extends JdbcRevocationSource<CRL> implements CRLSource {
 
     private static final long serialVersionUID = 3007740140330998336L;
-    private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheCRLSource.class);
 
     /**
      * Used in the init method to check if the table exists

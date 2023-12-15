@@ -29,6 +29,8 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
  */
 public class PAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
+	private static final long serialVersionUID = -8000663721847997317L;
+
 	/**
 	 * The default constructor
 	 *

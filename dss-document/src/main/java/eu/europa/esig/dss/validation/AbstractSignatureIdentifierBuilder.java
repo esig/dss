@@ -35,6 +35,8 @@ import java.util.List;
  */
 public abstract class AbstractSignatureIdentifierBuilder implements SignatureIdentifierBuilder {
 
+	private static final long serialVersionUID = 5839378965317021595L;
+
 	/** The signature to build identifier for */
 	protected final AdvancedSignature signature;
 	

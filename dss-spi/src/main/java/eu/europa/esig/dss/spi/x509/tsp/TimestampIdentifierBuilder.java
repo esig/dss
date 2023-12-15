@@ -18,6 +18,8 @@ import java.util.Objects;
  */
 public class TimestampIdentifierBuilder implements IdentifierBuilder {
 
+    private static final long serialVersionUID = 8108224076397826022L;
+
     /** Time-stamp token to build an identifier for */
     protected final byte[] timestampTokenBinaries;
 
