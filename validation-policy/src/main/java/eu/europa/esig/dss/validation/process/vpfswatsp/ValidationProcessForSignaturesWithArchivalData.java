@@ -107,6 +107,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	 * @param bbbs map of BasicBuildingBlocks
 	 * @param policy {@link ValidationPolicy}
 	 * @param currentTime {@link Date}
+	 * @param poe {@link POEExtraction}
 	 */
 	public ValidationProcessForSignaturesWithArchivalData(final I18nProvider i18nProvider, final XmlSignature signatureAnalysis,
 			final SignatureWrapper signature, final DiagnosticData diagnosticData, final Map<String, XmlBasicBuildingBlocks> bbbs,

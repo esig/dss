@@ -48,6 +48,13 @@ public class X500NameBuilder {
     private String pseudo;
 
     /**
+     * Default constructor
+     */
+    public X500NameBuilder() {
+        // empty
+    }
+
+    /**
      * Sets the name of the certificate owner
      *
      * @param name {@link String}

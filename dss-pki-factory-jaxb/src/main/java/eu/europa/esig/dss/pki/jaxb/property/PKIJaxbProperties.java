@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pki.jaxb.property;
 
 /**
- * Contains a list of JAXB PKI properties
+ * Utils class, containing a list of JAXB PKI properties
  *
  */
 public final class PKIJaxbProperties {
@@ -55,5 +55,12 @@ public final class PKIJaxbProperties {
 
     /** Preceding path to an OCSP file (for example: ocsp/***) */
     public static final String OCSP_PATH = PropertiesLoader.getProperty("pki.factory.ocsp.path", "ocsp/");
+
+    /**
+     * Default constructor
+     */
+    private PKIJaxbProperties() {
+        // empty
+    }
 
 }

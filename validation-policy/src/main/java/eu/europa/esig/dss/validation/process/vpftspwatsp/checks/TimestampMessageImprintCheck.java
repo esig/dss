@@ -60,6 +60,7 @@ public class TimestampMessageImprintCheck<T extends XmlConstraintsConclusion> ex
      * @param result {@link XmlSAV}
      * @param timestamp {@link TimestampWrapper}
      * @param constraint {@link LevelConstraint}
+     * @param bbbId {@link String} if of the corresponding basic building block
      */
     protected TimestampMessageImprintCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
                                         LevelConstraint constraint, String bbbId) {
