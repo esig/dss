@@ -61,7 +61,6 @@ public class CompositeAIASource implements AIASource {
         this.aIASource = aIASource;
     }
 
-
     @Override
     public Set<CertificateToken> getCertificatesByAIA(CertificateToken certificateToken) {
         for (Entry<String, AIASource> entry : aIASource.entrySet()) {
@@ -75,9 +74,10 @@ public class CompositeAIASource implements AIASource {
                     return certificateTokens;
                 }
             } catch (Exception e) {
-                LOG.warn("Unable to retrieve the certificateTokens with AIA Source '{}' : {}", sourceKey, e.getMessage());
+                LOG.debug("Unable to retrieve the certificateTokens with AIA Source '{}' : {}", sourceKey, e.getMessage());
             }
         }
         throw new DSSExternalResourceException("Unable to retrieve the certificateTokens (" + aIASource.size() + " tries)");
     }
+
 }

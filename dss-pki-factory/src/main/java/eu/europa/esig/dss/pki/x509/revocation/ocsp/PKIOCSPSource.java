@@ -256,13 +256,18 @@ public class PKIOCSPSource implements OCSPSource {
      * @param issuerCertificateToken {@link CertificateToken} issued the {@code certificateToken}
      * @return {@link CertEntity} representing the entry to be used as an issuer of the OCSP Response
      */
-    protected CertEntity getOCSPResponder(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+    protected CertEntity getOcspResponder(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
         // If ocspResponder is not provided during construction, find it based on issuerCertificateToken and certificateToken
         CertEntity currentOCSPResponder;
         if (ocspResponder != null) {
             currentOCSPResponder = ocspResponder;
         } else {
             currentOCSPResponder = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+            if (currentOCSPResponder == null) {
+                throw new PKIException(String.format("CertEntity for certificate token with Id '%s' " +
+                                "not found in the repository! Provide a valid issuer or use #setOcspResponder method to set a custom OCSP responder.",
+                        issuerCertificateToken.getDSSIdAsString()));
+            }
         }
         return currentOCSPResponder;
     }
@@ -341,7 +346,7 @@ public class PKIOCSPSource implements OCSPSource {
      */
     protected OCSPResp buildOCSPResponse(CertificateToken certificateToken, CertificateToken issuerCertificateToken, OCSPReq ocspReq) {
         try {
-            final CertEntity ocspResponder = getOCSPResponder(certificateToken, issuerCertificateToken);
+            final CertEntity ocspResponder = getOcspResponder(certificateToken, issuerCertificateToken);
             final BasicOCSPRespBuilder builder = initBuilder(ocspResponder.getCertificateToken());
 
             CertEntityRevocation certRevocation = getCertificateTokenRevocation(certificateToken, ocspReq);
