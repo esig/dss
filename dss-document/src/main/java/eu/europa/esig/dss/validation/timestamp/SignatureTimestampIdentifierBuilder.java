@@ -15,6 +15,8 @@ import java.util.Objects;
  */
 public class SignatureTimestampIdentifierBuilder extends TimestampIdentifierBuilder {
 
+    private static final long serialVersionUID = -1948364785002670303L;
+
     /** Prefix string for the order of attribute value */
     private static final String ORDER_OF_ATTRIBUTE_PREFIX = "-OOA-";
 

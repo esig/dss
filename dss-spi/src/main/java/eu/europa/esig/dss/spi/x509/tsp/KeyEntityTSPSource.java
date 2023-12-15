@@ -458,17 +458,17 @@ public class KeyEntityTSPSource implements TSPSource {
      * This method initializes the {@code TimeStampResponseGenerator}
      *
      * @param digestAlgorithm {@link DigestAlgorithm} used to generate the message-imprint
-     * @param productionTime {@link Date} production time of the time-stamp
+     * @param getTime {@link Date} production time of the time-stamp
      * @return {@link TimeStampResponseGenerator}
      */
-    protected TimeStampResponseGenerator initResponseGenerator(DigestAlgorithm digestAlgorithm, Date productionTime) {
+    protected TimeStampResponseGenerator initResponseGenerator(DigestAlgorithm digestAlgorithm, Date getTime) {
         try {
             SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
             ContentSigner signer = new JcaContentSignerBuilder(signatureAlgorithm.getJCEId()).build(privateKey);
 
             X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
             SignerInfoGenerator infoGenerator = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider())
-                    .setSignedAttributeGenerator(getSignedAttributeGenerator(productionTime)).build(signer, certificateHolder);
+                    .setSignedAttributeGenerator(getSignedAttributeGenerator(getTime)).build(signer, certificateHolder);
 
             AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(getASN1ObjectIdentifier(digestAlgorithm));
             DigestCalculator digestCalculator = new JcaDigestCalculatorProviderBuilder().build().get(digestAlgorithmIdentifier);
@@ -489,10 +489,10 @@ public class KeyEntityTSPSource implements TSPSource {
     /**
      * Returns generator for signed attributes of a time-stamp
      *
-     * @param productionTime {@link Date} production time of the time-stamp
+     * @param getTime {@link Date} production time of the time-stamp
      * @return {@link CMSAttributeTableGenerator}
      */
-    protected CMSAttributeTableGenerator getSignedAttributeGenerator(Date productionTime) {
+    protected CMSAttributeTableGenerator getSignedAttributeGenerator(Date getTime) {
         return new DefaultSignedAttributeTableGenerator() {
 
             @Override
@@ -500,8 +500,8 @@ public class KeyEntityTSPSource implements TSPSource {
                 Hashtable hashtable = super.createStandardAttributeTable(map);
 
                 // Ensure the same productionTime is used
-                if (productionTime != null) {
-                    Attribute attr = new Attribute(CMSAttributes.signingTime, new DERSet(new Time(productionTime)));
+                if (getTime != null) {
+                    Attribute attr = new Attribute(CMSAttributes.signingTime, new DERSet(new Time(getTime)));
                     hashtable.put(CMSAttributes.signingTime, attr);
                 }
 

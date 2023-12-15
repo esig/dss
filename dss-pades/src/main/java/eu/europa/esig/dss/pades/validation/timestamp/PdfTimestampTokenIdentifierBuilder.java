@@ -11,6 +11,8 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampIdentifierBuilder;
  */
 public class PdfTimestampTokenIdentifierBuilder extends TimestampIdentifierBuilder {
 
+    private static final long serialVersionUID = -6655656136412456482L;
+
     /**
      * PDF document time-stamp token
      */
