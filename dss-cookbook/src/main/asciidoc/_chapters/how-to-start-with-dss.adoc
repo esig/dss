@@ -42,7 +42,7 @@ The simplest way to include DSS to your project is to use https://central.sonaty
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
-        <version>5.13.RC1</version>
+        <version>5.13</version>
     </dependency>
     ...
 </dependencies>
@@ -87,7 +87,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>5.13.RC1</version>
+            <version>5.13</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
