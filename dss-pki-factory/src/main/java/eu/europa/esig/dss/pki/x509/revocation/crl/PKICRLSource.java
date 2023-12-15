@@ -201,12 +201,17 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
      * @param issuerCertificateToken {@link CertificateToken} issued the {@code certificateToken}
      * @return {@link CertEntity} representing the entry to be used as an issuer of the CRL
      */
-    protected CertEntity getCRLIssuer(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+    protected CertEntity getCrlIssuer(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
         CertEntity currentCRLIssuer;
         if (crlIssuer != null) {
             currentCRLIssuer = crlIssuer;
         } else {
             currentCRLIssuer = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+            if (currentCRLIssuer == null) {
+                throw new PKIException(String.format("CertEntity for certificate token with Id '%s' " +
+                        "not found in the repository! Provide a valid issuer or use #setCrlIssuer method to set a custom issuer.",
+                        issuerCertificateToken.getDSSIdAsString()));
+            }
         }
         return currentCRLIssuer;
     }
@@ -217,7 +222,7 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
      *
      * @param crlIssuer {@link CertEntity}
      */
-    public void setCRLIssuer(CertEntity crlIssuer) {
+    public void setCrlIssuer(CertEntity crlIssuer) {
         this.crlIssuer = crlIssuer;
     }
 
@@ -239,9 +244,10 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
             return null;
         }
 
+        // Obtain the CRL bytes based on the productionDate and nextUpdate parameters.
+        CertEntity currentCRLIssuer = getCrlIssuer(certificateToken, issuerCertificateToken);
+
         try {
-            // Obtain the CRL bytes based on the productionDate and nextUpdate parameters.
-            CertEntity currentCRLIssuer = getCRLIssuer(certificateToken, issuerCertificateToken);
             CRLBinary crlBinary = generateCRL(currentCRLIssuer);
 
             // Build the CRLValidity using CRLUtils from the retrieved CRL bytes and the issuerCertificateToken.
@@ -333,10 +339,12 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
      * @param builder        The X509v2CRLBuilder instance to which the entries will be added.
      */
     protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<CertEntity, CertEntityRevocation> revocationList) {
-        revocationList.forEach((key, value) -> {
-            X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(key.getCertificateToken());
-            builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), value.getRevocationReason().getValue());
-        });
+        if (Utils.isMapNotEmpty(revocationList)) {
+            revocationList.forEach((key, value) -> {
+                X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(key.getCertificateToken());
+                builder.addCRLEntry(entry.getSerialNumber(), value.getRevocationDate(), value.getRevocationReason().getValue());
+            });
+        }
     }
 
 }
