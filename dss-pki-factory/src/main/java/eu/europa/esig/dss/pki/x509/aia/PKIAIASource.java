@@ -82,7 +82,6 @@ public class PKIAIASource implements AIASource {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public Set<CertificateToken> getCertificatesByAIA(CertificateToken certificateToken) {
         Objects.requireNonNull(certificateToken, "Certificate Token parameter is not provided!");
 
@@ -90,18 +89,15 @@ public class PKIAIASource implements AIASource {
             return new HashSet<>();
         }
 
-        CertEntity certEntity = getCertEntity(certificateToken);
-        List<CertificateToken> certificateChain = certEntity.getCertificateChain();
-        if (Utils.isCollectionNotEmpty(certificateChain)) {
-            certificateChain.remove(certificateToken);
-
-            if (completeCertificateChain) {
+        if (completeCertificateChain) {
+            List<CertificateToken> certificateChain = getCertificateChain(certificateToken);
+            if (Utils.isCollectionNotEmpty(certificateChain)) {
                 return new HashSet<>(certificateChain);
-            } else if (Utils.isCollectionNotEmpty(certificateChain)) {
-                CertEntity issuerCertEntity = certEntityRepository.getIssuer(certEntity);
-                if (issuerCertEntity != null) {
-                    return new HashSet<>(Collections.singleton(issuerCertEntity.getCertificateToken()));
-                }
+            }
+        } else {
+            CertificateToken certificateIssuer = getCertificateIssuer(certificateToken);
+            if (certificateIssuer != null) {
+                return new HashSet<>(Collections.singleton(certificateIssuer));
             }
         }
         return new HashSet<>();
@@ -135,6 +131,22 @@ public class PKIAIASource implements AIASource {
         List<CertificateToken> certificateChain = new ArrayList<>(certEntity.getCertificateChain());
         certificateChain.remove(certificateToken);
         return certificateChain;
+    }
+
+    /**
+     * Returns issuer of the {@code certificateToken}
+     *
+     * @param certificateToken {@link CertificateToken} to get issuer for
+     * @return {@link CertificateToken} issuer certificate token, if found
+     */
+    @SuppressWarnings("unchecked")
+    protected CertificateToken getCertificateIssuer(CertificateToken certificateToken) {
+        CertEntity certEntity = getCertEntity(certificateToken);
+        CertEntity issuerCertEntity = certEntityRepository.getIssuer(certEntity);
+        if (issuerCertEntity != null) {
+            return issuerCertEntity.getCertificateToken();
+        }
+        return null;
     }
 
     /**

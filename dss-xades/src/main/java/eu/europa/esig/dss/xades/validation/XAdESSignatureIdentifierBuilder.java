@@ -33,6 +33,8 @@ import org.w3c.dom.NodeList;
  */
 public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
+	private static final long serialVersionUID = 6174322691822584700L;
+
 	/** The META-INF folder (used to determine a signature file position in an ASiC container) */
 	public static final String META_INF_FOLDER = "META-INF/";
 

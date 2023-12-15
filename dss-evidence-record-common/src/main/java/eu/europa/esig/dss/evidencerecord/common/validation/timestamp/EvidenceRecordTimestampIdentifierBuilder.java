@@ -8,6 +8,8 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampIdentifierBuilder;
  */
 public class EvidenceRecordTimestampIdentifierBuilder extends TimestampIdentifierBuilder {
 
+    private static final long serialVersionUID = -4742875671551626836L;
+
     /** Prefix string for the order of archive time-stamp chain element */
     private static final String ARCHIVE_TIMESTAMP_CHAIN_ORDER_PREFIX = "-ATC-";
 
