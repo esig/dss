@@ -125,6 +125,11 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
         return detachedEvidenceRecords;
     }
 
+    /**
+     * Adds an external evidence record to the validation scope
+     *
+     * @param evidenceRecord {@link EvidenceRecord}
+     */
     public void addExternalEvidenceRecord(EvidenceRecord evidenceRecord) {
         // if timestamp tokens not created yet
         if (detachedEvidenceRecords == null) {

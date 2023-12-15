@@ -50,7 +50,7 @@ public class TrustServiceQualifiersKnownConsistency implements TrustServiceCondi
         return true;
     }
 
-    public boolean isQualifierKnown(String qualifierUri) {
+    private boolean isQualifierKnown(String qualifierUri) {
         List<String> singletonList = Collections.singletonList(qualifierUri);
         return ServiceQualification.isQcWithSSCD(singletonList) || ServiceQualification.isQcNoSSCD(singletonList) ||
                 ServiceQualification.isQcSSCDStatusAsInCert(singletonList) || ServiceQualification.isQcWithQSCD(singletonList) ||

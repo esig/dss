@@ -55,6 +55,7 @@ public class GrantedStatusAtTimeCheck<T extends XmlConstraintsConclusion> extend
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlConstraintsConclusion}
 	 * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
+	 * @param validationTime {@link ValidationTime} the validation time type
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public GrantedStatusAtTimeCheck(I18nProvider i18nProvider, T result, List<TrustServiceWrapper> trustServicesAtTime,
