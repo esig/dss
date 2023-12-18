@@ -288,6 +288,21 @@ SignerInfoGenerator signerInfoGenerator = new CMSSignerInfoGeneratorBuilder().bu
 CMSSignedData cmsSignedData = getCMSSignedDataBuilder(parameters).setOriginalCMSSignedData(originalCmsSignedData).createCMSSignedData(signerInfoGenerator, contentToSign);
 ----
 
+|OfficialJournalSchemeInformationURI URI extraction                               a|[source,java]
+----
+import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+
+OfficialJournalSchemeInformationURI officialJournalSchemeInformationURI = ...
+String officialJournalURL = officialJournalSchemeInformationURI.getOfficialJournalURL();
+----
+                                                                a|[source,java]
+----
+import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+
+OfficialJournalSchemeInformationURI officialJournalSchemeInformationURI = ...
+String officialJournalURL = officialJournalSchemeInformationURI.getUri();
+----
+
 |===
 
 [cols="2,5,5"]

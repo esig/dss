@@ -37,6 +37,7 @@ import eu.europa.esig.trustedlist.mra.MRAFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -98,22 +99,34 @@ public class LOTLParsingTask extends AbstractParsingTask<LOTLParsingResult> {
 	private void extractSigningCertificatesAnnouncementURL(LOTLParsingResult result, NonEmptyMultiLangURIListType schemeInformationURI) {
 		LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate = lotlSource.getSigningCertificatesAnnouncementPredicate();
 		if (signingCertificatesAnnouncementPredicate != null) {
-			List<String> uris = schemeInformationURI.getURI().stream().filter(signingCertificatesAnnouncementPredicate).map(NonEmptyMultiLangURIType::getValue)
-					.collect(Collectors.toList());
+			final List<String> uris = schemeInformationURI.getURI().stream().filter(signingCertificatesAnnouncementPredicate)
+					.map(NonEmptyMultiLangURIType::getValue).collect(Collectors.toList());
 			if (Utils.isCollectionNotEmpty(uris)) {
-				if (uris.size() > 1) {
-					LOG.warn("More than 1 LOTLSigningCertificatesAnnouncement URI found (returns the first entry) : {}", uris);
+				String newUri = uris.get(0);
+				if (!newUri.equals(signingCertificatesAnnouncementPredicate.getUri())) {
+					LOG.warn("LOTLSigningCertificatesAnnouncement URI change detected. New URI : {}", newUri);
 				}
-				result.setSigningCertificateAnnouncementURL(uris.get(0));
+				result.setSigningCertificateAnnouncementURL(newUri);
 			}
 		}
 	}
 
 	private void extractPivotURLs(LOTLParsingResult result, NonEmptyMultiLangURIListType schemeInformationURI) {
 		if (lotlSource.isPivotSupport()) {
-			List<String> uris = schemeInformationURI.getURI().stream().filter(new PivotSchemeInformationURI()).map(NonEmptyMultiLangURIType::getValue)
-					.collect(Collectors.toList());
-			result.setPivotURLs(uris);
+			LOTLSigningCertificatesAnnouncementSchemeInformationURI signCertAnnouncementPredicate = lotlSource.getSigningCertificatesAnnouncementPredicate();
+			String signCertAnnouncementURL = signCertAnnouncementPredicate != null ? signCertAnnouncementPredicate.getUri() : null;
+
+			final List<String> filteredPivots = new ArrayList<>();
+			for (NonEmptyMultiLangURIType nonEmptyMultiLangURIType : schemeInformationURI.getURI()) {
+				if (new PivotSchemeInformationURI().test(nonEmptyMultiLangURIType)) {
+					filteredPivots.add(nonEmptyMultiLangURIType.getValue());
+				}
+				// check if OJ URL is reached
+				if (signCertAnnouncementURL != null && signCertAnnouncementURL.equals(nonEmptyMultiLangURIType.getValue())) {
+					break;
+				}
+			}
+			result.setPivotURLs(filteredPivots);
 		}
 	}
 
