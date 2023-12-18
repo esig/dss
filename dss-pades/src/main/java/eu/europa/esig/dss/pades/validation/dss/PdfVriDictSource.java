@@ -41,8 +41,11 @@ public class PdfVriDictSource {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfVriDictSource.class);
 
-    /** The DSS dictionary */
+    /** The VRI dictionary */
     private final PdfVriDict pdfVriDict;
+
+    /** Identifier of the VRI dictionary */
+    private final String vriDictionaryName;
 
     /**
      * Default constructor
@@ -57,6 +60,7 @@ public class PdfVriDictSource {
         } else {
             this.pdfVriDict = null;
         }
+        this.vriDictionaryName = vriDictionaryName;
     }
 
     /**
@@ -82,7 +86,7 @@ public class PdfVriDictSource {
                 byte[] tsStream = pdfVriDict.getTSStream();
                 if (Utils.isArrayNotEmpty(tsStream)) {
                     VriDictionaryTimestampIdentifierBuilder identifierBuilder =
-                            new VriDictionaryTimestampIdentifierBuilder(tsStream, pdfVriDict.getNumber());
+                            new VriDictionaryTimestampIdentifierBuilder(tsStream, vriDictionaryName);
                     return new TimestampToken(pdfVriDict.getTSStream(), TimestampType.VRI_TIMESTAMP, new ArrayList<>(), identifierBuilder);
                 }
 
