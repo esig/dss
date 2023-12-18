@@ -58,7 +58,7 @@ public class OJUrlChangeDetection implements AlertDetector<LOTLInfo> {
 					.getSigningCertificatesAnnouncementPredicate();
 			if (signingCertificatesAnnouncementPredicate instanceof OfficialJournalSchemeInformationURI) {
 				OfficialJournalSchemeInformationURI journalSchemeInformation = (OfficialJournalSchemeInformationURI) signingCertificatesAnnouncementPredicate;
-				String officialJournalURL = journalSchemeInformation.getOfficialJournalURL();
+				String officialJournalURL = journalSchemeInformation.getUri();
 				String signingCertificateAnnouncementUrl = parsingCacheInfo.getSigningCertificateAnnouncementUrl();
 
 				if (!Utils.areStringsEqual(officialJournalURL, signingCertificateAnnouncementUrl)) {

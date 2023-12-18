@@ -31,6 +31,7 @@ import java.util.List;
 
 /**
  * Warns on the LOTL location change
+ *
  */
 public class LogLOTLLocationChangeAlertHandler implements AlertHandler<LOTLInfo> {
 
@@ -47,11 +48,9 @@ public class LogLOTLLocationChangeAlertHandler implements AlertHandler<LOTLInfo>
 	public void process(LOTLInfo currentInfo) {
 		List<PivotInfo> pivotInfos = currentInfo.getPivotInfos();
 		if (Utils.isCollectionNotEmpty(pivotInfos)) {
-			for (PivotInfo pivotInfo : pivotInfos) {
-				if (!Utils.areStringsEqual(pivotInfo.getLOTLLocation(), currentInfo.getUrl())) {
-					LOG.warn("The LOTL Location has changed - new location : {}", pivotInfo.getLOTLLocation());
-					break;
-				}
+			PivotInfo lastPivotInfo = pivotInfos.get(pivotInfos.size() - 1);
+			if (!Utils.areStringsEqual(lastPivotInfo.getLOTLLocation(), currentInfo.getUrl())) {
+				LOG.warn("The LOTL Location has changed - new location : {}", lastPivotInfo.getLOTLLocation());
 			}
 		}
 	}
