@@ -17,6 +17,7 @@
                                             * Offline PKI factory bug fixes;
                                             * XAdES : fixed extension of pretty-printed signature with TimeStampValidationData;
                                             * Unhandled casting of PdfBox COSArray;
+                                            * Add support of LOTL-location change;
                                             * Simple Report : fixed Id copy button;
                                             * DSS Standalone : fixed Trusted List signing with a non SHA-256 algorithm.
 

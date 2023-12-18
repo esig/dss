@@ -30,4 +30,11 @@ import java.util.function.Predicate;
  */
 public interface LOTLSigningCertificatesAnnouncementSchemeInformationURI extends Predicate<NonEmptyMultiLangURIType> {
 
+    /**
+     * Returns URI of the signing-certificate announcement page
+     *
+     * @return {@link String}
+     */
+    String getUri();
+
 }
