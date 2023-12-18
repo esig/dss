@@ -30,23 +30,23 @@ public class VriDictionaryTimestampIdentifierBuilder extends TimestampIdentifier
 
     private static final long serialVersionUID = 1258485021800079377L;
 
-    /** Number of the corresponding VRI dictionary in the PDF document */
-    private final Integer dictionaryNumber;
+    /** Identifier of the corresponding VRI dictionary in the PDF document */
+    private final String name;
 
     /**
      * Default constructor to build an identifier for a time-stamp extracted from a VRI dictionary
      *
      * @param timestampTokenBinaries byte array containing DER-encoded time-stamp
-     * @param dictionaryNumber {@link Integer} number of the VRI dictionary
+     * @param name {@link String} name identifier of the /VRI dictionary
      */
-    public VriDictionaryTimestampIdentifierBuilder(byte[] timestampTokenBinaries, Integer dictionaryNumber) {
+    public VriDictionaryTimestampIdentifierBuilder(byte[] timestampTokenBinaries, String name) {
         super(timestampTokenBinaries);
-        this.dictionaryNumber = dictionaryNumber;
+        this.name = name;
     }
 
     @Override
-    protected Integer getTimestampPosition() {
-        return dictionaryNumber;
+    protected String getTimestampPosition() {
+        return name;
     }
 
 }
