@@ -29,6 +29,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,8 +41,11 @@ public class PdfVriDictSource {
 
     private static final Logger LOG = LoggerFactory.getLogger(PdfVriDictSource.class);
 
-    /** The DSS dictionary */
+    /** The VRI dictionary */
     private final PdfVriDict pdfVriDict;
+
+    /** Identifier of the VRI dictionary */
+    private final String vriDictionaryName;
 
     /**
      * Default constructor
@@ -56,6 +60,7 @@ public class PdfVriDictSource {
         } else {
             this.pdfVriDict = null;
         }
+        this.vriDictionaryName = vriDictionaryName;
     }
 
     /**
@@ -80,7 +85,9 @@ public class PdfVriDictSource {
             try {
                 byte[] tsStream = pdfVriDict.getTSStream();
                 if (Utils.isArrayNotEmpty(tsStream)) {
-                    return new TimestampToken(pdfVriDict.getTSStream(), TimestampType.VRI_TIMESTAMP);
+                    VriDictionaryTimestampIdentifierBuilder identifierBuilder =
+                            new VriDictionaryTimestampIdentifierBuilder(tsStream, vriDictionaryName);
+                    return new TimestampToken(pdfVriDict.getTSStream(), TimestampType.VRI_TIMESTAMP, new ArrayList<>(), identifierBuilder);
                 }
 
             } catch (Exception e) {

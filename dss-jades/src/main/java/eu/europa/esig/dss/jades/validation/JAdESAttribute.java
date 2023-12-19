@@ -74,6 +74,7 @@ public class JAdESAttribute implements SignatureAttribute {
 	 *
 	 * @return {@link JAdESAttributeIdentifier}
 	 */
+	@Override
 	public JAdESAttributeIdentifier getIdentifier() {
 		if (identifier == null) {
 			identifier = JAdESAttributeIdentifier.build(name, value);

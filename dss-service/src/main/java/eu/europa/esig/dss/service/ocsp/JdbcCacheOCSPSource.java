@@ -37,8 +37,6 @@ import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cert.ocsp.SingleResp;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -50,7 +48,7 @@ import java.util.List;
  *
  */
 public class JdbcCacheOCSPSource extends JdbcRevocationSource<OCSP> implements OCSPSource {
-	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheOCSPSource.class);
+
 	private static final long serialVersionUID = 10480458323923489L;
 
 	/**

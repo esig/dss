@@ -28,9 +28,15 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.DERSet;
+import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.CMSAttributes;
+import org.bouncycastle.asn1.cms.Time;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
+import org.bouncycastle.cms.CMSAttributeTableGenerator;
+import org.bouncycastle.cms.DefaultSignedAttributeTableGenerator;
 import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 import org.bouncycastle.operator.ContentSigner;
@@ -64,7 +70,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -440,9 +448,9 @@ public class KeyEntityTSPSource implements TSPSource {
      * @throws TSPException if an error occurs during the timestamp response generation
      */
     protected TimeStampResponse generateResponse(TimeStampRequest request, DigestAlgorithm digestAlgorithm) throws TSPException {
-        TimeStampResponseGenerator responseGenerator = initResponseGenerator(digestAlgorithm);
+        final Date productionTime = getProductionTime();
+        TimeStampResponseGenerator responseGenerator = initResponseGenerator(digestAlgorithm, productionTime);
         BigInteger timeStampSerialNumber = getTimeStampSerialNumber();
-        Date productionTime = getProductionTime();
         return buildResponse(responseGenerator, request, timeStampSerialNumber, productionTime);
     }
 
@@ -450,15 +458,17 @@ public class KeyEntityTSPSource implements TSPSource {
      * This method initializes the {@code TimeStampResponseGenerator}
      *
      * @param digestAlgorithm {@link DigestAlgorithm} used to generate the message-imprint
+     * @param getTime {@link Date} production time of the time-stamp
      * @return {@link TimeStampResponseGenerator}
      */
-    protected TimeStampResponseGenerator initResponseGenerator(DigestAlgorithm digestAlgorithm) {
+    protected TimeStampResponseGenerator initResponseGenerator(DigestAlgorithm digestAlgorithm, Date getTime) {
         try {
             SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
             ContentSigner signer = new JcaContentSignerBuilder(signatureAlgorithm.getJCEId()).build(privateKey);
 
             X509CertificateHolder certificateHolder = new X509CertificateHolder(certificate.getEncoded());
-            SignerInfoGenerator infoGenerator = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider()).build(signer, certificateHolder);
+            SignerInfoGenerator infoGenerator = new SignerInfoGeneratorBuilder(new BcDigestCalculatorProvider())
+                    .setSignedAttributeGenerator(getSignedAttributeGenerator(getTime)).build(signer, certificateHolder);
 
             AlgorithmIdentifier digestAlgorithmIdentifier = new AlgorithmIdentifier(getASN1ObjectIdentifier(digestAlgorithm));
             DigestCalculator digestCalculator = new JcaDigestCalculatorProviderBuilder().build().get(digestAlgorithmIdentifier);
@@ -474,6 +484,31 @@ public class KeyEntityTSPSource implements TSPSource {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Returns generator for signed attributes of a time-stamp
+     *
+     * @param getTime {@link Date} production time of the time-stamp
+     * @return {@link CMSAttributeTableGenerator}
+     */
+    protected CMSAttributeTableGenerator getSignedAttributeGenerator(Date getTime) {
+        return new DefaultSignedAttributeTableGenerator() {
+
+            @Override
+            protected Hashtable createStandardAttributeTable(Map map) {
+                Hashtable hashtable = super.createStandardAttributeTable(map);
+
+                // Ensure the same productionTime is used
+                if (getTime != null) {
+                    Attribute attr = new Attribute(CMSAttributes.signingTime, new DERSet(new Time(getTime)));
+                    hashtable.put(CMSAttributes.signingTime, attr);
+                }
+
+                return hashtable;
+            }
+
+        };
     }
 
     /**

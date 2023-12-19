@@ -53,6 +53,7 @@ public class JWS extends JsonWebSignature implements Serializable {
 	 * The default constructor creating an empty JsonWebSignature
 	 */
 	public JWS() {
+		// empty
 	}
 
 	/**

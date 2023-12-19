@@ -11,6 +11,15 @@
 |===
 |Version           |Release date             |Features
 
+|v5.13             |December 2023           a|Bug fixes :
+
+                                            * RFC 6283 XML Evidence Records (XMLERS) bug fixes;
+                                            * Offline PKI factory bug fixes;
+                                            * XAdES : fixed extension of pretty-printed signature with TimeStampValidationData;
+                                            * Unhandled casting of PdfBox COSArray;
+                                            * Simple Report : fixed Id copy button;
+                                            * DSS Standalone : fixed Trusted List signing with a non SHA-256 algorithm.
+
 |v5.13.RC1         |November 2023           a|Main new features / improvements :
 
                                             * RFC 6283 XML Evidence Records (XMLERS) validation support;
@@ -333,14 +342,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `5.13.RC1` using <<BomModule>>:
+The example below shows how to switch to DSS version `5.13` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.13.RC1</dss.version>
+    <dss.version>5.13</dss.version>
     ...
 </properties>
 

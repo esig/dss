@@ -43,7 +43,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class OpenDocumentWithSHA3Test extends AbstractOpenDocumentTestSignature {
+public class OpenDocumentWithSHA3Test extends AbstractOpenDocumentSetTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;

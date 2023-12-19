@@ -54,6 +54,13 @@ public class SecureContainerHandlerBuilder implements ZipContainerHandlerBuilder
     private boolean extractComments = false;
 
     /**
+     * Default constructor
+     */
+    public SecureContainerHandlerBuilder() {
+        // empty
+    }
+
+    /**
      * Sets the maximum allowed threshold after exceeding each the security checks
      * are enforced
      * <p>

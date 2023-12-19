@@ -20,29 +20,27 @@
  */
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
-import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
+import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
-import eu.europa.esig.xmlers.definition.XMLERSAttribute;
-import eu.europa.esig.xmlers.definition.XMLERSElement;
-import eu.europa.esig.xmlers.definition.XMLERSPath;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.xmlers.definition.XMLERSAttribute;
+import eu.europa.esig.xmlers.definition.XMLERSElement;
+import eu.europa.esig.xmlers.definition.XMLERSPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,33 +58,21 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
         super(evidenceRecord);
     }
 
-    /**
-     * This method returns a document with matching {@code Digest} from a provided list of {@code detachedContents}
-     *
-     * @param digest {@link Digest} to check
-     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
-     * @return {@link DSSDocument} if matching document found, NULL otherwise
-     */
     @Override
-    protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
-                                              List<DSSDocument> detachedContents) {
-        String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
-        if (Utils.isCollectionNotEmpty(detachedContents)) {
-            for (DSSDocument document : detachedContents) {
-                byte[] documentDigest;
-                if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
-                    byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(document.openStream());
-                    documentDigest = DSSUtils.digest(digest.getAlgorithm(), canonicalizedDocument);
-                } else {
-                    String base64Digest = document.getDigest(digest.getAlgorithm());
-                    documentDigest = Utils.fromBase64(base64Digest);
-                }
-                if (Arrays.equals(digest.getValue(), documentDigest)) {
-                    return document;
-                }
-            }
+    protected byte[] getDocumentDigest(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain) {
+        byte[] documentDigest;
+        if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
+            /*
+             * Note that the selected canonicalization method MUST be used also for
+             * archive data when data is represented in XML format.
+             */
+            String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
+            byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(document.openStream());
+            documentDigest = DSSUtils.digest(archiveTimeStampChain.getDigestAlgorithm(), canonicalizedDocument);
+        } else {
+            documentDigest = super.getDocumentDigest(document, archiveTimeStampChain);
         }
-        return null;
+        return documentDigest;
     }
 
     /**
@@ -103,9 +89,9 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     @Override
     protected List<? extends DigestValueGroup> getHashTree(
             List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents,
-            DigestAlgorithm digestAlgorithm, DSSMessageDigest lastTimeStampHash, DSSMessageDigest lastTimeStampSequenceHash) {
+            ArchiveTimeStampChainObject archiveTimeStampChain, DSSMessageDigest lastTimeStampHash, DSSMessageDigest lastTimeStampSequenceHash) {
         final List<? extends DigestValueGroup> hashTree = super.getHashTree(
-                originalHashTree, detachedContents, digestAlgorithm, lastTimeStampHash, lastTimeStampSequenceHash);
+                originalHashTree, detachedContents, archiveTimeStampChain, lastTimeStampHash, lastTimeStampSequenceHash);
 
         // HashTree renewal time-stamp shall cover one or more data objects
         if (lastTimeStampSequenceHash != null && !lastTimeStampSequenceHash.isEmpty()) {

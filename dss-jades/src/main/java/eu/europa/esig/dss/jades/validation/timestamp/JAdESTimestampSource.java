@@ -50,6 +50,7 @@ import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -473,8 +474,9 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		if (Utils.isMapNotEmpty(tstContainer)) {
 			List<?> tstTokens = DSSJsonUtils.getAsList(tstContainer, JAdESHeaderParameterNames.TST_TOKENS);
 			if (Utils.isCollectionNotEmpty(tstTokens)) {
-				for (Object item : tstTokens) {
-					TimestampToken timestampToken = toTimestampToken(item, signatureAttribute, timestampType, references);
+				for (int i = 0; i < tstTokens.size(); i++) {
+					Object tstToken = tstTokens.get(i);
+					TimestampToken timestampToken = toTimestampToken(tstToken, signatureAttribute, i, timestampType, references);
 					if (timestampToken != null) {
 						timestampAttributeMap.put(timestampToken, signatureAttribute);
 						result.add(timestampToken);
@@ -489,7 +491,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 		return result;
 	}
 
-	private TimestampToken toTimestampToken(Object tstToken, JAdESAttribute signatureAttribute,
+	private TimestampToken toTimestampToken(Object tstToken, JAdESAttribute signatureAttribute, Integer orderWithinAttribute,
 											TimestampType timestampType, List<TimestampedReference> references) {
 		Map<?, ?> tstTokenMap = DSSJsonUtils.toMap(tstToken);
 		if (Utils.isMapNotEmpty(tstTokenMap)) {
@@ -498,9 +500,15 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 				String tstBase64 = DSSJsonUtils.getAsString(tstTokenMap, JAdESHeaderParameterNames.VAL);
 				if (Utils.isStringNotEmpty(tstBase64)) {
 					try {
-						return new TimestampToken(Utils.fromBase64(tstBase64), timestampType, references);
+						byte[] binaries = Utils.fromBase64(tstBase64);
+						final SignatureTimestampIdentifierBuilder identifierBuilder = new SignatureTimestampIdentifierBuilder(binaries)
+								.setSignature(signature)
+								.setAttribute(signatureAttribute)
+								.setOrderOfAttribute(getAttributeOrder(signatureAttribute))
+								.setOrderWithinAttribute(orderWithinAttribute);
+						return new TimestampToken(binaries, timestampType, references, identifierBuilder);
 					} catch (Exception e) {
-						LOG.warn("Unable to parse timestamp '{}'. Reason : {}", tstBase64, e.getMessage(), e);
+						LOG.warn("Unable to create timestamp from base64-encoded string '{}'. Reason : {}", tstBase64, e.getMessage(), e);
 					}
 				}
 

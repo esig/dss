@@ -128,6 +128,7 @@ public abstract class PKIFactoryAccess {
     protected static final String EE_GOOD_TSA = "ee-good-tsa";
     protected static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
     protected static final String SELF_SIGNED_TSA = "self-signed-tsa";
+    protected static final String SELF_SIGNED_LONG_TSA = "self-signed-long-tsa";
 
     /* Produces timestamp with a fail status */
     private static final String FAIL_GOOD_TSA_ONLINE = "fail/good-tsa";

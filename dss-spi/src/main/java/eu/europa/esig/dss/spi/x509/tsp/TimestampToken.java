@@ -111,6 +111,11 @@ public class TimestampToken extends Token {
 	private final List<TimestampedReference> timestampedReferences;
 
 	/**
+	 * Builds a time-stamp token unique identifier
+	 */
+	private TimestampIdentifierBuilder identifierBuilder;
+
+	/**
 	 * Internal variables defining whether the timestamp has been validated
 	 */
 	private boolean processed = false;
@@ -131,7 +136,7 @@ public class TimestampToken extends Token {
 	private Boolean messageImprintIntact = null;
 	
 	/**
-	 * In case a detached timestamp
+	 * In case of a detached timestamp
 	 */
 	private String fileName;
 	
@@ -208,7 +213,23 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Default constructor with timestamped references
+	 * Default constructor with timestamped references and identifier builder
+	 *
+	 * @param binaries byte array
+	 * @param type {@link TimestampType}
+	 * @param timestampedReferences a list of {@link TimestampedReference}s
+	 * @param identifierBuilder {@link TimestampIdentifierBuilder}
+	 * @throws TSPException if timestamp creation exception occurs
+	 * @throws IOException if IOException occurs
+	 * @throws CMSException if CMS data building exception occurs
+	 */
+	public TimestampToken(final byte[] binaries, final TimestampType type, final List<TimestampedReference> timestampedReferences,
+						  final TimestampIdentifierBuilder identifierBuilder) throws TSPException, IOException, CMSException {
+		this(new CMSSignedData(binaries), type, timestampedReferences, identifierBuilder);
+	}
+
+	/**
+	 * Constructor from CMS with timestamped references
 	 *
 	 * @param cms {@link CMSSignedData}
 	 * @param type {@link TimestampType}
@@ -221,8 +242,23 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Constructor with an indication of the timestamp type. The default constructor
-	 * for {@code TimestampToken}.
+	 * Constructor from CMS with timestamped references and identifier builder
+	 *
+	 * @param cms {@link CMSSignedData}
+	 * @param type {@link TimestampType}
+	 * @param timestampedReferences a list of {@link TimestampedReference}s
+	 * @param identifierBuilder {@link TimestampIdentifierBuilder}
+	 * @throws TSPException if timestamp creation exception occurs
+	 * @throws IOException if IOException occurs
+	 */
+	public TimestampToken(final CMSSignedData cms, final TimestampType type, final List<TimestampedReference> timestampedReferences,
+						  final TimestampIdentifierBuilder identifierBuilder) throws TSPException, IOException {
+		this(new TimeStampToken(cms), type, timestampedReferences, identifierBuilder);
+	}
+
+	/**
+	 * Constructor with an indication of the timestamp type and time-stamped references.
+	 * The default constructor for {@code TimestampToken}. Builds an implementation independent identifier.
 	 *
 	 * @param timeStamp
 	 *                              {@code TimeStampToken}
@@ -233,12 +269,31 @@ public class TimestampToken extends Token {
 	 *                              timestamp comes from
 	 */
 	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences) {
+		this(timeStamp, type, timestampedReferences, null);
+	}
+
+	/**
+	 * Constructor with an indication of the timestamp type, time-stamped references and an identifier builder.
+	 *
+	 * @param timeStamp
+	 *                              {@code TimeStampToken}
+	 * @param type
+	 *                              {@code TimestampType}
+	 * @param timestampedReferences
+	 *                              timestamped references
+	 *                              timestamp comes from
+	 * @param identifierBuilder
+	 *                              {@link TimestampIdentifierBuilder}
+	 */
+	public TimestampToken(final TimeStampToken timeStamp, final TimestampType type, final List<TimestampedReference> timestampedReferences,
+						  final TimestampIdentifierBuilder identifierBuilder) {
 		this.timeStamp = timeStamp;
 		this.timeStampType = type;
 		this.certificateSource = new TimestampCertificateSource(timeStamp);
 		this.ocspSource = new TimestampOCSPSource(timeStamp);
 		this.crlSource = new TimestampCRLSource(timeStamp);
 		this.timestampedReferences = timestampedReferences;
+		this.identifierBuilder = identifierBuilder;
 	}
 
 	@Override
@@ -884,7 +939,24 @@ public class TimestampToken extends Token {
 
 	@Override
 	protected TokenIdentifier buildTokenIdentifier() {
-		return new TimestampTokenIdentifier(this);
+		return getTimestampIdentifierBuilder().build();
+	}
+
+	/**
+	 * Returns a {@code TimestampTokenIdentifierBuilder} implementation
+	 *
+	 * @return {@link TimestampIdentifierBuilder}
+	 */
+	protected TimestampIdentifierBuilder getTimestampIdentifierBuilder() {
+		if (identifierBuilder == null) {
+			identifierBuilder = new TimestampIdentifierBuilder(getEncoded()).setFilename(fileName);
+		}
+		return identifierBuilder;
+	}
+
+	@Override
+	public byte[] getDigest(DigestAlgorithm digestAlgorithm) {
+		return DSSUtils.digest(digestAlgorithm, getEncoded());
 	}
 
 }

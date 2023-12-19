@@ -33,7 +33,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class OpenDocumentLevelLTAWithKeyInfoTest extends AbstractOpenDocumentTestSignature {
+public class OpenDocumentLevelLTAWithKeyInfoTest extends AbstractOpenDocumentSetTestSignature {
 	
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
