@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.13-SNAPSHOT</version>
+		<version>5.13</version>
 	</parent>
 	
 	<artifactId>dss-validation-dto</artifactId>

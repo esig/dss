@@ -4,7 +4,7 @@
     <parent>
         <artifactId>sd-dss</artifactId>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-        <version>5.13-SNAPSHOT</version>
+        <version>5.13</version>
     </parent>
 
     <artifactId>specs-xmlers</artifactId>
