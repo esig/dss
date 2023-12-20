@@ -449,10 +449,10 @@ public class KeyEntityTSPSource implements TSPSource {
      * @throws TSPException if an error occurs during the timestamp response generation
      */
     protected TimeStampResponse generateResponse(TimeStampRequest request, DigestAlgorithm digestAlgorithm) throws TSPException {
-        final Date productionTime = getProductionTime();
-        TimeStampResponseGenerator responseGenerator = initResponseGenerator(digestAlgorithm, productionTime);
+        final Date genTime = getProductionTime();
+        TimeStampResponseGenerator responseGenerator = initResponseGenerator(digestAlgorithm, genTime);
         BigInteger timeStampSerialNumber = getTimeStampSerialNumber();
-        return buildResponse(responseGenerator, request, timeStampSerialNumber, productionTime);
+        return buildResponse(responseGenerator, request, timeStampSerialNumber, genTime);
     }
 
     /**
