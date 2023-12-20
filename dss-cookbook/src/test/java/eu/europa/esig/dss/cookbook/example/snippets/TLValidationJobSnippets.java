@@ -521,7 +521,8 @@ public class TLValidationJobSnippets {
 		// Default : not defined
 		//
 		// OfficialJournalSchemeInformationURI allows to specify the Official Journal
-		// URL where the signing certificates are published
+		// URL where the used LOTL signing-certificate keystore is published
+		// When set, builds LOTL keystore based on pivots defined before the given URL
 		lotlSource.setSigningCertificatesAnnouncementPredicate(
 				new OfficialJournalSchemeInformationURI("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG"));
 
