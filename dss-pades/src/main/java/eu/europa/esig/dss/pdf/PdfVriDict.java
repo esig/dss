@@ -34,9 +34,6 @@ public class PdfVriDict extends AbstractPdfDssDict {
 	/** The VRI dictionary key (SHA-1 value of a signature) */
 	private final String name;
 
-	/** Number of the VRI dictionary */
-	private final Integer number;
-
 	/** Represents a 'TU' time value */
 	private final Date tuTime;
 
@@ -48,24 +45,10 @@ public class PdfVriDict extends AbstractPdfDssDict {
 	 *
 	 * @param name {@link String} VRI dictionary key
 	 * @param vriDict {@link PdfDict} the dictionary
-	 * @deprecated since DSS 5.13. Please use {@code PdfVriDict(String name, Integer number, PdfDict vriDict)}.
 	 */
-	@Deprecated
 	public PdfVriDict(String name, PdfDict vriDict) {
-		this(name, null, vriDict);
-	}
-
-	/**
-	 * Constructor with information about the VRI dictionary
-	 *
-	 * @param name {@link String} VRI dictionary key
-	 * @param number {@link Integer} dictionary number
-	 * @param vriDict {@link PdfDict} the dictionary
-	 */
-	public PdfVriDict(String name, Integer number, PdfDict vriDict) {
 		super(vriDict);
 		this.name = name;
-		this.number = number;
 		this.tuTime = DSSDictionaryExtractionUtils.getDictionaryCreationTime(vriDict);
 		this.tsStream = DSSDictionaryExtractionUtils.getTimestampBinaries(vriDict);
 	}
@@ -97,15 +80,6 @@ public class PdfVriDict extends AbstractPdfDssDict {
 	 */
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * Returns dictionary number of the current VRI dictionary
-	 *
-	 * @return {@link Integer}
-	 */
-	public Integer getNumber() {
-		return number;
 	}
 
 	@Override
