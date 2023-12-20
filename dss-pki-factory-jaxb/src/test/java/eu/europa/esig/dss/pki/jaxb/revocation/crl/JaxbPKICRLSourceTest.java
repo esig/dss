@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -156,6 +157,13 @@ public class JaxbPKICRLSourceTest extends AbstractTestJaxbPKI {
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
         assertNotNull(revocationToken);
         assertEquals(thisUpdate, revocationToken.getThisUpdate());
+
+        pkiCRLSource.setThisUpdate(null);
+
+        revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
+        assertNotNull(revocationToken);
+        assertNotNull(revocationToken.getThisUpdate());
+        assertNotEquals(thisUpdate, revocationToken.getThisUpdate());
     }
 
     @Test
@@ -168,6 +176,12 @@ public class JaxbPKICRLSourceTest extends AbstractTestJaxbPKI {
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
         assertNotNull(revocationToken);
         assertEquals(nextUpdate, revocationToken.getNextUpdate());
+
+        pkiCRLSource.setNextUpdate(null);
+
+        revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
+        assertNotNull(revocationToken);
+        assertNull(revocationToken.getNextUpdate());
     }
 
     @Test
