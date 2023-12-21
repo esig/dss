@@ -243,7 +243,7 @@
 					<Algo Date="2029" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 					<Algo Date="2029" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 
-					<!-- 		<Algo Date="2026" Size="32">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
+					<!-- 		<Algo Date="2026" Size="24">EdDSA</Algo> 		Not referenced in ETSI/SOGIS -->
 					<!-- end Encryption algorithms -->
 				</AlgoExpirationDate>
 			</Cryptographic>
@@ -357,7 +357,7 @@
 			<Algo Date="2029" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2029" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 
-			<!-- 		<Algo Date="2026" Size="32">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
+			<!-- 		<Algo Date="2026" Size="24">EdDSA</Algo> 		Not referenced in ETSI/SOGIS -->
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>
 	</Cryptographic>
