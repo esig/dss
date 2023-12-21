@@ -39,6 +39,8 @@ import eu.europa.esig.dss.tsl.alerts.handlers.log.LogOJUrlChangeAlertHandler;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.trustedlist.TrustedListFacade;
+import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -57,11 +59,14 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class LOTLLocationRenewalTest {
 
     private static final String KS_TYPE = "PKCS12";
     private static final char[] KS_PASSWORD = "password".toCharArray();
+
+    private static String lotlLocationPath;
 
     private static Map<String, Collection<String>> lotlLocations;
     private static Map<String, DSSDocument> pivotMap;
@@ -84,30 +89,32 @@ public class LOTLLocationRenewalTest {
         keyStoreMap = new LinkedHashMap<>();
         ojLotlMap = new LinkedHashMap<>();
 
-        lotlLocations.put("http://18.202.217.18/res/pivot/lotl_test_loc_01.xml",
+        lotlLocationPath = getLotlLocationPath();
+
+        lotlLocations.put("lotl_test_loc_01.xml",
                 Arrays.asList(
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_01.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_02.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_03.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_01.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_02.xml"
+                        "lotl_test_OJ_1_pivot_01.xml",
+                        "lotl_test_OJ_1_pivot_02.xml",
+                        "lotl_test_OJ_1_pivot_03.xml",
+                        "lotl_test_OJ_2_pivot_01.xml",
+                        "lotl_test_OJ_2_pivot_02.xml"
                 )
         );
-        lotlLocations.put("http://18.202.217.18/res/pivot/lotl_test_loc_02.xml",
+        lotlLocations.put("lotl_test_loc_02.xml",
                 Arrays.asList(
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_01.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_02.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ-2_reset_pivot.xml"
+                        "lotl_test_OJ_2_pivot_01.xml",
+                        "lotl_test_OJ_2_pivot_02.xml",
+                        "lotl_test_OJ-2_reset_pivot.xml"
                 )
         );
 
-        pivotMap.put("http://18.202.217.18/res/pivot/lotl_test_loc_01.xml", new FileDocument("src/test/resources/pivots/lotl_test_loc_01.xml"));
-        pivotMap.put("http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_01.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_1_pivot_01.xml"));
-        pivotMap.put("http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_02.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_1_pivot_02.xml"));
-        pivotMap.put("http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_03.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_1_pivot_03.xml"));
-        pivotMap.put("http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_01.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_2_pivot_01.xml"));
-        pivotMap.put("http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_02.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_2_pivot_02.xml"));
-        pivotMap.put("http://18.202.217.18/res/pivot/lotl_test_OJ-2_reset_pivot.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ-2_reset_pivot.xml"));
+        pivotMap.put("lotl_test_loc_01.xml", new FileDocument("src/test/resources/pivots/lotl_test_loc_01.xml"));
+        pivotMap.put("lotl_test_OJ_1_pivot_01.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_1_pivot_01.xml"));
+        pivotMap.put("lotl_test_OJ_1_pivot_02.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_1_pivot_02.xml"));
+        pivotMap.put("lotl_test_OJ_1_pivot_03.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_1_pivot_03.xml"));
+        pivotMap.put("lotl_test_OJ_2_pivot_01.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_2_pivot_01.xml"));
+        pivotMap.put("lotl_test_OJ_2_pivot_02.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ_2_pivot_02.xml"));
+        pivotMap.put("lotl_test_OJ-2_reset_pivot.xml", new FileDocument("src/test/resources/pivots/lotl_test_OJ-2_reset_pivot.xml"));
 
         keyStoreMap.put("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG",
                 new KeyStoreCertificateSource("src/test/resources/pivots/keystore_OJ1.p12", KS_TYPE, KS_PASSWORD)
@@ -118,27 +125,27 @@ public class LOTLLocationRenewalTest {
 
         ojLotlMap.put("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG",
                 Arrays.asList(
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_01.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_02.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_03.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_01.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_02.xml"
+                        "lotl_test_OJ_1_pivot_01.xml",
+                        "lotl_test_OJ_1_pivot_02.xml",
+                        "lotl_test_OJ_1_pivot_03.xml",
+                        "lotl_test_OJ_2_pivot_01.xml",
+                        "lotl_test_OJ_2_pivot_02.xml"
                 )
         );
         ojLotlMap.put("https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2023.999.01.0001.01.ENG",
                 Arrays.asList(
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_01.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_02.xml",
-                        "http://18.202.217.18/res/pivot/lotl_test_OJ-2_reset_pivot.xml"
+                        "lotl_test_OJ_2_pivot_01.xml",
+                        "lotl_test_OJ_2_pivot_02.xml",
+                        "lotl_test_OJ-2_reset_pivot.xml"
                 )
         );
 
         newLOTLLocations = Arrays.asList(
-                "http://18.202.217.18/res/pivot/lotl_test_loc_02.xml",
-                "http://18.202.217.18/res/pivot/lotl_test_OJ_1_pivot_03.xml",
-                "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_01.xml",
-                "http://18.202.217.18/res/pivot/lotl_test_OJ_2_pivot_02.xml",
-                "http://18.202.217.18/res/pivot/lotl_test_OJ-2_reset_pivot.xml");
+                "lotl_test_loc_02.xml",
+                "lotl_test_OJ_1_pivot_03.xml",
+                "lotl_test_OJ_2_pivot_01.xml",
+                "lotl_test_OJ_2_pivot_02.xml",
+                "lotl_test_OJ-2_reset_pivot.xml");
 
         newOJKeystore = "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2023.999.01.0001.01.ENG";
 
@@ -153,8 +160,21 @@ public class LOTLLocationRenewalTest {
         cacheCleaner.setCleanFileSystem(true);
     }
 
+    private static String getLotlLocationPath() {
+        try {
+            TrustStatusListType trustStatusListType = TrustedListFacade.newFacade().unmarshall(
+                    new File("src/test/resources/pivots/lotl_test_OJ_1_pivot_01.xml"));
+            String tslLocation = trustStatusListType.getSchemeInformation()
+                    .getPointersToOtherTSL().getOtherTSLPointer().get(0).getTSLLocation();
+            return tslLocation.substring(0, tslLocation.lastIndexOf("/")) + "/";
+        } catch (Exception e) {
+            fail(e);
+            return null;
+        }
+    }
+
     private static Stream<Arguments> data() {
-        Object[] locations = LOTLLocationRenewalTest.lotlLocations.keySet().toArray(new String[0]);
+        Object[] locations = lotlLocations.keySet().toArray(new String[0]);
         Object[] pivotUrls = pivotMap.keySet().toArray(new String[0]);
         Object[] ojUrls = keyStoreMap.keySet().toArray(new String[0]);
         Object[] ojKeystores = keyStoreMap.values().toArray(new CertificateSource[0]);
@@ -183,12 +203,12 @@ public class LOTLLocationRenewalTest {
     @ParameterizedTest(name = "OJ test {index} : {0} - {1} - {2}")
     @MethodSource("data")
     public void test(String location, String pivotlUrl, String ojUrl, CertificateSource ojKeystore) {
-        HashMap<String, DSSDocument> cacheMap = new HashMap<>(pivotMap);
-        cacheMap.put(location, pivotMap.get(pivotlUrl));
+        HashMap<String, DSSDocument> cacheMap = getCacheMap();
+        cacheMap.put(lotlLocationPath + location, pivotMap.get(pivotlUrl));
         fileLoader.setDataLoader(new MockDataLoader(cacheMap));
 
         LOTLSource lotlSource = new LOTLSource();
-        lotlSource.setUrl(location);
+        lotlSource.setUrl(lotlLocationPath + location);
         lotlSource.setCertificateSource(ojKeystore);
         if (ojUrl != null) {
             lotlSource.setSigningCertificatesAnnouncementPredicate(new OfficialJournalSchemeInformationURI(ojUrl));
@@ -227,6 +247,14 @@ public class LOTLLocationRenewalTest {
 
         assertEquals(ojUrl != null && !newOJKeystore.equals(ojUrl) && ojLotlMap.get(newOJKeystore).contains(pivotlUrl), ojUrlDetection.detected);
         assertEquals(!newLOTLLocations.contains(location) && newLOTLLocations.contains(pivotlUrl), lotlLocationDetection.detected);
+    }
+
+    private HashMap<String, DSSDocument> getCacheMap() {
+        HashMap<String, DSSDocument> hashMap = new HashMap<>();
+        for (Map.Entry<String, DSSDocument> entry : pivotMap.entrySet()) {
+            hashMap.put(lotlLocationPath + entry.getKey(), entry.getValue());
+        }
+        return hashMap;
     }
 
     private LOTLAlert ojUrlAlert(AlertDetector<LOTLInfo> ojUrlDetection) {
