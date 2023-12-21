@@ -65,7 +65,9 @@ public class OtherTSLPointer implements Serializable {
 	}
 
 	/**
-	 * Default constructor to create an empty object
+	 * Default constructor to instantiate object from {@code OtherTSLPointerBuilder}
+	 *
+	 * @param builder {@link OtherTSLPointerBuilder}
 	 */
 	public OtherTSLPointer(OtherTSLPointerBuilder builder) {
 		this.sdiCertificates = builder.getSdiCertificates();
