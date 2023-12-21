@@ -67,9 +67,16 @@ public class OfficialJournalSchemeInformationURI implements LOTLSigningCertifica
 	 * Gets the OJ URL
 	 *
 	 * @return {@link String}
+	 * @deprecated since DSS 5.13. Please use {@code #getUri} instead.
 	 */
+	@Deprecated
 	public String getOfficialJournalURL() {
-		return this.officialJournalURL;
+		return getUri();
+	}
+
+	@Override
+	public String getUri() {
+		return officialJournalURL;
 	}
 
 }

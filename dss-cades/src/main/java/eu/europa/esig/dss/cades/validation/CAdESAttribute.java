@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureAttribute;
+import eu.europa.esig.dss.validation.SignatureAttributeIdentifier;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -44,13 +45,20 @@ public class CAdESAttribute implements SignatureAttribute {
 	/** The Attribute value */
 	private final Attribute attribute;
 
+	/** Order of the attribute within signature properties */
+	private final Integer order;
+
+	/** Identifies the instance */
+	protected CAdESAttributeIdentifier identifier;
+
 	/**
 	 * The default constructor
 	 *
 	 * @param attribute {@link Attribute}
 	 */
-	CAdESAttribute(Attribute attribute) {
+	CAdESAttribute(Attribute attribute, Integer order) {
 		this.attribute = attribute;
+		this.order = order;
 	}
 
 	/**
@@ -107,6 +115,14 @@ public class CAdESAttribute implements SignatureAttribute {
 		return null;
 	}
 	
+	@Override
+	public SignatureAttributeIdentifier getIdentifier() {
+		if (identifier == null) {
+			identifier = CAdESAttributeIdentifier.build(attribute, order);
+		}
+		return identifier;
+	}
+
 	@Override
 	public String toString() {
 		ASN1ObjectIdentifier asn1Oid = getASN1Oid();

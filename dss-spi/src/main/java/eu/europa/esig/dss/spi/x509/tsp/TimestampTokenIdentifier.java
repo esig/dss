@@ -30,13 +30,25 @@ public final class TimestampTokenIdentifier extends TokenIdentifier {
 
 	private static final long serialVersionUID = 4260120806950705848L;
 
+	/** Default identifier prefix for a time-stamp token */
+	private static final String TIMESTAMP_TOKEN_PREFIX = "T-";
+
 	/**
 	 * Default constructor
 	 *
 	 * @param timestampToken {@link TimestampToken}
 	 */
 	public TimestampTokenIdentifier(TimestampToken timestampToken) {
-		super("T-", timestampToken);
+		super(TIMESTAMP_TOKEN_PREFIX, timestampToken);
+	}
+
+	/**
+	 * Constructor to build a time-stamp identifier from custom binaries
+	 *
+	 * @param binaries byte array representing the time-stamp token
+	 */
+	public TimestampTokenIdentifier(byte[] binaries) {
+		super(TIMESTAMP_TOKEN_PREFIX, binaries);
 	}
 
 }

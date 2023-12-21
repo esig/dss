@@ -1080,8 +1080,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		if (tokenExtractionStrategy.isTimestamp()) {
 			xmlTimestampToken.setBase64Encoded(timestampToken.getEncoded());
 		} else {
-			byte[] certDigest = timestampToken.getDigest(defaultDigestAlgorithm);
-			xmlTimestampToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, certDigest));
+			byte[] tstDigest = timestampToken.getDigest(defaultDigestAlgorithm);
+			xmlTimestampToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, tstDigest));
 		}
 
 		return xmlTimestampToken;

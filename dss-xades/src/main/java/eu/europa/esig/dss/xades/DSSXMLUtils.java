@@ -358,7 +358,14 @@ public final class DSSXMLUtils {
 				if (idAttribute != null) {
 					indentedXmlNode = DomUtils.getElementById(indentedSignature, idAttribute);
 				} else {
-					indentedXmlNode = DomUtils.getNode(indentedSignature, pathAllFromCurrentPosition);
+					NodeList indentedXmlNodes = DomUtils.getNodeList(indentedSignature, pathAllFromCurrentPosition);
+					if (indentedXmlNodes.getLength() == 0) {
+						// TODO : temporary safe handling for 5.13
+						LOG.warn("No elements found matching the '{}' XPath expression!", pathAllFromCurrentPosition);
+						return xmlNode;
+					}
+					// return the last item
+					indentedXmlNode = indentedXmlNodes.item(indentedXmlNodes.getLength() - 1);
 				}
 				if (indentedXmlNode != null) {
 					return indentedXmlNode;
@@ -994,14 +1001,23 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Returns a NodeList of all "ds:Signature" elements found in the
-	 * {@code documentNode}
+	 * Returns a NodeList of all "ds:Signature" elements found in the {@code documentNode}
 	 * 
 	 * @param documentNode {@link Node} the XML document or its part
 	 * @return {@link NodeList}
 	 */
 	public static NodeList getAllSignaturesExceptCounterSignatures(Node documentNode) {
 		return DomUtils.getNodeList(documentNode, XAdES132Path.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
+	}
+
+	/**
+	 * Returns a NodeList of all "xades:EncapsulatedTimeStamp" elements found in the {@code documentNode}
+	 *
+	 * @param documentNode {@link Node} the XML document or its part
+	 * @return {@link NodeList}
+	 */
+	public static NodeList getAllEncapsulatedTimestamps(Node documentNode) {
+		return DomUtils.getNodeList(documentNode, XAdES132Path.ALL_ENCAPSULATED_TIMESTAMP_PARENT_PATH);
 	}
 
 	/**

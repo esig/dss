@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
-import eu.europa.esig.dss.asic.common.validation.AbstractASiCEWithEvidenceRecordTestValidation;
+import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithEvidenceRecordTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithEvidenceRecordDataNotFoundTest extends AbstractASiCEWithEvidenceRecordTestValidation {
+public class ASiCEWithCAdESEvidenceRecordDataNotFoundValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

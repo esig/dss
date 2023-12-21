@@ -107,6 +107,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	 * @param bbbs map of BasicBuildingBlocks
 	 * @param policy {@link ValidationPolicy}
 	 * @param currentTime {@link Date}
+	 * @param poe {@link POEExtraction}
 	 */
 	public ValidationProcessForSignaturesWithArchivalData(final I18nProvider i18nProvider, final XmlSignature signatureAnalysis,
 			final SignatureWrapper signature, final DiagnosticData diagnosticData, final Map<String, XmlBasicBuildingBlocks> bbbs,
@@ -407,6 +408,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 			for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
 				if (timestampId.equals(timestamp.getId())) {
 					return new TimestampPOE(timestamp);
+				}
+			}
+			// Should not happen, as current revision of the standard does not handle ERs within LTV process.
+			for (EvidenceRecordWrapper evidenceRecordWrapper : diagnosticData.getEvidenceRecords()) {
+				if (timestampId.equals(evidenceRecordWrapper.getId())) {
+					return new EvidenceRecordPOE(evidenceRecordWrapper);
 				}
 			}
 		}

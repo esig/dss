@@ -89,18 +89,18 @@ public class PKIAIASource implements AIASource {
             return new HashSet<>();
         }
 
-        CertEntity certEntity = certEntityRepository.getByCertificateToken(certificateToken);
-        List<CertificateToken> certificateChain = certEntity.getCertificateChain();
-        certificateChain.remove(certificateToken);
-
         if (completeCertificateChain) {
-            return new HashSet<>(certificateChain);
-        } else if (Utils.isCollectionNotEmpty(certificateChain)) {
-            CertEntity issuerCertEntity = certEntityRepository.getIssuer(certEntity);
-            return new HashSet<>(Collections.singleton(issuerCertEntity.getCertificateToken()));
+            List<CertificateToken> certificateChain = getCertificateChain(certificateToken);
+            if (Utils.isCollectionNotEmpty(certificateChain)) {
+                return new HashSet<>(certificateChain);
+            }
         } else {
-            return new HashSet<>();
+            CertificateToken certificateIssuer = getCertificateIssuer(certificateToken);
+            if (certificateIssuer != null) {
+                return new HashSet<>(Collections.singleton(certificateIssuer));
+            }
         }
+        return new HashSet<>();
     }
 
     /**
@@ -127,14 +127,41 @@ public class PKIAIASource implements AIASource {
      * @return a list of {@link CertificateToken}s
      */
     protected List<CertificateToken> getCertificateChain(CertificateToken certificateToken) {
+        CertEntity certEntity = getCertEntity(certificateToken);
+        List<CertificateToken> certificateChain = new ArrayList<>(certEntity.getCertificateChain());
+        certificateChain.remove(certificateToken);
+        return certificateChain;
+    }
+
+    /**
+     * Returns issuer of the {@code certificateToken}
+     *
+     * @param certificateToken {@link CertificateToken} to get issuer for
+     * @return {@link CertificateToken} issuer certificate token, if found
+     */
+    @SuppressWarnings("unchecked")
+    protected CertificateToken getCertificateIssuer(CertificateToken certificateToken) {
+        CertEntity certEntity = getCertEntity(certificateToken);
+        CertEntity issuerCertEntity = certEntityRepository.getIssuer(certEntity);
+        if (issuerCertEntity != null) {
+            return issuerCertEntity.getCertificateToken();
+        }
+        return null;
+    }
+
+    /**
+     * Returns a cert entity for the corresponding {@code eu.europa.esig.dss.model.x509.CertificateToken}
+     *
+     * @param certificateToken {@link CertificateToken} to get the corresponding cert entity
+     * @return {@link CertEntity}
+     */
+    protected CertEntity getCertEntity(CertificateToken certificateToken) {
         CertEntity certEntity = certEntityRepository.getByCertificateToken(certificateToken);
         if (certEntity == null) {
             throw new PKIException(String.format("CertEntity for certificate token with Id '%s' " +
                     "not found in the repository!", certificateToken.getDSSIdAsString()));
         }
-        List<CertificateToken> certificateChain = new ArrayList<>(certEntity.getCertificateChain());
-        certificateChain.remove(certificateToken);
-        return certificateChain;
+        return certEntity;
     }
 
 }

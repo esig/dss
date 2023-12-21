@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2023-11-03T10:23:59Z",
+    "ValidationDate" : "2023-12-12T15:35:11Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
@@ -131,7 +131,7 @@
         "Info" : [ ]
       }
     } ],
-    "ValidationTime" : "2023-11-03T10:23:59Z"
+    "ValidationTime" : "2023-12-12T15:35:11Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrEvidenceRecord" : [ {

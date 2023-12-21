@@ -72,14 +72,8 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
             assertTrue(Utils.isCollectionNotEmpty(evidenceRecords));
 
             for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
-                List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
-                for (XmlDigestMatcher digestMatcher : digestMatcherList) {
-                    assertTrue(digestMatcher.isDataFound());
-                    assertTrue(digestMatcher.isDataIntact());
-                }
-
                 List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
-                assertEquals(1, Utils.collectionSize(evidenceRecordScopes)); // Only signature document is referenced in the scopes
+                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
 
                 boolean sigNameFound = false;
                 for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
@@ -132,7 +126,7 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                     assertTrue(timestamp.isSignatureValid());
 
                     List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-                    assertEquals(1, Utils.collectionSize(timestampScopes));
+                    assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
 
                     sigNameFound = false;
                     for (XmlSignatureScope tstScope : timestampScopes) {
@@ -211,6 +205,8 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
         }
     }
 
+    protected abstract int getNumberOfExpectedEvidenceScopes();
+
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);
 
@@ -223,7 +219,7 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                 assertNotEquals(Indication.FAILED, xmlEvidenceRecord.getIndication());
 
                 List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> evidenceRecordScopes = xmlEvidenceRecord.getEvidenceRecordScope();
-                assertEquals(1, Utils.collectionSize(evidenceRecordScopes));
+                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
 
                 boolean sigNameFound = false;
                 for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
@@ -242,7 +238,7 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                     assertNotEquals(Indication.FAILED, xmlTimestamp.getIndication());
 
                     List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
-                    assertEquals(1, Utils.collectionSize(timestampScopes));
+                    assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
 
                     sigNameFound = false;
                     for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope tstScope : timestampScopes) {

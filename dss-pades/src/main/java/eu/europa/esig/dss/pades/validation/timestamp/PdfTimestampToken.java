@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampIdentifierBuilder;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 
@@ -34,8 +35,9 @@ import java.util.ArrayList;
  * Specific class for a PDF TimestampToken
  *
  */
-@SuppressWarnings("serial")
 public class PdfTimestampToken extends TimestampToken {
+
+	private static final long serialVersionUID = -5410279655319854578L;
 
 	/**
 	 * The related PDF revision
@@ -64,6 +66,11 @@ public class PdfTimestampToken extends TimestampToken {
 	 */
 	public PdfDocTimestampRevision getPdfRevision() {
 		return pdfRevision;
+	}
+
+	@Override
+	protected TimestampIdentifierBuilder getTimestampIdentifierBuilder() {
+		return new PdfTimestampTokenIdentifierBuilder(this);
 	}
 
 }

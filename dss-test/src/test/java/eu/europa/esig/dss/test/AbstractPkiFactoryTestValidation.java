@@ -409,6 +409,14 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 				verifyRevocationSourceData(crlSource, foundRevocations, RevocationType.CRL);
 				verifyRevocationSourceData(ocspSource, foundRevocations, RevocationType.OCSP);
+
+				XmlDigestAlgoAndValue digestAlgoAndValue = timestampWrapper.getDigestAlgoAndValue();
+				if (digestAlgoAndValue != null) {
+					assertArrayEquals(DSSUtils.digest(digestAlgoAndValue.getDigestMethod(), timestampToken.getEncoded()),
+							digestAlgoAndValue.getDigestValue());
+				} else {
+					assertArrayEquals(timestampToken.getEncoded(), timestampWrapper.getBinaries());
+				}
 			}
 
 			Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
@@ -916,6 +924,8 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		List<SignatureWrapper> allSignatures = diagnosticData.getSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
+			checkNoDuplicateTimestamps(signatureWrapper.getTimestampList());
+
 			List<String> timestampIdList = diagnosticData.getTimestampIdList(signatureWrapper.getId());
 	
 			boolean foundSignatureTimeStamp = false;
@@ -923,7 +933,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			boolean foundDocTimeStamp = false;
 			boolean foundContainerTimeStamp = false;
 	
-			if ((timestampIdList != null) && (timestampIdList.size() > 0)) {
+			if (timestampIdList != null && !timestampIdList.isEmpty()) {
 				for (String timestampId : timestampIdList) {
 					TimestampType timestampType = diagnosticData.getTimestampType(timestampId);
 					switch (timestampType) {
@@ -954,6 +964,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			}
 
 			List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
+			checkNoDuplicateTimestamps(allTimestamps);
 			for (TimestampWrapper timestampWrapper : allTimestamps) {
 				if (!timestampWrapper.getType().isEvidenceRecordTimestamp()) {
 					checkTimestamp(diagnosticData, timestampWrapper);
@@ -1159,9 +1170,15 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
 			List<XmlDigestMatcher> digestMatchers = evidenceRecord.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+			DigestAlgorithm digestAlgorithm = null;
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
 				assertNotNull(digestMatcher.getDigestMethod());
 				assertNotNull(digestMatcher.getDigestValue());
+				if (digestAlgorithm != null) {
+					assertEquals(digestAlgorithm, digestMatcher.getDigestMethod());
+				} else {
+					digestAlgorithm = digestMatcher.getDigestMethod();
+				}
 				if (allArchiveDataObjectsProvidedToValidation()) {
 					assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
 					assertTrue(digestMatcher.isDataFound());
@@ -1182,6 +1199,16 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
 			assertTrue(Utils.isCollectionNotEmpty(timestamps));
 			for (TimestampWrapper timestampWrapper : timestamps) {
+				List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
+				assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+				DigestAlgorithm digestAlgorithm = null;
+				for (XmlDigestMatcher digestMatcher : digestMatchers) {
+					if (digestAlgorithm != null) {
+						assertEquals(digestAlgorithm, digestMatcher.getDigestMethod());
+					} else {
+						digestAlgorithm = digestMatcher.getDigestMethod();
+					}
+				}
 				if (allArchiveDataObjectsProvidedToValidation()) {
 					checkTimestamp(diagnosticData, timestampWrapper);
 				}
@@ -1470,6 +1497,11 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		if (diagnosticData.isPDFAValidationPerformed()) {
 			assertNotNull(diagnosticData.getPDFAProfileId());
 		}
+	}
+
+	protected void checkNoDuplicateTimestamps(List<TimestampWrapper> timestampTokens) {
+		Set<String> tstIds = timestampTokens.stream().map(TimestampWrapper::getId).collect(Collectors.toSet());
+		assertEquals(timestampTokens.size(), tstIds.size());
 	}
 	
 	protected void checkNoDuplicateCompleteCertificates(FoundCertificatesProxy foundCertificates) {

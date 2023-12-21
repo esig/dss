@@ -34,6 +34,8 @@ import java.util.Collection;
  */
 public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
+	private static final long serialVersionUID = -7828439853620987517L;
+
 	/**
 	 * The default constructor
 	 *

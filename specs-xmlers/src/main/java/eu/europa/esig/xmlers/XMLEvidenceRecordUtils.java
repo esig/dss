@@ -21,7 +21,7 @@
 package eu.europa.esig.xmlers;
 
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
-import eu.europa.esig.ers.xmlers.jaxb.ObjectFactory;
+import eu.europa.esig.xmlers.jaxb.ObjectFactory;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

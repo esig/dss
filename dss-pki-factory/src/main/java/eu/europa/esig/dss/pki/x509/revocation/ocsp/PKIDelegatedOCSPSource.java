@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pki.x509.revocation.ocsp;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pki.exception.PKIException;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.CertEntityRepository;
 import eu.europa.esig.dss.utils.Utils;
@@ -64,8 +65,13 @@ public class PKIDelegatedOCSPSource extends PKIOCSPSource {
     }
 
     @Override
-    protected CertEntity getOCSPResponder(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
+    protected CertEntity getOcspResponder(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
         CertEntity issuerCertEntity = certEntityRepository.getByCertificateToken(issuerCertificateToken);
+        if (issuerCertEntity == null) {
+            throw new PKIException(String.format("CertEntity for certificate token with Id '%s' " +
+                            "not found in the repository! Provide a valid issuer.",
+                    issuerCertificateToken.getDSSIdAsString()));
+        }
         if (Utils.isMapNotEmpty(ocspResponders)) {
             CertEntity ocspResponder = ocspResponders.get(issuerCertEntity);
             if (ocspResponder != null) {

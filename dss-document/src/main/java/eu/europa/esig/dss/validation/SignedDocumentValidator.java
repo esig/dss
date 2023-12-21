@@ -714,6 +714,14 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		}
 	}
 
+	/**
+	 * Prepares the {@code validationContext} for the evidence record validation process
+	 *
+	 * @param validationContext
+	 *                          {@link ValidationContext}
+	 * @param evidenceRecords
+	 *                          a collection of detached evidence records
+	 */
 	protected void prepareDetachedEvidenceRecordValidationContext(
 			final ValidationContext validationContext, Collection<EvidenceRecord> evidenceRecords) {
 		for (EvidenceRecord evidenceRecord : evidenceRecords) {
@@ -936,9 +944,10 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		try {
 			try {
 				EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
-				evidenceRecordValidator.setDetachedContents(Collections.singletonList(document));
+				evidenceRecordValidator.setDetachedContents(getSignatureEvidenceRecordDetachedContents());
 				evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
 				return getEvidenceRecord(evidenceRecordValidator);
+
 			} catch (UnsupportedOperationException e) {
 				LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}" +
 						"Please ensure the corresponding module is loaded.", evidenceRecordDocument.getName(), e.getMessage());
@@ -948,6 +957,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 					evidenceRecordDocument.getName(), e.getMessage(), e);
 		}
 		return null;
+	}
+
+	private List<DSSDocument> getSignatureEvidenceRecordDetachedContents() {
+		List<DSSDocument> erDetachedContents = new ArrayList<>();
+		erDetachedContents.add(document);
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
+			erDetachedContents.addAll(detachedContents);
+		}
+		return erDetachedContents;
 	}
 
 	/**

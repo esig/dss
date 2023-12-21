@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.RepeatedTest;
@@ -62,16 +63,22 @@ public class DSS1690Test extends AbstractPAdESTestValidation {
 	}
 
 	@Override
-	protected void checkTimestamps(DiagnosticData diagnosticData) {
+	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+		super.verifySourcesAndDiagnosticData(advancedSignatures, diagnosticData);
+
+		assertEquals(1, advancedSignatures.size());
+		AdvancedSignature advancedSignature = advancedSignatures.get(0);
+
+		assertEquals(2, advancedSignature.getAllTimestamps().size());
 		assertEquals(2, diagnosticData.getTimestampList().size());
 		
-		String firstTimestampId = "T-32902C8337E0351C4AA33052A3E1DA9232D204C4839BB52879DF7183678CEE61";
+		String firstTimestampId = advancedSignature.getAllTimestamps().get(0).getDSSIdAsString();
 		TimestampWrapper firstATST = diagnosticData.getTimestampById(firstTimestampId);
 		assertNotNull(firstATST, "Timestamp " + firstTimestampId + " not found");
 		List<TimestampWrapper> timestampedTimestamps = firstATST.getTimestampedTimestamps();
 		assertEquals(0, timestampedTimestamps.size(), "First timestamp can't cover the second one");
 		
-		String secondTimestampId = "T-8E4BDE2CF1609CCB38EDABCC07DBD17B0842A1A08CB376C76B752D6E14475AC9";
+		String secondTimestampId = advancedSignature.getAllTimestamps().get(1).getDSSIdAsString();
 		TimestampWrapper secondATST = diagnosticData.getTimestampById(secondTimestampId);
 		assertNotNull(secondATST, "Timestamp " + secondTimestampId + " not found");
 		timestampedTimestamps = secondATST.getTimestampedTimestamps();

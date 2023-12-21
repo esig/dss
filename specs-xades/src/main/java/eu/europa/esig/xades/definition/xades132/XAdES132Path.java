@@ -36,10 +36,13 @@ public class XAdES132Path extends AbstractPath implements XAdESPath {
 
 	private static final long serialVersionUID = 1878591854613359863L;
 
-	// TODO find a proper way (namespace independent)
+	// TODO: find a proper way (namespace independent)
 	/** Gets all signatures without counter signatures */
-	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH = allNotParent(XMLDSigElement.SIGNATURE,
-			XAdES132Element.COUNTER_SIGNATURE);
+	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH =
+			allNotParent(XMLDSigElement.SIGNATURE, XAdES132Element.COUNTER_SIGNATURE);
+
+	/** Gets all encapsulated time-stamp token elements */
+	public static final String ALL_ENCAPSULATED_TIMESTAMP_PARENT_PATH = all(XAdES132Element.ENCAPSULATED_TIMESTAMP);
 
 	/**
 	 * Default constructor

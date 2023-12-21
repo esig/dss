@@ -22,8 +22,11 @@ package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.AbstractSignatureParametersBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
@@ -104,13 +107,34 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	}
 
 	@Override
+	public TrustedListSignatureParametersBuilder setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		return (TrustedListSignatureParametersBuilder) super.setDigestAlgorithm(digestAlgorithm);
+	}
+
+	@Override
+	public TrustedListSignatureParametersBuilder setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
+		return (TrustedListSignatureParametersBuilder) super.setEncryptionAlgorithm(encryptionAlgorithm);
+	}
+
+	@Override
+	public TrustedListSignatureParametersBuilder setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+		return (TrustedListSignatureParametersBuilder) super.setMaskGenerationFunction(maskGenerationFunction);
+	}
+
+	@Override
+	public TrustedListSignatureParametersBuilder setBLevelParams(BLevelParameters bLevelParams) {
+		return (TrustedListSignatureParametersBuilder) super.setBLevelParams(bLevelParams);
+	}
+
+	@Override
 	protected XAdESSignatureParameters initParameters() {
 		return new XAdESSignatureParameters();
 	}
 	
 	@Override
 	public XAdESSignatureParameters build() {
-		XAdESSignatureParameters signatureParameters = super.build();
+		final XAdESSignatureParameters signatureParameters = super.build();
+
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setEn319132(false);

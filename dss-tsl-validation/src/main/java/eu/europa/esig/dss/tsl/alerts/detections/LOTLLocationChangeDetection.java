@@ -52,10 +52,9 @@ public class LOTLLocationChangeDetection implements AlertDetector<LOTLInfo> {
 
 			List<PivotInfo> pivotInfos = info.getPivotInfos();
 			if (Utils.isCollectionNotEmpty(pivotInfos)) {
-				for (PivotInfo pivotInfo : pivotInfos) {
-					if (!Utils.areStringsEqual(pivotInfo.getLOTLLocation(), lotlSource.getUrl())) {
-						return true;
-					}
+				PivotInfo lastPivotInfo = pivotInfos.get(pivotInfos.size() - 1);
+				if (!Utils.areStringsEqual(lastPivotInfo.getLOTLLocation(), info.getUrl())) {
+					return true;
 				}
 			}
 		}

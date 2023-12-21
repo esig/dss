@@ -231,4 +231,9 @@ public class XAdESLevelLTWithBrokenXmlEvidenceRecordValidationTest extends Abstr
         // skip
     }
 
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 1;
+    }
+
 }

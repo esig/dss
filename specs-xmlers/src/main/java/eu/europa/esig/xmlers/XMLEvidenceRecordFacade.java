@@ -21,7 +21,7 @@
 package eu.europa.esig.xmlers;
 
 import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
-import eu.europa.esig.ers.xmlers.jaxb.EvidenceRecordType;
+import eu.europa.esig.xmlers.jaxb.EvidenceRecordType;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;

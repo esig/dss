@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.TimeZone;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -40,10 +31,14 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.XPathEnvelopedSignatureTransform;
+import org.junit.jupiter.api.BeforeEach;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 public class XAdESLevelBXPathEnvelopedWithContentTstTest extends AbstractXAdESTestSignature {
-	
-	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -59,10 +54,10 @@ public class XAdESLevelBXPathEnvelopedWithContentTstTest extends AbstractXAdESTe
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		Date date = sdf.parse("2020-08-01 12:00");
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MONTH, -1);
+		Date date = calendar.getTime();
 
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsaByTime(date));

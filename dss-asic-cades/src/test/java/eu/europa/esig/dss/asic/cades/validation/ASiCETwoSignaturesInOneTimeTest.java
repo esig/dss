@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 
 import java.util.List;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCETwoSignaturesInOneTimeTest extends AbstractASiCWithCAdESTestValidation {
 
@@ -50,6 +54,30 @@ public class ASiCETwoSignaturesInOneTimeTest extends AbstractASiCWithCAdESTestVa
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertFalse(signatureWrapper.isBLevelTechnicallyValid());
 		}
+	}
+
+	@Override
+	protected void checkTimestamps(DiagnosticData diagnosticData) {
+		super.checkTimestamps(diagnosticData);
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		assertEquals(2, timestampList.size());
+
+		int tstValidCounter = 0;
+		for (TimestampWrapper timestampWrapper : timestampList) {
+			assertEquals(TimestampType.SIGNATURE_TIMESTAMP, timestampWrapper.getType());
+			assertTrue(timestampWrapper.isMessageImprintDataFound());
+			assertTrue(timestampWrapper.isMessageImprintDataIntact());
+			assertTrue(timestampWrapper.isSignatureIntact());
+			assertTrue(timestampWrapper.isSignatureValid());
+			++tstValidCounter;
+		}
+		assertEquals(2, tstValidCounter);
+
+		assertEquals(timestampList.get(0).getDigestAlgoAndValue().getDigestMethod(),
+				timestampList.get(1).getDigestAlgoAndValue().getDigestMethod());
+		assertArrayEquals(timestampList.get(0).getDigestAlgoAndValue().getDigestValue(),
+				timestampList.get(1).getDigestAlgoAndValue().getDigestValue());
 	}
 
 }

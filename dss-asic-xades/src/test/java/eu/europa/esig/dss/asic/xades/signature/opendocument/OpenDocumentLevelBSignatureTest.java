@@ -30,7 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
 
-public class OpenDocumentLevelBSignatureTest extends AbstractOpenDocumentTestSignature {
+public class OpenDocumentLevelBSignatureTest extends AbstractOpenDocumentSetTestSignature {
 	
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;

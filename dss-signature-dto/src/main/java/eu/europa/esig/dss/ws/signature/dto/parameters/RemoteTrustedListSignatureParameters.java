@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 
 import java.io.Serializable;
@@ -39,6 +41,21 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
      * The signing certificate
      */
     private RemoteCertificate signingCertificate;
+
+    /**
+     * The encryption algorithm used for a signature creation by the current signing-certificate
+     */
+    private EncryptionAlgorithm encryptionAlgorithm;
+
+    /**
+     * The digest algorithm used to hash signed data on signing
+     */
+    private DigestAlgorithm digestAlgorithm;
+
+    /**
+     * The mask generation function used on signing
+     */
+    private MaskGenerationFunction maskGenerationFunction;
 
     /**
      * The B-Level parameters
@@ -78,6 +95,60 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
      */
     public void setSigningCertificate(RemoteCertificate signingCertificate) {
         this.signingCertificate = signingCertificate;
+    }
+
+    /**
+     * Gets the encryption algorithm used by the signing-certificate
+     *
+     * @return {@link EncryptionAlgorithm}
+     */
+    public EncryptionAlgorithm getEncryptionAlgorithm() {
+        return encryptionAlgorithm;
+    }
+
+    /**
+     * Sets the encryption algorithm used by the signing-certificate
+     *
+     * @param encryptionAlgorithm {@link EncryptionAlgorithm}
+     */
+    public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
+        this.encryptionAlgorithm = encryptionAlgorithm;
+    }
+
+    /**
+     * Gets a digest algorithm used on signing
+     *
+     * @return {@link DigestAlgorithm}
+     */
+    public DigestAlgorithm getDigestAlgorithm() {
+        return digestAlgorithm;
+    }
+
+    /**
+     * Sets a digest algorithm used on signing
+     *
+     * @param digestAlgorithm {@link DigestAlgorithm}
+     */
+    public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+        this.digestAlgorithm = digestAlgorithm;
+    }
+
+    /**
+     * Gets a mask generation function, if used
+     *
+     * @return {@link MaskGenerationFunction}
+     */
+    public MaskGenerationFunction getMaskGenerationFunction() {
+        return maskGenerationFunction;
+    }
+
+    /**
+     * Sets a mask generation function, if used
+     *
+     * @param maskGenerationFunction {@link MaskGenerationFunction}
+     */
+    public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+        this.maskGenerationFunction = maskGenerationFunction;
     }
 
     /**

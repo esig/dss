@@ -452,6 +452,8 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Adds an evidence record covering the signature file
+	 *
+	 * @param evidenceRecord {@link EvidenceRecord}
 	 */
 	void addExternalEvidenceRecord(EvidenceRecord evidenceRecord);
 
