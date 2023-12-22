@@ -199,7 +199,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 			XAdESService service = new XAdESService(verifier);
-			service.setTspSource(getOnlineTSPSource());
+			service.setTspSource(getTSPSource());
 
 			// Signature process with its 3 stateless steps
 			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
@@ -290,7 +290,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 			XAdESService service = new XAdESService(verifier);
-			service.setTspSource(getOnlineTSPSource());
+			service.setTspSource(getTSPSource());
 
 			ToBeSigned dataToSign = service.getDataToSign(document, parameters);
 			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
@@ -356,7 +356,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 			XAdESService service = new XAdESService(verifier);
-			service.setTspSource(getOnlineTSPSource());
+			service.setTspSource(getTSPSource());
 
 			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
@@ -423,7 +423,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 			XAdESService service = new XAdESService(verifier);
-			service.setTspSource(getOnlineTSPSource());
+			service.setTspSource(getTSPSource());
 
 			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
@@ -484,7 +484,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 			XAdESService service = new XAdESService(verifier);
-			service.setTspSource(getOnlineTSPSource());
+			service.setTspSource(getTSPSource());
 
 			ToBeSigned dataToSign = service.getDataToSign(toSignDocument, parameters);
 			SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);

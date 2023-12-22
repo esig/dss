@@ -64,7 +64,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 		// Return AbstractSignatureTokenConnection signingToken
 		// and it's first private key entry from the PKCS12 store
 		// Return DSSPrivateKeyEntry privateKey *****
-		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
+		try (SignatureTokenConnection signingToken = getUserPkcs12Token()) {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
@@ -105,7 +105,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			// We set the certificate chain
 			parameters.setCertificateChain(privateKey.getCertificateChain());
 
-			CommonsDataLoader commonsHttpDataLoader = new CommonsDataLoader();
+			CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
 			OCSPDataLoader ocspDataLoader = new OCSPDataLoader();
 
 			KeyStoreCertificateSource keyStoreCertificateSource = new KeyStoreCertificateSource(
@@ -118,7 +118,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 
 			TrustedListsCertificateSource tslCertificateSource = new TrustedListsCertificateSource();
 			
-			FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader(commonsHttpDataLoader);
+			FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader(commonsDataLoader);
 			
 			CacheCleaner cacheCleaner = new CacheCleaner();
 			cacheCleaner.setCleanFileSystem(true);
@@ -141,7 +141,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 
 			// Instantiate CRL source
 			OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
-			onlineCRLSource.setDataLoader(commonsHttpDataLoader);
+			onlineCRLSource.setDataLoader(commonsDataLoader);
 			commonCertificateVerifier.setCrlSource(onlineCRLSource);
 
 			// Instantiate OCSP source
