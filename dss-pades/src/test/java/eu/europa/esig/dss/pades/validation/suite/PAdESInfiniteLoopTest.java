@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
-import static java.time.Duration.ofMillis;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import static java.time.Duration.ofMillis;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 // See DSS-1872
 public class PAdESInfiniteLoopTest {
@@ -42,6 +42,7 @@ public class PAdESInfiniteLoopTest {
 	
 			PDFDocumentValidator validator = new PDFDocumentValidator(dssDocument);
 			validator.setCertificateVerifier(new CommonCertificateVerifier());
+			validator.setSignaturePolicyProvider(new SignaturePolicyProvider());
 			Reports reports = validator.validateDocument();
 			assertNotNull(reports);
 			// NOTE: OpenPDF and PDFBox search for signatures in opposite directions, therefore the results are different!
@@ -55,6 +56,7 @@ public class PAdESInfiniteLoopTest {
 	
 			PDFDocumentValidator validator = new PDFDocumentValidator(dssDocument);
 			validator.setCertificateVerifier(new CommonCertificateVerifier());
+			validator.setSignaturePolicyProvider(new SignaturePolicyProvider());
 			Reports reports = validator.validateDocument();
 			assertNotNull(reports);
 			// NOTE: OpenPDF and PDFBox search for signatures in opposite directions, therefore the results are different!
