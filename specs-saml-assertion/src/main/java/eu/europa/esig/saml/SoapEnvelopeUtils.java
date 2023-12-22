@@ -22,8 +22,8 @@ package eu.europa.esig.saml;
 
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import java.util.ArrayList;

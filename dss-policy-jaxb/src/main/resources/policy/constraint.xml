@@ -491,14 +491,14 @@
 			<Algo>DSA</Algo>
 			<Algo>ECDSA</Algo>
 			<Algo>PLAIN-ECDSA</Algo>
-<!-- 		<Algo>Ed25519</Algo> 				Not referenced in ETSI/SOGIS -->
+<!-- 		<Algo>EdDSA</Algo> 				Not referenced in ETSI/SOGIS -->
 		</AcceptableEncryptionAlgo>
 		<MiniPublicKeySize>
 			<Algo Size="1024">DSA</Algo>
 			<Algo Size="1024">RSA</Algo>
 			<Algo Size="160">ECDSA</Algo>
 			<Algo Size="160">PLAIN-ECDSA</Algo>
-<!-- 		<Algo Size="24">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
+<!-- 		<Algo Size="24">EdDSA</Algo> 		Not referenced in ETSI/SOGIS -->
 		</MiniPublicKeySize>
 		<AcceptableDigestAlgo>
 <!--		<Algo>MD2</Algo> 		Not referenced in ETSI/SOGIS -->
@@ -551,7 +551,7 @@
 			<Algo Date="2029" Size="256">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2029" Size="384">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2029" Size="512">PLAIN-ECDSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
-<!-- 		<Algo Date="2026" Size="32">Ed25519</Algo> 		Not referenced in ETSI/SOGIS -->
+<!-- 		<Algo Date="2026" Size="24">EdDSA</Algo> 		Not referenced in ETSI/SOGIS -->
 			<!-- end Encryption algorithms -->
 		</AlgoExpirationDate>
 	</Cryptographic> 

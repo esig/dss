@@ -29,7 +29,7 @@ import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 
 /**

@@ -553,7 +553,9 @@ public abstract class PKIFactoryAccess {
     }
 
     protected PkiTSPFailSource getFailPkiTspSource(String tsaName) {
-        return new PkiTSPFailSource(getPKICertEntity(tsaName));
+        PkiTSPFailSource tspSource = new PkiTSPFailSource(getPKICertEntity(tsaName));
+        tspSource.setTsaPolicy(DEFAULT_TSA_POLICY);
+        return tspSource;
     }
 
     protected OnlineTSPSource getOnlineTSPSourceByName(String tsaName) {

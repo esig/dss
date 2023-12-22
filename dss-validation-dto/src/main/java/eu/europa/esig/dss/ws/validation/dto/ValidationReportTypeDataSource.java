@@ -23,7 +23,7 @@ package eu.europa.esig.dss.ws.validation.dto;
 import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-import javax.activation.DataSource;
+import jakarta.activation.DataSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

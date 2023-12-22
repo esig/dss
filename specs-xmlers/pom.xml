@@ -4,7 +4,7 @@
     <parent>
         <artifactId>sd-dss</artifactId>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-        <version>5.13</version>
+        <version>6.0</version>
     </parent>
 
     <artifactId>specs-xmlers</artifactId>
@@ -66,7 +66,7 @@
                     <useDependenciesAsEpisodes>true</useDependenciesAsEpisodes>
 
                     <strict>false</strict>
-                    <specVersion>2.3</specVersion>
+                    <specVersion>3.0</specVersion>
                     <episode>true</episode>
                     <locale>en</locale>
 
@@ -78,7 +78,7 @@
                     <dependency>
                         <groupId>org.glassfish.jaxb</groupId>
                         <artifactId>jaxb-runtime</artifactId>
-                        <version>2.3.9</version>
+                        <version>3.0.2</version>
                     </dependency>
                 </dependencies>
             </plugin>

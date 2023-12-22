@@ -45,7 +45,7 @@ import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;

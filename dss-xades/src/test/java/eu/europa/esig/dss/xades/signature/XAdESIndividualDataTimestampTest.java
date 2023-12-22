@@ -53,7 +53,7 @@ import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.junit.jupiter.api.Test;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;

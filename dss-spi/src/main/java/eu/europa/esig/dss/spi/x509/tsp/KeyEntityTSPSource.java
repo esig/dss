@@ -50,6 +50,7 @@ import org.bouncycastle.tsp.TimeStampRequest;
 import org.bouncycastle.tsp.TimeStampRequestGenerator;
 import org.bouncycastle.tsp.TimeStampResponse;
 import org.bouncycastle.tsp.TimeStampResponseGenerator;
+import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.tsp.TimeStampTokenGenerator;
 
 import java.io.ByteArrayInputStream;
@@ -386,7 +387,7 @@ public class KeyEntityTSPSource implements TSPSource {
         try {
             TimeStampRequest request = createRequest(digestAlgorithm, digest);
             TimeStampResponse response = generateResponse(request, digestAlgorithm);
-            return new TimestampBinary(response.getTimeStampToken().getEncoded());
+            return getTimestampBinary(response);
 
         } catch (IOException | TSPException e) {
             throw new DSSException(String.format("Unable to generate a timestamp. Reason : %s", e.getMessage()), e);
@@ -492,6 +493,7 @@ public class KeyEntityTSPSource implements TSPSource {
      * @param getTime {@link Date} production time of the time-stamp
      * @return {@link CMSAttributeTableGenerator}
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected CMSAttributeTableGenerator getSignedAttributeGenerator(Date getTime) {
         return new DefaultSignedAttributeTableGenerator() {
 
@@ -533,6 +535,24 @@ public class KeyEntityTSPSource implements TSPSource {
      */
     protected BigInteger getTimeStampSerialNumber() {
         return new BigInteger(128, secureRandom);
+    }
+
+    /**
+     * Returns time-stamp binary from the obtained {@code response}
+     *
+     * @param response {@link TimeStampResponse}
+     * @return {@link TimestampBinary}
+     * @throws IOException if en error occurs on time-stamp binaries extraction
+     */
+    protected TimestampBinary getTimestampBinary(TimeStampResponse response) throws IOException {
+        TimeStampToken timeStampToken = response.getTimeStampToken();
+        if (timeStampToken != null) {
+            return new TimestampBinary(timeStampToken.getEncoded());
+        } else if (response.getStatusString() != null) {
+            throw new DSSException(String.format("Unable to generate a timestamp. Reason : %s", response.getStatusString()));
+        } else {
+            throw new DSSException("Unable to generate a timestamp. Response returned an empty time-stamp token.");
+        }
     }
 
 }

@@ -316,9 +316,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/JKSSnippet
 ----
 
 ===== Other Implementations
-NOTE: The DSS also provides the support for MOCCA framework to communicate with the Smartcard with PC/SC, but it involves the installation of the MOCCA and IAIK libraries.
 
-As you can see, it is easy to add another implementation of the `SignatureTokenConnection`, thus enabling the framework to use other API than provided within the framework. For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
+Another implementation can be added by extending the `SignatureTokenConnection` interface, thus enabling the framework to use other API than provided within the framework. For example, it is likely that in the future PC/SC will be the preferred way of accessing a Smartcard. Although PKCS#11 is currently the most used API, DSS framework is extensible and can use PC/SC. For our design example we propose to use PC/SC to communicate with the Smartcard.
 
 ==== Key management
 

@@ -47,7 +47,7 @@ public class ExtendXAdESTest extends CookbookTools {
 		prepareXmlDoc();
 
 		DSSDocument signedDocument = null;
-		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
+		try (SignatureTokenConnection signingToken = getUserPkcs12Token()) {
 
 			DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();

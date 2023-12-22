@@ -140,7 +140,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 
 			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 			XAdESService service = new XAdESService(verifier);
-			service.setTspSource(getOnlineTSPSource());
+			service.setTspSource(getTSPSource());
 
 			// Allows setting of content-timestamp (part of the signed attributes)
 			TimestampToken contentTimestamp = service.getContentTimestamp(toSignDocument, xadesSignatureParameters);

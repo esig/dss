@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>5.13</version>
+		<version>6.0</version>
 	</parent>
 
 	<artifactId>dss-diagnostic-jaxb</artifactId>
@@ -32,24 +32,24 @@
 								<schemaInclude>DiagnosticData.xsd</schemaInclude>
 							</schemaIncludes>
 							<bindingIncludes>
-								<include>binding.xml</include>
+								<include>bindings.xml</include>
 							</bindingIncludes>
-							<specVersion>2.1</specVersion>
+							<specVersion>3.0</specVersion>
 							<encoding>UTF-8</encoding>
 							<locale>en</locale>
-							
+
 							<extension>true</extension>
-			                <args>
-			                    <arg>-Xxew</arg>
-			                    <arg>-Xxew:instantiate lazy</arg>
-			                </args>
-							 <plugins>
-			                    <plugin>
-			                        <groupId>com.github.jaxb-xew-plugin</groupId> <!-- Allows to add XmlElementWrapper -->
-			                        <artifactId>jaxb-xew-plugin</artifactId>
-                      					<version>1.11</version> <!-- version 2+ only for Jakarta v3+ -->
-			                    </plugin>
-			                </plugins>
+							<args>
+								<arg>-Xxew</arg>
+								<arg>-Xxew:instantiate lazy</arg>
+							</args>
+							<plugins>
+								<plugin>
+									<groupId>com.github.jaxb-xew-plugin</groupId> <!-- Allows to add XmlElementWrapper -->
+									<artifactId>jaxb-xew-plugin</artifactId>
+									<version>2.1</version>
+								</plugin>
+							</plugins>
 						</configuration>
 					</execution>
 				</executions>
@@ -57,7 +57,7 @@
 					<dependency>
 						<groupId>org.glassfish.jaxb</groupId>
 						<artifactId>jaxb-runtime</artifactId>
-						<version>2.3.9</version>
+						<version>3.0.2</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -108,7 +108,7 @@
                 <jdk>[9,13)</jdk>
             </activation>
             <properties>
-				<!-- specs-xmldsig\target\generated-sources\xjc\eu\europa\esig\xmldsig\jaxb\package-info.java:8: error: unknown tag: javax.xml.bind.annotation.XmlSchema -->
+				<!-- specs-xmldsig\target\generated-sources\xjc\eu\europa\esig\xmldsig\jaxb\package-info.java:8: error: unknown tag: jakarta.xml.bind.annotation.XmlSchema -->
 				<maven.javadoc.skip>true</maven.javadoc.skip>
             </properties>
 		</profile>

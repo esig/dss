@@ -40,7 +40,7 @@ import eu.europa.esig.validationreport.jaxb.SATimestampType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import java.util.ArrayList;
 import java.util.List;
 

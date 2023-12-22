@@ -360,9 +360,7 @@ public final class DSSXMLUtils {
 				} else {
 					NodeList indentedXmlNodes = DomUtils.getNodeList(indentedSignature, pathAllFromCurrentPosition);
 					if (indentedXmlNodes.getLength() == 0) {
-						// TODO : temporary safe handling for 5.13
-						LOG.warn("No elements found matching the '{}' XPath expression!", pathAllFromCurrentPosition);
-						return xmlNode;
+						throw new IllegalStateException(String.format("No elements found matching the '%s' XPath expression!", pathAllFromCurrentPosition));
 					}
 					// return the last item
 					indentedXmlNode = indentedXmlNodes.item(indentedXmlNodes.getLength() - 1);
