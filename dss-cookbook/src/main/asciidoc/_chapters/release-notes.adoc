@@ -11,6 +11,16 @@
 |===
 |Version           |Release date             |Features
 
+|v6.0             |December 2023            a|Main new features / improvements :
+
+                                            * Transition from `javax.\*` to `jakarta.*` namespaces;
+                                            * Demos : webapp migrated from Spring to Spring-Boot 3;
+                                            * Demos : removed sscd-mocca-adapter module.
+
+Bug fixes :
+
+                                            * KeyEntityTSPSource : add null safe processing.
+
 |v5.13             |December 2023           a|Bug fixes :
 
                                             * RFC 6283 XML Evidence Records (XMLERS) bug fixes;
@@ -343,14 +353,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `5.13` using <<BomModule>>:
+The example below shows how to switch to DSS version `6.0` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.13</dss.version>
+    <dss.version>6.0</dss.version>
     ...
 </properties>
 

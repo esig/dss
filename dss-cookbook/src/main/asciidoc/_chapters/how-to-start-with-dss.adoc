@@ -25,7 +25,9 @@ The latest version of DSS framework has the following minimal requirements:
 * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
 * Operating system: no specific requirements (tested on Windows and Linux).
 
-NOTE: We strongly recommend using the latest available version of JDK, in order to have the most recent security fixes and cryptographical algorithm updates. We also recommend to use JDK 11+.
+Starting from version `6.0`, DSS uses `jakarta.\*` namespace naming of Specification API. If your application uses `javax.*` namespaces, please use version `5.13`.
+
+NOTE: We strongly recommend using the latest available version of JDK, in order to have the most recent security fixes and cryptographical algorithm updates. We also recommend to use JDK 17+.
 
 WARNING: Before processing the integration steps, please ensure you have successfully installed Maven and JVM with a required version.
 
@@ -42,7 +44,7 @@ The simplest way to include DSS to your project is to use https://central.sonaty
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
-        <version>5.13</version>
+        <version>6.0</version>
     </dependency>
     ...
 </dependencies>
@@ -87,7 +89,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>5.13</version>
+            <version>6.0</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -133,7 +135,6 @@ In addition to the general build, the framework provides a list of various profi
 * *quick-init* - is similar to the `quick` profile. Disables java-doc validation for all modules and unit tests excluding some modules which have dependencies on their test classes. *Can be used for the primary build of DSS*.
 * *slow-tests* - executes all tests, including time-consuming unit tests.
 * *owasp* - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
-* *jdk19-plus* - executed automatically for JDK version 9 and higher. Provides a support of JDK 8 with newer versions.
 * *spotless* - used to add a licence header into project files.
 
 WARNING: Some modules (e.g. `dss-utils`, `dss-crl-parser`, etc., see ch. <<SpecificModules>>) have to be built completely, as other modules are dependent on their test classes. Therefore, for the first build of DSS, the profile `quick-init` should be chosen rather than `quick` profile.
