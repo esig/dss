@@ -102,11 +102,19 @@ public class CookbookTools extends PKIFactoryAccess {
 	}
 
 	/**
+	 * This method retrieves an instance of online PKCS12 keystore
+	 *
+	 */
+	protected SignatureTokenConnection getUserPkcs12Token() throws IOException {
+		return getOnlinePKCS12Token();
+	}
+
+	/**
 	 * This method retrieves an instance of PKCS12 keystore
 	 * 
 	 */
 	protected SignatureTokenConnection getPkcs12Token() throws IOException {
-		return getOnlinePKCS12Token();
+		return getToken();
 	}
 
 	protected TSPSource getOnlineTSPSource() {
@@ -115,7 +123,13 @@ public class CookbookTools extends PKIFactoryAccess {
 
 	@Override
 	protected CertificateSource getTrustedCertificateSource() {
-		return getOnlineTrustedCertificateSource();
+		CertificateSource trustedCertificateSource = super.getTrustedCertificateSource();
+		getOnlineTrustedCertificateSource().getCertificates().forEach(trustedCertificateSource::addCertificate);
+		return trustedCertificateSource;
+	}
+
+	protected TSPSource getTSPSource() {
+		return getPKITSPSourceByName(GOOD_TSA);
 	}
 
 	@Override
