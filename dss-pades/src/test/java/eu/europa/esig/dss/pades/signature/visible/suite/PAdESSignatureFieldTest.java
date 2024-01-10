@@ -55,6 +55,7 @@ import java.io.InputStreamReader;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -849,9 +850,13 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
 				getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-
 		// signedDocument.save("target/test.pdf");
 
+		validate(signedDocument);
+		return signedDocument;
+	}
+
+	private Reports validate(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
@@ -868,11 +873,12 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 				assertTrue(digestMatcher.isDataFound());
 				assertTrue(digestMatcher.isDataIntact());
 			}
+			assertFalse(signature.arePdfModificationsDetected());
+			assertTrue(signature.getPdfUndefinedChanges().isEmpty());
 		}
-
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 
-		return signedDocument;
+		return reports;
 	}
 
 	private int countStringOccurrence(DSSDocument document, String textToCheck) {
