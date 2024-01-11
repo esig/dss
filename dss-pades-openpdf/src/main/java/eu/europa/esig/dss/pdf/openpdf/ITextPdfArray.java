@@ -28,16 +28,18 @@ import com.lowagie.text.pdf.PdfIndirectReference;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfNull;
 import com.lowagie.text.pdf.PdfNumber;
-import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfObject;
+import eu.europa.esig.dss.pdf.PdfSimpleObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * The IText (OpenPDF) implementation of {@code eu.europa.esig.dss.pdf.PdfArray}
@@ -47,7 +49,10 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	private static final Logger LOG = LoggerFactory.getLogger(ITextPdfArray.class);
 
 	/** The OpenPDF object */
-	private PdfArray wrapped;
+	private final PdfArray wrapped;
+
+	/** Parent object */
+	private final PdfObject parent;
 
 	/**
 	 * Default constructor
@@ -55,7 +60,29 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	 * @param wrapped {@link PdfArray}
 	 */
 	public ITextPdfArray(PdfArray wrapped) {
+		this(wrapped, null);
+	}
+
+	/**
+	 * Constructor with a parent provided
+	 *
+	 * @param wrapped {@link PdfArray}
+	 * @param parent {@link PdfObject}
+	 */
+	public ITextPdfArray(PdfArray wrapped, PdfObject parent) {
+		Objects.requireNonNull(wrapped, "Pdf array shall be provided!");
 		this.wrapped = wrapped;
+		this.parent = parent;
+	}
+
+	@Override
+	public PdfObject getValue() {
+		return this;
+	}
+
+	@Override
+	public PdfObject getParent() {
+		return parent;
 	}
 
 	@Override
@@ -65,7 +92,7 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 
 	@Override
 	public Long getObjectNumber(int i) {
-		PdfObject pdfObject = wrapped.getPdfObject(i);
+		com.lowagie.text.pdf.PdfObject pdfObject = wrapped.getPdfObject(i);
 		if (pdfObject == null) {
 			throw new DSSException("The requested PDF object not found!");
 		}
@@ -99,31 +126,31 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 
 	@Override
 	public PdfDict getAsDict(int i) {
-		PdfObject directObject = wrapped.getDirectObject(i);
+		com.lowagie.text.pdf.PdfObject directObject = wrapped.getDirectObject(i);
 		if (directObject instanceof PdfDictionary) {
-			return new ITextPdfDict((PdfDictionary) directObject);
+			return new ITextPdfDict((PdfDictionary) directObject, this);
 		}
 		return null;
 	}
 
 	@Override
-	public Object getObject(int i) {
-		PdfObject directObject = wrapped.getDirectObject(i);
+	public PdfObject getObject(int i) {
+		com.lowagie.text.pdf.PdfObject directObject = wrapped.getDirectObject(i);
 		if (directObject == null) {
 			return null;
 		}
 		if (directObject instanceof PdfDictionary) {
 			return getAsDict(i);
 		} else if (directObject instanceof com.lowagie.text.pdf.PdfArray) {
-			return new ITextPdfArray((com.lowagie.text.pdf.PdfArray) directObject);
+			return new ITextPdfArray((com.lowagie.text.pdf.PdfArray) directObject, this);
 		} else if (directObject instanceof PdfString) {
-			return getString(i);
+			return new PdfSimpleObject(getString(i), this);
 		} else if (directObject instanceof PdfName) {
-			return PdfName.decodeName(directObject.toString());
+			return new PdfSimpleObject(PdfName.decodeName(directObject.toString()), this);
 		} else if (directObject instanceof PdfNumber) {
-			return getNumber(i);
+			return new PdfSimpleObject(getNumber(i), this);
 		} else if (directObject instanceof PdfBoolean) {
-			return ((PdfBoolean) directObject).booleanValue();
+			return new PdfSimpleObject(((PdfBoolean) directObject).booleanValue(), this);
 		} else if (directObject instanceof PdfNull) {
 			return null;
 		} else {

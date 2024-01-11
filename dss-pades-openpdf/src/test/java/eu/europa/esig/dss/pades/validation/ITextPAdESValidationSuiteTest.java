@@ -61,6 +61,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleCorruptedTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSimpleValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESSpoofingAttackReplacementTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampWithOrphanRefsTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESTimestampedExistingFieldsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESTwoSigWithCopiedTstTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithAddedPageTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithCrossCertificateOCSPsTest;
@@ -127,7 +128,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESWithVRITimeStampTest.class, PAdESWithVRITimeTest.class, PAdESWithSpoofingAttackTest.class, PAdESSpoofingAttackReplacementTest.class,
 		PAdESEndEntityCertIssuedByNotCACertTest.class, DSS3111Test.class, PAdESLevelLTWithXmlEvidenceRecordValidationTest.class,
 		PAdESLevelTWithDuplicatedSigTstTest.class, PAdESLevelTWithDuplicatedDocTstTest.class, PAdESLevelLTAWithCopiedDocTstTest.class,
-		PAdESTwoSigWithCopiedTstTest.class })
+		PAdESTwoSigWithCopiedTstTest.class, PAdESTimestampedExistingFieldsTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }

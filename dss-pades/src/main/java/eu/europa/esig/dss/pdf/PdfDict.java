@@ -28,7 +28,7 @@ import java.util.Date;
  * The usage of this interface permit the user to choose the underlying PDF
  * library use to created PDF signatures.
  */
-public interface PdfDict {
+public interface PdfDict extends PdfObject {
 
 	/**
 	 * Gets an embedded dictionary by name
@@ -95,12 +95,12 @@ public interface PdfDict {
 	Number getNumberValue(String name);
 
 	/**
-	 * Returns an object
+	 * Returns a PDF object
 	 *
 	 * @param name {@link String} property name
-	 * @return {@link Object} value
+	 * @return {@link PdfObject} value
 	 */
-	Object getObject(String name);
+	PdfObject getObject(String name);
 
 	/**
 	 * Returns a number of indirect reference to an object, when applicable

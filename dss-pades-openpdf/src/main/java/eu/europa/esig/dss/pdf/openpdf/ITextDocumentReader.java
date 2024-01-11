@@ -151,7 +151,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public PdfDssDict getDSSDictionary() {
-		PdfDict currentCatalog = new ITextPdfDict(pdfReader.getCatalog());
+		PdfDict currentCatalog = getCatalogDictionary();
 		return SingleDssDict.extract(currentCatalog);
 	}
 

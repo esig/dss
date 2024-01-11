@@ -158,7 +158,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public PdfDssDict getDSSDictionary() {
-		PdfDict catalog = new PdfBoxDict(pdDocument.getDocumentCatalog().getCOSObject(), pdDocument);
+		PdfDict catalog = getCatalogDictionary();
 		return SingleDssDict.extract(catalog);
 	}
 

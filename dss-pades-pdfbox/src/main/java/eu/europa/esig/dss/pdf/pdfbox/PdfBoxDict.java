@@ -22,6 +22,8 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfObject;
+import eu.europa.esig.dss.pdf.PdfSimpleObject;
 import eu.europa.esig.dss.utils.Utils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
@@ -55,10 +57,13 @@ class PdfBoxDict implements PdfDict {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxDict.class);
 
 	/** The PDFBox object */
-	private COSDictionary wrapped;
+	private final COSDictionary wrapped;
 
 	/** The document */
-	private PDDocument document;
+	private final PDDocument document;
+
+	/** Parent object */
+	private final PdfObject parent;
 
 	/**
 	 * Default constructor
@@ -66,11 +71,32 @@ class PdfBoxDict implements PdfDict {
 	 * @param wrapped {@link COSDictionary}
 	 * @param document {@link PDDocument}
 	 */
-	public PdfBoxDict(COSDictionary wrapped, PDDocument document) {
+	public PdfBoxDict(final COSDictionary wrapped, final PDDocument document) {
+		this(wrapped, document, null);
+	}
+
+	/**
+	 * Constructor with a parent object
+	 *
+	 * @param wrapped {@link COSDictionary}
+	 * @param document {@link PDDocument}
+	 */
+	public PdfBoxDict(final COSDictionary wrapped, final PDDocument document, final PdfObject parent) {
 		Objects.requireNonNull(wrapped, "Pdf dictionary shall be provided!");
 		Objects.requireNonNull(document, "Pdf document shall be provided!");
 		this.wrapped = wrapped;
 		this.document = document;
+		this.parent = parent;
+	}
+
+	@Override
+	public PdfObject getValue() {
+		return this;
+	}
+
+	@Override
+	public PdfObject getParent() {
+		return parent;
 	}
 
 	@Override
@@ -89,14 +115,14 @@ class PdfBoxDict implements PdfDict {
 			LOG.warn("Unable to extract entry with name '{}' as dictionary!", name);
 			return null;
 		}
-		return new PdfBoxDict(cosDictionary, document);
+		return new PdfBoxDict(cosDictionary, document, this);
 	}
 
 	@Override
 	public PdfArray getAsArray(String name) {
 		COSBase val = wrapped.getDictionaryObject(name);
 		if (val instanceof COSArray) {
-			return new PdfBoxArray((COSArray) val, document);
+			return new PdfBoxArray((COSArray) val, document, this);
 		}
 		return null;
 	}
@@ -154,7 +180,7 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
-	public Object getObject(String name) {
+	public PdfObject getObject(String name) {
 		COSBase dictionaryObject = wrapped.getDictionaryObject(name);
 		if (dictionaryObject == null) {
 			return null;
@@ -164,13 +190,13 @@ class PdfBoxDict implements PdfDict {
 		} else if (dictionaryObject instanceof COSArray) {
 			return getAsArray(name);
 		} else if (dictionaryObject instanceof COSString) {
-			return getStringValue(name);
+			return new PdfSimpleObject(getStringValue(name), this);
 		} else if (dictionaryObject instanceof COSName) {
-			return getNameValue(name);
+			return new PdfSimpleObject(getNameValue(name), this);
 		} else if (dictionaryObject instanceof COSNumber) {
-			return getNumberValue(name);
+			return new PdfSimpleObject(getNumberValue(name), this);
 		} else if (dictionaryObject instanceof COSBoolean) {
-			return ((COSBoolean) dictionaryObject).getValueAsObject();
+			return new PdfSimpleObject(((COSBoolean) dictionaryObject).getValueAsObject(), this);
 		} else if (dictionaryObject instanceof COSNull) {
 			return null;
 		} else {

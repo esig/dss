@@ -53,9 +53,7 @@ import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
-import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.modifications.PdfModification;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
@@ -235,9 +233,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		AcroFields acroFields = reader.getAcroFields();
 		List<String> signatureNames = acroFields.getSignedFieldNames();
 		for (String name : signatureNames) {
-			PdfDict dictionary = new ITextPdfDict(acroFields.getSignatureDictionary(name));
-			PdfSigDictWrapper signatureDictionary = new PdfSigDictWrapper(dictionary);
-			if (Utils.isArrayNotEmpty(signatureDictionary.getContents())) {
+			PdfDictionary signatureDictionary = acroFields.getSignatureDictionary(name);
+			if (signatureDictionary.contains(new PdfName(PAdESConstants.CONTENTS_NAME))) {
 				return true;
 			}
 		}
