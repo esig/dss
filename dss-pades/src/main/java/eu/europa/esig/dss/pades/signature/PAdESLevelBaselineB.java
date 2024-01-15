@@ -22,6 +22,8 @@ package eu.europa.esig.dss.pades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineB;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -50,7 +52,7 @@ class PAdESLevelBaselineB {
 
 		AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
 
-		if (signedAttributes.get(CMSAttributes.contentType) == null) {
+		if (Utils.isArrayEmpty(DSSASN1Utils.getAsn1Attributes(signedAttributes, CMSAttributes.contentType))) {
 			ASN1ObjectIdentifier contentType = (ASN1ObjectIdentifier) params.get(CMSAttributeTableGenerator.CONTENT_TYPE);
 			// contentType will be null if we're trying to generate a counter signature.
 			if (contentType != null) {
@@ -58,7 +60,7 @@ class PAdESLevelBaselineB {
 			}
 		}
 
-		if (signedAttributes.get(CMSAttributes.messageDigest) == null) {
+		if (Utils.isArrayEmpty(DSSASN1Utils.getAsn1Attributes(signedAttributes, CMSAttributes.messageDigest))) {
 			signedAttributes = signedAttributes.add(CMSAttributes.messageDigest, new DEROctetString(messageDigest));
 		}
 

@@ -161,10 +161,12 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			// We don't include the outer SEQUENCE, only the attrType and
 			// attrValues as stated by the TS Â§6.3.5, NOTE 2
 
-			final Attribute attribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_signatureTimeStampToken);
-			if (attribute != null) {
-				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
-				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
+			final Attribute[] attributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_signatureTimeStampToken);
+			if (Utils.isArrayNotEmpty(attributes)) {
+				for (Attribute attribute : attributes) {
+					digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
+					digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
+				}
 			}
 			// Method is common to Type 1 and Type 2
 			writeTimestampX2MessageDigest(digestCalculator);
@@ -199,15 +201,19 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 	private void writeTimestampX2MessageDigest(DSSMessageDigestCalculator digestCalculator) {
 		// Those are common to Type 1 and Type 2
-		final Attribute certAttribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_certificateRefs);
-		final Attribute revAttribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_revocationRefs);
-		if (certAttribute != null) {
-			digestCalculator.update(DSSASN1Utils.getDEREncoded(certAttribute.getAttrType()));
-			digestCalculator.update(DSSASN1Utils.getDEREncoded(certAttribute.getAttrValues()));
+		final Attribute[] certAttributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_certificateRefs);
+		if (Utils.isArrayNotEmpty(certAttributes)) {
+			for (Attribute attribute : certAttributes) {
+				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
+				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
+			}
 		}
-		if (revAttribute != null) {
-			digestCalculator.update(DSSASN1Utils.getDEREncoded(revAttribute.getAttrType()));
-			digestCalculator.update(DSSASN1Utils.getDEREncoded(revAttribute.getAttrValues()));
+		final Attribute[] revAttributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_revocationRefs);
+		if (Utils.isArrayNotEmpty(revAttributes)) {
+			for (Attribute attribute : revAttributes) {
+				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
+				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
+			}
 		}
 	}
 

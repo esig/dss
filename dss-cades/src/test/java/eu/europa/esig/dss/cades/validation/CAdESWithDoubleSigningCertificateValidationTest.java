@@ -1,0 +1,74 @@
+package eu.europa.esig.dss.cades.validation;
+
+import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class CAdESWithDoubleSigningCertificateValidationTest extends AbstractCAdESTestValidation {
+
+    @Override
+    protected DSSDocument getSignedDocument() {
+        return new FileDocument("src/test/resources/validation/cades-double-signing-certificate.p7m");
+    }
+
+    @Override
+    protected List<DSSDocument> getDetachedContents() {
+        return Collections.singletonList(new DigestDocument(DigestAlgorithm.SHA256, "CPp2OwWzeZg/KAo4QFQuwtYttnH/HlN2xCxgLkrn/7g="));
+    }
+
+    @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertEquals(SignatureLevel.CMS_NOT_ETSI, signatureWrapper.getSignatureFormat());
+    }
+
+    @Override
+    protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+        SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertTrue(signatureWrapper.isSigningCertificateIdentified());
+        assertTrue(signatureWrapper.isSigningCertificateReferencePresent());
+        assertTrue(signatureWrapper.isSigningCertificateReferenceUnique());
+
+        CertificateRefWrapper signingCertificateReference = signatureWrapper.getSigningCertificateReference();
+        assertNotNull(signingCertificateReference);
+        assertTrue(signingCertificateReference.isDigestValuePresent());
+        assertTrue(signingCertificateReference.isDigestValueMatch());
+        if (signingCertificateReference.isIssuerSerialPresent()) {
+            assertTrue(signingCertificateReference.isIssuerSerialMatch());
+        }
+
+        CertificateWrapper signingCertificate = signatureWrapper.getSigningCertificate();
+        assertNotNull(signingCertificate);
+        String signingCertificateId = signingCertificate.getId();
+        String certificateDN = diagnosticData.getCertificateDN(signingCertificateId);
+        String certificateSerialNumber = diagnosticData.getCertificateSerialNumber(signingCertificateId);
+        assertEquals(signingCertificate.getCertificateDN(), certificateDN);
+        assertEquals(signingCertificate.getSerialNumber(), certificateSerialNumber);
+
+        assertTrue(Utils.isCollectionEmpty(signatureWrapper.foundCertificates()
+                .getOrphanCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE)));
+    }
+
+    @Override
+    protected void checkSigningDate(DiagnosticData diagnosticData) {
+        SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertNull(signatureWrapper.getClaimedSigningTime());
+    }
+
+}

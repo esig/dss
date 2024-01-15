@@ -274,6 +274,16 @@ public final class Utils {
 	}
 
 	/**
+	 * Gets size of the array. If null, returns 0.
+	 *
+	 * @param array to check
+	 * @return size of the given array
+	 */
+	public static int arraySize(Object[] array) {
+		return impl.arraySize(array);
+	}
+
+	/**
 	 * Checks if the byte array is null or empty
 	 *
 	 * @param array byte array to check
@@ -294,6 +304,16 @@ public final class Utils {
 	}
 
 	/**
+	 * Gets size of the byte array. If null, returns 0.
+	 *
+	 * @param array byte array to check
+	 * @return size of the given array
+	 */
+	public static int arraySize(byte[] array) {
+		return impl.arraySize(array);
+	}
+
+	/**
 	 * Checks if the char array is null or empty
 	 *
 	 * @param array char array to check
@@ -311,6 +331,16 @@ public final class Utils {
 	 */
 	public static boolean isArrayNotEmpty(char[] array) {
 		return impl.isArrayNotEmpty(array);
+	}
+
+	/**
+	 * Gets size of the char array. If null, returns 0.
+	 *
+	 * @param array char array to check
+	 * @return size of the given array
+	 */
+	public static int arraySize(char[] array) {
+		return impl.arraySize(array);
 	}
 
 	/**

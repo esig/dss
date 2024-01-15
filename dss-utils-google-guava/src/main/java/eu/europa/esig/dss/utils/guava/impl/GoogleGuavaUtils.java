@@ -192,6 +192,14 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public int arraySize(Object[] array) {
+		if (array == null) {
+			return 0;
+		}
+		return array.length;
+	}
+
+	@Override
 	public boolean isArrayEmpty(byte[] array) {
 		return array == null || array.length == 0;
 	}
@@ -202,6 +210,14 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 
 	@Override
+	public int arraySize(byte[] array) {
+		if (array == null) {
+			return 0;
+		}
+		return array.length;
+	}
+
+	@Override
 	public boolean isArrayEmpty(char[] array) {
 		return array == null || array.length == 0;
 	}
@@ -209,6 +225,14 @@ public class GoogleGuavaUtils implements IUtils {
 	@Override
 	public boolean isArrayNotEmpty(char[] array) {
 		return !isArrayEmpty(array);
+	}
+
+	@Override
+	public int arraySize(char[] array) {
+		if (array == null) {
+			return 0;
+		}
+		return array.length;
 	}
 
 	@Override

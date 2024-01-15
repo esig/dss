@@ -960,11 +960,14 @@ public final class DSSASN1Utils {
 	public static ASN1Sequence getAtsHashIndexByVersion(AttributeTable timestampUnsignedAttributes, 
 			ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		if (timestampUnsignedAttributes != null && atsHashIndexVersionIdentifier != null) {
-			final Attribute atsHashIndexAttribute = timestampUnsignedAttributes.get(atsHashIndexVersionIdentifier);
-			if (atsHashIndexAttribute != null) {
-				final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
-				if (attrValues != null && attrValues.size() == 1) {
-					return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
+			final Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(timestampUnsignedAttributes, atsHashIndexVersionIdentifier);
+			if (Utils.arraySize(attributes) == 1) {
+				final Attribute atsHashIndexAttribute = attributes[0];
+				if (atsHashIndexAttribute != null) {
+					final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
+					if (attrValues != null && attrValues.size() == 1) {
+						return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
+					}
 				}
 			}
 		}
@@ -1043,13 +1046,18 @@ public final class DSSASN1Utils {
 	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link ASN1Encodable}
+	 * @deprecated since DSS 6.1. Please use {@code DSSASN1Utils.getAsn1Attributes(attributeTable, oid)}
 	 */
+	@Deprecated
 	public static ASN1Encodable getAsn1Encodable(AttributeTable attributeTable, ASN1ObjectIdentifier oid) {
-		final ASN1Set attrValues = getAsn1AttributeSet(attributeTable, oid);
-		if (attrValues == null || attrValues.size() <= 0) {
-			return null;
+		Attribute[] attributes = getAsn1Attributes(attributeTable, oid);
+		if (Utils.isArrayNotEmpty(attributes)) {
+			ASN1Encodable[] attributeValues = attributes[0].getAttributeValues();
+			if (Utils.isArrayNotEmpty(attributeValues)) {
+				return attributeValues[0];
+			}
 		}
-		return attrValues.getObjectAt(0);
+		return null;
 	}
 	
 	/**
@@ -1058,17 +1066,19 @@ public final class DSSASN1Utils {
 	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
 	 * @return {@link ASN1Set}
+	 * @deprecated since DSS 6.1. Please use {@code DSSASN1Utils.getAsn1Attributes(attributeTable, oid)}
 	 */
+	@Deprecated
 	public static ASN1Set getAsn1AttributeSet(AttributeTable attributeTable, ASN1ObjectIdentifier oid) {
-		final Attribute attribute = attributeTable.get(oid);
-		if (attribute == null) {
-			return null;
+		Attribute[] attributes = getAsn1Attributes(attributeTable, oid);
+		if (Utils.isArrayNotEmpty(attributes)) {
+			return attributes[0].getAttrValues();
 		}
-		return attribute.getAttrValues();
+		return null;
 	}
 	
 	/**
-	 * Returns an array of {@link Attribute}s for a given {@code oid} found in the {@code unsignedAttributes}
+	 * Returns an array of {@link Attribute}s for a given {@code oid} found in the {@code attributeTable}
 	 *
 	 * @param attributeTable {@link AttributeTable}
 	 * @param oid target {@link ASN1ObjectIdentifier}
@@ -1077,7 +1087,7 @@ public final class DSSASN1Utils {
 	public static Attribute[] getAsn1Attributes(AttributeTable attributeTable, ASN1ObjectIdentifier oid) {
 		ASN1EncodableVector encodableVector = attributeTable.getAll(oid);
 		if (encodableVector == null) {
-			return null;
+			return new Attribute[0];
 		}
 		Attributes attributes = new Attributes(encodableVector);
 		return attributes.getAttributes();

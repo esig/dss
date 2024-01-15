@@ -26,7 +26,9 @@ import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.CertificateList;
 import org.slf4j.Logger;
@@ -56,16 +58,27 @@ public class PdfCmsCRLSource extends OfflineCRLSource {
      */
     private void extractCRLArchivalValues(AttributeTable signedAttributes) {
         if (signedAttributes != null) {
-            final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(signedAttributes, OID.adbe_revocationInfoArchival);
-            RevocationInfoArchival revValues = PAdESUtils.getRevocationInfoArchival(attValue);
-            if (revValues != null) {
-                for (final CertificateList revValue : revValues.getCrlVals()) {
-                    try {
-                        addBinary(CRLUtils.buildCRLBinary(revValue.getEncoded()),
-                                RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
-                    } catch (Exception e) {
-                        LOG.warn("Could not convert CertificateList to CRLBinary : {}", e.getMessage());
+            Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(signedAttributes, OID.adbe_revocationInfoArchival);
+            for (Attribute attribute : attributes) {
+                ASN1Encodable[] attributeValues = attribute.getAttributeValues();
+                if (Utils.isArrayNotEmpty(attributeValues)) {
+                    for (ASN1Encodable attrValue : attributeValues) {
+                        extractRevocationInfoArchival(attrValue);
                     }
+                }
+            }
+        }
+    }
+
+    private void extractRevocationInfoArchival(ASN1Encodable attrValue) {
+        RevocationInfoArchival revValues = PAdESUtils.getRevocationInfoArchival(attrValue);
+        if (revValues != null) {
+            for (final CertificateList revValue : revValues.getCrlVals()) {
+                try {
+                    addBinary(CRLUtils.buildCRLBinary(revValue.getEncoded()),
+                            RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+                } catch (Exception e) {
+                    LOG.warn("Could not convert CertificateList to CRLBinary : {}", e.getMessage());
                 }
             }
         }

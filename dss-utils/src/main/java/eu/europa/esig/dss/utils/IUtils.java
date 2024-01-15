@@ -195,6 +195,14 @@ public interface IUtils {
 	boolean isArrayNotEmpty(Object[] array);
 
 	/**
+	 * Gets size of the array. If null, returns 0.
+	 *
+	 * @param array to check
+	 * @return size of the given array
+	 */
+	int arraySize(Object[] array);
+
+	/**
 	 * Checks if the byte array is null or empty
 	 *
 	 * @param array byte array to check
@@ -211,6 +219,14 @@ public interface IUtils {
 	boolean isArrayNotEmpty(byte[] array);
 
 	/**
+	 * Gets size of the byte array. If null, returns 0.
+	 *
+	 * @param array byte array to check
+	 * @return size of the given array
+	 */
+	int arraySize(byte[] array);
+
+	/**
 	 * Checks if the char array is null or empty
 	 *
 	 * @param array char array to check
@@ -225,6 +241,14 @@ public interface IUtils {
 	 * @return TRUE if the char array is not null nor empty, FALSE otherwise
 	 */
 	boolean isArrayNotEmpty(char[] array);
+
+	/**
+	 * Gets size of the byte array. If null, returns 0.
+	 *
+	 * @param array byte array to check
+	 * @return size of the given array
+	 */
+	int arraySize(char[] array);
 
 	/**
 	 * Returns a subArray, starting from position {@code start} with the defined length {@code length}

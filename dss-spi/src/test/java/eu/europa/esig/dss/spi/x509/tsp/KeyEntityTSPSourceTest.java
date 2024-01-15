@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
@@ -72,8 +73,9 @@ public class KeyEntityTSPSourceTest {
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
 
         AttributeTable signedAttributes = timeStampToken.getSignedAttributes();
-        Attribute signingTimeAttr = signedAttributes.get(CMSAttributes.signingTime);
-        final ASN1Set attrValues = signingTimeAttr.getAttrValues();
+        Attribute[] signingTimeAttrs = DSSASN1Utils.getAsn1Attributes(signedAttributes, CMSAttributes.signingTime);
+        assertEquals(1, Utils.arraySize(signingTimeAttrs));
+        final ASN1Set attrValues = signingTimeAttrs[0].getAttrValues();
         final ASN1Encodable attrValue = attrValues.getObjectAt(0);
 
         assertEquals(0, timeStampToken.getTimeStampInfo().getGenTime().compareTo(DSSASN1Utils.getDate(attrValue)));
@@ -142,8 +144,9 @@ public class KeyEntityTSPSourceTest {
         assertEquals(0, time.compareTo(timeStampToken.getTimeStampInfo().getGenTime()));
 
         AttributeTable signedAttributes = timeStampToken.getSignedAttributes();
-        Attribute signingTimeAttr = signedAttributes.get(CMSAttributes.signingTime);
-        final ASN1Set attrValues = signingTimeAttr.getAttrValues();
+        Attribute[] signingTimeAttrs = DSSASN1Utils.getAsn1Attributes(signedAttributes, CMSAttributes.signingTime);
+        assertEquals(1, Utils.arraySize(signingTimeAttrs));
+        final ASN1Set attrValues = signingTimeAttrs[0].getAttrValues();
         final ASN1Encodable attrValue = attrValues.getObjectAt(0);
         assertEquals(0, time.compareTo(DSSASN1Utils.getDate(attrValue)));
     }

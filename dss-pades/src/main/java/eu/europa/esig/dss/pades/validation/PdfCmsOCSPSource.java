@@ -26,7 +26,9 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.ocsp.OCSPResponse;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -53,20 +55,29 @@ public class PdfCmsOCSPSource extends OfflineOCSPSource {
 
     private void extractOCSPArchivalValues(AttributeTable signedAttributes) {
         if (signedAttributes != null) {
-            final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(signedAttributes, OID.adbe_revocationInfoArchival);
-            if (attValue != null) {
-                RevocationInfoArchival revocationArchival = PAdESUtils.getRevocationInfoArchival(attValue);
-                if (revocationArchival != null) {
-                    for (final OCSPResponse ocspResponse : revocationArchival.getOcspVals()) {
-                        try {
-                            BasicOCSPResp basicOCSPResponse = DSSASN1Utils.toBasicOCSPResp(ocspResponse);
-                            addBinary(OCSPResponseBinary.build(basicOCSPResponse),
-                                    RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
-                        } catch (OCSPException e) {
-                            LOG.warn("Error while extracting OCSPResponse from Revocation Info Archivals (ADBE) : {}",
-                                    e.getMessage());
-                        }
+            Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(signedAttributes, OID.adbe_revocationInfoArchival);
+            for (Attribute attribute : attributes) {
+                ASN1Encodable[] attributeValues = attribute.getAttributeValues();
+                if (Utils.isArrayNotEmpty(attributeValues)) {
+                    for (ASN1Encodable attrValue : attributeValues) {
+                        extractRevocationInfoArchival(attrValue);
                     }
+                }
+            }
+        }
+    }
+
+    private void extractRevocationInfoArchival(ASN1Encodable attValue) {
+        RevocationInfoArchival revocationArchival = PAdESUtils.getRevocationInfoArchival(attValue);
+        if (revocationArchival != null) {
+            for (final OCSPResponse ocspResponse : revocationArchival.getOcspVals()) {
+                try {
+                    BasicOCSPResp basicOCSPResponse = DSSASN1Utils.toBasicOCSPResp(ocspResponse);
+                    addBinary(OCSPResponseBinary.build(basicOCSPResponse),
+                            RevocationOrigin.ADBE_REVOCATION_INFO_ARCHIVAL);
+                } catch (OCSPException e) {
+                    LOG.warn("Error while extracting OCSPResponse from Revocation Info Archivals (ADBE) : {}",
+                            e.getMessage());
                 }
             }
         }
