@@ -35,13 +35,4 @@ public interface NonceSource extends Serializable {
 	 */
 	byte[] getNonceValue();
 
-	/**
-	 * This method allows retrieving of unique value to be used as a nonce.
-	 * 
-	 * @return {@link BigInteger} the unique value to use
-	 * @deprecated since DSS 5.13. Use {@code new BigInteger(nonceSource.getNonceValue())}
-	 */
-	@Deprecated
-	BigInteger getNonce();
-
 }

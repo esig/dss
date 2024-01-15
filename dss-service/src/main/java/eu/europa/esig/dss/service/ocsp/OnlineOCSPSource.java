@@ -37,7 +37,6 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
-import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
@@ -299,47 +298,6 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 	}
 
 	/**
-	 * This method retrieves a {@code RevocationTokenAndUrl} for the certificateToken
-	 *
-	 * @param certificateToken
-	 *                               The {@code CertificateToken} for which the
-	 *                               request is made
-	 * @param issuerToken
-	 *                               The {@code CertificateToken} which is the
-	 *                               issuer of the certificateToken
-	 * @return an instance of {@code RevocationTokenAndUrl}
-	 * @deprecated since DSS 5.13. Use {@code #getRevocationToken(certificateToken, issuerToken).getSourceURL()} method
-	 */
-	@Deprecated
-	public OnlineRevocationSource.RevocationTokenAndUrl<OCSP> getRevocationTokenAndUrl(CertificateToken certificateToken,
-																					   CertificateToken issuerToken) {
-		OCSPToken revocationToken = getRevocationToken(certificateToken, issuerToken);
-		if (revocationToken != null) {
-			return new OnlineRevocationSource.RevocationTokenAndUrl<>(revocationToken.getSourceURL(), revocationToken);
-		}
-		return null;
-	}
-
-	/**
-	 * Extracts an OCSP token for a {@code certificateToken} from the given list of {@code ocspUrls}
-	 *
-	 * @param certificateToken {@link CertificateToken} to get an OCSP token for
-	 * @param issuerToken {@link CertificateToken} issued the {@code certificateToken}
-	 * @param ocspUrls a list of {@link String} URLs to use to access an OCSP token
-	 * @return {@link OnlineRevocationSource.RevocationTokenAndUrl}
-	 * @deprecated since DSS 5.13. Use {@code #getRevocationToken(certificateToken, issuerToken).getSourceURL()} method
-	 */
-	@Deprecated
-	protected OnlineRevocationSource.RevocationTokenAndUrl<OCSP> getRevocationTokenAndUrl(CertificateToken certificateToken,
-																   CertificateToken issuerToken, List<String> ocspUrls) {
-		OCSPToken revocationToken = getRevocationToken(certificateToken, issuerToken, ocspUrls);
-		if (revocationToken != null) {
-			return new OnlineRevocationSource.RevocationTokenAndUrl<>(revocationToken.getSourceURL(), revocationToken);
-		}
-		return null;
-	}
-
-	/**
 	 * Builds an OCSP request for {@code certificateToken}
 	 *
 	 * @param certificateToken {@link CertificateToken} to retrieve an OCSP token for
@@ -352,40 +310,6 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			final OCSPReqBuilder ocspReqBuilder = new OCSPReqBuilder();
 
 			final CertificateID certId = DSSRevocationUtils.getOCSPCertificateID(certificateToken, issuerToken, certIDDigestAlgorithm);
-			ocspReqBuilder.addRequest(certId);
-			/*
-			 * The nonce extension is used to bind a request to a response to
-			 * prevent replay attacks. RFC 6960 (OCSP) section 4.1.2 such
-			 * extensions SHOULD NOT be flagged as critical
-			 */
-			if (nonce != null) {
-				DEROctetString encodedNonceValue = new DEROctetString(nonce);
-				Extension extension = new Extension(OCSPObjectIdentifiers.id_pkix_ocsp_nonce, false,
-						new DEROctetString(encodedNonceValue));
-				Extensions extensions = new Extensions(extension);
-				ocspReqBuilder.setRequestExtensions(extensions);
-			}
-			final OCSPReq ocspReq = ocspReqBuilder.build();
-			return ocspReq.getEncoded();
-
-		} catch (OCSPException | IOException e) {
-			throw new DSSException("Cannot build OCSP Request", e);
-		}
-	}
-
-	/**
-	 * This method builds an OCSP Request
-	 *
-	 * @param certId {@link CertificateID}
-	 * @param nonce byte array containing nonce value, when applicable
-	 * @return byte array representing the content of the OCSP Request
-	 * @throws DSSException if an error occurred during the OCSP Request building process
-	 * @deprecated since DSS 5.13. Use {@code #buildOCSPRequest(certificateToken, issuerCertificateToken, nonce}
-	 */
-	@Deprecated
-	protected byte[] buildOCSPRequest(final CertificateID certId, byte[] nonce) throws DSSException {
-		try {
-			final OCSPReqBuilder ocspReqBuilder = new OCSPReqBuilder();
 			ocspReqBuilder.addRequest(certId);
 			/*
 			 * The nonce extension is used to bind a request to a response to

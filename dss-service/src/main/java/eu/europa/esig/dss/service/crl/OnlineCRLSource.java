@@ -31,7 +31,6 @@ import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
-import eu.europa.esig.dss.spi.x509.revocation.OnlineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -188,46 +187,6 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 
 		prioritize(crlUrls);
 		return crlUrls;
-	}
-
-	/**
-	 * This method retrieves a {@code RevocationTokenAndUrl} for the certificateToken
-	 *
-	 * @param certificateToken
-	 *                               The {@code CertificateToken} for which the
-	 *                               request is made
-	 * @param issuerToken
-	 *                               The {@code CertificateToken} which is the
-	 *                               issuer of the certificateToken
-	 * @return an instance of {@code RevocationTokenAndUrl}
-	 * @deprecated since DSS 5.13. Use {@code #getRevocationToken(certificateToken, issuerToken).getSourceURL()} method
-	 */
-	@Deprecated
-	public OnlineRevocationSource.RevocationTokenAndUrl<CRL> getRevocationTokenAndUrl(CertificateToken certificateToken, CertificateToken issuerToken) {
-		CRLToken revocationToken = getRevocationToken(certificateToken, issuerToken);
-		if (revocationToken != null) {
-			return new OnlineRevocationSource.RevocationTokenAndUrl<>(revocationToken.getSourceURL(), revocationToken);
-		}
-		return null;
-	}
-
-	/**
-	 * Extracts a CRL token for a {@code certificateToken} from the given list of {@code crlUrls}
-	 *
-	 * @param certificateToken {@link CertificateToken} to get a CRL token for
-	 * @param issuerToken {@link CertificateToken} issued the {@code certificateToken}
-	 * @param crlUrls a list of {@link String} URLs to use to access a CRL token
-	 * @return {@link OnlineRevocationSource.RevocationTokenAndUrl}
-	 * @deprecated since DSS 5.13. Use {@code #getRevocationToken(certificateToken, issuerToken,crlUrls).getSourceURL()} method
-	 */
-	@Deprecated
-	protected OnlineRevocationSource.RevocationTokenAndUrl<CRL> getRevocationTokenAndUrl(CertificateToken certificateToken,
-																  CertificateToken issuerToken, List<String> crlUrls) {
-		CRLToken revocationToken = getRevocationToken(certificateToken, issuerToken, crlUrls);
-		if (revocationToken != null) {
-			return new OnlineRevocationSource.RevocationTokenAndUrl<>(revocationToken.getSourceURL(), revocationToken);
-		}
-		return null;
 	}
 
 	/**

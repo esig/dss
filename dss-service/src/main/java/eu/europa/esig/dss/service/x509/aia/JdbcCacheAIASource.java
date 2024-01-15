@@ -211,16 +211,6 @@ public class JdbcCacheAIASource extends RepositoryAIASource {
         }
     }
 
-    @Deprecated
-    @Override
-    protected void insertCertificates(final String aiaKey, final Collection<CertificateToken> certificateTokens) {
-        if (Utils.isCollectionNotEmpty(certificateTokens)) {
-            for (CertificateToken certificate : certificateTokens) {
-                insertCertificate(aiaKey, certificate);
-            }
-        }
-    }
-
     @Override
     protected void insertCertificate(final String aiaKey, final CertificateToken certificateTokens) {
         if (certificateTokens != null && aiaKey != null) {

@@ -177,19 +177,6 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This method allows to register a canonicalizer.
-	 *
-	 * @param c14nAlgorithmURI
-	 *            the URI of canonicalization algorithm
-	 * @return true if this set did not already contain the specified element
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.CanonicalizationUtils.registerCanonicalizer(c14nAlgorithmURI)}
-	 */
-	@Deprecated
-	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
-		return XMLCanonicalizer.registerCanonicalizer(c14nAlgorithmURI);
-	}
-
-	/**
 	 * This method allows to register a transformation resulting to a node-set output.
 	 * See XMLDSIG for more information
 	 *
@@ -432,84 +419,6 @@ public final class DSSXMLUtils {
 		return null;
 	}
 
-	// TODO : remove method later and re-use DomUtils.serializeNode(node)
-	/**
-	 * This method performs the serialization of the given node
-	 *
-	 * @param xmlNode
-	 *            The node to be serialized.
-	 * @return the serialized bytes
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.DomUtils.serializeNode(xmlNode)}
-	 */
-	@Deprecated
-	public static byte[] serializeNode(final Node xmlNode) {
-		return DomUtils.serializeNode(xmlNode);
-	}
-
-	/**
-	 * This method says if the framework can canonicalize an XML data with the provided method.
-	 *
-	 * @param canonicalizationMethod
-	 *            the canonicalization method to be checked
-	 * @return true if it is possible to canonicalize false otherwise
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.CanonicalizationUtils.canCanonicalize(canonicalizationMethod)}
-	 */
-	@Deprecated
-	public static boolean canCanonicalize(final String canonicalizationMethod) {
-		return XMLCanonicalizer.canCanonicalize(canonicalizationMethod);
-	}
-
-	/**
-	 * This method canonicalizes the given array of bytes using the {@code canonicalizationMethod} parameter.
-	 *
-	 * @param canonicalizationMethod
-	 *            canonicalization method
-	 * @param toCanonicalizeBytes
-	 *            array of bytes to canonicalize
-	 * @return array of canonicalized bytes
-	 * @throws DSSException
-	 *             if any error is encountered
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(toCanonicalizeBytes}
-	 */
-	@Deprecated
-	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
-		return XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(toCanonicalizeBytes);
-	}
-
-	/**
-	 * This method canonicalizes the given {@code Node}.
-	 * If canonicalization method is not provided, the {@code DEFAULT_CANONICALIZATION_METHOD} is being used
-	 *
-	 * @param canonicalizationMethod
-	 *            canonicalization method (can be null)
-	 * @param node
-	 *            {@code Node} to canonicalize
-	 * @return array of canonicalized bytes
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node}}
-	 */
-	@Deprecated
-	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
-		return XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node);
-	}
-	
-	/**
-	 * Returns the {@code canonicalizationMethod} if provided, otherwise returns the DEFAULT_CANONICALIZATION_METHOD
-	 * 
-	 * @param canonicalizationMethod {@link String} canonicalization method (can be null)
-	 * @return canonicalizationMethod to be used
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.CanonicalizationUtils}
-	 */
-	@Deprecated
-	public static String getCanonicalizationMethod(String canonicalizationMethod) {
-		if (Utils.isStringEmpty(canonicalizationMethod)) {
-			// The INCLUSIVE canonicalization is used by default (See DSS-2208)
-			LOG.warn("Canonicalization method is not defined. "
-					+ "An inclusive canonicalization '{}' will be used (see XMLDSIG 4.4.3.2).", XMLCanonicalizer.DEFAULT_XMLDSIG_C14N_METHOD);
-			return XMLCanonicalizer.DEFAULT_XMLDSIG_C14N_METHOD;
-		}
-		return canonicalizationMethod;
-	}
-
 	/**
 	 * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by
 	 * the fact that the attribute does not have attached type of information. Another solution is to parse the XML
@@ -619,17 +528,6 @@ public final class DSSXMLUtils {
 			throw new DSSException("Unable to check if duplicate ids are present", e);
 		}
 		return false;
-	}
-	
-	/**
-	 * Returns bytes of the given {@code node}
-	 * @param node {@link Node} to get bytes for
-	 * @return byte array
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.DomUtils.getNodeBytes(node)} instead
-	 */
-	@Deprecated
-	public static byte[] getNodeBytes(Node node) {
-		return DomUtils.getNodeBytes(node);
 	}
 	
 	/**

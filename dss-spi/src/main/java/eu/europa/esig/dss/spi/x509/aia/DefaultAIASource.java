@@ -174,42 +174,6 @@ public class DefaultAIASource implements AIASource {
                 "responded with an empty byte array!", caIssuersUrl));
     }
 
-    /**
-     * The method returns a collection of processed URLs and the corresponding downloaded certificates
-     *
-     * @param certificateToken {@link CertificateToken} to obtain AIA certificates for
-     * @return a list of {@link OnlineAIASource.CertificatesAndAIAUrl}s
-     * @deprecated since DSS 5.13. Use {@code #getCertificatesByAIA(certificateToken)} and {@code CertificateToken.getSourceURL()} methods
-     */
-    @Deprecated
-    public List<OnlineAIASource.CertificatesAndAIAUrl> getCertificatesAndAIAUrls(CertificateToken certificateToken) {
-        final List<OnlineAIASource.CertificatesAndAIAUrl> result = new ArrayList<>();
-
-        List<String> caIssuersUrls = getCAIssuersUrls(certificateToken);
-
-        for (String caIssuersUrl : caIssuersUrls) {
-            try {
-                byte[] bytes = executeCAIssuersRequest(caIssuersUrl);
-
-                List<CertificateToken> loadedCertificates;
-
-                try (InputStream is = new ByteArrayInputStream(bytes)) {
-                    loadedCertificates = DSSUtils.loadCertificateFromP7c(is);
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("{} certificate(s) loaded from '{}'", loadedCertificates.size(), caIssuersUrl);
-                    }
-                }
-
-                result.add(new OnlineAIASource.CertificatesAndAIAUrl(caIssuersUrl, loadedCertificates));
-
-            } catch (Exception e) {
-                LOG.warn("Unable to retrieve AIA certificates with URL '{}' : {}", caIssuersUrl, e.getMessage());
-            }
-        }
-
-        return result;
-    }
-
     private boolean isUrlAccepted(String url) {
         if (Utils.isCollectionNotEmpty(acceptedProtocols)) {
             for (Protocol protocol : acceptedProtocols) {

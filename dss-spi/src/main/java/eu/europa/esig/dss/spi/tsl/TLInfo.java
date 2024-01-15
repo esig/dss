@@ -161,21 +161,6 @@ public class TLInfo implements IdentifierBasedObject, Serializable {
 	}
 
 	/**
-	 * Gets the MRA (Mutual Recognition Agreement) element when applicable
-	 *
-	 * @return {@link MRA}
-	 * @deprecated since DSS 5.13. Use {@code #getOtherTSLPointer.getMra} instead
-	 */
-	@Deprecated
-	public MRA getMra() {
-		OtherTSLPointer otherTSLPointer = getOtherTSLPointer();
-		if (otherTSLPointer != null) {
-			return getOtherTSLPointer().getMra();
-		}
-		return null;
-	}
-
-	/**
 	 * Returns the TL id
 	 *
 	 * @return {@link String} id

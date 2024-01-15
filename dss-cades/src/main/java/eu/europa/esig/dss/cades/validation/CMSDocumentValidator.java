@@ -60,17 +60,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	}
 
 	/**
-	 * The empty constructor
-	 *
-	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use for a signatureScopes extraction
-	 * @deprecated since DSS 5.13.
-	 */
-	@Deprecated
-	CMSDocumentValidator(SignatureScopeFinder<CAdESSignature> signatureScopeFinder) {
-		// empty
-	}
-
-	/**
 	 * The default constructor for {@code CMSDocumentValidator}.
 	 *
 	 * @param cmsSignedData
@@ -98,18 +87,6 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 		} catch (Exception e) {
 			throw new IllegalInputException(String.format("A CMS file is expected : %s", e.getMessage()), e);
 		}
-	}
-
-	/**
-	 * Creates a validator from a {@code DSSDocument}
-	 *
-	 * @param document {@link DSSDocument} representing a CMSSignedData to be validated
-	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use
-	 * @deprecated since DSS 5.13. Use {@code new CMSDocumentValidator(DSSDocument document)} instead.
-	 */
-	@Deprecated
-	protected CMSDocumentValidator(final DSSDocument document, SignatureScopeFinder<CAdESSignature> signatureScopeFinder) {
-		this(document);
 	}
 
 	@Override

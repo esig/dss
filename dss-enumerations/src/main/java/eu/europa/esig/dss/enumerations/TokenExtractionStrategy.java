@@ -159,20 +159,6 @@ public enum TokenExtractionStrategy {
      * @param certificate    true if certificates need to be extracted
      * @param timestamp      true if timestamps need to be extracted
      * @param revocationData true if revocation data need to be extracted
-     * @return {@link TokenExtractionStrategy}
-     * @deprecated since DSS 5.13. Please use {@code #fromParameters(certificate, timestamp, revocationData, evidenceRecord)}.
-     */
-    @Deprecated
-    public static TokenExtractionStrategy fromParameters(boolean certificate, boolean timestamp, boolean revocationData) {
-        return fromParameters(certificate, timestamp, revocationData, false);
-    }
-
-    /**
-     * Returns the enumeration value depending on parameters
-     *
-     * @param certificate    true if certificates need to be extracted
-     * @param timestamp      true if timestamps need to be extracted
-     * @param revocationData true if revocation data need to be extracted
      * @param evidenceRecord true if evidence records need to be extracted
      * @return {@link TokenExtractionStrategy}
      */

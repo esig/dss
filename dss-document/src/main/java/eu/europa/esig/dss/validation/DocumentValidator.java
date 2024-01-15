@@ -275,16 +275,6 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	<T extends AdvancedSignature> void processSignaturesValidation(Collection<T> allSignatureList);
 
 	/**
-	 * Finds SignatureScopes for a list of signatures
-	 *
-	 * @param <T> {@link AdvancedSignature} implementation
-	 * @param currentValidatorSignatures a collection of {@link AdvancedSignature}s
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.validation.AdvancedSignature.getSignatureScopes()}
-	 */
-	@Deprecated
-	<T extends AdvancedSignature> void findSignatureScopes(Collection<T> currentValidatorSignatures);
-
-	/**
 	 * Extracts a validation data for provided collection of signatures
 	 *
 	 * @param <T> {@link AdvancedSignature} implementation

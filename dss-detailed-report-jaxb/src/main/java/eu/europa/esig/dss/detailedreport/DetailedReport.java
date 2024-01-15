@@ -413,30 +413,6 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Gets timestamp validation indication for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return {@link Indication}
-	 * @deprecated since DSS 5.13. Use {@code #getBasicTimestampValidationIndication(timestampId)} instead
-	 */
-	@Deprecated
-	public Indication getTimestampValidationIndication(String timestampId) {
-		return getBasicTimestampValidationIndication(timestampId);
-	}
-
-	/**
-	 * Gets timestamp validation subIndication for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return {@link Indication}
-	 * @deprecated since DSS 5.13. Use {@code #getBasicTimestampValidationSubIndication(timestampId)} instead
-	 */
-	@Deprecated
-	public SubIndication getTimestampValidationSubIndication(String timestampId) {
-		return getBasicTimestampValidationSubIndication(timestampId);
-	}
-
-	/**
 	 * Gets timestamp validation with archive data indication for a timestamp with id
 	 *
 	 * @param timestampId {@link String}

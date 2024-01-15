@@ -47,10 +47,4 @@ public class SecureRandomNonceSource implements NonceSource {
 		return bytes;
 	}
 
-	@Override
-	@Deprecated
-	public BigInteger getNonce() {
-		return new BigInteger(getNonceValue());
-	}
-
 }

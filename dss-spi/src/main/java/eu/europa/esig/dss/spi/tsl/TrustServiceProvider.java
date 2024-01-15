@@ -65,16 +65,6 @@ public class TrustServiceProvider implements Serializable {
 	private String territory;
 
 	/**
-	 * Empty constructor
-	 *
-	 * @deprecated since DSS 5.13. Use {@code new TrustServiceProviderBuilder.build()} method
-	 */
-	@Deprecated
-	public TrustServiceProvider() {
-		// empty
-	}
-
-	/**
 	 * Default constructor
 	 *
 	 * @param builder {@link TrustServiceProviderBuilder}

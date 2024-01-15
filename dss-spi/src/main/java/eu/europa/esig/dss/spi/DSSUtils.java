@@ -898,49 +898,6 @@ public final class DSSUtils {
 		}
 		return result[0];
 	}
-	
-	/**
-	 * Reads first {@code preamble.length} bytes of the {@code dssDocument} and compares them with {@code preamble}
-	 * 
-	 * @param dssDocument {@link DSSDocument} to read bytes from
-	 * @param preamble {@code byte} array to compare the beginning string with
-	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWith(inputStream, preamble)}
-	 */
-	@Deprecated
-	public static boolean startsWithBytes(final DSSDocument dssDocument, byte[] preamble) {
-		return startsWithBytes(dssDocument.openStream(), preamble);
-	}
-
-	/**
-	 * Reads first {@code preamble.length} bytes of the {@code byteArray} and compares them with {@code preamble}
-	 *
-	 * @param byteArray {@link DSSDocument} to compare bytes from
-	 * @param preamble {@code byte} array to compare the beginning string with
-	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWithBytes(byteArray, preamble)}
-	 */
-	@Deprecated
-	public static boolean startsWithBytes(final byte[] byteArray, byte[] preamble) {
-		return Utils.startsWith(byteArray, preamble);
-	}
-
-	/**
-	 * Reads first {@code preamble.length} bytes of the {@code InputStream} and compares them with {@code preamble}
-	 *
-	 * @param inputStream {@link InputStream} to read bytes from
-	 * @param preamble {@code byte} array to compare the beginning string with
-	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWith(inputStream, preamble)}
-	 */
-	@Deprecated
-	public static boolean startsWithBytes(final InputStream inputStream, byte[] preamble) {
-		try (InputStream is = inputStream) {
-			return Utils.startsWith(is, preamble);
-		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to read document : %s", e.getMessage()), e);
-		}
-	}
 
 	/**
 	 * This method decodes a URI to be compliant with the RFC 3986 (see DSS-2411 for details)
