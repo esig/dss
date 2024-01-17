@@ -988,8 +988,13 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 		List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			assertTrue(xmlDigestMatcher.isDataFound());
-			assertTrue(xmlDigestMatcher.isDataIntact());
+			if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != xmlDigestMatcher.getType()) {
+				assertTrue(xmlDigestMatcher.isDataFound());
+				assertTrue(xmlDigestMatcher.isDataIntact());
+			} else {
+				assertFalse(xmlDigestMatcher.isDataFound());
+				assertFalse(xmlDigestMatcher.isDataIntact());
+			}
 		}
 		if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
 			assertNotNull(timestampWrapper.getArchiveTimestampType());

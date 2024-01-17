@@ -89,7 +89,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     @Override
     protected List<? extends DigestValueGroup> getHashTree(
             List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents,
-            ArchiveTimeStampChainObject archiveTimeStampChain, DSSMessageDigest lastTimeStampHash, List<DSSMessageDigest> lastTimeStampSequenceHash) {
+            ArchiveTimeStampChainObject archiveTimeStampChain, DSSMessageDigest lastTimeStampHash, DSSMessageDigest lastTimeStampSequenceHash) {
         final List<? extends DigestValueGroup> hashTree = super.getHashTree(
                 originalHashTree, detachedContents, archiveTimeStampChain, lastTimeStampHash, lastTimeStampSequenceHash);
 
@@ -119,7 +119,9 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     }
 
     @Override
-    protected List<DSSMessageDigest> computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents) {
+    protected DSSMessageDigest computePrecedingTimeStampSequenceHash(
+            ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents) {
+        DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
         XmlArchiveTimeStampChainObject xmlArchiveTimeStampChainObject = (XmlArchiveTimeStampChainObject) archiveTimeStampChain;
 
         Document documentCopy = createDocumentCopy();
@@ -141,9 +143,7 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
         byte[] canonicalizedSubtree = XMLCanonicalizer.createInstance(xmlArchiveTimeStampChainObject.getCanonicalizationMethod())
                 .canonicalize(archiveTimeStampSequence);
         byte[] digestValue = DSSUtils.digest(digestAlgorithm, canonicalizedSubtree);
-        List<DSSMessageDigest> messageDigestValues = new ArrayList<>();
-        messageDigestValues.add( new DSSMessageDigest(digestAlgorithm, digestValue) );
-        return messageDigestValues;
+        return new DSSMessageDigest(digestAlgorithm, digestValue);
     }
 
     private Document createDocumentCopy() {

@@ -1,20 +1,8 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bouncycastle.asn1.tsp.ArchiveTimeStampChain;
-import org.bouncycastle.asn1.tsp.ArchiveTimeStampSequence;
-import org.bouncycastle.asn1.tsp.EvidenceRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
-import eu.europa.esig.dss.evidencerecord.common.validation.ByteArrayComparator;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
@@ -23,6 +11,16 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.tsp.ArchiveTimeStampChain;
+import org.bouncycastle.asn1.tsp.ArchiveTimeStampSequence;
+import org.bouncycastle.asn1.tsp.EvidenceRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Verifies ArchiveTimeStampSequence for an ASN.1 Evidence Record
@@ -51,25 +49,25 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
     @Override
     protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
                                               List<DSSDocument> detachedContents) {
+        DSSMessageDigest archiveTimeStampSequenceDigest = null;
+        if (archiveTimeStampChain.getOrder() > 1) {
+            archiveTimeStampSequenceDigest = computePrecedingTimeStampSequenceHash(archiveTimeStampChain, detachedContents);
+        }
         if (Utils.isCollectionNotEmpty(detachedContents)) {
             for (DSSDocument document : detachedContents) {
             	byte[] documentDigest;
                
-            	if (archiveTimeStampChain.getOrder() <= 1)
-            	{
+            	if (archiveTimeStampSequenceDigest == null) {
 	                if (!(document instanceof DigestDocument)) {
 	                    documentDigest = DSSUtils.digest(digest.getAlgorithm(), document.openStream());
 	                } else {
 	                    String base64Digest = document.getDigest(digest.getAlgorithm());
 	                    documentDigest = Utils.fromBase64(base64Digest);
 	                }
-            	}
-            	else
-            	{
-            		List<DSSDocument> docDigests = new ArrayList<DSSDocument>();
-            		docDigests.add(document);
-            		List<DSSMessageDigest> documentChainDigests = computePrecedingTimeStampSequenceHash(digest.getAlgorithm(), archiveTimeStampChain, docDigests);
-            		documentDigest = documentChainDigests.get(0).getValue();
+
+            	} else {
+                    DSSMessageDigest chainAndDocumentHash = computeChainAndDocumentHash(archiveTimeStampSequenceDigest, document);
+            		documentDigest = chainAndDocumentHash.getValue();
             	}
             	
                 if (Arrays.equals(digest.getValue(), documentDigest)) {
@@ -89,8 +87,9 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
     }
     
     @Override
-    protected List<DSSMessageDigest> computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm,
+    protected DSSMessageDigest computePrecedingTimeStampSequenceHash(
             ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents) {
+        DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
         ASN1ArchiveTimeStampChainObject asn1ArchiveTimeStampChainObject = (ASN1ArchiveTimeStampChainObject) archiveTimeStampChain;
 
         ArchiveTimeStampSequence archiveTimeStampSequence = getArchiveTimeStampSequence();
@@ -104,23 +103,16 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
 
         // calc the preceding ATSSeq hash
         ArchiveTimeStampSequence precedingArchiveTimeStampSequence = new ArchiveTimeStampSequence(precedingChildNodes);
-        byte[] digestValue;
+        DSSMessageDigest archiveTimeStampSequenceDigest;
 		try {
-			digestValue = DSSUtils.digest(digestAlgorithm, precedingArchiveTimeStampSequence.toASN1Primitive().getEncoded());
+            archiveTimeStampSequenceDigest = new DSSMessageDigest(digestAlgorithm,
+                    DSSUtils.digest(digestAlgorithm, precedingArchiveTimeStampSequence.toASN1Primitive().getEncoded()));
 		} catch (IOException e) {
 			LOG.warn("Unable to generate ASN1 TimeStampSequence. Reason : {}", e.getMessage(), e);
 			return null;
 		}
 
-		// get hash from document(s)
-		// sort both hashes in ascending order, concat hashes and create a new digest
-		List<DSSMessageDigest> digestValues = new ArrayList<>();
-		for (DSSDocument document : detachedContents) {
-			DSSMessageDigest chainAndDocumentHash = computeChainAndDocumentHash(digestAlgorithm,  new DSSMessageDigest(digestAlgorithm,Utils.fromBase64(document.getDigest(digestAlgorithm))), new DSSMessageDigest(digestAlgorithm, digestValue), false);
-			digestValues.add( chainAndDocumentHash );
-		}
-
-        return digestValues;
+        return archiveTimeStampSequenceDigest;
     }
 
     private ArchiveTimeStampSequence getArchiveTimeStampSequence() {
@@ -131,21 +123,19 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
 
     /**
      * Computes a hash value for chain-hash and document-hash
-     * Note: rfc4998 is ambiguous in this case
-     * All known ASN.1 ERs are not sorted for this hash!
-     * Read more here: <a href="https://github.com/de-bund-bsi-tr-esor/ERVerifyTool/issues/2">https://github.com/de-bund-bsi-tr-esor/ERVerifyTool/issues/2</a>
      *
-     * @param digestAlgorithm {@link DigestAlgorithm} to be used for a hash computation
-     * @param documentHash {@link DSSMessageDigest} the hash of the document
-     * @param sort whether the hash value should be sorted
+     * @param archiveTimeStampChainHash {@link DSSDocument} hash of the previous ArchiveTimeStampChain
+     * @param document {@link DSSDocument} detached document
      * @return {@link DSSMessageDigest}
      */
-    protected DSSMessageDigest computeChainAndDocumentHash(
-            DigestAlgorithm digestAlgorithm, DSSMessageDigest documentHash, DSSMessageDigest chainHash, boolean sort) {
+    protected DSSMessageDigest computeChainAndDocumentHash(DSSMessageDigest archiveTimeStampChainHash,
+                                                           DSSDocument document) {
+        DigestAlgorithm digestAlgorithm = archiveTimeStampChainHash.getAlgorithm();
+
         /*
          * The algorithm by which a root hash value is generated from the
          * <HashTree> element is as follows: the content of each <DigestValue>
-         element within the first <Sequence> element is base64 ([RFC4648],
+         * element within the first <Sequence> element is base64 ([RFC4648],
          * using the base64 alphabet not the base64url alphabet) decoded to
          * obtain a binary value (representing the hash value). All collected
          * hash values from the sequence are [ordered in binary ascending order],
@@ -154,22 +144,33 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
          * has only one <DigestValue> element, then its binary value is added to
          * the next list obtained from the next <Sequence> element.
          */
+
+        // 0. Compute hash of the document
+        byte[] documentMessageDigest = Utils.fromBase64(document.getDigest(digestAlgorithm));
+
         // 1. Group together items
         List<byte[]> hashValueList = new ArrayList<>();
-        hashValueList.add(documentHash.getValue());
-        hashValueList.add(chainHash.getValue());
+        hashValueList.add(documentMessageDigest);
+        hashValueList.add(archiveTimeStampChainHash.getValue());
 
         // 2a. Exception
         if (Utils.collectionSize(hashValueList) == 1) {
             return new DSSMessageDigest(digestAlgorithm, hashValueList.get(0));
         }
 
+        /*
+         * All known ASN.1 ERs are not sorted for this hash!
+         *
+         * There is an error in Figure 4 of RFC4998, which states
+         * "h1' = H( binary sorted and concatenated (H(d1), ha(1)))",
+         * but 5.2. point 4. clearly states "Concatenate each h(i)
+         * with ha(i) and generate hash values h(i)' = H (h(i)+ ha(i)).".
+         * N.b.: There is no need to sort hashes when their order is defined.
+         *
+         * Read more here: <a href="https://github.com/de-bund-bsi-tr-esor/ERVerifyTool/issues/2">https://github.com/de-bund-bsi-tr-esor/ERVerifyTool/issues/2</a>
+         */
         // 2b. Binary ascending sort
-        // NOTE: See comment above
-        // TODO : what about accepting both options (i.e. sorted/not sorted) ?
-        if (sort) {
-        	hashValueList.sort(ByteArrayComparator.getInstance());
-        }
+        // hashValueList.sort(ByteArrayComparator.getInstance());
 
         // 3. Concatenate
         final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
@@ -178,6 +179,20 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
         }
         // 4. Calculate hash value
         return digestCalculator.getMessageDigest();
+    }
+
+    @Override
+    protected List<byte[]> getLastTimeStampSequenceHashList(
+            DSSMessageDigest lastTimeStampSequenceHash, List<DSSDocument> detachedDocuments) {
+        if (Utils.isCollectionEmpty(detachedDocuments)) {
+            return super.getLastTimeStampSequenceHashList(lastTimeStampSequenceHash, detachedDocuments);
+        }
+        final List<byte[]> hashes = new ArrayList<>();
+        for (DSSDocument document : detachedDocuments) {
+            DSSMessageDigest documentMessageDigest = computeChainAndDocumentHash(lastTimeStampSequenceHash, document);
+            hashes.add(documentMessageDigest.getValue());
+        }
+        return hashes;
     }
 
 }
