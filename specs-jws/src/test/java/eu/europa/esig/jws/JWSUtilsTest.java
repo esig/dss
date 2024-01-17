@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.jws;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.github.erosb.jsonsKema.JsonArray;
+import com.github.erosb.jsonsKema.JsonObject;
+import com.github.erosb.jsonsKema.JsonString;
+import com.github.erosb.jsonsKema.JsonValue;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
+import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -44,17 +48,17 @@ public class JWSUtilsTest {
 	@Test
 	public void jsonSerializationTest() {
 		InputStream is = JWSUtilsTest.class.getResourceAsStream("/jws-serialization.json");
-		JSONObject jws = jwsUtils.parseJson(is);
+		JsonObject jws = jwsUtils.parseJson(is);
 		
 		List<String> errors = jwsUtils.validateAgainstJWSSchema(jws);
 		assertTrue(errors.isEmpty(), errors.toString());
-		
-		JSONArray signatures = jws.getJSONArray("signatures");
+
+		JsonArray signatures = (JsonArray) jws.get("signatures");
 		assertNotNull(signatures);
 		assertTrue(signatures.length() > 0);
 
-		for (Object signature : signatures) {
-			JSONObject jsonSignature = (JSONObject) signature;
+		for (JsonValue signature : signatures.getElements()) {
+			JsonObject jsonSignature = (JsonObject) signature;
 			validateSignature(jsonSignature);
 		}
 	}
@@ -62,7 +66,7 @@ public class JWSUtilsTest {
 	@Test
 	public void jsonFlattenedTest() {
 		InputStream is = JWSUtilsTest.class.getResourceAsStream("/jws-flattened.json");
-		JSONObject jws = jwsUtils.parseJson(is);
+		JsonObject jws = jwsUtils.parseJson(is);
 		
 		List<String> errors = jwsUtils.validateAgainstJWSSchema(jws);
 		assertTrue(errors.isEmpty());
@@ -70,18 +74,25 @@ public class JWSUtilsTest {
 		validateSignature(jws);
 	}
 	
-	private void validateSignature(JSONObject signature) {
-		String protectedBase64 = signature.getString("protected");
+	private void validateSignature(JsonObject signature) {
+		JsonString protectedBase64 = (JsonString) signature.get("protected");
 		assertNotNull(protectedBase64);
+		assertNotNull(protectedBase64.getValue());
+
+		String protectedBase64String = protectedBase64.getValue();
 		
-		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64);
+		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64String);
 		String protectedString = new String(decodedProtected);
 		
 		List<String> errors = jwsUtils.validateAgainstJWSProtectedHeaderSchema(protectedString);
 		assertTrue(errors.isEmpty());
 
-		JSONObject header = signature.getJSONObject("header");
+		JsonObject header = (JsonObject) signature.get("header");
 		assertNotNull(header);
+
+		Map<JsonString, JsonValue> properties = header.getProperties();
+		assertNotNull(header.getProperties());
+		assertFalse(properties.isEmpty());
 		
 		errors = jwsUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
 		assertTrue(errors.isEmpty());

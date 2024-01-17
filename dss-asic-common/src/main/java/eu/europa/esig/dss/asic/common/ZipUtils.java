@@ -77,21 +77,6 @@ public final class ZipUtils {
 	}
 
 	/**
-	 * Sets a handler to process ZIP-content retrieving
-	 * Default : {@code SecureContainerHandler}
-	 * 
-	 * @param zipContainerHandler {@link ZipContainerHandler}
-	 * @deprecated since DSS 5.13. Please use {@code #setZipContainerHandlerBuilder} instead
-	 */
-	@Deprecated
-	public void setZipContainerHandler(ZipContainerHandler zipContainerHandler) {
-		Objects.requireNonNull(zipContainerHandler, "zipContainerHandler shall be defined!");
-		LOG.warn("Use of deprecated method #setZipContainerHandler(zipContainerHandler)! Not thread-safe! " +
-				"Please use #setZipContainerHandlerBuilder(zipContainerHandlerBuilder) method instead.");
-		this.zipContainerHandlerBuilder = (ZipContainerHandlerBuilder<ZipContainerHandler>) () -> zipContainerHandler;
-	}
-
-	/**
 	 * Extracts a list of {@code DSSDocument} from the given ZIP-archive
 	 * 
 	 * @param zipPackage {@link DSSDocument}

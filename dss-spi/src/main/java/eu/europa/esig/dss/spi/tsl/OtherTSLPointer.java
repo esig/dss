@@ -65,7 +65,9 @@ public class OtherTSLPointer implements Serializable {
 	}
 
 	/**
-	 * Default constructor to create an empty object
+	 * Default constructor to instantiate object from {@code OtherTSLPointerBuilder}
+	 *
+	 * @param builder {@link OtherTSLPointerBuilder}
 	 */
 	public OtherTSLPointer(OtherTSLPointerBuilder builder) {
 		this.sdiCertificates = builder.getSdiCertificates();
@@ -88,33 +90,11 @@ public class OtherTSLPointer implements Serializable {
 	}
 
 	/**
-	 * Gets a list of SDI certificates
-	 *
-	 * @return a list of {@link CertificateToken}s
-	 * @deprecated since DSS 5.13. Use {@code #getSdiCertificates} method instead
-	 */
-	@Deprecated
-	public List<CertificateToken> getCertificates() {
-		return getSdiCertificates();
-	}
-
-	/**
 	 * Gets TSL location url
 	 *
 	 * @return {@link String}
 	 */
 	public String getTSLLocation() {
-		return tslLocation;
-	}
-
-	/**
-	 * Gets TSL location url
-	 *
-	 * @return {@link String}
-	 * @deprecated since DSS 5.13. Use {@code #getTSLLocation} method instead
-	 */
-	@Deprecated
-	public String getLocation() {
 		return tslLocation;
 	}
 

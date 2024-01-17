@@ -151,7 +151,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public PdfDssDict getDSSDictionary() {
-		PdfDict currentCatalog = new ITextPdfDict(pdfReader.getCatalog());
+		PdfDict currentCatalog = getCatalogDictionary();
 		return SingleDssDict.extract(currentCatalog);
 	}
 
@@ -264,6 +264,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 				}
 				PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 				pdfAnnotation.setName(getSignatureFieldName(annotDictionary));
+				pdfAnnotation.setSigned(isSignedField(annotDictionary));
 				return pdfAnnotation;
 			}
 		}
@@ -318,6 +319,10 @@ public class ITextDocumentReader implements PdfDocumentReader {
 			return pdfString.toString();
 		}
 		return null;
+	}
+
+	private boolean isSignedField(PdfDictionary annotDictionary) {
+		return annotDictionary.getAsDict(PdfName.V) != null;
 	}
 
 	@Override

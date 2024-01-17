@@ -55,12 +55,6 @@ public class Base64Transform extends AbstractTransform {
 	}
 
 	@Override
-	@Deprecated
-	public byte[] getBytesAfterTransformation(Node node) {
-		return DomUtils.serializeNode(node);
-	}
-
-	@Override
 	public DSSTransformOutput performTransform(DSSTransformOutput transformOutput) {
 		// extract base64-decoded content from a Reference directly
 		return transformOutput;

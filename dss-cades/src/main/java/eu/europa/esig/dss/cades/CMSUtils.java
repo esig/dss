@@ -266,7 +266,7 @@ public final class CMSUtils {
 	 * @param digestAlgorithm
 	 *            the digest algorithm to be used
 	 * @param signingToken
-	 *            The signing certificate to be append
+	 *            The signing certificate to be appended
 	 */
 	public static void addSigningCertificateAttribute(final ASN1EncodableVector signedAttributes, final DigestAlgorithm digestAlgorithm,
 			CertificateToken signingToken) {
@@ -310,32 +310,71 @@ public final class CMSUtils {
 	}
 
 	/**
-	 * Returns a signed attribute with the given {@code oid} from {@code signerInformation} if present
+	 * Returns a signed attribute with the given {@code oid} from {@code signerInformation} if present and unique.
+	 * If multiple Attributes extraction is expected, please use
+	 * {@code #getSignedAttributes(signerInformation, oid)} method.
 	 *
 	 * @param signerInformation {@link SignerInformation} containing signed attributes
 	 * @param oid {@link ASN1ObjectIdentifier} oid of the element to extract
 	 * @return {@link Attribute} with the given OID
 	 */
 	public static Attribute getSignedAttribute(final SignerInformation signerInformation, ASN1ObjectIdentifier oid) {
-		final AttributeTable signedAttributes = signerInformation.getSignedAttributes();
-		if (signedAttributes == null) {
+		Attribute[] attributes = getSignedAttributes(signerInformation, oid);
+		if (Utils.isArrayEmpty(attributes)) {
 			return null;
 		}
-		return signedAttributes.get(oid);
+		if (Utils.arraySize(attributes) > 1) {
+			LOG.warn("More than attribute with OID '{}' found in signed attributes table! Value is skipped.", oid);
+			return null;
+		}
+		return attributes[0];
 	}
 
 	/**
-	 * Returns an unsigned attribute by its given {@code oid}
+	 * Returns signed attributes matching the given {@code oid} from {@code signerInformation} if present.
+	 * Otherwise, returns an empty array.
+	 *
+	 * @param signerInformation {@link SignerInformation} containing signed attributes
+	 * @param oid {@link ASN1ObjectIdentifier} oid of the elements to extract
+	 * @return an array of {@link Attribute}s with the given OID
+	 */
+	public static Attribute[] getSignedAttributes(final SignerInformation signerInformation, ASN1ObjectIdentifier oid) {
+		AttributeTable attributeTable = getSignedAttributes(signerInformation);
+		return DSSASN1Utils.getAsn1Attributes(attributeTable, oid);
+	}
+
+	/**
+	 * Returns an unsigned attribute with the given {@code oid} from {@code signerInformation} if present and unique.
+	 * If multiple Attributes extraction is expected, please use
+	 * {@code #getUnsignedAttributes(signerInformation, oid)} method.
+	 *
 	 * @param signerInformation {@link SignerInformation} to get attribute from
 	 * @param oid {@link ASN1ObjectIdentifier} of the target attribute
 	 * @return {@link Attribute}
 	 */
 	public static Attribute getUnsignedAttribute(SignerInformation signerInformation, ASN1ObjectIdentifier oid) {
-		final AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
-		if (unsignedAttributes == null) {
+		Attribute[] attributes = getUnsignedAttributes(signerInformation, oid);
+		if (Utils.isArrayEmpty(attributes)) {
 			return null;
 		}
-		return unsignedAttributes.get(oid);
+		if (Utils.arraySize(attributes) > 1) {
+			LOG.warn("More than attribute with OID '{}' found in unsigned attributes table! Value is skipped.", oid);
+			return null;
+		}
+		return attributes[0];
+	}
+
+	/**
+	 * Returns unsigned attributes matching the given {@code oid} from {@code signerInformation} if present.
+	 * Otherwise, returns an empty array.
+	 *
+	 * @param signerInformation {@link SignerInformation} containing unsigned attributes
+	 * @param oid {@link ASN1ObjectIdentifier} oid of the elements to extract
+	 * @return an array of {@link Attribute}s with the given OID
+	 */
+	public static Attribute[] getUnsignedAttributes(final SignerInformation signerInformation, ASN1ObjectIdentifier oid) {
+		AttributeTable attributeTable = getUnsignedAttributes(signerInformation);
+		return DSSASN1Utils.getAsn1Attributes(attributeTable, oid);
 	}
 
 	/**

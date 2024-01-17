@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JAdESWithWrongCritEntryType extends AbstractJAdESTestValidation {
 
@@ -47,7 +48,8 @@ public class JAdESWithWrongCritEntryType extends AbstractJAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertFalse(signature.isStructuralValidationValid());
         assertEquals(1, signature.getStructuralValidationMessages().size());
-        assertEquals("#/crit/0: expected type: String, found: JSONArray", signature.getStructuralValidationMessages().get(0));
+        assertTrue(signature.getStructuralValidationMessages().get(0).contains("expected type: string, actual: array"));
+        assertTrue(signature.getStructuralValidationMessages().get(0).contains("#/crit"));
     }
 
 }

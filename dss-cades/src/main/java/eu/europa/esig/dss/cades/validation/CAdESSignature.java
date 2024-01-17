@@ -311,8 +311,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	
 	@Override
 	public SignaturePolicyStore getSignaturePolicyStore() {
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		Attribute sigPolicyStore = unsignedAttributes.get(id_aa_ets_sigPolicyStore);
+		final Attribute sigPolicyStore = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_sigPolicyStore);
 		if (sigPolicyStore != null && sigPolicyStore.getAttrValues().size() > 0) {
 			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 			SpDocSpecification spDocSpecification = new SpDocSpecification();

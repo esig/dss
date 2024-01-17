@@ -27,9 +27,11 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.CrlListID;
 import org.bouncycastle.asn1.esf.CrlOcspRef;
@@ -134,9 +136,21 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 		}
 	}
 
-	private void collectRevocationValues(AttributeTable attributes, ASN1ObjectIdentifier revocationValuesAttribute, RevocationOrigin origin) {
-		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, revocationValuesAttribute);
-		RevocationValues revValues = DSSASN1Utils.getRevocationValues(attValue);
+	private void collectRevocationValues(AttributeTable attributeTable, ASN1ObjectIdentifier revocationValuesAttribute,
+										 RevocationOrigin origin) {
+		Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(attributeTable, revocationValuesAttribute);
+		for (Attribute attribute : attributes) {
+			ASN1Encodable[] attributeValues = attribute.getAttributeValues();
+			if (Utils.isArrayNotEmpty(attributeValues)) {
+				for (ASN1Encodable attrValue : attributeValues) {
+					extractRevocationValues(attrValue, origin);
+				}
+			}
+		}
+	}
+
+	private void extractRevocationValues(ASN1Encodable attrValue, RevocationOrigin origin) {
+		RevocationValues revValues = DSSASN1Utils.getRevocationValues(attrValue);
 		if (revValues != null) {
 			for (final CertificateList revValue : revValues.getCrlVals()) {
 				try {
@@ -171,11 +185,16 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 
 	private void collectRevocationRefs(ASN1ObjectIdentifier revocationRefsAttribute, RevocationRefOrigin origin) {
 		try {
-			final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(unsignedAttributes, revocationRefsAttribute);
-			if (attrValue != null) {
-				final ASN1Sequence revocationRefs = (ASN1Sequence) attrValue;
-				for (int ii = 0; ii < revocationRefs.size(); ii++) {
-					collectRevocationRefFromASN1Encodable(revocationRefs.getObjectAt(ii), origin);
+			Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(unsignedAttributes, revocationRefsAttribute);
+			for (Attribute attribute : attributes) {
+				ASN1Encodable[] attributeValues = attribute.getAttributeValues();
+				if (Utils.isArrayNotEmpty(attributeValues)) {
+					for (ASN1Encodable attrValue : attributeValues) {
+						final ASN1Sequence revocationRefs = (ASN1Sequence) attrValue;
+						for (int ii = 0; ii < revocationRefs.size(); ii++) {
+							collectRevocationRefFromASN1Encodable(revocationRefs.getObjectAt(ii), origin);
+						}
+					}
 				}
 			}
 		} catch (Exception e) {

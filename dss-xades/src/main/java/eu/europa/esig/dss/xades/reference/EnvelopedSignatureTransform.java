@@ -51,13 +51,6 @@ public class EnvelopedSignatureTransform extends AbstractTransform {
 	}
 
 	@Override
-	@Deprecated
-	public byte[] getBytesAfterTransformation(Node node) {
-		// do nothing the new signature is not existing yet
-		return DomUtils.serializeNode(node);
-	}
-
-	@Override
 	public DSSTransformOutput performTransform(DSSTransformOutput transformOutput) {
 		// do nothing the new signature is not existing yet
 		return transformOutput;

@@ -23,7 +23,11 @@ package eu.europa.esig.dss.pdf.modifications;
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +37,8 @@ import java.util.List;
  *
  */
 public class PdfObjectModificationsFilter {
+
+    private final Logger LOG = LoggerFactory.getLogger(PdfObjectModificationsFilter.class);
 
     /**
      * Default constructor
@@ -69,11 +75,13 @@ public class PdfObjectModificationsFilter {
         return pdfObjectModifications;
     }
 
-    /*
-     * Note for developers:
+    /**
      * This method allows to skip some modification occurring in PdfBox and OpenPDF
+     *
+     * @param objectModification {@link ObjectModification}
+     * @return TRUE if the modification should be skipped, FALSE otherwise
      */
-    private static boolean skipChange(ObjectModification objectModification) {
+    protected boolean skipChange(ObjectModification objectModification) {
         String lastKey = objectModification.getObjectTree().getLastKey();
         if (PdfObjectModificationType.DELETION.equals(objectModification.getActionType()) &&
                 PAdESConstants.APPEARANCE_DICTIONARY_NAME.equals(lastKey)) {
@@ -91,10 +99,21 @@ public class PdfObjectModificationsFilter {
         return false;
     }
 
-    private static boolean isExtensionChange(ObjectModification objectModification) {
+    /**
+     * Returns whether the modification corresponds to a signature augmentation
+     * (such as DocTimeStamp or DSS dictionary creation)
+     *
+     * @param objectModification {@link ObjectModification}
+     * @return TRUE if the modification corresponds to augmentation process, FALSE otherwise
+     */
+    protected boolean isExtensionChange(ObjectModification objectModification) {
         if (isDSSDictionaryChange(objectModification)) {
             return true;
         } else if (isDocTimeStampAdded(objectModification)) {
+            return true;
+        } else if (isDocTimeStampEmptyFieldFill(objectModification)) {
+            return true;
+        } else if (isDocTimeStampEmptyFieldFontCreation(objectModification)) {
             return true;
         } else if (isDocumentExtension(objectModification)) {
             return true;
@@ -108,7 +127,7 @@ public class PdfObjectModificationsFilter {
         return false;
     }
 
-    private static boolean isDSSDictionaryChange(ObjectModification objectModification) {
+    private boolean isDSSDictionaryChange(ObjectModification objectModification) {
         List<String> keyChain = objectModification.getObjectTree().getKeyChain();
         for (String key : keyChain) {
             if (PAdESConstants.DSS_DICTIONARY_NAME.equals(key)) {
@@ -118,50 +137,65 @@ public class PdfObjectModificationsFilter {
         return false;
     }
 
-    private static boolean isDocTimeStampAdded(ObjectModification objectModification) {
+    private boolean isDocTimeStampAdded(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         if (isAnnotsKey(key)) {
-            Object addedObject = objectModification.getFinalObject();
+            PdfObject addedObject = objectModification.getFinalObject();
+            if (addedObject instanceof PdfDict) {
+                PdfObject valueObject = ((PdfDict) addedObject).getObject(PAdESConstants.VALUE_NAME);
+                if (valueObject instanceof PdfDict && isDocTimeStamp((PdfDict) valueObject)) {
+                    return true;
+                }
+            }
+        } else if (isValueKey(key)) {
+            PdfObject addedObject = objectModification.getFinalObject();
             if (addedObject instanceof PdfDict && isDocTimeStamp((PdfDict) addedObject)) {
                 return true;
             }
-            return false;
         }
         return false;
     }
     
-    private static boolean isSignature(PdfDict pdfDict) {
+    private boolean isSignature(PdfDict pdfDict) {
         return isObjectOfType(pdfDict, PAdESConstants.SIGNATURE_TYPE);
     }
 
-    private static boolean isDocTimeStamp(PdfDict pdfDict) {
+    private boolean isDocTimeStamp(PdfDict pdfDict) {
         return isObjectOfType(pdfDict, PAdESConstants.TIMESTAMP_TYPE);
     }
 
-    private static boolean isObjectOfType(PdfDict pdfDict, String typeValue) {
-        final PdfDict vDict = pdfDict.getAsDict(PAdESConstants.VALUE_NAME);
-        if (vDict != null) {
-            String type = vDict.getNameValue(PAdESConstants.TYPE_NAME);
-            if (typeValue.equals(type)) {
+    private boolean isObjectOfType(PdfDict pdfDict, String typeValue) {
+        if (pdfDict != null) {
+            PdfObject typeObject = pdfDict.getObject(PAdESConstants.TYPE_NAME);
+            if (typeObject != null && typeValue.equals(typeObject.getValue())) {
                 return true;
             }
         }
         return false;
     }
 
-    private static boolean isDocumentExtension(ObjectModification objectModification) {
+    private boolean isDocumentExtension(ObjectModification objectModification) {
         // can be relevant for /DSS or/and /DocTimeStamp incorporation
         String key = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
         return PAdESConstants.EXTENSIONS_NAME.equals(key) && PAdESConstants.CATALOG_NAME.equals(parentKey);
     }
 
-    private static boolean isSignatureOrFormFillChange(ObjectModification objectModification) {
+    /**
+     * Returns whether the modification corresponds to a signature addition or a form fill
+     * (such as DocTimeStamp or DSS dictionary creation)
+     *
+     * @param objectModification {@link ObjectModification}
+     * @return TRUE if the modification corresponds to a signature addition or a form fill process, FALSE otherwise
+     */
+    protected boolean isSignatureOrFormFillChange(ObjectModification objectModification) {
         if (isFieldFilled(objectModification)) {
             return true;
         } else if (isAnnotsFill(objectModification)) {
             return true;
         } else if (isFieldAppearanceCreationChange(objectModification)) {
+            return true;
+        } else if (isSignatureEmptyFieldFill(objectModification)) {
             return true;
         } else if (isCatalogPieceInfoChange(objectModification)) {
             return true;
@@ -173,13 +207,13 @@ public class PdfObjectModificationsFilter {
             return true;
         } else if (isAcroFormDictionaryChange(objectModification)) {
             return true;
-        } else if (isFontCreationChange(objectModification)) {
+        } else if (isSignatureEmptyFieldFontCreation(objectModification)) {
             return true;
         }
         return false;
     }
 
-    private static boolean isFieldFilled(ObjectModification objectModification) {
+    private boolean isFieldFilled(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
         if (PAdESConstants.VALUE_NAME.equals(key) && isAnnotsKey(parentKey)) {
@@ -194,15 +228,19 @@ public class PdfObjectModificationsFilter {
         return false;
     }
 
-    private static boolean isValueChange(PdfDict pdfDict) {
+    private boolean isValueChange(PdfDict pdfDict) {
         return pdfDict.getAsDict(PAdESConstants.VALUE_NAME) != null;
     }
 
-    private static boolean isAnnotsKey(String key) {
+    private boolean isValueKey(String key) {
+        return isOneOf(key, PAdESConstants.VALUE_NAME);
+    }
+
+    private boolean isAnnotsKey(String key) {
         return isOneOf(key, PAdESConstants.ANNOTS_NAME, PAdESConstants.FIELDS_NAME, PAdESConstants.PARENT_NAME);
     }
 
-    private static boolean isAnnotsFill(ObjectModification objectModification) {
+    private boolean isAnnotsFill(ObjectModification objectModification) {
         String lastKey = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
         if (isAnnotsKey(lastKey) || isAnnotsKey(parentKey)) {
@@ -217,7 +255,7 @@ public class PdfObjectModificationsFilter {
         return false;
     }
 
-    private static boolean isFieldAppearanceCreationChange(ObjectModification objectModification) {
+    private boolean isFieldAppearanceCreationChange(ObjectModification objectModification) {
         boolean appearanceDictChangeFound = false;
         boolean annotChangeFound = false;
         if (PdfObjectModificationType.CREATION.equals(objectModification.getActionType())) {
@@ -232,7 +270,75 @@ public class PdfObjectModificationsFilter {
         return appearanceDictChangeFound && annotChangeFound;
     }
 
-    private static boolean isVersionChange(ObjectModification objectModification) {
+    private boolean isSignatureEmptyFieldFill(ObjectModification objectModification) {
+        return isEmptyFieldFill(objectModification, PAdESConstants.SIGNATURE_TYPE);
+    }
+
+    private boolean isDocTimeStampEmptyFieldFill(ObjectModification objectModification) {
+        return isEmptyFieldFill(objectModification, PAdESConstants.TIMESTAMP_TYPE);
+    }
+
+    private boolean isEmptyFieldFill(ObjectModification objectModification, String signatureType) {
+        boolean appearanceDictChangeFound = false;
+        boolean normalAppearanceFound = false;
+        if (PdfObjectModificationType.MODIFICATION.equals(objectModification.getActionType())) {
+            for (String chainKey : objectModification.getObjectTree().getKeyChain()) {
+                if (PAdESConstants.APPEARANCE_DICTIONARY_NAME.equals(chainKey) && checkRecursivelyForNewSignatureCreation(objectModification, signatureType)) {
+                    appearanceDictChangeFound = true;
+                } else if (appearanceDictChangeFound && PAdESConstants.NORMAL_APPEARANCE_NAME.equals(chainKey)) {
+                    normalAppearanceFound = true;
+                }
+
+                if (normalAppearanceFound) {
+                    if (PAdESConstants.LENGTH_NAME.equals(chainKey)) {
+                        return true;
+                    } else if (isStreamFill(objectModification)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean checkRecursivelyForNewSignatureCreation(ObjectModification objectModification, String targetType) {
+        return checkRecursivelyForNewSignatureCreation(objectModification.getOriginalObject(), objectModification.getFinalObject(), targetType);
+    }
+
+    private boolean checkRecursivelyForNewSignatureCreation(PdfObject originalObject, PdfObject finalObject, String targetType) {
+        PdfObject originalSigValue = originalObject instanceof PdfDict ? ((PdfDict) originalObject).getObject(PAdESConstants.VALUE_NAME) : null;
+        PdfObject finalSigValue = finalObject instanceof PdfDict ? ((PdfDict) finalObject).getObject(PAdESConstants.VALUE_NAME) : null;
+        if (originalSigValue == null && finalSigValue instanceof PdfDict && isObjectOfType((PdfDict) finalSigValue, targetType)) {
+            return true;
+        }
+
+        PdfObject originalParent = originalObject != null ? originalObject.getParent() : null;
+        PdfObject finalParent = finalObject != null ? finalObject.getParent() : null;
+        if (originalParent == null && finalParent == null) {
+            return false;
+        }
+        return checkRecursivelyForNewSignatureCreation(originalParent, finalParent, targetType);
+    }
+
+    private boolean isStreamFill(ObjectModification objectModification) {
+        try {
+            Object originalObject = objectModification.getOriginalObject();
+            Object finalObject = objectModification.getFinalObject();
+            if (originalObject instanceof PdfDict && finalObject instanceof PdfDict) {
+                PdfDict finalDict = (PdfDict) finalObject;
+                byte[] finalBytes = finalDict.getStreamBytes();
+                if (finalBytes != null && finalBytes.length != 0) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            LOG.warn("Unable to evaluate stream modification from path '{}'. Reason : {}",
+                    objectModification.getObjectTree(), e.getMessage(), e);
+        }
+        return false;
+    }
+
+    private boolean isVersionChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
         return PdfObjectModificationType.MODIFICATION.equals(objectModification.getActionType()) &&
@@ -240,7 +346,7 @@ public class PdfObjectModificationsFilter {
                 isOneOf(parentKey, PAdESConstants.CATALOG_NAME, PAdESConstants.DATA_NAME, PAdESConstants.ROOT_NAME);
     }
 
-    private static boolean isExtensionsChange(ObjectModification objectModification) {
+    private boolean isExtensionsChange(ObjectModification objectModification) {
         List<String> keyChain = objectModification.getObjectTree().getKeyChain();
         for (String key : keyChain) {
             if (PAdESConstants.EXTENSIONS_NAME.equals(key)) {
@@ -250,7 +356,7 @@ public class PdfObjectModificationsFilter {
         return false;
     }
 
-    private static boolean isCatalogPieceInfoChange(ObjectModification objectModification) {
+    private boolean isCatalogPieceInfoChange(ObjectModification objectModification) {
         List<String> keyChain = objectModification.getObjectTree().getKeyChain();
         for (String key : keyChain) {
             if (PAdESConstants.PIECE_INFO_NAME.equals(key)) {
@@ -260,13 +366,13 @@ public class PdfObjectModificationsFilter {
         return false;
     }
 
-    private static boolean isCatalogPermsCreationChange(ObjectModification objectModification) {
+    private boolean isCatalogPermsCreationChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         return PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
                 PAdESConstants.PERMS_NAME.equals(key);
     }
 
-    private static boolean isCatalogNamesChange(ObjectModification objectModification) {
+    private boolean isCatalogNamesChange(ObjectModification objectModification) {
         List<String> keyChain = objectModification.getObjectTree().getKeyChain();
         for (String key : keyChain) {
             if (PAdESConstants.NAMES_NAME.equals(key)) {
@@ -276,19 +382,19 @@ public class PdfObjectModificationsFilter {
         return false;
     }
 
-    private static boolean isCatalogOutputIntentsChange(ObjectModification objectModification) {
+    private boolean isCatalogOutputIntentsChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         return PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
                 PAdESConstants.OUTPUT_INTENTS_NAME.equals(key);
     }
 
-    private static boolean isMetaDataChange(ObjectModification objectModification) {
+    private boolean isMetaDataChange(ObjectModification objectModification) {
         String key = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
         return PAdESConstants.METADATA_NAME.equals(key) || PAdESConstants.METADATA_NAME.equals(parentKey);
     }
 
-    private static boolean isAcroFormDictionaryChange(ObjectModification objectModification) {
+    private boolean isAcroFormDictionaryChange(ObjectModification objectModification) {
         boolean containsAcroForm = false;
         boolean containsResourseDict = false;
         List<String> keyChain = objectModification.getObjectTree().getKeyChain();
@@ -303,14 +409,23 @@ public class PdfObjectModificationsFilter {
         return containsAcroForm && containsResourseDict;
     }
 
-    private static boolean isFontCreationChange(ObjectModification objectModification) {
+    private boolean isSignatureEmptyFieldFontCreation(ObjectModification objectModification) {
+        return isFontCreationChange(objectModification, PAdESConstants.SIGNATURE_TYPE);
+    }
+
+    private boolean isDocTimeStampEmptyFieldFontCreation(ObjectModification objectModification) {
+        return isFontCreationChange(objectModification, PAdESConstants.TIMESTAMP_TYPE);
+    }
+
+    private boolean isFontCreationChange(ObjectModification objectModification, String signatureType) {
         String key = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
         return PdfObjectModificationType.CREATION.equals(objectModification.getActionType()) &&
-                (PAdESConstants.FONT_NAME.equals(key) || PAdESConstants.FONT_NAME.equals(parentKey));
+                (PAdESConstants.FONT_NAME.equals(key) || PAdESConstants.FONT_NAME.equals(parentKey)) &&
+                checkRecursivelyForNewSignatureCreation(objectModification, signatureType);
     }
 
-    private static String getParentKey(ObjectModification objectModification) {
+    private String getParentKey(ObjectModification objectModification) {
         List<String> keyChain = objectModification.getObjectTree().getKeyChain();
         if (keyChain.size() > 1) {
             return keyChain.get(keyChain.size() - 2);
@@ -318,25 +433,36 @@ public class PdfObjectModificationsFilter {
         return null;
     }
 
-    private static boolean isAnnotationChange(ObjectModification objectModification) {
+    /**
+     * Returns whether the modification corresponds to an annotation change
+     * (such as DocTimeStamp or DSS dictionary creation)
+     *
+     * @param objectModification {@link ObjectModification}
+     * @return TRUE if the modification corresponds to an annotation change process, FALSE otherwise
+     */
+    protected boolean isAnnotationChange(ObjectModification objectModification) {
         return isAnnotChange(objectModification);
     }
 
-    private static boolean isAnnotChange(ObjectModification objectModification) {
+    private boolean isAnnotChange(ObjectModification objectModification) {
         String lastKey = objectModification.getObjectTree().getLastKey();
         String parentKey = getParentKey(objectModification);
         if (isAnnotsKey(lastKey) || isAnnotsKey(parentKey)) {
             if (PdfObjectModificationType.DELETION.equals(objectModification.getActionType()) &&
                     objectModification.getOriginalObject() instanceof PdfDict) {
                 PdfDict pdfDict = (PdfDict) objectModification.getOriginalObject();
-                return !isSignature(pdfDict) && !isDocTimeStamp(pdfDict);
+                PdfObject valueObject = pdfDict.getObject(PAdESConstants.VALUE_NAME);
+                if (valueObject instanceof PdfDict) {
+                    PdfDict valueDict = (PdfDict) valueObject;
+                    return !isSignature(valueDict) && !isDocTimeStamp(valueDict);
+                }
             }
             return true;
         }
         return false;
     }
 
-    private static boolean isOneOf(String key, String... toCompare) {
+    private boolean isOneOf(String key, String... toCompare) {
         return Arrays.asList(toCompare).contains(key);
     }
 

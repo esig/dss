@@ -574,31 +574,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * Returns a list of {@code XmlTrustServiceProvider}s
 	 *
 	 * @return a list of {@link XmlTrustServiceProvider}s
-	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceProviders} method instead.
-	 */
-	@Deprecated
-	public List<XmlTrustServiceProvider> getTrustedServiceProviders() {
-		return getTrustServiceProviders();
-	}
-
-	/**
-	 * Returns a list of {@code XmlTrustServiceProvider}s
-	 *
-	 * @return a list of {@link XmlTrustServiceProvider}s
 	 */
 	public List<XmlTrustServiceProvider> getTrustServiceProviders() {
 		return certificate.getTrustServiceProviders();
-	}
-
-	/**
-	 * Returns a list of {@code TrustServiceWrapper}s
-	 *
-	 * @return a list of {@link TrustServiceWrapper}s
-	 * @deprecated since DSS 5.13. Use {@code #getTrustServices} method instead.
-	 */
-	@Deprecated
-	public List<TrustServiceWrapper> getTrustedServices() {
-		return getTrustServices();
 	}
 
 	/**

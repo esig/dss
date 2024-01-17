@@ -96,6 +96,14 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
         assertNotNull(ocspToken);
         assertEquals(producedAt, ocspToken.getProductionDate());
         assertEquals(producedAt, ocspToken.getThisUpdate());
+
+        ocspSource.setProducedAtTime(null);
+
+        ocspToken = ocspSource.getRevocationToken(goodUser, rootToken);
+        assertNotNull(ocspToken);
+        assertNotNull(ocspToken.getProductionDate());
+        assertNotEquals(producedAt, ocspToken.getProductionDate());
+        assertEquals(producedAt, ocspToken.getThisUpdate());
     }
 
     @Test
@@ -107,8 +115,18 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
 
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, rootToken);
         assertNotNull(ocspToken);
+        assertNotNull(ocspToken.getProductionDate());
         assertNotEquals(thisUpdate, ocspToken.getProductionDate());
         assertEquals(thisUpdate, ocspToken.getThisUpdate());
+
+        ocspSource.setThisUpdate(null);
+
+        ocspToken = ocspSource.getRevocationToken(goodUser, rootToken);
+        assertNotNull(ocspToken);
+        assertNotNull(ocspToken.getProductionDate());
+        assertNotEquals(thisUpdate, ocspToken.getProductionDate());
+        assertNotNull(ocspToken.getThisUpdate());
+        assertNotEquals(thisUpdate, ocspToken.getThisUpdate());
     }
 
     @Test
@@ -139,6 +157,12 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, rootToken);
         assertNotNull(ocspToken);
         assertEquals(nextUpdate, ocspToken.getNextUpdate());
+
+        ocspSource.setNextUpdate(null);
+
+        ocspToken = ocspSource.getRevocationToken(goodUser, rootToken);
+        assertNotNull(ocspToken);
+        assertNull(ocspToken.getNextUpdate());
     }
 
     @Test

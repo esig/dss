@@ -110,12 +110,16 @@ public final class PAdESConstants {
 	public static final String FONT_NAME = "Font";
 	/** 'ITXT' (iText identifier) */
 	public static final String ITEXT_NAME = "ITXT";
+	/** 'Length' */
+	public static final String LENGTH_NAME = "Length";
 	/** 'Location' */
 	public static final String LOCATION_NAME = "Location";
 	/** 'Lock' */
 	public static final String LOCK_NAME = "Lock";
 	/** 'Metadata' */
 	public static final String METADATA_NAME = "Metadata";
+	/** 'N' */
+	public static final String NORMAL_APPEARANCE_NAME = "N";
 	/** 'Name' */
 	public static final String NAME_NAME = "Name";
 	/** 'Names' */
@@ -138,6 +142,8 @@ public final class PAdESConstants {
 	public static final String ROOT_NAME = "Root";
 	/** 'M' (Signing date) */
 	public static final String SIGNING_DATE_NAME = "M";
+	/** 'stream' */
+	public static final String STREAM_NAME = "stream";
 	/** 'SigFieldLock' */
 	public static final String SIG_FIELD_LOCK_NAME = "SigFieldLock";
 	/** 'SigFlags' */

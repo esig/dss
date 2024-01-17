@@ -51,7 +51,6 @@ import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoade
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.EvidenceRecordScopeFinder;
-import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -201,17 +200,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * The constructor with a null {@code signatureScopeFinder}
 	 */
 	protected SignedDocumentValidator() {
-		// empty
-	}
-
-	/**
-	 * The default constructor
-	 *
-	 * @param signatureScopeFinder {@link SignatureScopeFinder}
-	 * @deprecated since DSS 5.13.
-	 */
-	@Deprecated
-	protected SignedDocumentValidator(SignatureScopeFinder<?> signatureScopeFinder) {
 		// empty
 	}
 
@@ -503,24 +491,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * Initializes and fills {@code ValidationContext} with necessary data sources
-	 *
-	 * @param <T> {@link AdvancedSignature} implementation
-	 * @param signatures a collection of {@link AdvancedSignature}s
-	 * @param detachedTimestamps a collection of detached {@link TimestampToken}s
-	 * @param certificateVerifier {@link CertificateVerifier} to be used for the validation
-	 * @return {@link ValidationContext}
-	 * @deprecated since DSS 5.13. Use
-	 * 		{@code #prepareValidationContext(signatures, detachedTimestamps, detachedEvidenceRecords, certificateVerifier}}
-	 */
-	@Deprecated
-	protected <T extends AdvancedSignature> ValidationContext prepareValidationContext(
-			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
-			final CertificateVerifier certificateVerifier) {
-		return prepareValidationContext(signatures, detachedTimestamps, Collections.emptyList(), certificateVerifier);
-	}
-
-	/**
-	 * Initializes and fills {@code ValidationContext} with necessary data sources
 	 * 
 	 * @param <T> {@link AdvancedSignature} implementation
 	 * @param signatures a collection of {@link AdvancedSignature}s
@@ -563,7 +533,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			throw new DSSException("At least one signature or a timestamp shall be provided to extract the validation data!");
 		}
 
-		ValidationContext validationContext = prepareValidationContext(signatures, detachedTimestamps, certificateVerifier);
+		// TODO : review use of evidence records
+		ValidationContext validationContext = prepareValidationContext(
+				signatures, detachedTimestamps, Collections.emptyList(), certificateVerifier);
 		validateContext(validationContext);
 
 		assertSignaturesValid(signatures, validationContext);
@@ -609,20 +581,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			validationContext.checkCertificatesNotRevoked(signature);
 			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature);
 		}
-	}
-
-	/**
-	 * Creates and fills the {@code DiagnosticDataBuilder} with a relevant data
-	 * 
-	 * @param validationContext {@link ValidationContext} used for the validation
-	 * @param signatures        a list of {@link AdvancedSignature}s to be validated
-	 * @return filled {@link DiagnosticDataBuilder}
-	 * @deprecated since DSS 5.13. Use {@code #createDiagnosticDataBuilder(validationContext, signatures, evidenceRecords)}
-	 */
-	@Deprecated
-	protected DiagnosticDataBuilder createDiagnosticDataBuilder(final ValidationContext validationContext,
-																final List<AdvancedSignature> signatures) {
-		return createDiagnosticDataBuilder(validationContext, signatures, Collections.emptyList());
 	}
 
 	/**
@@ -1000,12 +958,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		for (final AdvancedSignature signature : allSignatureList) {
 			signature.checkSignatureIntegrity();
 		}
-	}
-
-	@Deprecated
-	@Override
-	public <T extends AdvancedSignature> void findSignatureScopes(Collection<T> currentValidatorSignatures) {
-		LOG.warn("Use of deprecated method! Use eu.europa.esig.dss.validation.AdvancedSignature.getSignatureScopes() method instead.");
 	}
 
 	/**

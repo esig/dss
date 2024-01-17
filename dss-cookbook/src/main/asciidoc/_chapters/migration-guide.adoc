@@ -14,6 +14,39 @@ For changes within Diagnostic Data XSD please refer <<DiagnosticDataChanges>>.
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 6.0 to 6.1
+|===
+|Title                               |v6.0                            |v6.1
+|CMS attribute extraction           a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+...
+ASN1Encodable asn1Encodable = DSSASN1Utils.getAsn1Encodable(attributeTable, oid);
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+...
+Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(attributeTable, oid);
+ASN1Encodable asn1Encodable = attributes[0].getAttributeValues()[0]; // return value of the first attribute
+
+|PDF strict numeric object comparison           a|
+Strict comparison enforced by default
+                                                                     a|[source,java]
+----
+IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+
+DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
+pdfObjectModificationsFinder.setLaxNumericComparison(false); // by default is True
+pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+
+PDFDocumentValidator validator = (PDFDocumentValidator) super.getValidator(signedDocument);
+validator.setPdfObjFactory(pdfObjFactory);
+----
+
+|===
+
+[cols="2,5,5"]
 .Code changes from version 5.13 to 6.0
 |===
 |Title                               |v5.13                            |v6.0
@@ -286,6 +319,21 @@ import org.bouncycastle.cms.SignerInfoGenerator;
 
 SignerInfoGenerator signerInfoGenerator = new CMSSignerInfoGeneratorBuilder().build(contentToSign, parameters, customContentSigner);
 CMSSignedData cmsSignedData = getCMSSignedDataBuilder(parameters).setOriginalCMSSignedData(originalCmsSignedData).createCMSSignedData(signerInfoGenerator, contentToSign);
+----
+
+|OfficialJournalSchemeInformationURI URI extraction                               a|[source,java]
+----
+import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+
+OfficialJournalSchemeInformationURI officialJournalSchemeInformationURI = ...
+String officialJournalURL = officialJournalSchemeInformationURI.getOfficialJournalURL();
+----
+                                                                a|[source,java]
+----
+import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+
+OfficialJournalSchemeInformationURI officialJournalSchemeInformationURI = ...
+String officialJournalURL = officialJournalSchemeInformationURI.getUri();
 ----
 
 |===

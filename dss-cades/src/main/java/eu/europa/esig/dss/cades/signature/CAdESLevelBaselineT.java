@@ -34,6 +34,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.ASN1Object;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cms.CMSSignedData;
@@ -121,8 +122,9 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 				(cadesSignature.hasLTProfile() && !cadesSignature.areAllSelfSignedCertificates()) )) {
 			throw new IllegalInputException(String.format(exceptionMessage, parameters.getSignatureLevel(), "LT level"));
 		}
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(cadesSignature.getSignerInformation());
-		if (unsignedAttributes.get(PKCSObjectIdentifiers.id_aa_ets_escTimeStamp) != null) {
+		Attribute[] sigTimeStampAttributes = CMSUtils.getUnsignedAttributes(
+				cadesSignature.getSignerInformation(), PKCSObjectIdentifiers.id_aa_ets_escTimeStamp);
+		if (Utils.isArrayNotEmpty(sigTimeStampAttributes)) {
 			throw new IllegalInputException(String.format(exceptionMessage,
 					parameters.getSignatureLevel(), PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
 		}

@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * The usage of this interface permit the user to choose the underlying PDF library use to created PDF signatures.
  */
-public interface PdfArray {
+public interface PdfArray extends PdfObject {
 
 	/**
 	 * Retrieves the array size
@@ -85,8 +85,8 @@ public interface PdfArray {
 	 *
 	 * @param i
 	 *          the position
-	 * @return {@link Object}
+	 * @return {@link PdfObject}
 	 */
-	Object getObject(int i);
+	PdfObject getObject(int i);
 
 }

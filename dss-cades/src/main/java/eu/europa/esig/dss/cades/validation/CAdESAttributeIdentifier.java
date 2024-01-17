@@ -49,18 +49,6 @@ public class CAdESAttributeIdentifier extends SignatureAttributeIdentifier {
      * Builds the identifier for CAdES attribute
      *
      * @param attribute {@link Attribute}
-     * @return {@link CAdESAttributeIdentifier}
-     * @deprecated since DSS 5.13. Please use {@code #build(Attribute attribute, Integer order)}
-     */
-    @Deprecated
-    public static CAdESAttributeIdentifier build(Attribute attribute) {
-        return build(attribute, null);
-    }
-
-    /**
-     * Builds the identifier for CAdES attribute
-     *
-     * @param attribute {@link Attribute}
      * @param order position of the attribute within signature properties
      * @return {@link CAdESAttributeIdentifier}
      */

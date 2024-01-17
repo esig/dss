@@ -150,52 +150,6 @@ public class ManifestFile implements Serializable {
 	public void setManifestType(ASiCManifestTypeEnum manifestType) {
 		this.manifestType = manifestType;
 	}
-
-	/**
-	 * Gets if the manifest is related to a timestamp
-	 *
-	 * @return TRUE if it is a timestamp's manifest, FALSE otherwise
-	 * @deprecated since DSS 5.13. Use {@code #getManifestType} method instead.
-	 */
-	@Deprecated
-	public boolean isTimestampManifest() {
-		return manifestType != null && ASiCManifestTypeEnum.TIMESTAMP == manifestType;
-	}
-
-	/**
-	 * Sets if the manifest is related to a timestamp
-	 *
-	 * @param timestampManifest if it is a timestamp's manifest
-	 * @deprecated since DSS 5.13. Use {@code #setManifestType} method instead.
-	 */
-	@Deprecated
-	public void setTimestampManifest(boolean timestampManifest) {
-		LOG.warn("Use of deprecated method #setTimestampManifest! Use #setManifestType instead.");
-		setManifestType(ASiCManifestTypeEnum.TIMESTAMP);
-	}
-
-	/**
-	 * Gets if the manifest is related to an archive timestamp (ASiC-E with CAdES)
-	 *
-	 * @return TRUE if it is an archive timestamp's manifest, FALSE otherwise
-	 * @deprecated since DSS 5.13. Use {@code #getManifestType} method instead.
-	 */
-	@Deprecated
-	public boolean isArchiveManifest() {
-		return manifestType != null && ASiCManifestTypeEnum.ARCHIVE_MANIFEST == manifestType;
-	}
-
-	/**
-	 * Sets if the manifest is related to an archive timestamp (ASiC-E with CAdES)
-	 *
-	 * @param archiveManifest if it is an archive timestamp's manifest
-	 * @deprecated since DSS 5.13. Use {@code #setManifestType} method instead.
-	 */
-	@Deprecated
-	public void setArchiveManifest(boolean archiveManifest) {
-		LOG.warn("Use of deprecated method #setTimestampManifest! Use #setManifestType instead.");
-		setManifestType(ASiCManifestTypeEnum.ARCHIVE_MANIFEST);
-	}
 	
 	/**
 	 * Returns a {@link ManifestEntry} with argument Rootfile="true"

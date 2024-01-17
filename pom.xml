@@ -1116,29 +1116,6 @@
 			</build>
 		</profile>
 		<profile>
-			<id>jdk19-plus</id>
-			<activation>
-				<jdk>[9,)</jdk>
-			</activation>
-			<!--             <properties> -->
-			<!-- 				<maven.compiler.release>9</maven.compiler.release> -->
-			<!--             </properties> -->
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<configuration>
-							<release>8</release>
-							<additionalJOptions>
-								<additionalJOption>-html5</additionalJOption>
-							</additionalJOptions>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
 			<id>spotless</id>
 			<build>
 				<plugins>

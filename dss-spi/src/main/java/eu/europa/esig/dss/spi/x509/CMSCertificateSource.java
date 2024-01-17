@@ -30,6 +30,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
@@ -129,13 +130,23 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	private void extractSigningCertificateReferences() {
 		AttributeTable signedAttributes = currentSignerInformation.getSignedAttributes();
 		if (signedAttributes != null && signedAttributes.size() > 0) {
-			final Attribute signingCertificateAttributeV1 = signedAttributes.get(id_aa_signingCertificate);
-			if (signingCertificateAttributeV1 != null) {
-				extractSigningCertificateV1(signingCertificateAttributeV1);
+			ASN1EncodableVector signingCertificateV1AttributeVector = signedAttributes.getAll(id_aa_signingCertificate);
+			if (signingCertificateV1AttributeVector != null) {
+				for (int i = 0; i < signingCertificateV1AttributeVector.size(); i++) {
+					Attribute signingCertificateV1Attribute = Attribute.getInstance(signingCertificateV1AttributeVector.get(i));
+					if (signingCertificateV1Attribute != null) {
+						extractSigningCertificateV1(signingCertificateV1Attribute);
+					}
+				}
 			}
-			final Attribute signingCertificateAttributeV2 = signedAttributes.get(id_aa_signingCertificateV2);
-			if (signingCertificateAttributeV2 != null) {
-				extractSigningCertificateV2(signingCertificateAttributeV2);
+			ASN1EncodableVector signingCertificateV2AttributeVector = signedAttributes.getAll(id_aa_signingCertificateV2);
+			if (signingCertificateV2AttributeVector != null) {
+				for (int i = 0; i < signingCertificateV2AttributeVector.size(); i++) {
+					Attribute signingCertificateV2Attribute = Attribute.getInstance(signingCertificateV2AttributeVector.get(i));
+					if (signingCertificateV2Attribute != null) {
+						extractSigningCertificateV2(signingCertificateV2Attribute);
+					}
+				}
 			}
 		}
 	}
@@ -207,17 +218,23 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	private void extractCertificateValues() {
 		AttributeTable unsignedAttributes = currentSignerInformation.getUnsignedAttributes();
 		if (unsignedAttributes != null) {
-			Attribute attribute = unsignedAttributes.get(id_aa_ets_certValues);
-			if (attribute != null) {
-				final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
-				for (int ii = 0; ii < seq.size(); ii++) {
-					try {
-						final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
-						addCertificate(DSSUtils.loadCertificate(cs.getEncoded()), CertificateOrigin.CERTIFICATE_VALUES);
-					} catch (Exception e) {
-						LOG.warn("Unable to parse encapsulated certificate : {}", e.getMessage());
-					}
+			Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(unsignedAttributes, id_aa_ets_certValues);
+			if (Utils.isArrayNotEmpty(attributes)) {
+				for (Attribute attribute : attributes) {
+					extractCertificateValues(attribute);
 				}
+			}
+		}
+	}
+
+	private void extractCertificateValues(Attribute attribute) {
+		final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
+		for (int ii = 0; ii < seq.size(); ii++) {
+			try {
+				final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
+				addCertificate(DSSUtils.loadCertificate(cs.getEncoded()), CertificateOrigin.CERTIFICATE_VALUES);
+			} catch (Exception e) {
+				LOG.warn("Unable to parse encapsulated certificate : {}", e.getMessage());
 			}
 		}
 	}
@@ -225,16 +242,18 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	private void extractCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefOrigin origin) {
 		AttributeTable unsignedAttributes = currentSignerInformation.getUnsignedAttributes();
 		if (unsignedAttributes != null) {
-			Attribute attribute = unsignedAttributes.get(attributeOid);
-			if (attribute != null) {
-				final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
-				for (int ii = 0; ii < seq.size(); ii++) {
-					try {
-						OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
-						CertificateRef certRef = DSSASN1Utils.getCertificateRef(otherCertId);
-						addCertificateRef(certRef, origin);
-					} catch (Exception e) {
-						LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
+			Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(unsignedAttributes, attributeOid);
+			if (Utils.isArrayNotEmpty(attributes)) {
+				for (Attribute attribute : attributes) {
+					final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
+					for (int ii = 0; ii < seq.size(); ii++) {
+						try {
+							OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
+							CertificateRef certRef = DSSASN1Utils.getCertificateRef(otherCertId);
+							addCertificateRef(certRef, origin);
+						} catch (Exception e) {
+							LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
+						}
 					}
 				}
 			}

@@ -83,12 +83,6 @@ public abstract class ComplexTransform extends AbstractTransform {
 			throw new DSSException(String.format("Cannot initialize a transform [%s]", algorithm), e);
 		}
 	}
-	
-	@Override
-	@Deprecated
-	public byte[] getBytesAfterTransformation(Node node) {
-		return performTransform(new DSSTransformOutput(node)).getBytes();
-	}
 
 	@Override
 	public DSSTransformOutput performTransform(DSSTransformOutput transformOutput) {
@@ -100,18 +94,6 @@ public abstract class ComplexTransform extends AbstractTransform {
 			throw new DSSException(String.format("Cannot process transformation [%s] on the given DOM object. Reason : [%s]",
 					algorithm, e.getMessage()), e);
 		}
-	}
-
-	/**
-	 * Gets {@code XMLSignatureInput} for the given node
-	 *
-	 * @param node {@link Node}
-	 * @return {@link XMLSignatureInput}
-	 * @deprecated since DSS 5.13. To be removed.
-	 */
-	@Deprecated
-	protected XMLSignatureInput getXMLSignatureInput(Node node) {
-		return new XMLSignatureInput(node);
 	}
 
 }

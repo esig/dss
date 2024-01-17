@@ -432,13 +432,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 		return Collections.emptyList();
 	}
 
-	@Deprecated
-	@Override
-	public void findSignatureScope(SignatureScopeFinder<?> signatureScopeFinder) {
-		LOG.warn("Use of deprecated method! The signatureScopeFinder variable is ignored. Use method #getSignatureScopes instead.");
-		signatureScopes = findSignatureScopes();
-	}
-
 	@Override
 	public List<SignatureScope> getSignatureScopes() {
 		if (signatureScopes == null) {

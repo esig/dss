@@ -515,15 +515,6 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	List<String> getStructureValidationResult();
 
 	/**
-	 * Runs SignatureScopeFinder
-	 * 
-	 * @param signatureScopeFinder {@link SignatureScopeFinder} to use
-	 * @deprecated since DSS 5.13. Use {@code #getSignatureScopes} directly
-	 */
-	@Deprecated
-	void findSignatureScope(SignatureScopeFinder<?> signatureScopeFinder);
-
-	/**
 	 * Returns a list of found SignatureScopes
 	 * 
 	 * @return a list of {@link SignatureScope}s

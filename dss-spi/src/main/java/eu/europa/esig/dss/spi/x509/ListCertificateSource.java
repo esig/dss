@@ -117,28 +117,6 @@ public class ListCertificateSource implements CertificateSource {
 	}
 
 	/**
-	 * Returns a set of all containing certificate tokens
-	 * 
-	 * @return set of {@link CertificateToken}s
-	 * @deprecated since DSS 5.13. Use {@code #getCertificates} method instead
-	 */
-	@Deprecated
-	public Set<CertificateToken> getAllCertificateTokens() {
-		return new HashSet<>(getCertificates());
-	}
-
-	/**
-	 * Returns a set of all containing {@link CertificateSourceEntity}
-	 * 
-	 * @return set of {@link CertificateSourceEntity}s
-	 * @deprecated since DSS 5.13. Use {@code #getEntities} method instead
-	 */
-	@Deprecated
-	public Set<CertificateSourceEntity> getAllEntities() {
-		return new HashSet<>(getEntities());
-	}
-
-	/**
 	 * This method checks if the embed sources is empty
 	 * 
 	 * @return true if no source has been added
@@ -341,20 +319,6 @@ public class ListCertificateSource implements CertificateSource {
 
 	/**
 	 * This method returns the found {@link CertificateToken} from all
-	 * {@link CertificateSource} for the given {@link SignerIdentifier}.
-	 * 
-	 * @param signerIdentifier the {@link SignerIdentifier} to find in the
-	 *                              sources
-	 * @return a Set of found {@link CertificateToken}
-	 * @deprecated since DSS 5.13. Use {@code #getBySignerIdentifier(signerIdentifier)} method instead
-	 */
-	@Deprecated
-	public Set<CertificateToken> getByCertificateIdentifier(SignerIdentifier signerIdentifier) {
-		return getBySignerIdentifier(signerIdentifier);
-	}
-
-	/**
-	 * This method returns the found {@link CertificateToken} from all
 	 * {@link CertificateSource} for the given {@link Digest}.
 	 * 
 	 * @param digest the {@link Digest} to find in the
@@ -368,20 +332,6 @@ public class ListCertificateSource implements CertificateSource {
 			result.addAll(source.getByCertificateDigest(digest));
 		}
 		return result;
-	}
-
-	/**
-	 * This method returns the found {@link CertificateToken} from all
-	 * {@link CertificateSource} for the given {@code certificateRef}.
-	 * 
-	 * @param certificateRef the {@link CertificateRef} to find in the
-	 *                              sources
-	 * @return a Set of found {@link CertificateToken}
-	 * @deprecated since DSS 5.13. Use {@code #findTokensFromCertRef(certificateRef)} method instead.
-	 */
-	@Deprecated
-	public Set<CertificateToken> findTokensFromRefs(CertificateRef certificateRef) {
-		return findTokensFromCertRef(certificateRef);
 	}
 
 	/**

@@ -466,18 +466,18 @@ public abstract class PKIFactoryAccess {
         return composite;
     }
 
-    protected CompositeRevocationSource<CRL, CRLSource> getCompositeCRLSource() {
-        CompositeRevocationSource<CRL, CRLSource> composite = new CompositeRevocationSource<>();
-        LinkedHashMap<String, CRLSource> crlSources = new LinkedHashMap<>();
+    protected CompositeRevocationSource<CRL> getCompositeCRLSource() {
+        CompositeRevocationSource<CRL> composite = new CompositeRevocationSource<>();
+        LinkedHashMap<String, RevocationSource<CRL>> crlSources = new LinkedHashMap<>();
         crlSources.put("PKICRLSource", pkiCRLSource());
         crlSources.put("OnlineCrlSource", onlineCRLSource());
         composite.setSources(crlSources);
         return composite;
     }
 
-    protected CompositeRevocationSource<OCSP, OCSPSource> getCompositeOCSPSource() {
-        CompositeRevocationSource<OCSP, OCSPSource> composite = new CompositeRevocationSource<>();
-        LinkedHashMap<String, OCSPSource> ocspSources = new LinkedHashMap<>();
+    protected CompositeRevocationSource<OCSP> getCompositeOCSPSource() {
+        CompositeRevocationSource<OCSP> composite = new CompositeRevocationSource<>();
+        LinkedHashMap<String, RevocationSource<OCSP>> ocspSources = new LinkedHashMap<>();
         ocspSources.put("PKIOCSPSource", pkiOCSPSource());
         ocspSources.put("OnlineOCSPSource", onlineOCSPSource());
         composite.setSources(ocspSources);
@@ -553,7 +553,9 @@ public abstract class PKIFactoryAccess {
     }
 
     protected PkiTSPFailSource getFailPkiTspSource(String tsaName) {
-        return new PkiTSPFailSource(getPKICertEntity(tsaName));
+        PkiTSPFailSource tspSource = new PkiTSPFailSource(getPKICertEntity(tsaName));
+        tspSource.setTsaPolicy(DEFAULT_TSA_POLICY);
+        return tspSource;
     }
 
     protected OnlineTSPSource getOnlineTSPSourceByName(String tsaName) {

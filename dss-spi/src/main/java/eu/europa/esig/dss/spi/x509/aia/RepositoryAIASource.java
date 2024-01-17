@@ -229,16 +229,6 @@ public abstract class RepositoryAIASource implements AIASource {
     /**
      * This method allows inserting of a certificate into the DB
      *
-     * @param aiaKey            {@link String} AIA key identifying an AIA access URL
-     * @param certificateTokens a collection of {@link CertificateToken}s to insert
-     * @deprecated since DSS 5.13. Use {@code #insertCertificate} method instead.
-     */
-    @Deprecated
-    protected abstract void insertCertificates(final String aiaKey, final Collection<CertificateToken> certificateTokens);
-
-    /**
-     * This method allows inserting of a certificate into the DB
-     *
      * @param aiaKey           {@link String} AIA key identifying an AIA access URL
      * @param certificateToken {@link CertificateToken} to insert
      */

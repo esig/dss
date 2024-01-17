@@ -27,6 +27,7 @@ import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -186,67 +187,78 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 		}
 	}
 	
-	private void collectRevocationValues(AttributeTable attributes, ASN1ObjectIdentifier revocationValueAttributes,
+	private void collectRevocationValues(AttributeTable attributeTable, ASN1ObjectIdentifier revocationValueAttributes,
 			RevocationOrigin origin) {
 
-		final ASN1Encodable attValue = DSSASN1Utils.getAsn1Encodable(attributes, revocationValueAttributes);
-		if (attValue !=null) {
-	
-			RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(attValue);
-			if (revocationValues != null) {
-				for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
-					try {
-						final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
-						OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
-						addBinary(ocspResponseIdentifier, origin);
+		Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(attributeTable, revocationValueAttributes);
+		for (Attribute attribute : attributes) {
+			ASN1Encodable[] attributeValues = attribute.getAttributeValues();
+			if (Utils.isArrayNotEmpty(attributeValues)) {
+				for (ASN1Encodable attrValue : attributeValues) {
+					extractRevocationValues(attrValue, origin);
+				}
+			}
+		}
+	}
 
-					} catch (Exception e) {
-						String errorMessage = "Unable to process OCSP binary : {}";
-						if (LOG.isDebugEnabled()) {
-							LOG.warn(errorMessage, e.getMessage(), e);
-						} else {
-							LOG.warn(errorMessage, e.getMessage());
-						}
+	private void extractRevocationValues(ASN1Encodable attrValue, RevocationOrigin origin) {
+		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(attrValue);
+		if (revocationValues != null) {
+			for (final BasicOCSPResponse basicOCSPResponse : revocationValues.getOcspVals()) {
+				try {
+					final BasicOCSPResp basicOCSPResp = new BasicOCSPResp(basicOCSPResponse);
+					OCSPResponseBinary ocspResponseIdentifier = OCSPResponseBinary.build(basicOCSPResp);
+					addBinary(ocspResponseIdentifier, origin);
+
+				} catch (Exception e) {
+					String errorMessage = "Unable to process OCSP binary : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.warn(errorMessage, e.getMessage(), e);
+					} else {
+						LOG.warn(errorMessage, e.getMessage());
 					}
 				}
 			}
-			/*
-			 * TODO: should add also OtherRevVals, but: "The syntax and semantics of the
-			 * other revocation values (OtherRevVals) are outside the scope of the present
-			 * document. The definition of the syntax of the other form of revocation
-			 * information is as identified by OtherRevRefType."
-			 */
 		}
+		/*
+		 * TODO: should add also OtherRevVals, but: "The syntax and semantics of the
+		 * other revocation values (OtherRevVals) are outside the scope of the present
+		 * document. The definition of the syntax of the other form of revocation
+		 * information is as identified by OtherRevRefType."
+		 */
 	}
-	
-	private void collectRevocationRefs(AttributeTable unsignedAttributes, ASN1ObjectIdentifier revocationReferencesAttribute, RevocationRefOrigin origin) {
-		final Attribute attribute = unsignedAttributes.get(revocationReferencesAttribute);
-		if (attribute == null) {
+
+	private void collectRevocationRefs(AttributeTable unsignedAttributes,
+									   ASN1ObjectIdentifier revocationReferencesAttribute, RevocationRefOrigin origin) {
+		final Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(unsignedAttributes, revocationReferencesAttribute);
+		if (Utils.isArrayEmpty(attributes)) {
 			return;
 		}
-		final ASN1Set attrValues = attribute.getAttrValues();
-		if (attrValues.size() <= 0) {
-			return;
-		}
-	
-		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
-		final ASN1Sequence revocationRefs = (ASN1Sequence) attrValue;
-		for (int i = 0; i < revocationRefs.size(); i++) {
-			try {
-				final CrlOcspRef otherCertId = CrlOcspRef.getInstance(revocationRefs.getObjectAt(i));
-				final OcspListID ocspListID = otherCertId.getOcspids();
-				if (ocspListID != null) {
-					for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
-						final OCSPRef ocspRef = new OCSPRef(ocspResponsesID);
-						addRevocationReference(ocspRef, origin);
+		for (Attribute attribute : attributes) {
+			final ASN1Set attrValues = attribute.getAttrValues();
+			if (attrValues.size() <= 0) {
+				return;
+			}
+
+			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+			final ASN1Sequence revocationRefs = (ASN1Sequence) attrValue;
+			for (int i = 0; i < revocationRefs.size(); i++) {
+				try {
+					final CrlOcspRef otherCertId = CrlOcspRef.getInstance(revocationRefs.getObjectAt(i));
+					final OcspListID ocspListID = otherCertId.getOcspids();
+					if (ocspListID != null) {
+						for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
+							final OCSPRef ocspRef = new OCSPRef(ocspResponsesID);
+							addRevocationReference(ocspRef, origin);
+						}
 					}
-				}
-			} catch (Exception e) {
-				String errorMessage = "Unable to process OCSP reference : {}";
-				if (LOG.isDebugEnabled()) {
-					LOG.warn(errorMessage, e.getMessage(), e);
-				} else {
-					LOG.warn(errorMessage, e.getMessage());
+				} catch (Exception e) {
+					String errorMessage = "Unable to process OCSP reference : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.warn(errorMessage, e.getMessage(), e);
+					} else {
+						LOG.warn(errorMessage, e.getMessage());
+					}
 				}
 			}
 		}

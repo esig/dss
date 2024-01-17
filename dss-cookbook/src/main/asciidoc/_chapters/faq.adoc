@@ -13,6 +13,8 @@ This chapter covers the most frequently asked questions and issues occurring in 
 |===
 |Version                    |Description                                   |Solution
 
+|v5.13 and before           |DSS does not work with Spring-Boot 3         a|DSS version `5.x` and before uses an old `javax.\*` namespace naming provided by Java specification API, while Spring-Boot 3 and new versions of some other libraries use the updated `jakarta.*` namespaces. DSS has been upgraded to Jakarta EE 9 and to new `jakarta.\*` namespaces starting from version `6.0`, which makes it compatible with Spring-Boot 3 and other Jakarta-based libraries. If you have a problem with using `javax.*` namespaces, please upgrade to DSS `6.0`.
+
 |v5.12                      |Performance downgrade on TLValidationJob/certificates loading       a|Starting from version 1.71 cryptographic library BouncyCastle enforces a secure validation of imported RSA keys. In order to get back to the original behavior (secure validation skipped), the following system property should be added before executing methods requiring certificate creation (such as TLValidationJob):
 
 [source,java,indent=0]

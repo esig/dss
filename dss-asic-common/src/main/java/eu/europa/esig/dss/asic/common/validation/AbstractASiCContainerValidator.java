@@ -98,32 +98,6 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	}
 
 	/**
-	 * Constructor with a custom {@code SignatureScopeFinder}
-	 * 
-	 * @param document             {@link DSSDocument} to be validated
-	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
-	 * @deprecated since DSS 5.13.
-	 */
-	@Deprecated
-	protected AbstractASiCContainerValidator(final DSSDocument document,
-			final SignatureScopeFinder<?> signatureScopeFinder) {
-		this(document);
-	}
-
-	/**
-	 * Constructor with a {@code ASiCContent}
-	 *
-	 * @param asicContent          {@link ASiCContent} to be validated
-	 * @param signatureScopeFinder {@link SignatureScopeFinder} to be used
-	 * @deprecated since DSS 5.13.
-	 */
-	@Deprecated
-	protected AbstractASiCContainerValidator(final ASiCContent asicContent,
-											 final SignatureScopeFinder<?> signatureScopeFinder) {
-		this(asicContent);
-	}
-
-	/**
 	 * Checks if the {@code ASiCContent} is supported by the current validator
 	 *
 	 * @param asicContent {@link ASiCContent} to check

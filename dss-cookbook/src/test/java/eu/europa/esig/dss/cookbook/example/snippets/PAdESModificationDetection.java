@@ -66,6 +66,9 @@ public class PAdESModificationDetection {
         // The variable defines a limit of the nested objects to be verified (in case of too big PDFs)
         // NOTE: setting '0' as MaximumObjectVerificationDeepness will skip the object modification detection
         pdfObjectModificationsFinder.setMaximumObjectVerificationDeepness(100);
+        // Sets whether an integer number shall be converted to a real for comparison against a real number
+        // DEFAULT: TRUE (only absolute values of numbers are compared, but not type)
+        pdfObjectModificationsFinder.setLaxNumericComparison(true);
         // Provide a customized PdfObjectModificationsFinder within IPdfObjFactory
         pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
         // end::object-modifications[]

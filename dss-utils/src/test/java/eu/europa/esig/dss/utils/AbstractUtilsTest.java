@@ -267,10 +267,19 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
+	public void arraySizeObj() {
+		assertEquals(0, Utils.arraySize((Object[]) null));
+		assertEquals(0, Utils.arraySize(new Object[] {}));
+		assertEquals(1, Utils.arraySize(new Object[] { null }));
+		assertEquals(2, Utils.arraySize(new Object[] { "1", 1 }));
+	}
+
+	@Test
 	public void isArrayEmpty() {
 		assertTrue(Utils.isArrayEmpty((byte[]) null));
 		assertTrue(Utils.isArrayEmpty(new byte[] {}));
 		assertFalse(Utils.isArrayEmpty(new byte[] { 1 }));
+		assertFalse(Utils.isArrayEmpty(new byte[] { 1, 2 }));
 	}
 
 	@Test
@@ -278,6 +287,15 @@ public abstract class AbstractUtilsTest {
 		assertFalse(Utils.isArrayNotEmpty((byte[]) null));
 		assertFalse(Utils.isArrayNotEmpty(new byte[] {}));
 		assertTrue(Utils.isArrayNotEmpty(new byte[] { 1 }));
+		assertTrue(Utils.isArrayNotEmpty(new byte[] { 1, 2 }));
+	}
+
+	@Test
+	public void arraySize() {
+		assertEquals(0, Utils.arraySize((byte[]) null));
+		assertEquals(0, Utils.arraySize(new byte[] {}));
+		assertEquals(1, Utils.arraySize(new byte[] { 1 }));
+		assertEquals(2, Utils.arraySize(new byte[] { 1, 2 }));
 	}
 
 	@Test
@@ -298,6 +316,16 @@ public abstract class AbstractUtilsTest {
 		assertTrue(Utils.isArrayNotEmpty(new char[] { 'A' }));
 		assertTrue(Utils.isArrayNotEmpty(new char[] { 'A', 'A', 'A', 'A' }));
 		assertTrue(Utils.isArrayNotEmpty(new char[] { 'A', 'B', 'C', 'D' }));
+	}
+
+	@Test
+	public void arraySizeChar() {
+		assertEquals(0, Utils.arraySize((char[]) null));
+		assertEquals(0, Utils.arraySize(new char[] {}));
+		assertEquals(1, Utils.arraySize(new char[] { ' ' }));
+		assertEquals(1, Utils.arraySize(new char[] { 'A' }));
+		assertEquals(4, Utils.arraySize(new char[] { 'A', 'A', 'A', 'A' }));
+		assertEquals(4, Utils.arraySize(new char[] { 'A', 'B', 'C', 'D' }));
 	}
 
 	@Test

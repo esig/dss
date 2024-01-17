@@ -63,13 +63,9 @@ public class OfficialJournalSchemeInformationURI implements LOTLSigningCertifica
 		}
 	}
 
-	/**
-	 * Gets the OJ URL
-	 *
-	 * @return {@link String}
-	 */
-	public String getOfficialJournalURL() {
-		return this.officialJournalURL;
+	@Override
+	public String getUri() {
+		return officialJournalURL;
 	}
 
 }

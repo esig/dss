@@ -29,14 +29,12 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.pki.exception.PKIException;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.model.CertEntityRepository;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -60,7 +58,7 @@ import java.util.Objects;
  * for certificate revocation checks. The CRLs are retrieved based on the CertEntity (certificate entity) and
  * optionally specified production and next update dates.
  */
-public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
+public class PKICRLSource implements CRLSource {
 
     private static final long serialVersionUID = 6912729291417315212L;
 
