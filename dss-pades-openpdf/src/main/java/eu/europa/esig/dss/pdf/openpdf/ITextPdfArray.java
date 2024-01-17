@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObject;
 import eu.europa.esig.dss.pdf.PdfSimpleObject;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,9 +111,17 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	public Number getNumber(int i) {
 		PdfNumber number = wrapped.getAsNumber(i);
 		if (number != null) {
-			return number.doubleValue();
+			if (isInteger(number)) {
+				return number.intValue();
+			} else {
+				return number.doubleValue();
+			}
 		}
 		return null;
+	}
+
+	private boolean isInteger(PdfNumber number) {
+		return Utils.isStringDigits(new String(number.getBytes()));
 	}
 
 	@Override

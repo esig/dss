@@ -30,6 +30,20 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(attributeTable, oid);
 ASN1Encodable asn1Encodable = attributes[0].getAttributeValues()[0]; // return value of the first attribute
 
+|PDF strict numeric object comparison           a|
+Strict comparison enforced by default
+                                                                     a|[source,java]
+----
+IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+
+DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
+pdfObjectModificationsFinder.setLaxNumericComparison(false); // by default is True
+pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+
+PDFDocumentValidator validator = (PDFDocumentValidator) super.getValidator(signedDocument);
+validator.setPdfObjFactory(pdfObjFactory);
+----
+
 |===
 
 [cols="2,5,5"]

@@ -43,6 +43,8 @@ import eu.europa.esig.dss.pades.validation.suite.DSS2513Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2601Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2821Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS3111Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS3226StrictNumberComparisonTest;
+import eu.europa.esig.dss.pades.validation.suite.DSS3226Test;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEndEntityCertIssuedByNotCACertTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEnvelopingOtherPdfTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESExtendedToTLevelTest;
@@ -128,7 +130,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESWithVRITimeStampTest.class, PAdESWithVRITimeTest.class, PAdESWithSpoofingAttackTest.class, PAdESSpoofingAttackReplacementTest.class,
 		PAdESEndEntityCertIssuedByNotCACertTest.class, DSS3111Test.class, PAdESLevelLTWithXmlEvidenceRecordValidationTest.class,
 		PAdESLevelTWithDuplicatedSigTstTest.class, PAdESLevelTWithDuplicatedDocTstTest.class, PAdESLevelLTAWithCopiedDocTstTest.class,
-		PAdESTwoSigWithCopiedTstTest.class, PAdESTimestampedExistingFieldsTest.class })
+		PAdESTwoSigWithCopiedTstTest.class, PAdESTimestampedExistingFieldsTest.class, DSS3226Test.class, DSS3226StrictNumberComparisonTest.class })
 public class PdfBoxPAdESValidationSuiteTest {
 
 }
