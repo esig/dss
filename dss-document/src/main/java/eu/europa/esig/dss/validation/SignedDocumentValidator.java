@@ -907,7 +907,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				return getEvidenceRecord(evidenceRecordValidator);
 
 			} catch (UnsupportedOperationException e) {
-				LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}" +
+				LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}. " +
 						"Please ensure the corresponding module is loaded.", evidenceRecordDocument.getName(), e.getMessage());
 			}
 		} catch (Exception e) {

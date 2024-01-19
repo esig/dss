@@ -7,7 +7,6 @@ import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeSta
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -59,12 +58,8 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
             	byte[] documentDigest;
                
             	if (archiveTimeStampSequenceDigest == null) {
-	                if (!(document instanceof DigestDocument)) {
-	                    documentDigest = DSSUtils.digest(digest.getAlgorithm(), document.openStream());
-	                } else {
-	                    String base64Digest = document.getDigest(digest.getAlgorithm());
-	                    documentDigest = Utils.fromBase64(base64Digest);
-	                }
+                    String base64Digest = document.getDigest(digest.getAlgorithm());
+                    documentDigest = Utils.fromBase64(base64Digest);
 
             	} else {
                     DSSMessageDigest chainAndDocumentHash = computeChainAndDocumentHash(archiveTimeStampSequenceDigest, document);

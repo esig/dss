@@ -82,6 +82,11 @@ public class CAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends Abstr
     }
 
     @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 0;
+    }
+
+    @Override
     protected void checkEvidenceRecords(DiagnosticData diagnosticData) {
         for (SignatureWrapper signature : diagnosticData.getSignatures()) {
             List<EvidenceRecordWrapper> evidenceRecords = signature.getEvidenceRecords();

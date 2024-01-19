@@ -1,35 +1,22 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.jades.validation.evidencerecord;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 
 import java.util.Collections;
 import java.util.List;
 
-public class JAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractJAdESWithEvidenceRecordTestValidation {
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class JAdESLevelLTWithAsn1EvidenceRecordValidationTest extends AbstractJAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -38,7 +25,7 @@ public class JAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractJAd
 
     @Override
     protected List<DSSDocument> getDetachedEvidenceRecords() {
-        return Collections.singletonList(new FileDocument("src/test/resources/validation/evidence-record/evidence-record-a0baac29-c2b6-4544-abc5-d26ac6c8b655.xml"));
+        return Collections.singletonList(new FileDocument("src/test/resources/validation/evidence-record/evidence-record-a0baac29-c2b6-4544-abc5-d26ac6c8b655.ers"));
     }
 
     @Override
@@ -54,6 +41,25 @@ public class JAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractJAd
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
         return 1;
+    }
+
+    @Override
+    protected void verifyCertificateSourceData(SignatureCertificateSource certificateSource, FoundCertificatesProxy foundCertificates) {
+        // skip
+    }
+
+    @Override
+    protected void checkTimestamp(DiagnosticData diagnosticData, TimestampWrapper timestampWrapper) {
+        assertNotNull(timestampWrapper.getProductionTime());
+        assertTrue(timestampWrapper.isMessageImprintDataFound());
+        assertTrue(timestampWrapper.isMessageImprintDataIntact());
+        assertTrue(timestampWrapper.isSignatureIntact());
+        assertTrue(timestampWrapper.isSignatureValid());
+    }
+
+    @Override
+    protected boolean allArchiveDataObjectsProvidedToValidation() {
+        return false;
     }
 
 }

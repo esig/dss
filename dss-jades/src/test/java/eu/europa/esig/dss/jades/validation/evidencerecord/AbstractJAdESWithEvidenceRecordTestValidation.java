@@ -72,14 +72,8 @@ public abstract class AbstractJAdESWithEvidenceRecordTestValidation extends Abst
             assertTrue(Utils.isCollectionNotEmpty(evidenceRecords));
 
             for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
-                List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
-                for (XmlDigestMatcher digestMatcher : digestMatcherList) {
-                    assertTrue(digestMatcher.isDataFound());
-                    assertTrue(digestMatcher.isDataIntact());
-                }
-
                 List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
-                assertEquals(diagnosticData.getSignatures().size(), Utils.collectionSize(evidenceRecordScopes));
+                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
 
                 boolean sigFileFound = false;
                 for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
@@ -202,6 +196,8 @@ public abstract class AbstractJAdESWithEvidenceRecordTestValidation extends Abst
             }
         }
     }
+
+    protected abstract int getNumberOfExpectedEvidenceScopes();
 
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);

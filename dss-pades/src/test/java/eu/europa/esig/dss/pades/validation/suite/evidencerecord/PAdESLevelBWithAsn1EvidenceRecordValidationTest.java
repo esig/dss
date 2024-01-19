@@ -1,44 +1,39 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.pades.validation.suite.evidencerecord;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class PAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractPAdESWithEvidenceRecordTestValidation {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class PAdESLevelBWithAsn1EvidenceRecordValidationTest extends AbstractPAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new InMemoryDocument(getClass().getResourceAsStream("/validation/evidence-record/Signature-P-LT-ef971596-8f2e-407d-a413-aae9cb9b8e4a.pdf"));
+        return new InMemoryDocument(getClass().getResourceAsStream("/validation/evidence-record/Signature-P-B-7da49953-d837-4f0b-8f38-aa5aa4181e3c.pdf"));
     }
 
     @Override
     protected List<DSSDocument> getDetachedEvidenceRecords() {
-        return Collections.singletonList(new InMemoryDocument(getClass().getResourceAsStream("/validation/evidence-record/evidence-record-ef971596-8f2e-407d-a413-aae9cb9b8e4a.xml")));
+        return Collections.singletonList(new InMemoryDocument(getClass().getResourceAsStream("/validation/evidence-record/evidence-record-7da49953-d837-4f0b-8f38-aa5aa4181e3c.ers")));
     }
 
     @Override
@@ -53,6 +48,45 @@ public class PAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractPAd
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
         return 1;
+    }
+
+    @Override
+    protected void verifyCertificateSourceData(SignatureCertificateSource certificateSource, FoundCertificatesProxy foundCertificates) {
+        // skip
+    }
+
+    @Override
+    protected void checkTimestamp(DiagnosticData diagnosticData, TimestampWrapper timestampWrapper) {
+        assertNotNull(timestampWrapper.getProductionTime());
+        assertTrue(timestampWrapper.isMessageImprintDataFound());
+        assertTrue(timestampWrapper.isMessageImprintDataIntact());
+        assertTrue(timestampWrapper.isSignatureIntact());
+        assertTrue(timestampWrapper.isSignatureValid());
+    }
+
+    protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+        assertEquals(1, signatures.size());
+
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        assertEquals(1, evidenceRecords.size());
+
+        EvidenceRecordWrapper evidenceRecord = evidenceRecords.get(0);
+        List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
+        assertTrue(Utils.isCollectionNotEmpty(coveredObjects));
+
+        assertEquals(Utils.collectionSize(signatures), coveredObjects.stream()
+                .filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
+        assertTrue(Utils.isCollectionNotEmpty(coveredObjects.stream()
+                .filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).collect(Collectors.toList())));
+
+        assertEquals(Utils.collectionSize(signatures), Utils.collectionSize(evidenceRecord.getCoveredSignatures()));
+        if (Utils.isCollectionNotEmpty(signatures)) {
+            assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredCertificates()));
+            assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredRevocations()));
+            assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredTimestamps()));
+        }
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignedData()));
     }
 
 }

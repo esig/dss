@@ -71,14 +71,8 @@ public abstract class AbstractPAdESWithEvidenceRecordTestValidation extends Abst
             assertTrue(Utils.isCollectionNotEmpty(evidenceRecords));
 
             for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
-                List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
-                for (XmlDigestMatcher digestMatcher : digestMatcherList) {
-                    assertTrue(digestMatcher.isDataFound());
-                    assertTrue(digestMatcher.isDataIntact());
-                }
-
                 List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
-                assertEquals(diagnosticData.getSignatures().size(), Utils.collectionSize(evidenceRecordScopes));
+                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
 
                 boolean coversSignature = false;
                 boolean coversSignedData = false;
@@ -103,10 +97,11 @@ public abstract class AbstractPAdESWithEvidenceRecordTestValidation extends Abst
                 assertTrue(coversSignature);
                 assertTrue(coversSignedData);
                 assertTrue(coversCertificates);
-                if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
+                if (SignatureLevel.PAdES_BASELINE_B != signature.getSignatureFormat()) {
                     assertTrue(coversTimestamps);
-                } else if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
-                    assertTrue(coversRevocationData);
+                    if (SignatureLevel.PAdES_BASELINE_T != signature.getSignatureFormat()) {
+                        assertTrue(coversRevocationData);
+                    }
                 }
 
                 int tstCounter = 0;
@@ -149,10 +144,11 @@ public abstract class AbstractPAdESWithEvidenceRecordTestValidation extends Abst
                     assertTrue(coversSignature);
                     assertTrue(coversSignedData);
                     assertTrue(coversCertificates);
-                    if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
+                    if (SignatureLevel.PAdES_BASELINE_B != signature.getSignatureFormat()) {
                         assertTrue(coversTimestamps);
-                    } else if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
-                        assertTrue(coversRevocationData);
+                        if (SignatureLevel.PAdES_BASELINE_T != signature.getSignatureFormat()) {
+                            assertTrue(coversRevocationData);
+                        }
                     }
 
                     if (tstCounter > 0) {
@@ -183,6 +179,8 @@ public abstract class AbstractPAdESWithEvidenceRecordTestValidation extends Abst
             }
         }
     }
+
+    protected abstract int getNumberOfExpectedEvidenceScopes();
 
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);

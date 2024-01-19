@@ -109,8 +109,9 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                 assertTrue(coversCertificates);
                 if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
                     assertTrue(coversTimestamps);
-                } else if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
-                    assertTrue(coversRevocationData);
+                    if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
+                        assertTrue(coversRevocationData);
+                    }
                 }
 
                 assertEquals(diagnosticData.getSignatures().size(),
@@ -167,8 +168,9 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                     assertTrue(coversCertificates);
                     if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
                         assertTrue(coversTimestamps);
-                    } else if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
-                        assertTrue(coversRevocationData);
+                        if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
+                            assertTrue(coversRevocationData);
+                        }
                     }
 
                     assertEquals(diagnosticData.getSignatures().size(),
