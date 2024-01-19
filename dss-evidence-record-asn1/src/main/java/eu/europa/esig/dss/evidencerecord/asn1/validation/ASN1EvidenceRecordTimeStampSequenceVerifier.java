@@ -8,6 +8,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -119,6 +120,13 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
     	ASN1EvidenceRecord asn1EvidenceRecord = (ASN1EvidenceRecord) evidenceRecord;
     	EvidenceRecord evidenceRecord = asn1EvidenceRecord.getEvidenceRecord();
         return evidenceRecord.getArchiveTimeStampSequence();
+    }
+
+    @Override
+    protected List<ReferenceValidation> validateArchiveTimeStampSequenceDigest(List<ReferenceValidation> referenceValidations,
+                                                                               DSSMessageDigest lastTimeStampSequenceHashes) {
+        // ASN.1 use a concatenation (archiveTimeStampSequenceHash || documentHash). No additional entry is required.
+        return referenceValidations;
     }
 
     /**

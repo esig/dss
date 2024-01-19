@@ -4,10 +4,11 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import org.bouncycastle.asn1.tsp.EvidenceRecord;
-import org.bouncycastle.operator.jcajce.JcaDigestCalculatorProviderBuilder;
-import org.bouncycastle.tsp.ers.ERSEvidenceRecord;
+
+import java.io.InputStream;
 
 /**
  * Class for validation of an ASN.1 Evidence Record (RFC 4998)
@@ -25,7 +26,7 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
      */
     public ASN1EvidenceRecordValidator(final DSSDocument document) {
         super(document);
-        this.evidenceRecordObject = toASN1Document(document).toASN1Structure();
+        this.evidenceRecordObject = toASN1Document(document);
     }
 
 	/**
@@ -35,9 +36,9 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
         // empty
     }
     
-    private ERSEvidenceRecord toASN1Document(DSSDocument document) {
-        try {
-            return new ERSEvidenceRecord(document.openStream(), new JcaDigestCalculatorProviderBuilder().build());
+    private EvidenceRecord toASN1Document(DSSDocument document) {
+        try (InputStream is = document.openStream()) {
+            return EvidenceRecord.getInstance(Utils.toByteArray(is));
         } catch (Exception e) {
             throw new IllegalInputException(String.format("An ASN.1 file is expected : %s", e.getMessage()), e);
         }

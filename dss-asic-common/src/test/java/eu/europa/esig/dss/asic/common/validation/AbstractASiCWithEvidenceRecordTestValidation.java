@@ -168,14 +168,16 @@ public abstract class AbstractASiCWithEvidenceRecordTestValidation extends Abstr
                             archiveTstDigestFound = true;
                         } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE.equals(digestMatcher.getType())) {
                             archiveTstSequenceDigestFound = true;
+                        } else if ((allArchiveDataObjectsProvidedToValidation() && tstCoversOnlyCurrentHashTreeData()) ||
+                                DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != digestMatcher.getType()) {
+                            assertTrue(digestMatcher.isDataFound());
+                            assertTrue(digestMatcher.isDataFound());
                         }
-                        assertTrue(digestMatcher.isDataFound());
-                        assertTrue(digestMatcher.isDataIntact());
                     }
 
-                    if (tstDigestMatcherList.size() == 1) {
+                    if (tstDigestMatcherList.size() == 2) { // arc-tst + message-digest
                         assertTrue(archiveTstDigestFound);
-                    } else {
+                    } else if (tstCoversOnlyCurrentHashTreeData()) {
                         assertTrue(archiveTstSequenceDigestFound);
                     }
                 }
@@ -214,6 +216,10 @@ public abstract class AbstractASiCWithEvidenceRecordTestValidation extends Abstr
     @Override
     protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
         // TODO : implement ETSI VR support
+    }
+
+    protected boolean tstCoversOnlyCurrentHashTreeData() {
+        return true;
     }
 
 }

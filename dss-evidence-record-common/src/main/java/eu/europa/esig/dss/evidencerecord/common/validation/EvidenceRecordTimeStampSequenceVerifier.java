@@ -224,15 +224,34 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         return Utils.fromBase64(document.getDigest(archiveTimeStampChain.getDigestAlgorithm()));
     }
 
-    private List<ReferenceValidation> validateArchiveTimeStampSequenceDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampSequenceHashes) {
-        return validateAdditionalDigest(referenceValidations, lastTimeStampSequenceHashes, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE);
-    }
-
-    private List<ReferenceValidation> validateArchiveTimeStampDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampHash) {
+    /**
+     * This method is used to verify presence of ArchiveTimeStamp digests within the reference validation list.
+     * If entry is not present, created one, when applicable
+     *
+     * @param referenceValidations a list of {@link ReferenceValidation}s
+     * @param lastTimeStampHash {@link DSSMessageDigest}
+     * @return an updated list of {@link ReferenceValidation}s
+     */
+    protected List<ReferenceValidation> validateArchiveTimeStampDigest(List<ReferenceValidation> referenceValidations,
+                                                                     DSSMessageDigest lastTimeStampHash) {
         return validateAdditionalDigest(referenceValidations, lastTimeStampHash, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP);
     }
+
+    /**
+     * This method is used to verify presence of ArchiveTimeStampSequence digests within the reference validation list.
+     * If entry is not present, created one, when applicable
+     *
+     * @param referenceValidations a list of {@link ReferenceValidation}s
+     * @param lastTimeStampSequenceHashes {@link DSSMessageDigest}
+     * @return an updated list of {@link ReferenceValidation}s
+     */
+    protected List<ReferenceValidation> validateArchiveTimeStampSequenceDigest(List<ReferenceValidation> referenceValidations,
+                                                                             DSSMessageDigest lastTimeStampSequenceHashes) {
+        return validateAdditionalDigest(referenceValidations, lastTimeStampSequenceHashes, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE);
+    }
     
-    private List<ReferenceValidation> validateAdditionalDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest messageDigest, DigestMatcherType type) {
+    private List<ReferenceValidation> validateAdditionalDigest(List<ReferenceValidation> referenceValidations,
+                                                               DSSMessageDigest messageDigest, DigestMatcherType type) {
         List<ReferenceValidation> invalidReferences = referenceValidations.stream().filter(r -> !r.isIntact()).collect(Collectors.toList());
         for (ReferenceValidation reference : invalidReferences) {
             if (reference.getDigest() != null && Arrays.equals(messageDigest.getValue(), reference.getDigest().getValue())) {
