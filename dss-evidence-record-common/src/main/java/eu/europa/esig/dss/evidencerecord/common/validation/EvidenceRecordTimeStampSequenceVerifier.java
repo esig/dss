@@ -124,7 +124,8 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                             // validate first time-stamp in ArchiveTimeStampChain
                             timestampValidations = validateArchiveTimeStampSequenceDigest(archiveDataObjectValidations, lastTimeStampSequenceHash);
                         }
-                        if (manifestFile != null) {
+                        // if the first time-stamp and ER has a linked manifest
+                        else if (manifestFile != null) {
                             archiveDataObjectValidations = validateManifestEntries(archiveDataObjectValidations, manifestFile, firstArchiveTimeStampChain);
                         }
 

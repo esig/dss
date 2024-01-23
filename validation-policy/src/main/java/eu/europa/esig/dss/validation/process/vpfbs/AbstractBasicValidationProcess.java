@@ -398,19 +398,43 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
 
     }
 
-    private ChainItem<T> formatChecking(final XmlFC xmlFC) {
+    /**
+     * Executes "5.2.2 Format Checking" building block for the given token
+     *
+     * @param xmlFC {@link XmlFC}
+     * @return {@link ChainItem}
+     */
+    protected ChainItem<T> formatChecking(final XmlFC xmlFC) {
         return new FormatCheckingResultCheck<>(i18nProvider, result, xmlFC, token, getFailLevelConstraint());
     }
 
-    private ChainItem<T> identificationOfSigningCertificate(final XmlISC xmlISC) {
+    /**
+     * Executes "5.2.3 Identification of the signing certificate" building block for the given token
+     *
+     * @param xmlISC {@link XmlISC}
+     * @return {@link ChainItem}
+     */
+    protected ChainItem<T> identificationOfSigningCertificate(final XmlISC xmlISC) {
         return new IdentificationOfSigningCertificateResultCheck<>(i18nProvider, result, xmlISC, token, getFailLevelConstraint());
     }
 
-    private ChainItem<T> validationContextInitialization(final XmlVCI xmlVCI) {
+    /**
+     * Executes "5.2.4 Validation context initialization" building block for the given token
+     *
+     * @param xmlVCI {@link XmlVCI}
+     * @return {@link ChainItem}
+     */
+    protected ChainItem<T> validationContextInitialization(final XmlVCI xmlVCI) {
         return new ValidationContextInitializationResultCheck<>(i18nProvider, result, xmlVCI, token, getFailLevelConstraint());
     }
 
-    private ChainItem<T> x509CertificateValidation(final XmlXCV xmlXCV) {
+    /**
+     * Executes "5.2.6 X.509 certificate validation" building block for the given token
+     *
+     * @param xmlXCV {@link XmlXCV}
+     * @return {@link ChainItem}
+     */
+    protected ChainItem<T> x509CertificateValidation(final XmlXCV xmlXCV) {
         return new X509CertificateValidationResultCheck<>(i18nProvider, result, xmlXCV, token, getWarnLevelConstraint());
     }
 
@@ -443,11 +467,23 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
                 revocationTime, getWarnLevelConstraint());
     }
 
-    private ChainItem<T> cryptographicVerification(final XmlCV xmlCV) {
+    /**
+     * Executes "5.2.7 Cryptographic verification" building block for the given token
+     *
+     * @param xmlCV {@link XmlCV}
+     * @return {@link ChainItem}
+     */
+    protected ChainItem<T> cryptographicVerification(final XmlCV xmlCV) {
         return new CryptographicVerificationResultCheck<>(i18nProvider, result, xmlCV, token, getFailLevelConstraint());
     }
 
-    private ChainItem<T> signatureAcceptanceValidation(final XmlSAV xmlSAV) {
+    /**
+     * Executes "5.2.8 Signature Acceptance Validation (SAV)" building block for the given token
+     *
+     * @param xmlSAV {@link XmlSAV}
+     * @return {@link ChainItem}
+     */
+    protected ChainItem<T> signatureAcceptanceValidation(final XmlSAV xmlSAV) {
         return new SignatureAcceptanceValidationResultCheck<>(i18nProvider, result, xmlSAV, token, getWarnLevelConstraint());
     }
 
@@ -457,7 +493,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
                 timestamp, cryptographicValidation, getFailLevelConstraint());
     }
 
-    private ChainItem<T> basicValidationProcess(final XmlConclusion xmlConclusion) {
+    protected ChainItem<T> basicValidationProcess(final XmlConclusion xmlConclusion) {
         return new BasicValidationProcessCheck<>(i18nProvider, result, xmlConclusion, token, getFailLevelConstraint());
     }
 

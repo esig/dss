@@ -1,0 +1,99 @@
+package eu.europa.esig.dss.validation.process.bbb.cv.checks;
+
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ChainItem;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * This check verifies whether the HashTree renewal time-stamp is conclusive and
+ * covers all original archive data objects covered by the evidence record
+ */
+public class EvidenceRecordHashTreeRenewalTimestampCheck extends ChainItem<XmlCV> {
+
+    /** Diagnostic Data */
+    private final DiagnosticData diagnosticData;
+
+    /** The time-stamp token to check */
+    private final TimestampWrapper timestampWrapper;
+
+    /**
+     * Default constructor
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlCV}
+     * @param timestampWrapper {@link TimestampWrapper}
+     * @param constraint {@link LevelConstraint}
+     */
+    public EvidenceRecordHashTreeRenewalTimestampCheck(I18nProvider i18nProvider, XmlCV result, DiagnosticData diagnosticData,
+                                                       TimestampWrapper timestampWrapper, LevelConstraint constraint) {
+        super(i18nProvider, result, constraint);
+        this.diagnosticData = diagnosticData;
+        this.timestampWrapper = timestampWrapper;
+    }
+
+    @Override
+    protected boolean process() {
+        EvidenceRecordWrapper evidenceRecord = getRelatedEvidenceRecord(timestampWrapper);
+        return timestampCoversAllOriginalDocuments(evidenceRecord, timestampWrapper);
+    }
+
+    private EvidenceRecordWrapper getRelatedEvidenceRecord(TimestampWrapper timestampWrapper) {
+        for (EvidenceRecordWrapper evidenceRecordWrapper : diagnosticData.getEvidenceRecords()) {
+            if (evidenceRecordWrapper.getTimestampList().contains(timestampWrapper)) {
+                return evidenceRecordWrapper;
+            }
+        }
+        throw new IllegalStateException(String.format(
+                "Not found a corresponding evidence record for a time-stamp with Id '%s'", timestampWrapper.getId()));
+    }
+
+    private List<String> getCoveredDocuments(List<XmlDigestMatcher> digestMatchers) {
+        return digestMatchers.stream().filter(d -> DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == d.getType() && d.isDataFound())
+                .map(XmlDigestMatcher::getName).collect(Collectors.toList());
+    }
+
+    private boolean timestampCoversAllOriginalDocuments(EvidenceRecordWrapper evidenceRecord, TimestampWrapper timestampWrapper) {
+        List<String> evidenceRecordCoveredDocuments = getCoveredDocuments(evidenceRecord.getDigestMatchers());
+        List<String> timestampCoveredDocuments = getCoveredDocuments(timestampWrapper.getDigestMatchers());
+        for (String originalDataObject : evidenceRecordCoveredDocuments) {
+            if (!timestampCoveredDocuments.contains(originalDataObject)) {
+                return false;
+            }
+            timestampCoveredDocuments.remove(originalDataObject); // remove object to avoid checking duplicates
+        }
+        return true;
+    }
+
+    @Override
+    protected MessageTag getMessageTag() {
+        return MessageTag.BBB_CV_ER_TST_RN;
+    }
+
+    @Override
+    protected MessageTag getErrorMessageTag() {
+        return MessageTag.BBB_CV_ER_TST_RN_ANS;
+    }
+
+    @Override
+    protected Indication getFailedIndicationForConclusion() {
+        return Indication.FAILED;
+    }
+
+    @Override
+    protected SubIndication getFailedSubIndicationForConclusion() {
+        return SubIndication.HASH_FAILURE;
+    }
+
+}

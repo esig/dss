@@ -21,10 +21,13 @@
 package eu.europa.esig.dss.validation.process.bbb.cv;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -32,6 +35,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.EvidenceRecordHashTreeRenewalTimestampCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
@@ -44,6 +48,9 @@ import java.util.List;
  * This building block checks the integrity of the signed data by performing the cryptographic verifications.
  */
 public class CryptographicVerification extends Chain<XmlCV> {
+
+	/** Diagnostic data */
+	private final DiagnosticData diagnosticData;
 
 	/** The token to verify */
 	private final TokenProxy token;
@@ -62,9 +69,10 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	 * @param context {@link Context}
 	 * @param validationPolicy {@link ValidationPolicy}
 	 */
-	public CryptographicVerification(I18nProvider i18nProvider, TokenProxy token, Context context,
-									 ValidationPolicy validationPolicy) {
+	public CryptographicVerification(I18nProvider i18nProvider, DiagnosticData diagnosticData, TokenProxy token,
+									 Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlCV());
+		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.context = context;
 		this.validationPolicy = validationPolicy;
@@ -115,6 +123,17 @@ public class CryptographicVerification extends Chain<XmlCV> {
 				 * sub-indication HASH_FAILURE.
 				 */
 				item = item.setNextItem(referenceDataIntact(digestMatcher));
+			}
+
+			if (isEvidenceRecordHashTreeRenewalTimestamp()) {
+
+				ChainItem<XmlCV> evidenceRecordHashTreeRenewalTimestamp = evidenceRecordHashTreeRenewalTimestamp();
+				if (item == null) {
+					firstItem = item = evidenceRecordHashTreeRenewalTimestamp;
+				} else {
+					item = item.setNextItem(evidenceRecordHashTreeRenewalTimestamp);
+				}
+
 			}
 		}
 
@@ -174,6 +193,20 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	private ChainItem<XmlCV> signatureIntact() {
 		LevelConstraint constraint = validationPolicy.getSignatureIntactConstraint(context);
 		return new SignatureIntactCheck<>(i18nProvider, result, token, context, constraint);
+	}
+
+	private boolean isEvidenceRecordHashTreeRenewalTimestamp() {
+		if (token instanceof TimestampWrapper) {
+			TimestampWrapper timestampWrapper = (TimestampWrapper) token;
+			return timestampWrapper.getType().isEvidenceRecordTimestamp() &&
+					EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestampWrapper.getEvidenceRecordTimestampType();
+		}
+		return false;
+	}
+
+	private ChainItem<XmlCV> evidenceRecordHashTreeRenewalTimestamp() {
+		LevelConstraint constraint = validationPolicy.getEvidenceRecordHashTreeRenewalConstraint();
+		return new EvidenceRecordHashTreeRenewalTimestampCheck(i18nProvider, result, diagnosticData, (TimestampWrapper) token, constraint);
 	}
 
 }

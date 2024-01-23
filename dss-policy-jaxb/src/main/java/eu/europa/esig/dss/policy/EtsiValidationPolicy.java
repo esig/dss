@@ -1271,6 +1271,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getEvidenceRecordHashTreeRenewalConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getHashTreeRenewal();
+		}
+		return null;
+	}
+
+	@Override
 	public CryptographicConstraint getEvidenceRecordCryptographicConstraint() {
 		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
 		if (evidenceRecordConstraints != null) {

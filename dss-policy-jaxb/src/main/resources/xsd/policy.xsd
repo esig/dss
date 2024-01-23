@@ -502,6 +502,11 @@
 							<xsd:documentation>Checks that only the hash values of the provided data objects are present in the first hash value list</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="HashTreeRenewal" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks that a HashTree renewal archive time-stamp covers all original documents found within the first archive time-stamp data group of the evidence record</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Group of cryptographic checks to operate on the certificate</xsd:documentation>
