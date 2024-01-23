@@ -70,6 +70,15 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 		return timestamp.getId();
 	}
 
+	/**
+	 * Checks if the time-stamp's Id is duplicated within the validating document
+	 *
+	 * @return TRUE if there is a duplicated time-stamp Id, FALSE otherwise
+	 */
+	public boolean isTimestampDuplicated() {
+		return timestamp.isDuplicated() != null && timestamp.isDuplicated();
+	}
+
 	@Override
 	protected XmlBasicSignature getCurrentBasicSignature() {
 		return timestamp.getBasicSignature();

@@ -925,6 +925,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		List<SignatureWrapper> allSignatures = diagnosticData.getSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			checkNoDuplicateTimestamps(signatureWrapper.getTimestampList());
+			checkNoDuplicateEvidenceRecords(signatureWrapper.getEvidenceRecords());
 
 			List<String> timestampIdList = diagnosticData.getTimestampIdList(signatureWrapper.getId());
 	
@@ -1161,6 +1162,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	}
 
 	protected void checkEvidenceRecords(DiagnosticData diagnosticData) {
+		checkNoDuplicateEvidenceRecords(diagnosticData.getEvidenceRecords());
 		checkEvidenceRecordDigestMatchers(diagnosticData);
 		checkEvidenceRecordTimestamps(diagnosticData);
 		checkEvidenceRecordValidationData(diagnosticData);
@@ -1168,6 +1170,12 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkEvidenceRecordScopes(diagnosticData);
 		checkEvidenceRecordTimestampedReferences(diagnosticData);
 		checkEvidenceRecordRepresentation(diagnosticData);
+	}
+
+	protected void checkNoDuplicateEvidenceRecords(List<EvidenceRecordWrapper> evidenceRecordWrappers) {
+		Set<String> erIds = evidenceRecordWrappers.stream().map(EvidenceRecordWrapper::getId).collect(Collectors.toSet());
+		assertEquals(evidenceRecordWrappers.size(), erIds.size());
+		assertFalse(evidenceRecordWrappers.stream().anyMatch(EvidenceRecordWrapper::isEvidenceRecordDuplicated));
 	}
 
 	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
@@ -1507,6 +1515,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void checkNoDuplicateTimestamps(List<TimestampWrapper> timestampTokens) {
 		Set<String> tstIds = timestampTokens.stream().map(TimestampWrapper::getId).collect(Collectors.toSet());
 		assertEquals(timestampTokens.size(), tstIds.size());
+		assertFalse(timestampTokens.stream().anyMatch(TimestampWrapper::isTimestampDuplicated));
 	}
 	
 	protected void checkNoDuplicateCompleteCertificates(FoundCertificatesProxy foundCertificates) {
