@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation.timestamp;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.evidencerecord.asn1.validation.ASN1EvidenceRecord;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
@@ -22,8 +23,8 @@ public class ASN1EvidenceRecordTimestampSource extends EvidenceRecordTimestampSo
     }
 
     @Override
-    protected TimestampToken createTimestampToken(ArchiveTimeStampObject archiveTimeStamp) {
-        TimestampToken timestampToken = super.createTimestampToken(archiveTimeStamp);
+    protected TimestampToken createTimestampToken(ArchiveTimeStampObject archiveTimeStamp, EvidenceRecordTimestampType evidenceRecordTimestampType) {
+        TimestampToken timestampToken = super.createTimestampToken(archiveTimeStamp, evidenceRecordTimestampType);
         timestampToken.setArchiveTimestampType(ArchiveTimestampType.ASN1_EVIDENCE_RECORD);
         return timestampToken;
     }

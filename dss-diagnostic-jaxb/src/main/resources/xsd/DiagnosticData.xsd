@@ -1171,6 +1171,7 @@
 				<xs:sequence>
 					<xs:element name="TimestampFilename" type="xs:string" minOccurs="0" /> <!-- In case of detached timestamps -->
 					<xs:element name="ArchiveTimestampType" type="ArchiveTimestampType" minOccurs="0" />
+					<xs:element name="EvidenceRecordTimestampType" type="EvidenceRecordTimestampType" minOccurs="0" />
 					<xs:element name="ProductionTime" type="xs:dateTime" />
 					<xs:element name="DigestMatcher" type="DigestMatcher" maxOccurs="unbounded" />
 					<xs:element name="BasicSignature" type="BasicSignature" />
@@ -1233,6 +1234,14 @@
 			<!-- Evidence record time-stamps -->
 			<xs:enumeration value="XML_EVIDENCE_RECORD" />
 			<xs:enumeration value="ASN1_EVIDENCE_RECORD" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EvidenceRecordTimestampType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
+			<xs:enumeration value="TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP" />
+			<xs:enumeration value="HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP" />
 		</xs:restriction>
 	</xs:simpleType>
 	

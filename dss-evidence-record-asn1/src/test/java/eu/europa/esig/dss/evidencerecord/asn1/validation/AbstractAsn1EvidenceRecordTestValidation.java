@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.AbstractEvidenceRecordTestValidation;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
@@ -10,6 +11,8 @@ import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractAsn1EvidenceRecordTestValidation extends AbstractEvidenceRecordTestValidation {
@@ -35,6 +38,10 @@ public abstract class AbstractAsn1EvidenceRecordTestValidation extends AbstractE
 
             List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
             for (TimestampToken timestampToken : timestamps) {
+                assertNotNull(timestampToken.getTimeStampType());
+                assertNotNull(timestampToken.getArchiveTimestampType());
+                assertNotNull(timestampToken.getEvidenceRecordTimestampType());
+
                 assertTrue(timestampToken.isProcessed());
                 assertTrue(timestampToken.isMessageImprintDataFound());
                 assertTrue(timestampToken.isMessageImprintDataIntact());
@@ -57,13 +64,11 @@ public abstract class AbstractAsn1EvidenceRecordTestValidation extends AbstractE
                         }
                     }
 
-                    if (tstReferenceValidationList.size() == 1) {
-                        assertTrue(archiveTstDigestFound ||
-                                DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == tstReferenceValidationList.get(0).getType());
-                    } else if (tstCoversOnlyCurrentHashTreeData()) {
-                        assertTrue(archiveTstSequenceDigestFound);
-                    }
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstDigestFound);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstSequenceDigestFound);
 
+                } else {
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
                 }
 
                 ++tstCounter;

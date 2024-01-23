@@ -39,6 +39,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
@@ -115,13 +116,22 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	
 	/**
 	 * Returns archive timestamp type, if applicable
-	 *
 	 * NOTE: returns null for non archive timestamps
 	 *
 	 * @return {@link ArchiveTimestampType}
 	 */
 	public ArchiveTimestampType getArchiveTimestampType() {
 		return timestamp.getArchiveTimestampType();
+	}
+
+	/**
+	 * Returns an evidence record archive timestamp type, if applicable
+	 * NOTE: returns null for non evidence record archive timestamps
+	 *
+	 * @return {@link eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType}
+	 */
+	public EvidenceRecordTimestampType getEvidenceRecordTimestampType() {
+		return timestamp.getEvidenceRecordTimestampType();
 	}
 
 	/**

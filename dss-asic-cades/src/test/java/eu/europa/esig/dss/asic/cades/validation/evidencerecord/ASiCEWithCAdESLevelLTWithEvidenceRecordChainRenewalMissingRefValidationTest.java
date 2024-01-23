@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCEWithCAdESLevelLTWithEvidenceRecordChainRenewalMissingRefValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
@@ -89,6 +91,10 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordChainRenewalMissingRefValida
         boolean archiveTstSequenceRefFound = false;
 
         for (TimestampToken timestampToken : timestamps) {
+            assertNotNull(timestampToken.getTimeStampType());
+            assertNotNull(timestampToken.getArchiveTimestampType());
+            assertNotNull(timestampToken.getEvidenceRecordTimestampType());
+
             assertTrue(timestampToken.isProcessed());
             assertTrue(timestampToken.isMessageImprintDataFound());
             assertTrue(timestampToken.isMessageImprintDataIntact());
@@ -119,10 +125,23 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordChainRenewalMissingRefValida
                     }
                 }
 
-                if (coveredTimestamps == 2) {
-                    assertEquals(3, validRefsCounter);
-                    assertEquals(1, invalidRefsCounter);
+                if (coveredTimestamps == 0) {
+                    assertEquals(0, validRefsCounter);
+                    assertEquals(0, invalidRefsCounter);
                     assertEquals(0, orphanRefsCounter);
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
+
+                } else if (coveredTimestamps == 1) {
+                    assertEquals(0, validRefsCounter);
+                    assertEquals(0, invalidRefsCounter);
+                    assertEquals(0, orphanRefsCounter);
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
+
+                } else if (coveredTimestamps == 2) {
+                    assertEquals(3, validRefsCounter);
+                    assertEquals(0, invalidRefsCounter);
+                    assertEquals(0, orphanRefsCounter);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
                 }
             }
 
@@ -150,6 +169,10 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordChainRenewalMissingRefValida
         boolean archiveTstSequenceRefFound = false;
 
         for (TimestampWrapper timestampWrapper : timestampList) {
+            assertNotNull(timestampWrapper.getType());
+            assertNotNull(timestampWrapper.getArchiveTimestampType());
+            assertNotNull(timestampWrapper.getEvidenceRecordTimestampType());
+
             assertTrue(timestampWrapper.isMessageImprintDataFound());
             assertTrue(timestampWrapper.isMessageImprintDataIntact());
             assertTrue(timestampWrapper.isSignatureIntact());
@@ -179,10 +202,23 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordChainRenewalMissingRefValida
                     }
                 }
 
-                if (coveredTimestamps == 3) {
-                    assertEquals(3, validRefsCounter);
-                    assertEquals(1, invalidRefsCounter);
+                if (coveredTimestamps == 1) {
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampWrapper.getEvidenceRecordTimestampType());
+                    assertEquals(0, validRefsCounter);
+                    assertEquals(0, invalidRefsCounter);
                     assertEquals(0, orphanRefsCounter);
+
+                } else if (coveredTimestamps == 2) {
+                    assertEquals(0, validRefsCounter);
+                    assertEquals(0, invalidRefsCounter);
+                    assertEquals(0, orphanRefsCounter);
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP, timestampWrapper.getEvidenceRecordTimestampType());
+
+                } else if (coveredTimestamps == 3) {
+                    assertEquals(3, validRefsCounter);
+                    assertEquals(0, invalidRefsCounter);
+                    assertEquals(0, orphanRefsCounter);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP, timestampWrapper.getEvidenceRecordTimestampType());
                 }
             }
 

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.evidencerecord.common.validation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -107,7 +108,13 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
             int tstCounter = 0;
 
             List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
+            assertTrue(Utils.isCollectionNotEmpty(timestamps));
+
             for (TimestampToken timestampToken : timestamps) {
+                assertNotNull(timestampToken.getTimeStampType());
+                assertNotNull(timestampToken.getArchiveTimestampType());
+                assertNotNull(timestampToken.getEvidenceRecordTimestampType());
+
                 assertTrue(timestampToken.isProcessed());
                 assertTrue(timestampToken.isMessageImprintDataFound());
                 assertTrue(timestampToken.isMessageImprintDataIntact());
@@ -130,12 +137,11 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
                         }
                     }
 
-                    if (tstReferenceValidationList.size() == 1) {
-                        assertTrue(archiveTstDigestFound);
-                    } else if (tstCoversOnlyCurrentHashTreeData()) {
-                        assertTrue(archiveTstSequenceDigestFound);
-                    }
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstDigestFound);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstSequenceDigestFound);
 
+                } else {
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
                 }
 
                 ++tstCounter;

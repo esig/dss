@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -119,10 +120,15 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordChainRenewalInvalidRefValida
                     }
                 }
 
-                if (coveredTimestamps == 2) {
+                if (coveredTimestamps == 0) {
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
+                } else if (coveredTimestamps == 1) {
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
+                } else if (coveredTimestamps == 2) {
                     assertEquals(3, validRefsCounter);
-                    assertEquals(1, invalidRefsCounter);
-                    assertEquals(0, orphanRefsCounter);
+                    assertEquals(0, invalidRefsCounter);
+                    assertEquals(1, orphanRefsCounter);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
                 }
             }
 
@@ -179,10 +185,15 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordChainRenewalInvalidRefValida
                     }
                 }
 
-                if (coveredTimestamps == 3) {
+                if (coveredTimestamps == 1) {
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampWrapper.getEvidenceRecordTimestampType());
+                } else if (coveredTimestamps == 2) {
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP, timestampWrapper.getEvidenceRecordTimestampType());
+                } else if (coveredTimestamps == 3) {
                     assertEquals(3, validRefsCounter);
-                    assertEquals(1, invalidRefsCounter);
-                    assertEquals(0, orphanRefsCounter);
+                    assertEquals(0, invalidRefsCounter);
+                    assertEquals(1, orphanRefsCounter);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP, timestampWrapper.getEvidenceRecordTimestampType());
                 }
             }
 

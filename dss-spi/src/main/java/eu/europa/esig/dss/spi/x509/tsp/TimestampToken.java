@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -165,6 +166,11 @@ public class TimestampToken extends Token {
 	 * Defines for archive timestamp its type.
 	 */
 	private ArchiveTimestampType archiveTimestampType;
+
+	/**
+	 * Defines for an evidence record archive timestamp its type.
+	 */
+	private EvidenceRecordTimestampType evidenceRecordTimestampType;
 
 	/**
 	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method
@@ -713,13 +719,31 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Archive timestamps can be of different sub type.
+	 * Archive timestamps can be of different subtype.
 	 *
 	 * @param archiveTimestampType
 	 *            {@code ArchiveTimestampType}
 	 */
 	public void setArchiveTimestampType(final ArchiveTimestampType archiveTimestampType) {
 		this.archiveTimestampType = archiveTimestampType;
+	}
+
+	/**
+	 * Gets the {@code EvidenceRecordTimestampType}, when applicable
+	 *
+	 * @return {@code EvidenceRecordTimestampType} in the case of an evidence record archive time-stamp, null otherwise
+	 */
+	public EvidenceRecordTimestampType getEvidenceRecordTimestampType() {
+		return evidenceRecordTimestampType;
+	}
+
+	/**
+	 * Sets the {@code EvidenceRecordTimestampType}, for an evidence record's time-stamp
+	 *
+	 * @param evidenceRecordTimestampType {@link EvidenceRecordTimestampType}
+	 */
+	public void setEvidenceRecordTimestampType(EvidenceRecordTimestampType evidenceRecordTimestampType) {
+		this.evidenceRecordTimestampType = evidenceRecordTimestampType;
 	}
 
 	/**

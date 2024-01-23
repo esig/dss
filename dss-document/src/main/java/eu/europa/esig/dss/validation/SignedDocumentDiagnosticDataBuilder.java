@@ -1075,6 +1075,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
 		// property is defined only for archival timestamps
 		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType());
+		xmlTimestampToken.setEvidenceRecordTimestampType(timestampToken.getEvidenceRecordTimestampType());
 
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
 		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
