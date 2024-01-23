@@ -156,6 +156,7 @@
         <DataObjectIntact Level="FAIL" />
         <DataObjectFound Level="FAIL" />
         <DataObjectGroup Level="WARN" />
+        <HashTreeRenewal Level="FAIL" />
         <Cryptographic />
     </EvidenceRecord>
     <Cryptographic Level="FAIL">
