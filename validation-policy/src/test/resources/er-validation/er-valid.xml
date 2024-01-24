@@ -286,6 +286,7 @@
     <UsedTimestamps>
         <Timestamp Type="EVIDENCE_RECORD_TIMESTAMP" Id="T-1AAB362B1B904BAB0D4209A952BE0300E50906C253C9478477B042105DC51947">
             <ArchiveTimestampType>XML_EVIDENCE_RECORD</ArchiveTimestampType>
+            <EvidenceRecordTimestampType>ARCHIVE_TIMESTAMP</EvidenceRecordTimestampType>
             <ProductionTime>2021-08-21T08:59:32Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA256</DigestMethod>
@@ -345,6 +346,7 @@
         </Timestamp>
         <Timestamp Type="EVIDENCE_RECORD_TIMESTAMP" Id="T-B914CF2D7E9272E3C1659A1A0EEE59ECBCAD9C4E520ED547B5CE322B18A582">
             <ArchiveTimestampType>XML_EVIDENCE_RECORD</ArchiveTimestampType>
+            <EvidenceRecordTimestampType>HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP</EvidenceRecordTimestampType>
             <ProductionTime>2022-08-21T09:49:17Z</ProductionTime>
             <DigestMatcher type="MESSAGE_IMPRINT">
                 <DigestMethod>SHA512</DigestMethod>

@@ -233,8 +233,8 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordChainRenewalMissingRefValida
     protected void verifySimpleReport(SimpleReport simpleReport) {
         List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(simpleReport.getFirstSignatureId());
         assertEquals(1, signatureEvidenceRecords.size());
-        assertEquals(Indication.FAILED, signatureEvidenceRecords.get(0).getIndication());
-        assertEquals(SubIndication.HASH_FAILURE, signatureEvidenceRecords.get(0).getSubIndication());
+        assertEquals(Indication.INDETERMINATE, signatureEvidenceRecords.get(0).getIndication());
+        assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, signatureEvidenceRecords.get(0).getSubIndication());
     }
 
 }

@@ -83,17 +83,34 @@ public class EvidenceRecordHashTreeRenewalTimestampCheck extends ChainItem<XmlCV
 
     @Override
     protected MessageTag getErrorMessageTag() {
-        return MessageTag.BBB_CV_ER_TST_RN_ANS;
+        if (containsOtherDigests()) {
+            return MessageTag.BBB_CV_ER_TST_RN_ANS_2;
+        } else {
+            return MessageTag.BBB_CV_ER_TST_RN_ANS_1;
+        }
     }
 
     @Override
     protected Indication getFailedIndicationForConclusion() {
-        return Indication.FAILED;
+        if (containsOtherDigests()) {
+            return Indication.FAILED;
+        } else {
+            return Indication.INDETERMINATE;
+        }
     }
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.HASH_FAILURE;
+        if (containsOtherDigests()) {
+            return SubIndication.HASH_FAILURE;
+        } else {
+            return SubIndication.SIGNED_DATA_NOT_FOUND;
+        }
+    }
+
+    private boolean containsOtherDigests() {
+        return timestampWrapper.getDigestMatchers().stream()
+                .anyMatch(d -> DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == d.getType());
     }
 
 }
