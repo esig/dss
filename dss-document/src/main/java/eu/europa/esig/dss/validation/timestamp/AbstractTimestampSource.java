@@ -43,6 +43,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -351,6 +352,43 @@ public abstract class AbstractTimestampSource {
 			}
 		}
 		return timestampedReferences;
+	}
+
+	/**
+	 * Enriches embedded time-stamp tokens with evidence record references
+	 *
+	 * @param evidenceRecord {@link EvidenceRecord}
+	 */
+	protected void processEvidenceRecordTimestamps(EvidenceRecord evidenceRecord) {
+		for (TimestampToken timestampToken : evidenceRecord.getTimestamps()) {
+			ensureOnlyDataTimestampReferencesPresent(timestampToken.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
+			addReferences(timestampToken.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
+		}
+	}
+
+	/**
+	 * Enriches embedded evidence records with the covered references
+	 *
+	 * @param evidenceRecord {@link EvidenceRecord}
+	 */
+	protected void processEmbeddedEvidenceRecords(EvidenceRecord evidenceRecord) {
+		for (EvidenceRecord embeddedEvidenceRecord : evidenceRecord.getDetachedEvidenceRecords()) {
+			addReferences(embeddedEvidenceRecord.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
+			processEvidenceRecordTimestamps(embeddedEvidenceRecord);
+		}
+	}
+
+	/**
+	 * This method is a workaround to ensure time-stamps from evidence record do not refer
+	 * signature or time-stamp files in addition to token references
+	 *
+	 * @param referenceList a list of {@link TimestampedReference} from time-stamp token
+	 * @param referencesToCheck a list of {@link TimestampedReference} from an evidence record
+	 */
+	private void ensureOnlyDataTimestampReferencesPresent(List<TimestampedReference> referenceList, List<TimestampedReference> referencesToCheck) {
+		referenceList.removeIf(timestampedReference ->
+				TimestampedObjectType.SIGNED_DATA.equals(timestampedReference.getCategory()) &&
+						referencesToCheck.stream().noneMatch(timestampedReference::equals));
 	}
 
 }

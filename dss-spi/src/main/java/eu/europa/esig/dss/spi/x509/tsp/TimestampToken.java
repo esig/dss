@@ -44,6 +44,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.SignerIdentifier;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -161,6 +162,11 @@ public class TimestampToken extends Token {
 	 * In case of an Evidence record time-stamp, contains references to
 	 */
 	private List<ReferenceValidation> referenceValidations;
+
+	/**
+	 * Returns a list of detached evidence records covering the time-stamp, when applicable
+	 */
+	private List<EvidenceRecord> detachedEvidenceRecords;
 
 	/**
 	 * Defines for archive timestamp its type.
@@ -821,6 +827,27 @@ public class TimestampToken extends Token {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Gets a list of detached evidence records covering the time-stamp, when applicable
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	public List<EvidenceRecord> getDetachedEvidenceRecords() {
+		if (detachedEvidenceRecords == null) {
+			detachedEvidenceRecords = new ArrayList<>();
+		}
+		return detachedEvidenceRecords;
+	}
+
+	/**
+	 * Adds an evidence record to the time-stamp's list
+	 *
+	 * @param evidenceRecord {@link EvidenceRecord}
+	 */
+	public void addDetachedEvidenceRecord(EvidenceRecord evidenceRecord) {
+		getDetachedEvidenceRecords().add(evidenceRecord);
 	}
 
 	/**

@@ -76,6 +76,9 @@
 		<jaxb:bindings node="//xs:complexType[@name='Signature']//xs:element[@name='EvidenceRecord']">
 			<jaxb:property name="EvidenceRecords" />
 		</jaxb:bindings>
+		<jaxb:bindings node="//xs:complexType[@name='Timestamp']//xs:element[@name='EvidenceRecord']">
+			<jaxb:property name="EvidenceRecords" />
+		</jaxb:bindings>
 		<jaxb:bindings node="//xs:complexType[@name='EvidenceRecord']//xs:element[@name='Timestamp']">
 			<jaxb:property name="Timestamps" />
 		</jaxb:bindings>

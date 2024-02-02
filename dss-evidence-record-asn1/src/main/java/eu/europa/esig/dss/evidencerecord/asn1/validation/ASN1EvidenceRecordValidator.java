@@ -4,9 +4,9 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
-import org.bouncycastle.asn1.tsp.EvidenceRecord;
 
 import java.io.InputStream;
 
@@ -17,7 +17,7 @@ import java.io.InputStream;
 public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
 
     /** The root object of the document to validate */
-    private EvidenceRecord evidenceRecordObject;
+    private org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordObject;
 
     /**
      * The default constructor for ASN1EvidenceRecordValidator.
@@ -36,9 +36,9 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
         // empty
     }
     
-    private EvidenceRecord toASN1Document(DSSDocument document) {
+    private org.bouncycastle.asn1.tsp.EvidenceRecord toASN1Document(DSSDocument document) {
         try (InputStream is = document.openStream()) {
-            return EvidenceRecord.getInstance(Utils.toByteArray(is));
+            return org.bouncycastle.asn1.tsp.EvidenceRecord.getInstance(Utils.toByteArray(is));
         } catch (Exception e) {
             throw new IllegalInputException(String.format("An ASN.1 file is expected : %s", e.getMessage()), e);
         }
@@ -60,7 +60,7 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
     }
 
     @Override
-    protected eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord buildEvidenceRecord() {
+    protected EvidenceRecord buildEvidenceRecord() {
         final ASN1EvidenceRecord evidenceRecord = new ASN1EvidenceRecord(this.evidenceRecordObject);
         evidenceRecord.setFilename(document.getName());
         evidenceRecord.setManifestFile(manifestFile);

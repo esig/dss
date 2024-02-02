@@ -496,6 +496,13 @@ public class DetailedReport {
 				}
 			}
 		}
+		for (XmlTimestamp xmlTimestamp : getIndependentTimestamps()) {
+			for (XmlEvidenceRecord xmlEvidenceRecord : xmlTimestamp.getEvidenceRecords()) {
+				if (xmlEvidenceRecord.getId().equals(evidenceRecordId)) {
+					return xmlEvidenceRecord;
+				}
+			}
+		}
 		return null;
 	}
 
@@ -656,6 +663,13 @@ public class DetailedReport {
 		for (XmlTimestamp xmlTimestamp : getIndependentTimestamps()) {
 			if (xmlTimestamp.getId().equals(timestampId)) {
 				return xmlTimestamp;
+			}
+			for (XmlEvidenceRecord xmlEvidenceRecord : xmlTimestamp.getEvidenceRecords()) {
+				for (XmlTimestamp xmlERTimestamp : xmlEvidenceRecord.getTimestamps()) {
+					if (xmlERTimestamp.getId().equals(timestampId)) {
+						return xmlERTimestamp;
+					}
+				}
 			}
 		}
 

@@ -25,9 +25,11 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 
 import java.util.List;
@@ -114,6 +116,21 @@ public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator 
 			timestamp.setArchiveTimestampType(archiveTimestampType);
 		}
 		return timestamp;
+	}
+
+	@Override
+	protected boolean isTimestampCoveredByEvidenceRecord(TimestampToken timestampToken, EvidenceRecord evidenceRecord) {
+		ManifestFile erManifestFile = evidenceRecord.getManifestFile();
+		if (erManifestFile == null) {
+			// detached ER, covers all content
+			return true;
+		}
+		for (ManifestEntry entry : erManifestFile.getEntries()) {
+			if (timestampToken.getFileName() != null && timestampToken.getFileName().equals(entry.getFileName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

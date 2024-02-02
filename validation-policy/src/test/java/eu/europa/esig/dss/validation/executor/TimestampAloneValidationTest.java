@@ -22,11 +22,13 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
@@ -581,6 +583,171 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 		List<String> timestampIds = detailedReport.getTimestampIds();
 		assertEquals(0, timestampIds.size());
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void tstWithErValidationTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/timestamp-validation/tst-and-er.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationPolicy(loadDefaultPolicy());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.PASSED, simpleReport.getIndication(diagnosticData.getUsedTimestamps().get(0).getId()));
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord> tstErs = simpleReport.getTimestampEvidenceRecords(simpleReport.getFirstTimestampId());
+		assertEquals(1, tstErs.size());
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord tstEr = tstErs.get(0);
+		assertEquals(Indication.PASSED, simpleReport.getIndication(tstEr.getId()));
+
+		assertEquals(Indication.PASSED, simpleReport.getIndication(tstEr.getTimestamps().getTimestamp().get(0).getId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		
+		List<XmlTimestamp> timestamps = detailedReport.getIndependentTimestamps();
+		assertEquals(1, timestamps.size());
+
+		XmlTimestamp xmlTimestamp = timestamps.get(0);
+		assertEquals(Indication.PASSED, xmlTimestamp.getConclusion().getIndication());
+
+		XmlValidationProcessBasicTimestamp validationProcessBasicTimestamp = xmlTimestamp.getValidationProcessBasicTimestamp();
+		assertEquals(Indication.INDETERMINATE, validationProcessBasicTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessBasicTimestamp.getConclusion().getSubIndication());
+
+		List<XmlEvidenceRecord> evidenceRecords = xmlTimestamp.getEvidenceRecords();
+		assertEquals(1, evidenceRecords.size());
+
+		XmlEvidenceRecord xmlEvidenceRecord = evidenceRecords.get(0);
+		assertEquals(Indication.PASSED, xmlEvidenceRecord.getConclusion().getIndication());
+
+		List<XmlTimestamp> erTimestamps = xmlEvidenceRecord.getTimestamps();
+		assertEquals(1, erTimestamps.size());
+
+		XmlTimestamp erTimestamp = erTimestamps.get(0);
+		assertEquals(Indication.PASSED, erTimestamp.getConclusion().getIndication());
+
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+		assertEquals(Indication.PASSED, validationProcessEvidenceRecord.getConclusion().getIndication());
+
+		XmlValidationProcessArchivalDataTimestamp validationProcessArchivalDataTimestamp = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+		assertEquals(Indication.PASSED, validationProcessArchivalDataTimestamp.getConclusion().getIndication());
+
+		boolean erValidationCheckFound = false;
+		boolean basicTstValidationCheckFound = false;
+		boolean pastTstValidationCheckFound = false;
+		for (XmlConstraint constraint : validationProcessArchivalDataTimestamp.getConstraint()) {
+			if (MessageTag.ADEST_IRERVPC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				erValidationCheckFound = true;
+			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), constraint.getWarning().getKey());
+				basicTstValidationCheckFound = true;
+			} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				pastTstValidationCheckFound = true;
+			}
+		}
+		assertTrue(erValidationCheckFound);
+		assertTrue(basicTstValidationCheckFound);
+		assertTrue(pastTstValidationCheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void tstWithErValidationInvalidTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/timestamp-validation/tst-and-er.xml"));
+		assertNotNull(diagnosticData);
+
+		eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord xmlEvidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+		xmlEvidenceRecord.getDigestMatchers().get(1).setDataIntact(false);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setValidationPolicy(loadDefaultPolicy());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(diagnosticData.getUsedTimestamps().get(0).getId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(diagnosticData.getUsedTimestamps().get(0).getId()));
+
+		List<eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord> tstErs = simpleReport.getTimestampEvidenceRecords(simpleReport.getFirstTimestampId());
+		assertEquals(1, tstErs.size());
+
+		eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord tstEr = tstErs.get(0);
+		assertEquals(Indication.FAILED, simpleReport.getIndication(tstEr.getId()));
+		assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(tstEr.getId()));
+
+		assertEquals(Indication.PASSED, simpleReport.getIndication(tstEr.getTimestamps().getTimestamp().get(0).getId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+
+		List<XmlTimestamp> timestamps = detailedReport.getIndependentTimestamps();
+		assertEquals(1, timestamps.size());
+
+		XmlTimestamp xmlTimestamp = timestamps.get(0);
+		assertEquals(Indication.INDETERMINATE, xmlTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, xmlTimestamp.getConclusion().getSubIndication());
+
+		XmlValidationProcessBasicTimestamp validationProcessBasicTimestamp = xmlTimestamp.getValidationProcessBasicTimestamp();
+		assertEquals(Indication.INDETERMINATE, validationProcessBasicTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessBasicTimestamp.getConclusion().getSubIndication());
+
+		List<XmlEvidenceRecord> evidenceRecords = xmlTimestamp.getEvidenceRecords();
+		assertEquals(1, evidenceRecords.size());
+
+		XmlEvidenceRecord evidenceRecord = evidenceRecords.get(0);
+		assertEquals(Indication.FAILED, evidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, evidenceRecord.getConclusion().getSubIndication());
+
+		List<XmlTimestamp> erTimestamps = evidenceRecord.getTimestamps();
+		assertEquals(1, erTimestamps.size());
+
+		XmlTimestamp erTimestamp = erTimestamps.get(0);
+		assertEquals(Indication.PASSED, erTimestamp.getConclusion().getIndication());
+
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = evidenceRecord.getValidationProcessEvidenceRecord();
+		assertEquals(Indication.FAILED, validationProcessEvidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, validationProcessEvidenceRecord.getConclusion().getSubIndication());
+
+		XmlValidationProcessArchivalDataTimestamp validationProcessArchivalDataTimestamp = xmlTimestamp.getValidationProcessArchivalDataTimestamp();
+		assertEquals(Indication.INDETERMINATE, validationProcessArchivalDataTimestamp.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, validationProcessArchivalDataTimestamp.getConclusion().getSubIndication());
+
+		boolean erValidationCheckFound = false;
+		boolean basicTstValidationCheckFound = false;
+		boolean pastTstValidationCheckFound = false;
+		for (XmlConstraint constraint : validationProcessArchivalDataTimestamp.getConstraint()) {
+			if (MessageTag.ADEST_IRERVPC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_IRERVPC_ANS.getId(), constraint.getWarning().getKey());
+				erValidationCheckFound = true;
+			} else if (MessageTag.ADEST_IBSVPTC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ADEST_IBSVPTC_ANS.getId(), constraint.getWarning().getKey());
+				basicTstValidationCheckFound = true;
+			} else if (MessageTag.PSV_IPTVC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.PSV_IPTVC_ANS.getId(), constraint.getError().getKey());
+				pastTstValidationCheckFound = true;
+			}
+		}
+		assertTrue(erValidationCheckFound);
+		assertTrue(basicTstValidationCheckFound);
+		assertTrue(pastTstValidationCheckFound);
 
 		checkReports(reports);
 	}

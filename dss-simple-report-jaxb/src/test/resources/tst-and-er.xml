@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleReport ValidationTime="2024-02-01T13:54:04Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validates electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+            Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+            signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
+    <DocumentName>d-trust.tsr</DocumentName>
+    <ValidSignaturesCount>0</ValidSignaturesCount>
+    <SignaturesCount>0</SignaturesCount>
+    <Timestamp Id="T-80081EA59AB55B499180A313BE2CBB176CCB902157B2BCD986DB26C71BD7B4E5">
+        <Filename>d-trust.tsr</Filename>
+        <CertificateChain>
+            <Certificate Id="C-9ACF4D4E37AD647B1310D55800234BBF17FFFE01CAF7E63ED7223B770CB0D2E9">
+                <QualifiedName>D-TRUST TSU 12 2017</QualifiedName>
+            </Certificate>
+            <Certificate Id="C-5F522A439611DEC501F0468FF6A455D23DFBD08EEB33964A0C5EDE95593E1FA8">
+                <QualifiedName>D-TRUST CA 1-3 2017</QualifiedName>
+            </Certificate>
+            <Certificate Id="C-4D24807B9CAD5110F40ED79D934346D7C9B0290431DC9B11A40BBB86FCF2AEF6">
+                <QualifiedName>D-TRUST Root CA 1 2017</QualifiedName>
+            </Certificate>
+        </CertificateChain>
+        <Indication>INDETERMINATE</Indication>
+        <SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+        <AdESValidationDetails>
+            <Error Key="BBB_XCV_CCCBB_TSP_ANS">The certificate chain for time-stamp is not trusted, it does not contain a trust anchor.</Error>
+            <Warning Key="ADEST_IRERVPC_ANS">The result of evidence record validation is not conclusive!</Warning>
+        </AdESValidationDetails>
+        <QualificationDetails>
+            <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+        </QualificationDetails>
+        <ProductionTime>2018-05-23T13:18:29Z</ProductionTime>
+        <ProducedBy>D-TRUST TSU 12 2017</ProducedBy>
+        <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+        <TimestampScope Id="D-9757B0DC0AE2E62E8B9E5041D66573EB45598910A44C88539773F437E942FF68" name="Full document" scope="FULL">Full document</TimestampScope>
+        <EvidenceRecords>
+            <EvidenceRecord Id="ER-5C5F1C4185A515C52A9E6C87555E592D76BC1AC182DE6EFA3A7B6F894301BEB8">
+                <Filename>er-asn1-on-tst.ers</Filename>
+                <Indication>INDETERMINATE</Indication>
+                <SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+                <AdESValidationDetails>
+                    <Error Key="ADEST_IBSVPTADC_ANS">The result of time-stamp validation is not conclusive!</Error>
+                    <Warning Key="BBB_CV_ER_DFHVLCDOG_ANS">The first hash value list contains other objects than data provided to the validation!</Warning>
+                </AdESValidationDetails>
+                <POETime>2024-02-01T13:54:04Z</POETime>
+                <EvidenceRecordScope Id="D-6F89C6A93B1A89F73080A3AE3665B9176F03B1A2F0A9503731E486F997ECCFC1" name="d-trust.tsr" scope="FULL">Full document</EvidenceRecordScope>
+                <Timestamps>
+                    <Timestamp Id="T-996AB75291D3894CEE9C173224868EB731137077A661E7F09443ADF91D5B801D">
+                        <CertificateChain>
+                            <Certificate Id="C-4114348084C4A7B57243847C7F77A20CBC96DE6BF19D5006266E108C54413BB7">
+                                <QualifiedName>Qualified TimeStamping - 20230314</QualifiedName>
+                            </Certificate>
+                            <Certificate Id="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9">
+                                <QualifiedName>DocuSign Time Stamping CA - G1</QualifiedName>
+                            </Certificate>
+                        </CertificateChain>
+                        <Indication>INDETERMINATE</Indication>
+                        <SubIndication>NO_CERTIFICATE_CHAIN_FOUND</SubIndication>
+                        <AdESValidationDetails>
+                            <Error Key="BBB_XCV_CCCBB_TSP_ANS">The certificate chain for time-stamp is not trusted, it does not contain a trust anchor.</Error>
+                        </AdESValidationDetails>
+                        <QualificationDetails>
+                            <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+                        </QualificationDetails>
+                        <ProductionTime>2024-01-24T14:56:48Z</ProductionTime>
+                        <ProducedBy>Qualified TimeStamping - 20230314</ProducedBy>
+                        <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+                        <TimestampScope Id="D-6F89C6A93B1A89F73080A3AE3665B9176F03B1A2F0A9503731E486F997ECCFC1" name="d-trust.tsr" scope="FULL">Full document</TimestampScope>
+                    </Timestamp>
+                </Timestamps>
+            </EvidenceRecord>
+        </EvidenceRecords>
+    </Timestamp>
+</SimpleReport>

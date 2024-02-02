@@ -141,6 +141,7 @@
 					<xs:element name="ProducedBy" type="xs:string" minOccurs="0" />
 					<xs:element name="TimestampLevel" type="TimestampLevel" minOccurs="0" />
 					<xs:element name="TimestampScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="EvidenceRecords" type="EvidenceRecords" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

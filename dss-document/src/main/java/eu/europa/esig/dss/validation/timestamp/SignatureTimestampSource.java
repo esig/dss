@@ -45,7 +45,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureAttribute;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1212,39 +1212,6 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         processEvidenceRecordTimestamps(evidenceRecord);
         processEmbeddedEvidenceRecords(evidenceRecord);
         populateSources(evidenceRecord);
-    }
-
-
-    /**
-     * Enriches embedded time-stamp tokens with evidence record references
-     *
-     * @param evidenceRecord {@link EvidenceRecord}
-     */
-    private void processEvidenceRecordTimestamps(EvidenceRecord evidenceRecord) {
-        for (TimestampToken timestampToken : evidenceRecord.getTimestamps()) {
-            ensureOnlyDataTimestampReferencesPresent(timestampToken.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
-            addReferences(timestampToken.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
-        }
-    }
-
-    private void processEmbeddedEvidenceRecords(EvidenceRecord evidenceRecord) {
-        for (EvidenceRecord embeddedEvidenceRecord : evidenceRecord.getDetachedEvidenceRecords()) {
-            addReferences(embeddedEvidenceRecord.getTimestampedReferences(), evidenceRecord.getTimestampedReferences());
-            processEvidenceRecordTimestamps(embeddedEvidenceRecord);
-        }
-    }
-
-    /**
-     * This method is a workaround to ensure time-stamps from evidence record do not refer
-     * signature or time-stamp files in addition to token references
-     *
-     * @param referenceList a list of {@link TimestampedReference} from time-stamp token
-     * @param referencesToCheck a list of {@link TimestampedReference} from an evidence record
-     */
-    private void ensureOnlyDataTimestampReferencesPresent(List<TimestampedReference> referenceList, List<TimestampedReference> referencesToCheck) {
-        referenceList.removeIf(timestampedReference ->
-                TimestampedObjectType.SIGNED_DATA.equals(timestampedReference.getCategory()) &&
-                        referencesToCheck.stream().noneMatch(timestampedReference::equals));
     }
 
     /**

@@ -20,12 +20,15 @@
  */
 package eu.europa.esig.dss.validation.timestamp;
 
+import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +37,6 @@ import java.util.List;
  * Performs processing of detached timestamps
  */
 public class DetachedTimestampSource extends AbstractTimestampSource {
-
-    /** A list of detached timestamps */
-    private final List<TimestampToken> detachedTimestamps = new ArrayList<>();
 
     /** Merged certificate source from timestamps */
     private final ListCertificateSource certificateSource = new ListCertificateSource();
@@ -47,11 +47,26 @@ public class DetachedTimestampSource extends AbstractTimestampSource {
     /** Merged OCSP source */
     private final ListRevocationSource<OCSP> ocspSource = new ListRevocationSource<>();
 
+    /** A list of detached timestamps */
+    private final List<TimestampToken> detachedTimestamps = new ArrayList<>();
+
+    /** This variable contains the list of evidence records detached from the time-stamp document. */
+    private final List<EvidenceRecord> detachedEvidenceRecords = new ArrayList<>();
+
     /**
      * Default constructor instantiating object with empty resources
      */
     public DetachedTimestampSource() {
         // empty
+    }
+
+    /**
+     * Constructor to instantiate a list of time-stamps with the given {@code TimestampToken}
+     *
+     * @param timestampToken {@link TimestampToken}
+     */
+    public DetachedTimestampSource(TimestampToken timestampToken) {
+        this.detachedTimestamps.add(timestampToken);
     }
 
     /**
@@ -74,19 +89,69 @@ public class DetachedTimestampSource extends AbstractTimestampSource {
     }
 
     private void processExternalTimestamp(TimestampToken externalTimestamp) {
-        certificateSource.add(externalTimestamp.getCertificateSource());
-        crlSource.add(externalTimestamp.getCRLSource());
-        ocspSource.add(externalTimestamp.getOCSPSource());
+        populateSources(externalTimestamp);
+        addReferences(externalTimestamp.getTimestampedReferences(), getManifestReferences(externalTimestamp));
+    }
 
+    private List<TimestampedReference> getManifestReferences(TimestampToken externalTimestamp) {
+        List<TimestampedReference> result = new ArrayList<>();
         ManifestFile manifestFile = externalTimestamp.getManifestFile();
         if (manifestFile != null) {
             for (TimestampToken timestampToken : detachedTimestamps) {
                 if (manifestFile.isDocumentCovered(timestampToken.getFileName())) {
-                    addReferences(externalTimestamp.getTimestampedReferences(),
+                    addReferences(result,
                             getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource));
                 }
             }
         }
+        return result;
+    }
+
+    /**
+     * Adds the external evidence record to the source
+     *
+     * @param evidenceRecord {@link EvidenceRecord}
+     */
+    public void addExternalEvidenceRecord(EvidenceRecord evidenceRecord) {
+        processExternalEvidenceRecord(evidenceRecord);
+        detachedEvidenceRecords.add(evidenceRecord);
+    }
+
+    private void processExternalEvidenceRecord(EvidenceRecord evidenceRecord) {
+        addEncapsulatedReferencesFromTimestamps(evidenceRecord, getDetachedTimestamps());
+        processEvidenceRecordTimestamps(evidenceRecord);
+        processEmbeddedEvidenceRecords(evidenceRecord);
+        for (TimestampToken timestampToken : evidenceRecord.getTimestamps()) {
+            populateSources(timestampToken);
+        }
+    }
+
+    private void populateSources(TimestampToken timestampToken) {
+        certificateSource.add(timestampToken.getCertificateSource());
+        crlSource.add(timestampToken.getCRLSource());
+        ocspSource.add(timestampToken.getOCSPSource());
+    }
+
+    private void addEncapsulatedReferencesFromTimestamps(EvidenceRecord evidenceRecord, List<TimestampToken> timestampTokens) {
+        for (TimestampToken timestampToken : timestampTokens) {
+            if (isCoveredTimestamp(evidenceRecord, timestampToken)) {
+                addReferences(evidenceRecord.getTimestampedReferences(),
+                        getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource));
+            }
+        }
+    }
+
+    private boolean isCoveredTimestamp(EvidenceRecord evidenceRecord, TimestampToken timestampToken) {
+        ManifestFile manifestFile = evidenceRecord.getManifestFile();
+        if (manifestFile != null) {
+            for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+                if (timestampToken.getFileName() != null && timestampToken.getFileName().equals(manifestEntry.getFileName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return true;
     }
 
 }

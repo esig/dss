@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>d-trust.tsr</DocumentName>
+    <ValidationDate>2024-02-01T15:52:02Z</ValidationDate>
+    <Signatures/>
+    <EvidenceRecords>
+        <EvidenceRecord Id="EVIDENCE-RECORD_Qualified-TimeStamping-20230314_20240124-1456">
+            <DocumentName>er-asn1-on-tst.ers</DocumentName>
+            <Type>ASN.1 Evidence Record</Type>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="EVIDENCE_RECORD_ORPHAN_REFERENCE">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>DLLukWGg7dR+f1zWWIEsba9tngUHnk+GHqfsMs7uvl0=</DigestValue>
+                    <DataFound>false</DataFound>
+                    <DataIntact>false</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="d-trust.tsr">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>H59bkrnfVnjNV6e0f+6t3jZQF71n5edGilrfFPbMkB8=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <EvidenceRecordTimestamps>
+                <FoundTimestamp Timestamp="TIMESTAMP_Qualified-TimeStamping-20230314_20240124-1456"/>
+            </EvidenceRecordTimestamps>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="DOCUMENT_d-trust-tsr" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="TIMESTAMP_D-TRUST-TSU-12-2017_20180523-1318" Category="TIMESTAMP"/>
+                <TimestampedObject Token="DOCUMENT_new-2-txt" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826" Category="CERTIFICATE"/>
+                <TimestampedObject Token="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934" Category="CERTIFICATE"/>
+                <TimestampedObject Token="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <EvidenceRecordScopes>
+                <SignatureScope SignerData="DOCUMENT_d-trust-tsr">
+                    <Scope>FULL</Scope>
+                    <Name>d-trust.tsr</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </EvidenceRecordScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>k0q+Vw3XS1MiAfqlIEVXoP23/7+8bNak3fkQjre+wa4=</DigestValue>
+            </DigestAlgoAndValue>
+        </EvidenceRecord>
+    </EvidenceRecords>
+    <UsedCertificates>
+        <Certificate Id="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000">
+            <SubjectDistinguishedName Format="CANONICAL">cn=docusign time stamping ca - g1,ou=0002 812611150,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=DocuSign Time Stamping CA - G1,OU=0002 812611150,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=opentrust ca for aatl g1,ou=0002 478217318,o=opentrust,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=OpenTrust CA for AATL G1,OU=0002 478217318,O=OpenTrust,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492478095336152237461836871015777948587213</SerialNumber>
+            <CommonName>DocuSign Time Stamping CA - G1</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <OrganizationalUnit>0002 812611150</OrganizationalUnit>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2038-01-01T00:00:00Z</NotAfter>
+            <NotBefore>2020-06-05T00:00:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-D9BC003347634630AB678A30D5C9929F813CBE7AE25BDCC8D559A4BD52CE7B46</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>eH9uVKrM6Di4/SfG54UVwQWHjRY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Bp4sIzAlSUBDket7gnXySUylatw=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">2.5.29.32.0</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">1.3.6.1.4.1.22234.2.14.3.1</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://get-ocsp.certificat.com/opentrustcaforaatlg1</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://get-crl.certificat.com/public/opentrustcaforaatlg1.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL_FR_20231124-1603" LOTL="LOTL_EU_20240123-1300">
+                    <TSPNames>
+                        <TSPName lang="en">Docusign France</TSPName>
+                        <TSPName lang="fr">Docusign France</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="en">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="en">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="en">Keynectis</TSPTradeName>
+                        <TSPTradeName lang="fr">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="fr">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="fr">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="fr">Keynectis</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATFR-71812611150</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000">
+                            <ServiceNames>
+                                <ServiceName lang="en">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                                <ServiceName lang="fr">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2020-12-17T01:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>DsGt7ZnHL9aN3oBXS7v3EqvDqnEPUBuDp9cBiMvWTPk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="CERTIFICATE_Qualified-TimeStamping-20230314_20230317-0835">
+            <SubjectDistinguishedName Format="CANONICAL">cn=qualified timestamping - 20230314,2.5.4.97=#0c0f4e545246522d383132363131313530,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Qualified TimeStamping - 20230314,2.5.4.97=#0c0f4e545246522d383132363131313530,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=docusign time stamping ca - g1,ou=0002 812611150,o=docusign france,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DocuSign Time Stamping CA - G1,OU=0002 812611150,O=DocuSign France,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492212435430898348226339713255176124977284</SerialNumber>
+            <CommonName>Qualified TimeStamping - 20230314</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationIdentifier>NTRFR-812611150</OrganizationIdentifier>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2029-03-15T08:35:40Z</NotAfter>
+            <NotBefore>2023-03-17T08:35:40Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F89BDE5114552A1A43DF6384123C91E2947ED1F079ABD1E9D2FE175D42422272</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Bp4sIzAlSUBDket7gnXySUylatw=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>MjXX6rgwBCE2XYi14x/J1C2rd4M=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">1.3.6.1.4.1.22234.2.14.3.36</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crt.dsf.docusign.net/docusigntimestampingcag1.p7c</caIssuersUrl>
+                    <ocspUrl>http://ocsp.dsf.docusign.net/docusigntimestampingcag1</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.dsf.docusign.net/docusigntimestampingcag1.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="false"/>
+                    <QcSSCD present="false"/>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+                <OtherExtension OID="2.5.29.16" description="privateKeyUsagePeriod" critical="false">
+                    <octets>BCQwIoAPMjAyMzAzMTcwODM1NDBagQ8yMDI0MDMxNzA4MzU0MFo=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL_FR_20231124-1603" LOTL="LOTL_EU_20240123-1300">
+                    <TSPNames>
+                        <TSPName lang="en">Docusign France</TSPName>
+                        <TSPName lang="fr">Docusign France</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="en">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="en">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="en">Keynectis</TSPTradeName>
+                        <TSPTradeName lang="fr">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="fr">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="fr">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="fr">Keynectis</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATFR-71812611150</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000">
+                            <ServiceNames>
+                                <ServiceName lang="en">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                                <ServiceName lang="fr">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2020-12-17T01:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="OCSP_OCSP-Responder-20230526_20240201-1533">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>QRQ0gITEp7VyQ4R8f3eiDLyW3mvxnVAGJm4QjFRBO7c=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust root ca 1 2017,o=d-trust gmbh,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST Root CA 1 2017,O=D-Trust GmbH,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust root ca 1 2017,o=d-trust gmbh,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST Root CA 1 2017,O=D-Trust GmbH,C=DE</IssuerDistinguishedName>
+            <SerialNumber>1041565</SerialNumber>
+            <CommonName>D-TRUST Root CA 1 2017</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationIdentifier>NTRDE-HRB74346</OrganizationIdentifier>
+            <OrganizationName>D-Trust GmbH</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2032-02-01T08:26:48Z</NotAfter>
+            <NotBefore>2017-02-01T08:26:48Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-570C6C60DBCDC76F1455BC04D2E93382E692BEC3C1D8635DA2E0646E25E46253</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <MaskGenerationFunctionUsedToSignThisToken>MGF1</MaskGenerationFunctionUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>ECqlR3dTMiYg7XOc1Q0yMetmQWA=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Root%20CA%201%202017,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_root_ca_1_2017.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>TSSAe5ytURD0Dtedk0NG18mwKQQx3JsRpAu7hvzyrvY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="CERTIFICATE_OCSP-Responder-20230526_20230526-1039">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder 20230526,ou=0002 812611150,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder 20230526,OU=0002 812611150,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=docusign time stamping ca - g1,ou=0002 812611150,o=docusign france,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DocuSign Time Stamping CA - G1,OU=0002 812611150,O=DocuSign France,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492468322579873962615720559416947361687541</SerialNumber>
+            <CommonName>OCSP Responder 20230526</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <OrganizationalUnit>0002 812611150</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2024-05-25T10:39:57Z</NotAfter>
+            <NotBefore>2023-05-26T10:39:57Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-1029B762B2354CD133F5E5ABD4966484A464BCC712E5BBA22338CA42229E1265</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Bp4sIzAlSUBDket7gnXySUylatw=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Ytud9GL3kX6602L+Fhjc7QSb0lI=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL_FR_20231124-1603" LOTL="LOTL_EU_20240123-1300">
+                    <TSPNames>
+                        <TSPName lang="en">Docusign France</TSPName>
+                        <TSPName lang="fr">Docusign France</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="en">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="en">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="en">Keynectis</TSPTradeName>
+                        <TSPTradeName lang="fr">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="fr">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="fr">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="fr">Keynectis</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATFR-71812611150</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000">
+                            <ServiceNames>
+                                <ServiceName lang="en">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                                <ServiceName lang="fr">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2020-12-17T01:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>VCzHwRYkP+ZMJCTeyBA6K4GwszHaWSVdPQE0vO2bZZ0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust ca 1-3 2017,o=d-trust gmbh,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST CA 1-3 2017,O=D-Trust GmbH,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust root ca 1 2017,o=d-trust gmbh,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST Root CA 1 2017,O=D-Trust GmbH,C=DE</IssuerDistinguishedName>
+            <SerialNumber>1041569</SerialNumber>
+            <CommonName>D-TRUST CA 1-3 2017</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationIdentifier>NTRDE-HRB74346</OrganizationIdentifier>
+            <OrganizationName>D-Trust GmbH</OrganizationName>
+            <Sources>
+                <Source>TRUSTED_STORE</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2032-02-01T08:26:48Z</NotAfter>
+            <NotBefore>2017-02-01T09:34:42Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-7DA5A67373940F7CCA51BF82B4DC5E687CC18DBF61ACB82DF44201CB728DE366</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <MaskGenerationFunctionUsedToSignThisToken>MGF1</MaskGenerationFunctionUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>ECqlR3dTMiYg7XOc1Q0yMetmQWA=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>zf2oGyWUVkZML6zJWkYPuCeSKF4=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy>0.4.0.2023.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.d-trust.net/internet/files/D-TRUST_Cloud_PKI_CPS.pdf">1.3.6.1.4.1.4788.2.100.3</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.d-trust.net/cgi-bin/D-TRUST_Root_CA_1_2017.crt</caIssuersUrl>
+                    <ocspUrl>http://root-ca-1-2017.ocsp.d-trust.net</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20Root%20CA%201%202017,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_root_ca_1_2017.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>X1IqQ5YR3sUB8EaP9qRV0j370I7rM5ZKDF7elVk+H6g=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust tsu 12 2017,o=d-trust gmbh,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST TSU 12 2017,O=D-Trust GmbH,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">2.5.4.97=#130e4e545244452d4852423734333436,cn=d-trust ca 1-3 2017,o=d-trust gmbh,c=de</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST CA 1-3 2017,O=D-Trust GmbH,C=DE</IssuerDistinguishedName>
+            <SerialNumber>1698782</SerialNumber>
+            <CommonName>D-TRUST TSU 12 2017</CommonName>
+            <CountryName>DE</CountryName>
+            <OrganizationIdentifier>NTRDE-HRB74346</OrganizationIdentifier>
+            <OrganizationName>D-Trust GmbH</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2023-06-15T12:49:48Z</NotAfter>
+            <NotBefore>2017-06-15T12:49:48Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-14002ADA4C7986B0B709E4E7B64DFA93DE555598516C837721D642759BB4B262</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <MaskGenerationFunctionUsedToSignThisToken>MGF1</MaskGenerationFunctionUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934"/>
+                <ChainItem Certificate="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>zf2oGyWUVkZML6zJWkYPuCeSKF4=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>8qsEm+i+PIEyKDddJDMREAily/I=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy>0.4.0.2023.1.1</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.d-trust.net/internet/files/D-TRUST_Cloud_PKI_CPS.pdf">1.3.6.1.4.1.4788.2.100.3</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.d-trust.net/cgi-bin/D-TRUST_CA_1-3_2017.crt</caIssuersUrl>
+                    <caIssuersUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%201-3%202017,O=D-Trust%20GmbH,C=DE?cACertificate?base?</caIssuersUrl>
+                    <ocspUrl>http://dtr-ca-1-3-2017.ocsp.d-trust.net</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>ldap://directory.d-trust.net/CN=D-TRUST%20CA%201-3%202017,O=D-Trust%20GmbH,C=DE?certificaterevocationlist</crlUrl>
+                    <crlUrl>http://crl.d-trust.net/crl/d-trust_ca_1-3_2017.crl</crlUrl>
+                    <crlUrl>http://cdn.d-trust-cloudcrl.net/crl/d-trust_ca_1-3_2017.crl</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="2.5.29.16" description="privateKeyUsagePeriod" critical="false">
+                    <octets>BBMwEYEPMjAyMDA2MTUwMDAwMDBa</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL_DE_20231127-1300" LOTL="LOTL_EU_20240123-1300">
+                    <TSPNames>
+                        <TSPName lang="en">D-Trust GmbH</TSPName>
+                        <TSPName lang="en">D-TRUST GmbH</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames/>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATDE-202620438 </TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249">
+                            <ServiceNames>
+                                <ServiceName lang="en">D-Trust qualified timestamp</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2023-07-04T15:00:36Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249">
+                            <ServiceNames>
+                                <ServiceName lang="en">D-Trust qualified timestamp</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-03-23T18:00:20Z</StartDate>
+                            <EndDate>2023-07-04T15:00:36Z</EndDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249">
+                            <ServiceNames>
+                                <ServiceName lang="en">D-TRUST qualified Timestamp</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-06-20T22:00:00Z</StartDate>
+                            <EndDate>2023-03-23T18:00:20Z</EndDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="CRL-20240201-1533">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ms9NTjetZHsTENVYACNLvxf//gHK9+Y+1yI7dwyw0uk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="OCSP_OCSP-Responder-20230526_20240201-1533">
+            <Origin>CACHED</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.dsf.docusign.net/docusigntimestampingcag1</SourceAddress>
+            <ProductionDate>2024-02-01T15:33:25Z</ProductionDate>
+            <ThisUpdate>2024-02-01T15:33:25Z</ThisUpdate>
+            <NextUpdate>2024-02-02T15:33:25Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_OCSP-Responder-20230526_20230526-1039"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_OCSP-Responder-20230526_20230526-1039"/>
+                <ChainItem Certificate="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="CERTIFICATE_OCSP-Responder-20230526_20230526-1039">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>Ytud9GL3kX6602L+Fhjc7QSb0lI=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>N5RffFeXYR4n9HaUCBgD/6Keh3+ldZ6+ltFOnB4K+kM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="CRL-20240201-1533">
+            <Origin>CACHED</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://ocsp.dsf.docusign.net/docusigntimestampingcag1</SourceAddress>
+            <ProductionDate>2024-02-01T15:33:25Z</ProductionDate>
+            <ThisUpdate>2024-02-01T15:33:25Z</ThisUpdate>
+            <NextUpdate>2024-02-02T15:33:25Z</NextUpdate>
+            <ExpiredCertsOnCRL>2015-02-01T15:33:25Z</ExpiredCertsOnCRL>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934"/>
+                <ChainItem Certificate="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826"/>
+            </CertificateChain>
+            <FoundCertificates/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>N5RffFeXYR4n9HaUCBgD/6Keh3+ldZ6+ltFOnB4K+kM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="CONTENT_TIMESTAMP" Id="TIMESTAMP_D-TRUST-TSU-12-2017_20180523-1318">
+            <TimestampFilename>d-trust.tsr</TimestampFilename>
+            <ProductionTime>2018-05-23T13:18:29Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>2bX1jws4GYKTlxhloUB09Z66PoJZW+y+hq5R8dnx9l4=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <MaskGenerationFunctionUsedToSignThisToken>MGF1</MaskGenerationFunctionUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249"/>
+                <ChainItem Certificate="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934"/>
+                <ChainItem Certificate="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>OID.2.5.4.97=NTRDE-HRB74346, CN=D-TRUST CA 1-3 2017, O=D-Trust GmbH, C=DE</IssuerName>
+                    <SerialNumber>1698782</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">2.5.4.97=#130e4e545244452d4852423734333436,CN=D-TRUST TSU 12 2017,O=D-Trust GmbH,C=DE</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MGkwYqRgMF4xCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxELVRydXN0IEdtYkgxHzAdBgNVBAMTFkQtVFJVU1QgUm9vdCBDQSAxIDIwMTcxFzAVBgNVBGETDk5UUkRFLUhSQjc0MzQ2AgMP5KE=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>X1IqQ5YR3sUB8EaP9qRV0j370I7rM5ZKDF7elVk+H6g=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MGkwYqRgMF4xCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxELVRydXN0IEdtYkgxHzAdBgNVBAMTFkQtVFJVU1QgUm9vdCBDQSAxIDIwMTcxFzAVBgNVBGETDk5UUkRFLUhSQjc0MzQ2AgMP5J0=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>TSSAe5ytURD0Dtedk0NG18mwKQQx3JsRpAu7hvzyrvY=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MGYwX6RdMFsxCzAJBgNVBAYTAkRFMRUwEwYDVQQKEwxELVRydXN0IEdtYkgxHDAaBgNVBAMTE0QtVFJVU1QgQ0EgMS0zIDIwMTcxFzAVBgNVBGETDk5UUkRFLUhSQjc0MzQ2AgMZ694=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>ms9NTjetZHsTENVYACNLvxf//gHK9+Y+1yI7dwyw0uk=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords>
+                <FoundEvidenceRecord EvidenceRecord="EVIDENCE-RECORD_Qualified-TimeStamping-20230314_20240124-1456"/>
+            </FoundEvidenceRecords>
+            <TimestampedObjects>
+                <TimestampedObject Token="DOCUMENT_new-2-txt" Category="SIGNED_DATA"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="DOCUMENT_new-2-txt">
+                    <Scope>FULL</Scope>
+                    <Name>new 2.txt</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>H59bkrnfVnjNV6e0f+6t3jZQF71n5edGilrfFPbMkB8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="EVIDENCE_RECORD_TIMESTAMP" Id="TIMESTAMP_Qualified-TimeStamping-20230314_20240124-1456">
+            <ArchiveTimestampType>ASN1_EVIDENCE_RECORD</ArchiveTimestampType>
+            <EvidenceRecordTimestampType>ARCHIVE_TIMESTAMP</EvidenceRecordTimestampType>
+            <ProductionTime>2023-05-24T14:56:48Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>AL+eFyiy4PVo7AhD53KsOAh9h8xMInR3KH2LutzXKVI=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="CERTIFICATE_Qualified-TimeStamping-20230314_20230317-0835"/>
+            <CertificateChain>
+                <ChainItem Certificate="CERTIFICATE_Qualified-TimeStamping-20230314_20230317-0835"/>
+                <ChainItem Certificate="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=DocuSign Time Stamping CA - G1, OU=0002 812611150, O=DocuSign France, C=FR</IssuerName>
+                    <SerialNumber>1492212435430898348226339713255176124977284</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="CERTIFICATE_Qualified-TimeStamping-20230314_20230317-0835">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>QRQ0gITEp7VyQ4R8f3eiDLyW3mvxnVAGJm4QjFRBO7c=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="CERTIFICATE_DocuSign-Time-Stamping-CA-G1_20200605-0000">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="DOCUMENT_d-trust-tsr" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="EVIDENCE-RECORD_Qualified-TimeStamping-20230314_20240124-1456" Category="EVIDENCE_RECORD"/>
+                <TimestampedObject Token="TIMESTAMP_D-TRUST-TSU-12-2017_20180523-1318" Category="TIMESTAMP"/>
+                <TimestampedObject Token="DOCUMENT_new-2-txt" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="CERTIFICATE_D-TRUST-Root-CA-1-2017_20170201-0826" Category="CERTIFICATE"/>
+                <TimestampedObject Token="CERTIFICATE_D-TRUST-CA-1-3-2017_20170201-0934" Category="CERTIFICATE"/>
+                <TimestampedObject Token="CERTIFICATE_D-TRUST-TSU-12-2017_20170615-1249" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="DOCUMENT_d-trust-tsr">
+                    <Scope>FULL</Scope>
+                    <Name>d-trust.tsr</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>mWq3UpHTiUzunBcyJIaOtzETcHemYefwlEOt+R1bgB0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="DOCUMENT_d-trust-tsr">
+            <ReferencedName>d-trust.tsr</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>H59bkrnfVnjNV6e0f+6t3jZQF71n5edGilrfFPbMkB8=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="DOCUMENT_new-2-txt">
+            <ReferencedName>new 2.txt</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>2bX1jws4GYKTlxhloUB09Z66PoJZW+y+hq5R8dnx9l4=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL_DE_20231127-1300" parent="LOTL_EU_20240123-1300">
+            <CountryCode>DE</CountryCode>
+            <Url>https://tl.bundesnetzagentur.de/TL-DE.XML</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>125</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-02-01T15:32:50Z</LastLoading>
+            <IssueDate>2023-11-27T13:00:27Z</IssueDate>
+            <NextUpdate>2024-05-27T12:00:27Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL_FR_20231124-1603" parent="LOTL_EU_20240123-1300">
+            <CountryCode>FR</CountryCode>
+            <Url>https://cyber.gouv.fr/sites/default/files/document/tl-fr.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>127</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-02-01T15:32:48Z</LastLoading>
+            <IssueDate>2023-11-24T16:03:06Z</IssueDate>
+            <NextUpdate>2024-05-24T15:03:06Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL_EU_20240123-1300" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+            <SequenceNumber>337</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-02-01T15:32:43Z</LastLoading>
+            <IssueDate>2024-01-23T13:00:33Z</IssueDate>
+            <NextUpdate>2024-07-22T12:00:33Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

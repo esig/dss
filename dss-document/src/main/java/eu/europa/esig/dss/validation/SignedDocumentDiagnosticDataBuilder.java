@@ -88,7 +88,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampTokenComparator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
@@ -320,7 +320,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(evidenceRecords)) {
 			List<XmlEvidenceRecord> builtEvidenceRecords = buildXmlEvidenceRecords(evidenceRecords);
 			diagnosticData.getEvidenceRecords().addAll(builtEvidenceRecords);
-			linkEvidenceRecordsAndSignatures(signatures);
+			linkSignaturesAndEvidenceRecords(signatures);
+			linkTimestampsAndEvidenceRecords(usedTimestamps);
 			linkEvidenceRecordsAndTimestamps(evidenceRecords);
 		}
 
@@ -1005,7 +1006,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return getXmlDigestMatchers(evidenceRecord.getReferenceValidation(), Collections.emptyList());
 	}
 
-	private void linkEvidenceRecordsAndSignatures(List<AdvancedSignature> signatures) {
+	private void linkSignaturesAndEvidenceRecords(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature signature : signatures) {
 			XmlSignature xmlSignature = xmlSignaturesMap.get(signature.getId());
 			xmlSignature.setFoundEvidenceRecords(getXmlSignatureEvidenceRecords(signature));
@@ -1015,6 +1016,23 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private List<XmlFoundEvidenceRecord> getXmlSignatureEvidenceRecords(AdvancedSignature signature) {
 		List<XmlFoundEvidenceRecord> foundEvidenceRecords = new ArrayList<>();
 		for (EvidenceRecord evidenceRecord : signature.getAllEvidenceRecords()) {
+			XmlFoundEvidenceRecord foundEvidenceRecord = new XmlFoundEvidenceRecord();
+			foundEvidenceRecord.setEvidenceRecord(xmlEvidenceRecordMap.get(evidenceRecord.getId()));
+			foundEvidenceRecords.add(foundEvidenceRecord);
+		}
+		return foundEvidenceRecords;
+	}
+
+	private void linkTimestampsAndEvidenceRecords(Collection<TimestampToken> timestampTokens) {
+		for (TimestampToken timestampToken : timestampTokens) {
+			XmlTimestamp xmlTimestamp = xmlTimestampsMap.get(timestampToken.getDSSIdAsString());
+			xmlTimestamp.setFoundEvidenceRecords(getXmlTimestampEvidenceRecords(timestampToken));
+		}
+	}
+
+	private List<XmlFoundEvidenceRecord> getXmlTimestampEvidenceRecords(TimestampToken timestampToken) {
+		List<XmlFoundEvidenceRecord> foundEvidenceRecords = new ArrayList<>();
+		for (EvidenceRecord evidenceRecord : timestampToken.getDetachedEvidenceRecords()) {
 			XmlFoundEvidenceRecord foundEvidenceRecord = new XmlFoundEvidenceRecord();
 			foundEvidenceRecord.setEvidenceRecord(xmlEvidenceRecordMap.get(evidenceRecord.getId()));
 			foundEvidenceRecords.add(foundEvidenceRecord);

@@ -259,6 +259,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				}
 			}
 		}
+
 	}
 
 	private void assertDoesNotContainEnvelopedTransform(final Node signatureNode) {

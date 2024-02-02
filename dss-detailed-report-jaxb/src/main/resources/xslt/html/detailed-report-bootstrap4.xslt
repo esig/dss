@@ -131,6 +131,9 @@
 					<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
 					<xsl:attribute name="id">collapseTimestamp<xsl:value-of select="$idToken"/></xsl:attribute>
    					<xsl:apply-templates select="dss:ValidationProcessBasicTimestamp"/>
+					<xsl:apply-templates select="dss:EvidenceRecord">
+						<xsl:with-param name="parentId" select="@Id"/>
+					</xsl:apply-templates>
 					<xsl:apply-templates select="dss:ValidationProcessArchivalDataTimestamp"/>
    					<xsl:apply-templates select="dss:ValidationTimestampQualification"/>
 				</div>
@@ -756,7 +759,7 @@
 									<xsl:attribute name="href">#<xsl:value-of select="@Id"/>-VTS</xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='ER'">
-									<xsl:attribute name="href">#EvidenceRecord-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
+									<xsl:attribute name="href">#<xsl:value-of select="concat(../../@Id, '-', @Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:attribute name="href">#<xsl:value-of select="@Id"/></xsl:attribute>

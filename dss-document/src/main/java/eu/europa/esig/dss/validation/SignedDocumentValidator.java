@@ -42,7 +42,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
@@ -51,6 +51,8 @@ import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoade
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.scope.EvidenceRecordScopeFinder;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -818,6 +820,33 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	}
 
 	/**
+	 * Appends the detached evidence records covering the time-stamp
+	 *
+	 * @param timestampToken {@link TimestampToken}
+	 */
+	protected void appendExternalEvidenceRecords(TimestampToken timestampToken) {
+		DetachedTimestampSource detachedTimestampSource = new DetachedTimestampSource(timestampToken);
+		for (EvidenceRecord evidenceRecord : getDetachedEvidenceRecords()) {
+			if (isTimestampCoveredByEvidenceRecord(timestampToken, evidenceRecord)) {
+				timestampToken.addDetachedEvidenceRecord(evidenceRecord);
+				detachedTimestampSource.addExternalEvidenceRecord(evidenceRecord);
+			}
+		}
+	}
+
+	/**
+	 * Checks whether the {@code timestampToken} is covered by the given {@code evidenceRecord}
+	 *
+	 * @param timestampToken {@link TimestampToken}
+	 * @param evidenceRecord {@link EvidenceRecord}
+	 * @return TRUE if the time-stamp is covered by the evidence record, FALSE otherwise
+	 */
+	protected boolean isTimestampCoveredByEvidenceRecord(TimestampToken timestampToken, EvidenceRecord evidenceRecord) {
+		// true by default
+		return true;
+	}
+
+	/**
 	 * Verifies whether an {@code evidenceRecord} covers the {@code signature}
 	 *
 	 * @param signature {@link AdvancedSignature}
@@ -862,6 +891,16 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @return a list of {@code TimestampToken}s
 	 */
 	protected List<TimestampToken> buildDetachedTimestamps() {
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of timestamp validators for timestamps embedded into the container
+	 *
+	 * @return a list of {@link DetachedTimestampValidator}s
+	 */
+	protected List<DetachedTimestampValidator> getTimestampValidators() {
+		// nothing by default
 		return Collections.emptyList();
 	}
 
@@ -951,6 +990,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected List<SignatureScope> getEvidenceRecordScopes(EvidenceRecord evidenceRecord) {
 		return new EvidenceRecordScopeFinder(evidenceRecord).findEvidenceRecordScope();
+	}
+
+	/**
+	 * Sets a list of detached evidence records
+	 *
+	 * @param evidenceRecords a list of {@link EvidenceRecord}s
+	 */
+	public void setDetachedEvidenceRecords(List<EvidenceRecord> evidenceRecords) {
+		this.evidenceRecords = evidenceRecords;
 	}
 
 	@Override

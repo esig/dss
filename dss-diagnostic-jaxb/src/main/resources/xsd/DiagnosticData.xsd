@@ -180,21 +180,8 @@
 					<xs:element name="FoundCertificates" type="FoundCertificates" />
 					<xs:element name="FoundRevocations" type="FoundRevocations" />
 								
-					<xs:element name="FoundTimestamps">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-
-					<xs:element name="FoundEvidenceRecords" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="FoundEvidenceRecord" type="FoundEvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
+					<xs:element name="FoundTimestamps" type="FoundTimestamps" />
+					<xs:element name="FoundEvidenceRecords" type="FoundEvidenceRecords" minOccurs="0" />
 					
 					<xs:element name="SignatureScopes">
 						<xs:complexType>
@@ -1183,6 +1170,7 @@
 					
 					<xs:element name="FoundCertificates" type="FoundCertificates" />
 					<xs:element name="FoundRevocations" type="FoundRevocations" />
+					<xs:element name="FoundEvidenceRecords" type="FoundEvidenceRecords" minOccurs="0" />
 		
 					<xs:element name="TimestampedObjects" type="TimestampedObjects" />
 
@@ -1326,6 +1314,18 @@
 			<xs:element name="OrphanRevocation" type="OrphanRevocation" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+
+	<xs:complexType name="FoundTimestamps">
+		<xs:sequence>
+			<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="FoundEvidenceRecords">
+		<xs:sequence>
+			<xs:element name="FoundEvidenceRecord" type="FoundEvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
 	
 	<xs:complexType name="FoundRevocation" abstract="true">
 		<xs:sequence>
@@ -1464,13 +1464,7 @@
 					<xs:element name="Type"	type="EvidenceRecordType" minOccurs="0" />
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					<xs:element name="DigestMatchers" type="DigestMatchers" />
-					<xs:element name="EvidenceRecordTimestamps">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
+					<xs:element name="EvidenceRecordTimestamps" type="FoundTimestamps" />
 
 					<xs:element name="FoundCertificates" type="FoundCertificates" />
 					<xs:element name="FoundRevocations" type="FoundRevocations" />

@@ -22,11 +22,13 @@ package eu.europa.esig.dss.validation.process.vpftsp;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -37,6 +39,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpftspwatsp.ValidationProcessForTimestampsWithArchivalData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -68,6 +71,9 @@ public class TimestampsValidationBlock {
     /** Map of BasicBuildingBlocks */
     private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
+    /** Map of processed evidence records */
+    private final Map<String, XmlEvidenceRecord> evidenceRecordValidations;
+
     /** List of Trusted List validations */
     private final List<XmlTLAnalysis> tlAnalysis;
 
@@ -86,19 +92,22 @@ public class TimestampsValidationBlock {
      * @param policy {@link ValidationPolicy}
      * @param currentTime {@link Date} validation time
      * @param bbbs map of {@link XmlBasicBuildingBlocks} to fill the validation result
+     * @param evidenceRecordValidations a map of {@link XmlEvidenceRecord}
      * @param tlAnalysis a list of {@link XmlTLAnalysis}
      * @param validationLevel {@link ValidationLevel} the target highest level
      * @param poe {@link POEExtraction} to be filled with POE from valid timestamps
      */
     public TimestampsValidationBlock(final I18nProvider i18nProvider, final List<TimestampWrapper> timestamps, final DiagnosticData diagnosticData,
                                      final ValidationPolicy policy, final Date currentTime, final Map<String, XmlBasicBuildingBlocks> bbbs,
-                                     final List<XmlTLAnalysis> tlAnalysis, final ValidationLevel validationLevel, final POEExtraction poe) {
+                                     final Map<String, XmlEvidenceRecord> evidenceRecordValidations, final List<XmlTLAnalysis> tlAnalysis,
+                                     final ValidationLevel validationLevel, final POEExtraction poe) {
         this.i18nProvider = i18nProvider;
         this.timestamps = timestamps;
         this.diagnosticData = diagnosticData;
         this.policy = policy;
         this.currentTime = currentTime;
         this.bbbs = bbbs;
+        this.evidenceRecordValidations = evidenceRecordValidations;
         this.tlAnalysis = tlAnalysis;
         this.validationLevel = validationLevel;
         this.poe = poe;
@@ -125,6 +134,7 @@ public class TimestampsValidationBlock {
         this.policy = policy;
         this.currentTime = currentTime;
         this.bbbs = bbbs;
+        this.evidenceRecordValidations = Collections.emptyMap(); // TODO : implement support
         this.tlAnalysis = tlAnalysis;
         this.validationLevel = validationLevel;
         this.poe = new POEExtraction();
@@ -179,8 +189,12 @@ public class TimestampsValidationBlock {
         }
 
         if (ValidationLevel.ARCHIVAL_DATA.equals(validationLevel)) {
+            for (EvidenceRecordWrapper sigEvidenceRecord : timestamp.getEvidenceRecords()) {
+                xmlTimestamp.getEvidenceRecords().add(evidenceRecordValidations.get(sigEvidenceRecord.getId()));
+            }
+
             ValidationProcessForTimestampsWithArchivalData vpftspwatst = new ValidationProcessForTimestampsWithArchivalData(
-                    i18nProvider, timestamp, validationProcessBasicTimestamp, bbbs, currentTime, policy, currentPOE);
+                    i18nProvider, timestamp, validationProcessBasicTimestamp, bbbs, evidenceRecordValidations, currentTime, policy, currentPOE);
             XmlValidationProcessArchivalDataTimestamp validationProcessTimestampArchivalData = vpftspwatst.execute();
 
             // extract POE for valid time-stamps

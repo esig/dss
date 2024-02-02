@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -103,6 +104,46 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	@Override
 	public FoundRevocationsProxy foundRevocations() {
 		return new FoundRevocationsProxy(timestamp.getFoundRevocations());
+	}
+
+	/**
+	 * Returns a list of evidence records covering the time-stamp file (applicable for detached time-stamps only)
+	 *
+	 * @return a list of {@link EvidenceRecordWrapper}s
+	 */
+	public List<EvidenceRecordWrapper> getEvidenceRecords() {
+		List<EvidenceRecordWrapper> result = new ArrayList<>();
+		List<XmlFoundEvidenceRecord> foundEvidenceRecords = timestamp.getFoundEvidenceRecords();
+		for (XmlFoundEvidenceRecord xmlEvidenceRecord : foundEvidenceRecords) {
+			result.add(new EvidenceRecordWrapper(xmlEvidenceRecord.getEvidenceRecord()));
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a list of associated evidence record identifiers
+	 *
+	 * @return a list of {@link String}
+	 */
+	public List<String> getEvidenceRecordIdsList() {
+		List<String> result = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecordWrapper : getEvidenceRecords()) {
+			result.add(evidenceRecordWrapper.getId());
+		}
+		return result;
+	}
+
+	/**
+	 * Returns identifiers of all covering evidence record time-stamps
+	 *
+	 * @return a list of {@link String} time-stamp identifiers
+	 */
+	public List<String> getEvidenceRecordTimestampIds() {
+		List<String> result = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecordWrapper : getEvidenceRecords()) {
+			result.addAll(evidenceRecordWrapper.getTimestampIdsList());
+		}
+		return result;
 	}
 
 	/**

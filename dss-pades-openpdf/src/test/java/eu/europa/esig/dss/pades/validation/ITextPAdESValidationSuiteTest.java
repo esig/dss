@@ -103,6 +103,7 @@ import eu.europa.esig.dss.pades.validation.suite.dss917.DSS917CorruptedTest;
 import eu.europa.esig.dss.pades.validation.suite.dss917.DSS917Test;
 import eu.europa.esig.dss.pades.validation.suite.evidencerecord.PAdESLevelBWithAsn1EvidenceRecordValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.evidencerecord.PAdESLevelLTWithXmlEvidenceRecordValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.evidencerecord.PAdESWithDetachedTstWithAsn1EvidenceRecordValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESDssAndVriTest;
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESFiveSignaturesDocTest;
 import eu.europa.esig.dss.pades.validation.suite.revocation.PAdESMultiSignedDocRevocTest;
@@ -132,7 +133,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESEndEntityCertIssuedByNotCACertTest.class, DSS3111Test.class, PAdESLevelLTWithXmlEvidenceRecordValidationTest.class,
 		PAdESLevelTWithDuplicatedSigTstTest.class, PAdESLevelTWithDuplicatedDocTstTest.class, PAdESLevelLTAWithCopiedDocTstTest.class,
 		PAdESTwoSigWithCopiedTstTest.class, PAdESTimestampedExistingFieldsTest.class, DSS3226Test.class, DSS3226StrictNumberComparisonTest.class,
-		PAdESLevelBWithAsn1EvidenceRecordValidationTest.class })
+		PAdESLevelBWithAsn1EvidenceRecordValidationTest.class, PAdESWithDetachedTstWithAsn1EvidenceRecordValidationTest.class })
 public class ITextPAdESValidationSuiteTest {
 
 }
