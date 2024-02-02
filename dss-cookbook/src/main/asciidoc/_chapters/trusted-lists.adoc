@@ -253,6 +253,8 @@ After these steps the `TLValidationJob` will successfully download the target Tr
 
 NOTE: This described algorithm is not only one available solution, if you have difficulties with this, you can search in the Internet for another working for you solution.
 
+NOTE: When using DSS-demonstrations, you may also set property `tl.loader.trust.all=true` to trust all SSL-certificates on Trusted Lists loading, in order to avoid manual configuration of the trusted store. Be aware, that this constraint will skip the SSL-certificate validation.
+
 ==== TLValidationJobSummary
 
 The class `TLValidationJobSummary` contains all processed data about the download (time, error, etc.), the parsing (extracted information, parsing error, etc.) and the signature validation (signing certificate, signing time, etc.).
