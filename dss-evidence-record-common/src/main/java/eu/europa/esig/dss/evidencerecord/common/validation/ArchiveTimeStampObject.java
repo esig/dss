@@ -41,6 +41,9 @@ public class ArchiveTimeStampObject implements EvidenceRecordObject {
     /** Contains validation information for the timestampToken */
     private List<CryptographicInformation> cryptographicInformationList;
 
+    /** Order of the element */
+    private int order;
+
     /**
      * Default constructor
      */
@@ -100,6 +103,24 @@ public class ArchiveTimeStampObject implements EvidenceRecordObject {
      */
     public void setCryptographicInformationList(List<CryptographicInformation> cryptographicInformationList) {
         this.cryptographicInformationList = cryptographicInformationList;
+    }
+
+    /**
+     * Gets Order attribute value of the corresponding element
+     *
+     * @return Order attribute value
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Sets order of the object within its parent
+     *
+     * @param order int value
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 
 }

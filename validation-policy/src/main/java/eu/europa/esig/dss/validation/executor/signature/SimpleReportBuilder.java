@@ -162,6 +162,19 @@ public class SimpleReportBuilder {
 			simpleReport.getSignatureOrTimestampOrEvidenceRecord().add(getSignature(signature, containerInfoPresent));
 		}
 
+		for (TimestampWrapper timestamp : diagnosticData.getNonEvidenceRecordTimestamps()) {
+			if (attachedTimestampIds.contains(timestamp.getId())) {
+				continue;
+			}
+			attachedTimestampIds.add(timestamp.getId());
+			attachedEvidenceRecordIds.addAll(timestamp.getEvidenceRecordIdsList());
+			attachedTimestampIds.addAll(timestamp.getEvidenceRecordTimestampIds());
+			Indication tstValidationIndication = detailedReport.getBasicTimestampValidationIndication(timestamp.getId());
+			if (tstValidationIndication != null) {
+				simpleReport.getSignatureOrTimestampOrEvidenceRecord().add(getXmlTimestamp(timestamp));
+			}
+		}
+
 		for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
 			if (attachedEvidenceRecordIds.contains(evidenceRecord.getId())) {
 				continue;
@@ -557,6 +570,19 @@ public class SimpleReportBuilder {
 		if (Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes())) {
 			for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope timestampScope : timestampWrapper.getTimestampScopes()) {
 				xmlTimestamp.getTimestampScope().add(getXmlSignatureScope(timestampScope));
+			}
+		}
+
+		if (Utils.isCollectionNotEmpty(timestampWrapper.getEvidenceRecords())) {
+			XmlEvidenceRecords xmlEvidenceRecords = new XmlEvidenceRecords();
+			for (EvidenceRecordWrapper evidenceRecord : timestampWrapper.getEvidenceRecords()) {
+				Indication erIndication = detailedReport.getEvidenceRecordValidationIndication(evidenceRecord.getId());
+				if (erIndication != null) {
+					xmlEvidenceRecords.getEvidenceRecord().add(getXmlEvidenceRecord(evidenceRecord));
+				}
+			}
+			if (Utils.isCollectionNotEmpty(xmlEvidenceRecords.getEvidenceRecord())) {
+				xmlTimestamp.setEvidenceRecords(xmlEvidenceRecords);
 			}
 		}
 

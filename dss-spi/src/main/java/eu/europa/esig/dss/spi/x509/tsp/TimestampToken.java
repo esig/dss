@@ -22,7 +22,9 @@ package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -42,6 +44,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.SignerIdentifier;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -161,9 +164,19 @@ public class TimestampToken extends Token {
 	private List<ReferenceValidation> referenceValidations;
 
 	/**
+	 * Returns a list of detached evidence records covering the time-stamp, when applicable
+	 */
+	private List<EvidenceRecord> detachedEvidenceRecords;
+
+	/**
 	 * Defines for archive timestamp its type.
 	 */
 	private ArchiveTimestampType archiveTimestampType;
+
+	/**
+	 * Defines for an evidence record archive timestamp its type.
+	 */
+	private EvidenceRecordTimestampType evidenceRecordTimestampType;
 
 	/**
 	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method
@@ -712,13 +725,31 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Archive timestamps can be of different sub type.
+	 * Archive timestamps can be of different subtype.
 	 *
 	 * @param archiveTimestampType
 	 *            {@code ArchiveTimestampType}
 	 */
 	public void setArchiveTimestampType(final ArchiveTimestampType archiveTimestampType) {
 		this.archiveTimestampType = archiveTimestampType;
+	}
+
+	/**
+	 * Gets the {@code EvidenceRecordTimestampType}, when applicable
+	 *
+	 * @return {@code EvidenceRecordTimestampType} in the case of an evidence record archive time-stamp, null otherwise
+	 */
+	public EvidenceRecordTimestampType getEvidenceRecordTimestampType() {
+		return evidenceRecordTimestampType;
+	}
+
+	/**
+	 * Sets the {@code EvidenceRecordTimestampType}, for an evidence record's time-stamp
+	 *
+	 * @param evidenceRecordTimestampType {@link EvidenceRecordTimestampType}
+	 */
+	public void setEvidenceRecordTimestampType(EvidenceRecordTimestampType evidenceRecordTimestampType) {
+		this.evidenceRecordTimestampType = evidenceRecordTimestampType;
 	}
 
 	/**
@@ -789,12 +820,34 @@ public class TimestampToken extends Token {
 	protected boolean areReferenceValidationsValid() {
 		if (Utils.isCollectionNotEmpty(referenceValidations)) {
 			for (ReferenceValidation referenceValidation : referenceValidations) {
-				if (!referenceValidation.isFound() || !referenceValidation.isIntact()) {
+				if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType() &&
+						(!referenceValidation.isFound() || !referenceValidation.isIntact())) {
 					return false;
 				}
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Gets a list of detached evidence records covering the time-stamp, when applicable
+	 *
+	 * @return a list of {@link EvidenceRecord}s
+	 */
+	public List<EvidenceRecord> getDetachedEvidenceRecords() {
+		if (detachedEvidenceRecords == null) {
+			detachedEvidenceRecords = new ArrayList<>();
+		}
+		return detachedEvidenceRecords;
+	}
+
+	/**
+	 * Adds an evidence record to the time-stamp's list
+	 *
+	 * @param evidenceRecord {@link EvidenceRecord}
+	 */
+	public void addDetachedEvidenceRecord(EvidenceRecord evidenceRecord) {
+		getDetachedEvidenceRecords().add(evidenceRecord);
 	}
 
 	/**

@@ -88,7 +88,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampTokenComparator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
@@ -320,7 +320,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(evidenceRecords)) {
 			List<XmlEvidenceRecord> builtEvidenceRecords = buildXmlEvidenceRecords(evidenceRecords);
 			diagnosticData.getEvidenceRecords().addAll(builtEvidenceRecords);
-			linkEvidenceRecordsAndSignatures(signatures);
+			linkSignaturesAndEvidenceRecords(signatures);
+			linkTimestampsAndEvidenceRecords(usedTimestamps);
 			linkEvidenceRecordsAndTimestamps(evidenceRecords);
 		}
 
@@ -949,9 +950,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(evidenceRecords)) {
 			for (EvidenceRecord evidenceRecord : evidenceRecords) {
 				String id = evidenceRecord.getId();
-				XmlEvidenceRecord xmlEvidenceRecord = buildXmlEvidenceRecord(evidenceRecord);
-				xmlEvidenceRecordMap.put(id, xmlEvidenceRecord);
-				xmlEvidenceRecords.add(xmlEvidenceRecord);
+				XmlEvidenceRecord xmlEvidenceRecord = xmlEvidenceRecordMap.get(id);
+				if (xmlEvidenceRecord == null) {
+					xmlEvidenceRecord = buildXmlEvidenceRecord(evidenceRecord);
+					xmlEvidenceRecords.add(xmlEvidenceRecord);
+				}
 			}
 		}
 		return xmlEvidenceRecords;
@@ -959,6 +962,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 	private XmlEvidenceRecord buildXmlEvidenceRecord(EvidenceRecord evidenceRecord) {
 		XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
+		checkDuplicates(xmlEvidenceRecord, evidenceRecord);
+
 		xmlEvidenceRecord.setId(identifierProvider.getIdAsString(evidenceRecord));
 		xmlEvidenceRecord.setDocumentName(evidenceRecord.getFilename());
 		xmlEvidenceRecord.setType(evidenceRecord.getReferenceRecordType());
@@ -977,14 +982,31 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			xmlEvidenceRecord.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, digest));
 		}
 
+		xmlEvidenceRecordMap.put(evidenceRecord.getId(), xmlEvidenceRecord);
+
 		return xmlEvidenceRecord;
+	}
+
+	private void checkDuplicates(XmlEvidenceRecord xmlEvidenceRecord, EvidenceRecord evidenceRecord) {
+		if (hasDuplicate(evidenceRecord)) {
+			xmlEvidenceRecord.setDuplicated(true);
+		}
+	}
+
+	private boolean hasDuplicate(EvidenceRecord currentEvidenceRecord) {
+		for (EvidenceRecord evidenceRecord : evidenceRecords) {
+			if (currentEvidenceRecord != evidenceRecord && currentEvidenceRecord.getId().equals(evidenceRecord.getId())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<XmlDigestMatcher> getXmlDigestMatchers(EvidenceRecord evidenceRecord) {
 		return getXmlDigestMatchers(evidenceRecord.getReferenceValidation(), Collections.emptyList());
 	}
 
-	private void linkEvidenceRecordsAndSignatures(List<AdvancedSignature> signatures) {
+	private void linkSignaturesAndEvidenceRecords(List<AdvancedSignature> signatures) {
 		for (AdvancedSignature signature : signatures) {
 			XmlSignature xmlSignature = xmlSignaturesMap.get(signature.getId());
 			xmlSignature.setFoundEvidenceRecords(getXmlSignatureEvidenceRecords(signature));
@@ -994,6 +1016,23 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private List<XmlFoundEvidenceRecord> getXmlSignatureEvidenceRecords(AdvancedSignature signature) {
 		List<XmlFoundEvidenceRecord> foundEvidenceRecords = new ArrayList<>();
 		for (EvidenceRecord evidenceRecord : signature.getAllEvidenceRecords()) {
+			XmlFoundEvidenceRecord foundEvidenceRecord = new XmlFoundEvidenceRecord();
+			foundEvidenceRecord.setEvidenceRecord(xmlEvidenceRecordMap.get(evidenceRecord.getId()));
+			foundEvidenceRecords.add(foundEvidenceRecord);
+		}
+		return foundEvidenceRecords;
+	}
+
+	private void linkTimestampsAndEvidenceRecords(Collection<TimestampToken> timestampTokens) {
+		for (TimestampToken timestampToken : timestampTokens) {
+			XmlTimestamp xmlTimestamp = xmlTimestampsMap.get(timestampToken.getDSSIdAsString());
+			xmlTimestamp.setFoundEvidenceRecords(getXmlTimestampEvidenceRecords(timestampToken));
+		}
+	}
+
+	private List<XmlFoundEvidenceRecord> getXmlTimestampEvidenceRecords(TimestampToken timestampToken) {
+		List<XmlFoundEvidenceRecord> foundEvidenceRecords = new ArrayList<>();
+		for (EvidenceRecord evidenceRecord : timestampToken.getDetachedEvidenceRecords()) {
 			XmlFoundEvidenceRecord foundEvidenceRecord = new XmlFoundEvidenceRecord();
 			foundEvidenceRecord.setEvidenceRecord(xmlEvidenceRecordMap.get(evidenceRecord.getId()));
 			foundEvidenceRecords.add(foundEvidenceRecord);
@@ -1030,9 +1069,11 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			tokens.sort(new TimestampTokenComparator());
 			for (TimestampToken timestampToken : tokens) {
 				String id = timestampToken.getDSSIdAsString();
-				XmlTimestamp xmlTimestamp = buildDetachedXmlTimestamp(timestampToken);
-				xmlTimestampsMap.put(id, xmlTimestamp);
-				xmlTimestampsList.add(xmlTimestamp);
+				XmlTimestamp xmlTimestamp = xmlTimestampsMap.get(id);
+				if (xmlTimestamp == null) {
+					xmlTimestamp = buildDetachedXmlTimestamp(timestampToken);
+					xmlTimestampsList.add(xmlTimestamp);
+				}
 			}
 		}
 		return xmlTimestampsList;
@@ -1045,13 +1086,14 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @return {@link XmlTimestamp}
 	 */
 	protected XmlTimestamp buildDetachedXmlTimestamp(final TimestampToken timestampToken) {
-
 		final XmlTimestamp xmlTimestampToken = new XmlTimestamp();
+		checkDuplicates(xmlTimestampToken, timestampToken);
 
 		xmlTimestampToken.setId(identifierProvider.getIdAsString(timestampToken));
 		xmlTimestampToken.setType(timestampToken.getTimeStampType());
 		// property is defined only for archival timestamps
 		xmlTimestampToken.setArchiveTimestampType(timestampToken.getArchiveTimestampType());
+		xmlTimestampToken.setEvidenceRecordTimestampType(timestampToken.getEvidenceRecordTimestampType());
 
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
 		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
@@ -1084,7 +1126,25 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			xmlTimestampToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, tstDigest));
 		}
 
+		xmlTimestampsMap.put(timestampToken.getDSSIdAsString(), xmlTimestampToken);
+
 		return xmlTimestampToken;
+	}
+
+	private void checkDuplicates(XmlTimestamp xmlTimestamp, TimestampToken timestampToken) {
+		if (hasDuplicate(timestampToken)) {
+			xmlTimestamp.setDuplicated(true);
+		}
+	}
+
+	private boolean hasDuplicate(TimestampToken currentTimestampToken) {
+		for (TimestampToken timestampToken : usedTimestamps) {
+			if (currentTimestampToken != timestampToken &&
+					currentTimestampToken.getDSSIdAsString().equals(timestampToken.getDSSIdAsString())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<XmlDigestMatcher> getXmlDigestMatchers(TimestampToken timestampToken) {

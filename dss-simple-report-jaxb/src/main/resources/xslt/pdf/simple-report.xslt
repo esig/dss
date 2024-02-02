@@ -79,6 +79,20 @@
 						<xsl:attribute name="internal-destination">timestamp-<xsl:value-of select="$index" /></xsl:attribute>
 						<fo:bookmark-title>Timestamp <xsl:value-of select="$index" /></fo:bookmark-title>
 					</fo:bookmark>
+					<xsl:for-each select="dss:EvidenceRecords/dss:EvidenceRecord">
+						<xsl:variable name="index_er"><xsl:value-of select="count(preceding-sibling::dss:EvidenceRecord) + 1" /></xsl:variable>
+						<fo:bookmark>
+							<xsl:attribute name="internal-destination">evidence-record-<xsl:value-of select="$index" />-<xsl:value-of select="$index_er" /></xsl:attribute>
+							<fo:bookmark-title>Evidence Record <xsl:value-of select="$index" />-<xsl:value-of select="$index_er" /></fo:bookmark-title>
+						</fo:bookmark>
+						<xsl:for-each select="dss:Timestamps/dss:Timestamp">
+							<xsl:variable name="index_er_tst"><xsl:value-of select="count(preceding-sibling::dss:Timestamp) + 1" /></xsl:variable>
+							<fo:bookmark>
+								<xsl:attribute name="internal-destination">timestamp-<xsl:value-of select="$index" />-<xsl:value-of select="$index_er" />-<xsl:value-of select="$index_er_tst" /></xsl:attribute>
+								<fo:bookmark-title>Timestamp <xsl:value-of select="$index" />-<xsl:value-of select="$index_er" />-<xsl:value-of select="$index_er_tst" /></fo:bookmark-title>
+							</fo:bookmark>
+						</xsl:for-each>
+					</xsl:for-each>
 				</xsl:for-each>
 
 				<xsl:for-each select="dss:EvidenceRecord">

@@ -30,6 +30,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
@@ -44,7 +45,7 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 
@@ -84,6 +85,10 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTe
 
         List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
         for (TimestampToken timestampToken : timestamps) {
+            assertNotNull(timestampToken.getTimeStampType());
+            assertNotNull(timestampToken.getArchiveTimestampType());
+            assertNotNull(timestampToken.getEvidenceRecordTimestampType());
+
             assertTrue(timestampToken.isProcessed());
             assertTrue(timestampToken.isMessageImprintDataFound());
             assertTrue(timestampToken.isMessageImprintDataIntact());
@@ -104,12 +109,11 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTe
                     assertTrue(referenceValidation.isIntact());
                 }
 
-                if (tstReferenceValidationList.size() == 1) {
-                    assertTrue(archiveTstDigestFound);
-                } else {
-                    assertTrue(archiveTstSequenceDigestFound);
-                }
+                assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstDigestFound);
+                assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstSequenceDigestFound);
 
+            } else {
+                assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
             }
 
             ++tstCounter;
@@ -182,6 +186,10 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTe
 
                 List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
                 for (TimestampWrapper timestamp : timestamps) {
+                    assertNotNull(timestamp.getType());
+                    assertNotNull(timestamp.getArchiveTimestampType());
+                    assertNotNull(timestamp.getEvidenceRecordTimestampType());
+
                     assertTrue(timestamp.isMessageImprintDataFound());
                     assertTrue(timestamp.isMessageImprintDataIntact());
                     assertTrue(timestamp.isSignatureIntact());
@@ -252,11 +260,11 @@ public class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTe
                             assertTrue(digestMatcher.isDataIntact());
                         }
 
-                        if (tstDigestMatcherList.size() == 1) {
-                            assertTrue(archiveTstDigestFound);
-                        } else {
-                            assertTrue(archiveTstSequenceDigestFound);
-                        }
+                        assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestamp.getEvidenceRecordTimestampType(), archiveTstDigestFound);
+                        assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestamp.getEvidenceRecordTimestampType(), archiveTstSequenceDigestFound);
+
+                    } else {
+                        assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestamp.getEvidenceRecordTimestampType());
                     }
 
                     ++tstCounter;

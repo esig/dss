@@ -194,6 +194,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 		timestampValidator.setArchiveTimestampType(archiveTimestampType);
 		timestampValidator.setOriginalDocuments(getAllDocuments());
 		timestampValidator.setArchiveDocuments(getArchiveDocuments());
+		timestampValidator.setDetachedEvidenceRecords(getDetachedEvidenceRecords());
 		timestampValidator.setCertificateVerifier(certificateVerifier);
 		return timestampValidator;
 	}

@@ -51,7 +51,7 @@ import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
 import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import eu.europa.esig.dss.validation.timestamp.TimestampSource;

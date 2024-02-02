@@ -51,4 +51,9 @@ public class CAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractCAd
         return trustedCertificateSource;
     }
 
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 1;
+    }
+
 }

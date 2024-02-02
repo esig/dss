@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
+import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecords;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
 import eu.europa.esig.dss.simplereport.jaxb.XmlPDFAInfo;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
@@ -533,18 +534,30 @@ public class SimpleReport {
 	 */
 	private XmlToken getTokenById(String tokenId) {
 		List<XmlToken> tokens = wrapped.getSignatureOrTimestampOrEvidenceRecord();
+		return getEmbeddedTokenById(tokens, tokenId);
+	}
+
+	private XmlToken getEmbeddedTokenById(List<? extends XmlToken> tokens, String tokenId) {
 		if (tokens != null) {
 			for (XmlToken token : tokens) {
 				if (tokenId.equals(token.getId())) {
 					return token;
 				} else if (token instanceof XmlSignature) {
-					XmlTimestamp timestampById = getSignatureTimestampById((XmlSignature) token, tokenId);
+					XmlToken timestampById = getSignatureTimestampById((XmlSignature) token, tokenId);
 					if (timestampById != null) {
 						return timestampById;
 					}
-					// TODO : handle embedded evidence record timestamps
+					XmlToken evidenceRecordById = getSignatureEvidenceRecordById((XmlSignature) token, tokenId);
+					if (evidenceRecordById != null) {
+						return evidenceRecordById;
+					}
+				} else if (token instanceof XmlTimestamp) {
+					XmlToken evidenceRecordById = getTimestampEvidenceRecordById((XmlTimestamp) token, tokenId);
+					if (evidenceRecordById != null) {
+						return evidenceRecordById;
+					}
 				} else if (token instanceof XmlEvidenceRecord) {
-					XmlTimestamp timestampById = getEvidenceRecordTimestampById((XmlEvidenceRecord) token, tokenId);
+					XmlToken timestampById = getEvidenceRecordTimestampById((XmlEvidenceRecord) token, tokenId);
 					if (timestampById != null) {
 						return timestampById;
 					}
@@ -554,26 +567,34 @@ public class SimpleReport {
 		return null;
 	}
 
-	private XmlTimestamp getSignatureTimestampById(XmlSignature signature, String tokenId) {
+	private XmlToken getSignatureTimestampById(XmlSignature signature, String tokenId) {
 		XmlTimestamps timestamps = signature.getTimestamps();
-		if (timestamps != null && timestamps.getTimestamp() != null) {
-			for (XmlTimestamp timestamp : timestamps.getTimestamp()) {
-				if (tokenId.equals(timestamp.getId())) {
-					return timestamp;
-				}
-			}
+		if (timestamps != null) {
+			return getEmbeddedTokenById(timestamps.getTimestamp(), tokenId);
 		}
 		return null;
 	}
 
-	private XmlTimestamp getEvidenceRecordTimestampById(XmlEvidenceRecord evidenceRecord, String tokenId) {
+	private XmlToken getSignatureEvidenceRecordById(XmlSignature signature, String tokenId) {
+		XmlEvidenceRecords xmlEvidenceRecords = signature.getEvidenceRecords();
+		if (xmlEvidenceRecords != null && xmlEvidenceRecords.getEvidenceRecord() != null) {
+			return getEmbeddedTokenById(xmlEvidenceRecords.getEvidenceRecord(), tokenId);
+		}
+		return null;
+	}
+
+	private XmlToken getTimestampEvidenceRecordById(XmlTimestamp xmlTimestamp, String tokenId) {
+		XmlEvidenceRecords xmlEvidenceRecords = xmlTimestamp.getEvidenceRecords();
+		if (xmlEvidenceRecords != null && xmlEvidenceRecords.getEvidenceRecord() != null) {
+			return getEmbeddedTokenById(xmlEvidenceRecords.getEvidenceRecord(), tokenId);
+		}
+		return null;
+	}
+
+	private XmlToken getEvidenceRecordTimestampById(XmlEvidenceRecord evidenceRecord, String tokenId) {
 		XmlTimestamps timestamps = evidenceRecord.getTimestamps();
 		if (timestamps != null && timestamps.getTimestamp() != null) {
-			for (XmlTimestamp timestamp : timestamps.getTimestamp()) {
-				if (tokenId.equals(timestamp.getId())) {
-					return timestamp;
-				}
-			}
+			return getEmbeddedTokenById(timestamps.getTimestamp(), tokenId);
 		}
 		return null;
 	}
@@ -649,6 +670,21 @@ public class SimpleReport {
 		XmlSignature xmlSignature = getSignatureById(signatureId);
 		if (xmlSignature != null && xmlSignature.getEvidenceRecords() != null) {
 			return xmlSignature.getEvidenceRecords().getEvidenceRecord();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * This method returns a list of evidence record for a time-stamp with the given id
+	 *
+	 * @param timestampId
+	 *            the time-stamp id
+	 * @return list if evidence records
+	 */
+	public List<XmlEvidenceRecord> getTimestampEvidenceRecords(String timestampId) {
+		XmlTimestamp xmlTimestamp = getTimestampById(timestampId);
+		if (xmlTimestamp != null && xmlTimestamp.getEvidenceRecords() != null) {
+			return xmlTimestamp.getEvidenceRecords().getEvidenceRecord();
 		}
 		return Collections.emptyList();
 	}

@@ -274,7 +274,7 @@ The class `PdfPermissionsChecker` is responsible for configuration of the setup.
 * FieldMDP `/FieldMDP` (as per "12.8.2.4 FieldMDP" of ISO 32000-1 <<R06>>) - defines permission issued for modifications within form fields (including signature fields).
 * Signature Lock dictionary `/Lock` (as per "12.7.4.5 Signature fields" of ISO 32000-1 <<R06>>) - defines permission for a particular signature field.
 
-NOTE: ETSI EN 319 142-1 (cf. <<R03>>) and ISO 32000-2 (cf. <<R27>>) allow augmentation of signatures having modification restriction dictionaries, thus supporting the long-term validity preservation mechanism for PDF signatures (e.g. for certification signatures). Therefore, DSS does not invalidate those signatures, nor restricts their augmentation.
+NOTE: ETSI EN 319 142-1 (cf. <<R03>>) and ISO 32000-2 (cf. <<R28>>) allow augmentation of signatures having modification restriction dictionaries, thus supporting the long-term validity preservation mechanism for PDF signatures (e.g. for certification signatures). Therefore, DSS does not invalidate those signatures, nor restricts their augmentation.
 
 A configured instance of the class should be provided to the used `IPdfObjFactory`. The behaviour has to be defined with a `StatusAlert` (see <<Alerts>> for more information):
 

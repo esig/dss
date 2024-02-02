@@ -30,6 +30,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
@@ -72,14 +73,8 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
             assertTrue(Utils.isCollectionNotEmpty(evidenceRecords));
 
             for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
-                List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
-                for (XmlDigestMatcher digestMatcher : digestMatcherList) {
-                    assertTrue(digestMatcher.isDataFound());
-                    assertTrue(digestMatcher.isDataIntact());
-                }
-
                 List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
-                assertEquals(diagnosticData.getSignatures().size(), Utils.collectionSize(evidenceRecordScopes));
+                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
 
                 boolean sigFileFound = false;
                 for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
@@ -113,16 +108,21 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
                 assertTrue(coversSignature);
                 assertTrue(coversSignedData);
                 assertTrue(coversCertificates);
-                if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
+                if (SignatureLevel.CAdES_BASELINE_B != signature.getSignatureFormat()) {
                     assertTrue(coversTimestamps);
-                } else if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
-                    assertTrue(coversRevocationData);
+                    if (SignatureLevel.CAdES_BASELINE_T != signature.getSignatureFormat()) {
+                        assertTrue(coversRevocationData);
+                    }
                 }
 
                 int tstCounter = 0;
 
                 List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
                 for (TimestampWrapper timestamp : timestamps) {
+                    assertNotNull(timestamp.getType());
+                    assertNotNull(timestamp.getArchiveTimestampType());
+                    assertNotNull(timestamp.getEvidenceRecordTimestampType());
+
                     assertTrue(timestamp.isMessageImprintDataFound());
                     assertTrue(timestamp.isMessageImprintDataIntact());
                     assertTrue(timestamp.isSignatureIntact());
@@ -168,10 +168,11 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
                     assertTrue(coversSignature);
                     assertTrue(coversSignedData);
                     assertTrue(coversCertificates);
-                    if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
+                    if (SignatureLevel.CAdES_BASELINE_B != signature.getSignatureFormat()) {
                         assertTrue(coversTimestamps);
-                    } else if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
-                        assertTrue(coversRevocationData);
+                        if (SignatureLevel.CAdES_BASELINE_T != signature.getSignatureFormat()) {
+                            assertTrue(coversRevocationData);
+                        }
                     }
 
                     if (tstCounter > 0) {
@@ -190,11 +191,11 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
                             assertTrue(digestMatcher.isDataIntact());
                         }
 
-                        if (tstDigestMatcherList.size() == 1) {
-                            assertTrue(archiveTstDigestFound);
-                        } else {
-                            assertTrue(archiveTstSequenceDigestFound);
-                        }
+                        assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestamp.getEvidenceRecordTimestampType(), archiveTstDigestFound);
+                        assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestamp.getEvidenceRecordTimestampType(), archiveTstSequenceDigestFound);
+
+                    } else {
+                        assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestamp.getEvidenceRecordTimestampType());
                     }
 
                     ++tstCounter;
@@ -202,6 +203,8 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
             }
         }
     }
+
+    protected abstract int getNumberOfExpectedEvidenceScopes();
 
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);

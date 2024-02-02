@@ -117,7 +117,7 @@ import eu.europa.esig.dss.validation.OriginalIdentifierProvider;
 import eu.europa.esig.dss.validation.SignaturePolicy;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
@@ -925,6 +925,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		List<SignatureWrapper> allSignatures = diagnosticData.getSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			checkNoDuplicateTimestamps(signatureWrapper.getTimestampList());
+			checkNoDuplicateEvidenceRecords(signatureWrapper.getEvidenceRecords());
 
 			List<String> timestampIdList = diagnosticData.getTimestampIdList(signatureWrapper.getId());
 	
@@ -988,8 +989,13 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 		List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			assertTrue(xmlDigestMatcher.isDataFound());
-			assertTrue(xmlDigestMatcher.isDataIntact());
+			if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != xmlDigestMatcher.getType()) {
+				assertTrue(xmlDigestMatcher.isDataFound());
+				assertTrue(xmlDigestMatcher.isDataIntact());
+			} else {
+				assertFalse(xmlDigestMatcher.isDataFound());
+				assertFalse(xmlDigestMatcher.isDataIntact());
+			}
 		}
 		if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
 			assertNotNull(timestampWrapper.getArchiveTimestampType());
@@ -1156,6 +1162,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	}
 
 	protected void checkEvidenceRecords(DiagnosticData diagnosticData) {
+		checkNoDuplicateEvidenceRecords(diagnosticData.getEvidenceRecords());
 		checkEvidenceRecordDigestMatchers(diagnosticData);
 		checkEvidenceRecordTimestamps(diagnosticData);
 		checkEvidenceRecordValidationData(diagnosticData);
@@ -1163,6 +1170,12 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkEvidenceRecordScopes(diagnosticData);
 		checkEvidenceRecordTimestampedReferences(diagnosticData);
 		checkEvidenceRecordRepresentation(diagnosticData);
+	}
+
+	protected void checkNoDuplicateEvidenceRecords(List<EvidenceRecordWrapper> evidenceRecordWrappers) {
+		Set<String> erIds = evidenceRecordWrappers.stream().map(EvidenceRecordWrapper::getId).collect(Collectors.toSet());
+		assertEquals(evidenceRecordWrappers.size(), erIds.size());
+		assertFalse(evidenceRecordWrappers.stream().anyMatch(EvidenceRecordWrapper::isEvidenceRecordDuplicated));
 	}
 
 	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
@@ -1502,6 +1515,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void checkNoDuplicateTimestamps(List<TimestampWrapper> timestampTokens) {
 		Set<String> tstIds = timestampTokens.stream().map(TimestampWrapper::getId).collect(Collectors.toSet());
 		assertEquals(timestampTokens.size(), tstIds.size());
+		assertFalse(timestampTokens.stream().anyMatch(TimestampWrapper::isTimestampDuplicated));
 	}
 	
 	protected void checkNoDuplicateCompleteCertificates(FoundCertificatesProxy foundCertificates) {

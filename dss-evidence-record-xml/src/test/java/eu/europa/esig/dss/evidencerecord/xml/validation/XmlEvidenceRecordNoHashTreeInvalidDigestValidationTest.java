@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.evidencerecord.common.validation.AbstractEvidenceRecordTestValidation;
@@ -40,7 +41,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,10 +80,12 @@ public class XmlEvidenceRecordNoHashTreeInvalidDigestValidationTest extends Abst
             int tstCounter = 0;
 
             List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
+            assertTrue(Utils.isCollectionNotEmpty(timestamps));
+
             for (TimestampToken timestampToken : timestamps) {
-                assertTrue(timestampToken.isProcessed());
-                assertTrue(timestampToken.isMessageImprintDataFound());
-                assertFalse(timestampToken.isMessageImprintDataIntact());
+                assertNotNull(timestampToken.getTimeStampType());
+                assertNotNull(timestampToken.getArchiveTimestampType());
+                assertNotNull(timestampToken.getEvidenceRecordTimestampType());
 
                 if (tstCounter > 0) {
                     List<ReferenceValidation> tstReferenceValidationList = timestampToken.getReferenceValidations();
@@ -100,12 +103,11 @@ public class XmlEvidenceRecordNoHashTreeInvalidDigestValidationTest extends Abst
                         assertTrue(referenceValidation.isIntact());
                     }
 
-                    if (tstReferenceValidationList.size() == 1) {
-                        assertTrue(archiveTstDigestFound);
-                    } else {
-                        assertTrue(archiveTstSequenceDigestFound);
-                    }
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstDigestFound);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstSequenceDigestFound);
 
+                } else {
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
                 }
 
                 ++tstCounter;

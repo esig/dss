@@ -500,11 +500,16 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 
 Since version `5.13` DSS provides a possibility of evidence records validation in relation to digital signatures or alone.
 
-Currently, the only supported version of evidence records is RFC 6283 XML Evidence Records (cf. <<R22>>).
+DSS provides support of RFC 6283 XML Evidence Records (cf. <<R22>>) and RFC 4998 Evidence Record Syntax (cf. <<R23>>).
 
 DSS performs cryptographic validation of the evidence record's hash tree, as well as processing of evidence record as a material for achieving a long-term preservation and availability as per ETSI EN 319 102-1 (cf. <<R09>>).
 
-In order to add support of XML evidence records on validation, the following dependency has to be added to a `pom.xml` file within your project:
+ One or both following modules should be included to the project in order to add support of evidence records on validation:
+
+ * `dss-evidence-record-xml` - for validation of RFC 6283 XML Evidence Records;
+ * `dss-evidence-record-asn1` - for validation of RFC 4998 Evidence Records.
+
+For instance, in order to add support of XML evidence records on validation, the dependency should be added to a `pom.xml` file within your project as following:
 
 [source,xml,indent=0]
 .pom.xml
@@ -596,7 +601,8 @@ A validator implementation for an evidence record document can be loaded using e
 
 The following implementation of a validator factory is present in DSS:
 
-* `XMLEvidenceRecordValidatorFactory`: loads `XMLEvidenceRecordValidator`, used for an RFC 6283 XML Evidence Record (cf. <<R22>>) validation (delivered in `dss-evidence-record-xml` module).
+* `XMLEvidenceRecordValidatorFactory`: loads `XMLEvidenceRecordValidator`, used for an RFC 6283 XML Evidence Record (cf. <<R22>>) validation (delivered in `dss-evidence-record-xml` module);
+* `ANS1EvidenceRecordValidatorFactory`: loads `ASN1EvidenceRecordValidator`, used for an RFC 4998 Evidence Record Syntax (ERS) (cf. <<R23>>) validation (delivered in `dss-evidence-record-asn1` module).
 
 ==== Signature Policy Validator
 

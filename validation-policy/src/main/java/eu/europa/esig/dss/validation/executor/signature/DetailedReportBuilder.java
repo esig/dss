@@ -65,6 +65,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Builds a DetailedReport for a signature validation
@@ -137,7 +138,8 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 
 		if (!ValidationLevel.BASIC_SIGNATURES.equals(validationLevel)) {
 			List<TimestampWrapper> nonEvidenceRecordTimestamps = diagnosticData.getNonEvidenceRecordTimestamps();
-			timestampValidations.putAll(executeTimestampsValidation(nonEvidenceRecordTimestamps, bbbs, tlAnalysis, poe));
+			timestampValidations.putAll(executeTimestampsValidation(
+					nonEvidenceRecordTimestamps, bbbs, evidenceRecordValidations, tlAnalysis, poe, attachedEvidenceRecords));
 		}
 
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
@@ -221,10 +223,15 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	}
 
 	private Map<String, XmlTimestamp> executeTimestampsValidation(
-			List<TimestampWrapper> timestamps, Map<String, XmlBasicBuildingBlocks> bbbs, List<XmlTLAnalysis> tlAnalysis,
-			POEExtraction poe) {
+			List<TimestampWrapper> timestamps, Map<String, XmlBasicBuildingBlocks> bbbs,
+			Map<String, XmlEvidenceRecord> evidenceRecordValidations, List<XmlTLAnalysis> tlAnalysis, POEExtraction poe,
+			Set<String> attachedEvidenceRecords) {
 		TimestampsValidationBlock allTimestampValidationBlock = new TimestampsValidationBlock(
-				i18nProvider, timestamps, diagnosticData, policy, currentTime, bbbs, tlAnalysis, validationLevel, poe);
+				i18nProvider, timestamps, diagnosticData, policy, currentTime, bbbs, evidenceRecordValidations, tlAnalysis, validationLevel, poe);
+		for (TimestampWrapper timestampWrapper : timestamps) {
+			attachedEvidenceRecords.addAll(timestampWrapper.getEvidenceRecords()
+					.stream().map(EvidenceRecordWrapper::getId).collect(Collectors.toList()));
+		}
 		return allTimestampValidationBlock.execute();
 	}
 

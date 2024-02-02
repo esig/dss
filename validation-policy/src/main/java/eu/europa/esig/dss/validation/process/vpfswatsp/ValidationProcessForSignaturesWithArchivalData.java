@@ -159,10 +159,13 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 				XmlValidationProcessEvidenceRecord evidenceRecordValidation = getEvidenceRecordValidation(evidenceRecord);
 				if (evidenceRecordValidation != null) {
 
+					ChainItem<XmlValidationProcessArchivalData> evidenceRecordValidationConclusive =
+							evidenceRecordValidationConclusive(evidenceRecord, evidenceRecordValidation);
+
 					if (item == null) {
-						item = firstItem = evidenceRecordValidationConclusive(evidenceRecord, evidenceRecordValidation);
+						item = firstItem = evidenceRecordValidationConclusive;
 					} else {
-						item = item.setNextItem(evidenceRecordValidationConclusive(evidenceRecord, evidenceRecordValidation));
+						item = item.setNextItem(evidenceRecordValidationConclusive);
 					}
 
 					if (isValid(evidenceRecordValidation)) {

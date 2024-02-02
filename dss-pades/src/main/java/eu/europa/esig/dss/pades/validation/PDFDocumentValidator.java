@@ -39,6 +39,7 @@ import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
@@ -47,7 +48,6 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -277,6 +277,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
             List<SignatureScope> timestampScopes = getPAdESTimestampScopeFinder().findTimestampScope(timestampToken);
             timestampToken.setTimestampScopes(timestampScopes);
             timestampToken.getTimestampedReferences().addAll(getTimestampedReferences(timestampScopes));
+            appendExternalEvidenceRecords(timestampToken);
 
             return timestampToken;
 

@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -39,6 +40,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
@@ -70,6 +72,15 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 		return timestamp.getId();
 	}
 
+	/**
+	 * Checks if the time-stamp's Id is duplicated within the validating document
+	 *
+	 * @return TRUE if there is a duplicated time-stamp Id, FALSE otherwise
+	 */
+	public boolean isTimestampDuplicated() {
+		return timestamp.isDuplicated() != null && timestamp.isDuplicated();
+	}
+
 	@Override
 	protected XmlBasicSignature getCurrentBasicSignature() {
 		return timestamp.getBasicSignature();
@@ -96,6 +107,46 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	}
 
 	/**
+	 * Returns a list of evidence records covering the time-stamp file (applicable for detached time-stamps only)
+	 *
+	 * @return a list of {@link EvidenceRecordWrapper}s
+	 */
+	public List<EvidenceRecordWrapper> getEvidenceRecords() {
+		List<EvidenceRecordWrapper> result = new ArrayList<>();
+		List<XmlFoundEvidenceRecord> foundEvidenceRecords = timestamp.getFoundEvidenceRecords();
+		for (XmlFoundEvidenceRecord xmlEvidenceRecord : foundEvidenceRecords) {
+			result.add(new EvidenceRecordWrapper(xmlEvidenceRecord.getEvidenceRecord()));
+		}
+		return result;
+	}
+
+	/**
+	 * Returns a list of associated evidence record identifiers
+	 *
+	 * @return a list of {@link String}
+	 */
+	public List<String> getEvidenceRecordIdsList() {
+		List<String> result = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecordWrapper : getEvidenceRecords()) {
+			result.add(evidenceRecordWrapper.getId());
+		}
+		return result;
+	}
+
+	/**
+	 * Returns identifiers of all covering evidence record time-stamps
+	 *
+	 * @return a list of {@link String} time-stamp identifiers
+	 */
+	public List<String> getEvidenceRecordTimestampIds() {
+		List<String> result = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecordWrapper : getEvidenceRecords()) {
+			result.addAll(evidenceRecordWrapper.getTimestampIdsList());
+		}
+		return result;
+	}
+
+	/**
 	 * Returns the type of the timestamp
 	 *
 	 * @return {@link TimestampType}
@@ -106,13 +157,22 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	
 	/**
 	 * Returns archive timestamp type, if applicable
-	 *
 	 * NOTE: returns null for non archive timestamps
 	 *
 	 * @return {@link ArchiveTimestampType}
 	 */
 	public ArchiveTimestampType getArchiveTimestampType() {
 		return timestamp.getArchiveTimestampType();
+	}
+
+	/**
+	 * Returns an evidence record archive timestamp type, if applicable
+	 * NOTE: returns null for non evidence record archive timestamps
+	 *
+	 * @return {@link eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType}
+	 */
+	public EvidenceRecordTimestampType getEvidenceRecordTimestampType() {
+		return timestamp.getEvidenceRecordTimestampType();
 	}
 
 	/**

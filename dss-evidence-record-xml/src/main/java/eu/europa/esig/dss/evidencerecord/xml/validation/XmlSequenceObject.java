@@ -34,9 +34,6 @@ public class XmlSequenceObject extends DigestValueGroup implements XmlEvidenceRe
     /** The current Element */
     private final Element element;
 
-    /** Order of the element */
-    private int order;
-
     /**
      * Default constructor
      *
@@ -49,20 +46,6 @@ public class XmlSequenceObject extends DigestValueGroup implements XmlEvidenceRe
     @Override
     public Element getElement() {
         return element;
-    }
-
-    @Override
-    public int getOrder() {
-        return order;
-    }
-
-    /**
-     * Sets order of the object within its parent
-     *
-     * @param order int value
-     */
-    public void setOrder(int order) {
-        this.order = order;
     }
 
 }

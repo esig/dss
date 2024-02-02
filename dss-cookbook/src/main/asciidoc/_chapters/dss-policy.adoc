@@ -2222,7 +2222,21 @@ Default: `WARN`
 ----
 <EvidenceRecord>
     ...
-    <DataObjectGroup Level="FAIL" />
+    <DataObjectGroup Level="WARN" />
+    ...
+</EvidenceRecord>
+----
+
+* `HashTreeRenewal` - this constraint checks if the evidence record's time-stamp used to renew the hashtree (i.e. the time-stamp starting a new ArchiveTimeStampChain) covers all archive data objects covered by the initial archive time-stamp of the evidence record.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of HashTreeRenewal usage (with FAIL validation level)
+----
+<EvidenceRecord>
+    ...
+    <HashTreeRenewal Level="FAIL" />
     ...
 </EvidenceRecord>
 ----

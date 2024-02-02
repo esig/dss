@@ -51,4 +51,9 @@ public class JAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractJAd
         return trustedCertificateSource;
     }
 
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 1;
+    }
+
 }

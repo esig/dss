@@ -119,7 +119,9 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     }
 
     @Override
-    protected DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain) {
+    protected DSSMessageDigest computePrecedingTimeStampSequenceHash(
+            ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents) {
+        DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
         XmlArchiveTimeStampChainObject xmlArchiveTimeStampChainObject = (XmlArchiveTimeStampChainObject) archiveTimeStampChain;
 
         Document documentCopy = createDocumentCopy();

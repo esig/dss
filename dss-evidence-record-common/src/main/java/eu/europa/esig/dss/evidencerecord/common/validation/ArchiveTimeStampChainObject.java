@@ -37,6 +37,9 @@ public class ArchiveTimeStampChainObject implements EvidenceRecordObject {
     /** List of ordered ArchiveTimeStamp objects */
     private List<? extends ArchiveTimeStampObject> archiveTimeStamps;
 
+    /** Order of the element */
+    private int order;
+
     /**
      * Default constructor
      */
@@ -78,6 +81,24 @@ public class ArchiveTimeStampChainObject implements EvidenceRecordObject {
      */
     public void setArchiveTimeStamps(List<? extends ArchiveTimeStampObject> archiveTimeStamps) {
         this.archiveTimeStamps = archiveTimeStamps;
+    }
+
+    /**
+     * Gets Order attribute value of the corresponding element
+     *
+     * @return Order attribute value
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * Sets order of the object within its parent
+     *
+     * @param order int value
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 
 }

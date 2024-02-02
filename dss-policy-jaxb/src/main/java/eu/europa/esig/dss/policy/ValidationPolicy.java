@@ -1071,6 +1071,13 @@ public interface ValidationPolicy {
 	LevelConstraint getEvidenceRecordDataObjectGroupConstraint();
 
 	/**
+	 * Returns HashTreeRenewal constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if HashTreeRenewal element is present
+	 */
+	LevelConstraint getEvidenceRecordHashTreeRenewalConstraint();
+
+	/**
 	 * Returns CounterSignature constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}DiagnosticDataFacade

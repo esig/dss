@@ -37,6 +37,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAbstractToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -236,6 +237,9 @@ public abstract class AbstractTestValidationExecutor {
 					break;
 				case SIGNED_DATA:
 					token = new XmlSignerData();
+					break;
+				case EVIDENCE_RECORD:
+					token = new XmlEvidenceRecord();
 					break;
 				case ORPHAN_CERTIFICATE:
 					token = new XmlOrphanCertificateToken();

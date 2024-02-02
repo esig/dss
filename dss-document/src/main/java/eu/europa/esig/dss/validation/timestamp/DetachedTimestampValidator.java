@@ -107,6 +107,7 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 			List<SignatureScope> timestampScopes = getTimestampScopes(timestampToken);
 			timestampToken.setTimestampScopes(getTimestampScopes(timestampToken));
 			timestampToken.getTimestampedReferences().addAll(getTimestampedReferences(timestampScopes));
+			appendExternalEvidenceRecords(timestampToken);
 		}
 		return timestampToken;
 	}
@@ -128,7 +129,6 @@ public class DetachedTimestampValidator extends SignedDocumentValidator implemen
 
 		} catch (CMSException | TSPException | IOException e) {
 			throw new DSSException(String.format("Unable to create a TimestampToken. Reason : %s", e.getMessage()), e);
-
 		}
 	}
 

@@ -24,31 +24,38 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
-import eu.europa.esig.dss.validation.process.vpftspwatsp.checks.TimestampMessageImprintCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POE;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
-import eu.europa.esig.dss.validation.process.vpftspwatsp.checks.AcceptableBasicTimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.EvidenceRecordValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.PastSignatureValidation;
 import eu.europa.esig.dss.validation.process.vpftsp.checks.BasicTimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.vpftspwatsp.checks.AcceptableBasicTimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpftspwatsp.checks.MessageImprintDigestAlgorithmValidationCheck;
 import eu.europa.esig.dss.validation.process.vpftspwatsp.checks.PastTimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.vpftspwatsp.checks.TimestampMessageImprintCheck;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,6 +72,9 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
     /** Map of BasicBuildingBlocks */
     private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
+    /** Map of processed evidence records */
+    private final Map<String, XmlEvidenceRecord> evidenceRecordValidations;
 
     /** The current time of validation */
     private final Date currentTime;
@@ -88,11 +98,13 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
      */
     public ValidationProcessForTimestampsWithArchivalData(final I18nProvider i18nProvider, final TimestampWrapper timestamp,
             final XmlValidationProcessBasicTimestamp vpftsp, final Map<String, XmlBasicBuildingBlocks> bbbs,
-            final Date currentTime, final ValidationPolicy policy, final POEExtraction poe) {
+            final Map<String, XmlEvidenceRecord> evidenceRecordValidations, final Date currentTime,
+            final ValidationPolicy policy, final POEExtraction poe) {
         super(i18nProvider, new XmlValidationProcessArchivalDataTimestamp());
         this.vpftsp = vpftsp;
         this.timestamp = timestamp;
         this.bbbs = bbbs;
+        this.evidenceRecordValidations = evidenceRecordValidations;
         this.currentTime = currentTime;
         this.policy = policy;
         this.poe = poe;
@@ -111,7 +123,39 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
         XmlConclusion basicTimestampConclusion = vpftsp.getConclusion();
 
-        ChainItem<XmlValidationProcessArchivalDataTimestamp> item = firstItem = timestampBasicSignatureValidationAcceptable(vpftsp);
+        ChainItem<XmlValidationProcessArchivalDataTimestamp> item = null;
+
+        /* Step 0. Execute detached evidence records processing, when applicable */
+        List<EvidenceRecordWrapper> evidenceRecords = timestamp.getEvidenceRecords();
+        if (Utils.isCollectionNotEmpty(evidenceRecords)) {
+            for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+                XmlValidationProcessEvidenceRecord evidenceRecordValidation = getEvidenceRecordValidation(evidenceRecord);
+                if (evidenceRecordValidation != null) {
+
+                    ChainItem<XmlValidationProcessArchivalDataTimestamp> evidenceRecordValidationConclusive =
+                            evidenceRecordValidationConclusive(evidenceRecord, evidenceRecordValidation);
+
+                    if (item == null) {
+                        item = firstItem = evidenceRecordValidationConclusive;
+                    } else {
+                        item = item.setNextItem(evidenceRecordValidationConclusive);
+                    }
+
+                    if (isValid(evidenceRecordValidation)) {
+                        poe.extractPOE(evidenceRecord);
+                    }
+
+                }
+            }
+        }
+
+        ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampBasicSignatureValidationAcceptable =
+                timestampBasicSignatureValidationAcceptable(vpftsp);
+        if (item == null) {
+            item = firstItem = timestampBasicSignatureValidationAcceptable;
+        } else {
+            item = item.setNextItem(timestampBasicSignatureValidationAcceptable);
+        }
 
         if (ValidationProcessUtils.isAllowedBasicTimestampValidation(basicTimestampConclusion)) {
 
@@ -203,6 +247,17 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
         bbbConclusion.getInfos().addAll(psvConclusion.getInfos());
     }
 
+    private XmlValidationProcessEvidenceRecord getEvidenceRecordValidation(EvidenceRecordWrapper evidenceRecord) {
+        XmlEvidenceRecord xmlEvidenceRecord = evidenceRecordValidations.get(evidenceRecord.getId());
+        return xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+    }
+
+    private ChainItem<XmlValidationProcessArchivalDataTimestamp> evidenceRecordValidationConclusive(
+            EvidenceRecordWrapper evidenceRecordWrapper, XmlValidationProcessEvidenceRecord erValidationResult) {
+        return new EvidenceRecordValidationCheck<>(i18nProvider, result, evidenceRecordWrapper,
+                erValidationResult, getEvidenceRecordValidationConstraintLevel());
+    }
+
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampBasicSignatureValidationConclusive(
             TimestampWrapper timestampWrapper, XmlValidationProcessBasicTimestamp timestampValidationResult) {
         return new BasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
@@ -228,6 +283,14 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampMessageImprint(TimestampWrapper timestampWrapper) {
         return new TimestampMessageImprintCheck<>(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
+    }
+
+    private LevelConstraint getEvidenceRecordValidationConstraintLevel() {
+        LevelConstraint constraint = policy.getEvidenceRecordValidConstraint();
+        if (constraint == null) {
+            constraint = getWarnLevelConstraint();
+        }
+        return constraint;
     }
 
     @Override
