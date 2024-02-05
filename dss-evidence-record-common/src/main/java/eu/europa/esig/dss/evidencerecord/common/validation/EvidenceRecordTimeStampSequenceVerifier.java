@@ -132,6 +132,11 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                         if (lastTimeStampHash.isEmpty() && firstArchiveTimeStampChain) {
                             referenceValidations.addAll(archiveDataObjectValidations);
                         }
+
+                        // assert hashtree is valid, otherwise fail validation
+                        if (!checkHashTreeValidity(archiveTimeStamp, archiveTimeStampChain)) {
+                            archiveDataObjectValidations.forEach(r -> r.setIntact(false));
+                        }
                     }
                     // Validation of each followingHashTree/Sequence
                     lastMessageDigest = computeDigestValueGroupHash(digestAlgorithm, digestValueGroup, lastMessageDigest);
@@ -200,6 +205,19 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         }
 
         return hashTree;
+    }
+
+    /**
+     * This method verifies whether the {@code ArchiveTimeStampObject} and its hash-tree is valid relatively
+     * the parent {@code ArchiveTimeStampChainObject}
+     *
+     * @param archiveTimeStamp {@link ArchiveTimeStampObject}
+     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject}
+     * @return TRUE if the validation succeeds, FALSE otherwise
+     */
+    protected boolean checkHashTreeValidity(ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain) {
+        // TRUE by default
+        return true;
     }
 
     /**

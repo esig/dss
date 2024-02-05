@@ -90,6 +90,8 @@ public class ASiCEWithCAdESEvidenceRecordIncorrectHashFunctionValidationTest ext
                     ++orphanRefsCounter;
                 } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP == tstReferenceValidation.getType()) {
                     assertEquals(1, coveredTimestamps);
+                    assertTrue(tstReferenceValidation.isFound());
+                    assertFalse(tstReferenceValidation.isIntact());
                     archiveTstRefreshRefFound = true;
                 }
             }
@@ -169,6 +171,8 @@ public class ASiCEWithCAdESEvidenceRecordIncorrectHashFunctionValidationTest ext
                     ++orphanRefsCounter;
                 } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP == digestMatcher.getType()) {
                     assertEquals(1, coveredTimestamps);
+                    assertTrue(digestMatcher.isDataFound());
+                    assertFalse(digestMatcher.isDataIntact());
                     archiveTstRefreshRefFound = true;
                 }
             }

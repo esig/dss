@@ -72,10 +72,16 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
     }
     
     private DigestAlgorithm getDigestAlgorithm(ArchiveTimeStampChain archiveTimeStampChain) {
-    	// TODO: ANS.1 allow digest algo definition within each ArchiveTimeStamp, while it should be the same as the one in the chain, we may want to add additional verification step
-        // return the first value for now
-    	AlgorithmIdentifier algIdentifier = archiveTimeStampChain.getArchiveTimestamps()[0].getDigestAlgorithmIdentifier();
-        return DigestAlgorithm.forOID(algIdentifier.getAlgorithm().getId());
+        /*
+         * 5. Archive Timestamp Chain and Archive Timestamp Sequence (5.2. Generation)
+         *
+         * The new Archive Timestamp MUST be added to the ArchiveTimestampChain.
+         * This hash tree of the new Archive Timestamp MUST use the same hash algorithm as the old one,
+         * which is specified in the digestAlgorithm field of the Archive Timestamp or,
+         * if this value is not set (as it is optional), within the timestamp itself.
+         */
+        // return the first value
+        return getDigestAlgorithm(archiveTimeStampChain.getArchiveTimestamps()[0]);
     }
 
     private List<? extends ArchiveTimeStampObject> getASN1ArchiveTimeStamps(ArchiveTimeStampChain archiveTimeStampChain) {
@@ -95,10 +101,24 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
     private ASN1ArchiveTimeStampObject getASN1ArchiveTimeStampObject(ArchiveTimeStamp archiveTimeStamp, int order) {
     	ASN1ArchiveTimeStampObject archiveTimeStampObject = new ASN1ArchiveTimeStampObject(archiveTimeStamp);
         archiveTimeStampObject.setHashTree(getHashTree(archiveTimeStamp));
+        archiveTimeStampObject.setDigestAlgorithm(getDigestAlgorithm(archiveTimeStamp));
         archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStamp));
         archiveTimeStampObject.setOrder(order);
         // cryptographic info not applicable for ANS.1
         return archiveTimeStampObject;
+    }
+
+    private DigestAlgorithm getDigestAlgorithm(ArchiveTimeStamp archiveTimeStamp) {
+        /*
+         * digestAlgorithm identifies the digest algorithm and any associated
+         * parameters used within the reduced hash tree. If the optional field
+         * digestAlgorithm is not present, the digest algorithm of the timestamp
+         * MUST be used. Which means, if timestamps according to [RFC3161] are
+         * hashAlgorithm of messageImprint field of TSTInfo.
+         */
+        // NOTE: BouncyCastle implements the logic itself within getDigestAlgorithmIdentifier() method
+        AlgorithmIdentifier algIdentifier = archiveTimeStamp.getDigestAlgorithmIdentifier();
+        return DigestAlgorithm.forOID(algIdentifier.getAlgorithm().getId());
     }
     
     private TimestampToken getTimestampToken(ArchiveTimeStamp archiveTimeStamp) {

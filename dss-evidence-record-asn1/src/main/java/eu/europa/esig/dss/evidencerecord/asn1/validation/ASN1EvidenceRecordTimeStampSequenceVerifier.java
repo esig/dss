@@ -75,6 +75,18 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
     }
     
     @Override
+    protected boolean checkHashTreeValidity(ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain) {
+        ASN1ArchiveTimeStampObject asn1ArchiveTimeStampObject = (ASN1ArchiveTimeStampObject) archiveTimeStamp;
+        if (asn1ArchiveTimeStampObject.getDigestAlgorithm() != archiveTimeStampChain.getDigestAlgorithm()) {
+            LOG.warn("The DigestAlgorithm '{}' found in ArchiveTimeStamp does not correspond to the DigestAlgorithm " +
+                            "within the old Archive Timestamp '{}'! Unable to ensure validity of referenced content.",
+                    asn1ArchiveTimeStampObject.getDigestAlgorithm().getName(), archiveTimeStampChain.getDigestAlgorithm().getName());
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     protected DSSMessageDigest computeTimeStampHash(DigestAlgorithm digestAlgorithm,
     		ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain) {
         ASN1ArchiveTimeStampObject asn1ArchiveTimeStampObject = (ASN1ArchiveTimeStampObject) archiveTimeStamp;
