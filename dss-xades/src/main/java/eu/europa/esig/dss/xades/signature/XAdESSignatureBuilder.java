@@ -1,28 +1,43 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * <p>
+ *
  * This file is part of the "DSS - Digital Signature Services" project.
- * <p>
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * <p>
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.enumerations.*;
+import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.ObjectIdentifier;
+import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.model.*;
+import eu.europa.esig.dss.model.CommitmentQualifier;
+import eu.europa.esig.dss.model.CommonCommitmentType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.Policy;
+import eu.europa.esig.dss.model.SignerLocation;
+import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -37,7 +52,11 @@ import eu.europa.esig.dss.xades.SignatureBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
 import eu.europa.esig.dss.xades.dataobject.DataObjectFormatBuilder;
-import eu.europa.esig.dss.xades.reference.*;
+import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
+import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
+import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
+import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
@@ -48,15 +67,18 @@ import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
-import static java.util.Arrays.asList;
-
 /**
  * This class implements all the necessary mechanisms to build each form of the XML signature.
+ *
  */
 public abstract class XAdESSignatureBuilder extends XAdESBuilder implements SignatureBuilder {
 
@@ -72,88 +94,57 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      */
     protected DSSDocument document;
 
-    /**
-     * The canonicalization method used for KeyInfo signing
-     */
+    /** The canonicalization method used for KeyInfo signing */
     protected String keyInfoCanonicalizationMethod;
 
-    /**
-     * The canonicalization method used for SignedInfo signing
-     */
+    /** The canonicalization method used for SignedInfo signing */
     protected String signedInfoCanonicalizationMethod;
 
-    /**
-     * The canonicalization method used for SignedProperties signing
-     */
+    /** The canonicalization method used for SignedProperties signing */
     protected String signedPropertiesCanonicalizationMethod;
 
-    /**
-     * The deterministic Id used for elements creation
-     */
+    /** The deterministic Id used for elements creation */
     protected final String deterministicId;
 
-    /**
-     * This variable represents the current DOM signature object.
-     */
+    /** This variable represents the current DOM signature object. */
     protected Element signatureDom;
 
-    /**
-     * Cached KeyInfo element
-     */
+    /** Cached KeyInfo element */
     protected Element keyInfoDom;
-    /**
-     * Cached SignedInfo element
-     */
+    /** Cached SignedInfo element */
     protected Element signedInfoDom;
-    /**
-     * Cached SignatureValue element
-     */
+    /** Cached SignatureValue element */
     protected Element signatureValueDom;
-    /**
-     * Cached QualifyingProperties element
-     */
+    /** Cached QualifyingProperties element */
     protected Element qualifyingPropertiesDom;
-    /**
-     * Cached SignedProperties element
-     */
+    /** Cached SignedProperties element */
     protected Element signedPropertiesDom;
-    /**
-     * Cached SignedSignatureProperties element
-     */
+    /** Cached SignedSignatureProperties element */
     protected Element signedSignaturePropertiesDom;
-    /**
-     * Cached SignedDataObjectProperties element
-     */
+    /** Cached SignedDataObjectProperties element */
     protected Element signedDataObjectPropertiesDom;
-    /**
-     * Cached UnsignedSignatureProperties element
-     */
+    /** Cached UnsignedSignatureProperties element */
     protected Element unsignedSignaturePropertiesDom;
 
-    /**
-     * Id-suffix for KeyInfo element
-     */
+    /** Id-suffix for KeyInfo element */
     protected static final String KEYINFO_SUFFIX = "keyInfo-";
-    /**
-     * Id-suffix for Timestamp element
-     */
+    /** Id-suffix for Timestamp element */
     protected static final String TIMESTAMP_SUFFIX = "TS-";
-    /**
-     * Id-suffix for SignatureValue element
-     */
+    /** Id-suffix for SignatureValue element */
     protected static final String VALUE_SUFFIX = "value-";
-    /**
-     * Id-suffix for Signature element
-     */
+    /** Id-suffix for Signature element */
     protected static final String XADES_SUFFIX = "xades-";
 
     /**
      * Creates the signature according to the packaging
      *
-     * @param params              The set of parameters relating to the structure and process of the creation or extension of the
-     *                            electronic signature.
-     * @param document            The original document to sign.
-     * @param certificateVerifier the certificate verifier with its OCSPSource,...
+     * @param params
+     *            The set of parameters relating to the structure and process of the creation or extension of the
+     *            electronic signature.
+     * @param document
+     *            The original document to sign.
+     * @param certificateVerifier
+     *            the certificate verifier with its OCSPSource,...
      * @return the signature builder linked to the packaging
      */
     public static XAdESSignatureBuilder getSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document,
@@ -177,10 +168,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
     /**
      * The default constructor for SignatureBuilder.
      *
-     * @param params              The set of parameters relating to the structure and process of the creation or extension of the
-     *                            electronic signature.
-     * @param document            The original document to sign.
-     * @param certificateVerifier the certificate verifier with its OCSPSource,...
+     * @param params
+     *            The set of parameters relating to the structure and process of the creation or extension of the
+     *            electronic signature.
+     * @param document
+     *            The original document to sign.
+     * @param certificateVerifier
+     *            the certificate verifier with its OCSPSource,...
      */
     protected XAdESSignatureBuilder(final XAdESSignatureParameters params, final DSSDocument document, final CertificateVerifier certificateVerifier) {
         super(certificateVerifier);
@@ -202,8 +196,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This is the main method which is called to build the XML signature
      *
      * @return A byte array is returned with XML that represents the canonicalized SignedInfo segment of signature.
-     * This data are used to define the SignatureValue element.
-     * @throws DSSException if an error occurred
+     *         This data are used to define the SignatureValue element.
+     * @throws DSSException
+     *             if an error occurred
      */
     public byte[] build() throws DSSException {
 
@@ -311,7 +306,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
     private ReferenceBuilder initReferenceBuilder() {
         List<DSSDocument> detachedContent = Utils.isCollectionNotEmpty(params.getDetachedContents()) ?
-                params.getDetachedContents() : asList(document);
+                params.getDetachedContents() : Arrays.asList(document);
         final ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
         referenceIdProvider.setSignatureParameters(params);
         return new ReferenceBuilder(detachedContent, params, referenceIdProvider);
@@ -419,13 +414,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method created the CanonicalizationMethod tag like :
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-     *    }
+     * 	}
      * </pre>
      *
-     * @param parentDom                        the parent element
-     * @param signedInfoCanonicalizationMethod the canonicalization algorithm
+     * @param parentDom
+     *            the parent element
+     * @param signedInfoCanonicalizationMethod
+     *            the canonicalization algorithm
      */
     private void incorporateCanonicalizationMethod(final Element parentDom, final String signedInfoCanonicalizationMethod) {
         final Element canonicalizationMethodDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.CANONICALIZATION_METHOD);
@@ -447,7 +444,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * included.
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<ds:KeyInfo>
      * 			<ds:X509Data>
      *  			<ds:X509Certificate>
@@ -462,7 +459,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * </pre>
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<ds:KeyInfo>
      * 			<ds:X509Data>
      *  			<ds:X509Certificate>
@@ -476,7 +473,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * }
      * </pre>
      *
-     * @throws DSSException if an error occurred
+     * @throws DSSException
+     *             if an error occurred
      */
     protected void incorporateKeyInfo() throws DSSException {
         if (params.getSigningCertificate() == null && params.isGenerateTBSWithoutCertificate()) {
@@ -525,8 +523,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * }
      * </pre>
      *
-     * @param x509DataDom the parent X509Data tag
-     * @param token       the certificate to add
+     * @param x509DataDom
+     *            the parent X509Data tag
+     * @param token
+     *            the certificate to add
      */
     private void addSubjectAndCertificate(final Element x509DataDom, final CertificateToken token) {
         DomUtils.addTextElement(documentDom, x509DataDom, getXmldsigNamespace(), XMLDSigElement.X509_SUBJECT_NAME, token.getSubject().getRFC2253());
@@ -542,8 +542,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * }
      * </pre>
      *
-     * @param x509DataDom the parent X509Data tag
-     * @param token       the certificate to add
+     * @param x509DataDom
+     *            the parent X509Data tag
+     * @param token
+     *            the certificate to add
      */
     private void addCertificate(final Element x509DataDom, final CertificateToken token) {
         DomUtils.addTextElement(documentDom, x509DataDom, getXmldsigNamespace(), XMLDSigElement.X509_CERTIFICATE, Utils.toBase64(token.getEncoded()));
@@ -553,7 +555,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates the ds:Object tags
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<ds:Object>
      * 			...
      * 		</ds:Object>
@@ -562,6 +564,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * 		</ds:Object>
      * }
      * </pre>
+     *
      */
     protected void incorporateObjects() {
         incorporateQualifyingProperties();
@@ -573,7 +576,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates the ds:Object with xades:QualifyingProperties element
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<ds:Object>
      * 			<xades:QualifyingProperties>
      * 				<xades:SignedProperties>
@@ -583,6 +586,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * 		</ds:Object>
      * }
      * </pre>
+     *
      */
     protected void incorporateQualifyingProperties() {
         if (Utils.isArrayNotEmpty(params.getSignedAdESObject())) {
@@ -676,15 +680,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates ds:References
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI=
-     * "#xades-id-A43023AFEB149830C242377CC941360F">
-     * 			<ds:Transforms>
-     * 				<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-     * 			</ds:Transforms>
-     * 			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-     * 			<ds:DigestValue>uijX/nvuu8g10ZVEklEnYatvFe8=</ds:DigestValue>
-     * 		</ds:Reference>
+    "#xades-id-A43023AFEB149830C242377CC941360F">
+     *			<ds:Transforms>
+     *				<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+     *			</ds:Transforms>
+     *			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+     *			<ds:DigestValue>uijX/nvuu8g10ZVEklEnYatvFe8=</ds:DigestValue>
+     *		</ds:Reference>
      * }
      * </pre>
      */
@@ -718,14 +722,14 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * Method incorporates KeyInfo ds:References.
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<ds:Reference URI="#keyInfo-id-A43023AFEB149830C242377CC941360F">
-     * 			<ds:Transforms>
-     * 				<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-     * 			</ds:Transforms>
-     * 			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-     * 			<ds:DigestValue>uijX/nvuu2g10ZVEklEnYatvFe4=</ds:DigestValue>
-     * 		</ds:Reference>
+     *			<ds:Transforms>
+     *				<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+     *			</ds:Transforms>
+     *			<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+     *			<ds:DigestValue>uijX/nvuu2g10ZVEklEnYatvFe4=</ds:DigestValue>
+     *		</ds:Reference>
      * }
      * </pre>
      */
@@ -758,8 +762,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
     /**
      * Creates the ds:DigestValue DOM object for the given {@code canonicalizedBytes}
      *
-     * @param referenceDom       - the parent element to append new DOM element to
-     * @param digestAlgorithm    - {@link DigestAlgorithm} to use
+     * @param referenceDom - the parent element to append new DOM element to
+     * @param digestAlgorithm - {@link DigestAlgorithm} to use
      * @param canonicalizedBytes - canonicalized byte array of the relevant reference DOM to hash
      */
     private void incorporateDigestValueOfReference(final Element referenceDom, final DigestAlgorithm digestAlgorithm,
@@ -809,6 +813,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * 		</SignedSignatureProperties>
      * }
      * </pre>
+     *
      */
     protected void incorporateSignedSignatureProperties() {
 
@@ -987,9 +992,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * Creates SigningTime DOM object element like :
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<SigningTime>2013-11-23T11:22:52Z</SigningTime>
-     *    }
+     * 	}
      * </pre>
      */
     private void incorporateSigningTime() {
@@ -1017,8 +1022,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * 			<IssuerSerial>
      * 				<ds:X509IssuerName>CN=ICA A,O=DSS,C=AA</ds:X509IssuerName>
      * 				<ds:X509SerialNumber>4</ds:X509SerialNumber>
-     * 			</IssuerSerial>
-     * 		</Cert>
+     *			</IssuerSerial>
+     *		</Cert>
      * 	</SigningCertificate>
      * }
      * </pre>
@@ -1062,11 +1067,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates the SignedDataObjectProperties DOM element like :
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<SignedDataObjectProperties> ...
      * 			<DataObjectFormat>
      * 				...
-     * 			</DataObjectFormat>
+     *			</DataObjectFormat>
      *          <CommitmentTypeIndication>
      *              ...
      *          </CommitmentTypeIndication>
@@ -1076,8 +1081,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      *          <IndividualDataObjectsTimeStamp>
      *              ...
      *          </IndividualDataObjectsTimeStamp>
-     * 		</SignedDataObjectProperties>
-     *    }
+     *		</SignedDataObjectProperties>
+     * 	}
      * </pre>
      */
     private void incorporateSignedDataObjectProperties() {
@@ -1103,12 +1108,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates the SignedDataObjectProperties DOM element like :
      *
      * <pre>
-     *    {@code
+     * 	{@code
      * 		<DataObjectFormat ObjectReference="#detached-ref-id">
      * 			<MimeType>text/plain</MimeType>
      * 			...
-     * 		</DataObjectFormat>
-     *    }
+     *		</DataObjectFormat>
+     * 	}
      * </pre>
      */
     private void incorporateDataObjectFormat() {
@@ -1233,7 +1238,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
         }
         if (signedAssertions != null && params.isEn319132()) {
 
-            if (signerRoleDom == null) {
+            if (signerRoleDom == null){
                 signerRoleDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignerRoleV2());
             }
 
@@ -1303,7 +1308,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
     /**
      * Below follows the schema definition for this element.
-     * <p>
+     *
      * <xsd:element name="CommitmentTypeIndication" type="CommitmentTypeIndicationType"/>
      * <xsd:complexType name="CommitmentTypeIndicationType">
      * ...<xsd:sequence>
@@ -1315,7 +1320,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * ......<xsd:element name="CommitmentTypeQualifiers" type="CommitmentTypeQualifiersListType" minOccurs="0"/>
      * ...</xsd:sequence>
      * </xsd:complexType>
-     * <p>
+     *
      * <xsd:complexType name="CommitmentTypeQualifiersListType">
      * ......<xsd:sequence>
      * .........<xsd:element name="CommitmentTypeQualifier"* type="AnyType" minOccurs="0" maxOccurs="unbounded"/>
@@ -1419,8 +1424,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * }
      * </pre>
      *
-     * @param parentDom        {@link Element} the parent element
-     * @param objectIdentifier {@link ObjectIdentifier}
+     * @param parentDom
+     *            {@link Element} the parent element
+     * @param objectIdentifier
+     *            {@link ObjectIdentifier}
      */
     private void incorporateObjectIdentifier(final Element parentDom, ObjectIdentifier objectIdentifier) {
         // add xades:Identifier
@@ -1455,8 +1462,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * }
      * </pre>
      *
-     * @param parentDom        {@link Element} the parent element
-     * @param objectIdentifier {@link ObjectIdentifier}
+     * @param parentDom
+     *            {@link Element} the parent element
+     * @param objectIdentifier
+     *            {@link ObjectIdentifier}
      */
     private void incorporateIdentifier(final Element parentDom, ObjectIdentifier objectIdentifier) {
         String uri = objectIdentifier.getUri();
@@ -1542,7 +1551,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * Adds the content of a timestamp into a given timestamp element
      *
      * @param timestampElement {@link Element}
-     * @param token            {@link TimestampToken}
+     * @param token {@link TimestampToken}
      */
     protected void addTimestamp(final Element timestampElement, final TimestampToken token) {
 
