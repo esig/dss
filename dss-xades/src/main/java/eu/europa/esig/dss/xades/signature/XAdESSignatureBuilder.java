@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- *
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- *
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -244,45 +244,53 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
     }
 
     private void assertSignaturePossible() {
-        if (DomUtils.isDOM(document)) {
-            Document dom = DomUtils.buildDOM(document);
-            final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(dom);
-            if (signatureNodeList != null && signatureNodeList.getLength() > 0) {
-                Document tempSave = documentDom;
-                documentDom = dom;
-                final Node parentSignatureNode = getParentNodeOfSignature();
-                final Set<Node> affectedNodes = new HashSet<>(Collections.singletonList(parentSignatureNode));
-                for (Node parentNode = dom; parentNode != null; parentNode = parentNode.getParentNode()) {
-                    affectedNodes.add(parentNode);
-                }
+        if (!DomUtils.isDOM(document)) return;
 
-                for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
-                    final Node signatureNode = signatureNodeList.item(ii);
-                    if (!affectedNodes.contains(signatureNode.getParentNode())) continue;
-                    assertDoesNotContainEnvelopedTransform(signatureNode);
-                }
-                documentDom = tempSave;
+        Document dom = DomUtils.buildDOM(document);
+        final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(dom);
+        if (signatureNodeList == null || signatureNodeList.getLength() == 0) return;
+
+        Document tempSave = documentDom;
+        documentDom = dom;
+
+        final Node parentSignatureNode = getParentNodeOfSignature();
+        final Set<Node> affectedNodes = new HashSet<>(Collections.singletonList(parentSignatureNode));
+        for (Node parentNode = parentSignatureNode.getParentNode(); parentNode != null; parentNode = parentNode.getParentNode()) {
+            affectedNodes.add(parentNode);
+        }
+
+        for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
+            final Node signatureNode = signatureNodeList.item(ii);
+            NodeList referenceNodeList = DSSXMLUtils.getReferenceNodeList(signatureNode);
+
+            if (referenceNodeList == null || referenceNodeList.getLength() == 0) return;
+            for (int jj = 0; jj < referenceNodeList.getLength(); jj++) {
+                final Node referenceNode = referenceNodeList.item(jj);
+                if (signatureCoveredNodeIsAffected(referenceNode, affectedNodes, dom))
+                    assertDoesNotContainEnvelopedTransform(referenceNode);
             }
         }
+        documentDom = tempSave;
     }
 
-    private void assertDoesNotContainEnvelopedTransform(final Node signatureNode) {
-        NodeList referenceNodeList = DSSXMLUtils.getReferenceNodeList(signatureNode);
-        if (referenceNodeList != null && referenceNodeList.getLength() > 0) {
-            for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
-                final Node referenceNode = referenceNodeList.item(ii);
-                NodeList transformList = DomUtils.getNodeList(referenceNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
-                if (transformList != null && transformList.getLength() > 0) {
-                    for (int jj = 0; jj < transformList.getLength(); jj++) {
-                        final Element transformElement = (Element) transformList.item(jj);
-                        String transformAlgorithm = transformElement
-                                .getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
-                        if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(transformAlgorithm)) {
-                            throw new IllegalInputException(String.format(
-                                    "The parallel signature is not possible! The provided file contains a signature with an '%s' transform.",
-                                    Transforms.TRANSFORM_ENVELOPED_SIGNATURE));
-                        }
-                    }
+    private static boolean signatureCoveredNodeIsAffected(Node referenceNode, Set<Node> affectedNodes, Document dom) {
+        String id = DSSXMLUtils.getAttribute(referenceNode, XMLDSigAttribute.URI.getAttributeName());
+        if (id == null) return false;
+        Node referencedNode = DomUtils.getElementById(dom, id);
+        return affectedNodes.contains(referencedNode) || id.isEmpty();
+    }
+
+    private void assertDoesNotContainEnvelopedTransform(final Node referenceNode) {
+        NodeList transformList = DomUtils.getNodeList(referenceNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
+        if (transformList != null && transformList.getLength() > 0) {
+            for (int jj = 0; jj < transformList.getLength(); jj++) {
+                final Element transformElement = (Element) transformList.item(jj);
+                String transformAlgorithm = transformElement
+                        .getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
+                if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(transformAlgorithm)) {
+                    throw new IllegalInputException(String.format(
+                            "The parallel signature is not possible! The provided file contains a signature with an '%s' transform.",
+                            Transforms.TRANSFORM_ENVELOPED_SIGNATURE));
                 }
             }
         }
@@ -414,9 +422,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method created the CanonicalizationMethod tag like :
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-     * 	}
+     *    }
      * </pre>
      *
      * @param parentDom
@@ -444,7 +452,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * included.
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<ds:KeyInfo>
      * 			<ds:X509Data>
      *  			<ds:X509Certificate>
@@ -459,7 +467,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * </pre>
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<ds:KeyInfo>
      * 			<ds:X509Data>
      *  			<ds:X509Certificate>
@@ -555,7 +563,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates the ds:Object tags
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<ds:Object>
      * 			...
      * 		</ds:Object>
@@ -576,7 +584,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates the ds:Object with xades:QualifyingProperties element
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<ds:Object>
      * 			<xades:QualifyingProperties>
      * 				<xades:SignedProperties>
@@ -680,7 +688,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates ds:References
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI=
     "#xades-id-A43023AFEB149830C242377CC941360F">
      *			<ds:Transforms>
@@ -722,7 +730,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * Method incorporates KeyInfo ds:References.
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<ds:Reference URI="#keyInfo-id-A43023AFEB149830C242377CC941360F">
      *			<ds:Transforms>
      *				<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
@@ -992,9 +1000,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * Creates SigningTime DOM object element like :
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<SigningTime>2013-11-23T11:22:52Z</SigningTime>
-     * 	}
+     *    }
      * </pre>
      */
     private void incorporateSigningTime() {
@@ -1067,7 +1075,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates the SignedDataObjectProperties DOM element like :
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<SignedDataObjectProperties> ...
      * 			<DataObjectFormat>
      * 				...
@@ -1082,7 +1090,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      *              ...
      *          </IndividualDataObjectsTimeStamp>
      *		</SignedDataObjectProperties>
-     * 	}
+     *    }
      * </pre>
      */
     private void incorporateSignedDataObjectProperties() {
@@ -1108,12 +1116,12 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
      * This method incorporates the SignedDataObjectProperties DOM element like :
      *
      * <pre>
-     * 	{@code
+     *    {@code
      * 		<DataObjectFormat ObjectReference="#detached-ref-id">
      * 			<MimeType>text/plain</MimeType>
      * 			...
      *		</DataObjectFormat>
-     * 	}
+     *    }
      * </pre>
      */
     private void incorporateDataObjectFormat() {
@@ -1238,7 +1246,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
         }
         if (signedAssertions != null && params.isEn319132()) {
 
-            if (signerRoleDom == null){
+            if (signerRoleDom == null) {
                 signerRoleDom = DomUtils.addElement(documentDom, signedSignaturePropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementSignerRoleV2());
             }
 
