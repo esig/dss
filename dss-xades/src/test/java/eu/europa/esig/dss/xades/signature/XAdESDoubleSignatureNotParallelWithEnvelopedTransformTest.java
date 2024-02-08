@@ -26,25 +26,20 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.ReaderInputStream;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XAdESDoubleSignatureNotParallelWithEnvelopedTransformTest extends AbstractXAdESTestSignature {
@@ -104,21 +99,7 @@ public class XAdESDoubleSignatureNotParallelWithEnvelopedTransformTest extends A
 		DSSDocument doubleSigned = super.sign();
 
 		documentToSign = originalDocument;
-        try {
-			InputStream s = doubleSigned.openStream();
-            File file = new File("result.xml");
-			Files.write(file.toPath(), IOUtils.toByteArray(s));
-			s.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
         return doubleSigned;
-	}
-
-	@Override
-	@Test
-	public void signAndVerify() {
-		assertDoesNotThrow(this::sign);
 	}
 
 	@Override
@@ -128,6 +109,11 @@ public class XAdESDoubleSignatureNotParallelWithEnvelopedTransformTest extends A
 
 	@Override
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
+		// skip
+	}
+
+	@Override
+	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		// skip
 	}
 

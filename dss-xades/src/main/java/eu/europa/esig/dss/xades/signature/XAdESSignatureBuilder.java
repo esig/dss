@@ -75,9 +75,9 @@ import org.w3c.dom.Text;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -214,7 +214,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		
 		xadesPath = getCurrentXAdESPath();
 
-		documentDom = buildRootDocumentDom();
+		initRootDocumentDom();
 
 		incorporateFiles();
 
@@ -250,39 +250,56 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	}
 	
 	private void assertSignaturePossible() {
-		if (!DomUtils.isDOM(document)) return;
-		Document dom = DomUtils.buildDOM(document);
-		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(dom);
-		if (signatureNodeList == null || signatureNodeList.getLength() == 0) return;
+		if (!DomUtils.isDOM(document)) {
+			return;
+		}
 
-		Document tempSave = documentDom;
-		documentDom = dom;
+		initRootDocumentDom();
+
+		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom);
+		if (signatureNodeList == null || signatureNodeList.getLength() == 0) {
+			return;
+		}
 
 		final Node parentSignatureNode = getParentNodeOfSignature();
-		final Set<Node> affectedNodes = new HashSet<>(Collections.singletonList(parentSignatureNode));
-		for (Node parentNode = parentSignatureNode.getParentNode(); parentNode != null; parentNode = parentNode.getParentNode()) {
-			affectedNodes.add(parentNode);
-		}
+		final Set<Node> parentNodes = getParentNodesChain(parentSignatureNode);
 
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 			final Node signatureNode = signatureNodeList.item(ii);
 			NodeList referenceNodeList = DSSXMLUtils.getReferenceNodeList(signatureNode);
+			if (referenceNodeList == null || referenceNodeList.getLength() == 0) {
+				continue;
+			}
 
-			if (referenceNodeList == null || referenceNodeList.getLength() == 0) return;
 			for (int jj = 0; jj < referenceNodeList.getLength(); jj++) {
 				final Node referenceNode = referenceNodeList.item(jj);
-				if (signatureCoveredNodeIsAffected(referenceNode, affectedNodes, dom))
+				if (isSignatureCoveredNodeAffected(referenceNode, parentNodes)) {
 					assertDoesNotContainEnvelopedTransform(referenceNode);
+				}
 			}
 		}
-		documentDom = tempSave;
 	}
 
-	private static boolean signatureCoveredNodeIsAffected(Node referenceNode, Set<Node> affectedNodes, Document dom) {
-		String id = DSSXMLUtils.getAttribute(referenceNode, XMLDSigAttribute.URI.getAttributeName());
-		if (id == null) return false;
-		Node referencedNode = DomUtils.getElementById(dom, id);
-		return affectedNodes.contains(referencedNode) || id.isEmpty();
+	private Set<Node> getParentNodesChain(Node node) {
+		final Set<Node> nodesChain = new LinkedHashSet<>();
+		nodesChain.add(node);
+		for (Node parentNode = node.getParentNode(); parentNode != null; parentNode = parentNode.getParentNode()) {
+			nodesChain.add(parentNode);
+		}
+		return nodesChain;
+	}
+
+	private boolean isSignatureCoveredNodeAffected(Node referenceNode, Set<Node> affectedNodes) {
+		final String id = DSSXMLUtils.getAttribute(referenceNode, XMLDSigAttribute.URI.getAttributeName());
+		if (id == null) {
+			return false;
+		} else if (Utils.isStringEmpty(id)) {
+			// covers the whole file
+			return true;
+		} else {
+			Node referencedNode = DomUtils.getElementById(documentDom, id);
+			return affectedNodes.contains(referencedNode);
+		}
 	}
 
 	private void assertDoesNotContainEnvelopedTransform(final Node referenceNode) {
@@ -343,6 +360,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 */
 	protected void incorporateFiles() {
 		// not implemented by default
+	}
+
+	/**
+	 * This method is used to instantiate a root {@code Document} DOM, when needed
+	 */
+	protected void initRootDocumentDom() {
+		if (documentDom == null) {
+			documentDom = buildRootDocumentDom();
+		}
 	}
 
 	/**
