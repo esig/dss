@@ -43,7 +43,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESDoubleSignatureWithEnvelopedTransformTest extends AbstractXAdESTestSignature {
+public class XAdESDoubleSignatureParallelWithEnvelopedTransformTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
