@@ -52,17 +52,15 @@ public class ByteRangeInputStream extends FilterInputStream {
 
     @Override
     public int read() throws IOException {
-        skipPerRange();
+        ensureFirstByteRangePosition();
 
         int b = -1;
         if (position == byteRange.getFirstPartEnd()) {
             int offset =  byteRange.getSecondPartStart() - byteRange.getFirstPartEnd();
-            long skipped = super.skip(offset);
-            position += skipped;
+            skip(offset);
         } else if (position < byteRange.getFirstPartStart()) {
             int offset = byteRange.getFirstPartStart() - position;
-            long skipped = super.skip(offset);
-            position += skipped;
+            skip(offset);
         }
         if (isPositionWithinRange(position + 1)) {
             b = super.read();
@@ -75,36 +73,54 @@ public class ByteRangeInputStream extends FilterInputStream {
 
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
-        position += off;
-        skipPerRange();
+        Objects.requireNonNull(b, "Byte array cannot be null!");
 
-        int readBytes = 0;
-        if (isPositionWithinFirstPart(position)) {
-            int toRead = byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() - position;
-            readBytes = super.read(b, off, Math.min(len, toRead));
+        ensureFirstByteRangePosition();
+
+        int totalRead = 0;
+        while (totalRead < len) {
+            int remaining = len - totalRead;
+            int toRead = remainingBytesInCurrentPart();
+            if (toRead <= 0) {
+                break;
+            }
+
+            int readBytes = super.read(b, off + totalRead, Math.min(remaining, toRead));
+            if (readBytes < 1) {
+                break;
+            }
+            totalRead += readBytes;
             position += readBytes;
-        } else if (isPositionWithinSecondPart(position)) {
-            int toRead = byteRange.getSecondPartStart() + byteRange.getSecondPartEnd() - position;
-            int readBytesSecondPart = super.read(b, off + readBytes, Math.min(len - readBytes, toRead));
-            readBytes += readBytesSecondPart;
-            position += readBytesSecondPart;
         }
-        if (readBytes < 1) {
+
+        if (totalRead < 1) {
             return -1;
         }
-        return readBytes;
+
+        return totalRead;
     }
 
-    private void skipPerRange() throws IOException {
-        if (position == byteRange.getFirstPartEnd()) {
-            int offset =  byteRange.getSecondPartStart() - byteRange.getFirstPartEnd();
-            long skipped = skip(offset);
-            position += skipped;
+    private long ensureFirstByteRangePosition() throws IOException {
+        return skip(0);
+    }
+
+    @Override
+    public long skip(long n) throws IOException {
+        long finalPosition = position + n;
+        long offset;
+        if (finalPosition >= byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() && finalPosition < byteRange.getSecondPartStart()) {
+            offset = byteRange.getSecondPartStart() + n - byteRange.getFirstPartStart() - byteRange.getFirstPartEnd();
         } else if (position < byteRange.getFirstPartStart()) {
-            int offset = byteRange.getFirstPartStart() - position;
-            long skipped = skip(offset);
-            position += skipped;
+            offset = byteRange.getFirstPartStart() - position + n;
+        } else {
+            offset = n;
         }
+        long skipped = super.skip(offset);
+        if (skipped > offset) {
+            skipped = offset;
+        }
+        position += (int) skipped;
+        return skipped;
     }
 
     private boolean isPositionWithinRange(int position) {
@@ -117,6 +133,15 @@ public class ByteRangeInputStream extends FilterInputStream {
 
     private boolean isPositionWithinSecondPart(int position) {
         return position >= byteRange.getSecondPartStart() && position <= byteRange.getSecondPartStart() + byteRange.getSecondPartEnd();
+    }
+
+    private int remainingBytesInCurrentPart() {
+        if (isPositionWithinFirstPart(position)) {
+            return byteRange.getFirstPartStart() + byteRange.getFirstPartEnd() - position;
+        } else if (isPositionWithinSecondPart(position)) {
+            return byteRange.getSecondPartStart() + byteRange.getSecondPartEnd() - position;
+        }
+        return 0;
     }
 
 }

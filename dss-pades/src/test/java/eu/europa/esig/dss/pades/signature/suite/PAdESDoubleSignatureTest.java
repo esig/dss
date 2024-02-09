@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.RepeatedTest;
-
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -41,10 +31,22 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.RepeatedTest;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESDoubleSignatureTest extends PKIFactoryAccess {
 
@@ -103,6 +105,26 @@ public class PAdESDoubleSignatureTest extends PKIFactoryAccess {
 		SignatureWrapper signatureTwo = diagnosticData2.getSignatures().get(1);
 		assertFalse(Arrays.equals(signatureOne.getSignatureDigestReference().getDigestValue(), signatureTwo.getSignatureDigestReference().getDigestValue()));
 
+		List<DSSDocument> originalDocumentsSigOne = validator.getOriginalDocuments(signatureOne.getId());
+		assertEquals(1, originalDocumentsSigOne.size());
+		assertArrayEquals(DSSUtils.toByteArray(toBeSigned), DSSUtils.toByteArray(originalDocumentsSigOne.get(0)));
+
+		List<DSSDocument> originalDocumentsSigTwo = validator.getOriginalDocuments(signatureTwo.getId());
+		assertEquals(1, originalDocumentsSigTwo.size());
+
+		validator = SignedDocumentValidator.fromDocument(originalDocumentsSigTwo.get(0));
+		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signatureOne.getId());
+		assertEquals(1, originalDocuments.size());
+		assertArrayEquals(DSSUtils.toByteArray(originalDocumentsSigOne.get(0)), DSSUtils.toByteArray(originalDocuments.get(0)));
+
+		List<AdvancedSignature> signatures = validator.getSignatures();
+		assertEquals(1, signatures.size());
+
+		Reports reports3 = validator.validateDocument();
+		DiagnosticData diagnosticData3 = reports3.getDiagnosticData();
+		assertTrue(diagnosticData3.isBLevelTechnicallyValid(signatures.get(0).getId()));
 	}
 
 	private void checkAllPreviousRevocationDataInNewDiagnosticData(DiagnosticData diagnosticData1, DiagnosticData diagnosticData2) {
