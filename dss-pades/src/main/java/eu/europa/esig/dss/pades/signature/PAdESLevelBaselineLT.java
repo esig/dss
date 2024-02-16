@@ -21,22 +21,19 @@
 package eu.europa.esig.dss.pades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.List;
-
-import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_LT;
 
 /**
  * PAdES Baseline LT signature
@@ -65,7 +62,13 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		}
 
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
-		assertExtendSignaturePossible(signatures, parameters, tLevelAdded);
+
+		final SignatureRequirementsChecker signatureRequirementsChecker =
+				new PAdESSignatureRequirementsChecker(certificateVerifier, parameters);
+		if (!tLevelAdded && SignatureLevel.PAdES_BASELINE_LT.equals(parameters.getSignatureLevel())) {
+			signatureRequirementsChecker.assertExtendToLTLevelPossible(signatures);
+		}
+		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signatures);
 
 		List<TimestampToken> detachedTimestamps = documentValidator.getDetachedTimestamps();
 		PdfValidationDataContainer validationData = documentValidator.getValidationData(signatures, detachedTimestamps);
@@ -81,22 +84,6 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 	 */
 	private PDFSignatureService getPAdESSignatureService() {
 		return pdfObjectFactory.newPAdESSignatureService();
-	}
-
-	private void assertExtendSignaturePossible(List<AdvancedSignature> signatures, PAdESSignatureParameters parameters,
-											   boolean tLevelAdded) {
-		for (AdvancedSignature signature : signatures) {
-			final PAdESSignature padesSignature = (PAdESSignature) signature;
-			final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-			if (!tLevelAdded && PAdES_BASELINE_LT.equals(signatureLevel) && padesSignature.hasLTAProfile()) {
-				throw new IllegalInputException(String.format(
-						"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
-			} else if (padesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
-				throw new IllegalInputException("Cannot extend signature. The signature does not contain certificates.");
-			} else if (padesSignature.areAllSelfSignedCertificates()) {
-				throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
-			}
-		}
 	}
 
 }

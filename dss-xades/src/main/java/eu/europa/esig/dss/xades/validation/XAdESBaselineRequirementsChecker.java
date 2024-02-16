@@ -311,15 +311,22 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     @Override
+    protected boolean containsLTLevelCertificates() {
+        Element signatureElement = signature.getSignatureElement();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getCertificateValuesPath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getAttrAuthoritiesCertValuesPath()) == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public boolean hasBaselineLTAProfile() {
         return minimalLTARequirement();
     }
 
-    /**
-     * Checks if the signature has a corresponding XAdES-BES profile
-     *
-     * @return TRUE if the signature has a XAdES-BES profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedBESProfile() {
         Element signatureElement = signature.getSignatureElement();
         XAdESPath xadesPaths = signature.getXAdESPaths();
@@ -368,11 +375,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding XAdES-EPES profile
-     *
-     * @return TRUE if the signature has a XAdES-EPES profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedEPESProfile() {
         Element signatureElement = signature.getSignatureElement();
         XAdESPath xadesPaths = signature.getXAdESPaths();
@@ -397,11 +400,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding XAdES-T profile
-     *
-     * @return TRUE if the signature has a XAdES-T profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedTProfile() {
         if (!minimalTRequirement()) {
             return false;
@@ -429,11 +428,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding XAdES-C profile
-     *
-     * @return TRUE if the signature has a XAdES-C profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedCProfile() {
         ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
         boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
@@ -441,35 +436,24 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
         Element signatureElement = signature.getSignatureElement();
         XAdESPath xadesPaths = signature.getXAdESPaths();
+
         // CompleteCertificateRefs/CompleteCertificateRefsV2 (Cardinality == 1)
-        int completeCompleteCertificateRefsAmount = allSelfSigned ? 0 : 1;
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsPath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path()) != completeCompleteCertificateRefsAmount) {
-            if (allSelfSigned) {
-                LOG.debug("CompleteCertificateRefs(V2) shall not be present for XAdES-C signature with all self-signed certificates (cardinality == 0})!");
-            } else {
-                LOG.debug("CompleteCertificateRefs(V2) shall be present for XAdES-C signature (cardinality == 1})!");
-            }
+        int completeCertificateRefsNumberOfOccurrences = getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsPath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteCertificateRefsV2Path());
+        if (completeCertificateRefsNumberOfOccurrences > 1 || (!allSelfSigned && completeCertificateRefsNumberOfOccurrences == 0)) {
+            LOG.debug("CompleteCertificateRefs(V2) shall be present for XAdES-C signature (cardinality == 1)!");
             return false;
         }
         // CompleteRevocationRefs (Cardinality == 1)
-        int completeRevocationRefsExpectedAmount = allSelfSigned ? 0 : 1;
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteRevocationRefsPath()) != completeRevocationRefsExpectedAmount) {
-            if (allSelfSigned) {
-                LOG.debug("CompleteRevocationRefs shall not be present for XAdES-C signature with all self-signed certificates (cardinality == 0})!");
-            } else {
-                LOG.debug("CompleteRevocationRefs shall be present for XAdES-C signature (cardinality == 1})!");
-            }
+        int completeRevocationRefsNumberOfOccurrences = getNumberOfOccurrences(signatureElement, xadesPaths.getCompleteRevocationRefsPath());
+        if (completeRevocationRefsNumberOfOccurrences > 1 || (!allSelfSigned && completeRevocationRefsNumberOfOccurrences == 0)) {
+            LOG.debug("CompleteRevocationRefs shall be present for XAdES-C signature (cardinality == 1)!");
             return false;
         }
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding XAdES-X profile
-     *
-     * @return TRUE if the signature has a XAdES-X profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedXProfile() {
         Element signatureElement = signature.getSignatureElement();
         XAdESPath xadesPaths = signature.getXAdESPaths();
@@ -485,20 +469,12 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding XAdES-XL profile
-     *
-     * @return TRUE if the signature has a XAdES-XL profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedXLProfile() {
         return minimalLTRequirement();
     }
 
-    /**
-     * Checks if the signature has a corresponding XAdES-A profile
-     *
-     * @return TRUE if the signature has a XAdES-A profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedAProfile() {
         return minimalLTARequirement();
     }

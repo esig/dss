@@ -26,13 +26,16 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cms.CMSSignedData;
@@ -42,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
@@ -219,6 +223,25 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     @Override
+    protected boolean containsLTLevelCertificates() {
+        CMSSignedData cmsSignedData = signature.getCmsSignedData();
+        List<CertificateToken> signedDataCertificates = cmsSignedData.getCertificates().getMatches(null)
+                .stream().map(DSSASN1Utils::getCertificate).collect(Collectors.toList());
+        ListCertificateSource timestampListCertificateSource = signature.getTimestampSource()
+                .getTimestampCertificateSourcesExceptLastArchiveTimestamp();
+        List<CertificateSource> timestampCertificateSources = timestampListCertificateSource.getSources();
+        if (Utils.isCollectionEmpty(timestampCertificateSources)) {
+            return false;
+        }
+        for (CertificateSource timestampCertificateSource : timestampCertificateSources) {
+            if (!Utils.containsAny(signedDataCertificates, timestampCertificateSource.getCertificates())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
     public boolean hasBaselineLTAProfile() {
         List<TimestampToken> timestampTokens = new ArrayList<>();
         timestampTokens.addAll(signature.getArchiveTimestamps());
@@ -244,11 +267,7 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-BES profile
-     *
-     * @return TRUE if the signature has a CAdES-BES profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedBESProfile() {
         SignerInformation signerInformation = signature.getSignerInformation();
         SignatureForm signatureForm = getBaselineSignatureForm();
@@ -357,11 +376,7 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-EPES profile
-     *
-     * @return TRUE if the signature has a CAdES-EPES profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedEPESProfile() {
         SignerInformation signerInformation = signature.getSignerInformation();
         SignatureForm signatureForm = getBaselineSignatureForm();
@@ -382,11 +397,7 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-T profile
-     *
-     * @return TRUE if the signature has a CAdES-T profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedTProfile() {
         if (!minimalTRequirement()) {
             return false;
@@ -400,11 +411,7 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-C profile
-     *
-     * @return TRUE if the signature has a CAdES-C profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedCProfile() {
         SignerInformation signerInformation = signature.getSignerInformation();
         // complete-certificate-references
@@ -428,11 +435,7 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-X profile
-     *
-     * @return TRUE if the signature has a CAdES-X profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedXProfile() {
         SignerInformation signerInformation = signature.getSignerInformation();
         if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_certCRLTimestamp)) +
@@ -443,20 +446,12 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-XL profile
-     *
-     * @return TRUE if the signature has a CAdES-XL profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedXLProfile() {
         return minimalLTRequirement();
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-A profile
-     *
-     * @return TRUE if the signature has a CAdES-A profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedAProfile() {
         List<TimestampToken> timestampTokens = new ArrayList<>();
         timestampTokens.addAll(signature.getArchiveTimestamps());

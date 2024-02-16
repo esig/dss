@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
@@ -34,8 +32,9 @@ import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.validation.ValidationDataContainer;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xades.definition.xades141.XAdES141Element;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
@@ -82,15 +81,16 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
-
-		boolean cLevelRequired = false;
+		if (!isCLevelRequired(signatures)) {
+			return;
+		}
 
 		// Reset sources
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 
 			// for XL-level it is required to re-initialize refs
-			if (!cLevelExtensionRequired()) {
+			if (!cLevelExtensionRequired(signature)) {
 				continue;
 			}
 
@@ -98,13 +98,13 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 			xadesSignature.resetCertificateSource();
 			xadesSignature.resetRevocationSources();
 			xadesSignature.resetTimestampSource();
-
-			cLevelRequired = true;
 		}
 
-		if (!cLevelRequired) {
-			return;
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		if (XAdES_C.equals(params.getSignatureLevel())) {
+			signatureRequirementsChecker.assertExtendToCLevelPossible(signatures);
 		}
+		signatureRequirementsChecker.assertCertificateChainValidForCLevel(signatures);
 
 		// Perform signature validation
 		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
@@ -112,11 +112,10 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		// Append ValidationData
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (!cLevelExtensionRequired()) {
+			if (signatureRequirementsChecker.hasXLevelOrHigher(signature)) {
+				// Unable to extend due to higher levels covering the current C-level
 				continue;
 			}
-
-			assertExtendSignatureToCPossible();
 
 			String indent = removeOldCertificateRefs();
 			removeOldRevocationRefs();
@@ -147,9 +146,19 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 	}
 
-	private boolean cLevelExtensionRequired() {
+	private boolean isCLevelRequired(List<AdvancedSignature> signatures) {
+		boolean cLevelExtensionRequired = false;
+		for (AdvancedSignature signature : signatures) {
+			if (cLevelExtensionRequired(signature)) {
+				cLevelExtensionRequired = true;
+			}
+		}
+		return cLevelExtensionRequired;
+	}
+
+	private boolean cLevelExtensionRequired(AdvancedSignature signature) {
 		return XAdES_C.equals(params.getSignatureLevel()) || XAdES_XL.equals(params.getSignatureLevel()) ||
-				!xadesSignature.hasCProfile();
+				!signature.hasXProfile();
 	}
 
 	private String removeOldCertificateRefs() {
@@ -353,21 +362,6 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 				incorporateDigestValue(digestAlgAndValueDom, digestAlgorithm, ocspToken);
 			}
 
-		}
-	}
-
-	/**
-	 * Checks if the extension is possible.
-	 */
-	private void assertExtendSignatureToCPossible() {
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if ((XAdES_C.equals(signatureLevel) && (xadesSignature.hasXProfile() || xadesSignature.hasAProfile() ||
-				(xadesSignature.hasXLProfile() && !xadesSignature.areAllSelfSignedCertificates()) )) ||
-				(XAdES_XL.equals(signatureLevel) && xadesSignature.hasAProfile()) ) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signature is already extended with higher level.", signatureLevel));
-		} else if (xadesSignature.areAllSelfSignedCertificates()) {
-			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
 		}
 	}
 

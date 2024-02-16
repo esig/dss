@@ -25,11 +25,11 @@ import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
@@ -73,18 +73,26 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 												List<String> signatureIdsToExtend) {
 		cmsSignedData = super.extendCMSSignatures(cmsSignedData, parameters, signatureIdsToExtend);
 
-		List<CAdESSignature> signaturesToExtend = new ArrayList<>();
-
 		CMSDocumentValidator documentValidator = getDocumentValidator(cmsSignedData, parameters);
 
+		final List<AdvancedSignature> signaturesToExtend = new ArrayList<>();
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			CAdESSignature cadesSignature = (CAdESSignature) signature;
 			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
 				// check if the resulted signature can be extended
-				assertExtendSignatureLevelLTPossible(cadesSignature, parameters);
 				signaturesToExtend.add(cadesSignature);
 			}
+		}
+
+		if (Utils.isCollectionNotEmpty(signaturesToExtend)) {
+			final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
+			if (CAdES_BASELINE_LT.equals(parameters.getSignatureLevel())) {
+				signatureRequirementsChecker.assertExtendToLTLevelPossible(signaturesToExtend);
+			}
+			signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signaturesToExtend);
+		} else {
+			return cmsSignedData;
 		}
 
 		// Perform signatures validation
@@ -213,18 +221,6 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		final CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder().setOriginalCMSSignedData(cmsSignedData);
 		return cmsSignedDataBuilder.extendCMSSignedData(validationDataForInclusion.getCertificateTokens(),
 				validationDataForInclusion.getCrlTokens(), validationDataForInclusion.getOcspTokens());
-	}
-	
-	private void assertExtendSignatureLevelLTPossible(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) {
-		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		if (CAdES_BASELINE_LT.equals(signatureLevel) && cadesSignature.hasLTAProfile()) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signedData is already extended with LTA level.", signatureLevel));
-		} else if (cadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
-			throw new IllegalInputException("Cannot extend signature. The signature does not contain certificates.");
-		} else if (cadesSignature.areAllSelfSignedCertificates()) {
-			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
-		}
 	}
 
 	/**

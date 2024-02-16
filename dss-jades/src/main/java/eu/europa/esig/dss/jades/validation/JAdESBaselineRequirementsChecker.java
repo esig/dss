@@ -234,6 +234,16 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     @Override
+    protected boolean containsLTLevelCertificates() {
+        JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
+        if (DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.X_VALS).size() +
+                DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.AX_VALS).size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public boolean hasBaselineLTAProfile() {
         return minimalLTARequirement();
     }

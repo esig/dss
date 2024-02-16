@@ -106,6 +106,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -301,6 +302,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		validator.setDetachedContents(getDetachedContents());
 		validator.setDetachedEvidenceRecordDocuments(getDetachedEvidenceRecords());
 		validator.setTokenIdentifierProvider(getTokenIdentifierProvider());
+		validator.setSigningCertificateSource(getSigningCertificateSource());
 		return validator;
 	}
 
@@ -321,6 +323,10 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	}
 
 	protected List<DSSDocument> getDetachedEvidenceRecords() {
+		return null;
+	}
+
+	protected CertificateSource getSigningCertificateSource() {
 		return null;
 	}
 

@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -64,12 +63,13 @@ public class XAdESLevelXL extends XAdESLevelX {
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
-
-		boolean xlLevelRequired = false;
+		if (!isXLLevelRequired(signatures)) {
+			return;
+		}
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (!xlLevelExtensionRequired()) {
+			if (!xlLevelExtensionRequired(xadesSignature)) {
 				continue;
 			}
 			
@@ -78,24 +78,23 @@ public class XAdESLevelXL extends XAdESLevelX {
 			// NOTE: do not force sources reload for certificate and revocation sources
 			// in order to ensure the same validation data as on -C level
 			xadesSignature.resetTimestampSource();
-
-			xlLevelRequired = true;
 		}
 
-		if (!xlLevelRequired) {
-			return;
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		if (XAdES_XL.equals(params.getSignatureLevel())) {
+			signatureRequirementsChecker.assertExtendToXLLevelPossible(signatures);
 		}
+		signatureRequirementsChecker.assertCertificateChainValidForXLLevel(signatures);
 
 		// Perform signature validation
 		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (!xlLevelExtensionRequired()) {
+			if (signatureRequirementsChecker.hasALevelOrHigher(signature)) {
+				// Unable to extend due to higher levels covering the current XL-level
 				continue;
 			}
-
-			assertExtendSignatureToXLPossible();
 
 			String indent = removeOldCertificateValues();
 			removeOldRevocationValues();
@@ -116,21 +115,18 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 	}
 
-	private boolean xlLevelExtensionRequired() {
-		return XAdES_XL.equals(params.getSignatureLevel()) || !xadesSignature.hasAProfile();
+	private boolean isXLLevelRequired(List<AdvancedSignature> signatures) {
+		boolean xlLevelExtensionRequired = false;
+		for (AdvancedSignature signature : signatures) {
+			if (xlLevelExtensionRequired(signature)) {
+				xlLevelExtensionRequired = true;
+			}
+		}
+		return xlLevelExtensionRequired;
 	}
 
-	/**
-	 * Checks if the extension is possible.
-	 */
-	private void assertExtendSignatureToXLPossible() {
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (XAdES_XL.equals(signatureLevel) && xadesSignature.hasAProfile()) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signature is already extended with A level.", signatureLevel));
-		} else if (xadesSignature.areAllSelfSignedCertificates()) {
-			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
-		}
+	private boolean xlLevelExtensionRequired(AdvancedSignature signature) {
+		return XAdES_XL.equals(params.getSignatureLevel()) || !signature.hasAProfile();
 	}
 
 }

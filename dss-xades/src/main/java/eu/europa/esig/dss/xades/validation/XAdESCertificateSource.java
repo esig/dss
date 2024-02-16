@@ -221,7 +221,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 				resolveForReference(certificateRef, certificateSource, candidatesForSigningCertificate);
 			}
 
-		} else if (candidatesForSigningCertificate.isEmpty()) {
+		} else {
 			List<CertificateToken> certificates = certificateSource.getCertificates();
 			LOG.debug("No signing certificate reference found. " +
 					"Resolve all {} certificates from the provided certificate source as signing candidates.", certificates.size());

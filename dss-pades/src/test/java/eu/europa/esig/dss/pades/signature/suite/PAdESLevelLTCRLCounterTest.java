@@ -153,7 +153,7 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
 
         private static final long serialVersionUID = 7677238056219199658L;
 
-        public PKICRLSourceCounter(CertEntityRepository certEntityRepository) {
+        public PKICRLSourceCounter(CertEntityRepository<?> certEntityRepository) {
             super(certEntityRepository);
         }
 

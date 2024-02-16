@@ -397,8 +397,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	public CertificateToken getSigningCertificateToken() {
 		if (signingCertificateToken == null) {
 			// This ensures that the variable candidatesForSigningCertificate has been initialized
-			CandidatesForSigningCertificate candidatesForSigningCertificate = getCertificateSource()
-					.getCandidatesForSigningCertificate(signingCertificateSource);
+			CandidatesForSigningCertificate candidatesForSigningCertificate = getCandidatesForSigningCertificate();
 			// This ensures that the variable signatureCryptographicVerification has been initialized
 			signatureCryptographicVerification = getSignatureCryptographicVerification();
 			final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
@@ -545,40 +544,59 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@SuppressWarnings("rawtypes")
 	protected abstract BaselineRequirementsChecker createBaselineRequirementsChecker();
 
-	/**
-	 * Checks if the signature is conformant to AdES-BASELINE-B level
-	 *
-	 * @return TRUE if the B-level is present, FALSE otherwise
-	 */
+	@Override
 	public boolean hasBProfile() {
 		return getBaselineRequirementsChecker().hasBaselineBProfile();
 	}
 
-	/**
-	 * Checks if the T-level is present in the signature
-	 *
-	 * @return TRUE if the T-level is present, FALSE otherwise
-	 */
+	@Override
 	public boolean hasTProfile() {
 		return getBaselineRequirementsChecker().hasBaselineTProfile();
 	}
 
-	/**
-	 * Checks if the LT-level is present in the signature
-	 *
-	 * @return TRUE if the LT-level is present, FALSE otherwise
-	 */
+	@Override
 	public boolean hasLTProfile() {
 		return getBaselineRequirementsChecker().hasBaselineLTProfile();
 	}
 
-	/**
-	 * Checks if the LTA-level is present in the signature
-	 *
-	 * @return TRUE if the LTA-level is present, FALSE otherwise
-	 */
+	@Override
 	public boolean hasLTAProfile() {
 		return getBaselineRequirementsChecker().hasBaselineLTAProfile();
+	}
+
+	@Override
+	public boolean hasBESProfile() {
+		return getBaselineRequirementsChecker().hasExtendedBESProfile();
+	}
+
+	@Override
+	public boolean hasEPESProfile() {
+		return getBaselineRequirementsChecker().hasExtendedEPESProfile();
+	}
+
+	@Override
+	public boolean hasExtendedTProfile() {
+		return getBaselineRequirementsChecker().hasExtendedTProfile();
+	}
+
+	@Override
+	public boolean hasCProfile() {
+		return getBaselineRequirementsChecker().hasExtendedCProfile();
+	}
+
+	@Override
+	public boolean hasXProfile() {
+		return getBaselineRequirementsChecker().hasExtendedXProfile();
+	}
+
+	@Override
+	public boolean hasXLProfile() {
+		return getBaselineRequirementsChecker().hasExtendedXLProfile();
+	}
+
+	@Override
+	public boolean hasAProfile() {
+		return getBaselineRequirementsChecker().hasExtendedAProfile();
 	}
 
 	@Override

@@ -102,6 +102,76 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     public abstract boolean hasBaselineLTAProfile();
 
     /**
+     * Checks if the signature has a corresponding *AdES-BES profile
+     *
+     * @return TRUE if the signature has a *AdES-BES profile, FALSE otherwise
+     */
+    public boolean hasExtendedBESProfile() {
+        // not implemented by default
+        return false;
+    }
+
+    /**
+     * Checks if the signature has a corresponding *AdES-EPES profile
+     *
+     * @return TRUE if the signature has a *AdES-EPES profile, FALSE otherwise
+     */
+    public boolean hasExtendedEPESProfile() {
+        // not implemented by default
+        return false;
+    }
+
+    /**
+     * Checks if the signature has a corresponding *AdES-T profile
+     *
+     * @return TRUE if the signature has a *AdES-T profile, FALSE otherwise
+     */
+    public boolean hasExtendedTProfile() {
+        // not implemented by default
+        return false;
+    }
+
+    /**
+     * Checks if the signature has a corresponding *AdES-C profile
+     *
+     * @return TRUE if the signature has a *AdES-C profile, FALSE otherwise
+     */
+    public boolean hasExtendedCProfile() {
+        // not implemented by default
+        return false;
+    }
+
+    /**
+     * Checks if the signature has a corresponding *AdES-X profile
+     *
+     * @return TRUE if the signature has a *AdES-X profile, FALSE otherwise
+     */
+    public boolean hasExtendedXProfile() {
+        // not implemented by default
+        return false;
+    }
+
+    /**
+     * Checks if the signature has a corresponding *AdES-XL profile
+     *
+     * @return TRUE if the signature has a *AdES-XL profile, FALSE otherwise
+     */
+    public boolean hasExtendedXLProfile() {
+        // not implemented by default
+        return false;
+    }
+
+    /**
+     * Checks if the signature has a corresponding *AdES-A profile
+     *
+     * @return TRUE if the signature has a *AdES-A profile, FALSE otherwise
+     */
+    public boolean hasExtendedAProfile() {
+        // not implemented by default
+        return false;
+    }
+
+    /**
      * Checks whether signature timestamps have been created before expiration of the signing-certificate
      * used to create the signature
      *
@@ -164,7 +234,21 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
             // check presence of all revocation data
             return isAllRevocationDataPresent();
         }
+        // Or one of the LT-/XL- profile properties are present (for self-signed cert chains only)
+        if (allSelfSigned) {
+            return containsLTLevelCertificates();
+        }
         return minimalLTRequirement;
+    }
+
+    /**
+     * This method verifies whether the signature contains some of the LT-/XL level attributes
+     *
+     * @return TRUE if the signature contains LT-/XL- level attributes, FALSE otherwise
+     */
+    protected boolean containsLTLevelCertificates() {
+        // FALSE by default
+        return false;
     }
 
     /**

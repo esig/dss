@@ -28,6 +28,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignatureValidationContext;
+import eu.europa.esig.dss.validation.status.SignatureStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,10 +45,10 @@ public class SignatureRequirementsChecker {
     private static final Logger LOG = LoggerFactory.getLogger(SignatureRequirementsChecker.class);
 
     /** CertificateVerifier to be used for certificates validation */
-    private final CertificateVerifier certificateVerifier;
+    protected final CertificateVerifier certificateVerifier;
 
     /** The signature parameters used for signature creation/extension */
-    private final AbstractSignatureParameters<?> signatureParameters;
+    protected final AbstractSignatureParameters<?> signatureParameters;
 
     /**
      * Default constructor
@@ -191,6 +192,304 @@ public class SignatureRequirementsChecker {
 
         validationContext.checkAllRequiredRevocationDataPresent();
         validationContext.checkCertificatesNotRevoked(signature);
+    }
+
+    /**
+     * Verifies whether extension of {@code signatures} to T-level is possible
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertExtendToTLevelPossible(List<AdvancedSignature> signatures) {
+        assertTLevelIsHighest(signatures);
+    }
+
+    /**
+     * Checks whether across {@code signatures} the T-level is highest and T-level augmentation can be performed
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    protected void assertTLevelIsHighest(List<AdvancedSignature> signatures) {
+        SignatureStatus status = new SignatureStatus();
+        for (AdvancedSignature signature : signatures) {
+            checkTLevelIsHighest(signature, status);
+        }
+        if (!status.isEmpty()) {
+            status.setMessage("Error on signature augmentation to T-level.");
+            certificateVerifier.getAugmentationAlertOnHigherSignatureLevel().alert(status);
+        }
+    }
+
+    /**
+     * Verifies whether the {@code signature} has maximum B- or T-level
+     *
+     * @param signature {@link AdvancedSignature} to be verifies
+     * @param status {@link SignatureStatus} to fill in case of error
+     */
+    protected void checkTLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
+        if (hasLTLevelOrHigher(signature)) {
+            status.addRelatedTokenAndErrorMessage(signature, "The signature is already extended with a higher level.");
+        }
+    }
+
+    /**
+     * Checks if the signature has LTA-level
+     *
+     * @param signature {@link AdvancedSignature} to be validated
+     * @return TRUE if the signature has LTA-level, FALSE otherwise
+     */
+    public boolean hasLTLevelOrHigher(AdvancedSignature signature) {
+        return signature.hasLTAProfile() ||
+                ((signature.hasLTProfile() || signature.hasCProfile()) && !signature.areAllSelfSignedCertificates() && signature.hasTProfile());
+    }
+
+    /**
+     * Verifies whether extension of {@code signatures} to LT-level is possible
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertExtendToLTLevelPossible(List<AdvancedSignature> signatures) {
+        assertLTLevelIsHighest(signatures);
+    }
+
+    /**
+     * Checks whether across {@code signatures} the LT-level is highest and LT-level augmentation can be performed
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    protected void assertLTLevelIsHighest(List<AdvancedSignature> signatures) {
+        SignatureStatus status = new SignatureStatus();
+        for (AdvancedSignature signature : signatures) {
+            checkLTLevelIsHighest(signature, status);
+        }
+        if (!status.isEmpty()) {
+            status.setMessage("Error on signature augmentation to LT-level.");
+            certificateVerifier.getAugmentationAlertOnHigherSignatureLevel().alert(status);
+        }
+    }
+
+    /**
+     * Verifies whether the {@code signature} has maximum B-, T- or LT-level
+     *
+     * @param signature {@link AdvancedSignature} to be verifies
+     * @param status {@link SignatureStatus} to fill in case of error
+     */
+    protected void checkLTLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
+        if (hasLTALevelOrHigher(signature)) {
+            status.addRelatedTokenAndErrorMessage(signature, "The signature is already extended with a higher level.");
+        }
+    }
+
+    /**
+     * Checks if the signature has LTA-level
+     *
+     * @param signature {@link AdvancedSignature} to be validated
+     * @return TRUE if the signature has LTA-level, FALSE otherwise
+     */
+    public boolean hasLTALevelOrHigher(AdvancedSignature signature) {
+        return signature.hasLTAProfile();
+    }
+
+    /**
+     * Checks whether across {@code signatures} the corresponding certificate chains require
+     * revocation data for LT-level augmentation
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertCertificateChainValidForLTLevel(List<AdvancedSignature> signatures) {
+        assertCertificateChainValid(signatures, "LT");
+    }
+
+    /**
+     * Checks whether across {@code signatures} the corresponding certificate chains require
+     * revocation data for C-level augmentation
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertCertificateChainValidForCLevel(List<AdvancedSignature> signatures) {
+        assertCertificateChainValid(signatures, "C");
+    }
+
+    /**
+     * Checks whether across {@code signatures} the corresponding certificate chains require
+     * revocation data for XL-level augmentation
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertCertificateChainValidForXLLevel(List<AdvancedSignature> signatures) {
+        assertCertificateChainValid(signatures, "XL");
+    }
+
+    private void assertCertificateChainValid(List<AdvancedSignature> signatures, String targetLevel) {
+        assertCertificatePresent(signatures, targetLevel);
+        assertCertificatesAreNotSelfSigned(signatures, targetLevel);
+    }
+
+    private void assertCertificatePresent(List<AdvancedSignature> signatures, String targetLevel) {
+        SignatureStatus status = new SignatureStatus();
+        for (AdvancedSignature signature : signatures) {
+            if (signature.getCertificateSource().getNumberOfCertificates() == 0) {
+                status.addRelatedTokenAndErrorMessage(signature, "The signature does not contain certificates.");
+            }
+        }
+        if (!status.isEmpty()) {
+            status.setMessage(String.format("Error on signature augmentation to %s-level.", targetLevel));
+            certificateVerifier.getAugmentationAlertOnSignatureWithoutCertificates().alert(status);
+        }
+    }
+
+    private void assertCertificatesAreNotSelfSigned(List<AdvancedSignature> signatures, String targetLevel) {
+        SignatureStatus status = new SignatureStatus();
+        for (AdvancedSignature signature : signatures) {
+            if (signature.areAllSelfSignedCertificates()) {
+                status.addRelatedTokenAndErrorMessage(signature, "The signature contains only self-signed certificate chains.");
+            }
+        }
+        if (!status.isEmpty()) {
+            status.setMessage(String.format("Error on signature augmentation to %s-level.", targetLevel));
+            certificateVerifier.getAugmentationAlertOnSelfSignedCertificateChains().alert(status);
+        }
+    }
+
+    /**
+     * Verifies whether extension of {@code signatures} to C-level is possible
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertExtendToCLevelPossible(List<AdvancedSignature> signatures) {
+        assertCLevelIsHighest(signatures);
+    }
+
+    /**
+     * Checks whether across {@code signatures} the C-level is highest and C-level augmentation can be performed
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    protected void assertCLevelIsHighest(List<AdvancedSignature> signatures) {
+        SignatureStatus status = new SignatureStatus();
+        for (AdvancedSignature signature : signatures) {
+            checkCLevelIsHighest(signature, status);
+        }
+        if (!status.isEmpty()) {
+            status.setMessage("Error on signature augmentation to C-level.");
+            certificateVerifier.getAugmentationAlertOnHigherSignatureLevel().alert(status);
+        }
+    }
+
+    /**
+     * Verifies whether the {@code signature} has maximum B-, T- or LT-level
+     *
+     * @param signature {@link AdvancedSignature} to be verifies
+     * @param status {@link SignatureStatus} to fill in case of error
+     */
+    protected void checkCLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
+        if (hasXLevelOrHigher(signature)) {
+            status.addRelatedTokenAndErrorMessage(signature, "The signature is already extended with a higher level.");
+        }
+    }
+
+    /**
+     * Checks if the signature has LTA-level
+     *
+     * @param signature {@link AdvancedSignature} to be validated
+     * @return TRUE if the signature has LTA-level, FALSE otherwise
+     */
+    public boolean hasXLevelOrHigher(AdvancedSignature signature) {
+        return (signature.hasXProfile() || signature.hasAProfile() ||
+                (signature.hasXLProfile() && !signature.areAllSelfSignedCertificates() && signature.hasTProfile()));
+    }
+
+    /**
+     * Verifies whether extension of {@code signatures} to X-level is possible
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertExtendToXLevelPossible(List<AdvancedSignature> signatures) {
+        assertXLevelIsHighest(signatures);
+    }
+
+    /**
+     * Checks whether across {@code signatures} the X-level is highest and X-level augmentation can be performed
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    protected void assertXLevelIsHighest(List<AdvancedSignature> signatures) {
+        SignatureStatus status = new SignatureStatus();
+        for (AdvancedSignature signature : signatures) {
+            checkXLevelIsHighest(signature, status);
+        }
+        if (!status.isEmpty()) {
+            status.setMessage("Error on signature augmentation to X-level.");
+            certificateVerifier.getAugmentationAlertOnHigherSignatureLevel().alert(status);
+        }
+    }
+
+    /**
+     * Verifies whether the {@code signature} has maximum B-, T- or LT-level
+     *
+     * @param signature {@link AdvancedSignature} to be verifies
+     * @param status {@link SignatureStatus} to fill in case of error
+     */
+    protected void checkXLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
+        if (hasXLLevelOrHigher(signature)) {
+            status.addRelatedTokenAndErrorMessage(signature, "The signature is already extended with a higher level.");
+        }
+    }
+
+    /**
+     * Checks if the signature has LTA-level
+     *
+     * @param signature {@link AdvancedSignature} to be validated
+     * @return TRUE if the signature has LTA-level, FALSE otherwise
+     */
+    public boolean hasXLLevelOrHigher(AdvancedSignature signature) {
+        return signature.hasAProfile() || (signature.hasXLProfile() && !signature.areAllSelfSignedCertificates() && signature.hasTProfile() && signature.hasXProfile());
+    }
+
+    /**
+     * Verifies whether extension of {@code signatures} to XL-level is possible
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertExtendToXLLevelPossible(List<AdvancedSignature> signatures) {
+        assertXLLevelIsHighest(signatures);
+    }
+
+    /**
+     * Checks whether across {@code signatures} the XL-level is highest and XL-level augmentation can be performed
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    protected void assertXLLevelIsHighest(List<AdvancedSignature> signatures) {
+        SignatureStatus status = new SignatureStatus();
+        for (AdvancedSignature signature : signatures) {
+            checkXLLevelIsHighest(signature, status);
+        }
+        if (!status.isEmpty()) {
+            status.setMessage("Error on signature augmentation to XL-level.");
+            certificateVerifier.getAugmentationAlertOnHigherSignatureLevel().alert(status);
+        }
+    }
+
+    /**
+     * Verifies whether the {@code signature} has maximum X-level
+     *
+     * @param signature {@link AdvancedSignature} to be verifies
+     * @param status {@link SignatureStatus} to fill in case of error
+     */
+    protected void checkXLLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
+        if (hasALevelOrHigher(signature)) {
+            status.addRelatedTokenAndErrorMessage(signature, "The signature is already extended with a higher level.");
+        }
+    }
+
+    /**
+     * Checks if the signature has A-level
+     *
+     * @param signature {@link AdvancedSignature} to be validated
+     * @return TRUE if the signature has A-level, FALSE otherwise
+     */
+    public boolean hasALevelOrHigher(AdvancedSignature signature) {
+        return hasLTALevelOrHigher(signature);
     }
 
 }

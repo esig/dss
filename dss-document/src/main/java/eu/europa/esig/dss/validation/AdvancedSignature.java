@@ -498,6 +498,85 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * @return a value of {@link SignatureLevel}
 	 */
 	SignatureLevel getDataFoundUpToLevel();
+
+	/**
+	 * Checks if the signature is conformant to AdES-BASELINE-B level
+	 *
+	 * @return TRUE if the B-level is present, FALSE otherwise
+	 */
+	boolean hasBProfile();
+
+	/**
+	 * Checks if the T-level is present in the signature
+	 *
+	 * @return TRUE if the T-level is present, FALSE otherwise
+	 */
+	boolean hasTProfile();
+
+	/**
+	 * Checks if the LT-level is present in the signature
+	 *
+	 * @return TRUE if the LT-level is present, FALSE otherwise
+	 */
+	boolean hasLTProfile();
+
+	/**
+	 * Checks if the LTA-level is present in the signature
+	 *
+	 * @return TRUE if the LTA-level is present, FALSE otherwise
+	 */
+	boolean hasLTAProfile();
+
+	/**
+	 * Checks the presence of signing certificate covered by the signature, what is the proof -BES profile existence
+	 *
+	 * @return true if BES Profile is detected
+	 */
+	boolean hasBESProfile();
+
+	/**
+	 * Checks the presence of SignaturePolicyIdentifier element in the signature,
+	 * what is the proof -EPES profile existence
+	 *
+	 * @return true if EPES Profile is detected
+	 */
+	boolean hasEPESProfile();
+
+	/**
+	 * Checks the presence of SignatureTimeStamp element in the signature, what is the proof -T profile existence
+	 *
+	 * @return true if T Profile is detected
+	 */
+	boolean hasExtendedTProfile();
+
+	/**
+	 * Checks the presence of CompleteCertificateRefs and CompleteRevocationRefs segments in the signature,
+	 * what is the proof -C profile existence
+	 *
+	 * @return true if C Profile is detected
+	 */
+	boolean hasCProfile();
+
+	/**
+	 * Checks the presence of SigAndRefsTimeStamp segment in the signature, what is the proof -X profile existence
+	 *
+	 * @return true if the -X extension is present
+	 */
+	boolean hasXProfile();
+
+	/**
+	 * Checks the presence of CertificateValues/RevocationValues segment in the signature, what is the proof -XL profile existence
+	 *
+	 * @return true if the -XL extension is present
+	 */
+	boolean hasXLProfile();
+
+	/**
+	 * Checks the presence of ArchiveTimeStamp element in the signature, what is the proof -A profile existence
+	 *
+	 * @return true if the -A extension is present
+	 */
+	boolean hasAProfile();
 	
 	/**
 	 * Checks if all certificate chains present in the signature are self-signed

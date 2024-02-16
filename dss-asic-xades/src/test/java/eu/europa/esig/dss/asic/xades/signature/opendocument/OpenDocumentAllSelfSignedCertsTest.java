@@ -20,19 +20,20 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.asic.xades.signature.asics.AbstractASiCSXAdESTestSignature;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -41,16 +42,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
+public class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
 	
 	private DSSDocument documentToSign;
 	
 	private ASiCWithXAdESSignatureParameters parameters;
 	private ASiCWithXAdESService service;
+	private CertificateVerifier certificateVerifier;
 	
 	public static Collection<Object[]> data() {
 		File folder = new File("src/test/resources/opendocument");
@@ -72,7 +74,8 @@ public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		parameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 
-        service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		certificateVerifier = getCompleteCertificateVerifier();
+		service = new ASiCWithXAdESService(certificateVerifier);
         service.setTspSource(getSelfSignedTsa());
 	}
 
@@ -98,29 +101,59 @@ public class OpenDocumentAllSelfSignedCertsTest extends PKIFactoryAccess {
 	@MethodSource("data")
 	public void ltLevelTest(File file) {
 		documentToSign = new FileDocument(file);
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
-		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
+		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@ParameterizedTest
 	@MethodSource("data")
 	public void ltaLevelTest(File file) {
 		documentToSign = new FileDocument(file);
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
-		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
-	}
-	
-	private DSSDocument sign() {
-        ToBeSigned dataToSign = service.getDataToSign(documentToSign, parameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, parameters.getDigestAlgorithm(), getPrivateKeyEntry());
-        return service.signDocument(documentToSign, parameters, signatureValue);
+		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Override
 	protected String getSigningAlias() {
 		return SELF_SIGNED_USER;
+	}
+
+	@Override
+	protected DSSDocument getDocumentToSign() {
+		return documentToSign;
+	}
+
+	@Override
+	public ASiCWithXAdESService getService() {
+		return service;
+	}
+
+	@Override
+	protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
+		return parameters;
+	}
+
+	@Override
+	public void signAndVerify() {
+		// do nothing
 	}
 
 }

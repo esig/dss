@@ -20,16 +20,22 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -37,9 +43,11 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JsonNotAdESLevelLTWithoutCertificatesTest extends AbstractJAdESTestSignature {
 
+    private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
@@ -55,15 +63,44 @@ public class JsonNotAdESLevelLTWithoutCertificatesTest extends AbstractJAdESTest
         signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
         signatureParameters.setGenerateTBSWithoutCertificate(true);
 
-        service = new JAdESService(getCompleteCertificateVerifier());
+        certificateVerifier = getCompleteCertificateVerifier();
+        service = new JAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
     }
 
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
-        assertEquals("Cannot extend signature. The signature does not contain certificates.", exception.getMessage());
+        certificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(new ExceptionOnStatusAlert());
+
+        Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+        assertTrue(exception.getMessage().contains("The signature does not contain certificates."));
+
+        certificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(new SilentOnStatusAlert());
+        super.signAndVerify();
+    }
+
+    @Override
+    protected CertificateSource getSigningCertificateSource() {
+        CommonCertificateSource signingCertificateSource = new CommonCertificateSource();
+        signingCertificateSource.addCertificate(getSigningCert());
+        return signingCertificateSource;
+    }
+
+    @Override
+    protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        assertEquals(SignatureLevel.JSON_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
+
+    @Override
+    protected void checkStructureValidation(DiagnosticData diagnosticData) {
+        // skip
     }
 
     @Override

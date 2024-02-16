@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -42,7 +41,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Objects;
 
-import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_LT;
 import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_T;
 
 /**
@@ -103,18 +101,18 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		}
 
 		boolean tLevelExtensionRequired = false;
-		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
-				certificateVerifier, parameters);
+		final SignatureRequirementsChecker signatureRequirementsChecker =
+				new PAdESSignatureRequirementsChecker(certificateVerifier, parameters);
 		for (AdvancedSignature signature : signatures) {
 			PAdESSignature padesSignature = (PAdESSignature) signature;
 			if (requiresDocumentTimestamp(padesSignature, parameters)) {
-				assertExtendSignatureToTPossible(padesSignature, parameters);
 				signatureRequirementsChecker.assertSigningCertificateIsValid(padesSignature);
 				tLevelExtensionRequired = true;
 			}
 		}
 
 		if (tLevelExtensionRequired) {
+			signatureRequirementsChecker.assertExtendToTLevelPossible(signatures);
 			// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 			return timestampDocument(document, parameters.getSignatureTimestampParameters(),
 					parameters.getPasswordProtection(), getSignatureTimestampService());
@@ -166,27 +164,6 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 
 	private boolean requiresDocumentTimestamp(PAdESSignature signature, PAdESSignatureParameters signatureParameters) {
 		return PAdES_BASELINE_T.equals(signatureParameters.getSignatureLevel()) || !signature.hasTProfile();
-	}
-
-	private void assertExtendSignatureToTPossible(PAdESSignature signature, PAdESSignatureParameters parameters) {
-		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		// ensure both levels are checked for optimization purposes
-		if (PAdES_BASELINE_T.equals(signatureLevel) || PAdES_BASELINE_LT.equals(signatureLevel)) {
-			if (signature.hasLTAProfile()) {
-				throw new IllegalInputException(String.format(
-						"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
-
-			} else if (signature.hasLTProfile() && !signature.areAllSelfSignedCertificates()) {
-				if (signature.hasTProfile()) {
-					throw new IllegalInputException(String.format(
-							"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
-				}
-				// NOTE: Otherwise allow extension, as it may be required to provide a best-signature-time
-				// to ensure the best practice of fresh revocation data incorporation
-				LOG.info("Signature contains a DSS dictionary, but no associated timestamp. " +
-						"Extension may lead to LTA-level.");
-			}
-		}
 	}
 
 }

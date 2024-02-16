@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
@@ -136,20 +135,22 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 	 * @param params {@link JAdESSignatureParameters} the extension parameters
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
-		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
-				certificateVerifier, params);
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(params);
+		if (isTLevelRequired(signatures, params)) {
+			signatureRequirementsChecker.assertExtendToTLevelPossible(signatures);
+		} else {
+			return;
+		}
 
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
-			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
 
 			// The timestamp must be added only if there is no one or the extension -T level is being created
 			if (!tLevelExtensionRequired(jadesSignature, params)) {
 				continue;
 			}
 
-			assertExtendSignatureToTPossible(jadesSignature, params);
-
+			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
 			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
@@ -167,20 +168,28 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 		}
 	}
 
-	private boolean tLevelExtensionRequired(JAdESSignature jadesSignature, JAdESSignatureParameters parameters) {
-		return JAdES_BASELINE_T.equals(parameters.getSignatureLevel()) || !jadesSignature.hasTProfile();
+	/**
+	 * Instantiates a {@code SignatureRequirementsChecker}
+	 *
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @return {@link SignatureRequirementsChecker}
+	 */
+	protected SignatureRequirementsChecker getSignatureRequirementsChecker(JAdESSignatureParameters parameters) {
+		return new SignatureRequirementsChecker(certificateVerifier, parameters);
 	}
 
-	/**
-	 * Checks if the extension is possible.
-	 */
-	private void assertExtendSignatureToTPossible(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (JAdES_BASELINE_T.equals(signatureLevel) && (jadesSignature.hasLTAProfile() ||
-				(jadesSignature.hasLTProfile() && !jadesSignature.areAllSelfSignedCertificates()) )) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
+	private boolean isTLevelRequired(List<AdvancedSignature> signatures, JAdESSignatureParameters parameters) {
+		boolean tLevelExtensionRequired = false;
+		for (AdvancedSignature signature : signatures) {
+			if (tLevelExtensionRequired(signature, parameters)) {
+				tLevelExtensionRequired = true;
+			}
 		}
+		return tLevelExtensionRequired;
+	}
+
+	private boolean tLevelExtensionRequired(AdvancedSignature jadesSignature, JAdESSignatureParameters parameters) {
+		return JAdES_BASELINE_T.equals(parameters.getSignatureLevel()) || !jadesSignature.hasTProfile();
 	}
 
 }

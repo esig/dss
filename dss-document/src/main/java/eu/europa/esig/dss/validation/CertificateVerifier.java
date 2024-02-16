@@ -331,6 +331,61 @@ public interface CertificateVerifier {
 	StatusAlert getAlertOnExpiredSignature();
 
 	/**
+	 * This method allows to change the augmentation behaviour for a signature of a higher level or
+	 * a document containing a such signature.
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 *
+	 * @param augmentationAlertOnHigherSignatureLevel defines augmentation behaviour for a signature of a higher level
+	 *                                                or a document containing a such signature.
+	 */
+	void setAugmentationAlertOnHigherSignatureLevel(StatusAlert augmentationAlertOnHigherSignatureLevel);
+
+	/**
+	 * This method returns the defined augmentation behaviour for a signature of a higher level or
+	 * a document containing a such signature.
+	 *
+	 * @return {@link StatusAlert} to be processed in case of a signature of a higher level or
+	 *                             a document containing a such signature.
+	 */
+	StatusAlert getAugmentationAlertOnHigherSignatureLevel();
+
+	/**
+	 * This method allows to change the augmentation behaviour for a signature without certificates.
+	 * The alert is triggered when no certificate is defined within the signature.
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 *
+	 * @param augmentationAlertOnSignatureWithoutCertificates defines augmentation behaviour for a signature
+	 *                                                        without certificates.
+	 */
+	void setAugmentationAlertOnSignatureWithoutCertificates(StatusAlert augmentationAlertOnSignatureWithoutCertificates);
+
+	/**
+	 * This method returns the defined augmentation behaviour for a signature without certificates.
+	 *
+	 * @return {@link StatusAlert} to be processed in case of a signature without certificates
+	 */
+	StatusAlert getAugmentationAlertOnSignatureWithoutCertificates();
+
+	/**
+	 * This method allows to change the augmentation behaviour for a signature containing
+	 * only self-signed certificate chains.
+	 * The alert is triggered when all used certificates are self-signed.
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 *
+	 * @param augmentationAlertOnSelfSignedCertificateChains defines augmentation behaviour for a signature containing
+	 *                                                       only self-signed certificate chains.
+	 */
+	void setAugmentationAlertOnSelfSignedCertificateChains(StatusAlert augmentationAlertOnSelfSignedCertificateChains);
+
+	/**
+	 * This method returns the defined augmentation behaviour for a signature containing
+	 * only self-signed certificate chains.
+	 *
+	 * @return {@link StatusAlert} to be processed in case of a signature containing only self-signed certificate chains
+	 */
+	StatusAlert getAugmentationAlertOnSelfSignedCertificateChains();
+
+	/**
 	 * This method allows enabling of revocation checking for untrusted certificate
 	 * chains.
 	 * Default : FALSE (revocation data is not checked for untrusted certificate chains)

@@ -152,6 +152,25 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
 
 	/**
+	 * Defines behavior on signature augmentation when a signature with a higher level is present, than the target one
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert augmentationAlertOnHigherSignatureLevel = new ExceptionOnStatusAlert();
+
+	/**
+	 * Defines behavior on augmentation for a signature not containing certificates
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert augmentationAlertOnSignatureWithoutCertificates = new ExceptionOnStatusAlert();
+
+	/**
+	 * Defines behavior on augmentation for a signature containing only self-signed certificate chains.
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert augmentationAlertOnSelfSignedCertificateChains = new ExceptionOnStatusAlert();
+
+	/**
 	 * This variable sets the behavior to follow for revocation retrieving in case of
 	 * untrusted certificate chains.
 	 * 
@@ -379,14 +398,47 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public StatusAlert getAlertOnExpiredSignature() {
+		return alertOnExpiredSignature;
+	}
+
+	@Override
 	public void setAlertOnExpiredSignature(StatusAlert alertOnExpiredSignature) {
 		Objects.requireNonNull(alertOnExpiredSignature);
 		this.alertOnExpiredSignature = alertOnExpiredSignature;
 	}
 
 	@Override
-	public StatusAlert getAlertOnExpiredSignature() {
-		return alertOnExpiredSignature;
+	public StatusAlert getAugmentationAlertOnHigherSignatureLevel() {
+		return augmentationAlertOnHigherSignatureLevel;
+	}
+
+	@Override
+	public void setAugmentationAlertOnHigherSignatureLevel(StatusAlert augmentationAlertOnHigherSignatureLevel) {
+		Objects.requireNonNull(augmentationAlertOnHigherSignatureLevel);
+		this.augmentationAlertOnHigherSignatureLevel = augmentationAlertOnHigherSignatureLevel;
+	}
+
+	@Override
+	public StatusAlert getAugmentationAlertOnSignatureWithoutCertificates() {
+		return augmentationAlertOnSignatureWithoutCertificates;
+	}
+
+	@Override
+	public void setAugmentationAlertOnSignatureWithoutCertificates(StatusAlert augmentationAlertOnSignatureWithoutCertificates) {
+		Objects.requireNonNull(augmentationAlertOnSignatureWithoutCertificates);
+		this.augmentationAlertOnSignatureWithoutCertificates = augmentationAlertOnSignatureWithoutCertificates;
+	}
+
+	@Override
+	public StatusAlert getAugmentationAlertOnSelfSignedCertificateChains() {
+		return augmentationAlertOnSelfSignedCertificateChains;
+	}
+
+	@Override
+	public void setAugmentationAlertOnSelfSignedCertificateChains(StatusAlert augmentationAlertOnSelfSignedCertificateChains) {
+		Objects.requireNonNull(augmentationAlertOnSelfSignedCertificateChains);
+		this.augmentationAlertOnSelfSignedCertificateChains = augmentationAlertOnSelfSignedCertificateChains;
 	}
 
 	@Override

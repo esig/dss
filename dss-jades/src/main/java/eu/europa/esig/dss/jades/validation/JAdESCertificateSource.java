@@ -342,7 +342,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 				}
 			}
 
-		} else if (candidatesForSigningCertificate.isEmpty()) {
+		} else {
 			List<CertificateToken> certificates = signingCertificateSource.getCertificates();
 			LOG.debug("No signing certificate reference found. " +
 					"Resolve all {} certificates from the provided certificate source as signing candidates.", certificates.size());

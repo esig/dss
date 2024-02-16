@@ -34,7 +34,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.ASN1Object;
-import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cms.CMSSignedData;
@@ -73,14 +72,26 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 			throw new IllegalInputException("There is no signature to extend!");
 		}
 
-		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
-				certificateVerifier, parameters);
+		final List<AdvancedSignature> signaturesToExtend = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			CAdESSignature cadesSignature = (CAdESSignature) signature;
+			if (signatureIdsToExtend.contains(cadesSignature.getId()) && tLevelExtensionRequired(cadesSignature, parameters)) {
+				// check if the resulted signature can be extended
+				signaturesToExtend.add(cadesSignature);
+			}
+		}
+
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
+		if (Utils.isCollectionNotEmpty(signaturesToExtend)) {
+			signatureRequirementsChecker.assertExtendToTLevelPossible(signaturesToExtend);
+		} else {
+			return cmsSignedData;
+		}
 
 		for (AdvancedSignature signature : signatures) {
 			final CAdESSignature cadesSignature = (CAdESSignature) signature;
 			final SignerInformation signerInformation = cadesSignature.getSignerInformation();
 			SignerInformation newSignerInformation = signerInformation;
-
 			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
 				newSignerInformation = extendSignerInformation(cmsSignedData, signerInformation, parameters,
 						signatureRequirementsChecker);
@@ -96,7 +107,6 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 													  SignatureRequirementsChecker signatureRequirementsChecker) {
 		final CAdESSignature cadesSignature = newCAdESSignature(signedData, signerInformation, parameters.getDetachedContents());
 		if (tLevelExtensionRequired(cadesSignature, parameters)) {
-			assertExtendSignatureLevelTPossible(cadesSignature, parameters);
 			signatureRequirementsChecker.assertSigningCertificateIsValid(cadesSignature);
 
 			AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
@@ -107,27 +117,18 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 		return signerInformation;
 	}
 
-	private boolean tLevelExtensionRequired(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) {
-		return CAdES_BASELINE_T.equals(parameters.getSignatureLevel()) || !cadesSignature.hasTProfile();
+	/**
+	 * Instantiates a {@code SignatureRequirementsChecker}
+	 *
+	 * @param parameters {@link CAdESSignatureParameters}
+	 * @return {@link SignatureRequirementsChecker}
+	 */
+	protected SignatureRequirementsChecker getSignatureRequirementsChecker(CAdESSignatureParameters parameters) {
+		return new SignatureRequirementsChecker(certificateVerifier, parameters);
 	}
 
-	/**
-	 * Checks if the signature extension is possible
-	 *
-	 * @param cadesSignature {@link CAdESSignature}
-	 */
-	private void assertExtendSignatureLevelTPossible(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) {
-		final String exceptionMessage = "Cannot extend signature to '%s'. The signedData is already extended with %s.";
-		if (CAdES_BASELINE_T.equals(parameters.getSignatureLevel()) && (cadesSignature.hasLTAProfile() ||
-				(cadesSignature.hasLTProfile() && !cadesSignature.areAllSelfSignedCertificates()) )) {
-			throw new IllegalInputException(String.format(exceptionMessage, parameters.getSignatureLevel(), "LT level"));
-		}
-		Attribute[] sigTimeStampAttributes = CMSUtils.getUnsignedAttributes(
-				cadesSignature.getSignerInformation(), PKCSObjectIdentifiers.id_aa_ets_escTimeStamp);
-		if (Utils.isArrayNotEmpty(sigTimeStampAttributes)) {
-			throw new IllegalInputException(String.format(exceptionMessage,
-					parameters.getSignatureLevel(), PKCSObjectIdentifiers.id_aa_ets_escTimeStamp.getId()));
-		}
+	private boolean tLevelExtensionRequired(AdvancedSignature cadesSignature, CAdESSignatureParameters parameters) {
+		return CAdES_BASELINE_T.equals(parameters.getSignatureLevel()) || !cadesSignature.hasTProfile();
 	}
 
 	private AttributeTable addSignatureTimestampAttribute(SignerInformation signerInformation, AttributeTable unsignedAttributes,

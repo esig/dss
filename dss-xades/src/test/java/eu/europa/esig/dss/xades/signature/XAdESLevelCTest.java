@@ -69,6 +69,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
+	protected CertificateVerifier certificateVerifier;
 	protected XAdESSignatureParameters signatureParameters;
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
@@ -84,7 +85,8 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_C);
 		signatureParameters.setTokenReferencesDigestAlgorithm(DigestAlgorithm.SHA384);
 		signatureParameters.setEn319132(false);
-		CertificateVerifier certificateVerifier=getCompleteCertificateVerifier();
+
+		certificateVerifier = getCompleteCertificateVerifier();
 		PKIOCSPSource pkiocspSource = pkiDelegatedOCSPSource();
 		certificateVerifier.setOcspSource(pkiocspSource);
 		service = new XAdESService(certificateVerifier);

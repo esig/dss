@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JsonObject;
@@ -29,6 +27,7 @@ import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -66,8 +65,9 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
 		super.extendSignatures(signatures, params);
-
-		boolean ltLevelRequired = false;
+		if (!isLTLevelRequired(signatures, params)) {
+			return;
+		}
 
 		// Reset sources
 		for (AdvancedSignature signature : signatures) {
@@ -76,22 +76,20 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 				continue;
 			}
 
-			/**
-			 * In all cases the -LT level need to be regenerated.
-			 */
+			// In all cases the -LT level need to be regenerated.
 			assertSignatureValid(jadesSignature, params);
 
 			// Data sources can already be loaded in memory (force reload)
 			jadesSignature.resetCertificateSource();
 			jadesSignature.resetRevocationSources();
 			jadesSignature.resetTimestampSource();
-
-			ltLevelRequired = true;
 		}
 
-		if (!ltLevelRequired) {
-			return;
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(params);
+		if (JAdES_BASELINE_LT.equals(params.getSignatureLevel())) {
+			signatureRequirementsChecker.assertExtendToLTLevelPossible(signatures);
 		}
+		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signatures);
 
 		// Perform signature validation
 		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
@@ -99,11 +97,10 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		// Append ValidationData
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
-			if (!ltLevelExtensionRequired(jadesSignature, params)) {
+			if (jadesSignature.hasLTAProfile()) {
 				continue;
 			}
-
-			assertExtendSignatureToLTPossible(jadesSignature, params);
+			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
 
 			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
 
@@ -246,23 +243,18 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		}
 	}
 
-	private boolean ltLevelExtensionRequired(JAdESSignature jadesSignature, JAdESSignatureParameters parameters) {
-		return JAdES_BASELINE_LT.equals(parameters.getSignatureLevel()) || !jadesSignature.hasLTAProfile();
+	private boolean isLTLevelRequired(List<AdvancedSignature> signatures, JAdESSignatureParameters parameters) {
+		boolean tLevelExtensionRequired = false;
+		for (AdvancedSignature signature : signatures) {
+			if (ltLevelExtensionRequired(signature, parameters)) {
+				tLevelExtensionRequired = true;
+			}
+		}
+		return tLevelExtensionRequired;
 	}
 
-	/**
-	 * Checks if the extension is possible.
-	 */
-	private void assertExtendSignatureToLTPossible(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (JAdES_BASELINE_LT.equals(signatureLevel) && jadesSignature.hasLTAProfile()) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
-		} else if (jadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
-			throw new IllegalInputException("Cannot extend signature. The signature does not contain certificates.");
-		} else if (jadesSignature.areAllSelfSignedCertificates()) {
-			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
-		}
+	private boolean ltLevelExtensionRequired(AdvancedSignature signature, JAdESSignatureParameters parameters) {
+		return JAdES_BASELINE_LT.equals(parameters.getSignatureLevel()) || !signature.hasLTAProfile();
 	}
 
 }

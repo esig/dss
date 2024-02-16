@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -30,18 +32,20 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
 	private DSSDocument documentToSign;
 	private PAdESSignatureParameters parameters;
 	private PAdESService service;
+	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
 	public void init() {
@@ -52,7 +56,8 @@ public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        service = new PAdESService(getOfflineCertificateVerifier());
+		certificateVerifier = getCompleteCertificateVerifier();
+        service = new PAdESService(certificateVerifier);
         service.setTspSource(getSelfSignedTsa());
 	}
 
@@ -72,16 +77,32 @@ public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 
 	@Test
 	public void ltLevelTest() {
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
-		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		Exception exception = assertThrows(AlertException.class, () -> sign());
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Test
 	public void ltaLevelTest() {
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
-		Exception exception = assertThrows(IllegalInputException.class, () -> sign());
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		Exception exception = assertThrows(AlertException.class, () -> sign());
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 	
 	private DSSDocument sign() {

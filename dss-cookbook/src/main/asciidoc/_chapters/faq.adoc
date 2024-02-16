@@ -158,6 +158,13 @@ The only possible way to perform the *cryptographic signature validation* is to 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLOTLSnippets.java[tags=data-loader-tls-v3]
 ----
 
+|all versions              a|PAdES-BASELINE-LT signature fails       a| If you receive the error "Cannot extend signature to 'PAdES-BASELINE-LT'. The signature is already extended with LTA level.", it means that the document already contains a `PAdES-BASELINE-LTA` signature, preventing you from a lower `-LT` level incorporation. In order to proceed with the signature creation, you should either enforce `PAdES-BASELINE-LTA` signature level within the used signature parameters, or (available starting from DSS 6.1) disable exception on alert within `CertificateVerifier`, as below:
+[source,java,indent=0]
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CertificateVerifierSnippet.java[tags=disable-augmentation-alert]
+----
+See <<certificateVerifier>> for more details about configuration.
+
 |all versions              a|I have a question not covered above      a|Feel free to reach us using https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[JIRA issues tracker].
 
 |===

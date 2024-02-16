@@ -182,10 +182,10 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
             return false;
         }
         PAdESSignature padesSignature = (PAdESSignature) signature;
-        boolean allSelfSigned = padesSignature.getCertificateSource().isAllSelfSigned();
+        boolean allSelfSigned = getCertificateSourcesExceptLastArchiveTimestamp().isAllSelfSigned();
         // SPO: DSS
         if (!allSelfSigned && padesSignature.getDssDictionary() == null) {
-            LOG.warn("DSS dictionary shall be present for PAdES-BASELINE-LT signature! (cardinality >= 1)");
+            LOG.debug("DSS dictionary shall be present for PAdES-BASELINE-LT signature! (cardinality >= 1)");
             return false;
         }
         return true;

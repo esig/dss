@@ -20,25 +20,30 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESAllSelfSignedCertsTest extends AbstractCAdESTestSignature {
 	
 	private DSSDocument documentToSign;
 	private CAdESSignatureParameters parameters;
 	private CAdESService service;
+	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
 	public void init() {
@@ -50,34 +55,53 @@ public class CAdESAllSelfSignedCertsTest extends AbstractCAdESTestSignature {
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        service = new CAdESService(getOfflineCertificateVerifier());
+		certificateVerifier = getCompleteCertificateVerifier();
+		service = new CAdESService(certificateVerifier);
         service.setTspSource(getSelfSignedTsa());
 	}
 
 	@Test
 	public void bLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		super.signAndVerify();
+		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Test
 	public void tLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		super.signAndVerify();
+		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Test
 	public void ltLevelTest() {
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-		Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Test
 	public void ltaLevelTest() {
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Override
