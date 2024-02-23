@@ -199,10 +199,12 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 		final PDSignature pdSignature = createSignatureDictionary(pdDocument, parameters);
 		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, fieldParameters);
+
 		if (pdSignatureField != null) {
-			setSignatureToField(pdSignatureField, pdSignature);
+
+			setSignatureToField(pdDocument, pdSignatureField, pdSignature);
 		}
-		
+
 		try (SignatureOptions options = new SignatureOptions()) {
 			options.setPreferredSignatureSize(parameters.getContentSize());
 
@@ -333,7 +335,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		return signature;
 	}
 
-	private void setSignatureToField(final PDSignatureField pdSignatureField, final  PDSignature pdSignature) {
+	private void setSignatureToField(final PDDocument pdDocument, final PDSignatureField pdSignatureField, final  PDSignature pdSignature) {
+		setFieldMDP(pdDocument, pdSignatureField, pdSignature);
 		pdSignatureField.getCOSObject().setItem(COSName.V, pdSignature);
 	}
 
@@ -349,6 +352,32 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		} catch (IOException e) {
 			LOG.warn("Cannot read the existing signature(s)", e);
 			return false;
+		}
+	}
+
+	/**
+	 * Add FieldMDP TransformMethod if the signature field contains a Lock
+	 * @param pdDocument the document
+	 * @param pdSignatureField the signature field
+	 * @param pdSignature the signature object
+	 */
+	private void setFieldMDP(PDDocument pdDocument, PDSignatureField pdSignatureField, PDSignature pdSignature) {
+		COSBase lock = pdSignatureField.getCOSObject().getDictionaryObject(COSName.getPDFName(PAdESConstants.LOCK_NAME));
+		if (lock instanceof COSDictionary) {
+			COSDictionary lockDict = (COSDictionary) lock;
+			COSDictionary transformParams = new COSDictionary(lockDict);
+			transformParams.setItem(COSName.TYPE, COSName.TRANSFORM_PARAMS);
+			transformParams.setName(COSName.V, PAdESConstants.VERSION_DEFAULT);
+			transformParams.setDirect(true);
+			COSDictionary sigRef = new COSDictionary();
+			sigRef.setItem(COSName.TYPE, COSName.SIG_REF);
+			sigRef.setItem(COSName.TRANSFORM_METHOD, COSName.getPDFName(PAdESConstants.FIELD_MDP_NAME));
+			sigRef.setItem(COSName.TRANSFORM_PARAMS, transformParams);
+			sigRef.setItem(COSName.getPDFName(PAdESConstants.DATA_NAME), pdDocument.getDocumentCatalog());
+			sigRef.setDirect(true);
+			COSArray referenceArray = new COSArray();
+			referenceArray.add(sigRef);
+			pdSignature.getCOSObject().setItem(COSName.REFERENCE, referenceArray);
 		}
 	}
 
