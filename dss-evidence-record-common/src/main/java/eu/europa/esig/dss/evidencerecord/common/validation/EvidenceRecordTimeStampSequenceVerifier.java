@@ -22,6 +22,7 @@ package eu.europa.esig.dss.evidencerecord.common.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.evidencerecord.common.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
@@ -33,6 +34,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.validation.evidencerecord.ByteArrayComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,8 +242,18 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      * @return byte array representing document digest
      */
     protected byte[] getDocumentDigest(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain) {
-        return Utils.fromBase64(document.getDigest(archiveTimeStampChain.getDigestAlgorithm()));
+        Digest digest = getDataObjectDigestBuilder(document, archiveTimeStampChain).build();
+        return digest.getValue();
     }
+
+    /**
+     * Returns {@code DataObjectDigestBuilder} corresponding to the current implementation
+     *
+     * @param document {@link DSSDocument} document to build digest for
+     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} of the current hashtree
+     * @return {@link DataObjectDigestBuilder}
+     */
+    protected abstract DataObjectDigestBuilder getDataObjectDigestBuilder(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain);
 
     /**
      * This method is used to verify presence of ArchiveTimeStamp digests within the reference validation list.
@@ -515,7 +527,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         /*
          * The algorithm by which a root hash value is generated from the
          * <HashTree> element is as follows: the content of each <DigestValue>
-         element within the first <Sequence> element is base64 ([RFC4648],
+         * element within the first <Sequence> element is base64 ([RFC4648],
          * using the base64 alphabet not the base64url alphabet) decoded to
          * obtain a binary value (representing the hash value). All collected
          * hash values from the sequence are ordered in binary ascending order,

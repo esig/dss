@@ -33,13 +33,13 @@ import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
+import eu.europa.esig.dss.xades.validation.DetachedSignatureResolver;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.definition.XAdESPath;
 import eu.europa.esig.xades.definition.xades111.XAdES111Path;
@@ -811,6 +811,34 @@ public final class DSSXMLUtils {
 	 */
 	public static Manifest initManifest(Element manifestElement) throws XMLSecurityException {
 		return new Manifest(manifestElement, "");
+	}
+
+	/**
+	 * Initializes a Manifest object from the provided ds:Manifest element with a provided {@code detachedContents}
+	 *
+	 * @param manifestElement {@link Element} ds:Manifest element
+	 * @param detachedContents a list of {@link DSSDocument}s representing a detached content
+	 * @return {@link Manifest} object
+	 * @throws XMLSecurityException if en error occurs in an attempt to initialize the Manifest object
+	 */
+	public static Manifest initManifestWithDetachedContent(Element manifestElement, List<DSSDocument> detachedContents) throws XMLSecurityException {
+		final Manifest manifest = initManifest(manifestElement);
+		initManifestDetachedContent(manifest, detachedContents);
+		return manifest;
+	}
+
+	/**
+	 * Initializes detached content within the given {@code manifest}
+	 *
+	 * @param manifest {@link Manifest} to initialize detached content in
+	 * @param detachedContents a list of {@link DSSDocument}s
+	 */
+	public static void initManifestDetachedContent(Manifest manifest, List<DSSDocument> detachedContents) {
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
+			for (DigestAlgorithm digestAlgorithm : getReferenceDigestAlgos(manifest.getElement())) {
+				manifest.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
+			}
+		}
 	}
 	
 	/**

@@ -498,7 +498,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 [[EvidenceRecords]]
 === Evidence records
 
-Since version `5.13` DSS provides a possibility of evidence records validation in relation to digital signatures or alone.
+Since version `5.13` DSS provides a functionality of evidence records validation in relation to digital signatures or alone.
 
 DSS provides support of RFC 6283 XML Evidence Records (cf. <<R22>>) and RFC 4998 Evidence Record Syntax (cf. <<R23>>).
 
@@ -563,6 +563,50 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EvidenceRe
 
 The choice between two approaches have no impact on the final validation process, provided that the corresponding implementation of a document factory is configured within `META-INF/services` folder. See <<ServiceLoaderValidation>> for more information.
 
+==== Hash computation for evidence record creation
+
+In order to facilitate preservation of data objects and creation of evidence records, DSS provides utility classes for computation of archive data objects hashes, represented by data or signature documents.
+
+NOTE: DSS does not provide a functionality for creation of evidence records. Creation of evidence records would require a hash preservation system, which is out of scope of DSS.
+
+The following classes are provided, based on the target implementation of evidence records:
+
+* `XMLEvidenceRecordDataObjectDigestBuilder` (part of `dss-evidence-record-xml` module) - creates digest for a given document to be protected by an RFC 6283 XMLERS Evidence Record (cf. <<R22>>). Canonicalizes XML data objects.
+
+[source,java,indent=0]
+.Hash computation for RFC 6283 XMLERS Evidence Record
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=xml-er]
+----
+
+* `ASN1EvidenceRecordDataObjectDigestBuilder` (part of `dss-evidence-record-asn1` module) - creates digest for a given document to be protected by an RFC 4998 Evidence Record Syntax (ERS) (cf. <<R23>>).
+
+[source,java,indent=0]
+.Hash computation for RFC 4998 Evidence Record Syntax (ERS)
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=asn1-er]
+----
+
+* `XAdESEvidenceRecordDigestBuilder` (part of `dss-xades` module) - creates digest for an XML or XAdES signature to be protected by an embedded evidence-record. Can be used for both XMLERS (cf. <<R22>>) and Evidence Record Syntax (cf. <<R23>>) evidence record implementations.
+
+[source,java,indent=0]
+.Hash computation for a XAdES signature
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=xades-er]
+----
+
+* `CAdESEvidenceRecordDigestBuilder` (part of `dss-cades` module) - creates digest for a CMS or CAdES signature to be protected by an embedded evidence-record. Can be used only for Evidence Record Syntax (cf. <<R23>>) evidence record implementation.
+
+[source,java,indent=0]
+.Hash computation for a CAdES signature
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=cades-er]
+----
+
+NOTE: In case of creation of evidence-record detached from the signature document, one of the `XMLEvidenceRecordDataObjectDigestBuilder` or `ASN1EvidenceRecordDataObjectDigestBuilder` classes shall be used.
+
+WARNING: Always ensure a correct utility class is chosen based on your implementation of evidence-records. Usage of a wrong class may result to an erroneously computed hash and therefore invalidity of the evidence-record.
+
 [[ServiceLoaderValidation]]
 === DocumentValidator implementations
 
@@ -601,7 +645,7 @@ A validator implementation for an evidence record document can be loaded using e
 
 The following implementation of a validator factory is present in DSS:
 
-* `XMLEvidenceRecordValidatorFactory`: loads `XMLEvidenceRecordValidator`, used for an RFC 6283 XML Evidence Record (cf. <<R22>>) validation (delivered in `dss-evidence-record-xml` module);
+* `XMLEvidenceRecordValidatorFactory`: loads `XMLEvidenceRecordValidator`, used for an RFC 6283 XMLERS Evidence Record (cf. <<R22>>) validation (delivered in `dss-evidence-record-xml` module);
 * `ANS1EvidenceRecordValidatorFactory`: loads `ASN1EvidenceRecordValidator`, used for an RFC 4998 Evidence Record Syntax (ERS) (cf. <<R23>>) validation (delivered in `dss-evidence-record-asn1` module).
 
 ==== Signature Policy Validator

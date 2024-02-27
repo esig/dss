@@ -655,6 +655,20 @@ public final class DSSUtils {
 			throw new DSSException(String.format("Unable to read InputStream : %s", e.getMessage()), e);
 		}
 	}
+
+	/**
+	 * Gets CMSSignedData from the {@code InputStream}
+	 *
+	 * @param inputStream {@link InputStream} contained CMSSignedData
+	 * @return {@link CMSSignedData}
+	 */
+	public static CMSSignedData toCMSSignedData(final InputStream inputStream) {
+		try (InputStream is = inputStream) {
+			return new CMSSignedData(is);
+		} catch (IOException | CMSException e) {
+			throw new DSSException("Not a valid CAdES file", e);
+		}
+	}
 	
 	/**
 	 * Gets CMSSignedData from the {@code document} bytes
@@ -663,11 +677,7 @@ public final class DSSUtils {
 	 * @return {@link CMSSignedData}
 	 */
 	public static CMSSignedData toCMSSignedData(final DSSDocument document) {
-		try (InputStream inputStream = document.openStream()) {
-			return new CMSSignedData(inputStream);
-		} catch (IOException | CMSException e) {
-			throw new DSSException("Not a valid CAdES file", e);
-		}
+		return toCMSSignedData(document.openStream());
 	}
 
 	/**

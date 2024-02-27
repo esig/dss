@@ -1,6 +1,8 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordDataObjectDigestBuilder;
+import eu.europa.esig.dss.evidencerecord.common.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
@@ -37,6 +39,12 @@ public class ASN1EvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordT
      */
     public ASN1EvidenceRecordTimeStampSequenceVerifier(ASN1EvidenceRecord evidenceRecord) {
         super(evidenceRecord);
+    }
+
+    @Override
+    protected DataObjectDigestBuilder getDataObjectDigestBuilder(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain) {
+        DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
+        return new ASN1EvidenceRecordDataObjectDigestBuilder(document, digestAlgorithm);
     }
 
     /**

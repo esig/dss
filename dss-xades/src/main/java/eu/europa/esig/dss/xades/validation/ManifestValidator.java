@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
@@ -77,7 +76,7 @@ public class ManifestValidator {
 	 * @param detachedContents a list of detached manifested {@link DSSDocument}s
 	 */
 	public ManifestValidator(final Element manifestElement, final List<DSSDocument> detachedContents) {
-		this(initManifest(manifestElement), detachedContents);
+		this(initManifest(manifestElement, detachedContents), detachedContents);
 	}
 
 	/**
@@ -88,7 +87,7 @@ public class ManifestValidator {
 	 */
 	public ManifestValidator(final Manifest manifest, final List<DSSDocument> detachedContents) {
 		this(manifest);
-		initDetachedSignatureResolvers(manifest, detachedContents);
+		initManifestDetachedContent(manifest, detachedContents);
 	}
 
 	/**
@@ -100,20 +99,17 @@ public class ManifestValidator {
 		this.manifest = manifest;
 	}
 
-	private static Manifest initManifest(final Element manifestElement) {
+	private static Manifest initManifest(final Element manifestElement, final List<DSSDocument> detachedContents) {
 		try {
-			return DSSXMLUtils.initManifest(manifestElement);
+			return DSSXMLUtils.initManifestWithDetachedContent(manifestElement, detachedContents);
 		} catch (XMLSecurityException e) {
 			throw new DSSException(
 					String.format("Unable to instantiate a ManifestValidator. Reason : %s", e.getMessage()), e);
 		}
 	}
 
-	private static void initDetachedSignatureResolvers(Manifest manifest, List<DSSDocument> detachedContents) {
-		List<DigestAlgorithm> usedReferenceDigestAlgos = DSSXMLUtils.getReferenceDigestAlgos(manifest.getElement());
-		for (DigestAlgorithm digestAlgorithm : usedReferenceDigestAlgos) {
-			manifest.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
-		}
+	private static void initManifestDetachedContent(Manifest manifest, List<DSSDocument> detachedContents) {
+		DSSXMLUtils.initManifestDetachedContent(manifest, detachedContents);
 	}
 
 	/**

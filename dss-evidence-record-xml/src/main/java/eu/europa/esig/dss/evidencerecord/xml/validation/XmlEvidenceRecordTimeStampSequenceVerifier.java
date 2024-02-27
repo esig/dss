@@ -21,13 +21,14 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.evidencerecord.common.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
+import eu.europa.esig.dss.evidencerecord.xml.digest.XMLEvidenceRecordDataObjectDigestBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
-import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
@@ -59,20 +60,10 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     }
 
     @Override
-    protected byte[] getDocumentDigest(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain) {
-        byte[] documentDigest;
-        if (!(document instanceof DigestDocument) && DomUtils.isDOM(document)) {
-            /*
-             * Note that the selected canonicalization method MUST be used also for
-             * archive data when data is represented in XML format.
-             */
-            String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
-            byte[] canonicalizedDocument = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(document.openStream());
-            documentDigest = DSSUtils.digest(archiveTimeStampChain.getDigestAlgorithm(), canonicalizedDocument);
-        } else {
-            documentDigest = super.getDocumentDigest(document, archiveTimeStampChain);
-        }
-        return documentDigest;
+    protected DataObjectDigestBuilder getDataObjectDigestBuilder(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain) {
+        DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
+        String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
+        return new XMLEvidenceRecordDataObjectDigestBuilder(document, digestAlgorithm, canonicalizationMethod);
     }
 
     /**
