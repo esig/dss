@@ -41,8 +41,16 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     public void xadesWithErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-basic.xml");
 
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                new XAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA256).setSignatureId("invalid-sig-id").build());
+        assertEquals("No signature with Id 'invalid-sig-id' found in the document!", exception.getMessage());
+
+        String sigId = "id-b922f76108a1fe54051e562afb8678b9";
+
         assertEquals("28FAD563B04EE8485EFFA92FFB1B52CAC15C63FAA87737E5C4D069874A8AFA5F",
                 new XAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA256).build().getHexValue());
+        assertEquals("28FAD563B04EE8485EFFA92FFB1B52CAC15C63FAA87737E5C4D069874A8AFA5F",
+                new XAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA256).setSignatureId(sigId).build().getHexValue());
         assertEquals("28FAD563B04EE8485EFFA92FFB1B52CAC15C63FAA87737E5C4D069874A8AFA5F",
                 new XAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA256).setParallelEvidenceRecord(false).build().getHexValue());
         assertEquals("E69F1ED3CE0AB6F8A72D9773CD9E862ED56E5C558DD79C2E695993810BC5B0E1",

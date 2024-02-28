@@ -117,18 +117,16 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
             throw new IllegalInputException("The provided document does not contain any signature! " +
                     "Unable to compute message-imprint for an integrated evidence-record.");
 
-        } else if (Utils.collectionSize(signatures) > 1) {
-            if (Utils.isStringNotEmpty(signatureId)) {
-                signature = documentValidator.getSignatureById(signatureId);
-                if (signature == null) {
-                    throw new IllegalArgumentException(
-                            String.format("No signature with Id '%s' found in the document!", signatureId));
-                }
-
-            } else {
-                throw new IllegalInputException("The provided document contains multiple signatures! " +
-                        "Please use #setSignatureId method in order to provide the identifier.");
+        } else if (Utils.isStringNotEmpty(signatureId)) {
+            signature = documentValidator.getSignatureById(signatureId);
+            if (signature == null) {
+                throw new IllegalArgumentException(
+                        String.format("No signature with Id '%s' found in the document!", signatureId));
             }
+
+        } else if (Utils.collectionSize(signatures) > 1) {
+            throw new IllegalInputException("The provided document contains multiple signatures! " +
+                    "Please use #setSignatureId method in order to provide the identifier.");
 
         } else {
             signature = signatures.get(0);
