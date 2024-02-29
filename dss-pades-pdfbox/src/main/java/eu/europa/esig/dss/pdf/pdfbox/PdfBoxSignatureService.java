@@ -218,6 +218,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					// check signature field position only for new annotations
 					getVisibleSignatureFieldBoxPosition(signatureDrawer, documentReader, fieldParameters);
 				}
+
+				int page = fieldParameters.getPage();
+				options.setPage(page - ImageUtils.DEFAULT_FIRST_PAGE); // DSS-1138
 				
 				signatureDrawer.draw();
 			}

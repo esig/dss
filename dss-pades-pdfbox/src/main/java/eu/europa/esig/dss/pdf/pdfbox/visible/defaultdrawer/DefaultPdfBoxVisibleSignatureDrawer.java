@@ -90,7 +90,6 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		signatureProperties.buildSignature();
 
 		signatureOptions.setVisualSignature(signatureProperties);
-		signatureOptions.setPage(page - ImageUtils.DEFAULT_FIRST_PAGE); // DSS-1138
 	}
 
 	@Override
