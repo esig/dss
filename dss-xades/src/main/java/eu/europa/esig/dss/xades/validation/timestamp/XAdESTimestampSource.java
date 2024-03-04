@@ -350,7 +350,10 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected List<EvidenceRecord> makeEvidenceRecords(XAdESAttribute signatureAttribute, List<TimestampedReference> references) {
-		throw new UnsupportedOperationException("Not implemented!");
+		if (signatureAttribute != null) {
+			LOG.warn("Embedded evidence records are not supported! The unsigned attribute is skipped.");
+		}
+		return Collections.emptyList();
 	}
 
 	@Override

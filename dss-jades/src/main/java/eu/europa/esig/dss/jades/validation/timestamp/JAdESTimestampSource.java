@@ -532,7 +532,10 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 
 	@Override
 	protected List<EvidenceRecord> makeEvidenceRecords(JAdESAttribute signatureAttribute, List<TimestampedReference> references) {
-		throw new UnsupportedOperationException("Embedded evidence records are not supported in JAdES!");
+		if (signatureAttribute != null) {
+			LOG.warn("Embedded evidence records are not supported within JAdES format! The unsigned attribute is skipped.");
+		}
+		return Collections.emptyList();
 	}
 
 }

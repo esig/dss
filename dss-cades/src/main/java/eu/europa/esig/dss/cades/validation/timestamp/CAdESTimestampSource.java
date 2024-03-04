@@ -38,25 +38,25 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.x509.CMSCRLSource;
+import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
+import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.spi.x509.CMSCRLSource;
-import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
-import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
-import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampIdentifierBuilder;
-import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampIdentifierBuilder;
+import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.validation.timestamp.TimestampSource;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -91,6 +91,8 @@ import java.util.List;
 
 import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
 import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
+import static eu.europa.esig.dss.spi.OID.id_aa_er_external;
+import static eu.europa.esig.dss.spi.OID.id_aa_er_internal;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
@@ -245,8 +247,8 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	@Override
 	protected boolean isEvidenceRecord(CAdESAttribute unsignedAttribute) {
-		// TODO : not supported
-		return false;
+		return id_aa_er_internal.equals(unsignedAttribute.getASN1Oid()) ||
+				id_aa_er_external.equals(unsignedAttribute.getASN1Oid());
 	}
 
 	@Override
@@ -265,7 +267,10 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	@Override
 	protected List<EvidenceRecord> makeEvidenceRecords(CAdESAttribute signatureAttribute, List<TimestampedReference> references) {
-		throw new UnsupportedOperationException("Not implemented!");
+		if (signatureAttribute != null) {
+			LOG.warn("Embedded evidence records are not supported! The unsigned attribute is skipped.");
+		}
+		return Collections.emptyList();
 	}
 
 	@Override
