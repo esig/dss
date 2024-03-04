@@ -23,19 +23,17 @@ package eu.europa.esig.dss.validation.process.bbb;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 import java.util.List;
 
 /**
  * Abstract class to check if the given value is one of the allowed values by ValidationPolicy
  * @param <T> {@code XmlConstraintsConclusion}
+ *
  */
 public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConclusion> extends ChainItem<T> {
-
-	/** The value is used to accept all values */
-	private static final String ALL_VALUE = "*";
 
 	/** The constraint value */
 	private final MultiValuesConstraint constraint;
@@ -59,11 +57,7 @@ public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConcl
 	 * @return TRUE if the value is allowed by the constraint, FALSE otherwise
 	 */
 	protected boolean processValueCheck(String value) {
-		List<String> expectedValues = constraint.getId();
-		if (Utils.isStringNotEmpty(value) && Utils.isCollectionNotEmpty(expectedValues)) {
-			return expectedValues.contains(ALL_VALUE) || expectedValues.contains(value);
-		}
-		return false;
+		return ValidationProcessUtils.processValueCheck(value, constraint.getId());
 	}
 
 	/**
@@ -73,16 +67,7 @@ public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConcl
 	 * @return TRUE if the values are allowed by the constraint, FALSE otherwise
 	 */
 	protected boolean processValuesCheck(List<String> values) {
-		if (Utils.isCollectionNotEmpty(values)) {
-			for (String value : values) {
-				if (processValueCheck(value)) {
-					return true;
-				}
-			}
-			return false;
-		} else {
-			return Utils.isCollectionEmpty(constraint.getId());
-		}
+		return ValidationProcessUtils.processValuesCheck(values, constraint.getId());
 	}
 
 }

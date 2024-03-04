@@ -36,6 +36,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -45,6 +46,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.CertificateAcceptanceValida
 import eu.europa.esig.dss.validation.process.bbb.sav.RevocationAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
 
@@ -167,26 +169,40 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 				final SubContext subContext = token.getSigningCertificate().getId().equals(certificate.getId()) ?
 						SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
-				final List<CertificateRevocationWrapper> certificateRevocationData = SubContext.SIGNING_CERT.equals(subContext) ?
-						ValidationProcessUtils.getAcceptableRevocationDataForPSVIfExistOrReturnAll(token, certificate, bbbs, poe) : certificate.getCertificateRevocationData();
 
-				CertificateRevocationSelector certificateRevocationSelector = new ValidationTimeSlidingCertificateRevocationSelector(
-						i18nProvider, certificate, certificateRevocationData, controlTime, bbbs, tokenBBB.getId(), poe, policy);
-				XmlCRS xmlCRS = certificateRevocationSelector.execute();
-				result.getCRS().add(xmlCRS);
+				CertificateRevocationWrapper latestCompliantRevocation = null;
 
-				if (item == null) {
-					item = firstItem = satisfyingRevocationDataExists(xmlCRS, certificate, controlTime);
+				RevocationDataRequiredCheck<XmlVTS> revocationDataRequiredCheck = revocationDataRequired(certificate, subContext);
+				boolean revocationDataRequired = revocationDataRequiredCheck.process();
+				if (revocationDataRequired) {
+					final List<CertificateRevocationWrapper> certificateRevocationData = SubContext.SIGNING_CERT.equals(subContext) ?
+							ValidationProcessUtils.getAcceptableRevocationDataForPSVIfExistOrReturnAll(token, certificate, bbbs, poe) : certificate.getCertificateRevocationData();
+
+					CertificateRevocationSelector certificateRevocationSelector = new ValidationTimeSlidingCertificateRevocationSelector(
+							i18nProvider, certificate, certificateRevocationData, controlTime, bbbs, tokenBBB.getId(), poe, policy);
+					XmlCRS xmlCRS = certificateRevocationSelector.execute();
+					result.getCRS().add(xmlCRS);
+
+					ChainItem<XmlVTS> satisfyingRevocationDataExists = satisfyingRevocationDataExists(xmlCRS, certificate, controlTime);
+					if (item == null) {
+						item = firstItem = satisfyingRevocationDataExists;
+					} else {
+						item = item.setNextItem(satisfyingRevocationDataExists);
+					}
+
+					latestCompliantRevocation = certificateRevocationSelector.getLatestAcceptableCertificateRevocation();
+
 				} else {
-					item = item.setNextItem(satisfyingRevocationDataExists(xmlCRS, certificate, controlTime));
+					if (item == null) {
+						item = firstItem = revocationDataRequiredCheck;
+					} else {
+						item = item.setNextItem(revocationDataRequiredCheck);
+					}
 				}
-				
-				CertificateRevocationWrapper latestCompliantRevocation = certificateRevocationSelector.getLatestAcceptableCertificateRevocation();
 
 				if (latestCompliantRevocation == null) {
-					continue;
+					// skip revocation checks
 				}
-
 				/*
 				 * b) If the certificate is marked as revoked in any of the revocation status information
 				 * found in the previous step, the building block shall perform the following steps:
@@ -199,7 +215,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 *
 				 * - go to step d).
 				 */
-				if (latestCompliantRevocation.isRevoked()) {
+				else if (latestCompliantRevocation.isRevoked()) {
 					Model validationModel = policy.getValidationModel();
 					RevocationReason revocationReason = latestCompliantRevocation.getReason();
 					// NOTE : HYBRID model is treated as CHAIN for Signing Cert and as SHELL for CAs
@@ -208,7 +224,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 							|| RevocationReason.KEY_COMPROMISE.equals(revocationReason) || RevocationReason.UNSPECIFIED.equals(revocationReason)) {
 						controlTime = latestCompliantRevocation.getRevocationDate();
 					}
-
+				}
 				/*
 				 * c) If the certificate is not marked as revoked in all of the revocation status information
 				 * found in step a), the building block shall select the revocation status information that
@@ -218,7 +234,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * control time to the issuance time of the revocation status information.
 				 * Otherwise, the building block shall not change the value of control time.
 				 */
-				} else {
+				else {
 					RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(
 							i18nProvider, latestCompliantRevocation, controlTime, context, subContext, policy);
 					XmlRFC execute = rfc.execute();
@@ -239,14 +255,17 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				if (!isValidConclusion(certificateSAV.getConclusion())) {
 					cryptoNotAfterDate = getCryptographicAlgorithmExpirationDateOrNull(certificateSAV);
                 }
-                XmlSAV revocationSAV = getRevocationCryptographicAcceptanceResult(latestCompliantRevocation, controlTime);
-                if (!isValidConclusion(revocationSAV.getConclusion())) {
-					Date revCryptoNotAfter = getCryptographicAlgorithmExpirationDateOrNull(revocationSAV);
-                    if (cryptoNotAfterDate == null ||
-							(revCryptoNotAfter != null && revCryptoNotAfter.before(cryptoNotAfterDate))) {
-                        cryptoNotAfterDate = revCryptoNotAfter;
-                    }
-                }
+
+				if (latestCompliantRevocation != null) {
+					XmlSAV revocationSAV = getRevocationCryptographicAcceptanceResult(latestCompliantRevocation, controlTime);
+					if (!isValidConclusion(revocationSAV.getConclusion())) {
+						Date revCryptoNotAfter = getCryptographicAlgorithmExpirationDateOrNull(revocationSAV);
+						if (cryptoNotAfterDate == null ||
+								(revCryptoNotAfter != null && revCryptoNotAfter.before(cryptoNotAfterDate))) {
+							cryptoNotAfterDate = revCryptoNotAfter;
+						}
+					}
+				}
                 
                 if (cryptoNotAfterDate != null && cryptoNotAfterDate.before(controlTime)) {
                     controlTime = cryptoNotAfterDate;
@@ -283,6 +302,11 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			return sav.getCryptographicValidation().getNotAfter();
 		}
 		return null;
+	}
+
+	private RevocationDataRequiredCheck<XmlVTS> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
+		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlVTS> satisfyingRevocationDataExists(XmlCRS crsResult, CertificateWrapper certificateWrapper,

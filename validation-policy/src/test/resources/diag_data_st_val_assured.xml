@@ -1,0 +1,1169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>2024 01 17 Document</DocumentName>
+    <ValidationDate>2024-01-22T15:35:36Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-5CD6B8C00B5DFA4605EB561DCDB610BC27730B8C3AA4E928658B9DC16EF313DF">
+            <SignatureFilename>2024 01 17 Document</SignatureFilename>
+            <ClaimedSigningTime>2024-01-17T18:25:58Z</ClaimedSigningTime>
+            <SignatureFormat>PKCS7-T</SignatureFormat>
+            <StructuralValidation valid="true" />
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>9A2mzHnquEv7IoIGd8PuT7kSISemNAz7BKGA5RzQrzE=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-51F51A94E28F9192415046A771FAEB26FA361921234AAD658EFC22D79186499C"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-51F51A94E28F9192415046A771FAEB26FA361921234AAD658EFC22D79186499C"/>
+                <ChainItem Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=DocuSign Cloud Signing CA - SI1, OU=0002 812611150, O=DocuSign France, C=FR</IssuerName>
+                    <SerialNumber>3054647813812667574946389281898326855174934</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureField name="DocumentSeal" />
+                <PDFSignatureDictionary consistent="true">
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKMS</Filter>
+                    <SubFilter>adbe.pkcs7.detached</SubFilter>
+                    <SignatureByteRange valid="true">0 385417 450953 2110</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-51F51A94E28F9192415046A771FAEB26FA361921234AAD658EFC22D79186499C">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-E5BEE86BEFD89F78F85ACD41D65AF926D450E97DAF383CCE90DC5CB7AEA979F5">
+                    <Type>CRL</Type>
+                    <Origin>ADBE_REVOCATION_INFO_ARCHIVAL</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-6641C22E94FEC574FB8AEDD9501C777BADFABC6657B63F3ABFD67065078678E5">
+                    <Type>CRL</Type>
+                    <Origin>ADBE_REVOCATION_INFO_ARCHIVAL</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-342129E0DF36327E46A6F98825915AAE86F314CEC459ECB08A6FB5214D94D93E">
+                    <Type>CRL</Type>
+                    <Origin>ADBE_REVOCATION_INFO_ARCHIVAL</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-75F5860AF67BBB0F6F921464B60E021893B6FF5FB70A97856E5022F9C5F5E706"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-1D49BAA1BFA0B4AD209265AA2A7CD580153FA6B478B8A9820346BEFBBE2FB804">
+                    <Scope>PARTIAL</Scope>
+                    <Name>Partial PDF</Name>
+                    <Description>The document ByteRange : [0, 385417, 450953, 2110]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>0xYWz6YkQnoWd+7dnMIZDsGagB4rVn7kSNb5f/HpEho=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>YdYeF3vsRZNm4vlG/n1jCfH8krkf3Zp0YPlnvJsLAd2xQe7B+vbo+ZmLZVSIKL23bB0UeDsLQMv4DkRMbNFS19kZSyco25ADTKkB+aV8c5d/VHwk83nSdChKgfJL/YbJkLSwIBGAncN+yZZsKyUfoTlUx2jCcMjKWB5ZU3JoR1/fNlbhHBTzYPEOEgFmChB31I0+8OWBEpAcO0mGeeXh6va5nKNhqRX29nRL3tu0buW1HVJ36ZD+l7pce4pK5PkbPh7KlbYaMnp/QCxIRUIhfJ943P0CDswRsH4sEvPvUEHNSXhOvYYhXufu/gP66tvc6L8QEWQvlKzArgIR3dMdMA==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9">
+            <SubjectDistinguishedName Format="CANONICAL">cn=docusign time stamping ca - g1,ou=0002 812611150,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=DocuSign Time Stamping CA - G1,OU=0002 812611150,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=opentrust ca for aatl g1,ou=0002 478217318,o=opentrust,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=OpenTrust CA for AATL G1,OU=0002 478217318,O=OpenTrust,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492478095336152237461836871015777948587213</SerialNumber>
+            <CommonName>DocuSign Time Stamping CA - G1</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <OrganizationalUnit>0002 812611150</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>			  
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2038-01-01T00:00:00Z</NotAfter>
+            <NotBefore>2020-06-05T00:00:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-D9BC003347634630AB678A30D5C9929F813CBE7AE25BDCC8D559A4BD52CE7B46</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>eH9uVKrM6Di4/SfG54UVwQWHjRY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Bp4sIzAlSUBDket7gnXySUylatw=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">2.5.29.32.0</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">1.3.6.1.4.1.22234.2.14.3.1</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://get-ocsp.certificat.com/opentrustcaforaatlg1</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://get-crl.certificat.com/public/opentrustcaforaatlg1.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-89321E8045CDB5207FE1CB35E4FA47A9C650DD5DF85695B9B2D4F44E15B35DB5" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Docusign France</TSPName>
+                        <TSPName lang="fr">Docusign France</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="en">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="en">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="en">Keynectis</TSPTradeName>
+                        <TSPTradeName lang="fr">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="fr">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="fr">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="fr">Keynectis</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATFR-71812611150</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9">
+                            <ServiceNames>
+                                <ServiceName lang="en">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                                <ServiceName lang="fr">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2020-12-17T01:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>DsGt7ZnHL9aN3oBXS7v3EqvDqnEPUBuDp9cBiMvWTPk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-3E710A319A435D0E5C8B18919265B441131DC2FB7353085AB5E84A157C4FECA8">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder 20240115,ou=0002 812611150,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder 20240115,OU=0002 812611150,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=docusign cloud signing ca - si1,ou=0002 812611150,o=docusign france,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DocuSign Cloud Signing CA - SI1,OU=0002 812611150,O=DocuSign France,C=FR</IssuerDistinguishedName>
+            <SerialNumber>3054527910164036235193651616022344531137442</SerialNumber>
+            <CommonName>OCSP Responder 20240115</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <OrganizationalUnit>0002 812611150</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2025-01-15T16:00:03Z</NotAfter>
+            <NotBefore>2024-01-15T16:00:03Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-68A92D56375B70733528A379BD9114FA101247FF2D47EAE4AB19E2EBAE49DE4A</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+			<SigningCertificate Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>9beK+YLzUArt0ZDWvgMUFNxJa8c=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>njke4Oq72wkFectUisKBqj1EtKY=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PnEKMZpDXQ5cixiRkmW0QRMdwvtzUwhatehKFXxP7Kg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-42143CB45E2604472467C7786A693CCCA91439BF04FC1677986660A91A6A566E">
+            <SubjectDistinguishedName Format="CANONICAL">cn=qualified timestamping - 20231115,2.5.4.97=#0c0f4e545246522d383132363131313530,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Qualified TimeStamping - 20231115,2.5.4.97=#0c0f4e545246522d383132363131313530,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=docusign time stamping ca - g1,ou=0002 812611150,o=docusign france,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DocuSign Time Stamping CA - G1,OU=0002 812611150,O=DocuSign France,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492163599140522939969584999204832389057936</SerialNumber>
+            <CommonName>Qualified TimeStamping - 20231115</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationIdentifier>NTRFR-812611150</OrganizationIdentifier>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2029-11-19T08:51:42Z</NotAfter>
+            <NotBefore>2023-11-21T08:51:42Z</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-39E3124BB47D613EF1C0EF65B3826CFBFB435A260F97F320357EF2C0590A0DF6</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Bp4sIzAlSUBDket7gnXySUylatw=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>wz2//92GM5sJH/mGk+xtth7pCo8=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">1.3.6.1.4.1.22234.2.14.3.36</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crt.dsf.docusign.net/docusigntimestampingcag1.p7c</caIssuersUrl>
+                    <ocspUrl>http://ocsp.dsf.docusign.net/docusigntimestampingcag1</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.dsf.docusign.net/docusigntimestampingcag1.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="false"/>
+                    <QcSSCD present="false"/>
+                    <QcTypes/>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+                <OtherExtension OID="2.5.29.16" description="privateKeyUsagePeriod" critical="false">
+                    <octets>BCQwIoAPMjAyMzExMjEwODUxNDJagQ8yMDI0MTEyMTA4NTE0Mlo=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-89321E8045CDB5207FE1CB35E4FA47A9C650DD5DF85695B9B2D4F44E15B35DB5" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Docusign France</TSPName>
+                        <TSPName lang="fr">Docusign France</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="en">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="en">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="en">Keynectis</TSPTradeName>
+                        <TSPTradeName lang="fr">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="fr">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="fr">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="fr">Keynectis</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATFR-71812611150</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9">
+                            <ServiceNames>
+                                <ServiceName lang="en">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                                <ServiceName lang="fr">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2020-12-17T01:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-36DEE98504C8AAA2B82FCF5A4E4CA345398F9C4463780545B4FB9DBF6E71FFAA">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>QhQ8tF4mBEckZ8d4amk8zKkUOb8E/BZ3mGZgqRpqVm4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-51F51A94E28F9192415046A771FAEB26FA361921234AAD658EFC22D79186499C">
+            <SubjectDistinguishedName Format="CANONICAL">cn=user name,ou=dd-22,ou=prod,ou=ra</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=User Name,OU=dd-22,OU=PROD6,OU=RA</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=docusign cloud signing ca - si1,ou=0002 812611150,o=docusign france,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DocuSign Cloud Signing CA - SI1,OU=0002 812611150,O=DocuSign France,C=FR</IssuerDistinguishedName>
+            <SerialNumber>7494638928189478138126675832685517493305464</SerialNumber>
+            <CommonName>User NAME</CommonName>
+            <OrganizationalUnit>RA</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2024-01-17T18:31:24Z</NotAfter>
+            <NotBefore>2024-01-17T17:26:24Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-208372E2EDD2776E6F79A2A9A66B95FA73C31A10F772500C17B5B597A3D420C6</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>9beK+YLzUArt0ZDWvgMUFNxJa8c=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>pOG69d+ikzXnRPhJCea/S/IPAT0=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.policy.com">1.3.6.2.14</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid>1.2.840.113583.1.1.5</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crt.dsf.docusign.net/docusigncloudsigningcasi1.p7c</caIssuersUrl>
+                    <ocspUrl>http://ocsp.dsf.docusign.net/docusigncloudsigningcasi1</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.dsf.docusign.net/docusigncloudsigningcasi1.crl</crlUrl>
+                </CRLDistributionPoints>
+                <ValAssuredShortTermCertificate OID="0.4.0.194121.2.1" critical="false" present="true" />
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-E5BEE86BEFD89F78F85ACD41D65AF926D450E97DAF383CCE90DC5CB7AEA979F5">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-D7B8936A916EB0B0C110F7E50076CB1DDAF461876EEFFC0BFB146213FCC69B00">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>UfUalOKPkZJBUEancfrrJvo2GSEjSq1ljvwi15GGSZw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-542CC7C116243FE64C2424DEC8103A2B81B0B331DA59255D3D0134BCED9B659D">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder 20230526,ou=0002 812611150,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder 20230526,OU=0002 812611150,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=docusign time stamping ca - g1,ou=0002 812611150,o=docusign france,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DocuSign Time Stamping CA - G1,OU=0002 812611150,O=DocuSign France,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492468322579873962615720559416947361687541</SerialNumber>
+            <CommonName>OCSP Responder 20230526</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <OrganizationalUnit>0002 812611150</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2024-05-25T10:39:57Z</NotAfter>
+            <NotBefore>2023-05-26T10:39:57Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-1029B762B2354CD133F5E5ABD4966484A464BCC712E5BBA22338CA42229E1265</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Bp4sIzAlSUBDket7gnXySUylatw=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Ytud9GL3kX6602L+Fhjc7QSb0lI=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-89321E8045CDB5207FE1CB35E4FA47A9C650DD5DF85695B9B2D4F44E15B35DB5" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Docusign France</TSPName>
+                        <TSPName lang="fr">Docusign France</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="en">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="en">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="en">Keynectis</TSPTradeName>
+                        <TSPTradeName lang="fr">DocuSign France</TSPTradeName>
+                        <TSPTradeName lang="fr">OPENTRUST</TSPTradeName>
+                        <TSPTradeName lang="fr">KEYNECTIS</TSPTradeName>
+                        <TSPTradeName lang="fr">Keynectis</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATFR-71812611150</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9">
+                            <ServiceNames>
+                                <ServiceName lang="en">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                                <ServiceName lang="fr">DocuSign Time Stamping CA - G1 -  1.3.6.1.4.1.22234.2.6.5.8</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2020-12-17T01:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>VCzHwRYkP+ZMJCTeyBA6K4GwszHaWSVdPQE0vO2bZZ0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4">
+            <SubjectDistinguishedName Format="CANONICAL">cn=opentrust root ca g1,o=opentrust,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OpenTrust Root CA G1,O=OpenTrust,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=opentrust root ca g1,o=opentrust,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=OpenTrust Root CA G1,O=OpenTrust,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492036577811947013770400127034825178844775</SerialNumber>
+            <CommonName>OpenTrust Root CA G1</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>OpenTrust</OrganizationName>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2038-01-15T00:00:00Z</NotAfter>
+            <NotBefore>2014-05-26T08:45:50Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-6D6F0C340971A218A31D10330EA9AE7C7A6550534C6EEFEDDD2118E114DB473E</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>l0YhVyE12jZVx/PxN3DlCPaTKbY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>l0YhVyE12jZVx/PxN3DlCPaTKbY=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>VsdxKNmMGNkbTP3/vCXukQPUdY6iq62CapDzRX1GDrQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05">
+            <SubjectDistinguishedName Format="CANONICAL">cn=docusign cloud signing ca - si1,ou=0002 812611150,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=DocuSign Cloud Signing CA - SI1,OU=0002 812611150,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=opentrust ca for aatl g1,ou=0002 478217318,o=opentrust,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=OpenTrust CA for AATL G1,OU=0002 478217318,O=OpenTrust,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492354637979442906405925375152533694858822</SerialNumber>
+            <CommonName>DocuSign Cloud Signing CA - SI1</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <OrganizationalUnit>0002 812611150</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2025-12-31T00:00:00Z</NotAfter>
+            <NotBefore>2017-03-08T11:26:31Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-DDD52216B297B72EFF4A7224D9887332947DDF2F9073A2F8340332D44AAEE9CD</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>eH9uVKrM6Di4/SfG54UVwQWHjRY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>9beK+YLzUArt0ZDWvgMUFNxJa8c=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">2.5.29.32.0</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">1.3.6.1.4.1.22234.2.14.3.1</certificatePolicy>
+                </CertificatePolicies>
+                <NameConstraints OID="2.5.29.30" critical="false">
+                    <ExcludedSubtree minimum="0" type="iPAddress">#0000000000000000</ExcludedSubtree>
+                    <ExcludedSubtree minimum="0" type="iPAddress">#0000000000000000000000000000000000000000000000000000000000000000</ExcludedSubtree>
+                    <ExcludedSubtree minimum="0" type="dNSName"></ExcludedSubtree>
+                </NameConstraints>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid>1.2.840.113583.1.1.5</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://get-ocsp.certificat.com/opentrustcaforaatlg1</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://get-crl.certificat.com/public/opentrustcaforaatlg1.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-CCE0F6FDA1A8FBC246BA5F895E70234E05131EAC17AA31E7643ECCCA65ADF79D">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-342129E0DF36327E46A6F98825915AAE86F314CEC459ECB08A6FB5214D94D93E">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>jRqPfDO5tG4nmx/RR8HRJc7WmIck5rwqxleXFinArQU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-9785E0042A2B104379F1EA31DAD97FC73A8959A33C13AF9B5280793DDB66CF1C">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder aatlg1 - 20230310,ou=0002 812611150,o=docusign france,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder AATLG1 - 20230310,OU=0002 812611150,O=DocuSign France,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=opentrust ca for aatl g1,ou=0002 478217318,o=opentrust,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=OpenTrust CA for AATL G1,OU=0002 478217318,O=OpenTrust,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1492169407361474465894921739861174316512110</SerialNumber>
+            <CommonName>OCSP Responder AATLG1 - 20230310</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>DocuSign France</OrganizationName>
+            <OrganizationalUnit>0002 812611150</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2026-03-10T00:00:00Z</NotAfter>
+            <NotBefore>2023-03-10T00:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-45A84E0B1C07E43ECB80A179EEE71EB81AF00B094CC8E43A99C5316B0AB878F5</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>eH9uVKrM6Di4/SfG54UVwQWHjRY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>gP3xKJpRisN03oZsNHWHLwou6N4=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>l4XgBCorEEN58eox2tl/xzqJWaM8E6+bUoB5Pdtmzxw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-D57519A66C27EE3C3C75F8E54A47B859465405248079B6DB9EC0C7DE6342C789">
+            <SubjectDistinguishedName Format="CANONICAL">cn=de longcamp guillaume,ou=ddcdb745-d73f-42c9-9bed-87c80d27034c,ou=2psigaes-prod-_-20240117182754-wjk4nkxa2nx85f12,ou=ra stratefi</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=de longcamp guillaume,OU=ddcdb745-d73f-42c9-9bed-87c80d27034c,OU=2PSIGAES-PROD-_-20240117182754-WJK4NKXA2NX85F12,OU=RA STRATEFI</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=docusign cloud signing ca - si1,ou=0002 812611150,o=docusign france,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DocuSign Cloud Signing CA - SI1,OU=0002 812611150,O=DocuSign France,C=FR</IssuerDistinguishedName>
+            <SerialNumber>3054664069780206999514623035851532462270765</SerialNumber>
+            <CommonName>de longcamp guillaume</CommonName>
+            <OrganizationalUnit>RA STRATEFI</OrganizationalUnit>
+            <Sources>
+                <Source>UNKNOWN</Source>
+            </Sources>
+            <NotAfter>2024-01-17T17:33:37Z</NotAfter>
+            <NotBefore>2024-01-17T16:28:37Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C4F90D5B2A029F0DD80A30B5CA49604167CFA50511587CF36026C83D7752E3E4</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>9beK+YLzUArt0ZDWvgMUFNxJa8c=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>ijRT92GrAV3GYK2OqUqn8zax8XA=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.docusign.fr/societe/politiques-de-certifications">1.3.6.1.4.1.22234.2.14.3.33</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid>1.2.840.113583.1.1.5</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crt.dsf.docusign.net/docusigncloudsigningcasi1.p7c</caIssuersUrl>
+                    <ocspUrl>http://ocsp.dsf.docusign.net/docusigncloudsigningcasi1</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.dsf.docusign.net/docusigncloudsigningcasi1.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-E5BEE86BEFD89F78F85ACD41D65AF926D450E97DAF383CCE90DC5CB7AEA979F5">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-DC49E0F3A6524AD41C06E7DDA46DA664FCA2808D7E1C40E79B5916EA82F4848E">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>1XUZpmwn7jw8dfjlSke4WUZUBSSAebbbnsDH3mNCx4k=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=opentrust ca for aatl g1,ou=0002 478217318,o=opentrust,c=fr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OpenTrust CA for AATL G1,OU=0002 478217318,O=OpenTrust,C=FR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=opentrust root ca g1,o=opentrust,c=fr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=OpenTrust Root CA G1,O=OpenTrust,C=FR</IssuerDistinguishedName>
+            <SerialNumber>1491798867435197772287576995994970033809945</SerialNumber>
+            <CommonName>OpenTrust CA for AATL G1</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>OpenTrust</OrganizationName>
+            <OrganizationalUnit>0002 478217318</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2038-01-15T00:00:00Z</NotAfter>
+            <NotBefore>2014-05-26T09:11:35Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-5533D085C2ACE8982FBD37F83F0E4342E1837B2243ACFC852185AC38AEEA845E</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>l0YhVyE12jZVx/PxN3DlCPaTKbY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>eH9uVKrM6Di4/SfG54UVwQWHjRY=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://www.opentrust.com/PC/">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://get-ocsp.certificat.com/opentrustrootcag1</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://get-crl.certificat.com/public/opentrustrootcag1.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-6641C22E94FEC574FB8AEDD9501C777BADFABC6657B63F3ABFD67065078678E5">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>9dXFzuKUYHYocGEyJOFPdpX/4AbTAch20Nv8Dkp0/sU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-342129E0DF36327E46A6F98825915AAE86F314CEC459ECB08A6FB5214D94D93E">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2023-07-26T09:11:35Z</ProductionDate>
+            <ThisUpdate>2023-07-26T09:11:35Z</ThisUpdate>
+            <NextUpdate>2024-07-26T09:11:35Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-36DEE98504C8AAA2B82FCF5A4E4CA345398F9C4463780545B4FB9DBF6E71FFAA">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.dsf.docusign.net/docusigntimestampingcag1</SourceAddress>
+            <ProductionDate>2024-01-22T15:35:36Z</ProductionDate>
+            <ThisUpdate>2024-01-22T15:35:36Z</ThisUpdate>
+            <NextUpdate>2024-01-23T15:35:36Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-542CC7C116243FE64C2424DEC8103A2B81B0B331DA59255D3D0134BCED9B659D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-542CC7C116243FE64C2424DEC8103A2B81B0B331DA59255D3D0134BCED9B659D"/>
+                <ChainItem Certificate="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-542CC7C116243FE64C2424DEC8103A2B81B0B331DA59255D3D0134BCED9B659D">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>Ytud9GL3kX6602L+Fhjc7QSb0lI=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-6641C22E94FEC574FB8AEDD9501C777BADFABC6657B63F3ABFD67065078678E5">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2023-03-26T00:00:00Z</ProductionDate>
+            <ThisUpdate>2023-03-26T00:00:00Z</ThisUpdate>
+            <NextUpdate>2024-03-26T00:00:00Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-CCE0F6FDA1A8FBC246BA5F895E70234E05131EAC17AA31E7643ECCCA65ADF79D">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://get-ocsp.certificat.com/opentrustcaforaatlg1</SourceAddress>
+            <ProductionDate>2024-01-22T15:35:35Z</ProductionDate>
+            <ThisUpdate>2024-01-22T15:35:35Z</ThisUpdate>
+            <NextUpdate>2024-01-22T15:59:35Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9785E0042A2B104379F1EA31DAD97FC73A8959A33C13AF9B5280793DDB66CF1C"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9785E0042A2B104379F1EA31DAD97FC73A8959A33C13AF9B5280793DDB66CF1C"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-9785E0042A2B104379F1EA31DAD97FC73A8959A33C13AF9B5280793DDB66CF1C">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>gP3xKJpRisN03oZsNHWHLwou6N4=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-D7B8936A916EB0B0C110F7E50076CB1DDAF461876EEFFC0BFB146213FCC69B00">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.dsf.docusign.net/docusigncloudsigningcasi1</SourceAddress>
+            <ProductionDate>2024-01-22T15:35:36Z</ProductionDate>
+            <ThisUpdate>2024-01-22T15:35:36Z</ThisUpdate>
+            <NextUpdate>2024-01-23T15:35:36Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3E710A319A435D0E5C8B18919265B441131DC2FB7353085AB5E84A157C4FECA8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3E710A319A435D0E5C8B18919265B441131DC2FB7353085AB5E84A157C4FECA8"/>
+                <ChainItem Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-3E710A319A435D0E5C8B18919265B441131DC2FB7353085AB5E84A157C4FECA8">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>njke4Oq72wkFectUisKBqj1EtKY=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-DC49E0F3A6524AD41C06E7DDA46DA664FCA2808D7E1C40E79B5916EA82F4848E">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.dsf.docusign.net/docusigncloudsigningcasi1</SourceAddress>
+            <ProductionDate>2024-01-22T15:35:36Z</ProductionDate>
+            <ThisUpdate>2024-01-22T15:35:36Z</ThisUpdate>
+            <NextUpdate>2024-01-23T15:35:36Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3E710A319A435D0E5C8B18919265B441131DC2FB7353085AB5E84A157C4FECA8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3E710A319A435D0E5C8B18919265B441131DC2FB7353085AB5E84A157C4FECA8"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-3E710A319A435D0E5C8B18919265B441131DC2FB7353085AB5E84A157C4FECA8">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>njke4Oq72wkFectUisKBqj1EtKY=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-E5BEE86BEFD89F78F85ACD41D65AF926D450E97DAF383CCE90DC5CB7AEA979F5">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2024-01-17T00:00:00Z</ProductionDate>
+            <ThisUpdate>2024-01-17T00:00:00Z</ThisUpdate>
+            <NextUpdate>2024-01-23T00:00:00Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-75F5860AF67BBB0F6F921464B60E021893B6FF5FB70A97856E5022F9C5F5E706">
+            <ProductionTime>2024-01-17T18:26:24Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cVf1t2IWkubEjHyP4CD6+BF8ucniSYZdozNPw+HyZ3k=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-42143CB45E2604472467C7786A693CCCA91439BF04FC1677986660A91A6A566E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-42143CB45E2604472467C7786A693CCCA91439BF04FC1677986660A91A6A566E"/>
+                <ChainItem Certificate="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9"/>
+                <ChainItem Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5"/>
+                <ChainItem Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=DocuSign Time Stamping CA - G1, OU=0002 812611150, O=DocuSign France, C=FR</IssuerName>
+                    <SerialNumber>1492163599140522939969584999204832389057936</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-0EC1ADED99C72FD68DDE80574BBBF712ABC3AA710F501B83A7D70188CBD64CF9">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-42143CB45E2604472467C7786A693CCCA91439BF04FC1677986660A91A6A566E">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>QhQ8tF4mBEckZ8d4amk8zKkUOb8E/BZ3mGZgqRpqVm4=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-1D49BAA1BFA0B4AD209265AA2A7CD580153FA6B478B8A9820346BEFBBE2FB804" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-5CD6B8C00B5DFA4605EB561DCDB610BC27730B8C3AA4E928658B9DC16EF313DF" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-51F51A94E28F9192415046A771FAEB26FA361921234AAD658EFC22D79186499C" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-8D1A8F7C33B9B46E279B1FD147C1D125CED6988724E6BC2AC657971629C0AD05" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-F5D5C5CEE29460762870613224E14F7695FFE006D301C876D0DBFC0E4A74FEC5" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-56C77128D98C18D91B4CFDFFBC25EE9103D4758EA2ABAD826A90F3457D460EB4" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-EA270275C0448191E711E70117445B8E7B9926723031122BD29AF06E69CFFF3D">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CNEgz48T43oieC/VIuA8OMIlzP4ox4bpNdAbUKu/YTI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-1D49BAA1BFA0B4AD209265AA2A7CD580153FA6B478B8A9820346BEFBBE2FB804">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>to5yv+hwWzORXTrqi8j5mioY0VKuwe0cOl9M18r7ncQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-89321E8045CDB5207FE1CB35E4FA47A9C650DD5DF85695B9B2D4F44E15B35DB5">
+            <CountryCode>FR</CountryCode>
+            <Url>https://cyber.gouv.fr/sites/default/files/document/tl-fr.xml</Url>
+            <SequenceNumber>127</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-01-22T15:21:22Z</LastLoading>
+            <IssueDate>2023-11-24T16:03:06Z</IssueDate>
+            <NextUpdate>2024-05-24T15:03:06Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>336</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-01-22T15:21:20Z</LastLoading>
+            <IssueDate>2024-01-03T09:00:16Z</IssueDate>
+            <NextUpdate>2024-07-03T08:00:16Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

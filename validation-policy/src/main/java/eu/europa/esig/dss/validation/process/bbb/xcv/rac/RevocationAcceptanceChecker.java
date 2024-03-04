@@ -32,11 +32,11 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactWithIdCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
@@ -50,7 +50,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationRespon
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfSignedCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
 
 import java.util.Date;
 import java.util.Set;
@@ -150,15 +150,12 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			if (revocationCertificate.isSelfSigned()) {
 				item = item.setNextItem(selfSigned(revocationCertificate));
 			}
-			
-			if (revocationCertificate.isIdPkixOcspNoCheck()) {
-				item = item.setNextItem(idPkixOcspNoCheck(revocationCertificate));
-			}
-			
-			if (ValidationProcessUtils.isRevocationCheckRequired(revocationCertificate)) {
 
-				SubContext subContext = revocationData.getSigningCertificate().getId().equals(revocationCertificate.getId()) ? 
-						SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+			SubContext subContext = revocationData.getSigningCertificate().getId().equals(revocationCertificate.getId()) ?
+					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+
+			RevocationDataRequiredCheck<XmlRAC> revocationDataRequired = revocationDataRequired(revocationCertificate, subContext);
+			if (revocationDataRequired.process()) {
 				
 				item = item.setNextItem(revocationDataPresentForRevocationChain(revocationCertificate, subContext));
 
@@ -173,6 +170,8 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
 				}
 				
+			} else {
+				item = item.setNextItem(revocationDataRequired);
 			}
 			
 		}
@@ -231,10 +230,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	private ChainItem<XmlRAC> selfSigned(CertificateWrapper certificate) {
 		return new CertificateSelfSignedCheck<>(i18nProvider, result, certificate, getWarnLevelConstraint());
 	}
-
-	private ChainItem<XmlRAC> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {
-		return new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, getWarnLevelConstraint());
-	}
 	
 	private ChainItem<XmlRAC> revocationDataPresentForRevocationChain(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(Context.REVOCATION, subContext);
@@ -244,6 +239,11 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	private ChainItem<XmlRAC> checkCertificateRevocationSelectorResult(XmlCRS crsResult, SubContext subContext) {
 		LevelConstraint constraint = policy.getAcceptableRevocationDataFoundConstraint(Context.REVOCATION, subContext);
 		return new CertificateRevocationSelectorResultCheck<>(i18nProvider, result, crsResult, constraint);
+	}
+
+	private RevocationDataRequiredCheck<XmlRAC> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
+		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(Context.REVOCATION, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint);
 	}
 
 	@Override

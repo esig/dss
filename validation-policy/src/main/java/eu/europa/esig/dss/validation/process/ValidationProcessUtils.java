@@ -61,27 +61,14 @@ public class ValidationProcessUtils {
 	/** The prefix used for "urn:oid:" definition as per RFC 3061 */
 	private static final String URN_OID_PREFIX = "urn:oid:";
 
+	/** The value is used to accept all values */
+	private static final String ALL_VALUE = "*";
+
 	/**
 	 * Empty constructor
 	 */
 	private ValidationProcessUtils() {
 		// empty
-	}
-	
-	/**
-	 * Verifies if the revocation check is required for the OCSP Responder's certificate
-	 *
-	 * RFC 2560 : 4.2.2.2.1  Revocation Checking of an Authorized Responder
-	 * 
-	 * A CA may specify that an OCSP client can trust a responder for the
-	 * lifetime of the responder's certificate. The CA does so by including
-	 * the extension id-pkix-ocsp-nocheck.
-	 *
-	 * @param certificate {@link CertificateWrapper} to check
-	 * @return TRUE if the revocation check is required for the OCSP Responder certificate, FALSE otherwise
-	 */
-	public static boolean isRevocationCheckRequired(CertificateWrapper certificate) {
-		return !certificate.isTrusted() && !certificate.isSelfSigned() && !certificate.isIdPkixOcspNoCheck();
 	}
 	
 	/**
@@ -529,6 +516,40 @@ public class ValidationProcessUtils {
 			return null;
 		}
 		return uri.replaceAll("(^.*://)|(www\\.)|([?=:#/].*)", "");
+	}
+
+	/**
+	 * Checks the value against the list of expected values
+	 *
+	 * @param value {@link String} to check
+	 * @param expectedValues a list of {@link String} expected values
+	 * @return TRUE if the value is allowed by the list of expected values, FALSE otherwise
+	 */
+	public static boolean processValueCheck(String value, List<String> expectedValues) {
+		if (Utils.isStringNotEmpty(value) && Utils.isCollectionNotEmpty(expectedValues)) {
+			return expectedValues.contains(ALL_VALUE) || expectedValues.contains(value);
+		}
+		return false;
+	}
+
+	/**
+	 * Checks the values against the expected values
+	 *
+	 * @param values {@link String} to check
+	 * @param expectedValues {@link String}s to check against
+	 * @return TRUE if the values are allowed by the list of expected values, FALSE otherwise
+	 */
+	public static boolean processValuesCheck(List<String> values, List<String> expectedValues) {
+		if (Utils.isCollectionNotEmpty(values)) {
+			for (String value : values) {
+				if (processValueCheck(value, expectedValues)) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			return Utils.isCollectionEmpty(expectedValues);
+		}
 	}
 
 }

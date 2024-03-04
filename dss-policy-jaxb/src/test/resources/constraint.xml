@@ -52,6 +52,11 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<AuthorityInfoAccessPresent Level="WARN" />
+				<RevocationDataSkip Level="INFORM">
+					<CertificateExtensions>
+						<Id>0.4.0.194121.2.1</Id> <!-- valassured-ST-certs -->
+					</CertificateExtensions>
+				</RevocationDataSkip>
 				<RevocationInfoAccessPresent Level="WARN" />
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
@@ -300,6 +305,11 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<RevocationDataSkip Level="IGNORE">
+					<CertificateExtensions>
+						<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+					</CertificateExtensions>
+				</RevocationDataSkip>
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="FAIL" Unit="DAYS" Value="0" />

@@ -670,6 +670,11 @@
 					<xsd:documentation>Checks the presence of the AIA (issuer) in the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="RevocationDataSkip" type="CertificateValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Defines conditions to skip revocation check for a certificate</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="RevocationInfoAccessPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the CRL distribution points or AIA (OCSP) in the certificate</xsd:documentation>
@@ -1048,6 +1053,20 @@
 			<xsd:extension base="LevelConstraint">
 				<xsd:sequence>
 					<xsd:element type="xsd:string" name="Id" maxOccurs="unbounded" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="CertificateValuesConstraint">
+		<xsd:annotation>
+			<xsd:documentation>Certificate check : follows the specified level behavior if the current certificate matches one if the conditions. '*' can be used and means any value.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="LevelConstraint">
+				<xsd:sequence>
+					<xsd:element type="MultiValuesConstraint" name="CertificateExtensions" minOccurs="0" />
+					<xsd:element type="MultiValuesConstraint" name="CertificatePolicies" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>

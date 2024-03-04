@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
@@ -34,6 +35,7 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
 import eu.europa.esig.dss.validation.RevocationDataVerifier;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.slf4j.event.Level;
 
 import java.util.Arrays;
@@ -215,6 +217,28 @@ public class CertificateVerifierSnippet {
         encryptionAlgos.put(EncryptionAlgorithm.ECDSA, 256);
         encryptionAlgos.put(EncryptionAlgorithm.PLAIN_ECDSA, 256);
         revocationDataVerifier.setAcceptableEncryptionAlgorithmKeyLength(encryptionAlgos);
+
+        // #setRevocationSkipCertificateExtensions method defines a list of certificate extensions
+        // which, when present in a certificate, indicate that no revocation data check shall be
+        // performed for that certificate.
+        // When a certificate is encountered with one of the certificate extensions, no revocation data
+        // request will be proceeded.
+        // Default : valassured-ST-certs (OID: "0.4.0.194121.2.1") and
+        // ocsp_noCheck (OID: "1.3.6.1.5.5.7.48.1.5")
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(Arrays.asList(
+                OID.id_etsi_ext_valassured_ST_certs.getId(),
+                OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId()
+        ));
+
+        // #setRevocationSkipCertificatePolicies method defines a list of certificate policies
+        // which, when present in a certificate, indicate that no revocation data check shall be
+        // performed for that certificate.
+        // When a certificate is encountered with one of the certificate policies, no revocation data
+        // request will be proceeded.
+        // Default : empty list
+        revocationDataVerifier.setRevocationSkipCertificatePolicies(Arrays.asList(
+                "1.2.3.4.5", "0.5.6.7.8.9"
+        ));
 
         // end::rev-data-verifier[]
 

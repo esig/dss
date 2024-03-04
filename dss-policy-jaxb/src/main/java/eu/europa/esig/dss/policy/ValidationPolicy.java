@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.policy;
 
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
@@ -1257,6 +1258,16 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getCertificateAuthorityInfoAccessPresentConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns RevocationDataSkip constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if RevocationDataSkip element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	CertificateValuesConstraint getRevocationDataSkipConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns CertificateRevocationInfoAccessPresent constraint if present in the policy, null otherwise

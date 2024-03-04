@@ -27,16 +27,26 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.extension.CertificateExtension;
+import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
+import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
+import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
+import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +54,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class is used to verify acceptance of a revocation data for the following validation process,
@@ -67,26 +80,35 @@ public class RevocationDataVerifier {
     /**
      * The trusted certificate source is used to accept trusted OCSPToken's certificate issuers
      */
-    protected ListCertificateSource trustedListCertificateSource;
+    protected CertificateSource trustedListCertificateSource;
 
     /**
      * A collection of Digest Algorithms to accept from CRL/OCSP responders.
-     *
-     * NOTE : revocation tokens created with digest algorithms other than listed in this collection will be skipped.
-     *
-     * DEFAULT : collection of algorithms is synchronized with ETSI 119 312 V1.4.2
+     * Note : revocation tokens created with digest algorithms other than listed in this collection will be skipped.
+     * Default : collection of algorithms is synchronized with ETSI 119 312 V1.4.2 (extracted from validation policy)
      */
     protected Collection<DigestAlgorithm> acceptableDigestAlgorithms;
 
     /**
      * Map of acceptable Encryption Algorithms with a corresponding minimal acceptable key length for each algorithm.
-     *
-     * NOTE : revocation tokens created with encryption algorithms other than listed in this map or
+     * Note : revocation tokens created with encryption algorithms other than listed in this map or
      *        with a key size smaller than defined in the map will be skipped.
-     *
-     * DEFAULT : collection of algorithms is synchronized with ETSI 119 312 V1.4.2
+     * Default : collection of algorithms is synchronized with ETSI 119 312 V1.4.2 (extracted from validation policy)
      */
     protected Map<EncryptionAlgorithm, Integer> acceptableEncryptionAlgorithmKeyLength;
+
+    /**
+     * Collection of certificate extension identifiers indicating the revocation check is not required for those certificates
+     * Default : valassured-ST-certs (OID: "0.4.0.194121.2.1") and ocsp_noCheck (OID: "1.3.6.1.5.5.7.48.1.5")
+     *           (extracted from validation policy)
+     */
+    protected Collection<String> revocationSkipCertificateExtensions;
+
+    /**
+     * Collection of certificate policy identifiers indicating the revocation check is not required for those certificates
+     * Default : empty list (extracted from validation policy)
+     */
+    protected Collection<String> revocationSkipCertificatePolicies;
 
     /**
      * Default constructor
@@ -131,7 +153,16 @@ public class RevocationDataVerifier {
      * @return {@link RevocationDataVerifier}
      */
     public static RevocationDataVerifier createRevocationDataVerifierFromPolicyWithTime(ValidationPolicy validationPolicy, Date validationTime) {
+        Objects.requireNonNull(validationPolicy, "ValidationPolicy shall be defined!");
+
         final RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifier();
+        instantiateCryptographicConstraints(revocationDataVerifier, validationPolicy, validationTime);
+        instantiateRevocationSkipConstraints(revocationDataVerifier, validationPolicy);
+        return revocationDataVerifier;
+    }
+
+    private static void instantiateCryptographicConstraints(final RevocationDataVerifier revocationDataVerifier,
+                                                            ValidationPolicy validationPolicy, Date validationTime) {
         List<DigestAlgorithm> acceptableDigestAlgorithms;
         Map<EncryptionAlgorithm, Integer> acceptableEncryptionAlgorithms;
 
@@ -149,7 +180,6 @@ public class RevocationDataVerifier {
         }
         revocationDataVerifier.setAcceptableDigestAlgorithms(acceptableDigestAlgorithms);
         revocationDataVerifier.setAcceptableEncryptionAlgorithmKeyLength(acceptableEncryptionAlgorithms);
-        return revocationDataVerifier;
     }
 
     private static CryptographicConstraintWrapper getRevocationCryptographicConstraints(ValidationPolicy validationPolicy) {
@@ -157,24 +187,108 @@ public class RevocationDataVerifier {
         return cryptographicConstraint != null ? new CryptographicConstraintWrapper(cryptographicConstraint) : null;
     }
 
+    private static void instantiateRevocationSkipConstraints(final RevocationDataVerifier revocationDataVerifier,
+                                                             ValidationPolicy validationPolicy) {
+        final Set<String> certificateExtensions = new HashSet<>();
+        final Set<String> certificatePolicies = new HashSet<>();
+
+        if (validationPolicy.getSignatureConstraints() != null) {
+            populateRevocationSkipFromBasicSignatureConstraints(certificateExtensions, certificatePolicies,
+                    validationPolicy.getSignatureConstraints().getBasicSignatureConstraints());
+        }
+        if (validationPolicy.getCounterSignatureConstraints() != null) {
+            populateRevocationSkipFromBasicSignatureConstraints(certificateExtensions, certificatePolicies,
+                    validationPolicy.getCounterSignatureConstraints().getBasicSignatureConstraints());
+        }
+        if (validationPolicy.getRevocationConstraints() != null) {
+            populateRevocationSkipFromBasicSignatureConstraints(certificateExtensions, certificatePolicies,
+                    validationPolicy.getRevocationConstraints().getBasicSignatureConstraints());
+        }
+        if (validationPolicy.getTimestampConstraints() != null) {
+            populateRevocationSkipFromBasicSignatureConstraints(certificateExtensions, certificatePolicies,
+                    validationPolicy.getTimestampConstraints().getBasicSignatureConstraints());
+        }
+
+        // TODO : remove in DSS 6.2
+        ensureOcspNoCheck(certificateExtensions, validationPolicy);
+
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(certificateExtensions);
+        revocationDataVerifier.setRevocationSkipCertificatePolicies(certificatePolicies);
+    }
+
+    /**
+     * This is a temporary method since DSS 6.1 to ensure smooth migration to a new version of DSS 6.2.
+     * Adds ocsp-no-check extension to a list of certificate extensions for a revocation data check skip,
+     * when not present in the policy.
+     *
+     * @param validationPolicy {@link ValidationPolicy}
+     */
+    private static void ensureOcspNoCheck(final Set<String> certificateExtensions, ValidationPolicy validationPolicy) {
+        RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
+        if (revocationConstraints != null) {
+            BasicSignatureConstraints basicSignatureConstraints = revocationConstraints.getBasicSignatureConstraints();
+            if (basicSignatureConstraints != null) {
+                CertificateConstraints signingCertificate = basicSignatureConstraints.getSigningCertificate();
+                if (signingCertificate != null && signingCertificate.getRevocationDataSkip() != null) {
+                    // RevocationData skip check is defined
+                    return;
+                }
+            }
+        }
+        LOG.warn("No RevocationDataSkip constraint is defined in the validation policy for Revocation/SigningCertificate element! " +
+                "Default behavior with ocsp-no-check is added to processing. Please set the constraint explicitly. To be required since DSS 6.2.");
+        certificateExtensions.add(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId());
+    }
+
+    private static void populateRevocationSkipFromBasicSignatureConstraints(
+            final Set<String> certificateExtensions, final Set<String> certificatePolicies,
+            BasicSignatureConstraints basicSignatureConstraints) {
+        if (basicSignatureConstraints != null) {
+            populateRevocationSkipFromCertificateConstraints(certificateExtensions, certificatePolicies,
+                    basicSignatureConstraints.getSigningCertificate());
+            populateRevocationSkipFromCertificateConstraints(certificateExtensions, certificatePolicies,
+                    basicSignatureConstraints.getCACertificate());
+        }
+    }
+
+    private static void populateRevocationSkipFromCertificateConstraints(
+            final Set<String> certificateExtensions, final Set<String> certificatePolicies,
+            CertificateConstraints certificateConstraints) {
+        if (certificateConstraints == null) {
+            return;
+        }
+        CertificateValuesConstraint revocationDataSkipConstraint = certificateConstraints.getRevocationDataSkip();
+        if (revocationDataSkipConstraint == null) {
+            return;
+        }
+
+        MultiValuesConstraint certificateExtensionsConstraint = revocationDataSkipConstraint.getCertificateExtensions();
+        if (certificateExtensionsConstraint != null) {
+            certificateExtensions.addAll(certificateExtensionsConstraint.getId());
+        }
+
+        MultiValuesConstraint certificatePoliciesConstraint = revocationDataSkipConstraint.getCertificatePolicies();
+        if (certificatePoliciesConstraint != null) {
+            certificatePolicies.addAll(certificatePoliciesConstraint.getId());
+        }
+    }
+
     /**
      * Sets a trusted certificate source in order to accept trusted OCSPToken's certificate issuers.
-     *
-     * NOTE : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     * Note : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
      *        initialization, in order to provide the same trusted source as the one used within
      *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
      *
-     * @param trustedListCertificateSource {@link ListCertificateSource}
+     * @param trustedListCertificateSource {@link CertificateSource}
      */
-    void setTrustedCertificateSource(ListCertificateSource trustedListCertificateSource) {
+    void setTrustedCertificateSource(CertificateSource trustedListCertificateSource) {
         this.trustedListCertificateSource = trustedListCertificateSource;
     }
 
     /**
      * Sets a collection of Digest Algorithms for acceptance.
      * If a revocation token is signed with an algorithm other than listed in the collection, the token will be skipped.
-     *
-     * DEFAULT : collection of algorithms is synchronized with ETSI 119 312 V1.4.2
+     * Default : collection of algorithms is synchronized with ETSI 119 312 V1.4.2
      *
      * @param acceptableDigestAlgorithms a collection if {@link DigestAlgorithm}s
      */
@@ -187,8 +301,7 @@ public class RevocationDataVerifier {
      * Sets a map of acceptable Encryption Algorithms and their corresponding minimal key length values.
      * If a revocation token is signed with an algorithm other than listed in the collection or with a smaller key size,
      * than the token will be skipped.
-     *
-     * DEFAULT : collection of algorithms is synchronized with ETSI 119 312 V1.4.2
+     * Default : collection of algorithms is synchronized with ETSI 119 312 V1.4.2
      *
      * @param acceptableEncryptionAlgorithmKeyLength a map of {@link EncryptionAlgorithm}s and
      *                                               their corresponding minimal supported key lengths
@@ -196,6 +309,28 @@ public class RevocationDataVerifier {
     public void setAcceptableEncryptionAlgorithmKeyLength(Map<EncryptionAlgorithm, Integer> acceptableEncryptionAlgorithmKeyLength) {
         Objects.requireNonNull(acceptableEncryptionAlgorithmKeyLength, "Map of Encryption Algorithms for acceptance cannot be null!");
         this.acceptableEncryptionAlgorithmKeyLength = acceptableEncryptionAlgorithmKeyLength;
+    }
+
+    /**
+     * Sets a collection of certificate extension OIDs indicating the revocation check shall be skipped
+     * for the given certificate
+     * Default : valassured-ST-certs (OID: "0.4.0.194121.2.1") and ocsp_noCheck (OID: "1.3.6.1.5.5.7.48.1.5")
+     *           (extracted from validation policy)
+     *
+     * @param revocationSkipCertificateExtensions a collection of {@link String}s certificate extension OIDs
+     */
+    public void setRevocationSkipCertificateExtensions(Collection<String> revocationSkipCertificateExtensions) {
+        this.revocationSkipCertificateExtensions = revocationSkipCertificateExtensions;
+    }
+
+    /**
+     * Sets a collection of certificate policy OIDs indicating the revocation check shall be skipped for the given certificate
+     * Default : empty list (extracted from validation policy)
+     *
+     * @param revocationSkipCertificatePolicies a collection of {@link String}s certificate policy OIDs
+     */
+    public void setRevocationSkipCertificatePolicies(Collection<String> revocationSkipCertificatePolicies) {
+        this.revocationSkipCertificatePolicies = revocationSkipCertificatePolicies;
     }
 
     /**
@@ -357,6 +492,35 @@ public class RevocationDataVerifier {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Checks and returns whether the revocation check shall be skipped for the given certificate
+     *
+     * @param certificateToken {@link CertificateToken} to check
+     * @return TRUE if the revocation check shall be skipped, FALSE otherwise
+     */
+    public boolean isRevocationDataSkip(CertificateToken certificateToken) {
+        if (trustedListCertificateSource != null && trustedListCertificateSource.isTrusted(certificateToken)) {
+            return true;
+        }
+        if (certificateToken.isSelfSigned()) {
+            return true;
+        }
+        CertificateExtensions certificateExtensions = CertificateExtensionsUtils.getCertificateExtensions(certificateToken);
+        List<CertificateExtension> allCertificateExtensions = certificateExtensions.getAllCertificateExtensions();
+        if (Utils.isCollectionNotEmpty(allCertificateExtensions) &&
+                Utils.containsAny(allCertificateExtensions.stream().map(CertificateExtension::getOid).collect(Collectors.toSet()),
+                        revocationSkipCertificateExtensions)) {
+            return true;
+        }
+        CertificatePolicies certificatePolicies = certificateExtensions.getCertificatePolicies();
+        if (certificatePolicies != null && Utils.isCollectionNotEmpty(certificatePolicies.getPolicyList()) &&
+                Utils.containsAny(certificatePolicies.getPolicyList().stream().map(CertificatePolicy::getOid).collect(Collectors.toSet()),
+                revocationSkipCertificatePolicies)) {
+            return true;
+        }
+        return false;
     }
 
 }

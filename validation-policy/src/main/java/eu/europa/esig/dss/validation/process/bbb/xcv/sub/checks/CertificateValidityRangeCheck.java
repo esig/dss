@@ -75,10 +75,8 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 		boolean inValidityRange = isInValidityRange();
 		if (!inValidityRange) {
 			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
-			if (ValidationProcessUtils.isRevocationCheckRequired(certificate)) {
-				if (usedCertificateRevocation != null && !usedCertificateRevocation.isRevoked()) {
-					subIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
-				}
+			if (usedCertificateRevocation != null && !usedCertificateRevocation.isRevoked()) {
+				subIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
 			}
 		}
 		return inValidityRange;

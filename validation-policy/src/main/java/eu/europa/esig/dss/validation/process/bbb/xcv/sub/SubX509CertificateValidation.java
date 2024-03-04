@@ -32,6 +32,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -64,6 +65,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePS2DQ
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyIdsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyQualifiedIdsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicySupportedByQSCDIdsCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyTreeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcCCLegislationCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcComplianceCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcEuLimitValueCurrencyCheck;
@@ -80,13 +82,12 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.ExtendedKeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.IdPkixOcspNoCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyTreeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationIssuerTrustedCheck;
@@ -232,12 +233,10 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		item = item.setNextItem(forbiddenCertificateExtensions(currentCertificate, subContext));
 
 		CertificateRevocationWrapper latestCertificateRevocation = null;
-		
-		if (currentCertificate.isIdPkixOcspNoCheck()) {
-			item = item.setNextItem(idPkixOcspNoCheck(currentCertificate));
-		}
 
-		if (ValidationProcessUtils.isRevocationCheckRequired(currentCertificate)) {
+		RevocationDataRequiredCheck<XmlSubXCV> revocationDataRequired = revocationDataRequired(currentCertificate, subContext);
+
+		if (revocationDataRequired.process()) {
 
 			item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
 			
@@ -275,6 +274,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 			}
 			
+		} else {
+			item = item.setNextItem(revocationDataRequired);
 		}
 
 		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
@@ -371,6 +372,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> forbiddenCertificateExtensions(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateForbiddenExtensionsConstraint(context, subContext);
 		return new CertificateForbiddenExtensionsCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private RevocationDataRequiredCheck<XmlSubXCV> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
+		CertificateValuesConstraint constraint = validationPolicy.getRevocationDataSkipConstraint(context, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> revocationInfoAccessPresent(CertificateWrapper certificate, SubContext subContext) {
@@ -545,10 +551,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> certificatePS2DQcCompetentAuthorityId(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificatePS2DQcCompetentAuthorityIdConstraint(context, subContext);
 		return new CertificatePS2DQcCompetentAuthorityIdCheck(i18nProvider, result, certificate, constraint);
-	}
-
-	private ChainItem<XmlSubXCV> idPkixOcspNoCheck(CertificateWrapper certificateWrapper) {
-		return new IdPkixOcspNoCheck<>(i18nProvider, result, certificateWrapper, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {

@@ -30,18 +30,24 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
+import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.ListAlgo;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.ExternalResourcesCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -319,6 +325,154 @@ public class RevocationDataVerifierTest {
 
         revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicyWithTime(validationPolicy, calendar.getTime());
         assertFalse(revocationDataVerifier.isAcceptable(ocspToken));
+    }
+
+    @Test
+    public void revocationSkipTrustedCertTest() {
+        String caCertB64 = "MIID6jCCAtKgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjEwNzAzMTI1MTQzWhcNMjMwNTAzMTI1MTQzWjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCxf8STorHasImct8bY+CFmxdm7JaM1/4peMPOs2FTgjq3OnbILB7wXYznGpbJqNGVLV0bWFrgbKeQcOU1xFta4HJxVH9a5CdO1g7HiYTCLOKD/4fKSlw5xWB+oD0Tgs8R56Kp3esBiQ2uFZ6X18XM7SbXZof4P7qu1TkosKvVXNkI70g4pajt4z5dNwruGHpKgVx5o31MBYRdNYQ918OS0NXPhP9N/U8P/v2Fx3W/sohn1nISKBYDOxHYSfQks2zdjJ/A+i/5hodPkijkmTAP0oCcvIymUkeoJxTqpAFwCvj3I+ZT7LWr1ESfi/ZU0pUAcipz96L7vX8+/9GdH/GV1AgMBAAGjgdQwgdEwDgYDVR0PAQH/BAQDAgEGMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NybC9yb290LWNhLmNybDBMBggrBgEFBQcBAQRAMD4wPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9yb290LWNhLmNydDAdBgNVHQ4EFgQUqvu5WABNumd2cDVEWyzGnvihBOkwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAUa1Vot6evQWOJqxqKpM5T1tK/DPMfEPpWISaeOHn0RHKKGMgwct2uTpQhd+CoD7WAGJk41DKtDMSmz5Dkpj/Z7irWoSn55PtrnhA5xedGYgJAZzUYZoJqB2VqPgnUtaWWI+R5vhvuz6Ob8SFIdFb/k8qe4EbkTB9eA/UGKS9RjngepsqCHroXIGiJD/xvVz69iLADmwRBQdWx4N+ZXpF67YgiK2wHq9psE/S/ExMfZPXrrCf4bPagvgEUYE3ZKhUsUOJDk+gmVAYUa/V5ZBESMW+uiI/MqtyEMIysdwqW32EkaIEdunPj1VQY+m+SOlKs9jD/8b0KKL/hkRvTMhl4Q==";
+        CertificateToken caCertificate = DSSUtils.loadCertificateFromBase64EncodedString(caCertB64);
+
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(caCertificate));
+
+        CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+        trustedCertificateSource.addCertificate(caCertificate);
+        revocationDataVerifier.setTrustedCertificateSource(trustedCertificateSource);
+
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(caCertificate));
+    }
+
+    @Test
+    public void revocationSkipSelfSignedCertTest() {
+        CertificateToken selfSignedCertificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIIFjjCCA3agAwIBAgIITzMgjMWUvzgwDQYJKoZIhvcNAQELBQAwKDELMAkGA1UEBhMCQkUxGTAXBgNVBAMTEEJlbGdpdW0gUm9vdCBDQTQwHhcNMTMwNjI2MTIwMDAwWhcNMzIxMDIyMTIwMDAwWjAoMQswCQYDVQQGEwJCRTEZMBcGA1UEAxMQQmVsZ2l1bSBSb290IENBNDCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAJiQrvrHHm+O4AU6syN4TNHWL911PFsY6E9euwVml5NAWTdw9p2mcmEOYGx424jFLpSQVNxxxoh3LsIpdWUMRQfuiDqzvZx/4dCBaeKL/AMRJuL1d6wU73XKSkdDr5uH6H2Yf19zSiUOm2x4k3aNLyT+VryF11b1Prp67CBk63OBmG0WUaB+ExtBHOkfPaHRHFA04MigoVFt3gLQRGh1V+H1rm1hydTzd6zzpoJHp3ujWD4r4kLCrxVFV0QZ44usvAPlhKoecF0feiKtegS1pS+FjGHA9S85yxZknEV8N6bbK5YP7kgNLDDCNFJ6G7MMpf8MEygXWMb+WrynTetWnIV6jTzZA1RmaZuqmIMDvWTA7JNkiDJQOJBWQ3Ehp+Vn7li1MCIjXlEDYJ2wRmcRZQ0bsUzaM/V3p+Q+j8S3osma3Pc6+dDzxL+Og/lnRnLlDapXx28XB9urUR5H03Ozm77B9/mYgIeM8Y1XntlCCELBeuJeEYJUqc0FsGxWNwjsBtRoZ4dva1rvzkXmjJuNIR4YILg8G4kKLhr9JDrtyCkvI9Xm8GDjqQIJ2KpQiJHBLJA0gKxlYem8CSO/an3AOxqTNZjWbQx6E32OPB/rsU28ldadi9c8yeRyXLWpUF4Ghjyoc4OdrAkXmljnkzLMC459xGL8gj6LyNb6UzX0eYA9AgMBAAGjgbswgbgwDgYDVR0PAQH/BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wQgYDVR0gBDswOTA3BgVgOAwBATAuMCwGCCsGAQUFBwIBFiBodHRwOi8vcmVwb3NpdG9yeS5laWQuYmVsZ2l1bS5iZTAdBgNVHQ4EFgQUZ+jxTk+ztfMHbwicDIPZetlb50kwEQYJYIZIAYb4QgEBBAQDAgAHMB8GA1UdIwQYMBaAFGfo8U5Ps7XzB28InAyD2XrZW+dJMA0GCSqGSIb3DQEBCwUAA4ICAQBe3CQAZrNwVZ9Ll3nFWkaKDvMwOE2s1NysTfocGUwyd6c01qsSN52BhRqpaSEWLeSXAfPQK+f57M1hXLNVE8VMf1Vtc0ge+VgjKOWLJ+4d0CAk8VIAK55NUkrSbu4pn+osfD/He0jfECKyq9xrhbn4yxZ/d5qj8RSj+aPmCoX/kaODZmug+AfzY+TXeJgjn8eEQGO8zDJoV/hdUuotkf8eQXeuRhoCuvipBm7vHqEA946NuVtRUmaztLUR9CkbSZ1plWWmqKC+QKErWzvBeswrWxzaRoW9Un7qCSmiO9ddkEHVRHibkUQvPn8kGdG/uOmmRQsbjFuARNCMWS4nHc6TTw7dJgkeZjZiqPl22ifsWJsR/w/VuJMA4kSot/h6qQV9Eglo4ClRlEk3yzbKkcJkLKk6lA90/u46KsqSC5MgUeFjER398iXqpDpT8BzIMovMzHlK7pxTJA5cWXN2a8OMhYCA/Kb6dqIXIi8NKsqzVMXJfX65DM2gWA8rjicJWoooqLhUKuZ6tSWA6If2TRr7MfQsVDhwwUk6mvEIaBJBcyOWH8XgyY6uuHuvGe8CkK+Yk4X2TiE+7GuQe4YVJ/MOGdS3V1eZwPmWSu++azOOFrwoZpIPKOwjbsuLbs0xt6BwWW2XFP025BDh/OD6UE4VsyznnUCkb4AbS947UX6NGA==");
+
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(selfSignedCertificate));
+    }
+
+    @Test
+    public void revocationSkipValAssuredCertTest() throws Exception {
+        CertificateToken shortTermCertificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIIDJjCCAg6gAwIBAgIIMMSTGSdLPxQwDQYJKoZIhvcNAQENBQAwKDEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczELMAkGA1UEBhMCTFUwHhcNMjEwNzAxMTAwMTI5WhcNMjEwNzAxMTAwNjI5WjA2MQwwCgYDVQQDDANBIGExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsW0yfJBqh9CtbfOtsZcEAEvzzfPusdhZNv0JSq8frKGMqJwTgjnkMJd9D3sEHUBJP0ryAmK9L5S+lWOGDhdYcE8K00k3hZSHyrOdRblB0SZhtXIgeGD7ESdTU9xPCf4Ze7xSI08zlk9NmTaj5Xqfyako8sxHAQapdXw8kfG0Ol6UhfMg7MjN8/wZrIVUYZzBQP3RFKHFQIms+pxfWxvETsynn/n2rOjuAsV0aTWGUAeWJRFJxKLSTrHQiQULVS1MHIIkdbQZxMA+Jn3dXwVdJLX/JRSvEOBqGRrvGQtYN2vNdrJlNHP0WGcSAddweWs7Ar+Pp7Qm/HEQF5+EOPUQDQIDAQABo0YwRDAOBgNVHQ8BAf8EBAMCBsAwIwYIKwYBBQUHAQMEFzAVMBMGBgQAjkYBBjAJBgcEAI5GAQYBMA0GBwQAi+xJAgEEAgUAMA0GCSqGSIb3DQEBDQUAA4IBAQBAYj8mdKsj/mMoM4HXL/w+xeK0iM55eGyBNprwxECoCH8ZCgVrVTb3eKttTXYrXjk3Yqpg3amkm7aV94iXJ0qLER/2C9lHLv6h1CoxYCdevAUSVOIzF0SJj54dxrwDQ7uTFXRe2etOg+hmEhj3OBpd/5vMfdIViYHtpPoCyZoQyGLztUt1k8/JvBe91UGAEnWx0nvokehkTgueq7dsTjBit4dlCmfmIzQUUWCgNpe1S1nEb0B/BCXaqPRhYx1//2T/5gR1lKe36HHp5rUURKT8NsS76lfxdor9Ag3mVmsw1NcVtDiFo0molO84+B53yqRP2wCU7MtfKfCX9CocgVNF");
+
+        ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
+                .getBasicSignatureConstraints().getSigningCertificate();
+
+        CertificateValuesConstraint certificateValuesConstraint = new CertificateValuesConstraint();
+        signingCertificate.setRevocationDataSkip(certificateValuesConstraint);
+
+        signingCertificate = validationPolicy.getCounterSignatureConstraints()
+                .getBasicSignatureConstraints().getSigningCertificate();
+        signingCertificate.setRevocationDataSkip(certificateValuesConstraint);
+
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy);
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(shortTermCertificate));
+
+        MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
+        multiValuesConstraint.getId().add(OID.id_etsi_ext_valassured_ST_certs.getId());
+        certificateValuesConstraint.setCertificateExtensions(multiValuesConstraint);
+        signingCertificate.setRevocationDataSkip(certificateValuesConstraint);
+
+        revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy);
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(shortTermCertificate));
+
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(Collections.emptyList());
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(shortTermCertificate));
+
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(
+                Collections.singleton(OID.id_etsi_ext_valassured_ST_certs.getId()));
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(shortTermCertificate));
+
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(
+                Collections.singleton(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId()));
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(shortTermCertificate));
+
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(
+                Arrays.asList(OID.id_etsi_ext_valassured_ST_certs.getId(), OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId()));
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(shortTermCertificate));
+    }
+
+    @Test
+    public void revocationSkipOcspNoCheckTest() throws Exception {
+        CertificateToken ocspNoCheckCertificate = DSSUtils.loadCertificateFromBase64EncodedString(
+                "MIIEXjCCAkagAwIBAgILBAAAAAABWLd6HkYwDQYJKoZIhvcNAQELBQAwMzELMAkGA1UEBhMCQkUxEzARBgNVBAMTCkNpdGl6ZW4gQ0ExDzANBgNVBAUTBjIwMTYzMTAeFw0xNjEyMTAxMTAwMDBaFw0xODAxMjkxMTAwMDBaMC4xHzAdBgNVBAMTFkJlbGdpdW0gT0NTUCBSZXNwb25kZXIxCzAJBgNVBAYTAkJFMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzD0B0c4gBx/wumeE2l/Wcz5FoMSUIuRNIySH2pJ3yfKR/u/FWCOzcrJvDMdmgzR33zGb4/fZel9YlI6xcN08Yd7GkP0/WtbHUhGUPERV76Vvyrk2K/EH/IG2gtxYB+7pkA/ZZycdyjc4IxHzBOiGofP9lDkPD05GSqI7MjVf6sNkZSnHcQSKwkaCGhAshJMjHzShEsSzOgX9kXceBFPTt6Hd2prVmnMTyAwURbQ6gFHbgfxB8JLMya95U6391nGQC66ScH1GhIwd9KSn+yBY0cazJ3nIrc8wd0yGYBgPK78jN3MvAsb1ydfs7kE+Wf95z9oRMiw62Glxh/ksLS/tTQIDAQABo3gwdjAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0OBBYEFBgKRBywCTroyvAErr7p657558Y9MBMGA1UdJQQMMAoGCCsGAQUFBwMJMB8GA1UdIwQYMBaAFM6Al2fQrdlOxJlqgCcikM0RNRCHMA8GCSsGAQUFBzABBQQCBQAwDQYJKoZIhvcNAQELBQADggIBAFuZrqcwt23UiiJdRst66MEBRyKbgPsQM81Uq4FVrAnV8z3l8DDUv+A29KzCPO0GnHSatqA7DNhhMzoBRC42PqCpuvrj8VEWHd43AuPOLaikE04a5tVh6DgW8b00s6Yyf/PuDHCsg2C2MqY71MUR9GcnI7ngR2SyWQGpbsf/wfjujNxEB0+SOwMDTgIAikaueHGZbYkwvlRpL6wm2ENvrE8OvKt7NlNsaWJ4KtQo0QS5Ku+Y2BDA3bX+g8eNLQkaXTycgL4X3MyE5pBOl1OW3KOjJdfyLF+Sii+JKjNf8ZQWk0xvkBEI+nhCzDXhtKAcrkTKlXE25MiUnYoRsXkXgrzYftxAMxvFOXJji/hnX5Fe/3SBAHaE+jU6yC5nk6Q9ERii8mL0nHouMlZWSiAuXtlZDFrzwtLD2ITBECe4X60BDQfb/caO2u3HcWoG1AOvGxfQB0cMmP2njCdDf8UOqryiyky4t7Jj3ghOvETjWlwMw5ObhZ8yj8p6qFAt7+EVJfpUc1gDAolS/hJoLzohbL5LnCAnUAWsFpvG3qW1ky+X0MePXi6q/boqj2tcC4IDdsYS6RHPBvzl5+yLDccrGx1s/7vQYTMNyX0dYZzuxFZxx0bttWfjqLz3hFHlAEVmLCyUkSz761CbaT9u/G4tPP4Q8ApFfSskPI57lbLWIcwP");
+
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(ocspNoCheckCertificate));
+
+        ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        CertificateConstraints signingCertificate = validationPolicy.getRevocationConstraints()
+                .getBasicSignatureConstraints().getSigningCertificate();
+
+        CertificateValuesConstraint certificateValuesConstraint = new CertificateValuesConstraint();
+        signingCertificate.setRevocationDataSkip(certificateValuesConstraint);
+
+        revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy);
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(ocspNoCheckCertificate));
+
+        MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
+        multiValuesConstraint.getId().add(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId());
+        certificateValuesConstraint.setCertificateExtensions(multiValuesConstraint);
+        signingCertificate.setRevocationDataSkip(certificateValuesConstraint);
+
+        revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy);
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(ocspNoCheckCertificate));
+
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(
+                Collections.singleton(OID.id_etsi_ext_valassured_ST_certs.getId()));
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(ocspNoCheckCertificate));
+
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(
+                Collections.singleton(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId()));
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(ocspNoCheckCertificate));
+
+        revocationDataVerifier.setRevocationSkipCertificateExtensions(
+                Arrays.asList(OID.id_etsi_ext_valassured_ST_certs.getId(), OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId()));
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(ocspNoCheckCertificate));
+    }
+
+    @Test
+    public void revocationSkipPolicyTest() throws Exception {
+        String certB64 = "MIIFQDCCBCigAwIBAgIOGCB2t4Cg4gEAAQAOEN4wDQYJKoZIhvcNAQELBQAwbTELMAkGA1UEBhMCTFQxEjAQBgNVBGETCTE4ODc3ODMxNTE2MDQGA1UEChMtQXNtZW5zIGRva3VtZW50dSBpc3Jhc3ltbyBjZW50cmFzIHByaWUgTFIgVlJNMRIwEAYDVQQDEwlBRElDIENBLUEwHhcNMTkwMTE1MDc1MDUwWhcNMjIwMTE0MDc1MDUwWjBlMQswCQYDVQQGEwJMVDEaMBgGA1UEAwwRQURPTUFTIEJJUsWgVFVOQVMxEzARBgNVBAQMCkJJUsWgVFVOQVMxDzANBgNVBCoTBkFET01BUzEUMBIGA1UEBRMLMzgwMDMxMzA2OTMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCpBBVaIBn1jxl44uuvkJWkW5F3rtoUsmAkMJPlPyzQOg87h07uYOIJk4YDIpvujDaL3y3RAy7ARFWpY31zn0b0TnMkDyuf5JYtro6ZpR3v/wijVUNYyGZYpbc42WVNVp/AYuE6IJ7ecE1dMMJDHVkJAmoH2wnT+Lnqp71n51luYc5v0VP+OFmPqPzuSbiwXewOg8PHARkv9l8d0FnoUmKg5xpm+jbjCFsOC77hkwjUDQxu9Yv7p+T1X7+se46GDOm287i2iW66bZYu4qy6ycrznNuwWLtU1i5Z7ypoNGJ++IRn4wP80CvwzUo5TNcLD8Ql3PaDs8GPKXfpBz2zd4MBAgMBAAGjggHkMIIB4DBLBgNVHQkERDBCMA8GCCsGAQUFBwkDMQMTAU0wHQYIKwYBBQUHCQExERgPMTk4MDAzMTMxMjAwMDBaMBAGCCsGAQUFBwkEMQQTAkxUMB0GA1UdDgQWBBSkKwML7BV258Cpil5bewoD6itogjAOBgNVHQ8BAf8EBAMCBsAwHwYDVR0jBBgwFoAUYpbcZMVf8JBEU79q1WAACu/0N7IweAYIKwYBBQUHAQEEbDBqMDQGCCsGAQUFBzABhihodHRwOi8vbnNjLnZybS5sdC9PQ1NQL29jc3ByZXNwb25kZXIubnNjMDIGCCsGAQUFBzAChiZodHRwOi8vbnNjLnZybS5sdC9haWEvQURJQ19DQS1BKDEpLmNydDAVBgNVHSUEDjAMBgorBgEEAYI3CgMMMEQGA1UdIAQ9MDswOQYLKwYBBAGChlUCAgIwKjAoBggrBgEFBQcCARYcaHR0cDovL25zYy52cm0ubHQvcmVwb3NpdG9yeTAdBgkrBgEEAYI3FQoEEDAOMAwGCisGAQQBgjcKAwwwSwYIKwYBBQUHAQMEPzA9MAgGBgQAjkYBATAIBgYEAI5GAQQwJwYGBACORgEFMB0wGxYVaHR0cDovL25zYy52cm0ubHQvcGRzEwJlbjANBgkqhkiG9w0BAQsFAAOCAQEAIHcOUDrDtW1cJVkCsKpdniYpBBoZfmwX0VIM+mTevRb/dCTMyHHp+DkfauWXEGUEkl+PoZb8r9hoYcBWYvbIXbSEPnoRX26BLXeNGKz4LxqoqoHRqDFSOr7+7uFkhIwalM5mjc9c/oOJZu5xTALH/TCSRD4TVp48/+UiII/JpC+700N8oNbPkJUoKBpfRFcD89WGlvywrGYyD1nPoSn+KF7lmxenl+KEJKE6q0UdzV9kbzkk7BlksiUL9U9D0c7emx6pRk1Mw7fqTVD/ETGqmKVR6lzIQcY/GLQ55W968FrovU6F7TP/7qW8ahYzdM09sEnoIeG5jet3mYVHPEyGMA==";
+        CertificateToken certificateToken = DSSUtils.loadCertificateFromBase64EncodedString(certB64);
+
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(certificateToken));
+
+        ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
+                .getBasicSignatureConstraints().getSigningCertificate();
+
+        CertificateValuesConstraint certificateValuesConstraint = new CertificateValuesConstraint();
+        signingCertificate.setRevocationDataSkip(certificateValuesConstraint);
+
+        signingCertificate = validationPolicy.getCounterSignatureConstraints()
+                .getBasicSignatureConstraints().getSigningCertificate();
+        signingCertificate.setRevocationDataSkip(certificateValuesConstraint);
+
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(certificateToken));
+
+        MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
+        multiValuesConstraint.getId().add("1.3.6.1.4.1.33621.2.2.2");
+        certificateValuesConstraint.setCertificatePolicies(multiValuesConstraint);
+        signingCertificate.setRevocationDataSkip(certificateValuesConstraint);
+
+        revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy);
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(certificateToken));
+
+        revocationDataVerifier.setRevocationSkipCertificatePolicies(
+                Collections.singleton("1.3.6.1.4.1.33621.2.2.2"));
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(certificateToken));
+
+        revocationDataVerifier.setRevocationSkipCertificatePolicies(
+                Collections.singleton("1.2.3.4.5"));
+        assertFalse(revocationDataVerifier.isRevocationDataSkip(certificateToken));
+
+        revocationDataVerifier.setRevocationSkipCertificatePolicies(
+                Arrays.asList("1.3.6.1.4.1.33621.2.2.2", "1.2.3.4.5"));
+        assertTrue(revocationDataVerifier.isRevocationDataSkip(certificateToken));
     }
 
 }

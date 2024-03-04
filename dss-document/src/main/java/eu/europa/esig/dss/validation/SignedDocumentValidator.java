@@ -445,6 +445,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public Reports validateDocument(final ValidationPolicy validationPolicy) {
 		LOG.info("Document validation...");
 		assertConfigurationValid();
+		initCertificateVerifier(validationPolicy);
 
 		final XmlDiagnosticData diagnosticData = getDiagnosticData();
 
@@ -457,6 +458,19 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected void assertConfigurationValid() {
 		Objects.requireNonNull(certificateVerifier, "CertificateVerifier is not defined");
 		Objects.requireNonNull(document, "Document is not provided to the validator");
+	}
+
+	/**
+	 * Initializes {@code CertificateVerifier} with required data
+	 *
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	protected void initCertificateVerifier(ValidationPolicy validationPolicy) {
+		if (certificateVerifier.getRevocationDataVerifier() == null &&
+				(certificateVerifier.getCrlSource() != null || certificateVerifier.getOcspSource() != null)) {
+			LOG.debug("No RevocationDataVerifier is defined. Instantiate a new one based on the validation policy.");
+			certificateVerifier.setRevocationDataVerifier(RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy));
+		}
 	}
 
 	/**

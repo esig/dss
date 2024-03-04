@@ -232,6 +232,11 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<RevocationDataSkip Level="IGNORE">
+					<CertificateExtensions>
+						<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+					</CertificateExtensions>
+				</RevocationDataSkip>
 				<Cryptographic Level="WARN">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>

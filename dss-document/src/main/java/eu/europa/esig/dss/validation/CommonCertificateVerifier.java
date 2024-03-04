@@ -83,7 +83,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * Verifies the validity of retrieved revocation data (used to evaluate if a new revocation should be requested).
 	 */
-	private RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+	private RevocationDataVerifier revocationDataVerifier;
 
 	/**
 	 * Defines whether a revocation data failed a verification still shall be returned to the validation process,
@@ -247,7 +247,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setRevocationDataVerifier(RevocationDataVerifier revocationDataVerifier) {
-		Objects.requireNonNull(revocationDataVerifier, "RevocationDataVerifier shall be defined!");
 		this.revocationDataVerifier = revocationDataVerifier;
 	}
 

@@ -51,6 +51,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
@@ -66,6 +67,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSe
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
@@ -190,7 +192,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			if (certificateWrapper.isTrusted()) {
 				break;
 			}
-			if (!ValidationProcessUtils.isRevocationCheckRequired(certificateWrapper)) {
+
+			SubContext subContext = currentSignature.getSigningCertificate().getId().equals(certificateWrapper.getId()) ?
+					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+
+			RevocationDataRequiredCheck<XmlValidationProcessLongTermData> revocationDataRequired =
+					revocationDataRequired(certificateWrapper, currentContext, subContext);
+
+			if (!revocationDataRequired.process()) {
+				item = item.setNextItem(revocationDataRequired);
 				continue;
 			}
 
@@ -423,6 +433,12 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private ChainItem<XmlValidationProcessLongTermData> isAcceptableBasicSignatureValidation() {
 		return new AcceptableBasicSignatureValidationCheck(i18nProvider, result, basicSignatureValidation, getFailLevelConstraint());
+	}
+
+	private RevocationDataRequiredCheck<XmlValidationProcessLongTermData> revocationDataRequired(CertificateWrapper certificate,
+																								 Context context, SubContext subContext) {
+		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataPresent(

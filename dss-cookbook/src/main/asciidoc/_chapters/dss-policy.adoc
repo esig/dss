@@ -746,6 +746,26 @@ Default: `WARN`
 </SigningCertificate>
 ----
 
+* `RevocationDataSkip` - this constraint defines a list of certificate extensions or certificate policies which, when present in a certificate, indicate that no revocation data check should be performed for that certificate. If the certificate matches one of the defined conditions, no revocation data check will be performed.
+
+NOTE: `FAIL` indication is not recommended, as it will interrupt the validation process.
+
+Default: `INFORM` for short-term signing-certificate, `IGNORE` for revocation issuer certificate (ocsp-no-check)
+
+[source,xml,indent=0]
+.Example of RevocationDataSkip usage (with IGNORE validation level)
+----
+<SigningCertificate>
+    ...
+    <RevocationDataSkip Level="IGNORE">
+        <CertificateExtensions>
+            <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+        </CertificateExtensions>
+    </RevocationDataSkip>
+    ...
+</SigningCertificate>
+----
+
 * `RevocationInfoAccessPresent` - this constraint is used to check whether the certificate has access points to extract revocation information about the certificate (i.e. CRL access points or AIA OCSP urls). If the certificate does not contain revocation access points, the check will fail.
 
 Default: `WARN`

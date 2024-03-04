@@ -20,18 +20,17 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.spi.x509.CertificateReorderer;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateReorderer;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -39,6 +38,7 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.TokenIssuerSelector;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
@@ -46,13 +46,12 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
 import eu.europa.esig.dss.validation.status.SignatureStatus;
 import eu.europa.esig.dss.validation.status.TokenStatus;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,8 +196,23 @@ public class SignatureValidationContext implements ValidationContext {
 		this.extractPOEFromUntrustedChains = certificateVerifier.isExtractPOEFromUntrustedChains();
 		this.revocationDataLoadingStrategyFactory = certificateVerifier.getRevocationDataLoadingStrategyFactory();
 		this.revocationDataVerifier = certificateVerifier.getRevocationDataVerifier();
-		this.revocationDataVerifier.setTrustedCertificateSource(trustedCertSources);
 		this.revocationFallback = certificateVerifier.isRevocationFallback();
+	}
+
+	/**
+	 * Returns an instance of {@code RevocationDataVerifier}.
+	 * Instantiates a default configuration from a default validation policy, if not defined.
+	 *
+	 * @return {@link RevocationDataVerifier}
+	 */
+	private RevocationDataVerifier getRevocationDataVerifier() {
+		if (revocationDataVerifier == null) {
+			revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+		}
+		if (revocationDataVerifier.trustedListCertificateSource == null) {
+			revocationDataVerifier.setTrustedCertificateSource(trustedCertSources);
+		}
+		return revocationDataVerifier;
 	}
 
 	@Override
@@ -879,7 +893,7 @@ public class SignatureValidationContext implements ValidationContext {
 		final RevocationDataLoadingStrategy revocationDataLoadingStrategy = revocationDataLoadingStrategyFactory.create();
 		revocationDataLoadingStrategy.setCrlSource(currentCRLSource);
 		revocationDataLoadingStrategy.setOcspSource(currentOCSPSource);
-		revocationDataLoadingStrategy.setRevocationDataVerifier(revocationDataVerifier);
+		revocationDataLoadingStrategy.setRevocationDataVerifier(getRevocationDataVerifier());
 		revocationDataLoadingStrategy.setFallbackEnabled(revocationFallback);
 		return revocationDataLoadingStrategy.getRevocationToken(certificateToken, issuerCertificate);
 	}
@@ -945,7 +959,7 @@ public class SignatureValidationContext implements ValidationContext {
 			if (isSelfSignedOrTrusted(certificateToken)) {
 				// break on the first trusted entry
 				break;
-			} else if (isOCSPNoCheckExtension(certificateToken)) {
+			} else if (isRevocationDataNotRequired(certificateToken)) {
 				// skip the revocation check for OCSP certs if no check is specified
 				continue;
 			}
@@ -1074,7 +1088,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (isSelfSignedOrTrusted(certificateToken)) {
 			return true;
 
-		} else if (!isOCSPNoCheckExtension(certificateToken)) {
+		} else if (!isRevocationDataNotRequired(certificateToken)) {
 			List<RevocationToken<?>> relatedRevocationTokens = getRelatedRevocationTokens(certificateToken);
 			// check only available revocation data in order to not duplicate
 			// the method {@code checkAllRequiredRevocationDataPresent()}
@@ -1111,15 +1125,11 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private boolean isRevocationDataNotRequired(CertificateToken certToken) {
-		return isSelfSignedOrTrusted(certToken) || isOCSPNoCheckExtension(certToken);
+		return getRevocationDataVerifier().isRevocationDataSkip(certToken);
 	}
 	
 	private boolean isSelfSignedOrTrusted(CertificateToken certToken) {
 		return certToken.isSelfSigned() || isTrusted(certToken);
-	}
-	
-	private boolean isOCSPNoCheckExtension(CertificateToken certToken) {
-		return CertificateExtensionsUtils.hasOcspNoCheckExtension(certToken);
 	}
 
 	private List<RevocationToken<?>> getRelatedRevocationTokens(CertificateToken certificateToken) {
@@ -1186,7 +1196,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private boolean isRevocationAcceptable(RevocationToken<?> revocation, CertificateToken issuerCertificateToken) {
-		return revocationDataVerifier.isAcceptable(revocation, issuerCertificateToken);
+		return getRevocationDataVerifier().isAcceptable(revocation, issuerCertificateToken);
 	}
 	
 	private boolean hasValidPOE(RevocationToken<?> revocation, CertificateToken relatedCertToken, CertificateToken issuerCertToken) {

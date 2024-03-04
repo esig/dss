@@ -60,7 +60,6 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlTrustAnchors;
 import eu.europa.esig.dss.simplereport.jaxb.XmlValidationMessages;
 import eu.europa.esig.dss.simplereport.jaxb.XmlValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
 import java.util.ArrayList;
@@ -686,7 +685,8 @@ public class SimpleReportBuilder {
 		Date min = null;
 		for (CertificateWrapper certificateWrapper : certificateChain) {
 
-			if (ValidationProcessUtils.isRevocationCheckRequired(certificateWrapper)) {
+			if (!certificateWrapper.isTrusted() && !certificateWrapper.isSelfSigned() &&
+					Utils.isCollectionNotEmpty(certificateWrapper.getCertificateRevocationData())) {
 				Date lastTrustedUsage;
 				if (usageTime != null) {
 					lastTrustedUsage = usageTime;

@@ -37,6 +37,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
@@ -46,6 +47,7 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.PastCertificateValidation;
@@ -59,6 +61,7 @@ import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastSig
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -143,25 +146,32 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 		final CertificateWrapper signingCertificate = token.getSigningCertificate();
 
-		PastSignatureValidationCertificateRevocationSelector certificateRevocationSelector =
-				new PastSignatureValidationCertificateRevocationSelector(
-						i18nProvider, signingCertificate, currentTime, bbbs, token.getId(), poe, policy);
-
-		XmlCRS xmlCRS = certificateRevocationSelector.execute();
-		tokenBBB.setPSVCRS(xmlCRS);
-
-		item = firstItem = checkCertificateRevocationSelectorResult(xmlCRS);
-
 		XmlConclusion sigCertRevocationPoeStatus = new XmlConclusion();
+		List<CertificateRevocationWrapper> signingCertificateRevocations = Collections.emptyList();
 
-		List<CertificateRevocationWrapper> signingCertificateRevocations = certificateRevocationSelector.getAcceptableCertificateRevocations();
-		if (Utils.isCollectionNotEmpty(signingCertificateRevocations)) {
-			sigCertRevocationPoeStatus.setIndication(Indication.PASSED);
+		if (isRevocationDataRequired(signingCertificate, SubContext.SIGNING_CERT)) {
+			PastSignatureValidationCertificateRevocationSelector certificateRevocationSelector =
+					new PastSignatureValidationCertificateRevocationSelector(
+							i18nProvider, signingCertificate, currentTime, bbbs, token.getId(), poe, policy);
+
+			XmlCRS xmlCRS = certificateRevocationSelector.execute();
+			tokenBBB.setPSVCRS(xmlCRS);
+
+			item = firstItem = checkCertificateRevocationSelectorResult(xmlCRS);
+
+			signingCertificateRevocations = certificateRevocationSelector.getAcceptableCertificateRevocations();
+			if (Utils.isCollectionNotEmpty(signingCertificateRevocations)) {
+				sigCertRevocationPoeStatus.setIndication(Indication.PASSED);
+			} else {
+				sigCertRevocationPoeStatus.setIndication(Indication.INDETERMINATE);
+				sigCertRevocationPoeStatus.setSubIndication(SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE);
+				// keep all revocation data if none of the valid instances found
+				signingCertificateRevocations = signingCertificate.getCertificateRevocationData();
+			}
+
 		} else {
-			sigCertRevocationPoeStatus.setIndication(Indication.INDETERMINATE);
-			sigCertRevocationPoeStatus.setSubIndication(SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE);
-			// keep all revocation data if none of the valid instances found
-			signingCertificateRevocations = signingCertificate.getCertificateRevocationData();
+			// revocation check is not required
+			sigCertRevocationPoeStatus.setIndication(Indication.PASSED);
 		}
 
 		/*
@@ -175,7 +185,12 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		XmlPCV pcvResult = pcv.execute();
 		tokenBBB.setPCV(pcvResult);
 
-		item = item.setNextItem(pastCertificateValidationAcceptableCheck(pcvResult));
+		ChainItem<XmlPSV> pastCertificateValidationAcceptableCheck = pastCertificateValidationAcceptableCheck(pcvResult);
+		if (item == null) {
+			item = firstItem = pastCertificateValidationAcceptableCheck;
+		} else {
+			item = item.setNextItem(pastCertificateValidationAcceptableCheck);
+		}
 
 		Date controlTime = pcvResult.getControlTime();
 		result.setControlTime(controlTime);
@@ -285,6 +300,11 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 */
 		item = item.setNextItem(pastRevocationDataValidationConclusive(sigCertRevocationPoeStatus));
 
+	}
+
+	private boolean isRevocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
+		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint).process();
 	}
 
 	private ChainItem<XmlPSV> checkCertificateRevocationSelectorResult(XmlCRS crsResult) {
