@@ -118,19 +118,6 @@ _(same for CounterSignatureConstraints)_
 </BasicSignatureConstraints>
 ----
 
-|PdfSignatureDictionary consistency check          |
-----
-not present
-----
-                                                  a|[source,xml]
-----
-<BasicSignatureConstraints>
-    ...
-    <PdfSignatureDictionary Level="FAIL" />
-    ...
-</BasicSignatureConstraints>
-----
-
 |Issuer DN check                                  |
 ----
 not present
