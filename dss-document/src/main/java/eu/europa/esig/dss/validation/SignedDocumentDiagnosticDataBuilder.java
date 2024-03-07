@@ -334,6 +334,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		if (Utils.isCollectionNotEmpty(usedTimestamps)) {
 			linkTimestampsAndTimestampsObjects(usedTimestamps);
 		}
+		if (Utils.isCollectionNotEmpty(evidenceRecords)) {
+			linkEvidenceRecordsAndTimestampsObjects(evidenceRecords);
+		}
 
 		return diagnosticData;
 	}
@@ -970,7 +973,6 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlEvidenceRecord.setStructuralValidation(getXmlStructuralValidation(evidenceRecord));
 		xmlEvidenceRecord.setDigestMatchers(getXmlDigestMatchers(evidenceRecord));
 		xmlEvidenceRecord.setEvidenceRecordScopes(getXmlSignatureScopes(evidenceRecord.getEvidenceRecordScopes()));
-		xmlEvidenceRecord.setTimestampedObjects(getXmlTimestampedObjects(evidenceRecord.getTimestampedReferences()));
 		xmlEvidenceRecord.setFoundCertificates(getXmlFoundCertificates(evidenceRecord.getCertificateSource()));
 		xmlEvidenceRecord.setFoundRevocations(getXmlFoundRevocations(evidenceRecord.getCRLSource(), evidenceRecord.getOCSPSource()));
 
@@ -1251,6 +1253,13 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		for (TimestampToken timestampToken : timestamps) {
 			XmlTimestamp xmlTimestampToken = xmlTimestampsMap.get(timestampToken.getDSSIdAsString());
 			xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken.getTimestampedReferences()));
+		}
+	}
+
+	private void linkEvidenceRecordsAndTimestampsObjects(List<EvidenceRecord> evidenceRecords) {
+		for (EvidenceRecord evidenceRecord : evidenceRecords) {
+			XmlEvidenceRecord xmlEvidenceRecord = xmlEvidenceRecordMap.get(evidenceRecord.getId());
+			xmlEvidenceRecord.setTimestampedObjects(getXmlTimestampedObjects(evidenceRecord.getTimestampedReferences()));
 		}
 	}
 

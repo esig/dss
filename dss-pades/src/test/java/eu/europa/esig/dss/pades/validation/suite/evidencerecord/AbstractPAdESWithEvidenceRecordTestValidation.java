@@ -119,7 +119,7 @@ public abstract class AbstractPAdESWithEvidenceRecordTestValidation extends Abst
                     assertTrue(timestamp.isSignatureValid());
 
                     List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-                    assertEquals(diagnosticData.getSignatures().size(), Utils.collectionSize(timestampScopes));
+                    assertEquals(getNumberOfExpectedEvidenceScopes(), timestampScopes.size());
 
                     boolean coversEvidenceRecord = false;
                     coversSignature = false;
@@ -199,7 +199,7 @@ public abstract class AbstractPAdESWithEvidenceRecordTestValidation extends Abst
                 assertNotEquals(Indication.FAILED, xmlEvidenceRecord.getIndication());
 
                 List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> evidenceRecordScopes = xmlEvidenceRecord.getEvidenceRecordScope();
-                assertEquals(simpleReport.getSignatureIdList().size(), Utils.collectionSize(evidenceRecordScopes));
+                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
 
                 XmlTimestamps timestamps = xmlEvidenceRecord.getTimestamps();
                 assertNotNull(timestamps);
@@ -209,7 +209,7 @@ public abstract class AbstractPAdESWithEvidenceRecordTestValidation extends Abst
                     assertNotEquals(Indication.FAILED, xmlTimestamp.getIndication());
 
                     List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
-                    assertEquals(simpleReport.getSignatureIdList().size(), Utils.collectionSize(timestampScopes));
+                    assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
                 }
 
             }
