@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<con:soapui-project id="62c0c65c-00fe-478c-a060-00529a090280" activeEnvironment="Default" name="DSS-SOAP-REST" resourceRoot="" soapui-version="5.7.1" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="17828c3d-c8ef-495c-b77c-fc90a19c79fd" wsaVersion="NONE" name="SoapDocumentValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://validation.dss.esig.europa.eu/}SoapDocumentValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentValidationServiceImplService" targetNamespace="http://validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://validation.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
+<con:soapui-project id="62c0c65c-00fe-478c-a060-00529a090280" activeEnvironment="Default" name="DSS-SOAP-REST" resourceRoot="" soapui-version="5.7.2" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:WsdlInterface" id="17828c3d-c8ef-495c-b77c-fc90a19c79fd" wsaVersion="NONE" name="SoapDocumentValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://validation.dss.esig.europa.eu/}SoapDocumentValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl"><con:part><con:url>http://localhost:8080/dss-demo-webapp/services/soap/validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentValidationServiceImplService" targetNamespace="http://validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://validation.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http">
   <wsdl:types>
     <xs:schema elementFormDefault="unqualified" targetNamespace="http://validation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns4="http://dss.esig.europa.eu/validation/simple-report" xmlns:ns3="http://dss.esig.europa.eu/validation/diagnostic" xmlns:ns2="http://dss.esig.europa.eu/validation/detailed-report" xmlns:ns1="http://dss.esig.europa.eu/validation/policy">
       <xs:import namespace="http://dss.esig.europa.eu/validation/policy"/>
@@ -1035,7 +1035,6 @@
    </soapenv:Body>
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://validation.dss.esig.europa.eu/SoapDocumentValidationService/validateSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:RestService" id="66dd2adb-201a-45ee-8bf6-e6ef4a5ba1ca" wadlVersion="http://wadl.dev.java.net/2009/02" name="http://localhost:8080" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>http://localhost:8080/services/rest/validation?_wadl</con:endpoint></con:endpoints><con:resource name="validateSignature" path="/services/rest/validation/validateSignature" id="5f2a4735-1c67-4420-b681-210881b11193"><con:settings/><con:parameters/><con:method name="ValidateSignature" id="76126e65-876a-45ae-b2cb-949f940c23e6" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature">val:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="c2b0bdab-f911-4774-b27c-386e3b74a2ce" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request>{"signedDocument":{"bytes":"PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48ZHM6U2lnbmF0dXJlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBJZD0iaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpTaWduZWRJbmZvPjxkczpDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIi8+PGRzOlNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZHNpZy1tb3JlI3JzYS1zaGEyNTYiLz48ZHM6UmVmZXJlbmNlIElkPSJyLWlkLTEiIFR5cGU9IiIgVVJJPSJzYW1wbGUueG1sIj48ZHM6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+PGRzOkRpZ2VzdFZhbHVlPmtjREhPWmp3WmhWZnVEaHVoQ2VDRVJSbVlwVEg0Smo0Um1mVlZpMzFROWc9PC9kczpEaWdlc3RWYWx1ZT48L2RzOlJlZmVyZW5jZT48ZHM6UmVmZXJlbmNlIFR5cGU9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMjU2lnbmVkUHJvcGVydGllcyIgVVJJPSIjeGFkZXMtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjxkczpUcmFuc2Zvcm1zPjxkczpUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiLz48L2RzOlRyYW5zZm9ybXM+PGRzOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPjxkczpEaWdlc3RWYWx1ZT4zc2xnUVQvTHdwRWozRVVNTmpDSWlPaXBaUDVGaVdGOC92cmM1WXpEMFZRPTwvZHM6RGlnZXN0VmFsdWU+PC9kczpSZWZlcmVuY2U+PC9kczpTaWduZWRJbmZvPjxkczpTaWduYXR1cmVWYWx1ZSBJZD0idmFsdWUtaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPlZKSDl2ckVmM2tvOG5COUJDbkxWK0R4UDBRUXIyTzdEeGxGK1ZacWJrV2hPV1RRQ1RqTlhHbW5wWnFtWi9QbFllTUJqSXRQNWpMdHVyMHF2UjFTSEJwR2E5bWF1Y2tBTXBCYjhmSC9UUmZjMDI5UHFuUkpyV0JXZWZDY2J6L2VVcGRYckJvOUtvTnJlOUV6ckQvTjl4S0FZdVdqemRxVFVqS3RCK0ZicG1vMkR5OVk2ejJDSERabmxkOUVJVjdtYUk5d2c4RlM2U21WdWhkUVZES0NQMU85NDI0b2dzSVRjUURzZTRZMnAxaHlPeFJGRHFzNWgycGg5YllocTJzR1pYZ1FQS1B3VW1vWDcwbDBLZE00WDR6dHRrdzBWbjZCNlZ3WnF0QjhJL3pyS3Y4RjlUOHVSRTMvcmR6NElWQi9zUGVkQndmMTZzK0Zra041ZWxsQlNtQT09PC9kczpTaWduYXR1cmVWYWx1ZT48ZHM6S2V5SW5mbz48ZHM6WDUwOURhdGE+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDNmpDQ0FkS2dBd0lCQWdJR0U0TVUzM2R4TUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakFvTVJNd0VRWURWUVFEREFwVGFXZHVaWEpHWVd0bE1SRXdEd1lEVlFRS0RBaEVVMU10ZEdWemREQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQQURDQ0FRb0NnZ0VCQUpieS9IbklhWUJsa1VaZ29LbnhNRDRhUnFQQktmZTQvMnNIdjd4eGVodVArR1pxYWFVSmZNMEY4UXRWTkhCMWNROXBhaHpEeXpzVk5lU3hpWllneENQVTZhV0lmSktpWFdoQmtUayswb1Q4NXJhZFhsMWFnRmJWQmJEaWpWZll1THZlQTk4enFxc2phQ1h3REJ2dXdZSEh2ejdHZDBIY0J1bE5MODVtOUFhelI4ZDU1QURLZ1htYWJ4R1Z2UWRoQUNaSlczcHlUUWdvMUJueXdhVGVabjJsVnZaZGZFZHludFV0ODhuZWZ5Tjl3czBHays2TlcwV2RtY1A4QmlRYnNWbkIwTHl4bnJua1JFL2NSaHBCNmRhNjM5d1ArQWJyQ2R3VE1oMmt4aUxQbVErek9XOHQxM3dmNjRIbzZTMU41M2pOV0M3NTVjQ21OMlBPcE1vNVJWRUNBd0VBQWFNU01CQXdEZ1lEVlIwUEFRSC9CQVFEQWdFR01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQndBOVhBMkRCWXM5RWxJQkE0ZVZtQ2t5WnFTWUJNdFVSU2VqMWhuN3JpK3F4SXk0THlsRGl0djhlV3hncmN6ZEQ4TzZYVUU3ZDRtUU9kN2FSS0ZicCs1R0NXZTNSc3NRQzMramhsMEJ3NmhRcGVmTytkd3lVeWR1aTlrcVRHY0s4UVgzT3BpNS9PZVR4YUNOUGFtaUZqcUZwMUZlMjJXbnJzTUxUYnNNTGsrajJCZXY0cEEvVXdxRHAzWG5xdWFIKzg5V1pnVVdSVG01VjBkdkhMalFyZjAybjQvTzJWVU1xWE1kNjlMUmFJdXFNcDcxOXk1WnI0VVgvMWdRNC9xTmp2ektsNDNFQytCVFBBM3d1L21IV1NGQkh4R092eVBkNFhGcytxajNER25VRW1WQ09XYjlvS1NBMm16VmlWc3owdUhUNktybm8rc29hU1lTdyt0SU8yPC9kczpYNTA5Q2VydGlmaWNhdGU+PGRzOlg1MDlDZXJ0aWZpY2F0ZT5NSUlDOGpDQ0FkcWdBd0lCQWdJR0NtckdiTlhYTUEwR0NTcUdTSWIzRFFFQkN3VUFNREF4R3pBWkJnTlZCQU1NRWxKdmIzUlRaV3htVTJsbmJtVmtSbUZyWlRFUk1BOEdBMVVFQ2d3SVJGTlRMWFJsYzNRd0hoY05NVFl3TVRJME1EZzFNRE15V2hjTk1UWXdNakEwTURnMU1ETXlXakF3TVJzd0dRWURWUVFEREJKU2IyOTBVMlZzWmxOcFoyNWxaRVpoYTJVeEVUQVBCZ05WQkFvTUNFUlRVeTEwWlhOME1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBcHJtWC9YYVBCWFd4S1pnM0VOaEJVRlZxelFSYzZ0RDlLSCtKNXdHQUZselVzNmZ3dkRQcEVXZDhYTVBSaGlEU3QvTXF2cGM2Z2ZpK1UreXVqaHFQSFRxajJEVTJzakpWc0dqaTg5QzMwQWpXNEN3RnVKMkhnak12ci9vRWphV3RIVXhrZ2t1WkpKQ3laYzZGUTAzSG8xUFFnbUpQWlVaNzdyTFNwbHk0aXN1SVJFUHNHNzl0Rk5WNFF0L3MySFpKZlRmbmNyME9XUXZTV1JMRTJOZlBqYzF5Qjc1VDBIdDdacVk1eGxyblB4YU9PM1V2TkVjamdsQUpwWUpGWHRuRUMwNTJGaWdRalorTzdPLzVjaFdQYlZYWFhMWk5aUWpyaDYvN2ZDU0lObGh6ZmJFTWhRSlYrNElMQThRaXBSb2RhOW1IRk0rck1QMEJQOWhadW1SMm1RSURBUUFCb3hJd0VEQU9CZ05WSFE4QkFmOEVCQU1DQVFZd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFDNTBIeU5YY2RYaTlUMkhhUGJQcWZ2ZXlydXFuNEJBcUhNUmFLZlhMM3h5RklmQ2JEM2VrandwVFhGRFNuVmhlZDZFOGtUYTlkMmkzWURydytxRi9sZlF5bjFDSHNrTHI4UWRaZHRjWHJrN0paRHRYSXphYm5QMmZXeVp2di9wOUNMRDNNcGNycXBtSDRlZ2k2S2lmZFM4WitnWjZaNnFHUEtnbVM1ckp4T25FVTREaEhuTDhzdEcvUlR6M3ZhWXlFT0JleVVTK3psNGxhREJqNmNwaFFCcW5VZUVoaGp5WjhFVWlJVjRqTUl3ckF2TEZZMy9XUkYxK3BnSnhlWWZEOGovNERLYVBISnJ0MmhBVDR2K1JyTzFuUWt5WXdCYUZOTUh4TENwa3FXSFVBRkg4YURTeWxnRGVSTzZMUzhhcjhGdlVhcFF5SGdoU0p2YWNEcW5ldVk9PC9kczpYNTA5Q2VydGlmaWNhdGU+PC9kczpYNTA5RGF0YT48L2RzOktleUluZm8+PGRzOk9iamVjdD48eGFkZXM6UXVhbGlmeWluZ1Byb3BlcnRpZXMgeG1sbnM6eGFkZXM9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDE5MDMvdjEuMy4yIyIgVGFyZ2V0PSIjaWQtM2ZjZjYxNjQ2NTZmZDliOTNmMmRkYmQ4MWMxYzRiNGQiPjx4YWRlczpTaWduZWRQcm9wZXJ0aWVzIElkPSJ4YWRlcy1pZC0zZmNmNjE2NDY1NmZkOWI5M2YyZGRiZDgxYzFjNGI0ZCI+PHhhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25pbmdUaW1lPjIwMTYtMDEtMjVUMDg6NTA6MzJaPC94YWRlczpTaWduaW5nVGltZT48eGFkZXM6U2lnbmluZ0NlcnRpZmljYXRlPjx4YWRlczpDZXJ0Pjx4YWRlczpDZXJ0RGlnZXN0PjxkczpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjc2hhMSIvPjxkczpEaWdlc3RWYWx1ZT5XVDFUczhCSXoyQUM5d3JROVBnYi9oNk5Rbms9PC9kczpEaWdlc3RWYWx1ZT48L3hhZGVzOkNlcnREaWdlc3Q+PHhhZGVzOklzc3VlclNlcmlhbD48ZHM6WDUwOUlzc3Vlck5hbWU+Tz1EU1MtdGVzdCxDTj1Sb290U2VsZlNpZ25lZEZha2U8L2RzOlg1MDlJc3N1ZXJOYW1lPjxkczpYNTA5U2VyaWFsTnVtYmVyPjIxNDUzNzExODMyOTQ1PC9kczpYNTA5U2VyaWFsTnVtYmVyPjwveGFkZXM6SXNzdWVyU2VyaWFsPjwveGFkZXM6Q2VydD48L3hhZGVzOlNpZ25pbmdDZXJ0aWZpY2F0ZT48L3hhZGVzOlNpZ25lZFNpZ25hdHVyZVByb3BlcnRpZXM+PHhhZGVzOlNpZ25lZERhdGFPYmplY3RQcm9wZXJ0aWVzPjx4YWRlczpEYXRhT2JqZWN0Rm9ybWF0IE9iamVjdFJlZmVyZW5jZT0iI3ItaWQtMSI+PHhhZGVzOk1pbWVUeXBlPnRleHQveG1sPC94YWRlczpNaW1lVHlwZT48L3hhZGVzOkRhdGFPYmplY3RGb3JtYXQ+PC94YWRlczpTaWduZWREYXRhT2JqZWN0UHJvcGVydGllcz48L3hhZGVzOlNpZ25lZFByb3BlcnRpZXM+PC94YWRlczpRdWFsaWZ5aW5nUHJvcGVydGllcz48L2RzOk9iamVjdD48L2RzOlNpZ25hdHVyZT4=","name":"xades-detached.xml"},"originalDocuments":[{"bytes":"PGhlbGxvPndvcmxkPC9oZWxsbz4=","name":"sample.xml"}],"policy":null}</con:request><con:originalUri>http://localhost/dss-demo-webapp/services/rest/validation/ValidationService/validateSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSign" path="/services/rest/signature/one-document/getDataToSign" id="4b22f5c8-ff08-473a-a340-7dccd88e91ca"><con:settings/><con:parameters/><con:method name="getDataToSign" id="70047513-c52e-4462-9361-52e0c5952229" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=UTF-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="Request 1" id="673985ee-102c-40d0-823d-ac348831bccd" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "CAdES_BASELINE_B",
     "signaturePackaging" : "ENVELOPING",
@@ -1081,7 +1080,6 @@
     "name" : "xades-detached.xml"
   },
   "parameters" : {
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "XAdES_BASELINE_T",
     "signaturePackaging" : null,
@@ -1119,7 +1117,6 @@
   }
 }</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/extendDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signDocument" path="/services/rest/signature/one-document/signDocument" id="17961de5-8a9a-425e-9ca1-b679e641f409"><con:settings/><con:parameters/><con:method name="Method 1" id="4ef0cd8c-c950-4b5e-ab41-5ac8f7ea1aee" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/signature/one-document/signDocument">sig:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="7e9835f6-0c10-4e69-abc4-3e6f5d940ef7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "CAdES_BASELINE_B",
     "signaturePackaging" : "ENVELOPING",
@@ -1169,7 +1166,6 @@
     "name" : "xades-detached.xml"
   },
   "parameters" : {
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "XAdES_BASELINE_T",
     "signaturePackaging" : null,
@@ -1207,7 +1203,6 @@
   }
 }</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/extendDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signDocument" path="/services/rest/signature/multiple-documents/signDocument" id="3fd3ee06-ea18-4c84-bfb3-b2bd5f7830c3"><con:settings/><con:parameters/><con:method name="Method 1" id="877f5ec8-aad8-4b22-ae0c-b08d7ca4d230" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/signature/multiple-documents/signDocument">sig:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="d722ba80-927c-489d-8560-70fef72175a7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : "DETACHED",
@@ -1256,7 +1251,6 @@
   } ]
 }</con:request><con:originalUri>http://localhost/services/rest/signature/multiple-documents/signDocument</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSignMultiple" path="/services/rest/signature/multiple-documents/getDataToSignMultiple" id="5e3f754e-6cf2-4c66-ac13-a9062cbe2930"><con:settings/><con:parameters/><con:method name="Method 1" id="14ca176c-e76b-478a-a136-642df1d06387" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/multiple-documents/getDataToSignMultiple">get:Response</con:element></con:representation><con:request name="Request 1" id="775931ae-6219-45d6-aac6-9597ccf74e67" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "signatureLevel" : "XAdES_BASELINE_B",
     "signaturePackaging" : "DETACHED",
@@ -1369,7 +1363,6 @@
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
     "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
@@ -1430,7 +1423,6 @@
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
     "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
@@ -2181,7 +2173,6 @@
                <digestAlgorithm>SHA256</digestAlgorithm>
                <!--Optional:-->
                <encryptionAlgorithm>RSA</encryptionAlgorithm>
-               <signWithExpiredCertificate>false</signWithExpiredCertificate>
                <!--Optional:-->
                <signatureLevel>XAdES_BASELINE_T</signatureLevel>
                <!--Optional:-->
@@ -2232,7 +2223,6 @@
                <digestAlgorithm>SHA256</digestAlgorithm>
                <!--Optional:-->
                <encryptionAlgorithm>RSA</encryptionAlgorithm>
-               <signWithExpiredCertificate>false</signWithExpiredCertificate>
                <!--Optional:-->
                <signatureLevel>XAdES_BASELINE_B</signatureLevel>
                <!--Optional:-->
@@ -2292,7 +2282,6 @@
                <digestAlgorithm>SHA256</digestAlgorithm>
                <!--Optional:-->
                <encryptionAlgorithm>RSA</encryptionAlgorithm>
-               <signWithExpiredCertificate>false</signWithExpiredCertificate>
                <!--Optional:-->
                <signatureLevel>XAdES_BASELINE_B</signatureLevel>
                <!--Optional:-->
@@ -2384,7 +2373,6 @@
                <digestAlgorithm>SHA256</digestAlgorithm>
                <!--Optional:-->
                <encryptionAlgorithm>RSA</encryptionAlgorithm>
-               <signWithExpiredCertificate>false</signWithExpiredCertificate>
                <!--Optional:-->
                <signatureLevel>XAdES_BASELINE_B</signatureLevel>
                <!--Optional:-->
@@ -2447,7 +2435,6 @@
                <digestAlgorithm>SHA256</digestAlgorithm>
                <!--Optional:-->
                <encryptionAlgorithm>RSA</encryptionAlgorithm>
-               <signWithExpiredCertificate>false</signWithExpiredCertificate>
                <!--Optional:-->
                <signatureLevel>XAdES_BASELINE_B</signatureLevel>
                <!--Optional:-->
@@ -3105,7 +3092,6 @@
                <digestAlgorithm>SHA256</digestAlgorithm>
                <!--Optional:-->
                <encryptionAlgorithm>RSA</encryptionAlgorithm>
-               <signWithExpiredCertificate>false</signWithExpiredCertificate>
                <!--Optional:-->
                <signatureLevel>XAdES_BASELINE_T</signatureLevel>
                <!--Optional:-->
@@ -3152,7 +3138,6 @@
                <digestAlgorithm>SHA256</digestAlgorithm>
                <!--Optional:-->
                <encryptionAlgorithm>RSA</encryptionAlgorithm>
-               <signWithExpiredCertificate>false</signWithExpiredCertificate>
                <!--Optional:-->
                <signatureLevel>XAdES_BASELINE_B</signatureLevel>
                <!--Optional:-->
@@ -3203,7 +3188,6 @@
                <digestAlgorithm>SHA256</digestAlgorithm>
                <!--Optional:-->
                <encryptionAlgorithm>RSA</encryptionAlgorithm>
-               <signWithExpiredCertificate>false</signWithExpiredCertificate>
                <!--Optional:-->
                <signatureLevel>XAdES_BASELINE_B</signatureLevel>
                <!--Optional:-->
