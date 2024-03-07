@@ -53,21 +53,25 @@ public abstract class AbstractDSS2058 extends AbstractPAdESTestValidation {
 	@BeforeEach
 	public void init() {
 		DSSDocument document = getDocumentToExtend();
-		
-		CertificateVerifier completeCertificateVerifier = getCompositeCertificateVerifier();
-		completeCertificateVerifier.setCheckRevocationForUntrustedChains(true);
-		completeCertificateVerifier.setExtractPOEFromUntrustedChains(true);
-		completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
-		completeCertificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.ERROR));
-		completeCertificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
 
-		PAdESService service = new PAdESService(completeCertificateVerifier);
+		PAdESService service = new PAdESService(getCompositeCertificateVerifier());
 		service.setTspSource(getCompositeTsa());
 		
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		
 		extendedDocument = service.extendDocument(document, signatureParameters);
+	}
+
+	@Override
+	protected CertificateVerifier getCompositeCertificateVerifier() {
+		CertificateVerifier completeCertificateVerifier = super.getCompositeCertificateVerifier();
+		completeCertificateVerifier.setCheckRevocationForUntrustedChains(true);
+		completeCertificateVerifier.setExtractPOEFromUntrustedChains(true);
+		completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
+		completeCertificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.ERROR));
+		completeCertificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert(Level.WARN));
+		return completeCertificateVerifier;
 	}
 
 	@Override

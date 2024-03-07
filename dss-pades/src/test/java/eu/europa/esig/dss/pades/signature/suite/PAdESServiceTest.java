@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,12 +63,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
+    private static CertificateVerifier certificateVerifier;
 	private static PAdESService service;
 	
 	@BeforeEach
 	public void init() {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
-        service = new PAdESService(getCompleteCertificateVerifier());
+        certificateVerifier = getCompleteCertificateVerifier();
+        service = new PAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
 	}
 	
@@ -88,7 +92,11 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         assertEquals("SignatureLevel must be defined!", exception.getMessage());
         signatureParameters.setGenerateTBSWithoutCertificate(false);
 
-        signatureParameters.setSignWithExpiredCertificate(true);
+        certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
+
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         

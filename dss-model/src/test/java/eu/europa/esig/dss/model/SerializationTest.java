@@ -20,7 +20,14 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import eu.europa.esig.dss.enumerations.CommitmentType;
+import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,15 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.enumerations.CommitmentType;
-import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SerializationTest {
 
@@ -158,7 +157,6 @@ public class SerializationTest {
 		MockSignatureParameters testObj = new MockSignatureParameters();
 		testObj.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		testObj.setSignaturePackaging(SignaturePackaging.DETACHED);
-		testObj.setSignWithExpiredCertificate(false);
 		testObj.setDigestAlgorithm(DigestAlgorithm.SHA1);
 		testObj.bLevel().setSigningDate(new Date());
 		List<CommitmentType> commitmentTypeIndications = new ArrayList<>();

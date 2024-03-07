@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
@@ -58,11 +59,12 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
 
-		boolean addTimestampValidationData = false;
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		signatureRequirementsChecker.assertSignaturesValid(signatures);
 
+		boolean addTimestampValidationData = false;
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			assertSignatureValid(signature);
 
 			if (xadesSignature.hasLTAProfile()) {
 				addTimestampValidationData = true;

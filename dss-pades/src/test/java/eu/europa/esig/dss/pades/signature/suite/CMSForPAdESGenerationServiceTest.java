@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -87,14 +88,16 @@ public class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
                 "use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
         parameters.setSigningCertificate(getCertificate(NOT_YET_VALID_USER));
-        exception = assertThrows(IllegalArgumentException.class, () ->
+        exception = assertThrows(AlertException.class, () ->
                 service.getDataToSign(messageDigest, parameters));
-        assertTrue(exception.getMessage().contains("Change signing certificate or use method setSignWithNotYetValidCertificate(true)."));
+        assertTrue(exception.getMessage().contains("Error on signature creation"));
+        assertTrue(exception.getMessage().contains("is not yet valid at signing time"));
 
         parameters.setSigningCertificate(getCertificate(EXPIRED_USER));
-        exception = assertThrows(IllegalArgumentException.class, () ->
+        exception = assertThrows(AlertException.class, () ->
                 service.getDataToSign(messageDigest, parameters));
-        assertTrue(exception.getMessage().contains("Change signing certificate or use method setSignWithExpiredCertificate(true)."));
+        assertTrue(exception.getMessage().contains("Error on signature creation"));
+        assertTrue(exception.getMessage().contains("is expired at signing time"));
 
         parameters.setSigningCertificate(getSigningCert());
         exception = assertThrows(IllegalArgumentException.class, () ->

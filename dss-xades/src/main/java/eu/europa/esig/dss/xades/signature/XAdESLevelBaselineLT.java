@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
@@ -33,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -66,19 +68,15 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
-		if (!isLTLevelRequired(signatures)) {
+
+		final List<AdvancedSignature> signaturesToExtend = getExtendToLTLevelSignatures(signatures);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return;
 		}
 
 		// Reset sources
-		for (AdvancedSignature signature : signatures) {
+		for (AdvancedSignature signature : signaturesToExtend) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (!ltLevelExtensionRequired(signature)) {
-				continue;
-			}
-
-			// In all cases the -LT level need to be regenerated.
-			assertSignatureValid(signature);
 
 			// Data sources can already be loaded in memory (force reload)
 			xadesSignature.resetCertificateSource();
@@ -88,15 +86,17 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
 		if (XAdES_BASELINE_LT.equals(params.getSignatureLevel())) {
-			signatureRequirementsChecker.assertExtendToLTLevelPossible(signatures);
+			signatureRequirementsChecker.assertExtendToLTLevelPossible(signaturesToExtend);
 		}
-		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signatures);
+
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signaturesToExtend);
 
 		// Perform signature validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
+		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signaturesToExtend);
 
 		// Append ValidationData
-		for (AdvancedSignature signature : signatures) {
+		for (AdvancedSignature signature : signaturesToExtend) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 			if (signatureRequirementsChecker.hasLTALevelOrHigher(signature)) {
 				// avoid overriding of elements, when covered by an ArchiveTimeStamp
@@ -121,14 +121,14 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		}
 	}
 
-	private boolean isLTLevelRequired(List<AdvancedSignature> signatures) {
-		boolean tLevelExtensionRequired = false;
+	private List<AdvancedSignature> getExtendToLTLevelSignatures(List<AdvancedSignature> signatures) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
 		for (AdvancedSignature signature : signatures) {
 			if (ltLevelExtensionRequired(signature)) {
-				tLevelExtensionRequired = true;
+				toBeExtended.add(signature);
 			}
 		}
-		return tLevelExtensionRequired;
+		return toBeExtended;
 	}
 
 	private boolean ltLevelExtensionRequired(AdvancedSignature signature) {

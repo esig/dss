@@ -34,6 +34,7 @@ import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -65,13 +66,15 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
 		super.extendSignatures(signatures, params);
 
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(params);
+		signatureRequirementsChecker.assertSignaturesValid(signatures);
+
 		boolean addTimestampValidationData = false;
 
 		for (AdvancedSignature signature : signatures) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
 			assertExtendSignatureToLTAPossible(jadesSignature, params);
-			assertSignatureValid(jadesSignature, params);
 
 			if (jadesSignature.hasLTAProfile()) {
 				addTimestampValidationData = true;

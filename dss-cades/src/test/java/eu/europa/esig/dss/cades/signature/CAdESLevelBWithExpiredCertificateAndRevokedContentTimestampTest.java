@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
@@ -64,7 +65,10 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 
 	@BeforeEach
 	public void init() throws Exception {
-		service = new CAdESService(getCompleteCertificateVerifier());
+		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
+		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+
+		service = new CAdESService(certificateVerifier);
 		service.setTspSource(getRevokedTsa());
 
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
@@ -75,7 +79,6 @@ public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest ext
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
-		signatureParameters.setSignWithExpiredCertificate(true);
 
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSign, signatureParameters);
 		List<TimestampToken> contentTimestamps = Arrays.asList(contentTimestamp);

@@ -116,6 +116,11 @@ public class CertificateVerifierSnippet {
         // Default : ExceptionOnStatusAlert -> interrupt the process
         cv.setAlertOnRevokedCertificate(new ExceptionOnStatusAlert());
 
+        // DSS 6.1+ :
+        // Defines a behavior on augmentation of a cryptographically invalid signature
+        // Default : ExceptionOnStatusAlert -> interrupt the process
+        cv.setAlertOnInvalidSignature(new ExceptionOnStatusAlert());
+
         // Defines a behavior if an invalid timestamp is found
         // Default : ExceptionOnStatusAlert -> interrupt the process
         cv.setAlertOnInvalidTimestamp(new ExceptionOnStatusAlert());
@@ -127,10 +132,15 @@ public class CertificateVerifierSnippet {
         // Default : LogOnStatusAlert -> a WARN log
         cv.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert(Level.ERROR));
 
-        // DSS 5.9+ :
-        // Defines behavior in case if the signing certificate or its related POE(s) have been expired
+        // DSS 6.1+ :
+        // Defines behavior on a signature creation or augmentation with an expired signing-certificate or its related POE(s)
         // Default : ExceptionOnStatusAlert -> interrupt the process
-        cv.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
+        cv.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+
+        // DSS 6.1+ :
+        // Defines behavior on a signature creation or augmentation with a not yet valid signing-certificate
+        // Default : ExceptionOnStatusAlert (throws an exception)
+        cv.setAlertOnNotYetValidCertificate(new ExceptionOnStatusAlert());
 
         // DSS 6.1+ : Defines a behavior on a signature creation or augmentation
         // within a document containing signatures of a higher level.

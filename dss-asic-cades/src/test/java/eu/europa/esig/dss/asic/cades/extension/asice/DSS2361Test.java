@@ -47,7 +47,7 @@ public class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
     public void init() {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.addTrustedCertSources(getTrustedCertSource());
-        certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         certificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());
     }
 

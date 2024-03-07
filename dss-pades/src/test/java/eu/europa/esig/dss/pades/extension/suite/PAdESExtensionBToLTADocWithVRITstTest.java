@@ -48,7 +48,7 @@ public class PAdESExtensionBToLTADocWithVRITstTest extends AbstractPAdESTestVali
     @Override
     protected DSSDocument getSignedDocument() {
         CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
-        completeCertificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert());
+        completeCertificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert());
         completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert());
 
         PAdESService padesService = new PAdESService(completeCertificateVerifier);

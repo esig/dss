@@ -129,6 +129,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	@Override
+	@Deprecated
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;
 	}
@@ -141,12 +142,15 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 *
 	 * @param signWithExpiredCertificate
 	 *            true if signature with an expired certificate is allowed
+	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.setSignatureAlertOnExpiredCertificate} method instead
 	 */
+	@Deprecated
 	public void setSignWithExpiredCertificate(boolean signWithExpiredCertificate) {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
 	}
 
 	@Override
+	@Deprecated
 	public boolean isSignWithNotYetValidCertificate() {
 		return signWithNotYetValidCertificate;
 	}
@@ -159,7 +163,9 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 *
 	 * @param signWithNotYetValidCertificate
 	 *            true if signature with a not yet valid certificate is allowed
+	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getSignatureAlertOnNotYetValidCertificate} method instead
 	 */
+	@Deprecated
 	public void setSignWithNotYetValidCertificate(boolean signWithNotYetValidCertificate) {
 		this.signWithNotYetValidCertificate = signWithNotYetValidCertificate;
 	}

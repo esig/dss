@@ -52,6 +52,24 @@ import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
                                                                      a|[source,java]
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
+|Signing with expired/not yet valid certificate           a|
+[source,java]
+----
+signatureParameters.setSignWithExpiredCertificate(true);
+signatureParameters.setSignWithNotYetValidCertificate(true);
+----
+                                                                     a|[source,java]
+certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
+
+|Alerting on expired signature augmentation           a|
+[source,java]
+----
+certificateVerifier.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
+----
+                                                                     a|[source,java]
+certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+
 |===
 
 [cols="2,5,5"]

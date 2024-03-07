@@ -47,8 +47,9 @@ public class PAdESExtensionBToLTADocWithVRITest extends AbstractPAdESTestValidat
     @Override
     protected DSSDocument getSignedDocument() {
         CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
-        completeCertificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert());
+        completeCertificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert());
         completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert());
+        completeCertificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert());
 
         PAdESService padesService = new PAdESService(completeCertificateVerifier);
         padesService.setTspSource(getGoodTsa());
@@ -57,7 +58,6 @@ public class PAdESExtensionBToLTADocWithVRITest extends AbstractPAdESTestValidat
 
         PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
-        signatureParameters.setSignWithExpiredCertificate(true);
 
         return padesService.extendDocument(originalDocument, signatureParameters);
     }

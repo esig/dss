@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -40,6 +40,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS798Test extends PKIFactoryAccess {
 
@@ -67,7 +68,10 @@ public class DSS798Test extends PKIFactoryAccess {
 
 		XAdESSignatureParameters parametersExtend = new XAdESSignatureParameters();
 		parametersExtend.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		assertThrows(DSSException.class, () -> serviceExtend.extendDocument(signedDocument, parametersExtend));
+
+		Exception exception = assertThrows(AlertException.class, () -> serviceExtend.extendDocument(signedDocument, parametersExtend));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+		assertTrue(exception.getMessage().contains("Cryptographic signature verification has failed / Best candidate validation failed"));
 	}
 
 	@Test

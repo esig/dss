@@ -25,30 +25,45 @@ import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
+public class XmlNonAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
 
+    private final DSSNamespace xmldsigNamespace = XMLDSigNamespace.NS;
+
+    private CertificateVerifier certificateVerifier;
     private XAdESService service;
 
     @BeforeEach
     public void init() throws Exception {
-        service = new XAdESService(getCompleteCertificateVerifier());
+        certificateVerifier = getCompleteCertificateVerifier();
+        service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
     }
 
@@ -61,14 +76,39 @@ public class XAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestEx
     }
 
     @Override
+    protected XAdESSignatureParameters getSignatureParameters() {
+        XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
+        signatureParameters.setGenerateTBSWithoutCertificate(true);
+        return signatureParameters;
+    }
+
+    @Override
+    protected DSSDocument getSignedDocument(DSSDocument doc) {
+        DSSDocument signedDocument = super.getSignedDocument(doc);
+        Document docDom = DomUtils.buildDOM(signedDocument);
+        NodeList signatures = DomUtils.getNodeList(docDom, XMLDSigPath.ALL_SIGNATURES_PATH);
+        assertEquals(1, signatures.getLength());
+        Node signatureElement = signatures.item(0);
+        Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
+        final Element keyInfoDom = DomUtils.createElementNS(docDom, xmldsigNamespace, XMLDSigElement.KEY_INFO);
+        signatureValueNode.getParentNode().insertBefore(keyInfoDom, signatureValueNode.getNextSibling());
+        for (CertificateToken token : getCertificateChain()) {
+            // <ds:X509Data>
+            final Element x509DataDom = DomUtils.createElementNS(docDom, xmldsigNamespace, XMLDSigElement.X509_DATA);
+            keyInfoDom.appendChild(x509DataDom);
+            DomUtils.addTextElement(docDom, x509DataDom, xmldsigNamespace, XMLDSigElement.X509_SUBJECT_NAME, token.getSubject().getRFC2253());
+            DomUtils.addTextElement(docDom, x509DataDom, xmldsigNamespace, XMLDSigElement.X509_CERTIFICATE, Utils.toBase64(token.getEncoded()));
+        }
+        return DomUtils.createDssDocumentFromDomDocument(docDom, signedDocument.getName());
+    }
+
+    @Override
     protected DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
-        CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
-        XAdESService service = new XAdESService(certificateVerifier);
-        service.setTspSource(getUsedTSPSourceAtExtensionTime());
-
-        Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
+        Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("is expired at signing time"));
 
@@ -79,7 +119,7 @@ public class XAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestEx
 
         service.setTspSource(getGoodTsaByTime(tstTime));
 
-        exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
+        exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("is expired at signing time"));
 
@@ -98,25 +138,28 @@ public class XAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestEx
     }
 
     @Override
-    protected void checkTimestamps(DiagnosticData diagnosticData) {
-        super.checkTimestamps(diagnosticData);
+    protected void checkOriginalLevel(DiagnosticData diagnosticData) {
+        assertEquals(SignatureLevel.XML_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
 
+    @Override
+    protected void checkFinalLevel(DiagnosticData diagnosticData) {
+        assertEquals(SignatureLevel.XML_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
+
+    @Override
+    protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        if (SignatureLevel.XAdES_BASELINE_LTA.equals(signature.getSignatureFormat())) {
-            List<TimestampWrapper> timestampList = signature.getTimestampList();
-            assertEquals(3, timestampList.size());
-            int signatureTstCounter = 0;
-            int archiveTstCounter = 0;
-            for (TimestampWrapper timestampWrapper : timestampList) {
-                if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
-                    ++signatureTstCounter;
-                } else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
-                    ++archiveTstCounter;
-                }
-            }
-            assertEquals(1, signatureTstCounter);
-            assertEquals(2, archiveTstCounter);
-        }
+        assertFalse(signature.isSigningCertificateIdentified());
+        assertFalse(signature.isSigningCertificateReferencePresent());
+        assertFalse(signature.isSigningCertificateReferenceUnique());
+        assertNotNull(signature.getSigningCertificate());
+        assertEquals(3, signature.getCertificateChain().size());
+    }
+
+    @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        assertEquals(SignatureLevel.XML_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
     }
 
     @Override

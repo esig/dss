@@ -105,6 +105,14 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
+	 * This variable set the behavior to follow in case of invalid signature
+	 * (augmentation process).
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnInvalidSignature = new ExceptionOnStatusAlert();
+
+	/**
 	 * This variable set the behavior to follow in case of invalid timestamp
 	 * (augmentation process).
 	 * 
@@ -150,6 +158,21 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
+
+
+	/**
+	 * Defines a behavior on signature creation with an expired signing-certificate
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnExpiredCertificate = new ExceptionOnStatusAlert();
+
+	/**
+	 * Defines a behavior on signature creation with a not yet valid certificate
+	 *
+	 * Default : ExceptionOnStatusAlert - throw the exception
+	 */
+	private StatusAlert alertOnNotYetValidCertificate = new ExceptionOnStatusAlert();
 
 	/**
 	 * Defines behavior on signature augmentation when a signature with a higher level is present, than the target one
@@ -342,6 +365,17 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public StatusAlert getAlertOnInvalidSignature() {
+		return alertOnInvalidSignature;
+	}
+
+	@Override
+	public void setAlertOnInvalidSignature(StatusAlert alertOnInvalidSignature) {
+		Objects.requireNonNull(alertOnInvalidSignature);
+		this.alertOnInvalidSignature = alertOnInvalidSignature;
+	}
+
+	@Override
 	public StatusAlert getAlertOnInvalidTimestamp() {
 		return alertOnInvalidTimestamp;
 	}
@@ -405,6 +439,28 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	public void setAlertOnExpiredSignature(StatusAlert alertOnExpiredSignature) {
 		Objects.requireNonNull(alertOnExpiredSignature);
 		this.alertOnExpiredSignature = alertOnExpiredSignature;
+	}
+
+	@Override
+	public StatusAlert getAlertOnExpiredCertificate() {
+		return alertOnExpiredCertificate;
+	}
+
+	@Override
+	public void setAlertOnExpiredCertificate(StatusAlert alertOnExpiredCertificate) {
+		Objects.requireNonNull(alertOnExpiredCertificate);
+		this.alertOnExpiredCertificate = alertOnExpiredCertificate;
+	}
+
+	@Override
+	public StatusAlert getAlertOnNotYetValidCertificate() {
+		return alertOnNotYetValidCertificate;
+	}
+
+	@Override
+	public void setAlertOnNotYetValidCertificate(StatusAlert alertOnNotYetValidCertificate) {
+		Objects.requireNonNull(alertOnNotYetValidCertificate);
+		this.alertOnNotYetValidCertificate = alertOnNotYetValidCertificate;
 	}
 
 	@Override

@@ -30,6 +30,7 @@ import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import org.bouncycastle.asn1.ASN1Object;
@@ -76,12 +77,19 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 		CMSDocumentValidator documentValidator = getDocumentValidator(cmsSignedData, parameters);
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
 
+		final List<AdvancedSignature> signaturesToExtend = getExtendToLTLevelSignatures(signatures, signatureIdsToExtend);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
+			return cmsSignedData;
+		}
+
+		// signature validity is checked within -LT augmentation
+
 		for (AdvancedSignature signature : signatures) {
 			final CAdESSignature cadesSignature = (CAdESSignature) signature;
 			final SignerInformation signerInformation = cadesSignature.getSignerInformation();
 			SignerInformation newSignerInformation = signerInformation;
 
-			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
+			if (signaturesToExtend.contains(cadesSignature)) {
 				AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 				unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
 				newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);

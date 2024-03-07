@@ -66,7 +66,7 @@ public class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTest
         assertTrue(exception.getMessage().contains("The signing certificate has expired and " +
                 "there is no POE during its validity range :"));
 
-        certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 
         DSSDocument extendedDocument = extendSignature(document);
         verify(extendedDocument);

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -28,6 +29,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.bouncycastle.cms.SignerInformation;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,9 +56,10 @@ public class CAdESLevelTWithGeneralizedTimeTest extends AbstractCAdESTestSignatu
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-        signatureParameters.setSignWithExpiredCertificate(true);
 
-        service = new CAdESService(getOfflineCertificateVerifier());
+        CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+        service = new CAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
     }
 

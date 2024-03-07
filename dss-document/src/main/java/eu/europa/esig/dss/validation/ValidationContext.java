@@ -226,7 +226,7 @@ public interface ValidationContext {
 	 * This method verifies if the signing certificate has not been expired yet or has a still valid timestamp
 	 *
 	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnExpiredSignature(eu.europa.esig.dss.alert.StatusAlert)}
+	 * {@link CertificateVerifier#setAlertOnExpiredCertificate(eu.europa.esig.dss.alert.StatusAlert)}
 	 *
 	 * @param signature {@code AdvancedSignature} signature to be verified
 	 * @return true if the signing certificate or its POE(s) not yet expired, false otherwise

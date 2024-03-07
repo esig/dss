@@ -20,13 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.validation.status.SignatureStatus;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -44,23 +38,26 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.definition.xades111.XAdES111Attribute;
 import eu.europa.esig.xades.definition.xades111.XAdES111Element;
 import eu.europa.esig.xades.definition.xades122.XAdES122Attribute;
 import eu.europa.esig.xades.definition.xades122.XAdES122Element;
 import eu.europa.esig.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -193,23 +190,19 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param signatures a list of {@link AdvancedSignature}s to extend
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
-		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
-		if (isTLevelRequired(signatures)) {
-			signatureRequirementsChecker.assertExtendToTLevelPossible(signatures);
-		} else {
+		final List<AdvancedSignature> signaturesToExtend = getExtendToTLevelSignatures(signatures);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return;
 		}
 
-		for (AdvancedSignature signature : signatures) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		signatureRequirementsChecker.assertExtendToTLevelPossible(signatures);
+
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertSigningCertificateIsValid(signaturesToExtend);
+
+		for (AdvancedSignature signature : signaturesToExtend) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-
-			// The timestamp must be added only if there is no one or the extension -T level is being created
-			if (!tLevelExtensionRequired(signature)) {
-				continue;
-			}
-
-			assertSignatureValid(xadesSignature);
-			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
@@ -233,47 +226,18 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		return new SignatureRequirementsChecker(certificateVerifier, params);
 	}
 
-	private boolean isTLevelRequired(List<AdvancedSignature> signatures) {
-		boolean tLevelExtensionRequired = false;
+	private List<AdvancedSignature> getExtendToTLevelSignatures(List<AdvancedSignature> signatures) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
 		for (AdvancedSignature signature : signatures) {
 			if (tLevelExtensionRequired(signature)) {
-				tLevelExtensionRequired = true;
+				toBeExtended.add(signature);
 			}
 		}
-		return tLevelExtensionRequired;
+		return toBeExtended;
 	}
 
 	private boolean tLevelExtensionRequired(AdvancedSignature signature) {
 		return XAdES_BASELINE_T.equals(params.getSignatureLevel()) || !signature.hasTProfile();
-	}
-
-	/**
-	 * This method throws an alert if a signature augmentation is forced on a signature of a higher level
-	 *
-	 * @param signature {@link XAdESSignature} of a higher current level that the augmentation {@code targetLevel}
-	 * @param targetLevel {@link SignatureLevel} target level of the signature's augmentation
-	 */
-	protected void alertOnHigherSignatureLevel(XAdESSignature signature, SignatureLevel targetLevel) {
-		StatusAlert alert = certificateVerifier.getAugmentationAlertOnHigherSignatureLevel();
-		SignatureStatus signatureStatus = new SignatureStatus();
-		signatureStatus.addRelatedTokenAndErrorMessage(signature, String.format(
-				"Error on signature augmentation to '%s' level. The signature is already extended with a higher level.", targetLevel));
-		alert.alert(signatureStatus);
-	}
-
-	/**
-	 * This method throws an alert on a signature augmentation within a document containing a signature of a higher level
-	 *
-	 * @param signature {@link XAdESSignature} of a higher current level that the augmentation {@code targetLevel}
-	 * @param targetLevel {@link SignatureLevel} target level of the signature's augmentation
-	 * @param message {@link String} the error message
-	 */
-	protected void alertOnNotRequiredRevocationData(XAdESSignature signature, SignatureLevel targetLevel, String message) {
-		StatusAlert alert = certificateVerifier.getAugmentationAlertOnSignatureWithoutCertificates();
-		SignatureStatus signatureStatus = new SignatureStatus();
-		signatureStatus.addRelatedTokenAndErrorMessage(signature, String.format(
-				"Error on signature augmentation to '%s' level. %s", targetLevel, message));
-		alert.alert(signatureStatus);
 	}
 
 	/**

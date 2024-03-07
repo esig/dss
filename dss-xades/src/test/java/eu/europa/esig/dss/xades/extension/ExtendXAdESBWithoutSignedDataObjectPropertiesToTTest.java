@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -27,6 +30,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -58,16 +62,21 @@ public class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFac
 		calendar.add(Calendar.MONTH, -1);
 		Date tstTime = calendar.getTime();
 
-		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
+		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
+		XAdESService service = new XAdESService(certificateVerifier);
 		service.setTspSource(getGoodTsaByTime(tstTime));
 
 		XAdESSignatureParameters parameters = new XAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.extendDocument(toSignDocument, parameters));
+		certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+
+		Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(toSignDocument, parameters));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
 		assertTrue(exception.getMessage().contains("is expired at signing time"));
 
-		parameters.setSignWithExpiredCertificate(true);
+		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+
 		DSSDocument extendDocument = service.extendDocument(toSignDocument, parameters);
 		// extendDocument.save("target/result.xml");
 

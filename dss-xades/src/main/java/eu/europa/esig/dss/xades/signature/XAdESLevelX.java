@@ -24,12 +24,14 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_X;
@@ -62,16 +64,18 @@ public class XAdESLevelX extends XAdESLevelC {
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
 
-		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
-		if (isXLevelRequired(signatures)) {
-			if (XAdES_X.equals(params.getSignatureLevel())) {
-				signatureRequirementsChecker.assertExtendToXLevelPossible(signatures);
-			}
-		} else {
+		final List<AdvancedSignature> signaturesToExtend = getExtendToXLevelSignatures(signatures);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return;
 		}
 
-		for (AdvancedSignature signature : signatures) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		if (XAdES_X.equals(params.getSignatureLevel())) {
+			signatureRequirementsChecker.assertExtendToXLevelPossible(signaturesToExtend);
+		}
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+
+		for (AdvancedSignature signature : signaturesToExtend) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 			if (!xLevelExtensionRequired(signature)) {
 				// Unable to extend due to higher levels covering the current X-level
@@ -91,14 +95,15 @@ public class XAdESLevelX extends XAdESLevelC {
 		}
 	}
 
-	private boolean isXLevelRequired(List<AdvancedSignature> signatures) {
-		boolean xLevelExtensionRequired = false;
+
+	private List<AdvancedSignature> getExtendToXLevelSignatures(List<AdvancedSignature> signatures) {
+		final List<AdvancedSignature> signaturesToExtend = new ArrayList<>();
 		for (AdvancedSignature signature : signatures) {
 			if (xLevelExtensionRequired(signature)) {
-				xLevelExtensionRequired = true;
+				signaturesToExtend.add(signature);
 			}
 		}
-		return xLevelExtensionRequired;
+		return signaturesToExtend;
 	}
 
 	private boolean xLevelExtensionRequired(AdvancedSignature signature) {

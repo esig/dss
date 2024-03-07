@@ -57,7 +57,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 
 		CertificateVerifier certificateVerifier = getCertificateVerifier();
-		certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
+		certificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert(Level.WARN));
 
 		validator.setCertificateVerifier(certificateVerifier);
 		Reports reports = validator.validateDocument();
@@ -102,7 +102,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 
 	private CertificateVerifier getCertificateVerifier() {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
+		certificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert(Level.WARN));
 
 		certificateVerifier.setCrlSource(getCompositeCRLSource());
 

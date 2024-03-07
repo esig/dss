@@ -41,6 +41,7 @@ import org.jose4j.json.internal.json_simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -65,19 +66,15 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
 		super.extendSignatures(signatures, params);
-		if (!isLTLevelRequired(signatures, params)) {
+
+		final List<AdvancedSignature> signaturesToExtend = getExtendToLTLevelSignatures(signatures, params);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return;
 		}
 
 		// Reset sources
-		for (AdvancedSignature signature : signatures) {
+		for (AdvancedSignature signature : signaturesToExtend) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
-			if (!ltLevelExtensionRequired(jadesSignature, params)) {
-				continue;
-			}
-
-			// In all cases the -LT level need to be regenerated.
-			assertSignatureValid(jadesSignature, params);
 
 			// Data sources can already be loaded in memory (force reload)
 			jadesSignature.resetCertificateSource();
@@ -87,19 +84,21 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 
 		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(params);
 		if (JAdES_BASELINE_LT.equals(params.getSignatureLevel())) {
-			signatureRequirementsChecker.assertExtendToLTLevelPossible(signatures);
+			signatureRequirementsChecker.assertExtendToLTLevelPossible(signaturesToExtend);
 		}
-		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signatures);
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signaturesToExtend);
 
 		// Perform signature validation
 		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
 
 		// Append ValidationData
-		for (AdvancedSignature signature : signatures) {
+		for (AdvancedSignature signature : signaturesToExtend) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 			if (jadesSignature.hasLTAProfile()) {
 				continue;
 			}
+
 			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
 
 			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
@@ -243,14 +242,14 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 		}
 	}
 
-	private boolean isLTLevelRequired(List<AdvancedSignature> signatures, JAdESSignatureParameters parameters) {
-		boolean tLevelExtensionRequired = false;
+	private List<AdvancedSignature> getExtendToLTLevelSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters parameters) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
 		for (AdvancedSignature signature : signatures) {
 			if (ltLevelExtensionRequired(signature, parameters)) {
-				tLevelExtensionRequired = true;
+				toBeExtended.add(signature);
 			}
 		}
-		return tLevelExtensionRequired;
+		return toBeExtended;
 	}
 
 	private boolean ltLevelExtensionRequired(AdvancedSignature signature, JAdESSignatureParameters parameters) {

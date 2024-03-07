@@ -68,6 +68,7 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		if (!tLevelAdded && SignatureLevel.PAdES_BASELINE_LT.equals(parameters.getSignatureLevel())) {
 			signatureRequirementsChecker.assertExtendToLTLevelPossible(signatures);
 		}
+		signatureRequirementsChecker.assertSignaturesValid(signatures);
 		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signatures);
 
 		List<TimestampToken> detachedTimestamps = documentValidator.getDetachedTimestamps();

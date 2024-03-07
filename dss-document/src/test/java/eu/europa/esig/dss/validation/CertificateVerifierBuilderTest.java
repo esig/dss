@@ -59,23 +59,29 @@ public class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.isExtractPOEFromUntrustedChains(), copy.isExtractPOEFromUntrustedChains());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
+        assertEquals(certificateVerifier.getAlertOnInvalidSignature(), copy.getAlertOnInvalidSignature());
         assertEquals(certificateVerifier.getAlertOnInvalidTimestamp(), copy.getAlertOnInvalidTimestamp());
         assertEquals(certificateVerifier.getAlertOnMissingRevocationData(), copy.getAlertOnMissingRevocationData());
         assertEquals(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime(), copy.getAlertOnNoRevocationAfterBestSignatureTime());
         assertEquals(certificateVerifier.getAlertOnRevokedCertificate(), copy.getAlertOnRevokedCertificate());
         assertEquals(certificateVerifier.getAlertOnUncoveredPOE(), copy.getAlertOnUncoveredPOE());
         assertEquals(certificateVerifier.getAlertOnExpiredSignature(), copy.getAlertOnExpiredSignature());
+        assertEquals(certificateVerifier.getAlertOnExpiredCertificate(), copy.getAlertOnExpiredCertificate());
+        assertEquals(certificateVerifier.getAlertOnNotYetValidCertificate(), copy.getAlertOnNotYetValidCertificate());
     }
 
     @Test
     public void buildOfflineAndSilentCopyTest() {
         CertificateVerifier certificateVerifier = initCertificateVerifier();
+        certificateVerifier.setAlertOnInvalidSignature(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnInvalidTimestamp(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnMissingRevocationData(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnRevokedCertificate(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnUncoveredPOE(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnNotYetValidCertificate(new ExceptionOnStatusAlert());
 
         CertificateVerifier copy = new CertificateVerifierBuilder(certificateVerifier).buildOfflineAndSilentCopy();
 
@@ -90,12 +96,15 @@ public class CertificateVerifierBuilderTest {
         assertNotNull(copy.getRevocationDataLoadingStrategyFactory()); // not relevant for offline validation
         assertFalse(copy.isRevocationFallback());
         assertFalse(copy.isCheckRevocationForUntrustedChains());
+        assertTrue(copy.getAlertOnInvalidSignature() instanceof SilentOnStatusAlert);
         assertTrue(copy.getAlertOnInvalidTimestamp() instanceof SilentOnStatusAlert);
         assertTrue(copy.getAlertOnMissingRevocationData() instanceof SilentOnStatusAlert);
         assertTrue(copy.getAlertOnNoRevocationAfterBestSignatureTime() instanceof SilentOnStatusAlert);
         assertTrue(copy.getAlertOnRevokedCertificate() instanceof SilentOnStatusAlert);
         assertTrue(copy.getAlertOnUncoveredPOE() instanceof SilentOnStatusAlert);
         assertTrue(copy.getAlertOnExpiredSignature() instanceof SilentOnStatusAlert);
+        assertTrue(copy.getAlertOnExpiredCertificate() instanceof SilentOnStatusAlert);
+        assertTrue(copy.getAlertOnNotYetValidCertificate() instanceof SilentOnStatusAlert);
     }
 
     @Test

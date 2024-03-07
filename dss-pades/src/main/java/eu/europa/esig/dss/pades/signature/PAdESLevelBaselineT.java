@@ -100,22 +100,19 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 			throw new IllegalInputException("No signatures found to be extended!");
 		}
 
-		boolean tLevelExtensionRequired = false;
-		final SignatureRequirementsChecker signatureRequirementsChecker =
-				new PAdESSignatureRequirementsChecker(certificateVerifier, parameters);
-		for (AdvancedSignature signature : signatures) {
-			PAdESSignature padesSignature = (PAdESSignature) signature;
-			if (requiresDocumentTimestamp(padesSignature, parameters)) {
-				signatureRequirementsChecker.assertSigningCertificateIsValid(padesSignature);
-				tLevelExtensionRequired = true;
-			}
-		}
-
-		if (tLevelExtensionRequired) {
+		if (isTLevelExtensionRequired(parameters, signatures)) {
+			final SignatureRequirementsChecker signatureRequirementsChecker =
+					new PAdESSignatureRequirementsChecker(certificateVerifier, parameters);
+			
 			signatureRequirementsChecker.assertExtendToTLevelPossible(signatures);
+			
+			signatureRequirementsChecker.assertSignaturesValid(signatures);
+			signatureRequirementsChecker.assertSigningCertificateIsValid(signatures);
+			
 			// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 			return timestampDocument(document, parameters.getSignatureTimestampParameters(),
 					parameters.getPasswordProtection(), getSignatureTimestampService());
+
 		} else {
 			return document;
 		}
@@ -160,6 +157,17 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
 		pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
 		return pdfDocumentValidator;
+	}
+
+	private boolean isTLevelExtensionRequired(PAdESSignatureParameters parameters, List<AdvancedSignature> signatures) {
+		boolean tLevelExtensionRequired = false;
+		for (AdvancedSignature signature : signatures) {
+			PAdESSignature padesSignature = (PAdESSignature) signature;
+			if (requiresDocumentTimestamp(padesSignature, parameters)) {
+				tLevelExtensionRequired = true;
+			}
+		}
+		return tLevelExtensionRequired;
 	}
 
 	private boolean requiresDocumentTimestamp(PAdESSignature signature, PAdESSignatureParameters signatureParameters) {

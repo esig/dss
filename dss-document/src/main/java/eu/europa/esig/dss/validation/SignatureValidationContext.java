@@ -1291,7 +1291,7 @@ public class SignatureValidationContext implements ValidationContext {
 						DSSUtils.formatDateToRFC(signingCertificate.getNotBefore()),
 						DSSUtils.formatDateToRFC(signingCertificate.getNotAfter())));
 				status.setMessage("Expired signature found.");
-				certificateVerifier.getAlertOnExpiredSignature().alert(status);
+				certificateVerifier.getAlertOnExpiredCertificate().alert(status);
 			}
 			return signatureNotExpired;
 		}

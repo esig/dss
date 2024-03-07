@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.asics;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.extension.AbstractASiCWithXAdESTestExtension;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -57,28 +58,21 @@ public class ASiCsExtensionWithXAdESBToLTAWithExpiredUserTest extends AbstractAS
     protected CertificateVerifier getCompleteCertificateVerifier() {
         CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
         certificateVerifier.setRevocationFallback(true);
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         return certificateVerifier;
     }
 
     @Override
-    protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
-        ASiCWithXAdESSignatureParameters signatureParameters = super.getSignatureParameters();
-        signatureParameters.setSignWithExpiredCertificate(true);
-        return signatureParameters;
-    }
-
-    @Override
-    protected ASiCWithXAdESSignatureParameters getExtensionParameters() {
-        ASiCWithXAdESSignatureParameters extensionParameters = super.getExtensionParameters();
-        extensionParameters.setSignWithExpiredCertificate(true);
-        return extensionParameters;
-    }
-
-    @Override
     protected DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
-        Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
-        assertTrue(exception.getMessage().contains("The signing certificate has expired and " +
-                "there is no POE during its validity range :"));
+        CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+
+        ASiCWithXAdESService service = new ASiCWithXAdESService(certificateVerifier);
+        service.setTspSource(getUsedTSPSourceAtExtensionTime());
+
+        Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
+        assertTrue(exception.getMessage().contains("is expired at signing time"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotAfter());
@@ -87,12 +81,18 @@ public class ASiCsExtensionWithXAdESBToLTAWithExpiredUserTest extends AbstractAS
 
         service.setTspSource(getGoodTsaByTime(tstTime));
 
-        DSSDocument extendedDocument = super.extendSignature(signedDocument);
+        exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
+        assertTrue(exception.getMessage().contains("is expired at signing time"));
+
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+
+        DSSDocument extendedDocument = service.extendDocument(signedDocument, getExtensionParameters());
         assertNotNull(extendedDocument);
 
         service.setTspSource(getGoodTsa());
 
-        extendedDocument = super.extendSignature(extendedDocument);
+        extendedDocument = service.extendDocument(extendedDocument, getExtensionParameters());
         assertNotNull(extendedDocument);
         return extendedDocument;
     }

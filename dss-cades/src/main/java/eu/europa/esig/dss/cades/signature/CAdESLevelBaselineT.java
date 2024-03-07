@@ -72,29 +72,24 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 			throw new IllegalInputException("There is no signature to extend!");
 		}
 
-		final List<AdvancedSignature> signaturesToExtend = new ArrayList<>();
-		for (AdvancedSignature signature : signatures) {
-			CAdESSignature cadesSignature = (CAdESSignature) signature;
-			if (signatureIdsToExtend.contains(cadesSignature.getId()) && tLevelExtensionRequired(cadesSignature, parameters)) {
-				// check if the resulted signature can be extended
-				signaturesToExtend.add(cadesSignature);
-			}
-		}
+		final List<AdvancedSignature> signaturesToExtend = getExtendToTLevelSignatures(signatures, signatureIdsToExtend, parameters);
 
 		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
-		if (Utils.isCollectionNotEmpty(signaturesToExtend)) {
-			signatureRequirementsChecker.assertExtendToTLevelPossible(signaturesToExtend);
-		} else {
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return cmsSignedData;
 		}
+
+		signatureRequirementsChecker.assertExtendToTLevelPossible(signaturesToExtend);
+
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertSigningCertificateIsValid(signaturesToExtend);
 
 		for (AdvancedSignature signature : signatures) {
 			final CAdESSignature cadesSignature = (CAdESSignature) signature;
 			final SignerInformation signerInformation = cadesSignature.getSignerInformation();
 			SignerInformation newSignerInformation = signerInformation;
-			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
-				newSignerInformation = extendSignerInformation(cmsSignedData, signerInformation, parameters,
-						signatureRequirementsChecker);
+			if (signaturesToExtend.contains(cadesSignature)) {
+				newSignerInformation = extendSignerInformation(signerInformation, parameters);
 			}
 			newSignerInformationList.add(newSignerInformation);
 		}
@@ -102,19 +97,11 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 		return replaceSigners(cmsSignedData, newSignerInformationList);
 	}
 
-	private SignerInformation extendSignerInformation(CMSSignedData signedData, SignerInformation signerInformation,
-													  CAdESSignatureParameters parameters,
-													  SignatureRequirementsChecker signatureRequirementsChecker) {
-		final CAdESSignature cadesSignature = newCAdESSignature(signedData, signerInformation, parameters.getDetachedContents());
-		if (tLevelExtensionRequired(cadesSignature, parameters)) {
-			signatureRequirementsChecker.assertSigningCertificateIsValid(cadesSignature);
-
-			AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-			unsignedAttributes = addSignatureTimestampAttribute(signerInformation, unsignedAttributes, parameters);
-
-			return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
-		}
-		return signerInformation;
+	private SignerInformation extendSignerInformation(SignerInformation signerInformation,
+													  CAdESSignatureParameters parameters) {
+		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		unsignedAttributes = addSignatureTimestampAttribute(signerInformation, unsignedAttributes, parameters);
+		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 	}
 
 	/**
@@ -125,6 +112,17 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 	 */
 	protected SignatureRequirementsChecker getSignatureRequirementsChecker(CAdESSignatureParameters parameters) {
 		return new SignatureRequirementsChecker(certificateVerifier, parameters);
+	}
+
+	private List<AdvancedSignature> getExtendToTLevelSignatures(List<AdvancedSignature> signatures, List<String> signatureIdsToExtend,
+																CAdESSignatureParameters parameters) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			if (signatureIdsToExtend.contains(signature.getId()) && tLevelExtensionRequired(signature, parameters)) {
+				toBeExtended.add(signature);
+			}
+		}
+		return toBeExtended;
 	}
 
 	private boolean tLevelExtensionRequired(AdvancedSignature cadesSignature, CAdESSignatureParameters parameters) {

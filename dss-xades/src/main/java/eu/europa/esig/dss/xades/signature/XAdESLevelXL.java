@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.ValidationData;
@@ -31,6 +32,7 @@ import eu.europa.esig.dss.validation.ValidationDataContainer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -63,17 +65,14 @@ public class XAdESLevelXL extends XAdESLevelX {
 	@Override
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
-		if (!isXLLevelRequired(signatures)) {
+
+		final List<AdvancedSignature> signaturesToExtend = getExtendToXLLevelSignatures(signatures);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return;
 		}
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-			if (!xlLevelExtensionRequired(xadesSignature)) {
-				continue;
-			}
-			
-			assertSignatureValid(signature);
 
 			// NOTE: do not force sources reload for certificate and revocation sources
 			// in order to ensure the same validation data as on -C level
@@ -84,6 +83,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		if (XAdES_XL.equals(params.getSignatureLevel())) {
 			signatureRequirementsChecker.assertExtendToXLLevelPossible(signatures);
 		}
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
 		signatureRequirementsChecker.assertCertificateChainValidForXLLevel(signatures);
 
 		// Perform signature validation
@@ -115,14 +115,15 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 	}
 
-	private boolean isXLLevelRequired(List<AdvancedSignature> signatures) {
-		boolean xlLevelExtensionRequired = false;
+
+	private List<AdvancedSignature> getExtendToXLLevelSignatures(List<AdvancedSignature> signatures) {
+		final List<AdvancedSignature> signaturesToExtend = new ArrayList<>();
 		for (AdvancedSignature signature : signatures) {
 			if (xlLevelExtensionRequired(signature)) {
-				xlLevelExtensionRequired = true;
+				signaturesToExtend.add(signature);
 			}
 		}
-		return xlLevelExtensionRequired;
+		return signaturesToExtend;
 	}
 
 	private boolean xlLevelExtensionRequired(AdvancedSignature signature) {

@@ -225,6 +225,21 @@ public interface CertificateVerifier {
 	 * @return {@link DigestAlgorithm}
 	 */
 	DigestAlgorithm getDefaultDigestAlgorithm();
+
+	/**
+	 * This method allows to change the behavior on invalid signature (T/LT/LTA augmentation).
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 *
+	 * @param alertOnInvalidSignature defines a behaviour in case of invalid signature
+	 */
+	void setAlertOnInvalidSignature(StatusAlert alertOnInvalidSignature);
+
+	/**
+	 * This method returns the defined execution behaviour on invalid signature.
+	 *
+	 * @return {@link StatusAlert} to be processed in case of an invalid signature
+	 */
+	StatusAlert getAlertOnInvalidSignature();
 	
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA
@@ -314,12 +329,14 @@ public interface CertificateVerifier {
 	StatusAlert getAlertOnUncoveredPOE();
 
 	/**
-	 * This method allows to change the behavior on expired signature
+	 * This method allows to change the behavior on expired signature during the signature augmentation process
 	 * (if the signing certificate or its POE(s) has been expired).
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param alertOnUncoveredPOE defines a behaviour in case of an expired signature
+	 * @deprecated since DSS 6.1. Please use {@code #setAlertOnExpiredCertificate} instead
 	 */
+	@Deprecated
 	void setAlertOnExpiredSignature(StatusAlert alertOnUncoveredPOE);
 
 	/**
@@ -327,8 +344,45 @@ public interface CertificateVerifier {
 	 * (if the signing certificate or its POE(s) has been expired).
 	 *
 	 * @return {@link StatusAlert} to be processed in case of uncovered POE
+	 * @deprecated since DSS 6.1. Please use {@code #getAlertOnExpiredCertificate} instead
 	 */
+	@Deprecated
 	StatusAlert getAlertOnExpiredSignature();
+
+	/**
+	 * This method allows to change a behavior on signature creation or augmentation with
+	 * an expired signing-certificate (notAfter is before the current time).
+	 * Validated the available POEs in case of existing signature augmentation.
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 *
+	 * @param alertOnExpiredCertificate defines behavior in case of an expired signing-certificate
+	 */
+	void setAlertOnExpiredCertificate(StatusAlert alertOnExpiredCertificate);
+
+	/**
+	 * This method returns the defined behavior on signature creation or augmentation with
+	 * an expired signing-certificate (notAfter is before the current time).
+	 * Validated the available POEs in case of existing signature augmentation.
+	 *
+	 * @return {@link StatusAlert} to process in case of a signature with an expired certificate
+	 */
+	StatusAlert getAlertOnExpiredCertificate();
+
+	/**
+	 * This method allows to change a behavior on signature creation with a not yet valid signing-certificate
+	 * (notBefore is after the current time)
+	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
+	 *
+	 * @param alertOnNotYetValidCertificate defines behavior in case of a not yet valid signing-certificate
+	 */
+	void setAlertOnNotYetValidCertificate(StatusAlert alertOnNotYetValidCertificate);
+
+	/**
+	 * This method returns the defined behavior on signature creation with a not yet valid signing-certificate
+	 *
+	 * @return {@link StatusAlert} to process in case of a signature with a not yet valid signing-certificate
+	 */
+	StatusAlert getAlertOnNotYetValidCertificate();
 
 	/**
 	 * This method allows to change the augmentation behaviour for a signature of a higher level or

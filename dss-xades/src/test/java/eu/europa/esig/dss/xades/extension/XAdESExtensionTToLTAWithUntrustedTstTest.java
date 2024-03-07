@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -51,14 +52,8 @@ public class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestE
     protected CertificateVerifier getCompleteCertificateVerifier() {
         CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
         certificateVerifier.setRevocationFallback(true);
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         return certificateVerifier;
-    }
-
-    @Override
-    protected XAdESSignatureParameters getSignatureParameters() {
-        XAdESSignatureParameters signatureParameters = super.getSignatureParameters();
-        signatureParameters.setSignWithExpiredCertificate(true);
-        return signatureParameters;
     }
 
     @Override
@@ -72,6 +67,8 @@ public class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestE
 
     @Override
     protected DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+
         certificateVerifier.setExtractPOEFromUntrustedChains(false);
 
         Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));

@@ -561,7 +561,9 @@ public class RemoteSignatureParameters implements Serializable {
 	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
 	 *
 	 * @return true if signature with an expired certificate is allowed
+	 * @deprecated since DSS 6.1. See {@code CertificateVerifier#setAlertOnExpiredCertificate}
 	 */
+	@Deprecated
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;
 	}
@@ -571,7 +573,9 @@ public class RemoteSignatureParameters implements Serializable {
 	 *
 	 * @param signWithExpiredCertificate
 	 *            true if signature with an expired certificate is allowed
+	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier#setAlertOnExpiredCertificate} method instead
 	 */
+	@Deprecated
 	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
 	}

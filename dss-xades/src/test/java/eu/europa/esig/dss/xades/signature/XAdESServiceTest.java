@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -63,12 +65,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class XAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
+	private static CertificateVerifier certificateVerifier;
 	private static XAdESService service;
 	
 	@BeforeEach
 	public void init() {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
-        service = new XAdESService(getCompleteCertificateVerifier());
+		certificateVerifier = getCompleteCertificateVerifier();
+        service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
 	}
 	
@@ -90,11 +94,11 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Cannot create a SignatureBuilder. SignaturePackaging is not defined!", exception.getMessage());
         signatureParameters.setGenerateTBSWithoutCertificate(false);
 
-		signatureParameters.setSignWithNotYetValidCertificate(true);
+		certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
 		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
 		assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
-        signatureParameters.setSignWithExpiredCertificate(true);
+		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
 		assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         

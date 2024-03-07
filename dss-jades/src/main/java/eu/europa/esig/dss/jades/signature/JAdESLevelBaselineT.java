@@ -43,6 +43,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -135,23 +136,21 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 	 * @param params {@link JAdESSignatureParameters} the extension parameters
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
-		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(params);
-		if (isTLevelRequired(signatures, params)) {
-			signatureRequirementsChecker.assertExtendToTLevelPossible(signatures);
-		} else {
+		final List<AdvancedSignature> signaturesToExtend = getExtendToTLevelSignatures(signatures, params);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return;
 		}
 
-		for (AdvancedSignature signature : signatures) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(params);
+		signatureRequirementsChecker.assertExtendToTLevelPossible(signaturesToExtend);
+
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertSigningCertificateIsValid(signaturesToExtend);
+
+		for (AdvancedSignature signature : signaturesToExtend) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
 
-			// The timestamp must be added only if there is no one or the extension -T level is being created
-			if (!tLevelExtensionRequired(jadesSignature, params)) {
-				continue;
-			}
-
 			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
-			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
@@ -178,14 +177,14 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 		return new SignatureRequirementsChecker(certificateVerifier, parameters);
 	}
 
-	private boolean isTLevelRequired(List<AdvancedSignature> signatures, JAdESSignatureParameters parameters) {
-		boolean tLevelExtensionRequired = false;
+	private List<AdvancedSignature> getExtendToTLevelSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters parameters) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
 		for (AdvancedSignature signature : signatures) {
 			if (tLevelExtensionRequired(signature, parameters)) {
-				tLevelExtensionRequired = true;
+				toBeExtended.add(signature);
 			}
 		}
-		return tLevelExtensionRequired;
+		return toBeExtended;
 	}
 
 	private boolean tLevelExtensionRequired(AdvancedSignature jadesSignature, JAdESSignatureParameters parameters) {

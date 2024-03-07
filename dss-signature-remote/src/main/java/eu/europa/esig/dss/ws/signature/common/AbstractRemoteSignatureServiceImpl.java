@@ -215,7 +215,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 				remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType()));
 		parameters.setContentTimestampParameters(toTimestampParameters(remoteParameters.getContentTimestampParameters(), 
 				remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType()));
-		parameters.setSignWithExpiredCertificate(remoteParameters.isSignWithExpiredCertificate());
+		parameters.setSignWithExpiredCertificate(remoteParameters.isSignWithExpiredCertificate()); // TODO : To be removed in DSS 6.2
 		parameters.setGenerateTBSWithoutCertificate(remoteParameters.isGenerateTBSWithoutCertificate());
 
 		RemoteCertificate signingCertificate = remoteParameters.getSigningCertificate();

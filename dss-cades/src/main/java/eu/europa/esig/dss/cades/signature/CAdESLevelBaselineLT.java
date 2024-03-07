@@ -74,26 +74,20 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		cmsSignedData = super.extendCMSSignatures(cmsSignedData, parameters, signatureIdsToExtend);
 
 		CMSDocumentValidator documentValidator = getDocumentValidator(cmsSignedData, parameters);
-
-		final List<AdvancedSignature> signaturesToExtend = new ArrayList<>();
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
-		for (AdvancedSignature signature : signatures) {
-			CAdESSignature cadesSignature = (CAdESSignature) signature;
-			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
-				// check if the resulted signature can be extended
-				signaturesToExtend.add(cadesSignature);
-			}
-		}
 
-		if (Utils.isCollectionNotEmpty(signaturesToExtend)) {
-			final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
-			if (CAdES_BASELINE_LT.equals(parameters.getSignatureLevel())) {
-				signatureRequirementsChecker.assertExtendToLTLevelPossible(signaturesToExtend);
-			}
-			signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signaturesToExtend);
-		} else {
+		final List<AdvancedSignature> signaturesToExtend = getExtendToLTLevelSignatures(signatures, signatureIdsToExtend);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return cmsSignedData;
 		}
+
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
+		if (CAdES_BASELINE_LT.equals(parameters.getSignatureLevel())) {
+			signatureRequirementsChecker.assertExtendToLTLevelPossible(signaturesToExtend);
+		}
+
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signaturesToExtend);
 
 		// Perform signatures validation
 		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signaturesToExtend);
@@ -119,7 +113,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 				final CAdESSignature cadesSignature = (CAdESSignature) signature;
 				final SignerInformation signerInformation = cadesSignature.getSignerInformation();
 				SignerInformation newSignerInformation = signerInformation;
-				if (signatureIdsToExtend.contains(cadesSignature.getId())) {
+				if (signaturesToExtend.contains(cadesSignature)) {
 					ValidationData validationData = validationDataContainer.getCompleteValidationDataForSignature(cadesSignature);
 					newSignerInformation = extendSignerInformation(signerInformation, validationData);
 				}
@@ -236,6 +230,23 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns a list of signatures to be extended according to th list of {@code signatureIdsToExtend}
+	 *
+	 * @param signatures a list of {@link AdvancedSignature}s
+	 * @param signatureIdsToExtend a list of {@link String} signature identifiers to be extended
+	 * @return a list of {@link AdvancedSignature}s
+	 */
+	protected List<AdvancedSignature> getExtendToLTLevelSignatures(List<AdvancedSignature> signatures, List<String> signatureIdsToExtend) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			if (signatureIdsToExtend.contains(signature.getId())) {
+				toBeExtended.add(signature);
+			}
+		}
+		return toBeExtended;
 	}
 
 }
