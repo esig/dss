@@ -613,6 +613,18 @@ public class DSSUtilsTest {
 	}
 
 	@Test
+	public void trimWhitespacesAndNewlinesTest() {
+		assertNull(DSSUtils.trimWhitespacesAndNewlines(null));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines(""));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines(" "));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines("\n"));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines("\r"));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines("\r\n"));
+		assertEquals("1.2.5.3.4", DSSUtils.trimWhitespacesAndNewlines(" 1.2.5.3.4 "));
+		assertEquals("http://nowina.lu", DSSUtils.trimWhitespacesAndNewlines("http://nowina.lu \n"));
+	}
+
+	@Test
 	public void isDocumentEmptyTest() {
 		assertTrue(DSSUtils.isEmpty(new InMemoryDocument(new byte[] {})));
 		assertTrue(DSSUtils.isEmpty(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY)));

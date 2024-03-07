@@ -423,18 +423,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				// Explicit policy
 				String policyUrlString = null;
 
-				String policyIdString = policyId.getTextContent();
-				if (Utils.isStringNotBlank(policyIdString) && !DSSUtils.isUrnOid(policyIdString) && !DSSUtils.isOidCode(policyIdString)) {
-					policyUrlString = policyIdString;
-				}
-
 				ObjectIdentifierQualifier qualifier = null;
 				String qualifierString = policyId.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
 				if (Utils.isStringNotBlank(qualifierString)) {
 					qualifier = ObjectIdentifierQualifier.fromValue(qualifierString);
 				}
 
+				String policyIdString = policyId.getTextContent();
 				policyIdString = DSSUtils.getObjectIdentifierValue(policyIdString, qualifier);
+				if (Utils.isStringNotBlank(policyIdString) && !DSSUtils.isUrnOid(policyIdString) && !DSSUtils.isOidCode(policyIdString)) {
+					policyUrlString = policyIdString;
+				}
+
 				xadesSignaturePolicy = new XAdESSignaturePolicy(policyIdString);
 
 				final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(policyIdentifier, xadesPath.getCurrentSignaturePolicyDigestAlgAndValue()));
@@ -443,7 +443,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xadesPath.getCurrentSignaturePolicySPURI());
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent();
-					policyUrlString = Utils.trim(policyUrlString);
+					policyUrlString = DSSUtils.trimWhitespacesAndNewlines(policyUrlString);
 				}
 				xadesSignaturePolicy.setUri(policyUrlString);
 

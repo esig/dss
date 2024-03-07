@@ -1186,8 +1186,7 @@ public final class DSSUtils {
 	private static String getObjectIdentifierValue(String oidOrUriString, ObjectIdentifierQualifier qualifier, boolean xades) {
 		String value = oidOrUriString;
 		if (Utils.isStringNotEmpty(oidOrUriString)) {
-			value = value.replace("\n", "");
-			value = Utils.trim(value);
+			value = trimWhitespacesAndNewlines(value);
 			if (DSSUtils.isUrnOid(value)) {
 				if (xades && !ObjectIdentifierQualifier.OID_AS_URN.equals(qualifier)) {
 					LOG.debug("When OID is encoded as URN, a Qualifier=\"OIDAsURN\" shall be used!");
@@ -1207,6 +1206,21 @@ public final class DSSUtils {
 			}
 		}
 		return value;
+	}
+
+	/**
+	 * Trims whitespaces and new line characters
+	 *
+	 * @param str {@link String} to trim
+	 * @return {@link String}
+	 */
+	public static String trimWhitespacesAndNewlines(String str) {
+		if (str != null) {
+			str = str.replace("\n", "");
+			str = str.replace("\r", "");
+			str = Utils.trim(str);
+		}
+		return str;
 	}
 	
 	/**
