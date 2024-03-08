@@ -139,7 +139,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			signatureDrawer.draw();
 		}
 
-		PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
+		PdfDictionary signatureDictionary = createSignatureDictionary(reader, fieldItem, parameters);
 		if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
 			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
 
@@ -181,10 +181,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		return null;
 	}
 	
-	private PdfDictionary createSignatureDictionary(Item fieldItem, PAdESCommonParameters parameters) {
+	private PdfDictionary createSignatureDictionary(PdfReader reader, Item fieldItem, PAdESCommonParameters parameters) {
 		PdfDictionary dic;
 		if (fieldItem != null) {
 			dic = fieldItem.getMerged(0);
+			setFieldMDP(reader, dic);
 		} else {
 			dic = new PdfDictionary();
 		}
@@ -227,6 +228,30 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		}
 		
 		return dic;
+	}
+
+	/**
+	 * Add FieldMDP TransformMethod if the signature field contains a Lock. OpenPDF implementation.
+	 *
+	 * @param reader {@link PdfReader}
+	 * @param sigFieldDictionary {@link PdfDictionary} representing a signature field
+	 */
+	private void setFieldMDP(PdfReader reader, PdfDictionary sigFieldDictionary) {
+		PdfDictionary lockDict = sigFieldDictionary.getAsDict(PdfName.LOCK);
+		if (lockDict != null) {
+			PdfDictionary transformParams = new PdfDictionary();
+			transformParams.putAll(lockDict);
+			transformParams.put(PdfName.TYPE, PdfName.TRANSFORMPARAMS);
+			transformParams.put(PdfName.V, new PdfName(PAdESConstants.VERSION_DEFAULT));
+			PdfDictionary sigRef = new PdfDictionary();
+			sigRef.put(PdfName.TYPE, PdfName.SIGREF);
+			sigRef.put(PdfName.TRANSFORMMETHOD, PdfName.FIELDMDP);
+			sigRef.put(PdfName.TRANSFORMPARAMS, transformParams);
+			sigRef.put(PdfName.DATA, reader.getCatalog());
+			PdfArray referenceArray = new PdfArray();
+			referenceArray.add(sigRef);
+			sigFieldDictionary.put(PdfName.REFERENCE, referenceArray);
+		}
 	}
 
 	private boolean containsFilledSignature(PdfReader reader) {

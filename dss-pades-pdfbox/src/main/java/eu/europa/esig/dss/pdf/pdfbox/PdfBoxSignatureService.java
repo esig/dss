@@ -201,7 +201,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, fieldParameters);
 
 		if (pdSignatureField != null) {
-
 			setSignatureToField(pdDocument, pdSignatureField, pdSignature);
 		}
 
@@ -335,7 +334,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		return signature;
 	}
 
-	private void setSignatureToField(final PDDocument pdDocument, final PDSignatureField pdSignatureField, final  PDSignature pdSignature) {
+	private void setSignatureToField(final PDDocument pdDocument, final PDSignatureField pdSignatureField, final PDSignature pdSignature) {
 		setFieldMDP(pdDocument, pdSignatureField, pdSignature);
 		pdSignatureField.getCOSObject().setItem(COSName.V, pdSignature);
 	}
@@ -357,6 +356,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	/**
 	 * Add FieldMDP TransformMethod if the signature field contains a Lock
+	 * See {@link <a href="https://github.com/mkl-public/testarea-pdfbox2/blob/master/src/test/java/mkl/testarea/pdfbox2/sign/CreateSignature.java#L348">link</a>}
+	 *
 	 * @param pdDocument the document
 	 * @param pdSignatureField the signature field
 	 * @param pdSignature the signature object
