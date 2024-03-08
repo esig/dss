@@ -39,6 +39,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampTokenIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -69,7 +70,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
 
@@ -80,6 +80,12 @@ import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
 public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureExtension<XAdESSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineT.class);
+
+	/** Id-prefix for TimeStamp element */
+	protected static final String TIMESTAMP_PREFIX = "ts-";
+
+	/** Id-prefix for EncapsulatedTimeStamp element */
+	protected static final String ENCAPSULATED_TIMESTAMP_PREFIX = "ets-";
 
 	/**
 	 * The object encapsulating the Time Stamp Protocol needed to create the level -T, of the signature
@@ -496,7 +502,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 				id = timestampToken.getDSSIdAsString();
 			}
 
-			timeStampValidationDataDom.setAttribute("Id", "id-" + id);
+			timeStampValidationDataDom.setAttribute("Id", ID_PREFIX + id);
 			if (params.isPrettyPrint()) {
 				DSSXMLUtils.indentAndReplace(documentDom, timeStampValidationDataDom);
 			}
@@ -582,9 +588,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			incorporateXAdES122Include(timeStampDom);
 		}
 
-		final String timestampId = UUID.randomUUID().toString();
+		final String timestampId = toXmlIdentifier(new TimestampTokenIdentifier(timeStampToken.getBytes()));
 		if (!XAdESNamespace.XADES_111.isSameUri(getXadesNamespace().getUri())) {
-			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "TS-" + timestampId);
+			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), TIMESTAMP_PREFIX + timestampId);
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
 		} else {
@@ -593,7 +599,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		
 		// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
 		final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());
-		encapsulatedTimeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "ETS-" + timestampId);
+		encapsulatedTimeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), ENCAPSULATED_TIMESTAMP_PREFIX + timestampId);
 		DomUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
 	}
 

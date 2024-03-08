@@ -25,10 +25,12 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
@@ -74,6 +76,9 @@ public abstract class XAdESBuilder {
 	/** The URI attribute */
 	public static final String URI = "URI";
 
+	/** Xml Id prefix */
+	protected static final String ID_PREFIX = "id-";
+
 	/**
 	 * This variable holds the {@code XAdESPaths} which contains all constants and
 	 * queries needed to cope with the default signature schema.
@@ -100,6 +105,7 @@ public abstract class XAdESBuilder {
 	 * Empty constructor
 	 */
 	protected XAdESBuilder() {
+		// empty
 	}
 
 	/**
@@ -427,6 +433,16 @@ public abstract class XAdESBuilder {
 				DomUtils.setTextNode(documentDom, documentReferenceElement, docRef);
 			}
 		}
+	}
+
+	/**
+	 * Transforms a DSS Identifier to an XML Id type
+	 *
+	 * @param identifier {@link TokenIdentifier} to transform
+	 * @return {@link String}
+	 */
+	protected String toXmlIdentifier(TokenIdentifier identifier) {
+		return ID_PREFIX + DSSUtils.getSHA1Digest(identifier.asXmlId());
 	}
 	
 }
