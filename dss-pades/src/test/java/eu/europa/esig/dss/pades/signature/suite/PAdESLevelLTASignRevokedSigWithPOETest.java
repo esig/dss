@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -64,12 +65,13 @@ public class PAdESLevelLTASignRevokedSigWithPOETest extends AbstractPAdESTestVal
         CertificateVerifier certificateVerifier = getCompositeCertificateVerifier();
         certificateVerifier.addTrustedCertSources(getTrustedCertSource());
         certificateVerifier.setRevocationFallback(true);
+        certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert());
 
         service = new PAdESService(certificateVerifier);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(2024, Calendar.JANUARY, 1);
-        service.setTspSource(getKeyStoreTSPSourceByNameAndTime(SELF_SIGNED_LONG_TSA, calendar.getTime()));
+        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
     }
 
     private CertificateSource getTrustedCertSource() {
