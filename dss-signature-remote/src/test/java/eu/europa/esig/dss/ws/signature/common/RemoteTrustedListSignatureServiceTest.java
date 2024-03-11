@@ -27,12 +27,12 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
@@ -188,6 +188,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
 
         RemoteTrustedListSignatureParameters tlSignatureParameters = new RemoteTrustedListSignatureParameters();
         tlSignatureParameters.setSigningCertificate(signingCertificate);
+        tlSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
         tlSignatureParameters.setTlVersion("5");
 
         Exception exception = assertThrows(IllegalInputException.class, () -> tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters));

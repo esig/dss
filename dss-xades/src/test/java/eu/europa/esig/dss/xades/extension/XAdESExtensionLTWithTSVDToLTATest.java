@@ -65,7 +65,7 @@ public class XAdESExtensionLTWithTSVDToLTATest extends XAdESExtensionLTToLTATest
         certificateVerifier.setCrlSource(getCRLSource());
         certificateVerifier.setOcspSource(getOCSPSource());
         certificateVerifier.addTrustedCertSources(getTrustedCommonCertificateSource());
-        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
         return certificateVerifier;
     }
 

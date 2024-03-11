@@ -3240,7 +3240,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 			}
 		}
 		executor.setValidationPolicy(defaultPolicy);
-		executor.setCurrentTime(new Date());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		
@@ -15076,7 +15076,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	@Test
 	void testTLWrongVersion() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/commisign.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/commisign.xml"));
 		assertNotNull(diagnosticData);
 
 		ValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -15108,7 +15108,7 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	@Test
 	void testTLWrongVersionWarnLevel() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/commisign.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/commisign.xml"));
 		assertNotNull(diagnosticData);
 
 		ValidationPolicy validationPolicy = loadDefaultPolicy();

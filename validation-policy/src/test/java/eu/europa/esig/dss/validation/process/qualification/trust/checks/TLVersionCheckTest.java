@@ -7,9 +7,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
-import jakarta.xml.bind.DatatypeConverter;
 import org.junit.jupiter.api.Test;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 import java.util.List;
 
