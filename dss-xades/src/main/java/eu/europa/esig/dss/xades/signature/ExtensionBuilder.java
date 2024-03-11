@@ -76,6 +76,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 * Empty constructor
 	 */
 	protected ExtensionBuilder() {
+		// empty
 	}
 
 	/**

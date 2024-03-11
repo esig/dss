@@ -57,6 +57,7 @@ import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
+import eu.europa.esig.dss.xades.validation.XAdESAttributeIdentifier;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
@@ -134,8 +135,6 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 
 	/** Id-prefix for KeyInfo element */
 	protected static final String KEYINFO_PREFIX = "keyInfo-";
-	/** Id-prefix for Timestamp element */
-	protected static final String TIMESTAMP_PREFIX = "ts-";
 	/** Id-prefix for SignatureValue element */
 	protected static final String VALUE_PREFIX = "value-";
 	/** Id-prefix for Signature element */
@@ -1234,21 +1233,18 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 
 		for (final TimestampToken contentTimestamp : contentTimestamps) {
-			final String timestampId = TIMESTAMP_PREFIX + toXmlIdentifier(contentTimestamp.getDSSId());
 			final TimestampType timeStampType = contentTimestamp.getTimeStampType();
+			Element timestampDom;
 			if (TimestampType.ALL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
-				Element allDataObjectsTimestampDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
+				timestampDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(),
 						getXadesNamespace(), getCurrentXAdESElements().getElementAllDataObjectsTimeStamp());
-				allDataObjectsTimestampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), timestampId);
-				addTimestamp(allDataObjectsTimestampDom, contentTimestamp);
 			} else if (TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP.equals(timeStampType)) {
-				Element individualDataObjectsTimestampDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(), 
+				timestampDom = DomUtils.addElement(documentDom, getSignedDataObjectPropertiesDom(),
 						getXadesNamespace(), getCurrentXAdESElements().getElementIndividualDataObjectsTimeStamp());
-				individualDataObjectsTimestampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), timestampId);
-				addTimestamp(individualDataObjectsTimestampDom, contentTimestamp);
 			} else {
 				throw new UnsupportedOperationException("Only types ALL_DATA_OBJECTS_TIMESTAMP and INDIVIDUAL_DATA_OBJECTS_TIMESTAMP are allowed");
 			}
+			addContentTimestamp(timestampDom, contentTimestamp);
 		}
 	}
 
@@ -1592,8 +1588,7 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	 * @param timestampElement {@link Element}
 	 * @param token {@link TimestampToken}
 	 */
-	protected void addTimestamp(final Element timestampElement, final TimestampToken token) {
-
+	protected void addContentTimestamp(final Element timestampElement, final TimestampToken token) {
 		// List<TimestampInclude> includes, String canonicalizationMethod, TimestampToken encapsulatedTimestamp) {
 		// add includes: URI + referencedData = "true"
 		// add canonicalizationMethod: Algorithm
@@ -1621,10 +1616,15 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 					+ "See EN 319 132-1: 4.5 Managing canonicalization of XML nodesets.");
 		}
 
-		Element encapsulatedTimestampElement = DomUtils.createElementNS(documentDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());
+		final Element encapsulatedTimestampElement = DomUtils.createElementNS(documentDom,
+				getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());
 		encapsulatedTimestampElement.setTextContent(Utils.toBase64(token.getEncoded()));
-
 		timestampElement.appendChild(encapsulatedTimestampElement);
+
+		// Build Id after time-stamp incorporation to ensure {@code timestampElement} contains a new time-stamp
+		final String timestampId = TIMESTAMP_PREFIX + toXmlIdentifier(XAdESAttributeIdentifier.build(timestampElement));
+		timestampElement.setAttribute(XMLDSigAttribute.ID.getAttributeName(), timestampId);
+		encapsulatedTimestampElement.setAttribute(XMLDSigAttribute.ID.getAttributeName(), ENCAPSULATED_TIMESTAMP_PREFIX + timestampId);
 	}
 
 	/**

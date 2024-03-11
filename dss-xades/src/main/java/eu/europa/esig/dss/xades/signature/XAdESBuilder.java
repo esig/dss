@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SpDocSpecification;
-import eu.europa.esig.dss.model.identifier.TokenIdentifier;
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.signature.SigningOperation;
@@ -78,6 +78,12 @@ public abstract class XAdESBuilder {
 
 	/** Xml Id prefix */
 	protected static final String ID_PREFIX = "id-";
+
+	/** Id-prefix for TimeStamp element */
+	protected static final String TIMESTAMP_PREFIX = "ts-";
+
+	/** Id-prefix for EncapsulatedTimeStamp element */
+	protected static final String ENCAPSULATED_TIMESTAMP_PREFIX = "ets-";
 
 	/**
 	 * This variable holds the {@code XAdESPaths} which contains all constants and
@@ -438,10 +444,10 @@ public abstract class XAdESBuilder {
 	/**
 	 * Transforms a DSS Identifier to an XML Id type
 	 *
-	 * @param identifier {@link TokenIdentifier} to transform
+	 * @param identifier {@link Identifier} to transform
 	 * @return {@link String}
 	 */
-	protected String toXmlIdentifier(TokenIdentifier identifier) {
+	protected String toXmlIdentifier(Identifier identifier) {
 		return ID_PREFIX + DSSUtils.getSHA1Digest(identifier.asXmlId());
 	}
 	
