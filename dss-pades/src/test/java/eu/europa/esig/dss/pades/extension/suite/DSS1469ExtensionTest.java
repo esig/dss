@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -44,6 +45,7 @@ import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,6 +72,7 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 		certificateVerifier.setAIASource(new DefaultAIASource(dataLoader));
 		certificateVerifier.setCrlSource(getCRLSource());
 		certificateVerifier.setOcspSource(getOCSPSource());
+		certificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert());
 	}
 
 	private CertificateSource getTrustedCertSource() {
@@ -97,7 +100,10 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/doc-firmado-T.pdf"));
 
 		PAdESService service = new PAdESService(certificateVerifier);
-		service.setTspSource(getGoodTsa());
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2024, Calendar.JANUARY, 1);
+		service.setTspSource(getGoodTsaByTime(calendar.getTime()));
 
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
