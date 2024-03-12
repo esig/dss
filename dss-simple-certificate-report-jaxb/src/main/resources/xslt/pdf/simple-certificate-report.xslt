@@ -107,7 +107,7 @@
 			       		
 						<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 						
-						<xsl:text>Certificate: <xsl:value-of select="dss:id"/></xsl:text>
+						<xsl:text>Certificate: </xsl:text><xsl:value-of select="dss:id"/>
 			    	</fo:block>
 		    	</fo:block-container>
 			</fo:block-container>
