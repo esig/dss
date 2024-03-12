@@ -214,7 +214,7 @@
 					<xsl:attribute name="margin-bottom">2px</xsl:attribute>
 		       		
 					<xsl:attribute name="id">policy</xsl:attribute>
-					<xsl:text>Validation Policy: <xsl:value-of select="dss:PolicyName"/></xsl:text>
+					<xsl:text>Validation Policy: </xsl:text><xsl:value-of select="dss:PolicyName"/>
 		    	</fo:block>
 	    	</fo:block-container>
 		</fo:block-container>
@@ -248,12 +248,12 @@
     </xsl:template>
     
     <xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord">
-        <xsl:variable name="nodeName" select="name()" />
-        
 		<xsl:param name="sigCounter" />
 		<xsl:param name="erCounter" />
-    	<xsl:variable name="counter">
-    		<xsl:if test="$nodeName = 'Signature'">
+
+		<xsl:variable name="nodeName" select="name()" />
+		<xsl:variable name="counter">
+			<xsl:if test="$nodeName = 'Signature'">
     			<xsl:value-of select="count(preceding-sibling::dss:Signature) + 1" />
     		</xsl:if>
     		<xsl:if test="$nodeName = 'Timestamp'">
