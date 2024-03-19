@@ -584,24 +584,24 @@
 						var notBefore =  getUniqueDate(currentElement, "svg-not-before");
 						var notAfter =  getUniqueDate(currentElement, "svg-not-after");
 						var signingCertificateId = getUniqueValue(currentElement, "svg-signing-cert");
-						
+
 						var notBeforeElement = null;
-						var notAfterElement = null; 
-						var notBeforeElements = document.getElementsByClassName("not-before");
-						if (notBeforeElements != null && notBeforeElements.length == 1) {
-							var titles = notBeforeElements[0].getElementsByTagName("title");
-							if (titles != null && titles.length == 1) {
-								notBeforeElement = titles[0];
-							}
-						}
-						var notAfterElements = document.getElementsByClassName("not-after");
-						if (notAfterElements != null && notAfterElements.length == 1) {
-							var titles = notAfterElements[0].getElementsByTagName("title");
-							if (titles != null && titles.length == 1) {
-								notAfterElement = titles[0];
-							}
-						}
-						
+                        var notAfterElement = null;
+                        var notBeforeElements = currentElement.getElementsByClassName("not-before");
+                        if (notBeforeElements != null && notBeforeElements.length == 1) {
+                            var titles = notBeforeElements[0].getElementsByTagName("title");
+                            if (titles != null && titles.length == 1) {
+                                notBeforeElement = titles[0];
+                            }
+                        }
+                        var notAfterElements = currentElement.getElementsByClassName("not-after");
+                        if (notAfterElements != null && notAfterElements.length == 1) {
+                            var titles = notAfterElements[0].getElementsByTagName("title");
+                            if (titles != null && titles.length == 1) {
+                                notAfterElement = titles[0];
+                            }
+                        }
+
 						var cert = new Certificate(currentElement, notBeforeElement, notAfterElement, notBefore, notAfter, signingCertificateId);
 						certificates.push(cert);
 					}
@@ -689,7 +689,7 @@
 						}
    					}
    				}	
-    			 
+
 				function getUniqueDate(currentElement, cssClass) {
     				var date;
 					var items = currentElement.getElementsByClassName(cssClass);
@@ -799,15 +799,6 @@
 			    <line x1="-6" y1="12" x2="6" y2="0" stroke-width="3" />
 	  		</g>
 
-    		<g id="range">
-  				<rect y="0" width="100%" height="4" fill="white" stroke-width="0" />	
-  				<rect y="4" width="100%" height="4" stroke-width="0" />	
-  				<rect y="8" width="100%" height="4" fill="white" stroke-width="0" />
-			    
-			    <line x1="0" y1="0" x2="0" y2="12" stroke-width="6" class="not-before"><title>NotBefore</title></line>
-			    <line x1="100%" y1="0" x2="100%" y2="12" stroke-width="6" class="not-after"><title>NotAfter</title></line>
-	  		</g>
-	  		
 	  		<g id="timeline">
 			    <line x1="795" y1="0" x2="800" y2="5" stroke="blue" stroke-width="1" />
 			    <line x1="795" y1="10" x2="800" y2="5" stroke="blue" stroke-width="1" />
@@ -921,17 +912,24 @@
 					<xsl:value-of select="diag:SigningCertificate/@Certificate" />
 				</text>
 			</xsl:if>
-			
-  			<use href="#range">
-  				<xsl:choose>
-	  				<xsl:when test="contains(diag:Trusted,'true')">
-	  					<xsl:attribute name="class">trusted</xsl:attribute>
-	  				</xsl:when>
-	  				<xsl:otherwise>
-	  					<xsl:attribute name="class">not-trusted</xsl:attribute>
-	  				</xsl:otherwise>
-  				</xsl:choose>
-  			</use>
+
+			<g>
+				<xsl:choose>
+					<xsl:when test="contains(diag:Trusted,'true')">
+						<xsl:attribute name="class">trusted</xsl:attribute>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:attribute name="class">not-trusted</xsl:attribute>
+					</xsl:otherwise>
+				</xsl:choose>
+				<rect y="0" width="100%" height="4" fill="white" stroke-width="0" />
+				<rect y="4" width="100%" height="4" stroke-width="0" />
+				<rect y="8" width="100%" height="4" fill="white" stroke-width="0" />
+
+				<line x1="0" y1="0" x2="0" y2="12" stroke-width="6" class="not-before"><title>NotBefore</title></line>
+				<line x1="100%" y1="0" x2="100%" y2="12" stroke-width="6" class="not-after"><title>NotAfter</title></line>
+			</g>
+
 		</svg>
 		
 		<xsl:apply-templates select="diag:Revocations/diag:CertificateRevocation"/>
