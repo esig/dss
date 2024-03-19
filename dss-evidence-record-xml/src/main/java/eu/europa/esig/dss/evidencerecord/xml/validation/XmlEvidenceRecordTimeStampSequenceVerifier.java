@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.evidencerecord.common.digest.DataObjectDigestBuilder;
+import eu.europa.esig.dss.spi.x509.evidencerecord.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
@@ -63,7 +63,8 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
     protected DataObjectDigestBuilder getDataObjectDigestBuilder(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain) {
         DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
         String canonicalizationMethod = getCanonicalizationMethod(archiveTimeStampChain);
-        return new XMLEvidenceRecordDataObjectDigestBuilder(document, digestAlgorithm, canonicalizationMethod);
+        return new XMLEvidenceRecordDataObjectDigestBuilder(document, digestAlgorithm)
+                .setCanonicalizationMethod(canonicalizationMethod);
     }
 
     /**

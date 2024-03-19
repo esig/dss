@@ -5,6 +5,7 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.xades.evidencerecord.XAdESEvidenceRecordDigestBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

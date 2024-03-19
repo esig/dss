@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
@@ -108,7 +108,7 @@ public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValida
 	}
 
 	@Override
-	protected AbstractASiCContainerExtractor getContainerExtractor() {
+	protected DefaultASiCContainerExtractor getContainerExtractor() {
 		return new ASiCWithCAdESContainerExtractor(document);
 	}
 	

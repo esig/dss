@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -99,7 +99,7 @@ public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation
 		assertArchiveTimestampFound(diagnosticData);
 		validateSignatures(diagnosticData.getSignatures());
 		
-		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doubleSignedDocument);
+		DefaultASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doubleSignedDocument);
         ASiCContent result = extractor.extract();
         
         assertEquals(6, result.getAllDocuments().size());

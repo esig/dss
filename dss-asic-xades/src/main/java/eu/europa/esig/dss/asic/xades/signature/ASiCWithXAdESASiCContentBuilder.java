@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.asic.xades.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCContentBuilder;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.List;
@@ -50,7 +50,7 @@ public class ASiCWithXAdESASiCContentBuilder extends AbstractASiCContentBuilder 
     }
 
     @Override
-    protected AbstractASiCContainerExtractor getContainerExtractor(DSSDocument archiveDocument) {
+    protected DefaultASiCContainerExtractor getContainerExtractor(DSSDocument archiveDocument) {
         return new ASiCWithXAdESContainerExtractor(archiveDocument);
     }
 

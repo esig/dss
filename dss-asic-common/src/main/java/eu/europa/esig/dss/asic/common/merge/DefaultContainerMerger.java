@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.common.merge;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -97,9 +97,9 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
      * This method returns a relevant ASiC container extractor
      *
      * @param container {@link DSSDocument} representing a container to be extracted
-     * @return {@link AbstractASiCContainerExtractor}
+     * @return {@link DefaultASiCContainerExtractor}
      */
-    protected abstract AbstractASiCContainerExtractor getContainerExtractor(DSSDocument container);
+    protected abstract DefaultASiCContainerExtractor getContainerExtractor(DSSDocument container);
 
     /**
      * Gets the merged container result's creation time

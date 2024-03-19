@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.validation.evidencerecord;
+package eu.europa.esig.dss.xades.evidencerecord;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.exception.IllegalInputException;

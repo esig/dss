@@ -43,7 +43,7 @@ public interface ASiCContainerMergerFactory {
      * Creates a new {@code ASiCContainerMerger} for the given ZIP-archive containers
      *
      * @param containers {@link DSSDocument}s representing ZIP-containers to be merged
-     * @return {@link DSSDocument} representing a merge result of given ZIP-containers
+     * @return {@link ASiCContainerMerger} supporting the containers type for the merge
      */
     ASiCContainerMerger create(DSSDocument... containers);
 
@@ -59,7 +59,7 @@ public interface ASiCContainerMergerFactory {
      * Creates a new {@code ASiCContainerMerger} for the given {@code ASiCContent}s
      *
      * @param asicContents {@link ASiCContent}s representing content of ZIP-containers to be merged
-     * @return {@link ASiCContent} representing a merge result
+     * @return {@link ASiCContainerMerger} supporting the containers type for the merge
      */
     ASiCContainerMerger create(ASiCContent... asicContents);
 

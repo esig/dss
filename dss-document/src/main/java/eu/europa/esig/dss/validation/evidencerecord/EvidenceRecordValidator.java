@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.evidencerecord;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.model.scope.SignatureScope;
@@ -102,5 +103,12 @@ public abstract class EvidenceRecordValidator extends SignedDocumentValidator {
         throw new UnsupportedOperationException("getOriginalDocuments(AdvancedSignature) is " +
                 "not supported for EvidenceRecordValidator!");
     }
+
+    /**
+     * This method returns a type of the evidence record supported by the current validator
+     *
+     * @return {@link EvidenceRecordTypeEnum}
+     */
+    public abstract EvidenceRecordTypeEnum getEvidenceRecordType();
 
 }

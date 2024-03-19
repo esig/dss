@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
@@ -125,5 +126,9 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
         }
     }
 
+    @Override
+    public EvidenceRecordTypeEnum getEvidenceRecordType() {
+        return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
+    }
 
 }

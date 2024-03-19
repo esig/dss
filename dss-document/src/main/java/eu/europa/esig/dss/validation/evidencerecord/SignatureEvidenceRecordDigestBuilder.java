@@ -10,6 +10,7 @@ public interface SignatureEvidenceRecordDigestBuilder {
 
     /**
      * Generates hash value for the signature enveloping the evidence-record.
+     * Note: the method is not supported for ASiC containers
      *
      * @return {@link Digest} containing the hash value of the binaries and the used digest algorithm
      */

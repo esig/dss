@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
@@ -49,7 +49,7 @@ public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	}
 
 	@Override
-	protected AbstractASiCContainerExtractor getASiCContainerExtractor() {
+	protected DefaultASiCContainerExtractor getASiCContainerExtractor() {
 		return new ASiCWithCAdESContainerExtractor(asicContainer);
 	}
 

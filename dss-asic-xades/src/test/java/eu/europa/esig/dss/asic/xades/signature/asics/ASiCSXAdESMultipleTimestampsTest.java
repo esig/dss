@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -95,7 +95,7 @@ public class ASiCSXAdESMultipleTimestampsTest extends PKIFactoryAccess {
 			assertTrue(timestampWrapper.isSignatureValid());
 		}
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(extendDocument);
+		DefaultASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(extendDocument);
 		ASiCContent result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());

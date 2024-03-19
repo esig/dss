@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
@@ -117,7 +117,7 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
     }
 
     @Override
-    protected AbstractASiCContainerExtractor getContainerExtractor(DSSDocument container) {
+    protected DefaultASiCContainerExtractor getContainerExtractor(DSSDocument container) {
         return new ASiCWithCAdESContainerExtractor(container);
     }
 

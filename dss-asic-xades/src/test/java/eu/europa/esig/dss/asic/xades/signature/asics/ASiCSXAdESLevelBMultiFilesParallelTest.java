@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -109,7 +109,7 @@ public class ASiCSXAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 			assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(sigId));
 		}
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(docToCheck);
+		DefaultASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(docToCheck);
 		ASiCContent result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());

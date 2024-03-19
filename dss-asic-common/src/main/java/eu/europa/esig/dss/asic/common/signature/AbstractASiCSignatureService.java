@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.common.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -97,7 +97,7 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 * @return {@link ASiCContent}
 	 */
 	protected ASiCContent extractCurrentArchive(DSSDocument archive) {
-		AbstractASiCContainerExtractor extractor = getArchiveExtractor(archive);
+		DefaultASiCContainerExtractor extractor = getArchiveExtractor(archive);
 		return extractor.extract();
 	}
 
@@ -105,9 +105,9 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 * Returns a relevant ASiC container extractor for the given format
 	 *
 	 * @param archive {@link DSSDocument} to get an extractor for
-	 * @return an instance of {@link AbstractASiCContainerExtractor}
+	 * @return an instance of {@link DefaultASiCContainerExtractor}
 	 */
-	protected abstract AbstractASiCContainerExtractor getArchiveExtractor(DSSDocument archive);
+	protected abstract DefaultASiCContainerExtractor getArchiveExtractor(DSSDocument archive);
 
 	/**
 	 * Creates a ZIP-Archive by copying the provided documents to the new container

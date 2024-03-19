@@ -603,6 +603,22 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObje
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=cades-er]
 ----
 
+* `ASiCEvidenceRecordDigestBuilder` (part of `dss-asic-common` module) - creates digest for documents embedded within an ASiC container to be protected by an evidence-record. Can be used for both XMLERS (cf. <<R22>>) and Evidence Record Syntax (cf. <<R23>>) evidence record implementations, as well as for XAdES, CAdES and time-stamp ASiC containers.
+
+[source,java,indent=0]
+.Hash computation for an ASiC container's content
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderForASiCTest.java[tags=asic-er]
+----
+
+In order to facilitate creation of evidence record within an ASiC container, an `ASiCEvidenceRecordManifestBuilder` class has been introduced helping to build an `ASiCEvidenceRecordManifest*.xml` file to be linked to a target evidence record:
+
+[source,java,indent=0]
+.Manifest creation for an evidence record within an ASiC container
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderForASiCTest.java[tags=asic-er-manifest]
+----
+
 NOTE: In case of creation of evidence-record detached from the signature document, one of the `XMLEvidenceRecordDataObjectDigestBuilder` or `ASN1EvidenceRecordDataObjectDigestBuilder` classes shall be used.
 
 WARNING: Always ensure a correct utility class is chosen based on your implementation of evidence-records. Usage of a wrong class may result to an erroneously computed hash and therefore invalidity of the evidence-record.

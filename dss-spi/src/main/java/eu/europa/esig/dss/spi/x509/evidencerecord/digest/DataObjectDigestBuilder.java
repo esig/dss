@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.evidencerecord.common.digest;
+package eu.europa.esig.dss.spi.x509.evidencerecord.digest;
 
 import eu.europa.esig.dss.model.Digest;
 

@@ -18,38 +18,34 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.xades;
+package eu.europa.esig.dss.asic.cades.extract;
 
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**
- * The class is used to extract the content (documents) embedded into an ASiC with XAdES container
+ * The class is used to extract the content (documents) embedded into an ASiC with CAdES container
  */
-public class ASiCWithXAdESContainerExtractor extends AbstractASiCContainerExtractor {
-
-	/** The manifest filename */
-	private static final String METAINF_MANIFEST_FILENAME = ASiCUtils.META_INF_FOLDER + "manifest.xml";
+public class ASiCWithCAdESContainerExtractor extends DefaultASiCContainerExtractor {
 
 	/**
 	 * The default constructor
 	 *
-	 * @param archive {@link DSSDocument} representing the container
+	 * @param archive {@link DSSDocument} representing an ASiC with CAdES container
 	 */
-	public ASiCWithXAdESContainerExtractor(DSSDocument archive) {
+	public ASiCWithCAdESContainerExtractor(DSSDocument archive) {
 		super(archive);
 	}
 
 	@Override
 	protected boolean isAllowedManifest(String entryName) {
-		return entryName.equals(METAINF_MANIFEST_FILENAME);
+		return ASiCUtils.isManifest(entryName);
 	}
 
 	@Override
 	protected boolean isAllowedArchiveManifest(String entryName) {
-		// No archive manifest in ASiC with XAdES
-		return false;
+		return ASiCUtils.isArchiveManifest(entryName);
 	}
 
 	@Override
@@ -59,18 +55,17 @@ public class ASiCWithXAdESContainerExtractor extends AbstractASiCContainerExtrac
 
 	@Override
 	protected boolean isAllowedSignature(String entryName) {
-		return ASiCUtils.isXAdES(entryName);
+		return ASiCUtils.isCAdES(entryName);
 	}
 
 	@Override
 	protected boolean isAllowedTimestamp(String entryName) {
-		// No timestamp file in ASiC with XAdES
-		return false;
+		return ASiCUtils.isTimestamp(entryName);
 	}
 
 	@Override
 	protected boolean isAllowedEvidenceRecord(String entryName) {
-		return ASiCUtils.EVIDENCE_RECORD_ERS.equals(entryName) || ASiCUtils.EVIDENCE_RECORD_XML.equals(entryName);
+		return ASiCUtils.isEvidenceRecord(entryName);
 	}
 
 }

@@ -22,9 +22,11 @@ package eu.europa.esig.dss.asic.common.validation;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -108,16 +110,16 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 	 * Extracts documents from a container
 	 */
 	private ASiCContent extractEntries() {
-		AbstractASiCContainerExtractor extractor = getContainerExtractor();
+		DefaultASiCContainerExtractor extractor = getContainerExtractor();
 		return extractor.extract();
 	}
 
 	/**
 	 * Returns the relevant container extractor
 	 *
-	 * @return {@link AbstractASiCContainerExtractor}
+	 * @return {@link DefaultASiCContainerExtractor}
 	 */
-	protected abstract AbstractASiCContainerExtractor getContainerExtractor();
+	protected abstract DefaultASiCContainerExtractor getContainerExtractor();
 	
 	@Override
 	protected DiagnosticDataBuilder createDiagnosticDataBuilder(ValidationContext validationContext, List<AdvancedSignature> signatures,
@@ -427,6 +429,8 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			}
 
 			final EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+			assertEvidenceRecordDocumentExtensionMatch(evidenceRecordDocument, evidenceRecordValidator.getEvidenceRecordType());
+
 			evidenceRecordValidator.setDetachedContents(detachedContents);
 			evidenceRecordValidator.setManifestFile(manifestFile);
 			evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
@@ -436,6 +440,30 @@ public abstract class AbstractASiCContainerValidator extends SignedDocumentValid
 			LOG.warn("Unable to load EvidenceRecordValidator for an evidence record document with name '{}' : {}",
 					evidenceRecordDocument.getName(), e.getMessage(), e);
 			return null;
+		}
+	}
+
+	/**
+	 * This method verifies whether the extension of {@code evidenceRecordDocument} is conformant to
+	 * the applicable standard for the given {@code evidenceRecordTypeEnum}
+	 *
+	 * @param evidenceRecordDocument {@link DSSDocument} to be validated
+	 * @param evidenceRecordTypeEnum {@link EvidenceRecordTypeEnum} identified for the document
+	 */
+	protected void assertEvidenceRecordDocumentExtensionMatch(DSSDocument evidenceRecordDocument, EvidenceRecordTypeEnum evidenceRecordTypeEnum) {
+		switch (evidenceRecordTypeEnum) {
+			case XML_EVIDENCE_RECORD:
+				if (evidenceRecordDocument.getName() != null && !evidenceRecordDocument.getName().endsWith(ASiCUtils.XML_EXTENSION)) {
+					throw new DSSException("Document containing an XMLERS evidence record shall end with '.xml' extension!");
+				}
+				break;
+			case ASN1_EVIDENCE_RECORD:
+				if (evidenceRecordDocument.getName() != null && !evidenceRecordDocument.getName().endsWith(ASiCUtils.ER_ASN1_EXTENSION)) {
+					throw new DSSException("Document containing an ERS evidence record shall end with '.ers' extension!");
+				}
+				break;
+			default:
+				throw new UnsupportedOperationException(String.format("The evidence record type '%s' is not supported!", evidenceRecordTypeEnum));
 		}
 	}
 

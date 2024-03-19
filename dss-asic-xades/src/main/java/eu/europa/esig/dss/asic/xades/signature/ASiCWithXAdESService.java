@@ -25,10 +25,10 @@ import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCSignatureService;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
@@ -270,7 +270,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	}
 
 	@Override
-	protected AbstractASiCContainerExtractor getArchiveExtractor(DSSDocument archive) {
+	protected DefaultASiCContainerExtractor getArchiveExtractor(DSSDocument archive) {
 		return new ASiCWithXAdESContainerExtractor(archive);
 	}
 

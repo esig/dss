@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.asic.xades.merge;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESFilenameFactory;
 import eu.europa.esig.dss.asic.xades.signature.DefaultASiCWithXAdESFilenameFactory;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidatorFactory;
@@ -89,7 +89,7 @@ public abstract class AbstractASiCWithXAdESContainerMerger extends DefaultContai
     }
 
     @Override
-    protected AbstractASiCContainerExtractor getContainerExtractor(DSSDocument container) {
+    protected DefaultASiCContainerExtractor getContainerExtractor(DSSDocument container) {
         return new ASiCWithXAdESContainerExtractor(container);
     }
 

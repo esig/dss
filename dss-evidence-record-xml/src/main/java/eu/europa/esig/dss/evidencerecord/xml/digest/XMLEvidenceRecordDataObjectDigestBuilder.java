@@ -21,11 +21,10 @@ import java.io.InputStream;
 public class XMLEvidenceRecordDataObjectDigestBuilder extends AbstractDataObjectDigestBuilder {
 
     /** Canonicalization method to be used on processing of XML documents */
-    private final String canonicalizationMethod;
+    private String canonicalizationMethod;
 
     /**
-     * Constructor to create a builder for computing digest on the given binaries using a SHA-256 digest algorithm and
-     * default "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" canonicalization algorithm
+     * Constructor to create a builder for computing digest on the given binaries using a SHA-256 digest algorithm
      *
      * @param binaries byte array to compute hash on
      */
@@ -34,8 +33,7 @@ public class XMLEvidenceRecordDataObjectDigestBuilder extends AbstractDataObject
     }
 
     /**
-     * Constructor to create a builder for computing digest on the given InputStream using a SHA-256 digest algorithm and
-     * default "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" canonicalization algorithm
+     * Constructor to create a builder for computing digest on the given InputStream using a SHA-256 digest algorithm
      *
      * @param inputStream {@link InputStream} to compute hash on
      */
@@ -44,8 +42,7 @@ public class XMLEvidenceRecordDataObjectDigestBuilder extends AbstractDataObject
     }
 
     /**
-     * Constructor to create a builder for computing digest on the given document using a SHA-256 digest algorithm and
-     * default "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" canonicalization algorithm
+     * Constructor to create a builder for computing digest on the given document using a SHA-256 digest algorithm
      *
      * @param document {@link DSSDocument} to compute hash on
      */
@@ -54,78 +51,45 @@ public class XMLEvidenceRecordDataObjectDigestBuilder extends AbstractDataObject
     }
 
     /**
-     * Constructor to create a builder for computing digest on the given binaries using a provided digest algorithm and
-     * default "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" canonicalization algorithm
+     * Constructor to create a builder for computing digest on the given binaries using a provided digest algorithm
      *
      * @param binaries {@link DigestAlgorithm} to compute hash on
      * @param digestAlgorithm {@link DigestAlgorithm} to be used on hash computation
      */
     public XMLEvidenceRecordDataObjectDigestBuilder(final byte[] binaries, final DigestAlgorithm digestAlgorithm) {
-        this(binaries, digestAlgorithm, null);
+        super(binaries, digestAlgorithm);
     }
 
     /**
-     * Constructor to create a builder for computing digest on the given InputStream using a provided digest algorithm and
-     * default "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" canonicalization algorithm
+     * Constructor to create a builder for computing digest on the given InputStream using a provided digest algorithm
      *
      * @param inputStream {@link InputStream} to compute hash on
      * @param digestAlgorithm {@link DigestAlgorithm} to be used on hash computation
      */
     public XMLEvidenceRecordDataObjectDigestBuilder(final InputStream inputStream, final DigestAlgorithm digestAlgorithm) {
-        this(inputStream, digestAlgorithm, null);
+        super(inputStream, digestAlgorithm);
     }
 
     /**
-     * Constructor to create a builder for computing digest on the given document using a provided digest algorithm and
-     * default "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" canonicalization algorithm
+     * Constructor to create a builder for computing digest on the given document using a provided digest algorithm
      *
      * @param document {@link DSSDocument} to compute hash on
      * @param digestAlgorithm {@link DigestAlgorithm} to be used on hash computation
      */
     public XMLEvidenceRecordDataObjectDigestBuilder(final DSSDocument document, final DigestAlgorithm digestAlgorithm) {
-        this(document, digestAlgorithm, null);
-    }
-
-    /**
-     * Constructor to create a builder for computing digest on the given binaries using a provided digest algorithm
-     * and canonicalization method
-     *
-     * @param binaries {@link InputStream} to compute hash on
-     * @param digestAlgorithm {@link DigestAlgorithm} to be used on hash computation
-     * @param canonicalizationMethod {@link String} canonicalization method to be used
-     */
-    public XMLEvidenceRecordDataObjectDigestBuilder(final byte[] binaries, final DigestAlgorithm digestAlgorithm,
-                                                    final String canonicalizationMethod) {
-        super(binaries, digestAlgorithm);
-        this.canonicalizationMethod = canonicalizationMethod;
-    }
-
-    /**
-     * Constructor to create a builder for computing digest on the given InputStream using a provided digest algorithm
-     * and canonicalization method
-     *
-     * @param inputStream {@link InputStream} to compute hash on
-     * @param digestAlgorithm {@link DigestAlgorithm} to be used on hash computation
-     * @param canonicalizationMethod {@link String} canonicalization method to be used
-     */
-    public XMLEvidenceRecordDataObjectDigestBuilder(final InputStream inputStream, final DigestAlgorithm digestAlgorithm,
-                                                    final String canonicalizationMethod) {
-        super(inputStream, digestAlgorithm);
-        this.canonicalizationMethod = canonicalizationMethod;
-    }
-
-    /**
-     * Constructor to create a builder for computing digest on the given document using a provided digest algorithm
-     * and canonicalization method
-     *
-     * @param document {@link DSSDocument} to compute hash on
-     * @param digestAlgorithm {@link DigestAlgorithm} to be used on hash computation
-     * @param canonicalizationMethod {@link String} canonicalization method to be used
-     */
-    public XMLEvidenceRecordDataObjectDigestBuilder(final DSSDocument document, final DigestAlgorithm digestAlgorithm,
-                                                    final String canonicalizationMethod) {
         super(document, digestAlgorithm);
+    }
+
+    /**
+     * Sets a canonicalization method to be used
+     * Default: "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" canonicalization algorithm
+     *
+     * @param canonicalizationMethod {@link String}
+     * @return this {@link XMLEvidenceRecordDataObjectDigestBuilder}
+     */
+    public XMLEvidenceRecordDataObjectDigestBuilder setCanonicalizationMethod(String canonicalizationMethod) {
         this.canonicalizationMethod = canonicalizationMethod;
+        return this;
     }
 
     @Override

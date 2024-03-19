@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -66,6 +67,11 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
         evidenceRecord.setManifestFile(manifestFile);
         evidenceRecord.setDetachedContents(detachedContents);
         return evidenceRecord;
+    }
+
+    @Override
+    public EvidenceRecordTypeEnum getEvidenceRecordType() {
+        return EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD;
     }
 
 }

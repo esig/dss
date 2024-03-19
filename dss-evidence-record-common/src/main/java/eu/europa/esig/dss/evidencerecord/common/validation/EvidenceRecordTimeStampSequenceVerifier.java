@@ -22,7 +22,7 @@ package eu.europa.esig.dss.evidencerecord.common.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.evidencerecord.common.digest.DataObjectDigestBuilder;
+import eu.europa.esig.dss.spi.x509.evidencerecord.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;

@@ -18,8 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.asic.common;
+package eu.europa.esig.dss.asic.common.extract;
 
+import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
@@ -29,13 +32,15 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.ServiceLoader;
 
 /**
  * This class is used to read an ASiC Container and to retrieve its content files
  */
-public abstract class AbstractASiCContainerExtractor {
+public abstract class DefaultASiCContainerExtractor implements ASiCContainerExtractor {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCContainerExtractor.class);
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultASiCContainerExtractor.class);
 
 	/** Represents an ASiC container */
 	private final DSSDocument asicContainer;
@@ -46,15 +51,29 @@ public abstract class AbstractASiCContainerExtractor {
 	 * @param asicContainer {@link DSSDocument} representing an ASiC container to
 	 *                      extract entries from
 	 */
-	protected AbstractASiCContainerExtractor(DSSDocument asicContainer) {
+	protected DefaultASiCContainerExtractor(DSSDocument asicContainer) {
 		this.asicContainer = asicContainer;
 	}
 
 	/**
-	 * Extracts a content (documents) embedded into the {@code asicContainer}
+	 * Loads an implementation of {@code ASiCContainerExtractor} corresponding to {@code asicContainer} type
 	 *
-	 * @return {@link ASiCContent}
+	 * @param asicContainer {@link DSSDocument} representing an ASiC archive
+	 * @return {@link ASiCContainerExtractor}
 	 */
+	public static ASiCContainerExtractor fromDocument(DSSDocument asicContainer) {
+		Objects.requireNonNull(asicContainer, "ASiC container cannot be null!");
+
+		ServiceLoader<ASiCContainerExtractorFactory> serviceLoaders = ServiceLoader.load(ASiCContainerExtractorFactory.class);
+		for (ASiCContainerExtractorFactory factory : serviceLoaders) {
+			if (factory.isSupported(asicContainer)) {
+				return factory.create(asicContainer);
+			}
+		}
+		throw new UnsupportedOperationException("Document format not recognized/handled");
+	}
+
+	@Override
 	public ASiCContent extract() {
 		ASiCContent result = zipParsing(asicContainer);
 		result.setZipComment(ASiCUtils.getZipComment(asicContainer));

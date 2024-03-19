@@ -8,7 +8,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.xades.validation.evidencerecord.XAdESEvidenceRecordDigestBuilder;
+import eu.europa.esig.dss.xades.evidencerecord.XAdESEvidenceRecordDigestBuilder;
 import org.junit.jupiter.api.Test;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
@@ -32,9 +32,12 @@ public class ERDataObjectBuilderTest {
         DSSDocument dataObject = new InMemoryDocument("Hello World!".getBytes());
 
         // Instantiate an XMLEvidenceRecordDataObjectDigestBuilder to create digest for the given data object
-        // with a specified digest algorithm and a canonicalization method (to be used for XML data objects only)
+        // with a specified digest algorithm
         XMLEvidenceRecordDataObjectDigestBuilder xmlEvidenceRecordDataObjectDigestBuilder =
-                new XMLEvidenceRecordDataObjectDigestBuilder(dataObject, DigestAlgorithm.SHA256, CanonicalizationMethod.INCLUSIVE);
+                new XMLEvidenceRecordDataObjectDigestBuilder(dataObject, DigestAlgorithm.SHA256);
+
+        // Set a canonicalization method (to be used for XML data objects only)
+        xmlEvidenceRecordDataObjectDigestBuilder.setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 
         // Builds digests based on the provided configuration
         Digest digest = xmlEvidenceRecordDataObjectDigestBuilder.build();

@@ -40,6 +40,17 @@ The property is available since BouncyCastle 1.73.
 </dependency>
 ----
 
+|v5.11                      |XMLConstraints exception on CertificateVerifier loading (Wildfly, JBOSS, Xalan, Xerces, Android, etc.)       a|The library you use has a conflict with the <<xmlSecurities>> imposed by DSS. See question "XAdES : performance downgrade" for additional information on the issue. If you want to continue usage of the library in question, please configure the following:
+
+[source,java,indent=0]
+----
+XmlDefinerUtils.getInstance().setSchemaFactoryBuilder(
+        SchemaFactoryBuilder.getSecureSchemaBuilder()
+                .removeAttribute(XMLConstants.ACCESS_EXTERNAL_DTD)
+                .removeAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA)
+);
+----
+
 |v5.9 and higher            |Returned signature level is *_NOT_ETSI       a|*DSS 5.9* enforces validation of AdES BASELINE signature profiles as per ETSI standards. *The signature is not BASELINE* if you receive _*_NOT_ETSI_ output. +
 *Since DSS 5.10 a support of AdES extended signature profiles* for (XAdES and CAdES) has been added as per ETSI standards.
 

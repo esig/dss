@@ -20,17 +20,13 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
-import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.AbstractASiCManifestBuilder;
+import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilter;
+import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilterFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MimeType;
-import eu.europa.esig.dss.model.DSSDocument;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * This class is used to generate the ASiCManifest.xml content (ASiC-E)
@@ -52,16 +48,7 @@ import org.w3c.dom.Element;
  * }
  * </pre>
  */
-public abstract class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuilder {
-
-	/** The container representation */
-	private final ASiCContent asicContent;
-
-	/** The DigestAlgorithm to use for reference digests computation */
-	private final DigestAlgorithm digestAlgorithm;
-
-	/** The URI of a document signing the manifest */
-	private final String documentUri;
+public abstract class ASiCEWithCAdESManifestBuilder extends AbstractASiCManifestBuilder {
 
 	/**
 	 * Defines rules for filename creation for new manifest files.
@@ -72,55 +59,36 @@ public abstract class ASiCEWithCAdESManifestBuilder extends AbstractManifestBuil
 	 * The default constructor
 	 *
 	 * @param asicContent {@link ASiCContent} representing container's document structure
+	 * @param documentFilename {@link String} filename of the document associated with the manifest
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
-	 * @param documentUri {@link String} filename of the document associated with the manifest
 	 */
-	protected ASiCEWithCAdESManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
-											final String documentUri) {
-		this(asicContent, digestAlgorithm, documentUri, new DefaultASiCWithCAdESFilenameFactory());
+	protected ASiCEWithCAdESManifestBuilder(final ASiCContent asicContent, final String documentFilename,
+											final DigestAlgorithm digestAlgorithm) {
+		this(asicContent, documentFilename, digestAlgorithm, new DefaultASiCWithCAdESFilenameFactory());
 	}
 
 	/**
 	 * Constructor with filename factory
 	 *
 	 * @param asicContent {@link ASiCContent} representing container's document structure
+	 * @param documentFilename {@link String} filename of the document associated with the manifest
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
-	 * @param documentUri {@link String} filename of the document associated with the manifest
 	 * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
 	 */
-	protected ASiCEWithCAdESManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
-											final String documentUri, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
-		this.asicContent = asicContent;
-		this.digestAlgorithm = digestAlgorithm;
-		this.documentUri = documentUri;
+	protected ASiCEWithCAdESManifestBuilder(final ASiCContent asicContent, final String documentFilename,
+			final DigestAlgorithm digestAlgorithm, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
+		super(asicContent, documentFilename, digestAlgorithm);
 		this.asicFilenameFactory = asicFilenameFactory;
 	}
 
-	/**
-	 * Builds the manifest and returns the document
-	 *
-	 * @return {@link DSSDocument}
-	 */
-	public DSSDocument build() {
-		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCManifestNamespace.NS, ASiCManifestElement.ASIC_MANIFEST);
-		documentDom.appendChild(asicManifestDom);
-
-		addSigReference(documentDom, asicManifestDom, documentUri, getSigReferenceMimeType());
-
-		for (DSSDocument document : asicContent.getSignedDocuments()) {
-			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
-		}
-
-		String newManifestName = asicFilenameFactory.getManifestFilename(asicContent);
-		return DomUtils.createDssDocumentFromDomDocument(documentDom, newManifestName);
+	@Override
+	protected ASiCContentDocumentFilter initDefaultAsicContentDocumentFilter() {
+		return ASiCContentDocumentFilterFactory.signedDocumentsOnlyFilter();
 	}
 
-	/**
-	 * Returns the {@code MimeType} to be used for a signature reference (signature or timestamp)
-	 *
-	 * @return {@link MimeType}
-	 */
-	protected abstract MimeType getSigReferenceMimeType();
+	@Override
+	protected String getManifestFilename() {
+		return asicFilenameFactory.getManifestFilename(asicContent);
+	}
 
 }

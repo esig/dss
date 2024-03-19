@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.common.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
@@ -63,7 +63,7 @@ public abstract class ASiCCounterSignatureHelper {
 	 * @return {@link ASiCContent}
 	 */
 	private ASiCContent extractAsicContent() {
-		AbstractASiCContainerExtractor extractor = getASiCContainerExtractor();
+		DefaultASiCContainerExtractor extractor = getASiCContainerExtractor();
 		return extractor.extract();
 	}
 
@@ -123,9 +123,9 @@ public abstract class ASiCCounterSignatureHelper {
 	/**
 	 * Gets an ASiC container extractor relative to the current implementation
 	 * 
-	 * @return {@link AbstractASiCContainerExtractor}
+	 * @return {@link DefaultASiCContainerExtractor}
 	 */
-	protected abstract AbstractASiCContainerExtractor getASiCContainerExtractor();
+	protected abstract DefaultASiCContainerExtractor getASiCContainerExtractor();
 
 	/**
 	 * Gets a Document Validator relative to the current implementation

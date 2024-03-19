@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.common.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -75,7 +75,7 @@ public abstract class AbstractASiCContentBuilder {
     protected abstract boolean isAcceptableContainerFormat(DSSDocument archiveDocument);
 
     private ASiCContent fromZipArchive(DSSDocument archiveDoc, ASiCContainerType asicContainerType) {
-        AbstractASiCContainerExtractor extractor = getContainerExtractor(archiveDoc);
+        DefaultASiCContainerExtractor extractor = getContainerExtractor(archiveDoc);
         ASiCContent asicContent = extractor.extract();
         assertContainerTypeValid(asicContent, asicContainerType);
 
@@ -96,9 +96,9 @@ public abstract class AbstractASiCContentBuilder {
      * Returns an instance of a corresponding container extractor class
      *
      * @param archiveDocument {@link DSSDocument} representing a container to be extracted
-     * @return {@link AbstractASiCContainerExtractor}
+     * @return {@link DefaultASiCContainerExtractor}
      */
-    protected abstract AbstractASiCContainerExtractor getContainerExtractor(DSSDocument archiveDocument);
+    protected abstract DefaultASiCContainerExtractor getContainerExtractor(DSSDocument archiveDocument);
 
     private void assertContainerTypeValid(ASiCContent result, ASiCContainerType asicContainerType) {
         if (ASiCUtils.filesContainSignatures(DSSUtils.getDocumentNames(result.getAllDocuments()))

@@ -33,9 +33,11 @@ public class XMLEvidenceRecordDataObjectDigestBuilderTest {
                 new XMLEvidenceRecordDataObjectDigestBuilder(data, DigestAlgorithm.SHA512).build().getHexValue());
         assertEquals("C0535E4BE2B79FFD93291305436BF889314E4A3FAEC05ECFFCBB7DF31AD9E51A",
 
-                new XMLEvidenceRecordDataObjectDigestBuilder(data, DigestAlgorithm.SHA256, CanonicalizationMethod.INCLUSIVE).build().getHexValue());
+                new XMLEvidenceRecordDataObjectDigestBuilder(data, DigestAlgorithm.SHA256)
+                        .setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE).build().getHexValue());
         assertEquals("C0535E4BE2B79FFD93291305436BF889314E4A3FAEC05ECFFCBB7DF31AD9E51A",
-                new XMLEvidenceRecordDataObjectDigestBuilder(data, DigestAlgorithm.SHA256, CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS).build().getHexValue());
+                new XMLEvidenceRecordDataObjectDigestBuilder(data, DigestAlgorithm.SHA256)
+                        .setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS).build().getHexValue());
         assertEquals("C0535E4BE2B79FFD93291305436BF889314E4A3FAEC05ECFFCBB7DF31AD9E51A",
 
                 new XMLEvidenceRecordDataObjectDigestBuilder(new InMemoryDocument(data), DigestAlgorithm.SHA256).build().getHexValue());
@@ -57,9 +59,11 @@ public class XMLEvidenceRecordDataObjectDigestBuilderTest {
                 Utils.toBase64(new XMLEvidenceRecordDataObjectDigestBuilder(document, DigestAlgorithm.SHA512).build().getValue()));
 
         assertEquals("/TiBXkCOtm0bSdOukpXHtqSu6G5EPRfwyYH9DJ9YtCE=",
-                Utils.toBase64(new XMLEvidenceRecordDataObjectDigestBuilder(document, DigestAlgorithm.SHA256, CanonicalizationMethod.INCLUSIVE).build().getValue()));
+                Utils.toBase64(new XMLEvidenceRecordDataObjectDigestBuilder(document, DigestAlgorithm.SHA256)
+                        .setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE).build().getValue()));
         assertEquals("0VrRKOvUCLDg3QSMAzIrdahAmiCo/AFTFAjd5FZDx+0=",
-                Utils.toBase64(new XMLEvidenceRecordDataObjectDigestBuilder(document, DigestAlgorithm.SHA256, CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS).build().getValue()));
+                Utils.toBase64(new XMLEvidenceRecordDataObjectDigestBuilder(document, DigestAlgorithm.SHA256)
+                        .setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS).build().getValue()));
 
         assertEquals("/TiBXkCOtm0bSdOukpXHtqSu6G5EPRfwyYH9DJ9YtCE=",
                 Utils.toBase64(new XMLEvidenceRecordDataObjectDigestBuilder(DSSUtils.toByteArray(document)).build().getValue()));
@@ -88,7 +92,7 @@ public class XMLEvidenceRecordDataObjectDigestBuilderTest {
         assertEquals("DigestAlgorithm cannot be null!", exception.getMessage());
 
         assertEquals("C0535E4BE2B79FFD93291305436BF889314E4A3FAEC05ECFFCBB7DF31AD9E51A",
-                new XMLEvidenceRecordDataObjectDigestBuilder(data, DigestAlgorithm.SHA256, null).build().getHexValue());
+                new XMLEvidenceRecordDataObjectDigestBuilder(data, DigestAlgorithm.SHA256).build().getHexValue());
     }
 
 }

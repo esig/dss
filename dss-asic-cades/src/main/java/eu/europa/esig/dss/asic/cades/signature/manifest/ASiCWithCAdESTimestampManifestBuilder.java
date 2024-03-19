@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.cades.signature.manifest;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilter;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -35,30 +36,36 @@ public class ASiCWithCAdESTimestampManifestBuilder extends ASiCEWithCAdESManifes
     /**
      * The default constructor
      *
-     * @param asicContent     {@link ASiCContent} representing container's document structure
-     * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
-     * @param documentUri     {@link String} filename of the document associated with the manifest
+     * @param asicContent       {@link ASiCContent} representing container's document structure
+     * @param digestAlgorithm   {@link DigestAlgorithm} to use for reference digest computation
+     * @param timestampFilename {@link String} filename of the time-stamp document associated with the manifest
      */
-    public ASiCWithCAdESTimestampManifestBuilder(ASiCContent asicContent, DigestAlgorithm digestAlgorithm, String documentUri) {
-        super(asicContent, digestAlgorithm, documentUri);
+    public ASiCWithCAdESTimestampManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
+                                                 final String timestampFilename) {
+        super(asicContent, timestampFilename, digestAlgorithm);
     }
 
     /**
      * Constructor with filename factory
      *
      * @param asicContent {@link ASiCContent} representing container's document structure
+     * @param timestampFilename {@link String} filename of the time-stamp document associated with the manifest
      * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
-     * @param documentUri {@link String} filename of the document associated with the manifest
      * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
      */
     public ASiCWithCAdESTimestampManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
-                                                    final String documentUri, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
-        super(asicContent, digestAlgorithm, documentUri, asicFilenameFactory);
+            final String timestampFilename, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
+        super(asicContent, timestampFilename, digestAlgorithm, asicFilenameFactory);
     }
 
     @Override
     protected MimeType getSigReferenceMimeType() {
         return MimeTypeEnum.TST;
+    }
+
+    @Override
+    public ASiCWithCAdESTimestampManifestBuilder setAsicContentDocumentFilter(ASiCContentDocumentFilter asicContentDocumentFilter) {
+        return (ASiCWithCAdESTimestampManifestBuilder) super.setAsicContentDocumentFilter(asicContentDocumentFilter);
     }
 
 }
