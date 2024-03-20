@@ -80,9 +80,12 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSuppo
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateValidityRangeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.EmailCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.ExtendedKeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.LocalityCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
@@ -93,7 +96,9 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationInfoAc
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationIssuerTrustedCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationIssuerValidityRangeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SerialNumberCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.StateCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SurnameCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.TitleCheck;
 
 import java.util.Date;
 
@@ -166,7 +171,17 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(pseudonym(currentCertificate, subContext));
 
+		item = item.setNextItem(title(currentCertificate, subContext));
+
+		item = item.setNextItem(email(currentCertificate, subContext));
+
 		item = item.setNextItem(country(currentCertificate, subContext));
+
+		item = item.setNextItem(locality(currentCertificate, subContext));
+
+		item = item.setNextItem(state(currentCertificate, subContext));
+
+		item = item.setNextItem(organizationIdentifier(currentCertificate, subContext));
 
 		item = item.setNextItem(organizationUnit(currentCertificate, subContext));
 
@@ -418,9 +433,34 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new PseudonymCheck(i18nProvider, result, certificate, constraint);
 	}
 
+	private ChainItem<XmlSubXCV> title(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateTitleConstraint(context, subContext);
+		return new TitleCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> email(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateEmailConstraint(context, subContext);
+		return new EmailCheck(i18nProvider, result, certificate, constraint);
+	}
+
 	private ChainItem<XmlSubXCV> country(CertificateWrapper certificate, SubContext subContext) {
 		MultiValuesConstraint constraint = validationPolicy.getCertificateCountryConstraint(context, subContext);
 		return new CountryCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> locality(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateLocalityConstraint(context, subContext);
+		return new LocalityCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> state(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateStateConstraint(context, subContext);
+		return new StateCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> organizationIdentifier(CertificateWrapper certificate, SubContext subContext) {
+		MultiValuesConstraint constraint = validationPolicy.getCertificateOrganizationIdentifierConstraint(context, subContext);
+		return new OrganizationIdentifierCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> organizationName(CertificateWrapper certificate, SubContext subContext) {

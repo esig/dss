@@ -757,37 +757,62 @@
 			</xsd:element>
 			<xsd:element name="Surname" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's surname is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "surname" (OID "2.5.4.4") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="GivenName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's given name is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "givenName" (OID "2.5.4.42") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="CommonName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's common name is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "common name" (OID "2.5.4.3") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Pseudonym" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's pseudonym is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "pseudonym" (OID "2.5.4.65") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Title" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "title" (OID "2.5.4.12") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Email" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "emailAddress" (OID "1.2.840.113549.1.9.1") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OrganizationIdentifier" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "organizationIdentifier" (OID "2.5.4.97") value unit is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="OrganizationUnit" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's organization unit is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "organizationalUnitName" (OID "2.5.4.11") value unit is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="OrganizationName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's organization name is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "organizationName" (OID "2.5.4.10") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Country" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's country is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "countryName" (OID "2.5.4.6") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Locality" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "localityName" (OID "2.5.4.7") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="State" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "stateOrProvinceName" (OID "2.5.4.8") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SerialNumberPresent" type="LevelConstraint" minOccurs="0">

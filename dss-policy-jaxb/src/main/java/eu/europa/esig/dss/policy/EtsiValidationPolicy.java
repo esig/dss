@@ -607,10 +607,55 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public MultiValuesConstraint getCertificateTitleConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getTitle();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateEmailConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getEmail();
+		}
+		return null;
+	}
+
+	@Override
 	public MultiValuesConstraint getCertificateCountryConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			return certificateConstraints.getCountry();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateLocalityConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getLocality();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateStateConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getState();
+		}
+		return null;
+	}
+
+	@Override
+	public MultiValuesConstraint getCertificateOrganizationIdentifierConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getOrganizationIdentifier();
 		}
 		return null;
 	}

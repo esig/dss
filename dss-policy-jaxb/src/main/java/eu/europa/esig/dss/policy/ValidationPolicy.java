@@ -1170,6 +1170,36 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificateCountryConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns CertificateLocality constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateLocality element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateLocalityConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns CertificateState constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateState element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateStateConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns CertificateOrganizationIdentifier constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateOrganizationIdentifier element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateOrganizationIdentifierConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns CertificateOrganizationName constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}
@@ -1238,6 +1268,26 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getCertificatePseudoUsageConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns CertificateTitle constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateTitle element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateTitleConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns CertificateEmail constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateEmail element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateEmailConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns CertificateSerialNumber constraint if present in the policy, null otherwise

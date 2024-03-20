@@ -1062,7 +1062,55 @@ Default: not executed
 </SigningCertificate>
 ----
 
-* `OrganizationUnit` - this constraint is used to check whether the certificate's subject distinguished name contains the OrganizationUnit attribute with one of the acceptable values. If the OrganizationUnit attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+* `Title` - this constraint is used to check whether the certificate's subject distinguished name contains the Title attribute with one of the acceptable values. If the Title attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Title usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Title Level="WARN">
+        <Id>CEO</Id>
+    </Title>
+    ...
+</SigningCertificate>
+----
+
+* `Email` - this constraint is used to check whether the certificate's subject distinguished name contains the EmailAddress attribute with one of the acceptable values. If the EmailAddress attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Email usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Email Level="WARN">
+        <Id>hello@nowina.lu</Id>
+    </Email>
+    ...
+</SigningCertificate>
+----
+
+* `OrganizationIdentifier` - this constraint is used to check whether the certificate's subject distinguished name contains the OrganizationIdentifier attribute with one of the acceptable values. If the OrganizationIdentifier attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of OrganizationIdentifier usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <OrganizationIdentifier Level="WARN">
+        <Id>1235</Id>
+    </OrganizationIdentifier>
+    ...
+</SigningCertificate>
+----
+
+* `OrganizationUnit` - this constraint is used to check whether the certificate's subject distinguished name contains the OrganizationalUnitName attribute with one of the acceptable values. If the OrganizationalUnitName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
 
 Default: not executed
 
@@ -1094,7 +1142,7 @@ Default: not executed
 </SigningCertificate>
 ----
 
-* `Country` - this constraint is used to check whether the certificate's subject distinguished name contains the Country attribute with one of the acceptable values. If the Country attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+* `Country` - this constraint is used to check whether the certificate's subject distinguished name contains the CountryName attribute with one of the acceptable values. If the CountryName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
 
 Default: not executed
 
@@ -1106,6 +1154,38 @@ Default: not executed
     <Country Level="WARN">
         <Id>USA</Id>
     </Country>
+    ...
+</SigningCertificate>
+----
+
+* `Locality` - this constraint is used to check whether the certificate's subject distinguished name contains the LocalityName attribute with one of the acceptable values. If the LocalityName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Locality usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Locality Level="WARN">
+        <Id>Boston</Id>
+    </Locality>
+    ...
+</SigningCertificate>
+----
+
+* `State` - this constraint is used to check whether the certificate's subject distinguished name contains the StateOrProvinceName attribute with one of the acceptable values. If the StateOrProvinceName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of State usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <State Level="WARN">
+        <Id>Massachusetts</Id>
+    </State>
     ...
 </SigningCertificate>
 ----
@@ -2558,11 +2638,18 @@ This table defines the correspondence between the enforced validation policy con
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints       |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.11+|CertificateConstraints       |Title                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Email                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationIdentifier          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Country                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Locality                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |State                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |IssuerName                      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                               .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
+.12+|CertificateConstraints    .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                                                                                       |FAILED                |REVOKED
                                   |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
@@ -2571,11 +2658,11 @@ This table defines the correspondence between the enforced validation policy con
                                   |NotSelfSigned                   |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyIds                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyQualificationIds          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints       |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcCompliance                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcEuLimitValueCurrency          |ValueConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |MinQcEuLimitValue               |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.13+|CertificateConstraints       |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcSSCD                          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcType                          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2583,7 +2670,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |IssuedToNaturalPerson           |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |IssuedToLegalPerson             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SemanticsIdentifier             |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.5+|CertificateConstraints        |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PSD2QcCompetentAuthorityName    |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PSD2QcCompetentAuthorityId      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
