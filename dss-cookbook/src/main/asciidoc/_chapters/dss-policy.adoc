@@ -2721,6 +2721,15 @@ This table defines the correspondence between the enforced validation policy con
                                   |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
+.7+|EvidenceRecordConstraints     |EvidenceRecordValid             |LevelConstraint                   |Indication from ER or timestamp |SubIndication from ER or timestamp
+                                  |DataObjectExistence             |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |DataObjectIntact                |LevelConstraint                   |FAILED                |HASH_FAILURE
+                                  |DataObjectFound                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |DataObjectGroup                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |HashTreeRenewal                 |LevelConstraint                   |INDETERMINATE +
+                                                                                                       FAILED                |SIGNED_DATA_NOT_FOUND +
+                                                                                                                              HASH_FAILURE
+                                  |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
 .4+|Cryptographic                 |AcceptableEncryptionAlgo        |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
                                                                                                                               CRYPTO_CONSTRAINTS_FAILURE
                                   |MiniPublicKeySize               |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
