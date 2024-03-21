@@ -80,7 +80,7 @@ public class RevocationDataVerifier {
     /**
      * The trusted certificate source is used to accept trusted OCSPToken's certificate issuers
      */
-    protected CertificateSource trustedListCertificateSource;
+    protected CertificateSource trustedCertificateSource;
 
     /**
      * A collection of Digest Algorithms to accept from CRL/OCSP responders.
@@ -279,10 +279,10 @@ public class RevocationDataVerifier {
      *        initialization, in order to provide the same trusted source as the one used within
      *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
      *
-     * @param trustedListCertificateSource {@link CertificateSource}
+     * @param trustedCertificateSource {@link CertificateSource}
      */
-    void setTrustedCertificateSource(CertificateSource trustedListCertificateSource) {
-        this.trustedListCertificateSource = trustedListCertificateSource;
+    void setTrustedCertificateSource(CertificateSource trustedCertificateSource) {
+        this.trustedCertificateSource = trustedCertificateSource;
     }
 
     /**
@@ -406,7 +406,7 @@ public class RevocationDataVerifier {
     }
 
     private boolean isTrusted(CertificateToken certificateToken) {
-        return trustedListCertificateSource != null && trustedListCertificateSource.isTrusted(certificateToken);
+        return trustedCertificateSource != null && trustedCertificateSource.isTrusted(certificateToken);
     }
 
     private boolean hasRevocationAccessPoints(final CertificateToken certificateToken) {
@@ -501,7 +501,7 @@ public class RevocationDataVerifier {
      * @return TRUE if the revocation check shall be skipped, FALSE otherwise
      */
     public boolean isRevocationDataSkip(CertificateToken certificateToken) {
-        if (trustedListCertificateSource != null && trustedListCertificateSource.isTrusted(certificateToken)) {
+        if (trustedCertificateSource != null && trustedCertificateSource.isTrusted(certificateToken)) {
             return true;
         }
         if (certificateToken.isSelfSigned()) {

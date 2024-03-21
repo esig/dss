@@ -33,10 +33,10 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateReorderer;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
-import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.TokenIssuerSelector;
+import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
@@ -209,7 +209,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (revocationDataVerifier == null) {
 			revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
 		}
-		if (revocationDataVerifier.trustedListCertificateSource == null) {
+		if (revocationDataVerifier.trustedCertificateSource == null) {
 			revocationDataVerifier.setTrustedCertificateSource(trustedCertSources);
 		}
 		return revocationDataVerifier;
@@ -919,8 +919,8 @@ public class SignatureValidationContext implements ValidationContext {
 	private List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
 		List<String> alternativeOCSPUrls = new ArrayList<>();
 		for (CertificateSource certificateSource : trustedCertSources.getSources()) {
-			if (certificateSource instanceof CommonTrustedCertificateSource) {
-				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) certificateSource;
+			if (certificateSource instanceof TrustedCertificateSource) {
+				TrustedCertificateSource trustedCertSource = (TrustedCertificateSource) certificateSource;
 				alternativeOCSPUrls.addAll(trustedCertSource.getAlternativeOCSPUrls(trustAnchor));
 			}
 		}
@@ -930,8 +930,8 @@ public class SignatureValidationContext implements ValidationContext {
 	private List<String> getAlternativeCRLUrls(CertificateToken trustAnchor) {
 		List<String> alternativeCRLUrls = new ArrayList<>();
 		for (CertificateSource certificateSource : trustedCertSources.getSources()) {
-			if (certificateSource instanceof CommonTrustedCertificateSource) {
-				CommonTrustedCertificateSource trustedCertSource = (CommonTrustedCertificateSource) certificateSource;
+			if (certificateSource instanceof TrustedCertificateSource) {
+				TrustedCertificateSource trustedCertSource = (TrustedCertificateSource) certificateSource;
 				alternativeCRLUrls.addAll(trustedCertSource.getAlternativeCRLUrls(trustAnchor));
 			}
 		}

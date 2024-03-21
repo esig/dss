@@ -52,6 +52,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.CompositeRevocationSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
+import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.CompositeAIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
@@ -174,7 +175,7 @@ public abstract class PKIFactoryAccess {
     private static final String DEFAULT_TSA_DATE_FORMAT = "yyyy-MM-dd-HH-mm";
     private static final String DEFAULT_TSA_POLICY = "1.2.3.4";
     private static final int TIMEOUT_MS = 10000;
-    private static CommonTrustedCertificateSource trustedCertificateSource;
+    private static TrustedCertificateSource trustedCertificateSource;
 
     private static JAXBCertEntityRepository certEntityRepository;
     private static JAXBPKICertificateLoader certificateLoader;
@@ -382,7 +383,7 @@ public abstract class PKIFactoryAccess {
             certificateLoader = new JAXBPKICertificateLoader(getCertEntityRepository());
             certificateLoader.setPkiFolder(PKI_FACTORY_RESOURCES_FOLDER);
             certificateLoader.setPkiFilenames(PKI_FACTORY_RESOURCES_FILENAMES);
-            certificateLoader.setCommonTrustedCertificateSource((CommonTrustedCertificateSource) getTrustedCertificateSource());
+            certificateLoader.setTrustedCertificateSource((TrustedCertificateSource) getTrustedCertificateSource());
         }
         return certificateLoader;
     }

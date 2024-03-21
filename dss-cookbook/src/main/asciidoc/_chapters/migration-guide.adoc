@@ -70,6 +70,15 @@ certificateVerifier.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
                                                                      a|[source,java]
 certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
+|CommonTrustedCertificateSource#getTrustServices           a|[source,java]
+----
+CommonTrustedCertificateSource trustedCertificateSource = ...
+List<TrustProperties> trustServices = trustedCertificateSource.getTrustServices(certificate);
+----
+                                                                     a|[source,java]
+TrustedListsCertificateSource trustedListCertificateSource = ...
+List<TrustProperties> trustServices = trustedListCertificateSource.getTrustServices(certificate);
+
 |===
 
 [cols="2,5,5"]
@@ -84,7 +93,6 @@ import javax.xml.bind.JAXBElement;
                                                                      a|[source,java]
 import jakarta.xml.bind.JAXBElement;
 ...
-
 
 |Javax version change        a|[source,xml]
 ----

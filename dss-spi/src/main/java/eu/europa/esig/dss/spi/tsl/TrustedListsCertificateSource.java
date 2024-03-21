@@ -38,7 +38,7 @@ import java.util.Map;
  * This class allows injection of trusted certificates from Trusted Lists
  */
 @SuppressWarnings("serial")
-public class TrustedListsCertificateSource extends CommonTrustedCertificateSource {
+public class TrustedListsCertificateSource extends CommonTrustedCertificateSource implements TrustPropertiesCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TrustedListsCertificateSource.class);
 
@@ -91,10 +91,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		throw new UnsupportedOperationException("Cannot directly add certificate to a TrustedListsCertificateSource");
 	}
 
-	/**
-	 * The method allows to fill the CertificateSource
-	 * @param trustPropertiesByCerts map between {@link CertificateToken}s and a list of {@link TrustProperties}
-	 */
+	@Override
 	public synchronized void setTrustPropertiesByCertificates(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts) {
 		this.trustPropertiesByEntity = new HashMap<>(); // reinit the map
 		super.reset();

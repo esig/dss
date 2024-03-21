@@ -35,6 +35,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignaturePolicyProvider;
@@ -121,7 +122,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		return new ValidationResult(indication, subIndication, signingTime, signingCertificate, certificateSource);
 	}
 
-	private CommonTrustedCertificateSource buildTrustedCertificateSource(CertificateSource certificateSource) {
+	private TrustedCertificateSource buildTrustedCertificateSource(CertificateSource certificateSource) {
 		CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		commonTrustedCertificateSource.importAsTrusted(certificateSource);
 		return commonTrustedCertificateSource;

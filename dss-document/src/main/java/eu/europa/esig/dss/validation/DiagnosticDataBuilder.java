@@ -58,8 +58,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
@@ -108,7 +108,7 @@ import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.spi.tsl.TLInfo;
 import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustProperties;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.TrustPropertiesCertificateSource;
 import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -324,7 +324,7 @@ public abstract class DiagnosticDataBuilder {
 	private boolean isUseTrustedLists() {
 		if (!allCertificateSources.isEmpty()) {
 			for (CertificateSource certificateSource : allCertificateSources.getSources()) {
-				if (certificateSource instanceof TrustedListsCertificateSource) {
+				if (certificateSource instanceof TrustPropertiesCertificateSource) {
 					return true;
 				}
 			}
@@ -386,17 +386,14 @@ public abstract class DiagnosticDataBuilder {
 	private Map<CertificateToken, List<TrustProperties>> getRelatedTrustServices(CertificateToken certToken) {
 		Map<CertificateToken, List<TrustProperties>> result = new HashMap<>();
 		for (CertificateSource trustedSource : allCertificateSources.getSources()) {
-			if (trustedSource instanceof TrustedListsCertificateSource) {
-				TrustedListsCertificateSource trustedCertSource = (TrustedListsCertificateSource) trustedSource;
+			if (trustedSource instanceof TrustPropertiesCertificateSource) {
+				TrustPropertiesCertificateSource trustedCertSource = (TrustPropertiesCertificateSource) trustedSource;
 				Set<CertificateToken> processedTokens = new HashSet<>();
 				CertificateToken currentCertificate = certToken;
 				while (currentCertificate != null) {
 					List<TrustProperties> trustServices = trustedCertSource.getTrustServices(currentCertificate);
-					if (!trustServices.isEmpty()) {
-						List<TrustProperties> certTrustServices = result.get(currentCertificate);
-						if (Utils.isCollectionEmpty(certTrustServices)) {
-							certTrustServices = new ArrayList<>();
-						}
+					if (Utils.isCollectionNotEmpty(trustServices)) {
+						List<TrustProperties> certTrustServices = result.getOrDefault(currentCertificate, new ArrayList<>());
 						certTrustServices.addAll(trustServices);
 						result.put(currentCertificate, certTrustServices);
 					}
@@ -475,8 +472,8 @@ public abstract class DiagnosticDataBuilder {
 		Map<Identifier, XmlTrustedList> mapListOfTrustedLists = new HashMap<>();
 
 		for (CertificateSource certificateSource : trustedCertificateSources.getSources()) {
-			if (certificateSource instanceof TrustedListsCertificateSource) {
-				TrustedListsCertificateSource tlCertSource = (TrustedListsCertificateSource) certificateSource;
+			if (certificateSource instanceof TrustPropertiesCertificateSource) {
+				TrustPropertiesCertificateSource tlCertSource = (TrustPropertiesCertificateSource) certificateSource;
 				TLValidationJobSummary summary = tlCertSource.getSummary();
 				if (summary != null) {
 					mapTrustedLists.putAll(getTrustedListsMap(tlCertSource, summary));
@@ -494,7 +491,7 @@ public abstract class DiagnosticDataBuilder {
 		return trustedLists;
 	}
 
-	private Map<Identifier, XmlTrustedList> getTrustedListsMap(TrustedListsCertificateSource tlCertSource,
+	private Map<Identifier, XmlTrustedList> getTrustedListsMap(TrustPropertiesCertificateSource tlCertSource,
 															   TLValidationJobSummary summary) {
 		Map<Identifier, XmlTrustedList> mapTrustedLists = new HashMap<>();
 		Set<Identifier> tlIdentifiers = getTLIdentifiers(tlCertSource);
@@ -509,7 +506,7 @@ public abstract class DiagnosticDataBuilder {
 		return mapTrustedLists;
 	}
 
-	private Map<Identifier, XmlTrustedList> getListOfTrustedListsMap(TrustedListsCertificateSource tlCertSource,
+	private Map<Identifier, XmlTrustedList> getListOfTrustedListsMap(TrustPropertiesCertificateSource tlCertSource,
 																	 TLValidationJobSummary summary) {
 		Map<Identifier, XmlTrustedList> mapListOfTrustedLists = new HashMap<>();
 		Set<Identifier> lotlIdentifiers = getLOTLIdentifiers(tlCertSource);
@@ -524,7 +521,7 @@ public abstract class DiagnosticDataBuilder {
 		return mapListOfTrustedLists;
 	}
 
-	private Set<Identifier> getTLIdentifiers(TrustedListsCertificateSource tlCS) {
+	private Set<Identifier> getTLIdentifiers(TrustPropertiesCertificateSource tlCS) {
 		Set<Identifier> tlIdentifiers = new HashSet<>();
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
@@ -538,7 +535,7 @@ public abstract class DiagnosticDataBuilder {
 		return tlIdentifiers;
 	}
 
-	private Set<Identifier> getLOTLIdentifiers(TrustedListsCertificateSource tlCS) {
+	private Set<Identifier> getLOTLIdentifiers(TrustPropertiesCertificateSource tlCS) {
 		Set<Identifier> lotlIdentifiers = new HashSet<>();
 		for (CertificateToken certificateToken : usedCertificates) {
 			List<TrustProperties> trustServices = tlCS.getTrustServices(certificateToken);
