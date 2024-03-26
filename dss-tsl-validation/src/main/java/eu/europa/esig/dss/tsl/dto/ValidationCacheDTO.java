@@ -53,7 +53,9 @@ public class ValidationCacheDTO extends AbstractCacheDTO implements ValidationIn
 	/**
 	 * Default constructor
 	 */
-	public ValidationCacheDTO() {}
+	public ValidationCacheDTO() {
+		// empty
+	}
 
 	/**
 	 * Copies the cache DTO

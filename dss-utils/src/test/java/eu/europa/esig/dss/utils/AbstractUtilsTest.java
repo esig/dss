@@ -171,6 +171,7 @@ public abstract class AbstractUtilsTest {
 		assertNull(Utils.joinStrings(null, null));
 		assertEquals("", Utils.joinStrings(new ArrayList<>(), null));
 		assertEquals("", Utils.joinStrings(new ArrayList<>(), ","));
+		assertEquals("a", Utils.joinStrings(Collections.singletonList("a"), ","));
 
 		List<String> list = new ArrayList<>();
 		list.add("a");

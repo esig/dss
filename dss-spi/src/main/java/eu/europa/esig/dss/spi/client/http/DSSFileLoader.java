@@ -26,12 +26,14 @@ import eu.europa.esig.dss.model.DSSException;
 import java.io.Serializable;
 
 /**
- * Loads files
+ * DSS file loader to load {@code DSSDocument} instead of binaries
+ *
  */
 public interface DSSFileLoader extends Serializable {
 	
 	/**
 	 * Returns DSSDocument from the provided url
+	 *
 	 * @param url {@link String} url of the document to obtain
 	 * @return {@link DSSDocument} retrieved document
 	 * @throws DSSException in case of DataLoader error
@@ -40,9 +42,12 @@ public interface DSSFileLoader extends Serializable {
 	
 	/**
 	 * Removes the file from FileSystem with the given url
+	 *
 	 * @param url {@link String} url of the remote file location (the same what was used on file saving)
 	 * @return TRUE when file was successfully deleted, FALSE otherwise
+	 * @deprecated since DSS 6.1. Please use {@code DSSCacheFileLoader} interface instead
 	 */
+	@Deprecated
 	boolean remove(final String url);
 
 }

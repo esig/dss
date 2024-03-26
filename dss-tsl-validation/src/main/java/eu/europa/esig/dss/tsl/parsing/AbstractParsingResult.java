@@ -56,6 +56,7 @@ public abstract class AbstractParsingResult implements CachedResult {
 	 * Default constructor instantiating object with null values
 	 */
 	protected AbstractParsingResult() {
+		// empty
 	}
 
 	/**

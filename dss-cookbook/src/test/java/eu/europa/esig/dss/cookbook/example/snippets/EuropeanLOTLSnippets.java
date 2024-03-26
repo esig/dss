@@ -26,7 +26,7 @@ import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
-import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -45,6 +45,7 @@ import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandle
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
+import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -68,7 +69,7 @@ public class EuropeanLOTLSnippets {
 	// import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 	// import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 	// import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
-	// import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+	// import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
 	// import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 	// import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 	// import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -87,6 +88,7 @@ public class EuropeanLOTLSnippets {
 	// import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 	// import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 	// import eu.europa.esig.dss.tsl.job.TLValidationJob;
+	// import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
 	// import eu.europa.esig.dss.tsl.source.LOTLSource;
 	// import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 	// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
@@ -157,7 +159,7 @@ public class EuropeanLOTLSnippets {
 		}
 	}
 
-	public DSSFileLoader offlineLoader() {
+	public DSSCacheFileLoader offlineLoader() {
 		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader();
 		offlineFileLoader.setCacheExpirationTime(-1); // negative value means cache never expires
 		offlineFileLoader.setDataLoader(new IgnoreDataLoader());
@@ -165,12 +167,12 @@ public class EuropeanLOTLSnippets {
 		return offlineFileLoader;
 	}
 
-	public DSSFileLoader onlineLoader() {
+	public DSSCacheFileLoader onlineLoader() {
 		FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader();
-		onlineFileLoader.setCacheExpirationTime(0);
+		onlineFileLoader.setCacheExpirationTime(-1); // control cache by Sha2FileCacheDataLoader
 		onlineFileLoader.setDataLoader(dataLoader());
 		onlineFileLoader.setFileCacheDirectory(tlCacheDirectory());
-		return onlineFileLoader;
+		return Sha2FileCacheDataLoader.initSha2DailyUpdateDataLoader(onlineFileLoader);
 	}
 
 	public File tlCacheDirectory() {

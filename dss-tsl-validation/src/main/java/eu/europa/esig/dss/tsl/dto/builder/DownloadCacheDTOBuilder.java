@@ -40,7 +40,15 @@ public class DownloadCacheDTOBuilder extends AbstractCacheDTOBuilder<XmlDownload
 	
 	@Override
 	public DownloadCacheDTO build() {
-		return new DownloadCacheDTO(super.build());
+		DownloadCacheDTO downloadCacheDTO = new DownloadCacheDTO(super.build());
+		if (isResultExist()) {
+			downloadCacheDTO.setSha2ErrorMessage(getSha2ErrorMessage());
+		}
+		return downloadCacheDTO;
+	}
+
+	private String getSha2ErrorMessage() {
+		return getResult().getSha2ErrorMessage();
 	}
 
 }

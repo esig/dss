@@ -145,6 +145,23 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Parses a {@code String} date to {@code Date}
+	 *
+	 * @param str {@link String} in RFC format, e.g. "2019-11-19T17:28:15Z"
+	 * @return {@link Date}
+	 */
+	public static Date parseRFCDate(final String str) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(RFC3339_TIME_FORMAT);
+			sdf.setTimeZone(UTC_TIMEZONE);
+			sdf.setLenient(false);
+			return sdf.parse(str);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(String.format("String '%s' doesn't follow the pattern '%s'", str, RFC3339_TIME_FORMAT));
+		}
+	}
+
+	/**
 	 * Formats the date according to the given format (with system TimeZone)
 	 * 
 	 * @param date {@link Date} to transform to a String

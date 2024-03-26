@@ -79,6 +79,19 @@ List<TrustProperties> trustServices = trustedCertificateSource.getTrustServices(
 TrustedListsCertificateSource trustedListCertificateSource = ...
 List<TrustProperties> trustServices = trustedListCertificateSource.getTrustServices(certificate);
 
+|CacheCleaner#setDataLoader           a|[source,java]
+----
+DSSFileLoader dataLoader = new FileCacheDataLoader();
+...
+CacheCleaner cacheCleaner = ...
+cacheCleaner.setDataLoader(dataLoader);
+----
+                                                                     a|[source,java]
+DSSCacheFileLoader dataLoader = new FileCacheDataLoader();
+...
+CacheCleaner cacheCleaner = ...
+cacheCleaner.setDataLoader(dataLoader);
+
 |===
 
 [cols="2,5,5"]

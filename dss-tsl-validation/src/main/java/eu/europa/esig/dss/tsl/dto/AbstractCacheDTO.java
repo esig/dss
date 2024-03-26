@@ -59,7 +59,9 @@ public class AbstractCacheDTO implements InfoRecord {
 	/**
 	 * Empty constructor
 	 */
-	public AbstractCacheDTO() {}
+	public AbstractCacheDTO() {
+		// empty
+	}
 
 	/**
 	 * Copies the cache DTO

@@ -76,7 +76,9 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	/**
 	 * Default constructor
 	 */
-	public ParsingCacheDTO() {}
+	public ParsingCacheDTO() {
+		// empty
+	}
 
 	/**
 	 * Copies the cache DTO

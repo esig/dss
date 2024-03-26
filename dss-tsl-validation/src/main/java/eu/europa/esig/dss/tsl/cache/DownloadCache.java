@@ -53,7 +53,10 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 		if (!cachedFileEntry.isEmpty()) {
 			XmlDownloadResult cachedResult = cachedFileEntry.getCachedResult();
 			LOG.trace("Comparing digest of the stored file [{}] with the downloaded file [{}]", cachedResult.getDigest(), downloadedResult.getDigest());
-			boolean upToDate = cachedResult.getDigest().equals(downloadedResult.getDigest());
+			boolean digestMatch = cachedResult.getDigest().equals(downloadedResult.getDigest());
+			boolean sha2ContentMatch = (cachedResult.getSha2ErrorMessage() == null && downloadedResult.getSha2ErrorMessage() == null) ||
+					(cachedResult.getSha2ErrorMessage() != null && cachedResult.getSha2ErrorMessage().equals(downloadedResult.getSha2ErrorMessage()));
+			boolean upToDate = digestMatch && sha2ContentMatch;
 			LOG.trace("Is file with the key [{}] up to date ? {}", cacheKey, upToDate);
 			if (upToDate) {
 				cachedFileEntry.syncUpdateDate();

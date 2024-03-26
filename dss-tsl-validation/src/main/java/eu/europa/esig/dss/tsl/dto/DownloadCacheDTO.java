@@ -35,10 +35,14 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 
 	private static final long serialVersionUID = 514589372769360786L;
 
+	/** An error message occurred during sha2 processing */
+	private String sha2ErrorMessage;
+
 	/**
 	 * Empty constructor
 	 */
 	public DownloadCacheDTO() {
+		// empty
 	}
 
 	/**
@@ -67,4 +71,23 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 			throw new IllegalStateException("All dates are null");
 		}
 	}
+
+	/**
+	 * Gets an error message occurred during the sha2 processing
+	 *
+	 * @return {@link String}
+	 */
+	public String getSha2ErrorMessage() {
+		return sha2ErrorMessage;
+	}
+
+	/**
+	 * Sets an error message occurred during sha2 file processing
+	 *
+	 * @param sha2ErrorMessage {@link String}
+	 */
+	public void setSha2ErrorMessage(String sha2ErrorMessage) {
+		this.sha2ErrorMessage = sha2ErrorMessage;
+	}
+
 }

@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.Protocol;
 import eu.europa.esig.dss.spi.exception.DSSDataLoaderMultipleException;
@@ -47,7 +47,7 @@ import java.util.Objects;
  * {@code java.io.tmpdir}. The urls of the resources is transformed to the
  * file name by replacing the special characters by {@code _}
  */
-public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
+public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 
 	private static final long serialVersionUID = 1028849693098211169L;
 
@@ -68,7 +68,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	/** List of URIs to be ignored */
 	private List<String> toIgnored;
 
-	/** The cache expiration time, after with the document shall be downloaded again */
+	/** The cache expiration time, after which the document shall be downloaded again */
 	private long cacheExpirationTime = -1;
 
 	/** The dataloader to be used for a remote files access */
@@ -78,6 +78,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	 * Empty constructor
 	 */
 	public FileCacheDataLoader() {
+		// empty
 	}
 
 	/**
@@ -209,31 +210,36 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	public byte[] get(final String url) throws DSSException {
 		return get(url, false);
 	}
-	
-	private DSSDocument getDocument(final String url, final boolean refresh) throws DSSException {
+
+	/**
+	 * This method allows to download a {@code DSSDocument} from a specified {@code url} with a custom setting
+	 * indicating whether the {@code refresh} of the document's cache shall be enforced, when applicable
+	 *
+	 * @param url {@link String} remote location of the document to download
+	 * @param refresh indicates whether the refresh of the cached document shall be enforced
+	 * @return {@link DSSDocument}
+	 */
+	public DSSDocument getDocument(final String url, final boolean refresh) {
 		Objects.requireNonNull(dataLoader, DATA_LOADER_NOT_CONFIGURED);
 
 		// TODO: review
-		if ((toBeLoaded != null) && !toBeLoaded.contains(url)) {
+		if (toBeLoaded != null && !toBeLoaded.contains(url)) {
 			throw new DSSExternalResourceException(String.format("The toBeLoaded list does not contain URL [%s]!", url));
 		}
 		final String fileName = DSSUtils.getNormalizedString(url);
 		final File file = getCacheFile(fileName);
 		final boolean fileExists = file.exists();
 		final boolean isCacheExpired = isCacheExpired(file);
-		
-		if (fileExists && !refresh && !isCacheExpired) {
-			LOG.debug("Cached file was used");
-			return new FileDocument(file);
-			
+
+		if (refresh) {
+			LOG.trace("The refresh is forced for url '{}'.", url);
+		} else if (!fileExists) {
+			LOG.debug("There is no cached file for url '{}'.", url);
+		} else if (isCacheExpired) {
+			LOG.debug("Cache expired for url '{}'.", url);
 		} else {
-			
-			if (!fileExists) {
-				LOG.debug("There is no cached file!");
-			} else {
-				LOG.debug("The refresh is forced!");
-			}
-			
+			LOG.debug("Cached file is used for url '{}'.", url);
+			return new FileDocument(file);
 		}
 		
 		byte[] bytes;
@@ -299,10 +305,8 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	}
 
 	private File getCacheFile(final String fileName) {
-
 		final String trimmedFileName = Utils.trim(fileName);
-		if ((toIgnored != null) && toIgnored.contains(trimmedFileName)) {
-
+		if (toIgnored != null && toIgnored.contains(trimmedFileName)) {
 			throw new DSSExternalResourceException("Part of urls to ignore.");
 		}
 		LOG.debug("Cached file: {}/{}", fileCacheDirectory, trimmedFileName);
@@ -310,7 +314,7 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	}
 	
     /**
-     * Allows to add a given array of {@code byte} as a cache file representing by the {@code urlString}.
+     * Allows to add a given array of {@code byte} as a cache file representing by the {@code url}.
      *
      * @param urlString
      *            the URL to add to the cache
@@ -331,7 +335,9 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 	 * @param urlString {@link String} url
 	 * @return the content of the file or {@code null} if the file does not exist
 	 * @throws DSSException in case if the file does not exist in the cache
+	 * @deprecated since DSS 6.1. Please use {@code #getDocumentFromCache} method instead
 	 */
+	@Deprecated
 	public byte[] loadFileFromCache(final String urlString) throws DSSException {
 		final String fileName = DSSUtils.getNormalizedString(urlString);
 		final File file = getCacheFile(fileName);
@@ -339,6 +345,16 @@ public class FileCacheDataLoader implements DataLoader, DSSFileLoader {
 			return DSSUtils.toByteArray(file);
 		}
 		throw new DSSExternalResourceException(String.format("The file with URL [%s] does not exist in the cache!", urlString));
+	}
+
+	@Override
+	public DSSDocument getDocumentFromCache(String url) {
+		final String fileName = DSSUtils.getNormalizedString(url);
+		final File file = getCacheFile(fileName);
+		if (file.exists()) {
+			return new FileDocument(file);
+		}
+		return null;
 	}
 
 	@Override
