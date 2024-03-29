@@ -10,6 +10,8 @@ dss-jades/src/test/resources/ObjectIdByURIHash-1.html         binary
 dss-jades/src/test/resources/ObjectIdByURIHash-2.html         binary
 dss-pades/src/test/resources/visualSignature/annots-no-rotate.pdf         binary
 dss-tsl-validation/src/test/resources/tl-ecdsa-brainpool.xml         binary
+dss-tsl-validation/src/test/resources/sk-tl.xml         binary
+dss-tsl-validation/src/test/resources/sk-tl-sn-95.xml         binary
 dss-utils/src/test/resources/sample-cr-lf.xml         binary
 dss-utils/src/test/resources/sample-lf.xml         binary
 dss-xades/src/test/resources/validation/dss1334/simple-test.xml         binary
