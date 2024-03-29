@@ -24,6 +24,8 @@ import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.download.XmlDownloadResult;
 import eu.europa.esig.dss.tsl.dto.DownloadCacheDTO;
 
+import java.util.List;
+
 /**
  * Builds {@code DownloadCacheDTO}
  */
@@ -42,13 +44,13 @@ public class DownloadCacheDTOBuilder extends AbstractCacheDTOBuilder<XmlDownload
 	public DownloadCacheDTO build() {
 		DownloadCacheDTO downloadCacheDTO = new DownloadCacheDTO(super.build());
 		if (isResultExist()) {
-			downloadCacheDTO.setSha2ErrorMessage(getSha2ErrorMessage());
+			downloadCacheDTO.setSha2ErrorMessages(getSha2ErrorMessages());
 		}
 		return downloadCacheDTO;
 	}
 
-	private String getSha2ErrorMessage() {
-		return getResult().getSha2ErrorMessage();
+	private List<String> getSha2ErrorMessages() {
+		return getResult().getSha2ErrorMessages();
 	}
 
 }
