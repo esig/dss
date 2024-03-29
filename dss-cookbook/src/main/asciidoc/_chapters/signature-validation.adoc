@@ -623,6 +623,28 @@ NOTE: In case of creation of evidence-record detached from the signature documen
 
 WARNING: Always ensure a correct utility class is chosen based on your implementation of evidence-records. Usage of a wrong class may result to an erroneously computed hash and therefore invalidity of the evidence-record.
 
+==== Hash computation for evidence record renewal
+
+In addition to digest computation for evidence record creation, DSS provides classes for digest computation on evidence record's renewal, whether it is a time-stamp renewal or a hash-tree renewal (with a possibility to define a new Digest Algorithm or a canonicalization method for XMLERS).
+
+The following classes are provided:
+
+* `XMLEvidenceRecordRenewalDigestBuilder` (part of `dss-evidence-record-xml` module) - creates digest for time-stamp or hash-tree renewal of an RFC 6283 XMLERS Evidence Record (cf. <<R22>>).
+
+[source,java,indent=0]
+.Hash computation for an XMLERS Evidence record renewal
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=xmlers-renewal-er]
+----
+
+* `ASN1EvidenceRecordRenewalDigestBuilder` (part of `dss-evidence-record-asn1` module) - creates digest for time-stamp or hash-tree renewal of an RFC 4998 ERS Evidence Record (cf. <<R23>>).
+
+[source,java,indent=0]
+.Hash computation for an ERS Evidence record renewal
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=ers-renewal-er]
+----
+
 [[ServiceLoaderValidation]]
 === DocumentValidator implementations
 

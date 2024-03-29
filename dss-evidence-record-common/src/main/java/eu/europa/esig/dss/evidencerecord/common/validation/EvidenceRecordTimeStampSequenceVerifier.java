@@ -22,7 +22,6 @@ package eu.europa.esig.dss.evidencerecord.common.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.spi.x509.evidencerecord.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
@@ -31,9 +30,10 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.ByteArrayComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,15 +88,15 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         referenceValidations = new ArrayList<>();
 
         DSSMessageDigest lastTimeStampHash = DSSMessageDigest.createEmptyDigest();
+        DSSMessageDigest lastTimeStampSequenceHash = DSSMessageDigest.createEmptyDigest();
 
-        boolean firstArchiveTimeStampChain = true;
         List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
-        for (ArchiveTimeStampChainObject archiveTimeStampChain : archiveTimeStampSequence) {
+        Iterator<? extends ArchiveTimeStampChainObject> archiveTimeStampSequenceIt = archiveTimeStampSequence.iterator();
+        while (archiveTimeStampSequenceIt.hasNext()) {
+            ArchiveTimeStampChainObject archiveTimeStampChain = archiveTimeStampSequenceIt.next();
             DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
             List<DSSDocument> detachedContents = lastTimeStampHash.isEmpty() ?
                     evidenceRecord.getDetachedContents() : Collections.emptyList();
-            DSSMessageDigest lastTimeStampSequenceHash = firstArchiveTimeStampChain ?
-            		DSSMessageDigest.createEmptyDigest() : computePrecedingTimeStampSequenceHash(archiveTimeStampChain, detachedContents);
 
             List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChain.getArchiveTimeStamps();
             Iterator<? extends ArchiveTimeStampObject> archiveTimeStampsIt = archiveTimeStamps.iterator();
@@ -115,7 +115,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                                 evidenceRecord.getManifestFile() : null;
                         // execute for all time-stamps in order to create reference validations
                         List<ReferenceValidation> archiveDataObjectValidations =
-                                validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain, detachedContents, manifestFile);
+                                validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain, lastTimeStampSequenceHash, detachedContents, manifestFile);
 
                         if (!lastTimeStampHash.isEmpty()) {
                             // validate following archive time-stamps
@@ -128,10 +128,10 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                         }
                         // if the first time-stamp and ER has a linked manifest
                         else if (manifestFile != null) {
-                            archiveDataObjectValidations = validateManifestEntries(archiveDataObjectValidations, manifestFile, firstArchiveTimeStampChain);
+                            archiveDataObjectValidations = validateManifestEntries(archiveDataObjectValidations, manifestFile, lastTimeStampSequenceHash.isEmpty());
                         }
 
-                        if (lastTimeStampHash.isEmpty() && firstArchiveTimeStampChain) {
+                        if (lastTimeStampHash.isEmpty() && lastTimeStampSequenceHash.isEmpty()) {
                             referenceValidations.addAll(archiveDataObjectValidations);
                         }
 
@@ -150,12 +150,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 timestampToken.setReferenceValidations(timestampValidations);
 
                 if (archiveTimeStampsIt.hasNext()) {
-                    lastTimeStampHash = computeTimeStampHash(digestAlgorithm, archiveTimeStamp, archiveTimeStampChain);
+                    lastTimeStampHash = computeTimeStampHash(archiveTimeStamp);
                 }
             }
 
-            firstArchiveTimeStampChain = false;
-            lastTimeStampHash = DSSMessageDigest.createEmptyDigest();
+            if (archiveTimeStampSequenceIt.hasNext()) {
+                lastTimeStampSequenceHash = computeTimeStampSequenceHash(archiveTimeStampChain);
+                lastTimeStampHash = DSSMessageDigest.createEmptyDigest();
+            }
         }
     }
 
@@ -365,12 +367,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param digestValueGroup {@link DigestValueGroup} to find document corresponding digest in
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
+     * @param lastTimeStampSequenceHash {@link DSSMessageDigest} hash of the last archive time-stamp sequence
      * @param detachedContents a list of detached {@link DSSDocument}s
      * @param manifestFile {@link ManifestFile}, when present
      * @return a list of {@link ReferenceValidation}s
      */
     protected List<ReferenceValidation> validateArchiveDataObjects(DigestValueGroup digestValueGroup,
                                                                    ArchiveTimeStampChainObject archiveTimeStampChain,
+                                                                   DSSMessageDigest lastTimeStampSequenceHash,
                                                                    List<DSSDocument> detachedContents,
                                                                    ManifestFile manifestFile) {
         final List<ReferenceValidation> result = new ArrayList<>();
@@ -387,7 +391,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             Digest digest = new Digest(digestAlgorithm, hashValue);
             referenceValidation.setDigest(digest);
 
-            DSSDocument matchingDocument = getMatchingDocument(digest, archiveTimeStampChain, detachedContents);
+            DSSDocument matchingDocument = getMatchingDocument(digest, archiveTimeStampChain, lastTimeStampSequenceHash, detachedContents);
             ManifestEntry matchingManifestEntry = getMatchingManifestEntry(manifestFile, digest, matchingDocument);
 
             if (manifestFile != null) {
@@ -460,10 +464,12 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param digest {@link Digest} to check
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
+     * @param lastTimeStampSequenceHash {@link DSSMessageDigest} hash of the last archive time-stamp sequence
      * @param detachedContents a list of {@link DSSDocument}s
      * @return {@link DSSDocument} if matching document found, NULL otherwise
      */
     protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
+                                              DSSMessageDigest lastTimeStampSequenceHash,
                                               List<DSSDocument> detachedContents) {
         byte[] documentDigest;
         if (Utils.isCollectionNotEmpty(detachedContents)) {
@@ -496,23 +502,18 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
     /**
      * Computes hash on {@code archiveTimeStamp} element provided the {@code archiveTimeStampChain}'s attributes
      *
-     * @param digestAlgorithm {@link DigestAlgorithm} to be used for hash computation
      * @param archiveTimeStamp {@link ArchiveTimeStampObject} to compute hash on
-     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for hash computation
      * @return {@link DSSMessageDigest}
      */
-    protected abstract DSSMessageDigest computeTimeStampHash(DigestAlgorithm digestAlgorithm,
-                                                             ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain);
+    protected abstract DSSMessageDigest computeTimeStampHash(ArchiveTimeStampObject archiveTimeStamp);
 
     /**
-     * Computes hash of {@code ArchiveTimeStampSequenceElement} preceding the incorporation of {@code ArchiveTimeStampChainObject}
+     * Computes hash of current {@code ArchiveTimeStampSequenceElement}
      *
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} to compute hash for
-     * @param detachedContents a list of {@link DSSDocument}s provided within a container
      * @return {@link DSSMessageDigest}
      */
-    protected abstract DSSMessageDigest computePrecedingTimeStampSequenceHash(
-            ArchiveTimeStampChainObject archiveTimeStampChain, List<DSSDocument> detachedContents);
+    protected abstract DSSMessageDigest computeTimeStampSequenceHash(ArchiveTimeStampChainObject archiveTimeStampChain);
     
     /**
      * Computes a hash value for a group of hashes

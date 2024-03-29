@@ -26,17 +26,15 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmlers.jaxb.EvidenceRecordType;
 import eu.europa.esig.xmlers.XMLEvidenceRecordFacade;
 import eu.europa.esig.xmlers.definition.XMLERSNamespace;
 import eu.europa.esig.xmlers.definition.XMLERSPath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.xmlers.jaxb.EvidenceRecordType;
+import jakarta.xml.bind.JAXBException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import jakarta.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,10 +45,8 @@ import java.io.InputStream;
  */
 public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(XMLEvidenceRecordValidator.class);
-
     /** The root element of the document to validate */
-    private Document rootElement;
+    private Element evidenceRecordElement;
 
     /**
      * The default constructor for XMLEvidenceRecordValidator.
@@ -59,7 +55,7 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
      */
     public XMLEvidenceRecordValidator(final DSSDocument document) {
         super(document);
-        this.rootElement = toDomDocument(document);
+        this.evidenceRecordElement = toEvidenceRecordElement(document);
     }
 
     /**
@@ -73,9 +69,10 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
         DomUtils.registerNamespace(XMLERSNamespace.XMLERS);
     }
 
-    private Document toDomDocument(DSSDocument document) {
+    private Element toEvidenceRecordElement(DSSDocument document) {
         try {
-            return DomUtils.buildDOM(document);
+            Document dom = DomUtils.buildDOM(document);
+            return DomUtils.getElement(dom, XMLERSPath.EVIDENCE_RECORD_PATH);
         } catch (Exception e) {
             throw new IllegalInputException(String.format("An XML file is expected : %s", e.getMessage()), e);
         }
@@ -96,34 +93,33 @@ public class XMLEvidenceRecordValidator extends EvidenceRecordValidator {
     }
 
     /**
+     * Returns the XML evidence record element
+     *
+     * @return {@link Element}
+     */
+    public Element getEvidenceRecordElement() {
+        return evidenceRecordElement;
+    }
+
+    /**
      * Returns the root element of the validating document
      *
      * @return {@link Document}
      */
     public Document getRootElement() {
-        return rootElement;
+        return evidenceRecordElement.getOwnerDocument();
     }
 
     @Override
     protected EvidenceRecord buildEvidenceRecord() {
-        Element evidenceRecordRootElement = getEvidenceRecordRootElement();
-        if (evidenceRecordRootElement != null) {
-            final XmlEvidenceRecord evidenceRecord = new XmlEvidenceRecord(evidenceRecordRootElement);
+        if (evidenceRecordElement != null) {
+            final XmlEvidenceRecord evidenceRecord = new XmlEvidenceRecord(evidenceRecordElement);
             evidenceRecord.setFilename(document.getName());
             evidenceRecord.setManifestFile(manifestFile);
             evidenceRecord.setDetachedContents(detachedContents);
             return evidenceRecord;
         }
         return null;
-    }
-
-    private Element getEvidenceRecordRootElement() {
-        try {
-            return DomUtils.getElement(rootElement, XMLERSPath.EVIDENCE_RECORD_PATH);
-        } catch (Exception e) {
-            LOG.warn("Unable to analyze manifest file '{}' : {}", document.getName(), e.getMessage());
-            return null;
-        }
     }
 
     @Override

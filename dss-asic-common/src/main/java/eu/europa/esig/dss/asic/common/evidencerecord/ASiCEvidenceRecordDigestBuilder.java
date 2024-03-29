@@ -8,8 +8,6 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.x509.evidencerecord.digest.DataObjectDigestBuilderFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
@@ -20,8 +18,6 @@ import java.util.Objects;
  *
  */
 public class ASiCEvidenceRecordDigestBuilder extends ZipContentEvidenceRecordDigestBuilder {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ASiCEvidenceRecordDigestBuilder.class);
 
     /**
      * Content of an ASiC container

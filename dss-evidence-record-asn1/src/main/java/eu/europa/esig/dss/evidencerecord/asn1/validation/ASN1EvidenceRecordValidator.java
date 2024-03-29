@@ -6,10 +6,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
-
-import java.io.InputStream;
 
 /**
  * Class for validation of an ASN.1 Evidence Record (RFC 4998)
@@ -38,8 +35,8 @@ public class ASN1EvidenceRecordValidator extends EvidenceRecordValidator {
     }
     
     private org.bouncycastle.asn1.tsp.EvidenceRecord toASN1Document(DSSDocument document) {
-        try (InputStream is = document.openStream()) {
-            return org.bouncycastle.asn1.tsp.EvidenceRecord.getInstance(Utils.toByteArray(is));
+        try {
+            return org.bouncycastle.asn1.tsp.EvidenceRecord.getInstance(DSSUtils.toByteArray(document));
         } catch (Exception e) {
             throw new IllegalInputException(String.format("An ASN.1 file is expected : %s", e.getMessage()), e);
         }

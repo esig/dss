@@ -3,7 +3,9 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 import eu.europa.esig.dss.cades.validation.evidencerecord.CAdESEvidenceRecordDigestBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordDataObjectDigestBuilder;
+import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordRenewalDigestBuilder;
 import eu.europa.esig.dss.evidencerecord.xml.digest.XMLEvidenceRecordDataObjectDigestBuilder;
+import eu.europa.esig.dss.evidencerecord.xml.digest.XMLEvidenceRecordRenewalDigestBuilder;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
@@ -122,6 +124,85 @@ public class ERDataObjectBuilderTest {
         // the first position, and digest of the detached document at the second
         List<Digest> digests = cadesEvidenceRecordDigestBuilder.buildExternalEvidenceRecordDigest();
         // end::cades-er[]
+
+        // tag::xmlers-renewal-er[]
+        // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+        // import eu.europa.esig.dss.evidencerecord.xml.digest.XMLEvidenceRecordRenewalDigestBuilder;
+        // import eu.europa.esig.dss.model.DSSDocument;
+        // import eu.europa.esig.dss.model.Digest;
+        // import eu.europa.esig.dss.model.FileDocument;
+        // import javax.xml.crypto.dsig.CanonicalizationMethod;
+        // import java.util.List;
+
+        // Load RFC 6283 XMLERS evidence record to be renewed
+        DSSDocument xmlersEvidenceRecord = new FileDocument("src/test/resources/snippets/evidence-record.xml");
+
+        // Instantiate a XMLEvidenceRecordRenewalDigestBuilder to create digest
+        // for evidence record's renewal.
+        // NOTE: the class does not perform validation of the provided evidence record.
+        XMLEvidenceRecordRenewalDigestBuilder xmlEvidenceRecordRenewalDigestBuilder =
+                new XMLEvidenceRecordRenewalDigestBuilder(xmlersEvidenceRecord);
+
+        // Create digest for time-stamp renewal.
+        // This method builds digest on a canonicalized value of the last ArchiveTimeStamp element.
+        // NOTE: this method uses digest algorithm and canonicalization method defined
+        // within the corresponding ArchiveTimeStampChain element
+        Digest tstRenewalDigest = xmlEvidenceRecordRenewalDigestBuilder.buildTimeStampRenewalDigest();
+
+        // Instantiate builder for hash-tree renewal with a specified digest algorithm
+        xmlEvidenceRecordRenewalDigestBuilder =
+                new XMLEvidenceRecordRenewalDigestBuilder(xmlersEvidenceRecord, DigestAlgorithm.SHA512);
+
+        // Set the canonicalization method to be used
+        xmlEvidenceRecordRenewalDigestBuilder.setCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
+
+        // Set the detached content to compute digest for.
+        // NOTE: if not provided, the digest computation for detached content will be ignored.
+        xmlEvidenceRecordRenewalDigestBuilder.setDetachedContent(detachedContents);
+
+        // Build a digest group to be protected by a hash-tree renewal time-stamp.
+        // This method builds digest on a canonicalized value of ArchiveTimeStampSequence element
+        // and provided detached content documents
+        List<Digest> digestGroup = xmlEvidenceRecordRenewalDigestBuilder.buildHashTreeRenewalDigestGroup();
+        // end::xmlers-renewal-er[]
+
+        // tag::ers-renewal-er[]
+        // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+        // import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordRenewalDigestBuilder;
+        // import eu.europa.esig.dss.model.DSSDocument;
+        // import eu.europa.esig.dss.model.Digest;
+        // import eu.europa.esig.dss.model.FileDocument;
+        // import java.util.List;
+
+        // Load RFC 4998 ERS evidence record to be renewed
+        DSSDocument ersEvidenceRecord = new FileDocument("src/test/resources/snippets/evidence-record.ers");
+
+        // Instantiate a ASN1EvidenceRecordRenewalDigestBuilder to create digest
+        // for evidence record's renewal.
+        // NOTE: the class does not perform validation of the provided evidence record.
+        ASN1EvidenceRecordRenewalDigestBuilder asn1EvidenceRecordRenewalDigestBuilder =
+                new ASN1EvidenceRecordRenewalDigestBuilder(ersEvidenceRecord);
+
+        // Create digest for time-stamp renewal.
+        // This method builds digest on an encoded value of ArchiveTimeStamp attribute.
+        // NOTE: this method uses digest algorithm defined within the first archive-time-stamp
+        // of the last ArchiveTimeStampChain
+        Digest ersTstRenewalDigest = asn1EvidenceRecordRenewalDigestBuilder.buildTimeStampRenewalDigest();
+
+        // Instantiate builder for hash-tree renewal with a specified digest algorithm
+        asn1EvidenceRecordRenewalDigestBuilder =
+                new ASN1EvidenceRecordRenewalDigestBuilder(ersEvidenceRecord, DigestAlgorithm.SHA512);
+
+        // Set the detached content to compute digest for.
+        // NOTE: if not provided, the output will produce an empty list.
+        asn1EvidenceRecordRenewalDigestBuilder.setDetachedContent(detachedContents);
+
+        // Build a digest group to be protected by a hash-tree renewal time-stamp.
+        // This method builds digest on a concatenated digest of a DER-encoded of
+        // ArchiveTimeStampSequence attribute and provided detached content documents
+        List<Digest> ersDigestGroup = asn1EvidenceRecordRenewalDigestBuilder.buildHashTreeRenewalDigestGroup();
+        // end::ers-renewal-er[]
+
     }
 
 }
