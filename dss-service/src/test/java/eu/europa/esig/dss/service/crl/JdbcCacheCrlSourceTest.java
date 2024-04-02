@@ -22,6 +22,7 @@ package eu.europa.esig.dss.service.crl;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.OnlineSourceTest;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
@@ -45,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class JdbcCacheCrlSourceTest {
+public class JdbcCacheCrlSourceTest extends OnlineSourceTest {
 	
 	private JdbcDataSource dataSource = new JdbcDataSource();
 	
@@ -70,8 +71,8 @@ public class JdbcCacheCrlSourceTest {
 		CRLToken revocationToken;
 
 		DataLoader dataLoader = new CommonsDataLoader();
-		CertificateToken certificateToken = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user-crl-ocsp.crt"));
-		CertificateToken caToken = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
+		CertificateToken certificateToken = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-crl-ocsp.crt"));
+		CertificateToken caToken = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-ca.crt"));
 
 		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNull(revocationToken);

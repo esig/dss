@@ -23,6 +23,7 @@ package eu.europa.esig.dss.service.tsp;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
+import eu.europa.esig.dss.service.OnlineSourceTest;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
@@ -43,11 +44,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OnlineTSPSourceTest {
+public class OnlineTSPSourceTest extends OnlineSourceTest {
 
-	private static final String TSA_URL = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
-	private static final String ED25519_TSA_URL = "http://dss.nowina.lu/pki-factory/tsa/Ed25519-good-tsa";
-	private static final String ERROR_500_TSA_URL = "http://dss.nowina.lu/pki-factory/tsa/error-500/good-tsa";
+	private static final String TSA_URL = ONLINE_PKI_HOST + "/tsa/good-tsa";
+	private static final String ED25519_TSA_URL = ONLINE_PKI_HOST + "/tsa/Ed25519-good-tsa";
+	private static final String ERROR_500_TSA_URL = ONLINE_PKI_HOST + "/tsa/error-500/good-tsa";
 
 	@Test
 	public void testWithoutNonce() {

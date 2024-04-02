@@ -23,6 +23,7 @@ package eu.europa.esig.dss.service.crl;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.OnlineSourceTest;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
@@ -39,9 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OnlineCRLSourceTest {
+public class OnlineCRLSourceTest extends OnlineSourceTest {
 
-	private static final String alternative_url = "http://dss.nowina.lu/pki-factory/crl/root-ca.crl";
+	private static final String alternative_url = ONLINE_PKI_HOST + "/crl/root-ca.crl";
 	private static final String wrong_url = "http://wrong.url";
 	
 	private static OnlineCRLSource onlineCRLSource;
@@ -59,13 +60,13 @@ public class OnlineCRLSourceTest {
 	public static void init() {
 		dataLoader = new CommonsDataLoader();
 
-		goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user.crt"));
-		goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
-		rootCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/root-ca.crt"));
+		goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user.crt"));
+		goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-ca.crt"));
+		rootCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/root-ca.crt"));
 
-		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-user.crt"));
-		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-ca.crt"));
-		ed25519RootCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-root-ca.crt"));
+		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-user.crt"));
+		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-ca.crt"));
+		ed25519RootCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-root-ca.crt"));
 	}
 
 	@BeforeEach

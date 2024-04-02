@@ -603,4 +603,8 @@ public abstract class PKIFactoryAccess {
         return null;
     }
 
+    protected String getPkiFactoryHost() {
+        return PKI_FACTORY_HOST;
+    }
+
 }

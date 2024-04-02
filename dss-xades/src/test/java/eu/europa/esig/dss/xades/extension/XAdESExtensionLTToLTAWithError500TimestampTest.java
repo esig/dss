@@ -50,7 +50,7 @@ public class XAdESExtensionLTToLTAWithError500TimestampTest extends AbstractXAdE
 	@Test
 	public void extendAndVerify() throws Exception {
 		Exception exception = assertThrows(DSSException.class, () -> super.extendAndVerify());
-		assertTrue(exception.getMessage().contains("Unable to process POST call for url [http://dss.nowina.lu/pki-factory//tsa/error-500/good-tsa]"));
+		assertTrue(exception.getMessage().contains("Unable to process POST call for url [" + getPkiFactoryHost() + "/tsa/error-500/good-tsa]"));
 	}
 
 }
