@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.service.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.service.OnlineSourceTest;
@@ -32,6 +33,7 @@ import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.tsp.CompositeTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -40,6 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,15 +52,22 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	private static final String TSA_URL = ONLINE_PKI_HOST + "/tsa/good-tsa";
 	private static final String ED25519_TSA_URL = ONLINE_PKI_HOST + "/tsa/Ed25519-good-tsa";
 	private static final String ERROR_500_TSA_URL = ONLINE_PKI_HOST + "/tsa/error-500/good-tsa";
+	private static final String INVALID_SIG_TSA_URL = ONLINE_PKI_HOST + "/tsa/invalid/good-tsa";
+	private static final String TIMEOUT_TSA_URL = ONLINE_PKI_HOST + "/tsa/timeout/good-tsa";
 
 	@Test
-	public void testWithoutNonce() {
+	public void testWithoutNonce() throws Exception {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
 		assertNotNull(timeStampResponse);
 		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
+
+		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
+		assertTrue(timestampToken.isSignedBy(timestampToken.getCandidatesForSigningCertificate().getTheBestCandidate().getCertificateToken()));
+		assertTrue(timestampToken.matchData(digest, true));
+		assertTrue(timestampToken.isValid());
 	}
 
 	@Test
@@ -74,6 +84,31 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 		CompositeTSPSource compositeTSPSource = new CompositeTSPSource();
 		compositeTSPSource.setTspSources(tspSources);
 		assertThrows(DSSExternalResourceException.class, () -> compositeTSPSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
+	}
+
+	@Test
+	public void invalidSignature() throws Exception {
+		OnlineTSPSource tspSource = new OnlineTSPSource(INVALID_SIG_TSA_URL);
+
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		assertNotNull(timeStampResponse);
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
+
+		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
+		assertFalse(timestampToken.isSignedBy(timestampToken.getCandidatesForSigningCertificate().getTheBestCandidate().getCertificateToken()));
+		assertTrue(timestampToken.matchData(digest, true));
+		assertFalse(timestampToken.isValid());
+	}
+
+	@Test
+	public void timeout() throws Exception {
+		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
+		timestampDataLoader.setTimeoutResponse(1000); // 1 second
+		OnlineTSPSource tspSource = new OnlineTSPSource(TIMEOUT_TSA_URL, timestampDataLoader);
+
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+		assertThrows(DSSExternalResourceException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
 	}
 
     @Test

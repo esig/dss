@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,6 +63,9 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	private static CertificateToken goodCa;
 	private static CertificateToken ed25519goodUser;
 	private static CertificateToken ed25519goodCa;
+
+	private static CertificateToken invalidSigGoodUser;
+	private static CertificateToken timeoutSigGoodUser;
 	
 	private static CertificateToken qtspUser;
 	private static CertificateToken qtspCa;
@@ -80,6 +84,9 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-user.crt"));
 		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-ca.crt"));
 
+		invalidSigGoodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-ocsp-invalid-sig.crt"));
+		timeoutSigGoodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-ocsp-timeout.crt"));
+
 		qtspUser = DSSUtils.loadCertificate(new File("src/test/resources/sk_user.cer"));
 		qtspCa = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
 		qtspOcsp = DSSUtils.toByteArray(new File("src/test/resources/sk_ocsp.bin"));
@@ -91,6 +98,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertTrue(ocspToken.isValid());
 	}
 
 	@Test
@@ -99,6 +107,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertTrue(ocspToken.isValid());
 	}
 	
 	@Test
@@ -162,6 +171,28 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 		ocspSource.setAlertOnNonexistentNonce(new SilentOnStatusAlert());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
+	}
+
+	@Test
+	public void getRevocationTokenInvalidSignatureTest() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		OCSPToken ocspToken = ocspSource.getRevocationToken(invalidSigGoodUser, goodCa);
+		assertNotNull(ocspToken);
+		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertFalse(ocspToken.isValid());
+	}
+
+	@Test
+	public void getRevocationTokenTimeoutTest() {
+		OCSPDataLoader dataLoader = new OCSPDataLoader();
+		dataLoader.setTimeoutResponse(1000);
+
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource(dataLoader);
+
+		Exception exception = assertThrows(DSSExternalResourceException.class,
+				() -> ocspSource.getRevocationToken(timeoutSigGoodUser, goodCa));
+		assertTrue(exception.getMessage().contains("Unable to retrieve OCSP response for certificate with Id '" + timeoutSigGoodUser.getDSSIdAsString() + "'"));
+		assertTrue(exception.getMessage().contains("Read timed out"));
 	}
 
 	@Test

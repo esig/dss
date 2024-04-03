@@ -56,6 +56,9 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	private static CertificateToken ed25519goodCa;
 	private static CertificateToken ed25519RootCa;
 
+	private static CertificateToken invalidSigGoodUser;
+	private static CertificateToken timeoutSigGoodUser;
+
 	@BeforeAll
 	public static void init() {
 		dataLoader = new CommonsDataLoader();
@@ -67,6 +70,9 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-user.crt"));
 		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-ca.crt"));
 		ed25519RootCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-root-ca.crt"));
+
+		invalidSigGoodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-crl-invalid-sig.crt"));
+		timeoutSigGoodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-crl-timeout.crt"));
 	}
 
 	@BeforeEach
@@ -83,6 +89,7 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 		
 		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa);
 		assertNotNull(revocationToken);
+		assertTrue(revocationToken.isValid());
 	}
 	
 	@Test
@@ -97,6 +104,23 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 		assertTrue(revocationToken.isValid());
 		assertEquals(SignatureAlgorithm.ED25519, revocationToken.getSignatureAlgorithm());
 		assertEquals(SignatureValidity.VALID, revocationToken.getSignatureValidity());
+	}
+
+	@Test
+	public void getRevocationTokenInvalidSignatureTest() {
+		Exception exception = assertThrows(DSSExternalResourceException.class,
+				() -> onlineCRLSource.getRevocationToken(invalidSigGoodUser, goodCa));
+		assertTrue(exception.getMessage().contains("CRL Signature cannot be validated : CRL does not verify with supplied public key."));
+	}
+
+	@Test
+	public void getRevocationTokenTimeoutTest() {
+		dataLoader.setTimeoutResponse(1000);
+
+		Exception exception = assertThrows(DSSExternalResourceException.class,
+				() -> onlineCRLSource.getRevocationToken(timeoutSigGoodUser, goodCa));
+		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + timeoutSigGoodUser.getDSSIdAsString() + "'"));
+		assertTrue(exception.getMessage().contains("Read timed out"));
 	}
 
 	@Test
