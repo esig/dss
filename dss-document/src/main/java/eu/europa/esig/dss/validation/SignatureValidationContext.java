@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -45,6 +46,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSourceAlternateUrlsSupport;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
@@ -118,6 +120,9 @@ public class SignatureValidationContext implements ValidationContext {
 	/** Cached map of tokens and their {@code CertificateToken} issuers */
 	private final Map<Token, CertificateToken> tokenIssuerMap = new HashMap<>();
 
+	/** Cached map of parent {@code CertificateToken}'s and their corresponding issued certificates */
+	private final Map<Token, Set<CertificateToken>> certificateChildrenMap = new HashMap<>();
+
 	/** Certificates from the document */
 	private final ListCertificateSource documentCertificateSource = new ListCertificateSource();
 
@@ -167,15 +172,22 @@ public class SignatureValidationContext implements ValidationContext {
 	private boolean extractPOEFromUntrustedChains;
 
 	/**
-	 * This is the time at what the validation is carried out. It is used only for test purpose.
+	 * This is the time at what the validation is carried out.
 	 */
-	protected Date currentTime = new Date();
+	protected Date currentTime;
 
 	/**
 	 * Default constructor instantiating object with null or empty values and current time
 	 */
 	public SignatureValidationContext() {
-		// empty
+		this(new Date());
+	}
+
+	/**
+	 * Constructor instantiating object with null or empty values and provided time
+	 */
+	public SignatureValidationContext(Date validationTime) {
+		this.currentTime = validationTime;
 	}
 
 	/**
@@ -474,9 +486,22 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		// Cache the result (successful or unsuccessful)
-		tokenIssuerMap.put(token, issuerCertificateToken);
+		addToCacheMap(token, issuerCertificateToken);
 
 		return issuerCertificateToken;
+	}
+
+	private void addToCacheMap(Token token, CertificateToken issuerCertificateToken) {
+		tokenIssuerMap.put(token, issuerCertificateToken);
+
+		if (token instanceof CertificateToken) {
+			Set<CertificateToken> childrenCertificates = certificateChildrenMap.get(issuerCertificateToken);
+			if (Utils.isCollectionEmpty(childrenCertificates)) {
+				childrenCertificates = new HashSet<>();
+				certificateChildrenMap.put(issuerCertificateToken, childrenCertificates);
+			}
+			childrenCertificates.add((CertificateToken) token);
+		}
 	}
 
 	private CertificateToken getIssuerFromProcessedCertificates(Token token) {
@@ -845,6 +870,7 @@ public class SignatureValidationContext implements ValidationContext {
 							onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
 					revocations.add(onlineRevocationToken);
 					addRevocationTokenForVerification(onlineRevocationToken);
+					linkRevocationToOtherCertificates(onlineRevocationToken, certToken, issuerToken);
 				}
 				
 			} else {
@@ -872,6 +898,23 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		return null;
+	}
+
+	private void linkRevocationToOtherCertificates(RevocationToken<?> revocationToken, CertificateToken certificateToken,
+												   CertificateToken issuerCertificateToken) {
+		// Only CRL may relate to multiple certificates
+		if (revocationToken instanceof CRLToken) {
+			CRLToken crlToken = (CRLToken) revocationToken;
+			Set<CertificateToken> certificateTokens = certificateChildrenMap.get(issuerCertificateToken);
+			for (CertificateToken childCertificate : certificateTokens) {
+				if (certificateToken != childCertificate) {
+					CRLToken newCRLToken = new CRLToken(childCertificate, crlToken.getCrlValidity());
+					newCRLToken.setExternalOrigin(crlToken.getExternalOrigin());
+					newCRLToken.setSourceURL(crlToken.getSourceURL());
+					addRevocationTokenForVerification(newCRLToken);
+				}
+			}
+		}
 	}
 
 	private RevocationToken<?> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificate,
@@ -1143,17 +1186,26 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, Collection<RevocationToken<?>> revocations) {
+		Context context = null;
 		// get best-signature-time for b-level certificate chain
 		Date refreshNeededAfterTime = bestSignatureTimeCertChainDates.get(certToken);
+		if (refreshNeededAfterTime != null) {
+			context = Context.SIGNATURE;
+		}
 		// get last usage dates for the same timestamp certificate chain
 		Date lastTimestampUsageTime = lastTimestampCertChainDates.get(certToken);
-		if (lastTimestampUsageTime != null && (refreshNeededAfterTime == null || lastTimestampUsageTime.after(refreshNeededAfterTime))) {
-			refreshNeededAfterTime = lastTimestampUsageTime;
+		if (lastTimestampUsageTime != null) {
+			if (context == null) {
+				context = Context.TIMESTAMP;
+			}
 		}
 		// return best POE for other cases
 		if (refreshNeededAfterTime == null) {
 			// shall not return null
 			refreshNeededAfterTime = getLowestPOETime(certToken);
+			if (context == null) {
+				context = Context.REVOCATION;
+			}
 		}
 		boolean freshRevocationDataFound = false;
 		for (RevocationToken<?> revocationToken : revocations) {
@@ -1164,7 +1216,8 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 
 			final CertificateToken issuerCertificateToken = certificateTokenChain.iterator().next();
-			if (refreshNeededAfterTime != null && (refreshNeededAfterTime.before(revocationToken.getThisUpdate()))
+			if (isRevocationFresh(revocationToken, refreshNeededAfterTime, context)
+					&& isRevocationIssuedAfterLastTimestampUsage(revocationToken, lastTimestampUsageTime)
 					&& (RevocationReason.CERTIFICATE_HOLD != revocationToken.getReason()
 					&& isRevocationAcceptable(revocationToken, issuerCertificateToken)
 					&& hasValidPOE(revocationToken, certToken, issuerCertificateToken))) {
@@ -1193,6 +1246,14 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		return lowestPOE;
+	}
+
+	private boolean isRevocationFresh(RevocationToken<?> revocationToken, Date refreshNeededAfterTime, Context context) {
+		return getRevocationDataVerifier().isRevocationDataFresh(revocationToken, refreshNeededAfterTime, context);
+	}
+
+	private boolean isRevocationIssuedAfterLastTimestampUsage(RevocationToken<?> revocationToken, Date lastTimestampUsage) {
+		return getRevocationDataVerifier().isRevocationDataAfterLastCertificateUsage(revocationToken, lastTimestampUsage);
 	}
 
 	private boolean isRevocationAcceptable(RevocationToken<?> revocation, CertificateToken issuerCertificateToken) {

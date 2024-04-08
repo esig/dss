@@ -92,6 +92,23 @@ DSSCacheFileLoader dataLoader = new FileCacheDataLoader();
 CacheCleaner cacheCleaner = ...
 cacheCleaner.setDataLoader(dataLoader);
 
+|Revocation update on validation          a|
+No revocation data update forced for time-stamp's certificates before its lowest POE
+                                                                     a|
+To get back to previous behavior:
+[source,java]
+----
+SignedDocumentValidator validator = ...
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+...
+RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+revocationDataVerifier.setTimestampMaximumRevocationFreshness(null); // disable tst revocation data update
+certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
+
+validator.setCertificateVerifier(certificateVerifier);
+----
+
 |===
 
 [cols="2,5,5"]

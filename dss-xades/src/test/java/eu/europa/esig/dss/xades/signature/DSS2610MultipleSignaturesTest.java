@@ -30,6 +30,7 @@ import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.RevocationDataVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -103,6 +104,12 @@ public class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
 
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setCrlSource(mockOnlineCRLSource);
+
+        // rollback behavior after DSS-3298
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        revocationDataVerifier.setTimestampMaximumRevocationFreshness(null); // disable tst revocation data update
+        certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
+
         validator.setCertificateVerifier(certificateVerifier);
 
         return validator;

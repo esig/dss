@@ -208,6 +208,9 @@ public class CertificateVerifierSnippet {
         // A validation time can be also defined to enforce verification of specific cryptographic algorithms at the given time
         revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicyWithTime(validationPolicy, validationTime);
 
+        // This method created a RevocationDataVerifier with en empty configuration. All configuration shall be provided manually.
+        revocationDataVerifier = RevocationDataVerifier.createEmptyRevocationDataVerifier();
+
         // For customization directly in RevocationDataVerifier, the following methods may be used:
 
         // #setAcceptableDigestAlgorithms method is used to provide a list of DigestAlgorithms
@@ -249,6 +252,34 @@ public class CertificateVerifierSnippet {
         revocationDataVerifier.setRevocationSkipCertificatePolicies(Arrays.asList(
                 "1.2.3.4.5", "0.5.6.7.8.9"
         ));
+
+        // #setSignatureMaximumRevocationFreshness method defines the maximum acceptable
+        // revocation freshness for signature's certificate chain.
+        // When revocation's thisUpdate time is not after the best-signature-time minus
+        // the maximum revocation freshness, a revocation update is enforced.
+        // Default : 0 (revocation's thisUpdate must be after best-signature-time)
+        revocationDataVerifier.setSignatureMaximumRevocationFreshness(24 * 60 * 60 * 1000L); // 24 hours
+
+        // #setTimestampMaximumRevocationFreshness method defines the maximum acceptable
+        // revocation freshness for time-stamp's certificate chain.
+        // When revocation's thisUpdate time is not after the lowest POE of the time-stamp minus
+        // the maximum revocation freshness, a revocation update is enforced.
+        // Default : 0 (revocation's thisUpdate must be after the lowest POE)
+        revocationDataVerifier.setTimestampMaximumRevocationFreshness(24 * 60 * 60 * 1000L); // 24 hours
+
+        // #setRevocationMaximumRevocationFreshness method defines the maximum acceptable
+        // revocation freshness for revocation's certificate chain.
+        // When revocation's thisUpdate time is not after the lowest POE of the revocation minus
+        // the maximum revocation freshness, a revocation update is enforced.
+        // Default : 0 (revocation's thisUpdate must be after the lowest POE)
+        revocationDataVerifier.setRevocationMaximumRevocationFreshness(24 * 60 * 60 * 1000L); // 24 hours
+
+        // #setCheckRevocationFreshnessNextUpdate method defines whether the revocation freshness
+        // must be evaluated using a difference between revocation's nextUpdate and thisUpdate
+        // as a maximum acceptable revocation freshness when maximum revocation freshness
+        // is not defined for the corresponding validation context (see above)
+        // Default : FALSE (the revocation freshness is not evaluated against its nextUpdate)
+        revocationDataVerifier.setCheckRevocationFreshnessNextUpdate(false);
 
         // end::rev-data-verifier[]
 

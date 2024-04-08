@@ -519,7 +519,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
 			final Collection<EvidenceRecord> detachedEvidenceRecords,
 			final CertificateVerifier certificateVerifier) {
-		ValidationContext validationContext = new SignatureValidationContext();
+		ValidationContext validationContext = new SignatureValidationContext(getValidationTime());
 		validationContext.initialize(certificateVerifier);
 		prepareSignatureValidationContext(validationContext, signatures);
 		prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
@@ -628,8 +628,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				.validationDate(getValidationTime());
 	}
 
-	private List<EvidenceRecord> getAllEvidenceRecords(final List<AdvancedSignature> signatures,
-													   final List<EvidenceRecord> detachedEvidenceRecords) {
+	/**
+	 * Returns a list of all found evidence records (embedded and detached)
+	 *
+	 * @param signatures a list of {@link AdvancedSignature}s
+	 * @param detachedEvidenceRecords a list of detached {@code EvidenceRecord}s
+	 * @return a list of all {@link EvidenceRecord}s
+	 */
+	protected List<EvidenceRecord> getAllEvidenceRecords(final List<AdvancedSignature> signatures,
+														 final List<EvidenceRecord> detachedEvidenceRecords) {
 		List<EvidenceRecord> result = new ArrayList<>();
 		for (AdvancedSignature signature : signatures) {
 			result.addAll(signature.getEmbeddedEvidenceRecords());

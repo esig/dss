@@ -227,7 +227,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link ValidationContext}
 	 */
 	protected ValidationContext prepareValidationContext(CertificateVerifier certificateVerifier) {
-		SignatureValidationContext svc = new SignatureValidationContext();
+		SignatureValidationContext svc = new SignatureValidationContext(getValidationTime());
 		svc.initialize(certificateVerifier);
 		svc.addCertificateTokenForVerification(token);
 		svc.setCurrentTime(getValidationTime());
