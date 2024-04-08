@@ -86,6 +86,12 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		signatureParameters.setImageParameters(imageParameters);
 
 		timestampParameters = new PAdESTimestampParameters();
+
+		imageParameters = new SignatureImageParameters();
+		textParameters = new SignatureImageTextParameters();
+		textParameters.setText("My timestamp");
+		textParameters.setTextColor(Color.GREEN);
+		imageParameters.setTextParameters(textParameters);
 		timestampParameters.setImageParameters(imageParameters);
 
 		service = new PAdESService(getCompleteCertificateVerifier());
@@ -923,6 +929,101 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 	}
 
+	@Test
+	public void testTimestampSignatureField() throws IOException {
+		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+
+		timestampParameters.getImageParameters().getFieldParameters().setFieldId("Signature1");
+		DSSDocument timestampedDocument = timestampAndValidate(document);
+
+		assertTrue(Utils.isCollectionEmpty(service.getAvailableSignatureFields(timestampedDocument)));
+	}
+
+	@Test
+	public void testTLevelAugmentationWithVisibleTimestamp() throws IOException {
+		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
+
+		signatureParameters.setImageParameters(null);
+		DSSDocument signedDocument = signAndValidate(document);
+
+		timestampParameters.getImageParameters().getFieldParameters().setFieldId("Signature1");
+		signatureParameters.setSignatureTimestampParameters(timestampParameters);
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
+
+		DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+		assertTrue(Utils.isCollectionEmpty(service.getAvailableSignatureFields(extendedDocument)));
+	}
+
+	@Test
+	public void testLTALevelWithVisibleSignatureAndTimestamp() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(100);
+		parametersTwo.setOriginY(0);
+		parametersTwo.setHeight(100);
+		parametersTwo.setWidth(100);
+		parametersTwo.setFieldId("signature2");
+		DSSDocument withSecondField = service.addNewSignatureField(withFirstField, parametersTwo);
+		assertNotNull(withSecondField);
+
+		assertEquals(2, service.getAvailableSignatureFields(withSecondField).size());
+
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+
+		timestampParameters.getImageParameters().getFieldParameters().setFieldId("signature2");
+		signatureParameters.setArchiveTimestampParameters(timestampParameters);
+
+		DSSDocument signedDocument = signAndValidate(withSecondField);
+		assertNotNull(signedDocument);
+		assertTrue(Utils.isCollectionEmpty(service.getAvailableSignatureFields(signedDocument)));
+	}
+
+	@Test
+	public void testLTALevelWithVisibleSignatureAndTimestampSameField() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
+
+		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
+		parametersOne.setFieldId("signature1");
+		parametersOne.setOriginX(0);
+		parametersOne.setOriginY(0);
+		parametersOne.setHeight(100);
+		parametersOne.setWidth(100);
+		DSSDocument withFirstField = service.addNewSignatureField(documentToSign, parametersOne);
+		assertNotNull(withFirstField);
+
+		SignatureFieldParameters parametersTwo = new SignatureFieldParameters();
+		parametersTwo.setOriginX(100);
+		parametersTwo.setOriginY(0);
+		parametersTwo.setHeight(100);
+		parametersTwo.setWidth(100);
+		parametersTwo.setFieldId("signature2");
+		DSSDocument withSecondField = service.addNewSignatureField(withFirstField, parametersTwo);
+		assertNotNull(withSecondField);
+
+		assertEquals(2, service.getAvailableSignatureFields(withSecondField).size());
+
+		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+
+		timestampParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+		signatureParameters.setArchiveTimestampParameters(timestampParameters);
+
+		Exception exception = assertThrows(IllegalArgumentException.class,
+				() -> signAndValidate(withSecondField));
+		assertTrue(exception.getMessage().contains("signature1"));
+	}
+
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {
 		DSSDocument signedDocument = sign(documentToSign);
 		validate(signedDocument, false);
@@ -936,6 +1037,18 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		// signedDocument.save("target/test.pdf");
 		return signedDocument;
+	}
+
+	private DSSDocument timestampAndValidate(DSSDocument document) throws IOException {
+		DSSDocument timestampedDocument = timestamp(document);
+		validate(timestampedDocument, false);
+		return timestampedDocument;
+	}
+
+	private DSSDocument timestamp(DSSDocument document) throws IOException {
+		DSSDocument timestampedDocument = service.timestamp(document, timestampParameters);
+		// timestampedDocument.save("target/timestamped.pdf");
+		return timestampedDocument;
 	}
 
 	private Reports validate(DSSDocument signedDocument, boolean skipObjectModification) {

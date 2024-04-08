@@ -170,7 +170,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	
 	private Item findExistingSignatureField(PdfReader reader, SignatureFieldParameters fieldParameters) {
 		String signatureFieldId = fieldParameters.getFieldId();
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(signatureFieldId)) {
+		if (Utils.isStringNotEmpty(signatureFieldId)) {
 			AcroFields acroFields = reader.getAcroFields();
 			List<String> signatureNames = acroFields.getFieldNamesWithBlankSignatures();
 			if (signatureNames.contains(signatureFieldId)) {

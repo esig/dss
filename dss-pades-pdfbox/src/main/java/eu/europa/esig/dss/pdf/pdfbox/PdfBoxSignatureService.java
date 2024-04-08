@@ -244,7 +244,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	
 	private PDSignatureField findExistingSignatureField(final PDDocument pdDocument, final SignatureFieldParameters fieldParameters) {
 		String targetFieldId = fieldParameters.getFieldId();
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(targetFieldId)) {
+		if (Utils.isStringNotEmpty(targetFieldId)) {
 			PDAcroForm acroForm = pdDocument.getDocumentCatalog().getAcroForm();
 			if (acroForm != null) {
 				PDField field = acroForm.getField(targetFieldId);
