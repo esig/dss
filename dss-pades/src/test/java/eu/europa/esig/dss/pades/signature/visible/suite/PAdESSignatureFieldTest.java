@@ -893,6 +893,36 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		assertTrue(signed instanceof FileDocument);
 	}
 
+	// see DSS-3269
+	@Test
+	public void testSignFieldWithWrongPage() throws IOException {
+		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/documentEmptySignature.pdf"));
+
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature");
+		DSSDocument doc = signAndValidate(documentToSign);
+		assertNotNull(doc);
+
+		// both should work
+		signatureParameters.getImageParameters().getFieldParameters().setPage(1);
+		doc = signAndValidate(documentToSign);
+		assertNotNull(doc);
+
+		// evaluate signature field presence
+		signatureParameters.getImageParameters().getFieldParameters().setFieldId(null);
+		signatureParameters.getImageParameters().getFieldParameters().setHeight(100);
+		signatureParameters.getImageParameters().getFieldParameters().setWidth(200);
+		signatureParameters.getImageParameters().getFieldParameters().setPage(1);
+
+		DSSDocument doubleSigned = signAndValidate(doc);
+		assertNotNull(doubleSigned);
+		doubleSigned.save("target/doubleSigned.pdf");
+
+		signatureParameters.getImageParameters().getFieldParameters().setPage(2);
+		Exception exception = assertThrows(AlertException.class,
+				() -> signAndValidate(doubleSigned));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+	}
+
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {
 		DSSDocument signedDocument = sign(documentToSign);
 		validate(signedDocument, false);
