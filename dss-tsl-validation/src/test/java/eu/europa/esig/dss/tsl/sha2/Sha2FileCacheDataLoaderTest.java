@@ -14,11 +14,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -101,21 +103,21 @@ public class Sha2FileCacheDataLoaderTest {
         assertInstanceOf(DocumentWithSha2.class, document);
 
         DocumentWithSha2 documentWithSha2 = (DocumentWithSha2) document;
-        assertEquals(urlMap.get("tl_ok.xml").getDigest(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigest(DigestAlgorithm.SHA256));
-        assertEquals(urlMap.get("tl_ok.sha2").getDigest(DigestAlgorithm.SHA256), documentWithSha2.getSha2Document().getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_ok.xml").getDigestValue(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigestValue(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_ok.sha2").getDigestValue(DigestAlgorithm.SHA256), documentWithSha2.getSha2Document().getDigestValue(DigestAlgorithm.SHA256));
         assertEquals(Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, urlMap.get("tl_ok.xml"))), new String(DSSUtils.toByteArray(documentWithSha2.getSha2Document())));
         assertTrue(Utils.isCollectionEmpty(documentWithSha2.getErrors()));
 
-        assertEquals(urlMap.get("tl_ok.xml").getDigest(DigestAlgorithm.SHA256), document.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_ok.xml").getDigestValue(DigestAlgorithm.SHA256), document.getDigestValue(DigestAlgorithm.SHA256));
 
         DSSDocument documentFromCache = sha2FileCacheDataLoader.getDocumentFromCache("tl_ok.xml");
-        assertEquals(documentWithSha2.getDocument().getDigest(DigestAlgorithm.SHA256), documentFromCache.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(documentWithSha2.getDocument().getDigestValue(DigestAlgorithm.SHA256), documentFromCache.getDigestValue(DigestAlgorithm.SHA256));
 
         DSSDocument refreshedDocument = sha2FileCacheDataLoader.getRefreshedDocument("tl_ok.xml");
-        assertEquals(urlMap.get("tl_ok.xml").getDigest(DigestAlgorithm.SHA256), refreshedDocument.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_ok.xml").getDigestValue(DigestAlgorithm.SHA256), refreshedDocument.getDigestValue(DigestAlgorithm.SHA256));
 
         DSSDocument sha2File = sha2FileCacheDataLoader.getSha2File("tl_ok.xml");
-        assertEquals(documentWithSha2.getSha2Document().getDigest(DigestAlgorithm.SHA256), sha2File.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(documentWithSha2.getSha2Document().getDigestValue(DigestAlgorithm.SHA256), sha2File.getDigestValue(DigestAlgorithm.SHA256));
 
         assertEquals("tl_ok.sha2", sha2FileCacheDataLoader.getSha2FileUrl("tl_ok.xml"));
     }
@@ -130,8 +132,8 @@ public class Sha2FileCacheDataLoaderTest {
         assertInstanceOf(DocumentWithSha2.class, document);
 
         DocumentWithSha2 documentWithSha2 = (DocumentWithSha2) document;
-        assertEquals(urlMap.get("tl_ko.xml").getDigest(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigest(DigestAlgorithm.SHA256));
-        assertEquals(urlMap.get("tl_ko.sha2").getDigest(DigestAlgorithm.SHA256), documentWithSha2.getSha2Document().getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_ko.xml").getDigestValue(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigestValue(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_ko.sha2").getDigestValue(DigestAlgorithm.SHA256), documentWithSha2.getSha2Document().getDigestValue(DigestAlgorithm.SHA256));
         assertNotEquals(Utils.toHex(DSSUtils.digest(DigestAlgorithm.SHA256, urlMap.get("tl_ko.xml"))), new String(DSSUtils.toByteArray(documentWithSha2.getSha2Document())));
 
         assertEquals(1, Utils.collectionSize(documentWithSha2.getErrors()));
@@ -148,7 +150,7 @@ public class Sha2FileCacheDataLoaderTest {
         assertInstanceOf(DocumentWithSha2.class, document);
 
         DocumentWithSha2 documentWithSha2 = (DocumentWithSha2) document;
-        assertEquals(urlMap.get("tl_no_sha2.xml").getDigest(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_no_sha2.xml").getDigestValue(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigestValue(DigestAlgorithm.SHA256));
         assertNull(documentWithSha2.getSha2Document());
 
         assertEquals(2, Utils.collectionSize(documentWithSha2.getErrors()));
@@ -166,7 +168,7 @@ public class Sha2FileCacheDataLoaderTest {
         assertInstanceOf(DocumentWithSha2.class, document);
 
         DocumentWithSha2 documentWithSha2 = (DocumentWithSha2) document;
-        assertEquals(urlMap.get("tl_bad.ext").getDigest(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_bad.ext").getDigestValue(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigestValue(DigestAlgorithm.SHA256));
         assertNull(documentWithSha2.getSha2Document());
 
         assertEquals(2, Utils.collectionSize(documentWithSha2.getErrors()));
@@ -184,7 +186,7 @@ public class Sha2FileCacheDataLoaderTest {
         assertInstanceOf(DocumentWithSha2.class, document);
 
         DocumentWithSha2 documentWithSha2 = (DocumentWithSha2) document;
-        assertEquals(urlMap.get("tl_no_dot_xml").getDigest(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(urlMap.get("tl_no_dot_xml").getDigestValue(DigestAlgorithm.SHA256), documentWithSha2.getDocument().getDigestValue(DigestAlgorithm.SHA256));
         assertNull(documentWithSha2.getSha2Document());
 
         assertEquals(2, Utils.collectionSize(documentWithSha2.getErrors()));
@@ -208,7 +210,7 @@ public class Sha2FileCacheDataLoaderTest {
         urlMap.put("tl_refresh.xml", urlMap.get("tl_new.xml"));
 
         DSSDocument documentFromCache = sha2FileCacheDataLoader.getDocumentFromCache("tl_refresh.xml");
-        assertEquals(((DocumentWithSha2) document).getDocument().getDigest(DigestAlgorithm.SHA256), documentFromCache.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(((DocumentWithSha2) document).getDocument().getDigestValue(DigestAlgorithm.SHA256), documentFromCache.getDigestValue(DigestAlgorithm.SHA256));
 
         document = sha2FileCacheDataLoader.getDocument("tl_refresh.xml");
         assertNotNull(document);
@@ -218,10 +220,10 @@ public class Sha2FileCacheDataLoaderTest {
         assertTrue(Utils.isCollectionEmpty(documentWithSha2.getErrors()));
 
         documentFromCache = sha2FileCacheDataLoader.getDocumentFromCache("tl_refresh.xml");
-        assertEquals(((DocumentWithSha2) document).getDocument().getDigest(DigestAlgorithm.SHA256), documentFromCache.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(((DocumentWithSha2) document).getDocument().getDigestValue(DigestAlgorithm.SHA256), documentFromCache.getDigestValue(DigestAlgorithm.SHA256));
 
         DSSDocument refreshedDocument = sha2FileCacheDataLoader.getRefreshedDocument("tl_refresh.xml");
-        assertEquals(((DocumentWithSha2) document).getDocument().getDigest(DigestAlgorithm.SHA256), refreshedDocument.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(((DocumentWithSha2) document).getDocument().getDigestValue(DigestAlgorithm.SHA256), refreshedDocument.getDigestValue(DigestAlgorithm.SHA256));
     }
 
     @Test
@@ -239,7 +241,7 @@ public class Sha2FileCacheDataLoaderTest {
         urlMap.put("tl_no_refresh.xml", urlMap.get("tl_new.xml"));
 
         DSSDocument documentFromCache = sha2FileCacheDataLoader.getDocumentFromCache("tl_no_refresh.xml");
-        assertEquals(((DocumentWithSha2) document).getDocument().getDigest(DigestAlgorithm.SHA256), documentFromCache.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(((DocumentWithSha2) document).getDocument().getDigestValue(DigestAlgorithm.SHA256), documentFromCache.getDigestValue(DigestAlgorithm.SHA256));
 
         document = sha2FileCacheDataLoader.getDocument("tl_no_refresh.xml");
         assertNotNull(document);
@@ -249,10 +251,10 @@ public class Sha2FileCacheDataLoaderTest {
         assertTrue(Utils.isCollectionEmpty(documentWithSha2.getErrors()));
 
         documentFromCache = sha2FileCacheDataLoader.getDocumentFromCache("tl_no_refresh.xml");
-        assertEquals(((DocumentWithSha2) document).getDocument().getDigest(DigestAlgorithm.SHA256), documentFromCache.getDigest(DigestAlgorithm.SHA256));
+        assertArrayEquals(((DocumentWithSha2) document).getDocument().getDigestValue(DigestAlgorithm.SHA256), documentFromCache.getDigestValue(DigestAlgorithm.SHA256));
 
         DSSDocument refreshedDocument = sha2FileCacheDataLoader.getRefreshedDocument("tl_refresh.xml");
-        assertNotEquals(((DocumentWithSha2) document).getDocument().getDigest(DigestAlgorithm.SHA256), refreshedDocument.getDigest(DigestAlgorithm.SHA256));
+        assertFalse(Arrays.equals(((DocumentWithSha2) document).getDocument().getDigestValue(DigestAlgorithm.SHA256), refreshedDocument.getDigestValue(DigestAlgorithm.SHA256)));
     }
 
     @Test

@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation.dss2011;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -34,8 +28,13 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESEnvelopingValidationTest extends AbstractCAdESTestValidation {
 
@@ -74,8 +73,8 @@ public class CAdESEnvelopingValidationTest extends AbstractCAdESTestValidation {
 		
 		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(diagnosticData.getFirstSignatureId());
 		assertEquals(1, originalDocuments.size());
-		assertEquals(originalDocuments.get(0).getDigest(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestMethod()), 
-				Utils.toBase64(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue()));
+		assertArrayEquals(originalDocuments.get(0).getDigestValue(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestMethod()),
+				originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue());
 	}
 
 }

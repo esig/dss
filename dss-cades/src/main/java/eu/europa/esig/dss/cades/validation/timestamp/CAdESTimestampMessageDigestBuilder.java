@@ -266,7 +266,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private DSSMessageDigest getOriginalDocumentDigest() {
 		DSSDocument originalDocument = getOriginalDocument();
 		if (originalDocument != null) {
-			final byte[] digest = Utils.fromBase64(originalDocument.getDigest(digestAlgorithm));
+			final byte[] digest = originalDocument.getDigestValue(digestAlgorithm);
 			return new DSSMessageDigest(digestAlgorithm, digest);
 		} else {
 			LOG.error("The original document is not found for TimestampToken with Id '{}'! "

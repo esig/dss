@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ASiCWithXAdESDataToSignHelperBuilderTest {
 
@@ -73,22 +73,22 @@ public class ASiCWithXAdESDataToSignHelperBuilderTest {
         String base64 = Utils.toBase64(byteArray);
         LOG.info(base64);
 
-        String digest = dssDocument.getDigest(DigestAlgorithm.SHA256);
+        byte[] digest = dssDocument.getDigestValue(DigestAlgorithm.SHA256);
 
-        LOG.info(digest);
+        LOG.info(Utils.toBase64(digest));
 
         GetDataToSignASiCWithXAdESHelper getDataToSignHelperTwo = builder.build(asicContent, signatureParameters);
         assertNotNull(getDataToSignHelper);
         DSSDocument twice = getDataToSignHelperTwo.getToBeSigned().get(0);
 
-        String digestTwice = twice.getDigest(DigestAlgorithm.SHA256);
+        byte[] digestTwice = twice.getDigestValue(DigestAlgorithm.SHA256);
 
         String base64twice = Utils.toBase64(DSSUtils.toByteArray(twice));
         LOG.info(base64twice);
-        LOG.info(digestTwice);
+        LOG.info(Utils.toBase64(digestTwice));
 
         assertEquals(base64, base64twice);
-        assertTrue(Utils.areStringsEqual(digest, digestTwice));
+        assertArrayEquals(digest, digestTwice);
     }
 
 }

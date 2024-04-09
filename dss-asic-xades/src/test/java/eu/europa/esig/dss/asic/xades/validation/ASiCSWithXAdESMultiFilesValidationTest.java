@@ -38,7 +38,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -77,11 +76,11 @@ public class ASiCSWithXAdESMultiFilesValidationTest extends AbstractASiCWithXAdE
 			assertEquals(2, originalDocuments.size());
 			
 			for (DSSDocument dssDocument : EXPECTED_MULTIFILES) {
-				String digestExpected = dssDocument.getDigest(DigestAlgorithm.SHA256);
+				byte[] digestExpected = dssDocument.getDigestValue(DigestAlgorithm.SHA256);
 				boolean found = false;
 				for (DSSDocument retrieved : originalDocuments) {
-					String digestRetrieved = retrieved.getDigest(DigestAlgorithm.SHA256);
-					if (Utils.areStringsEqual(digestExpected, digestRetrieved)) {
+					byte[] digestRetrieved = retrieved.getDigestValue(DigestAlgorithm.SHA256);
+					if (Arrays.equals(digestExpected, digestRetrieved)) {
 						found = true;
 					}
 				}

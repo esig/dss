@@ -53,7 +53,7 @@ public class JAdESLevelLTADetachedUriByHashWithDigestDocumentTest extends Abstra
     @BeforeEach
     public void init() throws Exception {
         DSSDocument originalDocument = new FileDocument(new File("src/test/resources/sample.json"));
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigest(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
         documentToSign.setName(originalDocument.getName());
 
         signatureParameters = new JAdESSignatureParameters();

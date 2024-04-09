@@ -124,7 +124,7 @@ public class ASN1ArchiveTimeStampSequenceDigestHelper extends AbstractEvidenceRe
          */
 
         // 0. Compute hash of the document
-        byte[] documentMessageDigest = Utils.fromBase64(document.getDigest(digestAlgorithm));
+        byte[] documentMessageDigest = document.getDigestValue(digestAlgorithm);
 
         // 1. Group together items
         List<byte[]> hashValueList = new ArrayList<>();

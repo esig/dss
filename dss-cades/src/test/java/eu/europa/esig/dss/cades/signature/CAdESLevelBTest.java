@@ -339,10 +339,9 @@ public class CAdESLevelBTest extends AbstractCAdESTestSignature {
 		String secondDocument = new String(DSSUtils.toByteArray(results.get(0)));
 		assertEquals(firstDocument, secondDocument);
 
-		String digest = documentToSign.getDigest(DigestAlgorithm.SHA256);
-		String digest2 = results.get(0).getDigest(DigestAlgorithm.SHA256);
-
-		assertEquals(digest, digest2);
+		byte[] digest = documentToSign.getDigestValue(DigestAlgorithm.SHA256);
+		byte[] digest2 = results.get(0).getDigestValue(DigestAlgorithm.SHA256);
+		assertArrayEquals(digest, digest2);
 	}
 
 	@Override

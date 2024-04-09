@@ -87,7 +87,7 @@ public class CAdESService extends
 		Objects.requireNonNull(tspSource, "A TSPSource is required !");
 
 		DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();
-		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, Utils.fromBase64(toSignDocument.getDigest(digestAlgorithm)));
+		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, toSignDocument.getDigestValue(digestAlgorithm));
 		try {
 			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
 		} catch (TSPException | IOException | CMSException e) {

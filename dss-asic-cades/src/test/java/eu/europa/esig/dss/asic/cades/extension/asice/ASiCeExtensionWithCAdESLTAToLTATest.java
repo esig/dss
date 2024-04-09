@@ -53,6 +53,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -140,7 +141,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         List<DSSDocument> signatures = asicValidator.getSignatureDocuments();
         assertTrue(Utils.isCollectionNotEmpty(signatures));
 
-        String signatureDigest = signatures.get(0).getDigest(DigestAlgorithm.SHA256);
+        byte[] signatureDigest = signatures.get(0).getDigestValue(DigestAlgorithm.SHA256);
 
         List<DSSDocument> archiveManifests = asicValidator.getArchiveManifestDocuments();
         assertTrue(Utils.isCollectionNotEmpty(archiveManifests));
@@ -148,7 +149,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         for (DSSDocument archiveManifest : archiveManifests) {
             ManifestFile archiveManifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
             Digest archManifestSigDigest = getSignatureDigest(archiveManifestFile);
-            assertEquals(signatureDigest, Utils.toBase64(archManifestSigDigest.getValue()));
+            assertArrayEquals(signatureDigest, archManifestSigDigest.getValue());
         }
     }
 

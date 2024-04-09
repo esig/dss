@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -107,9 +108,22 @@ public class ManifestFile implements Serializable {
 	 *
 	 * @param digestAlgorithm {@link DigestAlgorithm} to compute digest
 	 * @return {@link String} base64-encoded digest value
+	 * @deprecated since DSS 6.1. Please use {@code #getDigestValue} method instead
 	 */
+	@Deprecated
 	public String getDigestBase64String(DigestAlgorithm digestAlgorithm) {
-		return document.getDigest(digestAlgorithm);
+		byte[] digestValue = getDigestValue(digestAlgorithm);
+		return Base64.getEncoder().encodeToString(digestValue);
+	}
+
+	/**
+	 * Gets digest value of the manifest document for the given {@code digestAlgorithm}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to compute digest
+	 * @return byte array representing the digest value
+	 */
+	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
+		return document.getDigestValue(digestAlgorithm);
 	}
 
 	/**

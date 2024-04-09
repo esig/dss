@@ -11,13 +11,12 @@ import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,7 +51,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
 
         List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(1, signedDocuments.size());
-        assertEquals(signedDocuments.get(0).getDigest(DigestAlgorithm.SHA256), Utils.toBase64(digests.get(0).getValue()));
+        assertArrayEquals(signedDocuments.get(0).getDigestValue(DigestAlgorithm.SHA256), digests.get(0).getValue());
 
         asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA512);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new XMLEvidenceRecordDataObjectDigestBuilderFactory());
@@ -62,7 +61,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
         Assertions.assertEquals(1, digests.size());
 
         assertEquals(1, signedDocuments.size());
-        assertEquals(signedDocuments.get(0).getDigest(DigestAlgorithm.SHA512), Utils.toBase64(digests.get(0).getValue()));
+        assertArrayEquals(signedDocuments.get(0).getDigestValue(DigestAlgorithm.SHA512), digests.get(0).getValue());
     }
 
     @Test
@@ -84,7 +83,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
 
         List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(1, signedDocuments.size());
-        assertEquals(signedDocuments.get(0).getDigest(DigestAlgorithm.SHA256), Utils.toBase64(digests.get(0).getValue()));
+        assertArrayEquals(signedDocuments.get(0).getDigestValue(DigestAlgorithm.SHA256), digests.get(0).getValue());
 
         asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA512);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new ASN1EvidenceRecordDataObjectDigestBuilderFactory());
@@ -94,7 +93,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
         Assertions.assertEquals(1, digests.size());
 
         assertEquals(1, signedDocuments.size());
-        assertEquals(signedDocuments.get(0).getDigest(DigestAlgorithm.SHA512), Utils.toBase64(digests.get(0).getValue()));
+        assertArrayEquals(signedDocuments.get(0).getDigestValue(DigestAlgorithm.SHA512), digests.get(0).getValue());
     }
 
     @Test
@@ -112,7 +111,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
 
         List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(1, signedDocuments.size());
-        assertEquals(signedDocuments.get(0).getDigest(DigestAlgorithm.SHA256), Utils.toBase64(digests.get(0).getValue()));
+        assertArrayEquals(signedDocuments.get(0).getDigestValue(DigestAlgorithm.SHA256), digests.get(0).getValue());
     }
 
     @Test
@@ -130,7 +129,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
 
         List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(1, signedDocuments.size());
-        assertEquals(signedDocuments.get(0).getDigest(DigestAlgorithm.SHA256), Utils.toBase64(digests.get(0).getValue()));
+        assertArrayEquals(signedDocuments.get(0).getDigestValue(DigestAlgorithm.SHA256), digests.get(0).getValue());
     }
 
     @Test
@@ -148,7 +147,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
 
         List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(1, signedDocuments.size());
-        assertEquals(signedDocuments.get(0).getDigest(DigestAlgorithm.SHA256), Utils.toBase64(digests.get(0).getValue()));
+        assertArrayEquals(signedDocuments.get(0).getDigestValue(DigestAlgorithm.SHA256), digests.get(0).getValue());
     }
 
     @Test
@@ -166,7 +165,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
 
         List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(1, signedDocuments.size());
-        assertEquals(signedDocuments.get(0).getDigest(DigestAlgorithm.SHA256), Utils.toBase64(digests.get(0).getValue()));
+        assertArrayEquals(signedDocuments.get(0).getDigestValue(DigestAlgorithm.SHA256), digests.get(0).getValue());
     }
 
     @Test
@@ -182,12 +181,10 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
         ASiCWithCAdESContainerExtractor asicContainerExtractor = new ASiCWithCAdESContainerExtractor(document);
         ASiCContent asicContent = asicContainerExtractor.extract();
 
-        List<String> based64Digests = digests.stream().map(d -> Utils.toBase64(d.getValue())).collect(Collectors.toList());
-
         List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(2, signedDocuments.size());
         for (DSSDocument signedDocument : signedDocuments) {
-            assertTrue(based64Digests.contains(signedDocument.getDigest(DigestAlgorithm.SHA256)));
+            assertTrue(digests.contains(new Digest(DigestAlgorithm.SHA256, signedDocument.getDigestValue(DigestAlgorithm.SHA256))));
         }
     }
 
@@ -204,12 +201,10 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
         ASiCWithCAdESContainerExtractor asicContainerExtractor = new ASiCWithCAdESContainerExtractor(document);
         ASiCContent asicContent = asicContainerExtractor.extract();
 
-        List<String> based64Digests = digests.stream().map(d -> Utils.toBase64(d.getValue())).collect(Collectors.toList());
-
         List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
         assertEquals(2, signedDocuments.size());
         for (DSSDocument signedDocument : signedDocuments) {
-            assertTrue(based64Digests.contains(signedDocument.getDigest(DigestAlgorithm.SHA256)));
+            assertTrue(digests.contains(new Digest(DigestAlgorithm.SHA256, signedDocument.getDigestValue(DigestAlgorithm.SHA256))));
         }
     }
 

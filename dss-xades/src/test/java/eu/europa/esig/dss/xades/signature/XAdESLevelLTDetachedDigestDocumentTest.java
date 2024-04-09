@@ -33,7 +33,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class XAdESLevelLTDetachedDigestDocumentTest extends AbstractXAdESTestSig
     @BeforeEach
     public void init() throws Exception {
         DSSDocument originalDocument = new FileDocument("src/test/resources/sample.xml");
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigest(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
 
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
@@ -61,7 +61,7 @@ public class XAdESLevelLTDetachedDigestDocumentTest extends AbstractXAdESTestSig
 
     @Override
     protected List<DSSDocument> getDetachedContents() {
-        return Arrays.asList(documentToSign);
+        return Collections.singletonList(documentToSign);
     }
 
     @Override

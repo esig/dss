@@ -166,7 +166,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                             "A signature with name '%s' in a container is covered by a manifest!", currentSignatureDocument.getName()));
 
                 } else if (manifest.getName().equals(manifestToCompare.getName()) &&
-                        manifest.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(manifestToCompare.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
+                        Arrays.equals(manifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM), manifestToCompare.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                     result.add(signatureToCompare);
 
                 } else {
@@ -203,7 +203,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                 for (ASiCContent currentASiCContent : asicContentsToProcess) {
                     for (DSSDocument currentManifest : currentASiCContent.getManifestDocuments()) {
                         if (manifest.getName() != null && manifest.getName().equals(currentManifest.getName())) {
-                            if (manifest.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(currentManifest.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
+                            if (Arrays.equals(manifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentManifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                                 // continue
 
                             } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
@@ -223,7 +223,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                 for (ASiCContent currentASiCContent : asicContentsToProcess) {
                     for (DSSDocument currentManifest : currentASiCContent.getArchiveManifestDocuments()) {
                         if (manifest.getName() != null && manifest.getName().equals(currentManifest.getName())) {
-                            if (manifest.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(currentManifest.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
+                            if (Arrays.equals(manifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentManifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                                 // continue
 
                             } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||

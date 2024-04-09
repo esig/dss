@@ -67,9 +67,9 @@ public class XAdESWithASN1SignaturePolicyTest extends AbstractXAdESTestSignature
         signaturePolicy.setDocumentationReferences(SIGNATURE_POLICY_DOCUMENTATION);
         signaturePolicy.setSpuri(HTTP_SPURI_TEST);
 
-        String base64Digest = POLICY_CONTENT.getDigest(DigestAlgorithm.SHA256);
+        byte[] digest = POLICY_CONTENT.getDigestValue(DigestAlgorithm.SHA256);
         signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        signaturePolicy.setDigestValue(Utils.fromBase64(base64Digest));
+        signaturePolicy.setDigestValue(digest);
 
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());

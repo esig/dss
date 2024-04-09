@@ -45,7 +45,6 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -286,7 +285,7 @@ public class JAdESServiceTest extends PKIFactoryAccess {
         Policy policy = new Policy();
         policy.setId("Policy Id");
         policy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        policy.setDigestValue(Utils.fromBase64(signaturePolicy.getDigest(DigestAlgorithm.SHA256)));
+        policy.setDigestValue(signaturePolicy.getDigestValue(DigestAlgorithm.SHA256));
         signatureParameters.bLevel().setSignaturePolicy(policy);
 
         DSSDocument signedDocument = sign(documentToSign, signatureParameters);

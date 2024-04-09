@@ -73,8 +73,8 @@ public class ASiCManifestValidator {
                 DSSDocument signedDocument = DSSUtils.getDocumentWithName(signedDocuments, entry.getFileName());
                 if (signedDocument != null) {
                     entry.setFound(true);
-                    String computedDigest = signedDocument.getDigest(entry.getDigest().getAlgorithm());
-                    if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
+                    byte[] computedDigest = signedDocument.getDigestValue(entry.getDigest().getAlgorithm());
+                    if (Arrays.equals(entry.getDigest().getValue(), computedDigest)) {
                         entry.setIntact(true);
                     } else {
                         LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());

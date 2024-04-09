@@ -81,8 +81,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 				List<DSSDocument> detachedContents = new ArrayList<>();
 				DSSDocument signedContent = new PdfByteRangeDocument(dssDocument, pdSignature.getByteRange());
 
-				DSSDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256,
-						signedContent.getDigest(DigestAlgorithm.SHA1));
+				DSSDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256, signedContent.getDigestValue(DigestAlgorithm.SHA1));
 				detachedContents.add(digestDoc);
 
 				validator.setDetachedContents(detachedContents);
@@ -132,8 +131,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 				List<DSSDocument> detachedContents = new ArrayList<>();
 				DSSDocument signedContent = new PdfByteRangeDocument(dssDocument, pdSignature.getByteRange());
 
-				DSSDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256,
-						signedContent.getDigest(DigestAlgorithm.SHA256));
+				DSSDocument digestDoc = new DigestDocument(DigestAlgorithm.SHA256, signedContent.getDigestValue(DigestAlgorithm.SHA256));
 				detachedContents.add(digestDoc);
 
 				validator.setDetachedContents(detachedContents);

@@ -311,7 +311,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
             if (currentMimeTypeDocument != null) {
                 if (mimeType == null) {
                     mimeType = currentMimeTypeDocument;
-                } else if (!mimeType.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(currentMimeTypeDocument.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
+                } else if (!Arrays.equals(mimeType.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentMimeTypeDocument.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                     throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
                             "Containers contain different mimetype documents!"));
                 }
@@ -331,7 +331,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
 
                 } else {
                     DSSDocument originalListDocument = DSSUtils.getDocumentWithName(result, document.getName());
-                    if (!originalListDocument.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(document.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
+                    if (!Arrays.equals(originalListDocument.getDigestValue(DEFAULT_DIGEST_ALGORITHM), document.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                         throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
                                 "Containers contain different documents under the same name : %s!", document.getName()));
                     }

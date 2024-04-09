@@ -59,7 +59,7 @@ public class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
         ExternalCMSService service = new ExternalCMSService(getOfflineCertificateVerifier());
 
         DSSDocument toSignDocument = new InMemoryDocument("Hello World!".getBytes());
-        DSSMessageDigest messageDigest = new DSSMessageDigest(DigestAlgorithm.SHA256, Utils.fromBase64(toSignDocument.getDigest(DigestAlgorithm.SHA256)));
+        DSSMessageDigest messageDigest = new DSSMessageDigest(DigestAlgorithm.SHA256, toSignDocument.getDigestValue(DigestAlgorithm.SHA256));
         PAdESSignatureParameters parameters = new PAdESSignatureParameters();
         parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 

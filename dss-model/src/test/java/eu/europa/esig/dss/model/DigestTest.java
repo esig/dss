@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,12 +36,12 @@ import java.security.SecureRandom;
 import java.util.Formatter;
 import java.util.Locale;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DigestTest {
 	
@@ -102,6 +101,18 @@ public class DigestTest {
 		String hexValue = d1.getHexValue();
 		d1.setValue(new byte[] { 5, 6, 7 });
 		assertNotEquals(hexValue, d1.getHexValue());
+	}
+
+	@Test
+	public void hexTest() {
+		Digest d1 = new Digest(DigestAlgorithm.SHA256, new byte[] { 1, 2, 3 });
+		assertEquals("010203", d1.getHexValue());
+	}
+
+	@Test
+	public void base64Test() {
+		Digest d1 = new Digest(DigestAlgorithm.SHA256, new byte[] { 1, 2, 3 });
+		assertEquals("AQID", d1.getBase64Value());
 	}
 
 	@Disabled("performances")

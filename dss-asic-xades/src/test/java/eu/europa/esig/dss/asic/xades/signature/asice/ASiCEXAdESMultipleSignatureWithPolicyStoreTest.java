@@ -74,7 +74,7 @@ public class ASiCEXAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 		Policy policy = new Policy();
 		policy.setId(SIGNATURE_POLICY_ID);
 		policy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		policy.setDigestValue(Utils.fromBase64(POLICY_CONTENT.getDigest(DigestAlgorithm.SHA256)));
+		policy.setDigestValue(POLICY_CONTENT.getDigestValue(DigestAlgorithm.SHA256));
 		signatureParameters.bLevel().setSignaturePolicy(policy);
 
 		return signatureParameters;

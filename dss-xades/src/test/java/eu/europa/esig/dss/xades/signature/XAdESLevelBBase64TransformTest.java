@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -112,7 +113,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			if (DigestMatcherType.OBJECT.equals(digestMatcher.getType())) {
 				DigestAlgorithm digestAlgorithm = digestMatcher.getDigestMethod();
-				assertEquals(image.getDigest(digestAlgorithm), Utils.toBase64(digestMatcher.getDigestValue()));
+				assertArrayEquals(image.getDigestValue(digestAlgorithm), digestMatcher.getDigestValue());
 				objectFound = true;
 			}
 		}

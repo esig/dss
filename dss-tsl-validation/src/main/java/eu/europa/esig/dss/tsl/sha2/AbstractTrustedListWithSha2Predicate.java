@@ -53,8 +53,8 @@ public abstract class AbstractTrustedListWithSha2Predicate implements Predicate<
         if (document == null) {
             return null;
         }
-        String base64EncodedDigest = document.getDigest(SHA2_ALGORITHM);
-        return new Digest(SHA2_ALGORITHM, Utils.fromBase64(base64EncodedDigest));
+        byte[] digest = document.getDigestValue(SHA2_ALGORITHM);
+        return new Digest(SHA2_ALGORITHM, digest);
     }
 
     /**

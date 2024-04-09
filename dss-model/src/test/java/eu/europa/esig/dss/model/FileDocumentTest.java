@@ -28,6 +28,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -58,8 +59,8 @@ public class FileDocumentTest {
 		assertTrue(doc.exists());
 		assertEquals("AdobeCA.p7c", doc.getName());
 		assertEquals(MimeTypeEnum.BINARY, doc.getMimeType());
-		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest(DigestAlgorithm.SHA256));
-		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest(DigestAlgorithm.SHA256)); // uses map
+		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", Base64.getEncoder().encodeToString(doc.getDigestValue(DigestAlgorithm.SHA256)));
+		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", Base64.getEncoder().encodeToString(doc.getDigestValue(DigestAlgorithm.SHA256))); // uses map
 
 		Path containerTemporaryPath = temporaryFolder.resolve("testFileDocument");
 		doc.save(containerTemporaryPath.toString());

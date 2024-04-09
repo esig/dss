@@ -3,7 +3,6 @@ package eu.europa.esig.dss.validation.evidencerecord;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Objects;
 
@@ -73,8 +72,7 @@ public abstract class AbstractSignatureEvidenceRecordDigestBuilder implements Si
      * @return {@link Digest}
      */
     protected Digest getDigest(DSSDocument document) {
-        String base64EncodedDigest = document.getDigest(digestAlgorithm);
-        return new Digest(digestAlgorithm, Utils.fromBase64(base64EncodedDigest));
+        return new Digest(digestAlgorithm, document.getDigestValue(digestAlgorithm));
     }
 
 }

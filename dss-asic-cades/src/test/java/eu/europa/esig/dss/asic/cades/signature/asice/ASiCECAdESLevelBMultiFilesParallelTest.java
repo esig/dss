@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
@@ -40,7 +40,6 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -164,7 +163,7 @@ public class ASiCECAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		XmlDigestAlgoAndValue digestAlgoAndValue = xmlSignatureScopeFirstDocument.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
 		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
-        assertArrayEquals(Utils.fromBase64(firstDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue());
+        assertArrayEquals(firstDocument.getDigestValue(digestAlgorithm), digestAlgoAndValue.getDigestValue());
 		
 		XmlSignatureScope xmlSignatureScopeSecondDocument = signatureScopes.get(2);
 		assertNotNull(xmlSignatureScopeSecondDocument.getName());
@@ -172,12 +171,13 @@ public class ASiCECAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		digestAlgoAndValue = xmlSignatureScopeSecondDocument.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
 		digestAlgorithm = digestAlgoAndValue.getDigestMethod();
-		assertArrayEquals(Utils.fromBase64(secondDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue());
-		
+		assertArrayEquals(secondDocument.getDigestValue(digestAlgorithm), digestAlgoAndValue.getDigestValue());
+
 	}
 
 	@Override
 	protected String getSigningAlias() {
 		return GOOD_USER;
 	}
+
 }

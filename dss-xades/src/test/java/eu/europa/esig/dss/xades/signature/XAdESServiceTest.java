@@ -336,7 +336,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 		Policy policy = new Policy();
 		policy.setId("Policy Id");
 		policy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		policy.setDigestValue(Utils.fromBase64(signaturePolicy.getDigest(DigestAlgorithm.SHA256)));
+		policy.setDigestValue(signaturePolicy.getDigestValue(DigestAlgorithm.SHA256));
 		signatureParameters.bLevel().setSignaturePolicy(policy);
 
 		DSSDocument signedDocument = sign(documentToSign, signatureParameters);

@@ -838,8 +838,7 @@ public class JAdESLevelBaselineB {
 			 * "false".
 			 */
 			if (!parameters.isBase64UrlEncodedPayload() || document instanceof DigestDocument) {
-				String base64Digest = document.getDigest(digestAlgorithm);
-				docDigest = Utils.fromBase64(base64Digest);
+				docDigest = document.getDigestValue(digestAlgorithm);
 			}
 			/*
 			 * 2) The base64url-encoded digest value of the base64url-encoded data object

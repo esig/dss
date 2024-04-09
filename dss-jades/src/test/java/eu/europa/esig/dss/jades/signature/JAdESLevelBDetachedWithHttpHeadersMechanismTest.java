@@ -71,8 +71,8 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 		documentsToSign.add(new HTTPHeader("x-example", "Duplicated Header"));     
 		
 		// build "Digest" header manually
-        String digest = originalDocument.getDigest(DigestAlgorithm.SHA1);
-        documentsToSign.add(new HTTPHeader("Digest", "SHA="+digest));
+        byte[] digest = originalDocument.getDigestValue(DigestAlgorithm.SHA1);
+        documentsToSign.add(new HTTPHeader("Digest", "SHA=" + Utils.toBase64(digest)));
 
 		signatureParameters = new JAdESSignatureParameters();
 

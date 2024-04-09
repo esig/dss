@@ -68,8 +68,8 @@ public class DSSDocumentTest {
 		}
 		// end::inMemoryDocument[]
 
-		assertNotNull(binaryInMemoryDocument.getDigest(DigestAlgorithm.SHA256));
-		assertNotNull(isInMemoryDocument.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(binaryInMemoryDocument.getDigestValue(DigestAlgorithm.SHA256));
+		assertNotNull(isInMemoryDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		try (InputStream is = binaryInMemoryDocument.openStream()) {
 			// expected behavior
@@ -100,8 +100,8 @@ public class DSSDocumentTest {
 
 		// end::fileDocument[]
 
-		assertNotNull(fileDocument.getDigest(DigestAlgorithm.SHA256));
-		assertNotNull(filePathDocument.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(fileDocument.getDigestValue(DigestAlgorithm.SHA256));
+		assertNotNull(filePathDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		try (InputStream is = fileDocument.openStream()) {
 			// expected behavior
@@ -129,21 +129,21 @@ public class DSSDocumentTest {
 		DSSDocument fileDocument = new FileDocument("src/main/resources/xml_example.xml");
 
 		// After that, we create a DigestDocument
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, fileDocument.getDigest(DigestAlgorithm.SHA1));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, fileDocument.getDigestValue(DigestAlgorithm.SHA1));
 		digestDocument.setName(fileDocument.getName());
 
 		// We can add additional digest values when required. Eg : for a SHA-256 based signature
-		digestDocument.addDigest(DigestAlgorithm.SHA256, fileDocument.getDigest(DigestAlgorithm.SHA256));
+		digestDocument.addDigest(DigestAlgorithm.SHA256, fileDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		// Or incorporate digest value as a String directly
 		digestDocument.addDigest(DigestAlgorithm.SHA512, "T1h8Ss0fiK0pfo1chVoLumIhyIgR9I0g8IvPhJPxwnR5dPFhLDEMU5kpt3AE4xnU2dagh6JaMz1INaCkO0LItg==");
 
 		// end::digestDocument[]
 
-		assertNotNull(digestDocument.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(digestDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		try {
-			digestDocument.getDigest(DigestAlgorithm.SHA384);
+			digestDocument.getDigestValue(DigestAlgorithm.SHA384);
 			fail("SHA-384 doesn't exist");
 		} catch (IllegalArgumentException e) {
 			// normal behavior
@@ -173,7 +173,7 @@ public class DSSDocumentTest {
 
 		// end::cmsDocument[]
 
-		assertNotNull(fileDocument.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(fileDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		try (InputStream is = fileDocument.openStream()) {
 			// expected behavior
@@ -210,7 +210,7 @@ public class DSSDocumentTest {
 
 		// end::containerEntryDocument[]
 
-		assertNotNull(containerEntryDocument.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(containerEntryDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		try (InputStream is = containerEntryDocument.openStream()) {
 			// expected behavior
@@ -232,21 +232,21 @@ public class DSSDocumentTest {
 		// An HTTPHeader shall be defined with a header name and a value
 		DSSDocument httpHeader = new HTTPHeader("content-type", "application/json");
 
-		// An `digest` HTTP Header can be created from a HTTP body message, using a DSSDocument and a desired DigestAlgorithm
+		// An `digest` HTTP Header can be created from an HTTP body message, using a DSSDocument and a desired DigestAlgorithm
 		DSSDocument httpBodyMessage = new InMemoryDocument("Hello World!".getBytes());
 		DSSDocument httpHeaderDigest = new HTTPHeaderDigest(httpBodyMessage, DigestAlgorithm.SHA256);
 
 		// end::httpHeader[]
 
 		try {
-			httpHeader.getDigest(DigestAlgorithm.SHA256);
+			httpHeader.getDigestValue(DigestAlgorithm.SHA256);
 			fail("getDigest(...) method is not supported for HTTPHeader document");
 		} catch (UnsupportedOperationException e) {
 			// normal behavior
 		}
 
 		try {
-			httpHeaderDigest.getDigest(DigestAlgorithm.SHA256);
+			httpHeaderDigest.getDigestValue(DigestAlgorithm.SHA256);
 			fail("getDigest(...) method is not supported for HTTPHeader document");
 		} catch (UnsupportedOperationException e) {
 			// normal behavior

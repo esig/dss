@@ -88,10 +88,10 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		assertEquals(1, results.size());
 		DSSDocument retrievedSignedDocument = results.get(0);
 
-		LOG.info("ORIGINAL : {}", document.getDigest(DigestAlgorithm.SHA256));
-		LOG.info("RETRIEVED : {}", retrievedSignedDocument.getDigest(DigestAlgorithm.SHA256));
+		LOG.info("ORIGINAL : {}", Utils.toBase64(document.getDigestValue(DigestAlgorithm.SHA256)));
+		LOG.info("RETRIEVED : {}", Utils.toBase64(retrievedSignedDocument.getDigestValue(DigestAlgorithm.SHA256)));
 
-		assertEquals(document.getDigest(DigestAlgorithm.SHA256), retrievedSignedDocument.getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(document.getDigestValue(DigestAlgorithm.SHA256), retrievedSignedDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		start = System.currentTimeMillis();
 		results = validator.getOriginalDocuments(signatureIdList.get(1));
@@ -101,10 +101,10 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		assertEquals(1, results.size());
 		DSSDocument retrievedResignedDocument = results.get(0);
 
-		LOG.info("SIGNED ORIGINAL : {}", signedDocument.getDigest(DigestAlgorithm.SHA256));
-		LOG.info("SIGNED RETRIEVED : {}", retrievedResignedDocument.getDigest(DigestAlgorithm.SHA256));
+		LOG.info("SIGNED ORIGINAL : {}", Utils.toBase64(signedDocument.getDigestValue(DigestAlgorithm.SHA256)));
+		LOG.info("SIGNED RETRIEVED : {}", Utils.toBase64(retrievedResignedDocument.getDigestValue(DigestAlgorithm.SHA256)));
 
-		assertEquals(signedDocument.getDigest(DigestAlgorithm.SHA256), retrievedResignedDocument.getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(signedDocument.getDigestValue(DigestAlgorithm.SHA256), retrievedResignedDocument.getDigestValue(DigestAlgorithm.SHA256));
 		
 		SignatureWrapper firstSignature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(firstSignature);
@@ -120,7 +120,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		assertNotNull(originalDocDigestAlgoAndValue);
 		DigestAlgorithm digestAlgorithmOriginalDocument = originalDocDigestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithmOriginalDocument);
-        assertArrayEquals(Utils.fromBase64(document.getDigest(digestAlgorithmOriginalDocument)), originalDocDigestAlgoAndValue.getDigestValue());
+        assertArrayEquals(document.getDigestValue(digestAlgorithmOriginalDocument), originalDocDigestAlgoAndValue.getDigestValue());
 		
 		SignatureWrapper secondSignature = diagnosticData.getSignatures().get(1);
 		assertNotNull(secondSignature);
@@ -136,7 +136,7 @@ public class GetOriginalDocumentTest extends PKIFactoryAccess {
 		assertNotNull(firstDocDigestAlgoAndValue);
 		DigestAlgorithm digestAlgorithmSignedDocument = firstDocDigestAlgoAndValue.getDigestMethod();
 		assertNotNull(digestAlgorithmSignedDocument);
-		assertArrayEquals(Utils.fromBase64(signedDocument.getDigest(digestAlgorithmSignedDocument)), firstDocDigestAlgoAndValue.getDigestValue());
+		assertArrayEquals(signedDocument.getDigestValue(digestAlgorithmSignedDocument), firstDocDigestAlgoAndValue.getDigestValue());
 		
 	}
 

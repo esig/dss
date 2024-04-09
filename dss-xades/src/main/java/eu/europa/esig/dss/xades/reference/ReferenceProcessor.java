@@ -190,7 +190,8 @@ public class ReferenceProcessor {
                 DSSXMLUtils.incorporateDigestMethod(referenceDom, dssReference.getDigestMethodAlgorithm(), namespace);
 
                 DSSDocument documentAfterTransforms = getReferenceOutput(dssReference);
-                String base64EncodedDigestBytes = documentAfterTransforms.getDigest(dssReference.getDigestMethodAlgorithm());
+                byte[] digestBytes = documentAfterTransforms.getDigestValue(dssReference.getDigestMethodAlgorithm());
+                String base64EncodedDigestBytes = Utils.toBase64(digestBytes);
                 DSSXMLUtils.incorporateDigestValue(referenceDom, base64EncodedDigestBytes, namespace);
             }
         }

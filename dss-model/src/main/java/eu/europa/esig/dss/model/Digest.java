@@ -25,7 +25,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Container for a Digest and his algorithm
@@ -55,19 +57,6 @@ public class Digest implements Serializable {
 	public Digest(DigestAlgorithm algorithm, byte[] value) {
 		this.algorithm = algorithm;
 		this.value = value;
-	}
-
-	/**
-	 * Gets the HEX (base16) encoded digest value String
-	 *
-	 * @return {@link String} HEX-encoded digest
-	 */
-	public String getHexValue() {
-		String hex = new BigInteger(1, value).toString(16);
-		if (hex.length() % 2 == 1) {
-			hex = "0" + hex;
-		}
-		return hex.toUpperCase(Locale.ENGLISH);
 	}
 
 	/**
@@ -106,6 +95,30 @@ public class Digest implements Serializable {
 	 */
 	public void setValue(byte[] value) {
 		this.value = value;
+	}
+
+	/**
+	 * Gets the HEX (base16) encoded digest value String
+	 *
+	 * @return {@link String} HEX-encoded digest
+	 */
+	public String getHexValue() {
+		Objects.requireNonNull(value, "Digest value is not defined!");
+		String hex = new BigInteger(1, value).toString(16);
+		if (hex.length() % 2 == 1) {
+			hex = "0" + hex;
+		}
+		return hex.toUpperCase(Locale.ENGLISH);
+	}
+
+	/**
+	 * Gets the base64-encoded digest value String
+	 *
+	 * @return {@link String} base64-encoded digest
+	 */
+	public String getBase64Value() {
+		Objects.requireNonNull(value, "Digest value is not defined!");
+		return Base64.getEncoder().encodeToString(value);
 	}
 
 	@Override

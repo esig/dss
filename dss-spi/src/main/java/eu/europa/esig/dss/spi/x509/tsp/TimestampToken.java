@@ -501,8 +501,8 @@ public class TimestampToken extends Token {
 		}
 
 		Digest currentMessageImprint = getMessageImprint();
-		String computedBase64Digest = timestampedData.getDigest(currentMessageImprint.getAlgorithm());
-		return matchData(Utils.fromBase64(computedBase64Digest), suppressMatchWarnings);
+		byte[] computedDigest = timestampedData.getDigestValue(currentMessageImprint.getAlgorithm());
+		return matchData(computedDigest, suppressMatchWarnings);
 	}
 
 	/**

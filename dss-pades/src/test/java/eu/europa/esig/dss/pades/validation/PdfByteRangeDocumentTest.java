@@ -58,7 +58,7 @@ public class PdfByteRangeDocumentTest {
     @Test
     public void contentComparisonTest() throws IOException {
         PdfByteRangeDocument pdfRevisionDocument = new PdfByteRangeDocument(pdfDocument, byteRange);
-        assertEquals("tlP+GBlImCLCAZGWWWTLmiHtZVVTqHeiRq+ddk5hV+M=", pdfRevisionDocument.getDigest(DigestAlgorithm.SHA256));
+        assertEquals("tlP+GBlImCLCAZGWWWTLmiHtZVVTqHeiRq+ddk5hV+M=", Utils.toBase64(pdfRevisionDocument.getDigestValue(DigestAlgorithm.SHA256)));
     }
 
     @Test
@@ -105,7 +105,7 @@ public class PdfByteRangeDocumentTest {
     public void readDocumentInsideOpenStreamTest() throws IOException {
         PdfByteRangeDocument pdfRevisionDocument = new PdfByteRangeDocument(pdfDocument, byteRange);
         try (InputStream is = pdfRevisionDocument.openStream()) {
-            assertEquals(pdfRevisionDocument.getDigest(DigestAlgorithm.SHA256), Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, is)));
+            assertArrayEquals(pdfRevisionDocument.getDigestValue(DigestAlgorithm.SHA256), DSSUtils.digest(DigestAlgorithm.SHA256, is));
         }
     }
 

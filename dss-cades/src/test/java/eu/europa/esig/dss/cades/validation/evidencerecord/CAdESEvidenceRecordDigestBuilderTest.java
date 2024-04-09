@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -136,8 +137,8 @@ public class CAdESEvidenceRecordDigestBuilderTest {
         List<Digest> digests = new CAdESEvidenceRecordDigestBuilder(cadesWithEr).setDetachedContent(originalDoc)
                 .setParallelEvidenceRecord(true).buildExternalEvidenceRecordDigest();
         assertEquals(2, digests.size());
-        assertEquals(signature.getDigest(DigestAlgorithm.SHA256), Utils.toBase64(digests.get(0).getValue()));
-        assertEquals(originalDoc.getDigest(DigestAlgorithm.SHA256), Utils.toBase64(digests.get(1).getValue()));
+        assertArrayEquals(signature.getDigestValue(DigestAlgorithm.SHA256), digests.get(0).getValue());
+        assertArrayEquals(originalDoc.getDigestValue(DigestAlgorithm.SHA256), digests.get(1).getValue());
     }
 
     @Test

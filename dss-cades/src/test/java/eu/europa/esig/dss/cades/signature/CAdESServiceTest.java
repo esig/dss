@@ -213,7 +213,7 @@ public class CAdESServiceTest extends PKIFactoryAccess {
         Policy policy = new Policy();
         policy.setId("1.2.3.4.5");
         policy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        policy.setDigestValue(Utils.fromBase64(signaturePolicy.getDigest(DigestAlgorithm.SHA256)));
+        policy.setDigestValue(signaturePolicy.getDigestValue(DigestAlgorithm.SHA256));
         signatureParameters.bLevel().setSignaturePolicy(policy);
 
         DSSDocument signedDocument = sign(documentToSign, signatureParameters);

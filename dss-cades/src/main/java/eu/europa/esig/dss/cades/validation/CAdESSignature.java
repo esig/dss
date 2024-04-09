@@ -799,8 +799,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
 			// try to match with found digest algorithm(s)
 			for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-				String base64Digest = originalDocument.getDigest(digestAlgorithm);
-				if (Arrays.equals(messageDigest.getValue(), Utils.fromBase64(base64Digest))) {
+				byte[] base64Digest = originalDocument.getDigestValue(digestAlgorithm);
+				if (Arrays.equals(messageDigest.getValue(), base64Digest)) {
 					messageDigest.setAlgorithm(digestAlgorithm);
 					return true;
 				}
@@ -870,7 +870,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, digestAlgorithmCandidates, messageDigest));
 
 			if (manifestFile != null && 
-					Utils.toBase64(messageDigest.getValue()).equals(manifestFile.getDigestBase64String(messageDigest.getAlgorithm()))) {
+					Arrays.equals(messageDigest.getValue(), manifestFile.getDigestValue(messageDigest.getAlgorithm()))) {
 				messageDigestValidation.setName(manifestFile.getFilename());
 				// get references to documents contained in the manifest file (for ASiC-E container)
 				messageDigestValidation.getDependentValidations()
@@ -899,7 +899,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				if (Utils.isArrayNotEmpty(contentDigest)) {
 					contentValidation.setFound(true);
 					contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
-					if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
+					if (Arrays.equals(contentDigest, originalDocument.getDigestValue(digestAlgorithm))) {
 						contentValidation.setIntact(true);
 					}
 				}

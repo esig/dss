@@ -49,7 +49,7 @@ public class ASiCEXAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, ORIGINAL_DOCUMENT.getDigest(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, ORIGINAL_DOCUMENT.getDigestValue(DigestAlgorithm.SHA256));
 
         signatureParameters = new ASiCWithXAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());

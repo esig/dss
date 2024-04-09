@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -70,8 +71,8 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		assertEquals(1, originalDocuments.size());
 		SignerDataWrapper originalDoc = originalDocuments.get(0);
 		
-		assertEquals(document.getDigest(originalDoc.getDigestAlgoAndValue().getDigestMethod()), 
-				Utils.toBase64(originalDoc.getDigestAlgoAndValue().getDigestValue()));
+		assertArrayEquals(document.getDigestValue(originalDoc.getDigestAlgoAndValue().getDigestMethod()),
+				originalDoc.getDigestAlgoAndValue().getDigestValue());
 	}
 	
 	@Test
@@ -86,8 +87,8 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		assertEquals(1, originalDocuments.size());
 		SignerDataWrapper originalDoc = originalDocuments.get(0);
 
-		assertEquals(document.getDigest(originalDoc.getDigestAlgoAndValue().getDigestMethod()), 
-				Utils.toBase64(originalDoc.getDigestAlgoAndValue().getDigestValue()));
+		assertArrayEquals(document.getDigestValue(originalDoc.getDigestAlgoAndValue().getDigestMethod()),
+				originalDoc.getDigestAlgoAndValue().getDigestValue());
 	}
 	
 	@Test
@@ -100,9 +101,8 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	}
 	
 	private List<DSSReference> buildReferences(DSSDocument document, DSSTransform... transforms) {
-		
-		List<DSSTransform> dssTransforms = new ArrayList<>();
-		dssTransforms.addAll(Arrays.asList(transforms));
+
+        List<DSSTransform> dssTransforms = new ArrayList<>(Arrays.asList(transforms));
 
 		DSSReference ref1 = new DSSReference();
 		ref1.setContents(document);

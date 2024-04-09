@@ -678,7 +678,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
 		boolean equals = false;
 		for (DSSDocument documentToCompare : similarDocuments) {
-			if (documentToCompare.getDigest(digestAlgorithm).equals(Utils.toBase64(digestAlgoAndValue.getDigestValue()))) {
+			if (Arrays.equals(documentToCompare.getDigestValue(digestAlgorithm), digestAlgoAndValue.getDigestValue())) {
 				equals = true;
 				break;
 			}

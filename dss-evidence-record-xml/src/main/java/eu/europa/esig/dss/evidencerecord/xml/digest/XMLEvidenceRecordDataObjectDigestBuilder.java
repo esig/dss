@@ -7,7 +7,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 
@@ -110,8 +109,7 @@ public class XMLEvidenceRecordDataObjectDigestBuilder extends AbstractDataObject
                 throw new DSSException(String.format("Unable to read document with name '%s'! Reason : %s", providedDocument.getName(), e.getMessage()), e);
             }
         } else {
-            String base64EncodedDigest = providedDocument.getDigest(digestAlgorithm);
-            hashValue = Utils.fromBase64(base64EncodedDigest);
+            hashValue = providedDocument.getDigestValue(digestAlgorithm);
         }
         return new Digest(digestAlgorithm, hashValue);
     }

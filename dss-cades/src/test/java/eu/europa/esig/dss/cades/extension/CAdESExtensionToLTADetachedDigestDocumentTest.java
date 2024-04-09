@@ -362,7 +362,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 
 	private DSSDocument getDigestDocument() {
-		DigestDocument digestDocument = new DigestDocument(digestAlgo, getCompleteDocument().getDigest(digestAlgo));
-		return digestDocument;
+		return new DigestDocument(digestAlgo, getCompleteDocument().getDigestValue(digestAlgo));
 	}
+
 }

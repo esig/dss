@@ -55,7 +55,7 @@ public class PrecomputedDigestCalculatorProvider implements DigestCalculatorProv
 	public DigestCalculator get(final AlgorithmIdentifier digestAlgorithmIdentifier) throws OperatorCreationException {
 
 		ASN1ObjectIdentifier algorithmOid = digestAlgorithmIdentifier.getAlgorithm();
-		final String digestBase64 = digestDocument.getDigest(DigestAlgorithm.forOID(algorithmOid.getId()));
+		final byte[] digestBase64 = digestDocument.getDigestValue(DigestAlgorithm.forOID(algorithmOid.getId()));
 
 		return new DigestCalculator() {
 
@@ -72,10 +72,7 @@ public class PrecomputedDigestCalculatorProvider implements DigestCalculatorProv
 
 			@Override
 			public byte[] getDigest() {
-				if (Utils.isBase64Encoded(digestBase64)) {
-					return Utils.fromBase64(digestBase64);
-				}
-				throw new IllegalArgumentException("The DigestDocument digest value shall be base64-encoded!");
+				return digestBase64;
 			}
 
 			@Override

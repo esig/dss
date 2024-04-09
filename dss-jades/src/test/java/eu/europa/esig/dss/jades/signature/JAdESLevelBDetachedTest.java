@@ -51,6 +51,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -166,7 +167,7 @@ public class JAdESLevelBDetachedTest extends AbstractJAdESTestSignature {
 		XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
 		
-		assertEquals(documentToSign.getDigest(digestAlgoAndValue.getDigestMethod()), Utils.toBase64(digestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(documentToSign.getDigestValue(digestAlgoAndValue.getDigestMethod()), digestAlgoAndValue.getDigestValue());
 	}
 
 	@Override

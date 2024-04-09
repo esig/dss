@@ -43,7 +43,7 @@ public class Asn1EvidenceRecordNoneValidRefValidationValidationTest extends Abst
     @Override
     protected List<DSSDocument> getDetachedContents() {
         return Arrays.asList(
-                new DigestDocument(DigestAlgorithm.SHA256, "nOrPvuvr+9Pj2QlFxQ3o4Oxzn9iVqadG31KDHNRlgKY==", "some invalid binary content"),
+                new DigestDocument(DigestAlgorithm.SHA256, "nOrPvuvr+9Pj2QlFxQ3o4Oxzn9iVqadG31KDHNRlgKY=", "some invalid binary content"),
                 new DigestDocument(DigestAlgorithm.SHA256, "t+btFtQajsHkMsByflnnYdSUwKbYnlRhV4rVJsoiw2o=", "some invalid binary content two")
         );
     }

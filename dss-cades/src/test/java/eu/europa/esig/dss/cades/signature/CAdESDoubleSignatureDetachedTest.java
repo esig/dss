@@ -35,7 +35,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -84,7 +83,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 		DSSDocument signedDocument = sign();
 		Reports reports = verify(signedDocument);
 		
-        byte[] expectedDigest = Utils.fromBase64(documentToSign.getDigest(DigestAlgorithm.SHA256));
+        byte[] expectedDigest = documentToSign.getDigestValue(DigestAlgorithm.SHA256);
 		
 		documentToSign = signedDocument;
 		user = EE_GOOD_USER;

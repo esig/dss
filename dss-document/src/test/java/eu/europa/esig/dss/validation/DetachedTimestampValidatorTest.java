@@ -45,6 +45,7 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,7 +97,7 @@ public class DetachedTimestampValidatorTest {
 		DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestamp);
-		validator.setDetachedContents(Arrays.asList(timestampedContent));
+		validator.setDetachedContents(Collections.singletonList(timestampedContent));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
 		validate(validator.validateDocument());
@@ -128,7 +129,7 @@ public class DetachedTimestampValidatorTest {
 		assertFalse(timestampWrapper.isSignatureValid());
 
 		validator = SignedDocumentValidator.fromDocument(timestamp);
-		validator.setDetachedContents(Arrays.asList(new InMemoryDocument("Wrong data".getBytes(StandardCharsets.UTF_8))));
+		validator.setDetachedContents(Collections.singletonList(new InMemoryDocument("Wrong data".getBytes(StandardCharsets.UTF_8))));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		reports = validator.validateDocument();
 		diagnosticData = reports.getDiagnosticData();
@@ -165,7 +166,7 @@ public class DetachedTimestampValidatorTest {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestamp);
 		validator.setDetachedContents(Arrays.asList(timestampedContent, timestampedContent));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> validator.validateDocument());
+		Exception exception = assertThrows(IllegalArgumentException.class, validator::validateDocument);
 		assertEquals("Only one detached document shall be provided for a timestamp validation!", exception.getMessage());
 	}
 
@@ -238,7 +239,7 @@ public class DetachedTimestampValidatorTest {
 		DigestDocument digestDocument = new DigestDocument(algorithm, "rNMlNiy5XThUc5LOI4+rEc8mou5Ks2wgMGM8AjaOQlU=");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setDetachedContents(Arrays.asList(digestDocument));
+		validator.setDetachedContents(Collections.singletonList(digestDocument));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/dss-1929/ts-policy.xml"));
 		assertNotNull(constraintsParameters);

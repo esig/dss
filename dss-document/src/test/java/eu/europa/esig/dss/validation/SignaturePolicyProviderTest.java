@@ -31,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -79,8 +80,8 @@ public class SignaturePolicyProviderTest {
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
 		spp.setDataLoader(dataLoader);
 
-		assertEquals(POLICY_DOC.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigest(DigestAlgorithm.SHA256));
-		assertEquals(POLICY_DOC.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(POLICY_DOC.getDigestValue(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigestValue(DigestAlgorithm.SHA256));
+		assertArrayEquals(POLICY_DOC.getDigestValue(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigestValue(DigestAlgorithm.SHA256));
 	}
 
 	@Test
@@ -95,8 +96,8 @@ public class SignaturePolicyProviderTest {
 		DataLoader dataLoader = new MemoryDataLoader(dataMap);
 		spp.setDataLoader(dataLoader);
 
-		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigest(DigestAlgorithm.SHA256));
-		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(policy.getDigestValue(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigestValue(DigestAlgorithm.SHA256));
+		assertArrayEquals(policy.getDigestValue(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigestValue(DigestAlgorithm.SHA256));
 
 		policyContent = "Bye World!".getBytes(StandardCharsets.UTF_8);
 		policy = new InMemoryDocument(policyContent);
@@ -105,8 +106,8 @@ public class SignaturePolicyProviderTest {
 		dataLoader = new MemoryDataLoader(dataMap);
 		spp.setDataLoader(dataLoader);
 
-		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigest(DigestAlgorithm.SHA256));
-		assertEquals(policy.getDigest(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(policy.getDigestValue(DigestAlgorithm.SHA256), spp.getSignaturePolicyByUrl(POLICY_URL).getDigestValue(DigestAlgorithm.SHA256));
+		assertArrayEquals(policy.getDigestValue(DigestAlgorithm.SHA256), spp.getSignaturePolicy(POLICY_ID, POLICY_URL).getDigestValue(DigestAlgorithm.SHA256));
 	}
 
 }

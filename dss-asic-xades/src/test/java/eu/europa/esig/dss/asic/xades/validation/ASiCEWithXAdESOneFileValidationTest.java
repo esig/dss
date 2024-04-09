@@ -31,6 +31,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ASiCEWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTestValidation {
@@ -57,7 +58,7 @@ public class ASiCEWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTe
 		for (AdvancedSignature advancedSignature : signatures) {
 			List<DSSDocument> originalDocuments = validator.getOriginalDocuments(advancedSignature.getId());
 			assertEquals(1, originalDocuments.size());
-			assertEquals(EXPECTED_ONEFILE.getDigest(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigest(DigestAlgorithm.SHA256));
+			assertArrayEquals(EXPECTED_ONEFILE.getDigestValue(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigestValue(DigestAlgorithm.SHA256));
 		}
 	}
 

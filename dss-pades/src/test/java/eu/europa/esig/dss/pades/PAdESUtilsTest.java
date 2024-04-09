@@ -181,7 +181,7 @@ public abstract class PAdESUtilsTest {
         List<PdfByteRangeDocument> revisions = PAdESUtils.extractRevisions(document);
         assertEquals(8, revisions.size());
 
-        List<String> digests = revisions.stream().map(p -> p.getDigest(DigestAlgorithm.SHA256)).collect(Collectors.toList());
+        List<String> digests = revisions.stream().map(p -> Utils.toBase64(p.getDigestValue(DigestAlgorithm.SHA256))).collect(Collectors.toList());
         assertTrue(digests.contains("vWy56bH8ogyHwEx2a65rFT0bahMyDaJtOQyUOxcu+Yk="));
         assertTrue(digests.contains("eIeuDc3ay6bOu+93QiJQauyLDT0a2duT3ZaqVST6u3c=")); // extracted from sig validation
         assertTrue(digests.contains("fgC1+020dbjbSOkxdR3JgNuiBbaSHSDXql53yN1cC5k=")); // extracted from sig validation
@@ -213,7 +213,7 @@ public abstract class PAdESUtilsTest {
         assertEquals(54, revisions.size());
 
         DSSDocument originalRevision = PAdESUtils.getPreviousRevision(byteRange, revisions);
-        assertEquals(expectedSHA256, originalRevision.getDigest(DigestAlgorithm.SHA256));
+        assertEquals(expectedSHA256, Utils.toBase64(originalRevision.getDigestValue(DigestAlgorithm.SHA256)));
     }
 
     @Test
@@ -226,7 +226,7 @@ public abstract class PAdESUtilsTest {
         assertEquals(54, revisions.size());
 
         DSSDocument originalRevision = PAdESUtils.getPreviousRevision(byteRange, revisions);
-        assertEquals(expectedSHA256, originalRevision.getDigest(DigestAlgorithm.SHA256));
+        assertEquals(expectedSHA256, Utils.toBase64(originalRevision.getDigestValue(DigestAlgorithm.SHA256)));
     }
 
     @Test

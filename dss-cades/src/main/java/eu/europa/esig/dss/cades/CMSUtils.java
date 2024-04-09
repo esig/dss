@@ -437,7 +437,7 @@ public final class CMSUtils {
 	public static DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument,
 																	   DigestAlgorithm digestAlgorithm) {
 		if (digestAlgorithm != null) {
-			return new CustomMessageDigestCalculatorProvider(digestAlgorithm, toSignDocument.getDigest(digestAlgorithm));
+			return new CustomMessageDigestCalculatorProvider(digestAlgorithm, toSignDocument.getDigestValue(digestAlgorithm));
 		} else if (toSignDocument instanceof DigestDocument) {
 			return new PrecomputedDigestCalculatorProvider((DigestDocument) toSignDocument);
 		}

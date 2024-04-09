@@ -1027,8 +1027,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			byte[] expectedDigest) {
 		byte[] computedDigestValue;
 		if (jws.isRfc7797UnencodedPayload() || document instanceof DigestDocument) {
-			String computedDigestBase64 = document.getDigest(digestAlgorithm);
-			computedDigestValue = Utils.fromBase64(computedDigestBase64);
+			computedDigestValue = document.getDigestValue(digestAlgorithm);
 		} else {
 			String base64UrlEncodedDocument = DSSJsonUtils.toBase64Url(document);
 			computedDigestValue = DSSUtils.digest(digestAlgorithm, base64UrlEncodedDocument.getBytes());

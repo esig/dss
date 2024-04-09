@@ -244,7 +244,7 @@ public class PAdESSignature extends CAdESSignature {
 		 */
 		if (signerDocument != null && getPdfSignatureDictionary() != null &&
 				PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(getPdfSignatureDictionary().getSubFilter())) {
-			signerDocument = new InMemoryDocument(Utils.fromBase64(signerDocument.getDigest(DigestAlgorithm.SHA1)));
+			signerDocument = new InMemoryDocument(signerDocument.getDigestValue(DigestAlgorithm.SHA1));
 		}
 		return signerDocument;
 	}

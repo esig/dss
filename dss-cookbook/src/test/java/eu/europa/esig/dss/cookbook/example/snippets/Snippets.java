@@ -32,7 +32,6 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.JKSSignatureToken;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -49,7 +48,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class Snippets {
 
@@ -263,15 +262,14 @@ public class Snippets {
 
 		// Compute hash on a DSSDocument
 		DSSDocument document = new InMemoryDocument("Hello World!".getBytes());
-		String base64Sha256HashOfDocument = document.getDigest(DigestAlgorithm.SHA256);
+		byte[] sha256HashOfDocument = document.getDigestValue(DigestAlgorithm.SHA256);
 
 		// Compute hash on a byte array
 		byte[] binaries = "Hello World!".getBytes();
 		byte[] sha256HashOfBinaries = DSSUtils.digest(DigestAlgorithm.SHA256, binaries);
-		String base64Sha256HashOfBinaries = Utils.toBase64(sha256HashOfBinaries);
 		// end::hashComputation[]
 
-		assertEquals(base64Sha256HashOfDocument, base64Sha256HashOfBinaries);
+		assertArrayEquals(sha256HashOfDocument, sha256HashOfBinaries);
 	}
 
 }

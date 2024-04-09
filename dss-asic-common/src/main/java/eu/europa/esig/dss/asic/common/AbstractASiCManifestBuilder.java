@@ -25,6 +25,7 @@ import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
 import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
 import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilter;
 import eu.europa.esig.dss.asic.common.evidencerecord.ASiCEvidenceRecordDigestBuilder;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -214,7 +215,7 @@ public abstract class AbstractASiCManifestBuilder {
 		digestMethodDom.setAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName(), digestAlgorithm.getUri());
 
 		final Element digestValueDom = DomUtils.addElement(documentDom, dataObjectReferenceDom, XMLDSigNamespace.NS, XMLDSigElement.DIGEST_VALUE);
-		final Text textNode = documentDom.createTextNode(document.getDigest(digestAlgorithm));
+		final Text textNode = documentDom.createTextNode(Utils.toBase64(document.getDigestValue(digestAlgorithm)));
 		digestValueDom.appendChild(textNode);
 		
 		return dataObjectReferenceDom;

@@ -109,6 +109,18 @@ certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
 validator.setCertificateVerifier(certificateVerifier);
 ----
 
+|DSSDocument#getDigest          a|[source,java]
+----
+DSSDocument document = ...
+String base64EncodedDigest = document.getDigest(DigestAlgorithm.SHA256);
+----
+a|[source,java]
+----
+DSSDocument document = ...
+byte[] digest = document.getDigestValue(DigestAlgorithm.SHA256);
+String base64EncodedDigest = Utils.toBase64(digest);
+----
+
 |===
 
 [cols="2,5,5"]

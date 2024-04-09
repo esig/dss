@@ -72,7 +72,7 @@ public class SignDetachedDocumentTest extends CookbookTools {
 
             // Create a DigestDocument from original DSSDocument
             DigestDocument digestDocument = new DigestDocument();
-            digestDocument.addDigest(DigestAlgorithm.SHA256, originalDocument.getDigest(DigestAlgorithm.SHA256));
+            digestDocument.addDigest(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
 
             // Preparing parameters for a signature creation
             CAdESSignatureParameters parameters = new CAdESSignatureParameters();

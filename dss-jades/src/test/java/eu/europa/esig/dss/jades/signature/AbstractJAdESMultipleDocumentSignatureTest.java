@@ -47,6 +47,7 @@ import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.jwx.Headers;
 import org.jose4j.lang.JoseException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -151,10 +152,10 @@ public abstract class AbstractJAdESMultipleDocumentSignatureTest extends Abstrac
 					}
 					
 				} else {
-					String originalDigest = original.getDigest(DigestAlgorithm.SHA256);
+					byte[] originalDigest = original.getDigestValue(DigestAlgorithm.SHA256);
 					for (DSSDocument retrieved : retrievedOriginalDocuments) {
-						String retrievedDigest = retrieved.getDigest(DigestAlgorithm.SHA256);
-						if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+						byte[] retrievedDigest = retrieved.getDigestValue(DigestAlgorithm.SHA256);
+						if (Arrays.equals(originalDigest, retrievedDigest)) {
 							found = true;
 						}
 					}

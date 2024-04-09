@@ -59,7 +59,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -159,23 +161,23 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
 		ValidationObjectRepresentationType validationObjectRepresentation = validationObjects.get(0).getValidationObjectRepresentation();
 		assertEquals(1, validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().size());
-		assertTrue(validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0) instanceof DigestAlgAndValueType);
+        assertInstanceOf(DigestAlgAndValueType.class, validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0));
 		DigestAlgAndValueType digestAlgAndValueFirstDoc = (DigestAlgAndValueType) validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0);
 		assertNotNull(digestAlgAndValueFirstDoc);
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueFirstDoc.getDigestValue());
-		assertEquals(Utils.toBase64(digestAlgAndValueFirstDoc.getDigestValue()),
-				fileToBeIndividualTimestamped.getDigest(DigestAlgorithm.forXML(digestAlgAndValueFirstDoc.getDigestMethod().getAlgorithm())));
+		assertArrayEquals(digestAlgAndValueFirstDoc.getDigestValue(),
+				fileToBeIndividualTimestamped.getDigestValue(DigestAlgorithm.forXML(digestAlgAndValueFirstDoc.getDigestMethod().getAlgorithm())));
 
 		validationObjectRepresentation = validationObjects.get(1).getValidationObjectRepresentation();
 		assertEquals(1, validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().size());
-		assertTrue(validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0) instanceof DigestAlgAndValueType);
+        assertInstanceOf(DigestAlgAndValueType.class, validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0));
 		DigestAlgAndValueType digestAlgAndValueSecondDoc = (DigestAlgAndValueType) validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue().get(0);
 		assertNotNull(digestAlgAndValueSecondDoc);
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestMethod());
 		assertNotNull(digestAlgAndValueSecondDoc.getDigestValue());
-		assertEquals(Utils.toBase64(digestAlgAndValueSecondDoc.getDigestValue()),
-				notIndividuallyTimestampedFile.getDigest(DigestAlgorithm.forXML(digestAlgAndValueSecondDoc.getDigestMethod().getAlgorithm())));
+		assertArrayEquals(digestAlgAndValueSecondDoc.getDigestValue(),
+				notIndividuallyTimestampedFile.getDigestValue(DigestAlgorithm.forXML(digestAlgAndValueSecondDoc.getDigestMethod().getAlgorithm())));
 
 		ValidationObjectListType signatureValidationObjects = etsiValidationReport.getSignatureValidationObjects();
 		assertNotNull(signatureValidationObjects);
@@ -227,7 +229,7 @@ public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 				List<Object> voReferences = voReferenceType.getVOReference();
 				assertNotNull(voReferences);
 				for (Object object : voReferences) {
-					assertTrue(object instanceof ValidationObjectType);
+                    assertInstanceOf(ValidationObjectType.class, object);
 					ValidationObjectType validationObjectType = (ValidationObjectType) object;
 					assertEquals(ObjectType.SIGNED_DATA, validationObjectType.getObjectType());
 					validationObjects.add(validationObjectType);

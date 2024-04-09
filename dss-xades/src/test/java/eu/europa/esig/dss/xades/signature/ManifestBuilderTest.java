@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,10 +58,10 @@ public class ManifestBuilderTest {
 		assertEquals(MimeTypeEnum.XML, document.getMimeType());
 
 		try (InputStream is = document.openStream()) {
-			String xmlContent = new String(Utils.toByteArray(is), "UTF-8");
+			String xmlContent = new String(Utils.toByteArray(is), StandardCharsets.UTF_8);
 			assertTrue(xmlContent.contains(XMLDSigElement.MANIFEST.getTagName()));
 			assertTrue(xmlContent.contains(file1.getName()));
-			assertTrue(xmlContent.contains(file1.getDigest(DigestAlgorithm.SHA512)));
+			assertTrue(xmlContent.contains(Utils.toBase64(file1.getDigestValue(DigestAlgorithm.SHA512))));
 			LOG.info(xmlContent);
 		}
 	}

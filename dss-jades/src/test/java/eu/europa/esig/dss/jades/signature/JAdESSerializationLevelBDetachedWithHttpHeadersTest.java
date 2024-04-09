@@ -33,6 +33,7 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
@@ -59,8 +60,8 @@ public class JAdESSerializationLevelBDetachedWithHttpHeadersTest extends Abstrac
 		documentsToSign.add(new HTTPHeader("x-example", "Duplicated Header"));
 		
 		DSSDocument messageBodyDocument = new FileDocument("src/test/resources/sample.json");
-		String digest = messageBodyDocument.getDigest(DigestAlgorithm.SHA1);
-		documentsToSign.add(new HTTPHeader("Digest", "SHA="+digest));
+		byte[] digest = messageBodyDocument.getDigestValue(DigestAlgorithm.SHA1);
+		documentsToSign.add(new HTTPHeader("Digest", "SHA=" + Utils.toBase64(digest)));
 	}
 
 	@Override
@@ -86,8 +87,8 @@ public class JAdESSerializationLevelBDetachedWithHttpHeadersTest extends Abstrac
 
 		detachedContents.add(new HTTPHeader("x-example", "HTTP Headers Example"));
 		DSSDocument messageBodyDocument = new FileDocument("src/test/resources/sample.json");
-		String digest = messageBodyDocument.getDigest(DigestAlgorithm.SHA1);
-		detachedContents.add(new HTTPHeader("Digest", "SHA="+digest));
+		byte[] digest = messageBodyDocument.getDigestValue(DigestAlgorithm.SHA1);
+		detachedContents.add(new HTTPHeader("Digest", "SHA=" + Utils.toBase64(digest)));
 		detachedContents.add(new HTTPHeader("content-type", "application/json"));
 		detachedContents.add(new HTTPHeader("x-example", "Duplicated Header"));
 		

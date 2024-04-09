@@ -133,8 +133,8 @@ public class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignatur
 			fail(e);
 		}
 		
-		assertEquals(doc1.getDigest(DigestAlgorithm.SHA256), orig1.getDigest(DigestAlgorithm.SHA256));
-		assertEquals(doc2.getDigest(DigestAlgorithm.SHA256), orig2.getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(doc1.getDigestValue(DigestAlgorithm.SHA256), orig1.getDigestValue(DigestAlgorithm.SHA256));
+		assertArrayEquals(doc2.getDigestValue(DigestAlgorithm.SHA256), orig2.getDigestValue(DigestAlgorithm.SHA256));
 	}
 	
 	@Override

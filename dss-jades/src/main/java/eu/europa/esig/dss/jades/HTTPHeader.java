@@ -113,8 +113,14 @@ public class HTTPHeader implements DSSDocument {
 	}
 
 	@Override
+	@Deprecated
 	public String getDigest(DigestAlgorithm digestAlgorithm) {
 		throw new UnsupportedOperationException("The getDigest(digestAlgorithm) method is not supported for HTTPHeaderDocument.");
+	}
+
+	@Override
+	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
+		throw new UnsupportedOperationException("The getDigestValue(digestAlgorithm) method is not supported for HTTPHeaderDocument.");
 	}
 
 }

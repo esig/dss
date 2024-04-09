@@ -239,8 +239,8 @@ public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJ
 		assertEquals(policyDigestAlgoAndValue.getDigestMethod(), policyStoreDigestAlgoAndValue.getDigestMethod());
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 
-		assertEquals(SIGNATURE_POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()),
-				Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(SIGNATURE_POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()),
+				policyDigestAlgoAndValue.getDigestValue());
 	}
 
 	@Override

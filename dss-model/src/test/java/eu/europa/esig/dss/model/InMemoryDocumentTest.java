@@ -41,7 +41,7 @@ public class InMemoryDocumentTest {
 		assertNull(doc.getMimeType());
 		assertNull(doc.getName());
 		assertNotNull(doc.getBytes());
-		assertNotNull(doc.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(doc.getDigestValue(DigestAlgorithm.SHA256));
 	}
 
 	@Test
@@ -51,7 +51,7 @@ public class InMemoryDocumentTest {
 		assertNull(doc.getMimeType());
 		assertNull(doc.getName());
 		assertNull(doc.getBytes());
-		NullPointerException exception = assertThrows(NullPointerException.class, () -> doc.getDigest(DigestAlgorithm.SHA256));
+		NullPointerException exception = assertThrows(NullPointerException.class, () -> doc.getDigestValue(DigestAlgorithm.SHA256));
 		assertEquals("Byte array is not defined!", exception.getMessage());
 
 		byte[] bytes = new byte[] { 1, 2, 3 };
@@ -61,7 +61,7 @@ public class InMemoryDocumentTest {
 		assertNotNull(doc.getMimeType());
 		assertNotNull(doc.getName());
 		assertNotNull(doc.getBytes());
-		assertNotNull(doc.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(doc.getDigestValue(DigestAlgorithm.SHA256));
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class InMemoryDocumentTest {
 		assertEquals(MimeTypeEnum.BINARY, doc.getMimeType());
 		assertNotNull(doc.getName());
 		assertNotNull(doc.getBytes());
-		assertNotNull(doc.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(doc.getDigestValue(DigestAlgorithm.SHA256));
 	}
 
 	@Test
@@ -83,7 +83,7 @@ public class InMemoryDocumentTest {
 		assertEquals(MimeTypeEnum.TEXT, doc.getMimeType());
 		assertNotNull(doc.getName());
 		assertNotNull(doc.getBytes());
-		assertNotNull(doc.getDigest(DigestAlgorithm.SHA256));
+		assertNotNull(doc.getDigestValue(DigestAlgorithm.SHA256));
 	}
 
 	@Test

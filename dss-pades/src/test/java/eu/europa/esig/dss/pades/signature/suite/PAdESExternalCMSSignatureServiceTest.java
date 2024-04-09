@@ -65,7 +65,7 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
         assertEquals("toSignDocument cannot be null!", exception.getMessage());
 
         DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
-        DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, documentToSign.getDigest(DigestAlgorithm.SHA256));
+        DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, documentToSign.getDigestValue(DigestAlgorithm.SHA256));
 
         exception = assertThrows(NullPointerException.class, () ->
                 service.getMessageDigest(digestDocument, null));

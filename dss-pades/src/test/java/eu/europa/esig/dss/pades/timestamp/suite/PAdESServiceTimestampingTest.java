@@ -37,7 +37,7 @@ public class PAdESServiceTimestampingTest extends AbstractPkiFactoryTestValidati
     @Test
     public void digestDocumentTest() {
         DSSDocument originalDocument = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
-        DSSDocument documentToTimestamp = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigest(DigestAlgorithm.SHA256));
+        DSSDocument documentToTimestamp = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
 
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
                 service.timestamp(documentToTimestamp, new PAdESTimestampParameters()));

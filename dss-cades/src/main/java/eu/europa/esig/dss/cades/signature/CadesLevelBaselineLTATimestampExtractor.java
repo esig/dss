@@ -499,7 +499,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("eContentType={}", bytes != null ? Utils.toHex(bytes) : bytes);
 		}
 
-		bytes = Utils.fromBase64(originalDocument.getDigest(digestAlgorithm));
+		bytes = originalDocument.getDigestValue(digestAlgorithm);
 		digestCalculator.update(bytes);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("signedDataDigest={}", bytes != null ? Utils.toHex(bytes) : bytes);

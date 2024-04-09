@@ -84,7 +84,7 @@ public class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSign
 
 		FileDocument fileDoc = new FileDocument("src/test/resources/sample.txt");
 
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, fileDoc.getDigest(DigestAlgorithm.SHA512));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, fileDoc.getDigestValue(DigestAlgorithm.SHA512));
 		digestDocument.setName(fileDoc.getName());
 
 		documents.add(digestDocument);

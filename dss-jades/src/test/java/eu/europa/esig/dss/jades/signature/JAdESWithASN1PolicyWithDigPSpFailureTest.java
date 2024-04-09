@@ -70,9 +70,9 @@ public class JAdESWithASN1PolicyWithDigPSpFailureTest extends AbstractJAdESTestS
         signaturePolicy.setSpuri(HTTP_SPURI_TEST);
         signaturePolicy.setHashAsInTechnicalSpecification(true);
 
-        String base64Digest = POLICY_CONTENT.getDigest(DigestAlgorithm.SHA256);
+        byte[] base64Digest = POLICY_CONTENT.getDigestValue(DigestAlgorithm.SHA256);
         signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        signaturePolicy.setDigestValue(Utils.fromBase64(base64Digest));
+        signaturePolicy.setDigestValue(base64Digest);
 
         SpDocSpecification spDocSpecification = new SpDocSpecification();
         spDocSpecification.setId("urn:oid:" + SIGNATURE_POLICY_ID);

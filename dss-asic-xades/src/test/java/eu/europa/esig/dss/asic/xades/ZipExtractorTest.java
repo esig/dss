@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -192,11 +193,11 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 		assertEquals(extractOriginal.getSignedDocuments().size(), extractSigned.getSignedDocuments().size());
 		
 		List<String> fileNames = getSignedFilesNames(extractSigned.getSignedDocuments());		
-		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
+		List<Digest> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
 
 		for (DSSDocument doc : extractOriginal.getSignedDocuments()) {
 			assertTrue(fileNames.contains(doc.getName()));
-			assertTrue(fileDigests.contains(doc.getDigest(DigestAlgorithm.SHA256)));
+			assertTrue(fileDigests.contains(new Digest(DigestAlgorithm.SHA256, doc.getDigestValue(DigestAlgorithm.SHA256))));
 		}	
 	}
 	
@@ -208,10 +209,10 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 		return fileNames;
 	}
 	
-	private List<String> getSignedFilesDigests(List<DSSDocument> files) {
-		List<String> fileDigests = new ArrayList<>();
-		for (DSSDocument doc: files) {
-			fileDigests.add(doc.getDigest(DigestAlgorithm.SHA256));
+	private List<Digest> getSignedFilesDigests(List<DSSDocument> files) {
+		List<Digest> fileDigests = new ArrayList<>();
+		for (DSSDocument doc : files) {
+			fileDigests.add(new Digest(DigestAlgorithm.SHA256, doc.getDigestValue(DigestAlgorithm.SHA256)));
 		}
 		return fileDigests;
 	}

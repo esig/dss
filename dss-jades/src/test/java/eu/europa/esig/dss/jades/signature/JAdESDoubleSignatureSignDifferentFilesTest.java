@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -38,15 +28,24 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JAdESDoubleSignatureSignDifferentFilesTest extends AbstractJAdESTestValidation {
 	
@@ -130,13 +129,13 @@ public class JAdESDoubleSignatureSignDifferentFilesTest extends AbstractJAdESTes
 			byte[] digestValue = signatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue();
 			
 			if (documentOne.getName().equals(signatureScope.getName())) {
-				assertEquals(documentOne.getDigest(digestAlgorithm), Utils.toBase64(digestValue));
+				assertArrayEquals(documentOne.getDigestValue(digestAlgorithm), digestValue);
 				firstDocFound = true;
 			} else if (documentTwo.getName().equals(signatureScope.getName())) {
-				assertEquals(documentTwo.getDigest(digestAlgorithm), Utils.toBase64(digestValue));
+				assertArrayEquals(documentTwo.getDigestValue(digestAlgorithm), digestValue);
 				secondDocFound = true;
 			} else if (documentThree.getName().equals(signatureScope.getName())) {
-				assertEquals(documentThree.getDigest(digestAlgorithm), Utils.toBase64(digestValue));
+				assertArrayEquals(documentThree.getDigestValue(digestAlgorithm), digestValue);
 				thirdDocFound = true;
 			} else {
 				fail("The document with name '" + signatureScope.getName() + "' has not been defined");

@@ -222,13 +222,11 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	private DSSDocument getDigestDocument() {
-		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
-		return digestDocument;
+		return new DigestDocument(USED_DIGEST, getCompleteDocument().getDigestValue(USED_DIGEST));
 	}
 	
 	private DSSDocument getDigestDocumentWrongDigestAlgo() {
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, getCompleteDocument().getDigest(DigestAlgorithm.SHA1));
-		return digestDocument;
+		return new DigestDocument(DigestAlgorithm.SHA1, getCompleteDocument().getDigestValue(DigestAlgorithm.SHA1));
 	}
 
 	private DSSDocument getWrongDocument() {

@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -59,7 +60,7 @@ public class DetectionModificationAfterSignTest extends AbstractTestVisualCompar
 
 		DSSDocument expected = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/retrieved-modified_after_signature.pdf"));
-		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(expected.getDigestValue(DigestAlgorithm.SHA256), retrievedDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
 		assertFalse(arePdfDocumentsVisuallyEqual(dssDocument, expected));

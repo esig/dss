@@ -31,11 +31,11 @@ import eu.europa.esig.dss.evidencerecord.common.validation.AbstractEvidenceRecor
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -69,7 +69,7 @@ public class XmlEvidenceRecordDataObjectGroupSameDigestValidationTest extends Ab
         for (XmlDigestMatcher digestMatcher : digestMatchers) {
             assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
             assertEquals(DigestAlgorithm.SHA512, digestMatcher.getDigestMethod());
-            assertEquals(detachedDocument.getDigest(DigestAlgorithm.SHA512), Utils.toBase64(digestMatcher.getDigestValue()));
+            assertArrayEquals(detachedDocument.getDigestValue(DigestAlgorithm.SHA512), digestMatcher.getDigestValue());
             assertTrue(digestMatcher.isDataFound());
             assertTrue(digestMatcher.isDataIntact());
         }
@@ -83,7 +83,7 @@ public class XmlEvidenceRecordDataObjectGroupSameDigestValidationTest extends Ab
         assertNotNull(evidenceRecordScope.getSignerData());
         assertNotNull(evidenceRecordScope.getSignerData().getDigestAlgoAndValue());
         assertEquals(DigestAlgorithm.SHA512, evidenceRecordScope.getSignerData().getDigestAlgoAndValue().getDigestMethod());
-        assertEquals(detachedDocument.getDigest(DigestAlgorithm.SHA512), Utils.toBase64(evidenceRecordScope.getSignerData().getDigestAlgoAndValue().getDigestValue()));
+        assertArrayEquals(detachedDocument.getDigestValue(DigestAlgorithm.SHA512), evidenceRecordScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
     }
 
 }
