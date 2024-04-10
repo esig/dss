@@ -277,7 +277,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 */
 	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
 		this.maskGenerationFunction = maskGenerationFunction;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
+		if (this.digestAlgorithm != null && this.encryptionAlgorithm != null) {
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
 		}
 	}

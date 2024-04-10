@@ -150,7 +150,11 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	 */
 	public void setSigningCertificate(final CertificateToken signingCertificate) {
 		this.signingCertificate = signingCertificate;
-		setEncryptionAlgorithm(EncryptionAlgorithm.forKey(signingCertificate.getPublicKey()));
+
+		EncryptionAlgorithm keyEncryptionAlgorithm = EncryptionAlgorithm.forKey(signingCertificate.getPublicKey());
+		if (keyEncryptionAlgorithm != null && !keyEncryptionAlgorithm.isEquivalent(getEncryptionAlgorithm())) {
+			setEncryptionAlgorithm(keyEncryptionAlgorithm);
+		}
 	}
 
 	/**

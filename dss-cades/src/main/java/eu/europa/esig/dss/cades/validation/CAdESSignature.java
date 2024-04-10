@@ -633,7 +633,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public DigestAlgorithm getDigestAlgorithm() {
 		final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
 		if (signatureAlgorithm != null) {
-			if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
+			if (EncryptionAlgorithm.RSASSA_PSS.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
 				return getPSSHashAlgorithm();
 			}
 			return signatureAlgorithm.getDigestAlgorithm();
@@ -678,7 +678,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		try {
 			final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
-			if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
+			if (signatureAlgorithm != null && EncryptionAlgorithm.RSASSA_PSS.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
 				byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
 				if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
 					RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);

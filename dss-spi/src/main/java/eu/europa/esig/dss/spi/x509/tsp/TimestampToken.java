@@ -403,7 +403,7 @@ public class TimestampToken extends Token {
 				this.tsaX500Principal = candidate.getSubject().getPrincipal();
 				SignerInformation signerInformation = timeStamp.toCMSSignedData().getSignerInfos().get(timeStamp.getSID());
 
-				if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.getOid().equals(signerInformation.getEncryptionAlgOID())) {
+				if (EncryptionAlgorithm.RSASSA_PSS.getOid().equals(signerInformation.getEncryptionAlgOID())) {
 					signatureAlgorithm = SignatureAlgorithm.forOidAndParams(signerInformation.getEncryptionAlgOID(),
 							signerInformation.getEncryptionAlgParams());
 				} else {
