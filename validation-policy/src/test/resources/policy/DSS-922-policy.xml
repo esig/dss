@@ -47,12 +47,14 @@
         <Cryptographic Level="FAIL">
           <AcceptableEncryptionAlgo>
             <Algo>RSA</Algo>
+            <Algo>RSASSA-PSS</Algo>
             <Algo>DSA</Algo>
             <Algo>ECDSA</Algo>
           </AcceptableEncryptionAlgo>
           <MiniPublicKeySize>
-            <Algo Size="1024">RSA</Algo>
             <Algo Size="128">DSA</Algo>
+            <Algo Size="1024">RSA</Algo>
+            <Algo Size="1024">RSASSA-PSS</Algo>
             <Algo Size="192">ECDSA</Algo>
           </MiniPublicKeySize>
           <AcceptableDigestAlgo>
@@ -76,12 +78,14 @@
         <Cryptographic Level="FAIL">
           <AcceptableEncryptionAlgo>
             <Algo>RSA</Algo>
+            <Algo>RSASSA-PSS</Algo>
             <Algo>DSA</Algo>
             <Algo>ECDSA</Algo>
           </AcceptableEncryptionAlgo>
           <MiniPublicKeySize>
-            <Algo Size="1024">RSA</Algo>
             <Algo Size="128">DSA</Algo>
+            <Algo Size="1024">RSA</Algo>
+            <Algo Size="1024">RSASSA-PSS</Algo>
             <Algo Size="192">ECDSA</Algo>
           </MiniPublicKeySize>
           <AcceptableDigestAlgo>
@@ -97,12 +101,14 @@
       <Cryptographic Level="FAIL">
         <AcceptableEncryptionAlgo>
           <Algo>RSA</Algo>
+          <Algo>RSASSA-PSS</Algo>
           <Algo>DSA</Algo>
           <Algo>ECDSA</Algo>
         </AcceptableEncryptionAlgo>
         <MiniPublicKeySize>
-          <Algo Size="1024">RSA</Algo>
           <Algo Size="128">DSA</Algo>
+          <Algo Size="1024">RSA</Algo>
+          <Algo Size="1024">RSASSA-PSS</Algo>
           <Algo Size="192">ECDSA</Algo>
         </MiniPublicKeySize>
         <AcceptableDigestAlgo>
@@ -170,13 +176,15 @@
         <Cryptographic Level="FAIL">
           <AcceptableEncryptionAlgo>
             <Algo>RSA</Algo>
+            <Algo>RSASSA-PSS</Algo>
             <Algo>DSA</Algo>
             <Algo>ECDSA</Algo>
           </AcceptableEncryptionAlgo>
           <MiniPublicKeySize>
-            <Algo Size="1024">RSA</Algo>
             <Algo Size="128">DSA</Algo>
-            <Algo Size="256">ECDSA</Algo>
+            <Algo Size="1024">RSA</Algo>
+            <Algo Size="1024">RSASSA-PSS</Algo>
+            <Algo Size="192">ECDSA</Algo>
           </MiniPublicKeySize>
           <AcceptableDigestAlgo>
             <Algo>SHA1</Algo>
@@ -199,13 +207,15 @@
         <Cryptographic Level="FAIL">
           <AcceptableEncryptionAlgo>
             <Algo>RSA</Algo>
+            <Algo>RSASSA-PSS</Algo>
             <Algo>DSA</Algo>
             <Algo>ECDSA</Algo>
           </AcceptableEncryptionAlgo>
           <MiniPublicKeySize>
-            <Algo Size="1024">RSA</Algo>
             <Algo Size="128">DSA</Algo>
-            <Algo Size="256">ECDSA</Algo>
+            <Algo Size="1024">RSA</Algo>
+            <Algo Size="1024">RSASSA-PSS</Algo>
+            <Algo Size="192">ECDSA</Algo>
           </MiniPublicKeySize>
           <AcceptableDigestAlgo>
             <Algo>SHA1</Algo>
@@ -220,12 +230,14 @@
       <Cryptographic Level="FAIL">
         <AcceptableEncryptionAlgo>
           <Algo>RSA</Algo>
+          <Algo>RSASSA-PSS</Algo>
           <Algo>DSA</Algo>
           <Algo>ECDSA</Algo>
         </AcceptableEncryptionAlgo>
         <MiniPublicKeySize>
           <Algo Size="128">DSA</Algo>
           <Algo Size="1024">RSA</Algo>
+          <Algo Size="1024">RSASSA-PSS</Algo>
           <Algo Size="192">ECDSA</Algo>
         </MiniPublicKeySize>
         <AcceptableDigestAlgo>
@@ -273,13 +285,15 @@
         <Cryptographic Level="WARN">
           <AcceptableEncryptionAlgo>
             <Algo>RSA</Algo>
+            <Algo>RSASSA-PSS</Algo>
             <Algo>DSA</Algo>
             <Algo>ECDSA</Algo>
           </AcceptableEncryptionAlgo>
           <MiniPublicKeySize>
-            <Algo Size="1024">RSA</Algo>
             <Algo Size="128">DSA</Algo>
-            <Algo Size="256">ECDSA</Algo>
+            <Algo Size="1024">RSA</Algo>
+            <Algo Size="1024">RSASSA-PSS</Algo>
+            <Algo Size="192">ECDSA</Algo>
           </MiniPublicKeySize>
           <AcceptableDigestAlgo>
             <Algo>SHA1</Algo>
@@ -302,13 +316,15 @@
         <Cryptographic Level="FAIL">
           <AcceptableEncryptionAlgo>
             <Algo>RSA</Algo>
+            <Algo>RSASSA-PSS</Algo>
             <Algo>DSA</Algo>
             <Algo>ECDSA</Algo>
           </AcceptableEncryptionAlgo>
           <MiniPublicKeySize>
-            <Algo Size="1024">RSA</Algo>
             <Algo Size="128">DSA</Algo>
-            <Algo Size="256">ECDSA</Algo>
+            <Algo Size="1024">RSA</Algo>
+            <Algo Size="1024">RSASSA-PSS</Algo>
+            <Algo Size="192">ECDSA</Algo>
           </MiniPublicKeySize>
           <AcceptableDigestAlgo>
             <Algo>SHA1</Algo>
@@ -323,12 +339,14 @@
       <Cryptographic Level="FAIL">
         <AcceptableEncryptionAlgo>
           <Algo>RSA</Algo>
+          <Algo>RSASSA-PSS</Algo>
           <Algo>DSA</Algo>
           <Algo>ECDSA</Algo>
         </AcceptableEncryptionAlgo>
         <MiniPublicKeySize>
-          <Algo Size="1024">DSA</Algo>
+          <Algo Size="128">DSA</Algo>
           <Algo Size="1024">RSA</Algo>
+          <Algo Size="1024">RSASSA-PSS</Algo>
           <Algo Size="192">ECDSA</Algo>
         </MiniPublicKeySize>
         <AcceptableDigestAlgo>
@@ -357,6 +375,12 @@
       <Algo Date="2030-02-24" Size="2048">RSA</Algo>
       <Algo Date="2030-02-24" Size="3072">RSA</Algo>
       <Algo Date="2035-02-24" Size="4096">RSA</Algo>
+      <Algo Date="2018-02-24" Size="1024">RSASSA-PSS</Algo>
+      <Algo Date="2018-02-24" Size="1536">RSASSA-PSS</Algo>
+      <Algo Date="2030-02-24" Size="2047">RSASSA-PSS</Algo>
+      <Algo Date="2030-02-24" Size="2048">RSASSA-PSS</Algo>
+      <Algo Date="2030-02-24" Size="3072">RSASSA-PSS</Algo>
+      <Algo Date="2035-02-24" Size="4096">RSASSA-PSS</Algo>
       <Algo Date="2035-02-24" Size="192">ECDSA</Algo>
       <Algo Date="2035-02-24" Size="256">ECDSA</Algo>
     </AlgoExpirationDate>

@@ -281,6 +281,7 @@
 				<Cryptographic Level="WARN">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>
+						<Algo>RSASSA-PSS</Algo>
 						<Algo>DSA</Algo>
 						<Algo>ECDSA</Algo>
 						<Algo>PLAIN-ECDSA</Algo>
@@ -288,6 +289,7 @@
 					<MiniPublicKeySize>
 						<Algo Size="128">DSA</Algo>
 						<Algo Size="1024">RSA</Algo>
+						<Algo Size="1024">RSASSA-PSS</Algo>
 						<Algo Size="192">ECDSA</Algo>
 						<Algo Size="192">PLAIN-ECDSA</Algo>
 					</MiniPublicKeySize>
@@ -338,6 +340,7 @@
 	<Cryptographic Level="FAIL">
 		<AcceptableEncryptionAlgo>
 			<Algo>RSA</Algo>
+			<Algo>RSASSA-PSS</Algo>
 			<Algo>DSA</Algo>
 			<Algo>ECDSA</Algo>
 			<Algo>PLAIN-ECDSA</Algo>
@@ -345,6 +348,7 @@
 		<MiniPublicKeySize>
 			<Algo Size="1024">DSA</Algo>
 			<Algo Size="1024">RSA</Algo>
+			<Algo Size="1024">RSASSA-PSS</Algo>
 			<Algo Size="192">ECDSA</Algo>
 			<Algo Size="192">PLAIN-ECDSA</Algo>
 		</MiniPublicKeySize>
@@ -373,6 +377,11 @@
 			<Algo Date="2035-02-24" Size="2048">RSA</Algo>
 			<Algo Date="2035-02-24" Size="3072">RSA</Algo>
 			<Algo Date="2035-02-24" Size="4096">RSA</Algo>
+			<Algo Date="2020-02-24" Size="1024">RSASSA-PSS</Algo>
+			<Algo Date="2020-02-24" Size="1536">RSASSA-PSS</Algo>
+			<Algo Date="2035-02-24" Size="2048">RSASSA-PSS</Algo>
+			<Algo Date="2035-02-24" Size="3072">RSASSA-PSS</Algo>
+			<Algo Date="2035-02-24" Size="4096">RSASSA-PSS</Algo>
 			<Algo Date="2035-02-24" Size="192">ECDSA</Algo>
 			<Algo Date="2035-02-24" Size="256">ECDSA</Algo>
 			<Algo Date="2035-02-24" Size="384">ECDSA</Algo>

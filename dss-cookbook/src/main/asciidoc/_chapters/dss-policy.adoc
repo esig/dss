@@ -2356,6 +2356,7 @@ Default: `FAIL` (`RSA`, `DSA`, `ECDSA`, `PLAIN-ECDSA`)
     ...
     <AcceptableEncryptionAlgo>
         <Algo>RSA</Algo>
+        <Algo>RSASSA-PSS</Algo>
         <Algo>DSA</Algo>
         <Algo>ECDSA</Algo>
         <Algo>PLAIN-ECDSA</Algo>
@@ -2376,6 +2377,7 @@ Default: `FAIL` (`RSA=1024`, `DSA=1024`, `ECDSA=160`, `PLAIN-ECDSA=160`)
     <MiniPublicKeySize>
         <Algo Size="1024">DSA</Algo>
         <Algo Size="1024">RSA</Algo>
+        <Algo Size="1024">RSASSA-PSS</Algo>
         <Algo Size="160">ECDSA</Algo>
         <Algo Size="160">PLAIN-ECDSA</Algo>
     </MiniPublicKeySize>
@@ -2451,6 +2453,10 @@ NOTE: If one of the `UpdateDate` or `LevelAfterUpdate` attributes is not defined
 			<Algo Date="2016" Size="1536">RSA</Algo>
 			<Algo Date="2026" Size="1900">RSA</Algo>
 			<Algo Date="2029" Size="3000">RSA</Algo>
+			<Algo Date="2009" Size="1024">RSASSA-PSS</Algo>
+			<Algo Date="2016" Size="1536">RSASSA-PSS</Algo>
+			<Algo Date="2026" Size="1900">RSASSA-PSS</Algo>
+			<Algo Date="2029" Size="3000">RSASSA-PSS</Algo>
 			<Algo Date="2013" Size="160">ECDSA</Algo>
 			<Algo Date="2013" Size="192">ECDSA</Algo>
 			<Algo Date="2016" Size="224">ECDSA</Algo>
