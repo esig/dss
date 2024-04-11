@@ -54,6 +54,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	private static final String ERROR_500_TSA_URL = ONLINE_PKI_HOST + "/tsa/error-500/good-tsa";
 	private static final String INVALID_SIG_TSA_URL = ONLINE_PKI_HOST + "/tsa/invalid/good-tsa";
 	private static final String TIMEOUT_TSA_URL = ONLINE_PKI_HOST + "/tsa/timeout/good-tsa";
+	private static final String CUSTOM_TIMEOUT_TSA_URL = ONLINE_PKI_HOST + "/tsa/timeout/%s/good-tsa";
 
 	@Test
 	public void testWithoutNonce() throws Exception {
@@ -109,6 +110,29 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
 		assertThrows(DSSExternalResourceException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
+	}
+
+	@Test
+	public void timeoutCustom() throws Exception {
+		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
+		timestampDataLoader.setTimeoutResponse(1000); // 1 second
+
+		OnlineTSPSource lowTimeoutTspSource = new OnlineTSPSource(String.format(CUSTOM_TIMEOUT_TSA_URL, 1), timestampDataLoader);
+
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
+
+		TimestampBinary timeStampResponse = lowTimeoutTspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest);
+		assertNotNull(timeStampResponse);
+		assertTrue(Utils.isArrayNotEmpty(timeStampResponse.getBytes()));
+
+		TimestampToken timestampToken = new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
+		assertTrue(timestampToken.isSignedBy(timestampToken.getCandidatesForSigningCertificate().getTheBestCandidate().getCertificateToken()));
+		assertTrue(timestampToken.matchData(digest, true));
+		assertTrue(timestampToken.isValid());
+
+		OnlineTSPSource bigTimeoutTspSource = new OnlineTSPSource(String.format(CUSTOM_TIMEOUT_TSA_URL, 2000), timestampDataLoader);;
+
+		assertThrows(DSSExternalResourceException.class, () -> bigTimeoutTspSource.getTimeStampResponse(DigestAlgorithm.SHA1, digest));
 	}
 
     @Test

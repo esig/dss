@@ -23,10 +23,14 @@ package eu.europa.esig.dss.service.crl;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.service.OnlineSourceTest;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
+import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,14 +40,16 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OnlineCRLSourceTest extends OnlineSourceTest {
 
-	private static final String alternative_url = ONLINE_PKI_HOST + "/crl/root-ca.crl";
-	private static final String wrong_url = "http://wrong.url";
+	private static final String ALTERNATIVE_URL = ONLINE_PKI_HOST + "/crl/root-ca.crl";
+	private static final String WRONG_URL = "http://wrong.url";
+	private static final String CUSTOM_TIMEOUT_CRL_URL = ONLINE_PKI_HOST + "/crl/timeout/%s/%s.crl";
 	
 	private static OnlineCRLSource onlineCRLSource;
 	private static CommonsDataLoader dataLoader;
@@ -121,25 +127,42 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 				() -> onlineCRLSource.getRevocationToken(timeoutSigGoodUser, goodCa));
 		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + timeoutSigGoodUser.getDSSIdAsString() + "'"));
 		assertTrue(exception.getMessage().contains("Read timed out"));
+
+		String alternativeUrl = String.format(CUSTOM_TIMEOUT_CRL_URL, 1, DSSASN1Utils.getSubjectCommonName(goodCa));
+		AlternateUrlsSourceAdapter<CRL> CRLAlternativeUrlSource = new AlternateUrlsSourceAdapter<>(onlineCRLSource, Collections.singletonList(alternativeUrl));
+
+		RevocationToken<CRL> revocationToken = CRLAlternativeUrlSource.getRevocationToken(timeoutSigGoodUser, goodCa);
+		assertInstanceOf(CRLToken.class, revocationToken);
+
+		CRLToken crlToken = (CRLToken) revocationToken;
+		assertNotNull(crlToken);
+		assertTrue(crlToken.isValid());
+
+		alternativeUrl = String.format(CUSTOM_TIMEOUT_CRL_URL, 2000, DSSASN1Utils.getSubjectCommonName(goodCa));
+		AlternateUrlsSourceAdapter<CRL> crlFailedAlternativeUrlSource = new AlternateUrlsSourceAdapter<>(onlineCRLSource, Collections.singletonList(alternativeUrl));
+		exception = assertThrows(DSSExternalResourceException.class,
+				() -> crlFailedAlternativeUrlSource.getRevocationToken(timeoutSigGoodUser, goodCa));
+		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + timeoutSigGoodUser.getDSSIdAsString() + "'"));
+		assertTrue(exception.getMessage().contains("Read timed out"));
 	}
 
 	@Test
 	public void getRevocationTokenWithAlternateUrlTest() {
 		Exception exception = assertThrows(DSSExternalResourceException.class,
-				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa, Collections.singletonList(alternative_url)));
+				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa, Collections.singletonList(ALTERNATIVE_URL)));
 		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + goodUser.getDSSIdAsString() + "'"));
 		
-		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa, Collections.singletonList(alternative_url));
+		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa, Collections.singletonList(ALTERNATIVE_URL));
 		assertNotNull(revocationToken);
 	}
 	
 	@Test
 	public void getRevocationTokenWithWrongAlternateUrlTest() {
 		Exception exception = assertThrows(DSSExternalResourceException.class,
-				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa, Collections.singletonList(wrong_url)));
+				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa, Collections.singletonList(WRONG_URL)));
 		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + goodUser.getDSSIdAsString() + "'"));
 
-		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa, Collections.singletonList(wrong_url));
+		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa, Collections.singletonList(WRONG_URL));
 		assertNotNull(revocationToken);
 	}
 	
@@ -148,12 +171,12 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 		dataLoader.setTimeoutResponse(1);
 
 		Exception exception = assertThrows(DSSExternalResourceException.class,
-				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa, Arrays.asList(wrong_url, alternative_url)));
+				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa, Arrays.asList(WRONG_URL, ALTERNATIVE_URL)));
 		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + goodUser.getDSSIdAsString() + "'"));
 		assertTrue(exception.getMessage().contains("Read timed out"));
 
 		exception = assertThrows(DSSExternalResourceException.class,
-				() -> onlineCRLSource.getRevocationToken(goodCa, rootCa, Arrays.asList(wrong_url, alternative_url)));
+				() -> onlineCRLSource.getRevocationToken(goodCa, rootCa, Arrays.asList(WRONG_URL, ALTERNATIVE_URL)));
 		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + goodCa.getDSSIdAsString() + "'"));
 		assertTrue(exception.getMessage().contains("Read timed out"));
 	}

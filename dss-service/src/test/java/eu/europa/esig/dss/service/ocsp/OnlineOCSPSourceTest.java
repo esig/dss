@@ -31,12 +31,14 @@ import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.alerts.DSSExternalResourceExceptionAlert;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -44,16 +46,20 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OnlineOCSPSourceTest extends OnlineSourceTest {
+
+	private static final String CUSTOM_TIMEOUT_OCSP_URL = ONLINE_PKI_HOST + "/ocsp/timeout/%s/%s";
 
 	private static CertificateToken certificateToken;
 	private static CertificateToken rootToken;
@@ -191,6 +197,24 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 
 		Exception exception = assertThrows(DSSExternalResourceException.class,
 				() -> ocspSource.getRevocationToken(timeoutSigGoodUser, goodCa));
+		assertTrue(exception.getMessage().contains("Unable to retrieve OCSP response for certificate with Id '" + timeoutSigGoodUser.getDSSIdAsString() + "'"));
+		assertTrue(exception.getMessage().contains("Read timed out"));
+
+		String alternativeUrl = String.format(CUSTOM_TIMEOUT_OCSP_URL, 1, DSSASN1Utils.getSubjectCommonName(goodCa));
+		AlternateUrlsSourceAdapter<OCSP> ocspAlternativeUrlSource = new AlternateUrlsSourceAdapter<>(ocspSource, Collections.singletonList(alternativeUrl));
+
+		RevocationToken<OCSP> revocationToken = ocspAlternativeUrlSource.getRevocationToken(timeoutSigGoodUser, goodCa);
+		assertInstanceOf(OCSPToken.class, revocationToken);
+
+		OCSPToken ocspToken = (OCSPToken) revocationToken;
+		assertNotNull(ocspToken);
+		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertTrue(ocspToken.isValid());
+
+		alternativeUrl = String.format(CUSTOM_TIMEOUT_OCSP_URL, 2000, DSSASN1Utils.getSubjectCommonName(goodCa));
+		AlternateUrlsSourceAdapter<OCSP> ocspFailedAlternativeUrlSource = new AlternateUrlsSourceAdapter<>(ocspSource, Collections.singletonList(alternativeUrl));
+		exception = assertThrows(DSSExternalResourceException.class,
+				() -> ocspFailedAlternativeUrlSource.getRevocationToken(timeoutSigGoodUser, goodCa));
 		assertTrue(exception.getMessage().contains("Unable to retrieve OCSP response for certificate with Id '" + timeoutSigGoodUser.getDSSIdAsString() + "'"));
 		assertTrue(exception.getMessage().contains("Read timed out"));
 	}
