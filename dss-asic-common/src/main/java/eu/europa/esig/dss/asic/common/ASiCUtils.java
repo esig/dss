@@ -177,14 +177,34 @@ public final class ASiCUtils {
 	}
 
 	/**
-	 * Verifies if the {@code entryName} represents a timestamp file name
+	 * Verifies if the {@code entryName} represents an evidence record filename
 	 *
 	 * @param entryName {@link String} name to check
-	 * @return TRUE if the entryName represents a timestamp file name, FALSE otherwise
+	 * @return TRUE if the entryName represents an evidence record filename, FALSE otherwise
 	 */
 	public static boolean isEvidenceRecord(final String entryName) {
 		return entryName.startsWith(META_INF_FOLDER) && entryName.contains(EVIDENCE_RECORD_FILENAME) &&
 				(entryName.endsWith(XML_EXTENSION) || entryName.endsWith(ER_ASN1_EXTENSION));
+	}
+
+	/**
+	 * Verifies if the {@code entryName} represents an XMLERS evidence record filename
+	 *
+	 * @param entryName {@link String} name to check
+	 * @return TRUE if the entryName represents an XMLERS evidence record filename, FALSE otherwise
+	 */
+	public static boolean isXmlEvidenceRecord(final String entryName) {
+		return entryName.startsWith(META_INF_FOLDER) && entryName.contains(EVIDENCE_RECORD_FILENAME) && entryName.endsWith(XML_EXTENSION);
+	}
+
+	/**
+	 * Verifies if the {@code entryName} represents an ERS ASN.1 evidence record filename
+	 *
+	 * @param entryName {@link String} name to check
+	 * @return TRUE if the entryName represents an ERS ASN.1 evidence record filename, FALSE otherwise
+	 */
+	public static boolean isAsn1EvidenceRecord(final String entryName) {
+		return entryName.startsWith(META_INF_FOLDER) && entryName.contains(EVIDENCE_RECORD_FILENAME) && entryName.endsWith(ER_ASN1_EXTENSION);
 	}
 
 	/**
@@ -337,19 +357,6 @@ public final class ASiCUtils {
 	}
 
 	/**
-	 * Checks if the list of filenames represents an ASiC container content
-	 * 
-	 * @param filenames a list of {@link String} file names
-	 * @return TRUE if the list of filenames represents an ASiC container content,
-	 *         FALSE otherwise
-	 */
-	public static boolean isAsicFileContent(List<String> filenames) {
-		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
-				|| filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION)
-				|| filesContainTimestamps(filenames);
-	}
-
-	/**
 	 * Checks if the list of filenames contains a timestamp
 	 * 
 	 * @param filenames a list of filenames to check
@@ -363,6 +370,35 @@ public final class ASiCUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Checks if the list of filenames contains an evidence record
+	 *
+	 * @param filenames a list of filenames to check
+	 * @return TRUE if the list of filenames contains the expected evidence record file,
+	 *         FALSE otherwise
+	 */
+	public static boolean filesContainEvidenceRecords(List<String> filenames) {
+		for (String filename : filenames) {
+			if (isEvidenceRecord(filename)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if the list of filenames represents an ASiC container content
+	 *
+	 * @param filenames a list of {@link String} file names
+	 * @return TRUE if the list of filenames represents an ASiC container content,
+	 *         FALSE otherwise
+	 */
+	public static boolean isAsicFileContent(List<String> filenames) {
+		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
+				|| filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION)
+				|| filesContainTimestamps(filenames);
 	}
 
 	/**
@@ -406,7 +442,7 @@ public final class ASiCUtils {
 	 *         otherwise
 	 */
 	public static boolean isASiCWithXAdES(List<String> filenames) {
-		return filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION);
+		return filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION) || filesContainEvidenceRecords(filenames);
 	}
 	
 	/**
@@ -418,7 +454,7 @@ public final class ASiCUtils {
 	 */
 	public static boolean isASiCWithCAdES(List<String> filenames) {
 		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
-				|| filesContainTimestamps(filenames);
+				|| filesContainTimestamps(filenames) || filesContainEvidenceRecords(filenames);
 	}
 
 	/**

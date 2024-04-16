@@ -94,8 +94,7 @@ public class ASiCEWithCAdESEmbedEvidenceRecordValidationTest extends AbstractASi
 
         // set filename
         DefaultASiCWithCAdESFilenameFactory filenameFactory = new DefaultASiCWithCAdESFilenameFactory();
-        filenameFactory.setEvidenceRecordType(EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD);
-        String erFilename = filenameFactory.getEvidenceRecordFilename(asicContent);
+        String erFilename = filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD);
         erDocument.setName(erFilename);
 
         // return the ER

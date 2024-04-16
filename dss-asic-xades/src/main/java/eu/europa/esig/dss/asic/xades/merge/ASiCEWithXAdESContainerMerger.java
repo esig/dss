@@ -20,23 +20,24 @@
  */
 package eu.europa.esig.dss.asic.xades.merge;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.asic.xades.signature.asice.ASiCEWithXAdESManifestBuilder;
 import eu.europa.esig.dss.asic.xades.validation.ASiCEWithXAdESManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.model.ManifestEntry;
-import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.signature.Reference;
 
 import java.util.ArrayList;
@@ -79,7 +80,8 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
 
     @Override
     protected boolean isSupported(DSSDocument container) {
-        return super.isSupported(container) && (!ASiCUtils.isASiCSContainer(container) || doesNotContainSignatures(container));
+        return super.isSupported(container) && (!ASiCUtils.isASiCSContainer(container) ||
+                (doesNotContainSignatures(container) && doesNotContainEvidenceRecords(container)));
     }
 
     private boolean doesNotContainSignatures(DSSDocument container) {
@@ -87,13 +89,23 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         return !ASiCUtils.filesContainSignatures(entryNames);
     }
 
+    private boolean doesNotContainEvidenceRecords(DSSDocument container) {
+        List<String> entryNames = ZipUtils.getInstance().extractEntryNames(container);
+        return !ASiCUtils.filesContainEvidenceRecords(entryNames);
+    }
+
     @Override
     protected boolean isSupported(ASiCContent asicContent) {
-        return super.isSupported(asicContent) && (!ASiCUtils.isASiCSContainer(asicContent) || doesNotContainSignatures(asicContent));
+        return super.isSupported(asicContent) && (!ASiCUtils.isASiCSContainer(asicContent) ||
+                (doesNotContainSignatures(asicContent) && doesNotContainEvidenceRecords(asicContent)));
     }
 
     private boolean doesNotContainSignatures(ASiCContent asicContent) {
         return Utils.isCollectionEmpty(asicContent.getSignatureDocuments());
+    }
+
+    private boolean doesNotContainEvidenceRecords(ASiCContent asicContent) {
+        return Utils.isCollectionEmpty(asicContent.getEvidenceRecordDocuments());
     }
 
     @Override
@@ -103,36 +115,74 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
 
     @Override
     protected void ensureContainerContentAllowMerge() {
-        if (Arrays.stream(asicContents).allMatch(asicContent -> Utils.isCollectionEmpty(asicContent.getSignatureDocuments()))) {
-            return; // no signatures -> can merge
+        if (Arrays.stream(asicContents).allMatch(asicContent -> Utils.isCollectionEmpty(asicContent.getSignatureDocuments()) &&
+                Utils.isCollectionEmpty(asicContent.getEvidenceRecordDocuments()))) {
+            return; // no signatures and evidence records -> can merge
         }
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()))) {
             throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
                     "One of the containers contains a detached timestamp!");
         }
+
+        Arrays.stream(asicContents).forEach(asicContent -> assertEvidenceRecordDocumentNameValid(asicContent.getEvidenceRecordDocuments()));
+    }
+
+    private void assertEvidenceRecordDocumentNameValid(List<DSSDocument> evidenceRecordDocuments) {
+        if (Utils.isCollectionNotEmpty(evidenceRecordDocuments)) {
+            String evidenceRecordDocumentName = null;
+            for (DSSDocument evidenceRecordDocument : evidenceRecordDocuments) {
+                if (!ASiCUtils.EVIDENCE_RECORD_XML.equals(evidenceRecordDocument.getName()) &&
+                        !ASiCUtils.EVIDENCE_RECORD_ERS.equals(evidenceRecordDocument.getName())) {
+                    throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
+                            "The evidence record document in one of the containers has invalid naming!");
+                }
+                if (evidenceRecordDocumentName == null) {
+                    evidenceRecordDocumentName = evidenceRecordDocument.getName();
+                } else if (!evidenceRecordDocumentName.equals(evidenceRecordDocument.getName())) {
+                    throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
+                            "The evidence record documents have conflicting names within containers!");
+                }
+            }
+        }
     }
 
     @Override
     protected void ensureSignaturesAllowMerge() {
-        if (Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())).count() <= 1) {
-            // no signatures in all containers except maximum one. Can merge.
+        if (Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()) ||
+                Utils.isCollectionNotEmpty(asicContent.getEvidenceRecordDocuments())).count() <= 1) {
+            // no signatures or evidence records in all containers except maximum one. Can merge.
             return;
         }
 
-        List<String> documentsCoveredBySignatures = getCoveredDocumentNames();
-        if (Arrays.stream(asicContents).anyMatch(asicContent -> doCoverManifest(documentsCoveredBySignatures)) &&
+        List<String> coveredDocumentNames = getCoveredDocumentNames();
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> doCoverManifest(coveredDocumentNames)) &&
                 !sameSignedDocuments()) {
             throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
-                    "manifest.xml is signed and the signer data does not match between containers!");
+                    "manifest.xml is signed or covered and the signer data does not match between containers!");
         }
 
         List<String> signatureNames = getAllSignatureDocumentNames();
-        if (isConflictBetweenSignatureDocumentNames(signatureNames)) {
-            if (doCoverOtherSignatures(signatureNames, documentsCoveredBySignatures)) {
-                throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
-                        "A signature covers another signature file, while having same signature names in both containers!");
+        List<String> conflictingSignatureDocumentNames = getConflictingDocumentNames(signatureNames);
+        if (Utils.isCollectionNotEmpty(conflictingSignatureDocumentNames)) {
+            for (String signatureDocumentName : conflictingSignatureDocumentNames) {
+                if (coveredDocumentNames.contains(signatureDocumentName) && !isSameDocumentContent(signatureDocumentName)) {
+                    throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
+                            "A signature is covered by another document, while having same signature names in both containers!");
+                }
             }
             ensureSignatureNamesDiffer();
+        }
+
+        List<String> evidenceRecordManifestDocumentNames = getAllEvidenceRecordManifestDocumentNames();
+        List<String> conflictingEvidenceRecordManifestNames = getConflictingDocumentNames(evidenceRecordManifestDocumentNames);
+        if (Utils.isCollectionNotEmpty(conflictingEvidenceRecordManifestNames)) {
+            for (String evidenceRecordManifestName : conflictingEvidenceRecordManifestNames) {
+                if (coveredDocumentNames.contains(evidenceRecordManifestName) && !isSameDocumentContent(evidenceRecordManifestName)) {
+                    throw new UnsupportedOperationException("Unable to merge ASiC-E with XAdES containers. " +
+                            "An evidence record manifest is covered by another document, while having same signature names in both containers!");
+                }
+            }
+            ensureEvidenceRecordManifestNamesDiffer();
         }
 
         // Create a merged manifest.xml file
@@ -142,6 +192,20 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         }
     }
 
+    private boolean isSameDocumentContent(String documentName) {
+        byte[] digestValue = null;
+        for (ASiCContent asicContent : asicContents) {
+            DSSDocument document = DSSUtils.getDocumentWithName(asicContent.getAllDocuments(), documentName);
+            byte[] currentDocumentDigestValue = document.getDigestValue(DEFAULT_DIGEST_ALGORITHM);
+            if (digestValue == null) {
+                digestValue = currentDocumentDigestValue;
+            } else if (!Arrays.equals(digestValue, currentDocumentDigestValue)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private List<String> getCoveredDocumentNames() {
         final List<String> result = new ArrayList<>();
         for (ASiCContent asicContent : asicContents) {
@@ -149,6 +213,14 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
                 XMLDocumentValidator documentValidator = new XMLDocumentValidator(signatureDocument);
                 for (AdvancedSignature signature : documentValidator.getSignatures()) {
                     result.addAll(getCoveredDocumentNames((XAdESSignature) signature));
+                }
+            }
+            for (DSSDocument manifestDocument : asicContent.getEvidenceRecordManifestDocuments()) {
+                ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifestDocument);
+                if (manifestFile != null) {
+                    for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
+                        result.add(manifestEntry.getFileName());
+                    }
                 }
             }
         }
@@ -191,22 +263,22 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         return signatureDocumentNames;
     }
 
-    private boolean isConflictBetweenSignatureDocumentNames(List<String> signatureDocumentNames) {
-        for (String signatureDocumentName : signatureDocumentNames) {
-            if (Collections.frequency(signatureDocumentNames, signatureDocumentName) > 1) {
-                return true;
-            }
+    private List<String> getAllEvidenceRecordManifestDocumentNames() {
+        List<String> erManifestDocumentNames = new ArrayList<>();
+        for (ASiCContent asicContent : asicContents) {
+            erManifestDocumentNames.addAll(DSSUtils.getDocumentNames(asicContent.getEvidenceRecordManifestDocuments()));
         }
-        return false;
+        return erManifestDocumentNames;
     }
 
-    private boolean doCoverOtherSignatures(List<String> signatureNames, List<String> coveredDocumentNames) {
-        for (String signature : signatureNames) {
-            if (coveredDocumentNames.contains(signature)) {
-                return true;
+    private List<String> getConflictingDocumentNames(List<String> documentNames) {
+        final List<String> result = new ArrayList<>();
+        for (String signatureDocumentName : documentNames) {
+            if (Collections.frequency(documentNames, signatureDocumentName) > 1) {
+                result.add(signatureDocumentName);
             }
         }
-        return false;
+        return result;
     }
 
     private DSSDocument createNewManifest() {
@@ -276,6 +348,25 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
                     signatureDocument.setName(newSignatureName);
                 }
                 usedSignatureNames.add(signatureDocument.getName());
+            }
+        }
+    }
+
+    private void ensureEvidenceRecordManifestNamesDiffer() {
+        final Set<String> usedNames = new HashSet<>();
+        ASiCContent mergedASiCContent = createEmptyContainer();
+        for (ASiCContent asicContent : asicContents) {
+            mergedASiCContent.getEvidenceRecordManifestDocuments().addAll(asicContent.getEvidenceRecordManifestDocuments());
+        }
+
+        for (ASiCContent asicContent : asicContents) {
+            List<DSSDocument> evidenceRecordManifestDocuments = asicContent.getEvidenceRecordManifestDocuments();
+            for (DSSDocument evidenceRecordManifest : evidenceRecordManifestDocuments) {
+                if (usedNames.contains(evidenceRecordManifest.getName())) {
+                    String newSignatureName = asicFilenameFactory.getEvidenceRecordManifestFilename(mergedASiCContent);
+                    evidenceRecordManifest.setName(newSignatureName);
+                }
+                usedNames.add(evidenceRecordManifest.getName());
             }
         }
     }

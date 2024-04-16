@@ -58,7 +58,7 @@ public class ASiCSWithCAdESEvidenceRecordValidationTest extends AbstractASiCWith
         for (XmlDigestMatcher digestMatcher : digestMatchers) {
             if (digestMatcher.isDataFound()) {
                 assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
-                assertEquals("test.txt", digestMatcher.getName());
+                assertEquals("test.text", digestMatcher.getName());
                 assertNotNull(digestMatcher.getDigestMethod());
                 assertNotNull(digestMatcher.getDigestValue());
                 assertTrue(digestMatcher.isDataIntact());

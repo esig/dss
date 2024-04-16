@@ -39,8 +39,7 @@ public class ASiCEWithCAdESWrongEvidenceRecordFilenameValidationTest extends Abs
         DSSDocument erDocument = evidenceRecordDocuments.get(0);
 
         DefaultASiCWithCAdESFilenameFactory filenameFactory = new DefaultASiCWithCAdESFilenameFactory();
-        filenameFactory.setEvidenceRecordType(EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD);
-        String erFilename = filenameFactory.getEvidenceRecordFilename(asicContent);
+        String erFilename = filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD);
         erDocument.setName(erFilename);
 
         ASiCEvidenceRecordManifestBuilder manifestBuilder = new ASiCEvidenceRecordManifestBuilder(asicContent,

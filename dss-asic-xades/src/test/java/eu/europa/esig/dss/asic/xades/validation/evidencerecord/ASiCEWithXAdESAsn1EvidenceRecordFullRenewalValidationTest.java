@@ -1,15 +1,14 @@
 package eu.europa.esig.dss.asic.xades.validation.evidencerecord;
 
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithAsn1EvidenceRecordTestValidation;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 
@@ -111,14 +110,6 @@ public class ASiCEWithXAdESAsn1EvidenceRecordFullRenewalValidationTest extends A
         assertNull(referenceValidation.getName());
         assertTrue(referenceValidation.isFound());
         assertTrue(referenceValidation.isIntact());
-    }
-
-    @Override
-    protected void checkContainerInfo(DiagnosticData diagnosticData) {
-        assertNotNull(diagnosticData.getContainerInfo());
-        assertNotNull(diagnosticData.getContainerType());
-        assertNull(diagnosticData.getMimetypeFileContent());
-        assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
     }
 
     @Override

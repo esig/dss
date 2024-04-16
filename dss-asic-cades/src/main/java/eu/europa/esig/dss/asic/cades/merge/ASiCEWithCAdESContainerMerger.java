@@ -20,16 +20,23 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
+import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
+import eu.europa.esig.asic.manifest.definition.ASiCManifestPath;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +76,8 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
 
     @Override
     protected boolean isSupported(DSSDocument container) {
-        return super.isSupported(container) && (!ASiCUtils.isASiCSContainer(container) || doesNotContainSignatures(container));
+        return super.isSupported(container) && (!ASiCUtils.isASiCSContainer(container) ||
+                (doesNotContainSignatures(container) && doesNotContainTimestamps(container) && doesNotContainEvidenceRecords(container)));
     }
 
     private boolean doesNotContainSignatures(DSSDocument container) {
@@ -77,13 +85,32 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
         return !ASiCUtils.filesContainSignatures(entryNames);
     }
 
+    private boolean doesNotContainTimestamps(DSSDocument container) {
+        List<String> entryNames = ZipUtils.getInstance().extractEntryNames(container);
+        return !ASiCUtils.filesContainTimestamps(entryNames);
+    }
+
+    private boolean doesNotContainEvidenceRecords(DSSDocument container) {
+        List<String> entryNames = ZipUtils.getInstance().extractEntryNames(container);
+        return !ASiCUtils.filesContainEvidenceRecords(entryNames);
+    }
+
     @Override
     protected boolean isSupported(ASiCContent asicContent) {
-        return super.isSupported(asicContent) && (!ASiCUtils.isASiCSContainer(asicContent) || doesNotContainSignatures(asicContent));
+        return super.isSupported(asicContent) && (!ASiCUtils.isASiCSContainer(asicContent) ||
+                (doesNotContainSignatures(asicContent) && doesNotContainTimestamps(asicContent) && doesNotContainEvidenceRecords(asicContent)));
     }
 
     private boolean doesNotContainSignatures(ASiCContent asicContent) {
         return Utils.isCollectionEmpty(asicContent.getSignatureDocuments());
+    }
+
+    private boolean doesNotContainTimestamps(ASiCContent asicContent) {
+        return Utils.isCollectionEmpty(asicContent.getTimestampDocuments());
+    }
+
+    private boolean doesNotContainEvidenceRecords(ASiCContent asicContent) {
+        return Utils.isCollectionEmpty(asicContent.getEvidenceRecordDocuments());
     }
 
     @Override
@@ -98,13 +125,16 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
 
     @Override
     protected void ensureSignaturesAllowMerge() {
-        if (Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()) ||
-                Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments())).count() <= 1) {
-            // no signatures nor timestamps in all containers except maximum one. Can merge.
+        if (Arrays.stream(asicContents).filter(asicContent ->
+                Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()) ||
+                Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()) ||
+                Utils.isCollectionNotEmpty(asicContent.getEvidenceRecordDocuments())).count() <= 1) {
+            // no signature, timestamp nor evidence record documents in all containers except maximum one. Can merge.
             return;
         }
 
         ensureSignatureDocumentsValid();
+        ensureEvidenceRecordDocumentsValid();
         ensureManifestDocumentsValid();
     }
 
@@ -192,6 +222,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
         for (ASiCContent asicContent : asicContents) {
             mergedASiCContent.getManifestDocuments().addAll(asicContent.getManifestDocuments());
             mergedASiCContent.getArchiveManifestDocuments().addAll(asicContent.getArchiveManifestDocuments());
+            mergedASiCContent.getEvidenceRecordManifestDocuments().addAll(asicContent.getEvidenceRecordManifestDocuments());
         }
 
         List<ASiCContent> asicContentsToProcess = new ArrayList<>(Arrays.asList(asicContents));
@@ -239,7 +270,96 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                     }
                 }
             }
+            for (DSSDocument manifest : asicContent.getEvidenceRecordManifestDocuments()) {
+                for (ASiCContent currentASiCContent : asicContentsToProcess) {
+                    for (DSSDocument currentManifest : currentASiCContent.getEvidenceRecordManifestDocuments()) {
+                        if (manifest.getName() != null && manifest.getName().equals(currentManifest.getName())) {
+                            if (Arrays.equals(manifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentManifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
+                                // continue
+
+                            } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
+                                    ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
+                                throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
+                                        "A manifest with name '%s' in a container is covered by another manifest!", currentManifest.getName()));
+
+                            } else {
+                                String newManifestName = asicFilenameFactory.getEvidenceRecordManifestFilename(mergedASiCContent);
+                                currentManifest.setName(newManifestName);
+                            }
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private void ensureEvidenceRecordDocumentsValid() {
+        ASiCContent mergedASiCContent = createEmptyContainer();
+        for (ASiCContent asicContent : asicContents) {
+            mergedASiCContent.getEvidenceRecordDocuments().addAll(asicContent.getEvidenceRecordDocuments());
+            mergedASiCContent.getEvidenceRecordManifestDocuments().addAll(asicContent.getEvidenceRecordManifestDocuments());
+        }
+
+        List<ASiCContent> asicContentsToProcess = new ArrayList<>(Arrays.asList(asicContents));
+        Iterator<ASiCContent> iterator = asicContentsToProcess.iterator();
+        while (iterator.hasNext()) {
+            ASiCContent asicContent = iterator.next();
+            iterator.remove();
+            for (DSSDocument evidenceRecord : asicContent.getEvidenceRecordDocuments()) {
+                for (ASiCContent currentASiCContent : asicContentsToProcess) {
+                    for (DSSDocument currentEvidenceRecord : currentASiCContent.getEvidenceRecordDocuments()) {
+                        if (evidenceRecord.getName() != null && evidenceRecord.getName().equals(currentEvidenceRecord.getName())) {
+                            if (Arrays.equals(evidenceRecord.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentEvidenceRecord.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
+                                // continue
+
+                            } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), evidenceRecord.getName()) ||
+                                    ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentEvidenceRecord.getName())) {
+                                throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
+                                        "An evidence record with name '%s' in a container is covered by a manifest!", currentEvidenceRecord.getName()));
+
+                            } else {
+                                DSSDocument currentEvidenceRecordManifest = ASiCManifestParser.getLinkedManifest(
+                                        currentASiCContent.getEvidenceRecordManifestDocuments(), currentEvidenceRecord.getName());
+                                if (currentEvidenceRecordManifest == null) {
+                                    throw new UnsupportedOperationException(String.format(
+                                            "No linked evidence record manifest for an evidence record with filename '%s' has been found!",
+                                            currentEvidenceRecord.getName()));
+                                }
+
+                                EvidenceRecordTypeEnum evidenceRecordType = getEvidenceRecordType(currentEvidenceRecord.getName());
+                                String newEvidenceRecordName = asicFilenameFactory.getEvidenceRecordFilename(mergedASiCContent, evidenceRecordType);
+                                currentEvidenceRecord.setName(newEvidenceRecordName);
+
+                                currentEvidenceRecordManifest = replaceSigReferenceDocumentName(
+                                        currentEvidenceRecordManifest, newEvidenceRecordName);
+                                ASiCUtils.addOrReplaceDocument(currentASiCContent.getEvidenceRecordManifestDocuments(), currentEvidenceRecordManifest);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private EvidenceRecordTypeEnum getEvidenceRecordType(String evidenceRecordFilename) {
+        if (ASiCUtils.isXmlEvidenceRecord(evidenceRecordFilename)) {
+            return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
+        } else if (ASiCUtils.isAsn1EvidenceRecord(evidenceRecordFilename)) {
+            return EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD;
+        }
+        throw new UnsupportedOperationException(String.format("The evidence record with filename '%s' is not supported!", evidenceRecordFilename));
+    }
+
+    private DSSDocument replaceSigReferenceDocumentName(DSSDocument evidenceRecordManifest, String newEvidenceRecordName) {
+        Document manifestDocumentDom = DomUtils.buildDOM(evidenceRecordManifest);
+        Element sigReferenceElement = DomUtils.getElement(manifestDocumentDom.getDocumentElement(), ASiCManifestPath.SIG_REFERENCE_PATH);
+        if (sigReferenceElement == null) {
+            throw new IllegalArgumentException(String.format(
+                    "Invalid structure of ASiCEvidenceRecordManifest with name '%s'.", evidenceRecordManifest.getName()));
+        }
+        sigReferenceElement.setAttribute(ASiCManifestAttribute.URI.getAttributeName(), newEvidenceRecordName);
+        byte[] serializedBytes = DomUtils.serializeNode(manifestDocumentDom);
+        return new InMemoryDocument(serializedBytes, evidenceRecordManifest.getName(), evidenceRecordManifest.getMimeType());
     }
 
 }

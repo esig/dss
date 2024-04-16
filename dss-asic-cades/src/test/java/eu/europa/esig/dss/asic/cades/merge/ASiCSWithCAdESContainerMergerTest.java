@@ -71,10 +71,12 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger();
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/validation/onefile-ok.asics")));
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asics")));
+        assertTrue(merger.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.asics")));
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/signable/test.zip"))); // simple container
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/onefile-ok.asice")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asice")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/open-document.odp")));
+        assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.asice")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/signable/asic_cades.zip"))); // ASiC-E
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/signable/test.txt")));
     }
@@ -370,7 +372,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
-                "One of the containers has more than one signature or timestamp documents!", exception.getMessage());
+                "One of the containers has more than one signature, timestamp or evidence record documents!", exception.getMessage());
     }
 
     @Test
@@ -386,7 +388,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
-                "A container containing a timestamp file cannot be merged with other signed or timestamped container!", exception.getMessage());
+                "Only one type of a container is allowed (signature, timestamp or evidence record)!", exception.getMessage());
     }
 
     @Test
@@ -548,6 +550,77 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
         assertDocumentsEqual(asicContent.getFolders(), mergedAsicContent.getFolders());
     }
 
+    @Test
+    public void mergeWithEvidenceRecordContainerTest() {
+        DSSDocument firstContainer = new FileDocument("src/test/resources/validation/onefile-ok.asics");
+        DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
+
+        ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstContainer, secondContainer);
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        assertEquals("Unable to merge ASiC-S with CAdES containers. " +
+                "Only one type of a container is allowed (signature, timestamp or evidence record)!", exception.getMessage());
+    }
+
+    @Test
+    public void mergeTimestampWithEvidenceRecordContainerTest() {
+        ASiCContent tstAsic = new ASiCContent();
+        tstAsic.setTimestampDocuments(Collections.singletonList(
+                new InMemoryDocument("timestamp".getBytes(), "META-INF/timestamp.tst", MimeTypeEnum.TST)));
+
+        DSSDocument erContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
+        ASiCContent erASiC = ASiCWithCAdESContainerExtractor.fromDocument(erContainer).extract();
+
+        ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(tstAsic, erASiC);
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        assertEquals("Unable to merge ASiC-S with CAdES containers. " +
+                "Timestamp or evidence record containers cannot be merged with the given container type!", exception.getMessage());
+    }
+
+    @Test
+    public void mergeWithEvidenceRecordContainerWithNonASiCTest() {
+        DSSDocument erContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
+        ASiCContent erASiC = ASiCWithCAdESContainerExtractor.fromDocument(erContainer).extract();
+
+        DSSDocument documentToAdd = new InMemoryDocument("Bye World !".getBytes(), "directory/test.txt", MimeTypeEnum.TEXT);
+        ASiCContent asicContentToAdd = new ASiCContent();
+        asicContentToAdd.getUnsupportedDocuments().add(documentToAdd);
+
+        ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(erASiC, asicContentToAdd);
+        DSSDocument mergedContainer = merger.merge();
+        assertNotNull(mergedContainer);
+
+        ASiCContent mergedAsicContent = new ASiCWithCAdESContainerExtractor(mergedContainer).extract();
+        List<String> allDocumentNames = DSSUtils.getDocumentNames(mergedAsicContent.getAllDocuments());
+        for (DSSDocument document : erASiC.getAllDocuments()) {
+            assertTrue(allDocumentNames.contains(document.getName()));
+        }
+        for (DSSDocument document : asicContentToAdd.getAllDocuments()) {
+            assertTrue(allDocumentNames.contains(document.getName()));
+        }
+    }
+
+    @Test
+    public void mergeEvidenceRecordContainerWithSignerDataContainerTest() {
+        DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
+        DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
+
+        ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstContainer, secondContainer);
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        assertEquals("Unable to merge ASiC-S with CAdES containers. " +
+                "Signer documents have different names!", exception.getMessage());
+    }
+
+    @Test
+    public void mergeMultipleEvidenceRecordContainersTest() {
+        DSSDocument firstContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.asics");
+        DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
+
+        ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstContainer, secondContainer);
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        assertEquals("Unable to merge ASiC-S with CAdES containers. " +
+                "Timestamp or evidence record containers cannot be merged with the given container type!", exception.getMessage());
+    }
+
     private void assertDocumentsEqual(List<DSSDocument> documentListOne, List<DSSDocument> documentListTwo) {
         assertEquals(new HashSet<>(DSSUtils.getDocumentNames(documentListOne)), new HashSet<>(DSSUtils.getDocumentNames(documentListTwo)));
 
@@ -556,7 +629,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
             assertNotNull(documentOne);
             DSSDocument documentTwo = DSSUtils.getDocumentWithName(documentListTwo, documentName);
             assertNotNull(documentTwo);
-            assertTrue(Arrays.equals(DSSUtils.toByteArray(documentOne), DSSUtils.toByteArray(documentTwo)));
+            assertArrayEquals(DSSUtils.toByteArray(documentOne), DSSUtils.toByteArray(documentTwo));
         }
     }
 

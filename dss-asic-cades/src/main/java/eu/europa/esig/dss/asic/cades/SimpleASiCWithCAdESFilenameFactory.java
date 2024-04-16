@@ -23,7 +23,10 @@ package eu.europa.esig.dss.asic.cades;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.Objects;
 
 /**
  * This class provides a simple way to define custom names for file entries created within an ASiC with CAdES container,
@@ -116,11 +119,12 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
     }
 
     @Override
-    public String getEvidenceRecordFilename(ASiCContent asicContent) {
+    public String getEvidenceRecordFilename(ASiCContent asicContent, EvidenceRecordTypeEnum evidenceRecordType) {
+        Objects.requireNonNull(evidenceRecordType, "EvidenceRecordType shall be defined!");
         if (Utils.isStringNotEmpty(evidenceRecordFilename)) {
-            return getValidEvidenceRecordFilename(evidenceRecordFilename, asicContent);
+            return getValidEvidenceRecordFilename(evidenceRecordFilename, asicContent, evidenceRecordType);
         }
-        return super.getEvidenceRecordFilename(asicContent);
+        return super.getEvidenceRecordFilename(asicContent, evidenceRecordType);
     }
 
     /**
@@ -262,10 +266,11 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
      *
      * @param evidenceRecordFilename {@link String} defined evidence record filename
      * @param asicContent {@link ASiCContent}
+     * @param  evidenceRecordType {@link EvidenceRecordTypeEnum}
      * @return {@link String} evidence record filename
      */
-    protected String getValidEvidenceRecordFilename(String evidenceRecordFilename, ASiCContent asicContent) {
-        assertEvidenceRecordConfigurationIsValid();
+    protected String getValidEvidenceRecordFilename(String evidenceRecordFilename, ASiCContent asicContent, EvidenceRecordTypeEnum evidenceRecordType) {
+        assertASiCContentIsValid(asicContent);
         evidenceRecordFilename = getWithMetaInfFolder(evidenceRecordFilename);
         assertFilenameValid(evidenceRecordFilename, asicContent.getEvidenceRecordDocuments());
         switch (evidenceRecordType) {

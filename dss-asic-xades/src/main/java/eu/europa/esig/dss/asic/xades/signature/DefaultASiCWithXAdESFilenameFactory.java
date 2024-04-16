@@ -38,23 +38,11 @@ public class DefaultASiCWithXAdESFilenameFactory extends AbstractASiCFilenameFac
 
     private static final long serialVersionUID = -3252975270136045191L;
 
-    /** The type of evidence record to be created */
-    protected EvidenceRecordTypeEnum evidenceRecordType;
-
     /**
      * Default constructor
      */
     public DefaultASiCWithXAdESFilenameFactory() {
         // empty
-    }
-
-    /**
-     * Sets a type of evidence record to be created
-     *
-     * @param evidenceRecordType {@link EvidenceRecordTypeEnum}
-     */
-    public void setEvidenceRecordType(EvidenceRecordTypeEnum evidenceRecordType) {
-        this.evidenceRecordType = evidenceRecordType;
     }
 
     @Override
@@ -84,9 +72,9 @@ public class DefaultASiCWithXAdESFilenameFactory extends AbstractASiCFilenameFac
     }
 
     @Override
-    public String getEvidenceRecordFilename(ASiCContent asicContent) {
+    public String getEvidenceRecordFilename(ASiCContent asicContent, EvidenceRecordTypeEnum evidenceRecordType) {
+        Objects.requireNonNull(evidenceRecordType, "EvidenceRecordType shall be defined!");
         assertASiCContentIsValid(asicContent);
-        assertEvidenceRecordConfigurationIsValid();
         // Same name for both ASiC-S and ASiC-E
         switch (evidenceRecordType) {
             case XML_EVIDENCE_RECORD:
@@ -97,13 +85,6 @@ public class DefaultASiCWithXAdESFilenameFactory extends AbstractASiCFilenameFac
                 throw new UnsupportedOperationException(
                         String.format("The Evidence Record Type '%s' is not supported!", evidenceRecordType));
         }
-    }
-
-    /**
-     * Verifies validity of the configuration for productiction of evidence record's filename
-     */
-    protected void assertEvidenceRecordConfigurationIsValid() {
-        Objects.requireNonNull(evidenceRecordType, "EvidenceRecordType shall be set to produce a valid evidence record's filename!");
     }
 
     @Override

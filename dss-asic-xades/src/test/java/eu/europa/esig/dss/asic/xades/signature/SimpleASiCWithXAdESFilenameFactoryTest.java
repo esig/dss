@@ -216,14 +216,11 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
         ASiCContent asicContent = new ASiCContent();
         asicContent.setContainerType(ASiCContainerType.ASiC_S);
 
-        Exception exception = assertThrows(NullPointerException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent));
-        assertEquals("EvidenceRecordType shall be set to produce a valid evidence record's filename!", exception.getMessage());
+        Exception exception = assertThrows(NullPointerException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, null));
+        assertEquals("EvidenceRecordType shall be defined!", exception.getMessage());
 
-        filenameFactory.setEvidenceRecordType(EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD);
-        assertEquals("META-INF/evidencerecord.xml", filenameFactory.getEvidenceRecordFilename(asicContent));
-
-        filenameFactory.setEvidenceRecordType(EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD);
-        assertEquals("META-INF/evidencerecord.ers", filenameFactory.getEvidenceRecordFilename(asicContent));
+        assertEquals("META-INF/evidencerecord.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+        assertEquals("META-INF/evidencerecord.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
     }
 
     @Test
@@ -233,14 +230,11 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
         ASiCContent asicContent = new ASiCContent();
         asicContent.setContainerType(ASiCContainerType.ASiC_E);
 
-        Exception exception = assertThrows(NullPointerException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent));
-        assertEquals("EvidenceRecordType shall be set to produce a valid evidence record's filename!", exception.getMessage());
+        Exception exception = assertThrows(NullPointerException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, null));
+        assertEquals("EvidenceRecordType shall be defined!", exception.getMessage());
 
-        filenameFactory.setEvidenceRecordType(EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD);
-        assertEquals("META-INF/evidencerecord.xml", filenameFactory.getEvidenceRecordFilename(asicContent));
-
-        filenameFactory.setEvidenceRecordType(EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD);
-        assertEquals("META-INF/evidencerecord.ers", filenameFactory.getEvidenceRecordFilename(asicContent));
+        assertEquals("META-INF/evidencerecord.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+        assertEquals("META-INF/evidencerecord.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
     }
 
     @Test
