@@ -75,13 +75,8 @@ public class CryptographicConstraintWrapper {
 	public boolean isEncryptionAlgorithmReliable(EncryptionAlgorithm encryptionAlgorithm) {
 		if (encryptionAlgorithm != null && constraint != null) {
 			ListAlgo acceptableEncryptionAlgos = constraint.getAcceptableEncryptionAlgo();
-			if (acceptableEncryptionAlgos != null) {
-				for (Algo algo : acceptableEncryptionAlgos.getAlgos()) {
-					if (algo.getValue().equals(encryptionAlgorithm.getName())) {
-						return true;
-					}
-				}
-			}
+			Algo algo = getMatchingAlgo(acceptableEncryptionAlgos, encryptionAlgorithm);
+			return algo != null;
 		}
 		return false;
 	}
@@ -94,14 +89,9 @@ public class CryptographicConstraintWrapper {
 	 */
 	public boolean isDigestAlgorithmReliable(DigestAlgorithm digestAlgorithm) {
 		if (digestAlgorithm != null && constraint != null) {
-			ListAlgo acceptableEncryptionAlgos = constraint.getAcceptableDigestAlgo();
-			if (acceptableEncryptionAlgos != null) {
-				for (Algo algo : acceptableEncryptionAlgos.getAlgos()) {
-					if (algo.getValue().equals(digestAlgorithm.getName())) {
-						return true;
-					}
-				}
-			}
+			ListAlgo acceptableDigestAlgos = constraint.getAcceptableDigestAlgo();
+			Algo algo = getMatchingAlgo(acceptableDigestAlgos, digestAlgorithm);
+			return algo != null;
 		}
 		return false;
 	}
@@ -128,22 +118,17 @@ public class CryptographicConstraintWrapper {
 	public boolean isEncryptionAlgorithmWithKeySizeReliable(EncryptionAlgorithm encryptionAlgorithm, Integer keySize) {
 		if (encryptionAlgorithm != null && keySize != 0 && constraint != null) {
 			Integer size = getAlgoKeySizeFromConstraint(encryptionAlgorithm);
-			if (size != null && size <= keySize) {
-				return true;
-			}
+            return size != null && size <= keySize;
 		}
 		return false;
 	}
 
 	private Integer getAlgoKeySizeFromConstraint(EncryptionAlgorithm encryptionAlgorithm) {
 		if (constraint != null) {
-			ListAlgo miniPublicKeySize = constraint.getMiniPublicKeySize();
-			if (miniPublicKeySize != null) {
-				for (Algo algo : miniPublicKeySize.getAlgos()) {
-					if (algo.getValue().equals(encryptionAlgorithm.getName())) {
-						return algo.getSize();
-					}
-				}
+			ListAlgo miniPublicKeySizeEncryptionAlgos = constraint.getMiniPublicKeySize();
+			Algo algo = getMatchingAlgo(miniPublicKeySizeEncryptionAlgos, encryptionAlgorithm);
+			if (algo != null) {
+				return algo.getSize();
 			}
 		}
 		return null;
@@ -173,11 +158,11 @@ public class CryptographicConstraintWrapper {
 	public Date getExpirationDate(EncryptionAlgorithm encryptionAlgorithm, Integer keySize) {
 		TreeMap<Integer, Date> dates = new TreeMap<>();
 		AlgoExpirationDate algoExpirationDates = getAlgoExpirationDates();
-		if (algoExpirationDates != null && encryptionAlgorithm != null) {
-			SimpleDateFormat dateFormat = getUsedDateFormat(algoExpirationDates);
-			String algoToSearch = encryptionAlgorithm.getName();
-			for (Algo algo : algoExpirationDates.getAlgos()) {
-				if (algo.getValue().equals(algoToSearch)) {
+		if (algoExpirationDates != null) {
+			List<Algo> matchingAlgos = getMatchingAlgos(algoExpirationDates, encryptionAlgorithm);
+			if (Utils.isCollectionNotEmpty(matchingAlgos)) {
+				SimpleDateFormat dateFormat = getUsedDateFormat(algoExpirationDates);
+				for (Algo algo : matchingAlgos) {
 					dates.put(algo.getSize(), getDate(algo, dateFormat));
 				}
 			}
@@ -201,12 +186,10 @@ public class CryptographicConstraintWrapper {
 	public Date getExpirationDate(DigestAlgorithm digestAlgorithm) {
 		AlgoExpirationDate algoExpirationDates = getAlgoExpirationDates();
 		if (algoExpirationDates != null && digestAlgorithm != null) {
+			List<Algo> matchingAlgos = getMatchingAlgos(algoExpirationDates, digestAlgorithm);
 			SimpleDateFormat dateFormat = getUsedDateFormat(algoExpirationDates);
-			String algoToFind = digestAlgorithm.getName();
-			for (Algo algo : algoExpirationDates.getAlgos()) {
-				if (algo.getValue().equals(algoToFind)) {
-					return getDate(algo, dateFormat);
-				}
+			for (Algo algo : matchingAlgos) {
+				return getDate(algo, dateFormat);
 			}
 		}
 		return null;
@@ -248,27 +231,6 @@ public class CryptographicConstraintWrapper {
 
 	/**
 	 * This method returns a list of reliable {@code DigestAlgorithm} according to the current validation policy
-	 *
-	 * @return a list of {@link DigestAlgorithm}s
-	 */
-	public List<DigestAlgorithm> getReliableDigestAlgorithms() {
-		List<DigestAlgorithm> reliableDigestAlgorithms = new ArrayList<>();
-		if (constraint != null) {
-			ListAlgo acceptableDigestAlgo = constraint.getAcceptableDigestAlgo();
-			for (Algo algo : acceptableDigestAlgo.getAlgos()) {
-				try {
-					final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(algo.getValue());
-					reliableDigestAlgorithms.add(digestAlgorithm);
-				} catch (IllegalArgumentException e) {
-					LOG.warn("Unable to parse a DigestAlgorithm with name '{}'! Reason : {}", algo.getValue(), e.getMessage(), e);
-				}
-			}
-		}
-		return reliableDigestAlgorithms;
-	}
-
-	/**
-	 * This method returns a list of reliable {@code DigestAlgorithm} according to the current validation policy
 	 * at the given validation time
 	 *
 	 * @param validationTime {@link Date} to verify against
@@ -299,29 +261,6 @@ public class CryptographicConstraintWrapper {
 			}
 		}
 		return reliableDigestAlgorithms;
-	}
-
-	/**
-	 * This method returns a list of reliable {@code EncryptionAlgorithm} according to the current validation policy
-	 *
-	 * @return a list of {@link EncryptionAlgorithm}s
-	 */
-	public List<EncryptionAlgorithm> getReliableEncryptionAlgorithms() {
-		List<EncryptionAlgorithm> reliableEncryptionAlgorithms = new ArrayList<>();
-		if (constraint != null) {
-			ListAlgo acceptableEncryptionAlgo = constraint.getAcceptableEncryptionAlgo();
-			for (Algo algo : acceptableEncryptionAlgo.getAlgos()) {
-				try {
-					final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algo.getValue());
-					if (encryptionAlgorithm != null) {
-						reliableEncryptionAlgorithms.add(encryptionAlgorithm);
-					}
-				} catch (IllegalArgumentException e) {
-					LOG.warn("Unable to parse a EncryptionAlgorithm with name '{}'! Reason : {}", algo.getValue(), e.getMessage(), e);
-				}
-			}
-		}
-		return reliableEncryptionAlgorithms;
 	}
 
 	/**
@@ -360,6 +299,57 @@ public class CryptographicConstraintWrapper {
 			}
 		}
 		return reliableEncryptionAlgorithms;
+	}
+
+	private Algo getMatchingAlgo(ListAlgo listAlgo, EncryptionAlgorithm encryptionAlgorithm) {
+		List<Algo> matchingAlgos = getMatchingAlgos(listAlgo, encryptionAlgorithm);
+		if (Utils.isCollectionNotEmpty(matchingAlgos)) {
+			return matchingAlgos.iterator().next(); // return first entry
+		}
+		return null;
+	}
+
+	private List<Algo> getMatchingAlgos(ListAlgo listAlgo, EncryptionAlgorithm encryptionAlgorithm) {
+		final List<Algo> result = new ArrayList<>();
+		if (listAlgo != null && encryptionAlgorithm != null) {
+			for (Algo algo : listAlgo.getAlgos()) {
+				if (algo.getValue().equals(encryptionAlgorithm.getName())) {
+					result.add(algo);
+				}
+			}
+			// TODO : temporary handling to ensure smooth migration in 6.1. To be removed in 6.2.
+			if (Utils.isCollectionEmpty(result) && EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+				for (Algo algo : listAlgo.getAlgos()) {
+					if (EncryptionAlgorithm.RSA.getName().equals(algo.getValue())) {
+						LOG.warn("No '{}' algorithm is defined within validation policy! Temporary handling '{}' == '{}' is added. " +
+										"Please set the constraint explicitly. To be required since DSS 6.2.",
+								encryptionAlgorithm.getName(), algo.getValue(), encryptionAlgorithm.getName());
+						result.add(algo);
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	private Algo getMatchingAlgo(ListAlgo listAlgo, DigestAlgorithm digestAlgorithm) {
+		List<Algo> matchingAlgos = getMatchingAlgos(listAlgo, digestAlgorithm);
+		if (Utils.isCollectionNotEmpty(matchingAlgos)) {
+			return matchingAlgos.iterator().next(); // return first entry
+		}
+		return null;
+	}
+
+	private List<Algo> getMatchingAlgos(ListAlgo listAlgo, DigestAlgorithm digestAlgorithm) {
+		final List<Algo> result = new ArrayList<>();
+		if (listAlgo != null) {
+			for (Algo algo : listAlgo.getAlgos()) {
+				if (algo.getValue().equals(digestAlgorithm.getName())) {
+					result.add(algo);
+				}
+			}
+		}
+		return result;
 	}
 
 	/**

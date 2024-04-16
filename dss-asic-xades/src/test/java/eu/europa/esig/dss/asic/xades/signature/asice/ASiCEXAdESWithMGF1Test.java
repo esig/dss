@@ -1,12 +1,28 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * 
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * 
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.RevocationWrapper;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.*;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -26,7 +42,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
+public class ASiCEXAdESWithMGF1Test extends AbstractASiCEXAdESTestSignature {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -43,7 +59,7 @@ public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+        signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
         service = new ASiCWithXAdESService(getCertificateVerifierWithMGF1());
         service.setTspSource(getPSSGoodTsa());
@@ -97,7 +113,7 @@ public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
 
     @Override
     protected String getSigningAlias() {
-        return RSASSA_PSS_GOOD_USER;
+        return PSS_GOOD_USER;
     }
 
     @Override

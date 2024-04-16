@@ -20,10 +20,13 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -37,10 +40,12 @@ import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
@@ -54,6 +59,7 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
@@ -146,6 +152,35 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 		assertTrue(docTimeStampFound);
 		assertTrue(newFieldFound);
 	}
+
+    @Override
+    protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+        super.verifyDiagnosticData(diagnosticData);
+
+        Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+        for (SignatureWrapper wrapper: allSignatures) {
+            assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+            assertNull(wrapper.getMaskGenerationFunction());
+        }
+
+        List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+        for (CertificateWrapper wrapper: usedCertificates) {
+            assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+            assertNull(wrapper.getMaskGenerationFunction());
+        }
+
+        Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
+        for (RevocationWrapper wrapper : allRevocationData) {
+            assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+            assertNull(wrapper.getMaskGenerationFunction());
+        }
+
+        List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+        for (TimestampWrapper wrapper : timestampList) {
+            assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+            assertNull(wrapper.getMaskGenerationFunction());
+        }
+    }
 
 	@Override
 	protected DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> getService() {

@@ -21,9 +21,12 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -33,8 +36,10 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
@@ -48,6 +53,7 @@ public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -99,6 +105,35 @@ public class CAdESLevelLTATest extends AbstractCAdESTestSignature {
 		}
 		assertTrue(sigTstFound);
 		assertTrue(arcTstFound);
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper wrapper: allSignatures) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+			assertNull(wrapper.getMaskGenerationFunction());
+		}
+
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		for (CertificateWrapper wrapper: usedCertificates) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+			assertNull(wrapper.getMaskGenerationFunction());
+		}
+
+		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
+		for (RevocationWrapper wrapper : allRevocationData) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+			assertNull(wrapper.getMaskGenerationFunction());
+		}
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		for (TimestampWrapper wrapper : timestampList) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+			assertNull(wrapper.getMaskGenerationFunction());
+		}
 	}
 
 	@Override

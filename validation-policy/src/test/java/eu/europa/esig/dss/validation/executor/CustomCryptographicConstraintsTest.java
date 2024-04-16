@@ -141,6 +141,9 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		
 		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_DSA); // some other algorithm is changed
 		assertEquals(Indication.TOTAL_PASSED, result);
+
+		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_RSASSA_PSS); // RSA-PSS is different
+		assertEquals(Indication.TOTAL_PASSED, result);
 		
 	}
 
@@ -869,6 +872,89 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 
 		simpleReport = createSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+	}
+
+	@Test
+	public void rsaPssTest() throws Exception {
+		initializeExecutor("src/test/resources/universign-pss.xml");
+		validationPolicyFile = new File("src/test/resources/policy/default-only-constraint-policy.xml");
+
+		Indication result;
+		DetailedReport detailedReport;
+		XmlBasicBuildingBlocks revocationBasicBuildingBlock;
+
+		result = defaultConstraintValidationDateIsBeforeExpirationDateTest(ALGORITHM_SHA256, 0);
+		assertEquals(Indication.TOTAL_PASSED, result);
+		checkErrorMessageAbsence(MessageTag.ASCCM_AR_ANS_ANR);
+
+		result = defaultConstraintAlgorithmExpiredTest(ALGORITHM_SHA256, 0);
+		assertEquals(Indication.INDETERMINATE, result);
+
+		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
+		assertEquals(Indication.TOTAL_PASSED, result);
+		checkWarningMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA256, MessageTag.ACCM_POS_SIG_SIG));
+
+		result = defaultConstraintAlgorithmExpiredTest(ALGORITHM_SHA1, 0); // some other algorithm is expired
+		assertEquals(Indication.TOTAL_PASSED, result);
+
+		result = defaultConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSASSA_PSS, 2048);
+		assertEquals(Indication.TOTAL_PASSED, result);
+
+		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
+		assertEquals(Indication.TOTAL_PASSED, result);
+
+		result = defaultConstraintAlgorithmExpirationDateIsNotDefined(ALGORITHM_RSASSA_PSS, 4096); // some other algorithm is expired
+		assertEquals(Indication.TOTAL_PASSED, result);
+		checkErrorMessageAbsence(MessageTag.ASCCM_AR_ANS_AKSNR);
+
+		result = defaultConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA256, 0);
+		assertEquals(Indication.INDETERMINATE, result);
+		detailedReport = createDetailedReport();
+		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
+		assertEquals(Indication.INDETERMINATE, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
+		checkRevocationErrorPresence(detailedReport, MessageTag.ASCCM_DAA_ANS, true);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_DAA_ANS, true);
+
+		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
+		assertEquals(Indication.TOTAL_PASSED, result);
+		checkWarningMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.SHA256, MessageTag.ACCM_POS_SIG_SIG));
+
+		result = defaultConstraintAcceptableDigestAlgorithmIsNotDefined(ALGORITHM_SHA1, 0); // some other algorithm is not defined
+		assertEquals(Indication.TOTAL_PASSED, result);
+		detailedReport = createDetailedReport();
+		checkErrorMessageAbsence(MessageTag.ASCCM_DAA_ANS);
+		revocationBasicBuildingBlock = detailedReport.getBasicBuildingBlockById(detailedReport.getRevocationIds().get(0));
+		assertEquals(Indication.PASSED, revocationBasicBuildingBlock.getSAV().getConclusion().getIndication());
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(detailedReport.getTimestampIds().get(0)));
+		checkRevocationErrorPresence(detailedReport, MessageTag.ASCCM_DAA_ANS, false);
+		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_DAA_ANS, false);
+
+		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_RSASSA_PSS, 0);
+		assertEquals(Indication.TOTAL_PASSED, result); // TODO : temp processing in 6.1 (accepts RSA)
+
+		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
+		assertEquals(Indication.TOTAL_PASSED, result);
+		// TODO : temp handling (see above)
+		// checkWarningMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_EAA_ANS, EncryptionAlgorithm.RSASSA_PSS.getName(), MessageTag.ACCM_POS_SIG_SIG));
+
+		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_DSA, 0); // some other algorithm is not defined
+		assertEquals(Indication.TOTAL_PASSED, result);
+		checkErrorMessageAbsence(MessageTag.ASCCM_EAA_ANS);
+
+		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_RSASSA_PSS);
+		assertEquals(Indication.INDETERMINATE, result);
+
+		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
+		assertEquals(Indication.TOTAL_PASSED, result);
+		checkWarningMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_APKSA_ANS, EncryptionAlgorithm.RSASSA_PSS.getName(), "2048", MessageTag.ACCM_POS_SIG_SIG));
+
+		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_DSA); // some other algorithm is changed
+		assertEquals(Indication.TOTAL_PASSED, result);
+
+		result = defaultConstraintLargeMiniPublicKeySize(ALGORITHM_RSA); // RSA is different
+		assertEquals(Indication.TOTAL_PASSED, result);
+
 	}
 	
 	private Indication defaultConstraintValidationDateIsBeforeExpirationDateTest(String algorithm, Integer keySize) throws Exception {

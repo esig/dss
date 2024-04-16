@@ -230,6 +230,10 @@
 					<Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
 					<Algo Date="2026" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 					<Algo Date="2029" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+					<Algo Date="2009" Size="1024">RSASSA-PSS</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+					<Algo Date="2016" Size="1536">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.1.1 -->
+					<Algo Date="2026" Size="1900">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
+					<Algo Date="2029" Size="3000">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
 					<Algo Date="2013" Size="160">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 					<Algo Date="2013" Size="192">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 					<Algo Date="2016" Size="224">ECDSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
@@ -301,6 +305,7 @@
 	<Cryptographic Level="FAIL">
 		<AcceptableEncryptionAlgo>
 			<Algo>RSA</Algo>
+			<Algo>RSASSA-PSS</Algo>
 			<Algo>DSA</Algo>
 			<Algo>ECDSA</Algo>
 			<Algo>PLAIN-ECDSA</Algo>
@@ -308,6 +313,7 @@
 		<MiniPublicKeySize>
 			<Algo Size="1024">DSA</Algo>
 			<Algo Size="1024">RSA</Algo>
+			<Algo Size="1024">RSASSA-PSS</Algo>
 			<Algo Size="160">ECDSA</Algo>
 			<Algo Size="160">PLAIN-ECDSA</Algo>
 		</MiniPublicKeySize>
@@ -350,6 +356,10 @@
 			<Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
 			<Algo Date="2026" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2029" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+			<Algo Date="2009" Size="1024">RSASSA-PSS</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+			<Algo Date="2016" Size="1536">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2026" Size="1900">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
+			<Algo Date="2029" Size="3000">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2013" Size="160">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 			<Algo Date="2013" Size="192">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 			<Algo Date="2016" Size="224">ECDSA</Algo> <!-- ETSI 119 312 V1.1.1 -->

@@ -1,73 +1,64 @@
-package eu.europa.esig.dss.asic.xades.signature.asice;
+package eu.europa.esig.dss.jades.signature;
 
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
-import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.Date;
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
+public class JAdESWithPSSTest extends AbstractJAdESTestSignature {
 
-    private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
-    private ASiCWithXAdESSignatureParameters signatureParameters;
+    private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
+    private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
     public void init() throws Exception {
-        documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+        documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
-        signatureParameters = new ASiCWithXAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters = new JAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-        signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
+        signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
-        service = new ASiCWithXAdESService(getCertificateVerifierWithMGF1());
+        service = new JAdESService(getCertificateVerifierWithMGF1());
         service.setTspSource(getPSSGoodTsa());
     }
 
     @Override
-    protected void onDocumentSigned(byte[] byteArray) {
-        InMemoryDocument doc = new InMemoryDocument(byteArray);
-
-        SignedDocumentValidator validator = getValidator(doc);
-
-        Reports reports = validator.validateDocument();
-
-        DiagnosticData diagnosticData = reports.getDiagnosticData();
-        verifyDiagnosticData(diagnosticData);
+    protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+        super.verifyDiagnosticData(diagnosticData);
 
         Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
-        for (SignatureWrapper wrapper : allSignatures) {
+        for (SignatureWrapper wrapper: allSignatures) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
             assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
 
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
-        for (CertificateWrapper wrapper : usedCertificates) {
+        for (CertificateWrapper wrapper: usedCertificates) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
             assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
@@ -86,23 +77,23 @@ public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
     }
 
     @Override
-    protected DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
+    protected DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> getService() {
         return service;
     }
 
     @Override
-    protected ASiCWithXAdESSignatureParameters getSignatureParameters() {
+    protected JAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected String getSigningAlias() {
-        return RSASSA_PSS_GOOD_USER;
     }
 
     @Override
     protected DSSDocument getDocumentToSign() {
         return documentToSign;
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return RSASSA_PSS_GOOD_USER;
     }
 
 }

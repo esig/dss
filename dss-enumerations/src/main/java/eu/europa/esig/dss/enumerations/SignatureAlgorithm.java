@@ -88,52 +88,52 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * RSA with MGF1 without digest algorithm
      */
-    RSA_SSA_PSS_RAW_MGF1(EncryptionAlgorithm.RSA, null, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_RAW_MGF1(EncryptionAlgorithm.RSASSA_PSS, null, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA-1
      */
-    RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA-224
      */
-    RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA-256
      */
-    RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA-384
      */
-    RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA-512
      */
-    RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA3-224
      */
-    RSA_SSA_PSS_SHA3_224_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_224, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA3_224_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_224, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA3-256
      */
-    RSA_SSA_PSS_SHA3_256_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_256, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA3_256_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_256, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA3-384
      */
-    RSA_SSA_PSS_SHA3_384_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_384, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA3_384_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_384, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with MGF1 with SHA3-512
      */
-    RSA_SSA_PSS_SHA3_512_MGF1(EncryptionAlgorithm.RSA, DigestAlgorithm.SHA3_512, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA3_512_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_512, MaskGenerationFunction.MGF1),
 
     /**
      * RSA with RIPEMD160
@@ -903,15 +903,35 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
      */
     public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
                                                   final MaskGenerationFunction mgf) {
-
+        final EncryptionAlgorithm targetEncryptionAlgorithm = ensureEncryptionAlgorithm(encryptionAlgorithm, mgf);
+        final DigestAlgorithm targetDigestAlgorithm = digestAlgorithm;
+        final MaskGenerationFunction targetMaskGenerationFunction = ensureMaskGenerationFunction(encryptionAlgorithm, mgf);
         for (SignatureAlgorithm currentAlgo : values()) {
-            if (Objects.equals(currentAlgo.getEncryptionAlgorithm(), encryptionAlgorithm)
-                    && Objects.equals(currentAlgo.getDigestAlgorithm(), digestAlgorithm)
-                    && Objects.equals(currentAlgo.getMaskGenerationFunction(), mgf)) {
+            if (Objects.equals(currentAlgo.getEncryptionAlgorithm(), targetEncryptionAlgorithm)
+                    && Objects.equals(currentAlgo.getDigestAlgorithm(), targetDigestAlgorithm)
+                    && Objects.equals(currentAlgo.getMaskGenerationFunction(), targetMaskGenerationFunction)) {
                 return currentAlgo;
             }
         }
         return null;
+    }
+
+    private static EncryptionAlgorithm ensureEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final MaskGenerationFunction mgf) {
+        if (EncryptionAlgorithm.RSA == encryptionAlgorithm && mgf != null) {
+            return EncryptionAlgorithm.RSASSA_PSS;
+        }
+        return encryptionAlgorithm;
+    }
+
+    private static MaskGenerationFunction ensureMaskGenerationFunction(final EncryptionAlgorithm encryptionAlgorithm, final MaskGenerationFunction mgf) {
+        if (mgf == null && EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+            return MaskGenerationFunction.MGF1;
+        }
+        if (mgf != null && !EncryptionAlgorithm.RSASSA_PSS.isEquivalent(encryptionAlgorithm)) {
+            // not applicable
+            return null;
+        }
+        return mgf;
     }
 
     /**

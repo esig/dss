@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
@@ -436,11 +435,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		incorporateCanonicalizationMethod(signedInfoDom, signedInfoCanonicalizationMethod);
 
 		final Element signatureMethod = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.SIGNATURE_METHOD);
-		signedInfoDom.appendChild(signatureMethod);		
-		final EncryptionAlgorithm encryptionAlgorithm = params.getEncryptionAlgorithm();
-		final DigestAlgorithm digestAlgorithm = params.getDigestAlgorithm();
-		final MaskGenerationFunction mgf = params.getMaskGenerationFunction();
-		final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
+		signedInfoDom.appendChild(signatureMethod);
+		final SignatureAlgorithm signatureAlgorithm = params.getSignatureAlgorithm();
 		final String signatureAlgorithmXMLId = signatureAlgorithm.getUri();
 		if (Utils.isStringBlank(signatureAlgorithmXMLId)) {
 			throw new UnsupportedOperationException("Unsupported signature algorithm " + signatureAlgorithm);

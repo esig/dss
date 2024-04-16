@@ -52,6 +52,7 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 
 	protected static final String ALGORITHM_DSA = "DSA";
 	protected static final String ALGORITHM_RSA = "RSA";
+	protected static final String ALGORITHM_RSASSA_PSS = "RSASSA-PSS";
 	protected static final String ALGORITHM_SHA1 = "SHA1";
 	protected static final String ALGORITHM_SHA256 = "SHA256";
 	
