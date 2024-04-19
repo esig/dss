@@ -123,7 +123,8 @@ public final class DSSASN1Utils {
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
 	/** Contains a list of all CAdES timestamp OIDs */
-	private static List<ASN1ObjectIdentifier> timestampOids;
+	@Deprecated
+	private static List<ASN1ObjectIdentifier> timestampOids; // TODO : to be removed from DSSASN1Utils in 6.2
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -465,7 +466,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param atsHashIndexValue {@link ASN1Sequence}
 	 * @return {@link ASN1Sequence}
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getCertificatesHashIndex} method instead
 	 */
+	@Deprecated
 	public static ASN1Sequence getCertificatesHashIndex(final ASN1Sequence atsHashIndexValue) {
 		if (atsHashIndexValue != null) {
 			int certificateIndex = 0;
@@ -482,7 +485,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param atsHashIndexValue {@link ASN1Sequence}
 	 * @return {@link ASN1Sequence}
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getCRLHashIndex} method instead
 	 */
+	@Deprecated
 	public static ASN1Sequence getCRLHashIndex(final ASN1Sequence atsHashIndexValue) {
 		if (atsHashIndexValue != null) {
 			int crlIndex = 1;
@@ -499,7 +504,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param atsHashIndexValue {@link ASN1Sequence}
 	 * @return {@link ASN1Sequence}
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getUnsignedAttributesHashIndex} method instead
 	 */
+	@Deprecated
 	public static ASN1Sequence getUnsignedAttributesHashIndex(final ASN1Sequence atsHashIndexValue) {
 		if (atsHashIndexValue != null) {
 			int unsignedAttributesIndex = 2;
@@ -855,7 +862,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param attributeTable {@link AttributeTable}
 	 * @return TRUE if the attribute table is empty, FALSE otherwise
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#isEmpty} method instead
 	 */
+	@Deprecated
 	public static boolean isEmpty(AttributeTable attributeTable) {
 		return (attributeTable == null) || (attributeTable.size() == 0);
 	}
@@ -865,7 +874,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param originalAttributeTable {@link AttributeTable}
 	 * @return {@link AttributeTable}
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#emptyIfNull} method instead
 	 */
+	@Deprecated
 	public static AttributeTable emptyIfNull(AttributeTable originalAttributeTable) {
 		if (originalAttributeTable != null) {
 			return originalAttributeTable;
@@ -944,7 +955,9 @@ public final class DSSASN1Utils {
 	 * 
 	 * @param timestampUnsignedAttributes {@link AttributeTable} unsigned properties of the timestamp
 	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute with a present version
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getAtsHashIndex} method instead
 	 */
+	@Deprecated
 	public static ASN1Sequence getAtsHashIndex(AttributeTable timestampUnsignedAttributes) {
 		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = getAtsHashIndexVersionIdentifier(timestampUnsignedAttributes);
 		return getAtsHashIndexByVersion(timestampUnsignedAttributes, atsHashIndexVersionIdentifier);
@@ -956,7 +969,9 @@ public final class DSSASN1Utils {
 	 * @param timestampUnsignedAttributes {@link AttributeTable} unsigned properties of the timestamp
 	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} identifier of ats-hash-index table to get
 	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute with a requested version if present
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getAtsHashIndexByVersion} method instead
 	 */
+	@Deprecated
 	public static ASN1Sequence getAtsHashIndexByVersion(AttributeTable timestampUnsignedAttributes, 
 			ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		if (timestampUnsignedAttributes != null && atsHashIndexVersionIdentifier != null) {
@@ -978,7 +993,9 @@ public final class DSSASN1Utils {
 	 * Returns {@code ASN1ObjectIdentifier} of the found AtsHashIndex
 	 * @param timestampUnsignedAttributes {@link AttributeTable} of the timestamp's unsignedAttributes
 	 * @return {@link ASN1ObjectIdentifier} of the AtsHashIndex element version
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getAtsHashIndexVersionIdentifier} method instead
 	 */
+	@Deprecated
 	public static ASN1ObjectIdentifier getAtsHashIndexVersionIdentifier(AttributeTable timestampUnsignedAttributes) {
 		if (timestampUnsignedAttributes != null) {
 			Attributes attributes = timestampUnsignedAttributes.toASN1Structure();
@@ -1001,7 +1018,9 @@ public final class DSSASN1Utils {
 	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} to specify
 	 *                                      rules
 	 * @return byte array
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getOctetStringForAtsHashIndex} method instead
 	 */
+	@Deprecated
 	public static List<byte[]> getOctetStringForAtsHashIndex(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		/*
 		 *  id_aa_ATSHashIndexV3 (EN 319 122-1 v1.1.1) -> Each one shall contain the hash
@@ -1029,7 +1048,9 @@ public final class DSSASN1Utils {
 	 *                            Attribute
 	 * @param attributeValues     {@link ASN1Set} of the corresponding Attribute
 	 * @return byte array representing an octet string
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getATSHashIndexV3OctetString} method instead
 	 */
+	@Deprecated
 	public static List<byte[]> getATSHashIndexV3OctetString(ASN1ObjectIdentifier attributeIdentifier,
 			ASN1Set attributeValues) {
 		List<byte[]> octets = new ArrayList<>();
@@ -1098,7 +1119,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param unsignedAttributes {@link AttributeTable} to obtain timestamps from
 	 * @return a list of {@link TimeStampToken}s
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#findArchiveTimeStampTokens} method instead
 	 */
+	@Deprecated
 	public static List<TimeStampToken> findArchiveTimeStampTokens(AttributeTable unsignedAttributes) {
 		List<TimeStampToken> timeStamps = new ArrayList<>();
 		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
@@ -1143,7 +1166,9 @@ public final class DSSASN1Utils {
 	 * @param attribute {@link Attribute} to check
 	 * @param asn1ObjectIdentifier {@link ASN1ObjectIdentifier} type to check against
 	 * @return TRUE if the attribute is of type asn1ObjectIdentifier, FALSE otherwise
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#isAttributeOfType} method instead
 	 */
+	@Deprecated
 	public static boolean isAttributeOfType(Attribute attribute, ASN1ObjectIdentifier asn1ObjectIdentifier) {
 		if (attribute == null) {
 			return false;
@@ -1157,7 +1182,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param attribute {@link Attribute} to generate {@link TimeStampToken} from
 	 * @return {@link TimeStampToken}
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getTimeStampToken} method instead
 	 */
+	@Deprecated
 	public static TimeStampToken getTimeStampToken(Attribute attribute) {
 		try {
 			CMSSignedData signedData = getCMSSignedData(attribute);
@@ -1177,7 +1204,9 @@ public final class DSSASN1Utils {
 	 * @return {@link CMSSignedData}
 	 * @throws IOException in case of encoding exception
 	 * @throws CMSException in case if the provided {@code attribute} cannot be converted to {@link CMSSignedData}
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getCMSSignedData} method instead
 	 */
+	@Deprecated
 	public static CMSSignedData getCMSSignedData(Attribute attribute) throws CMSException, IOException {
 		ASN1Encodable value = getAsn1Encodable(attribute);
 		if (value instanceof DEROctetString) {
@@ -1194,7 +1223,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param attribute {@link Attribute}
 	 * @return {@link ASN1Encodable}
+	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getAsn1Encodable} method instead
 	 */
+	@Deprecated
 	public static ASN1Encodable getAsn1Encodable(Attribute attribute) {
 		return attribute.getAttrValues().getObjectAt(0);
 	}

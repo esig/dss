@@ -162,7 +162,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	private TimeStampToken getLastArchiveTimestamp(AttributeTable unsignedAttributes) {
 		TimeStampToken lastTimeStampToken = null;
 		TimeStampTokenProductionComparator comparator = new TimeStampTokenProductionComparator();
-		for (TimeStampToken timeStampToken : DSSASN1Utils.findArchiveTimeStampTokens(unsignedAttributes)) {
+		for (TimeStampToken timeStampToken : CMSUtils.findArchiveTimeStampTokens(unsignedAttributes)) {
 			if (lastTimeStampToken == null || comparator.after(timeStampToken, lastTimeStampToken)) {
 				lastTimeStampToken = timeStampToken;
 			}
@@ -184,11 +184,11 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		Attribute[] attributes = attributeTable.toASN1Structure().getAttributes();
 		for (Attribute attribute : attributes) {
 			Attribute newAttribute = attribute;
-			if (DSSASN1Utils.isArchiveTimeStampToken(attribute)) {
+			if (CMSUtils.isArchiveTimeStampToken(attribute)) {
 				try {
 					// ContentInfo binaries have to be compared, therefore CMSSignedData creation is required
-					CMSSignedData cmsSignedData = DSSASN1Utils.getCMSSignedData(attribute);
-					if (CMSUtils.isCMSSignedDataEqual(attributeToReplace, cmsSignedData)) {
+					CMSSignedData cmsSignedData = CMSUtils.getCMSSignedData(attribute);
+					if (cmsSignedData != null && CMSUtils.isCMSSignedDataEqual(attributeToReplace, cmsSignedData)) {
 						ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(attributeToAdd.getEncoded());
 						newAttribute = new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive));
 					}

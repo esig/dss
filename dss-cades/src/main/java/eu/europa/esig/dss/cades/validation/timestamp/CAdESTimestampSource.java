@@ -284,16 +284,16 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		addReferences(timestampedReferences, getSignatureTimestampReferences());
 
-		final ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
+		final ASN1Sequence atsHashIndex = CMSUtils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
 		if (atsHashIndex != null) {
 			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
 
-			final ASN1Sequence certsHashIndex = DSSASN1Utils.getCertificatesHashIndex(atsHashIndex);
-			final ASN1Sequence crlHashIndex = DSSASN1Utils.getCRLHashIndex(atsHashIndex);
+			final ASN1Sequence certsHashIndex = CMSUtils.getCertificatesHashIndex(atsHashIndex);
+			final ASN1Sequence crlHashIndex = CMSUtils.getCRLHashIndex(atsHashIndex);
 			addReferences(timestampedReferences, getSignedDataCertificateReferences(certsHashIndex, digestAlgorithm));
 			addReferences(timestampedReferences, getSignedDataRevocationReferences(crlHashIndex, digestAlgorithm));
 
-			final ASN1Sequence unsignedAttrsHashIndex = DSSASN1Utils.getUnsignedAttributesHashIndex(atsHashIndex);
+			final ASN1Sequence unsignedAttrsHashIndex = CMSUtils.getUnsignedAttributesHashIndex(atsHashIndex);
 			addReferences(timestampedReferences,
 					getUnsignedAttributesReferences(unsignedAttrsHashIndex, digestAlgorithm, previousTimestamps));
 		}
@@ -430,7 +430,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		
 		final SignatureProperties<CAdESAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
 		for (CAdESAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
-			List<byte[]> octets = DSSASN1Utils.getATSHashIndexV3OctetString(unsignedAttribute.getASN1Oid(),
+			List<byte[]> octets = CMSUtils.getATSHashIndexV3OctetString(unsignedAttribute.getASN1Oid(),
 					unsignedAttribute.getAttrValues());
 			for (byte[] bytes : octets) {
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, bytes);

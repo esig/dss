@@ -436,7 +436,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			if (id_aa_ets_archiveTimestampV2.equals(attrType) || id_aa_ets_archiveTimestampV3.equals(attrType)) {
 				try {
 
-					TimeStampToken token = DSSASN1Utils.getTimeStampToken(attribute);
+					TimeStampToken token = CMSUtils.getTimeStampToken(attribute);
 					if (token == null || !token.getTimeStampInfo().getGenTime().before(timestampToken.getGenerationTime())) {
 						continue;
 					}

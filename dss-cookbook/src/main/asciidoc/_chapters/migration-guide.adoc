@@ -32,7 +32,7 @@ ASN1Encodable asn1Encodable = attributes[0].getAttributeValues()[0]; // return v
 
 |PDF strict numeric object comparison           a|
 Strict comparison enforced by default
-                                                                     a|[source,java]
+a|[source,java]
 ----
 IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
 
@@ -94,7 +94,7 @@ cacheCleaner.setDataLoader(dataLoader);
 
 |Revocation update on validation          a|
 No revocation data update forced for time-stamp's certificates before its lowest POE
-                                                                     a|
+a|
 To get back to previous behavior:
 [source,java]
 ----
@@ -119,6 +119,25 @@ a|[source,java]
 DSSDocument document = ...
 byte[] digest = document.getDigestValue(DigestAlgorithm.SHA256);
 String base64EncodedDigest = Utils.toBase64(digest);
+----
+
+|DSSASN1Utils CMS methods          a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+
+List<ASN1ObjectIdentifier> oids = DSSASN1Utils.getTimestampOids();
+boolean result = DSSASN1Utils.isArchiveTimeStampToken(attribute);
+...
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.cades.CMSUtils;
+
+List<ASN1ObjectIdentifier> oids = CMSUtils.getTimestampOids();
+boolean result = CMSUtils.isArchiveTimeStampToken(attribute);
+...
 ----
 
 |===

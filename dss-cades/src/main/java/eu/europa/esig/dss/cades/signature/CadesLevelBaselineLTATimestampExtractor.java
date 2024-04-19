@@ -158,8 +158,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	public Attribute getVerifiedAtsHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) {
 		final AttributeTable unsignedAttributes = timestampToken.getUnsignedAttributes();
-		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = DSSASN1Utils.getAtsHashIndexVersionIdentifier(unsignedAttributes);
-		ASN1Sequence atsHashIndex = DSSASN1Utils.getAtsHashIndexByVersion(unsignedAttributes, atsHashIndexVersionIdentifier);
+		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = CMSUtils.getAtsHashIndexVersionIdentifier(unsignedAttributes);
+		ASN1Sequence atsHashIndex = CMSUtils.getAtsHashIndexByVersion(unsignedAttributes, atsHashIndexVersionIdentifier);
 		if (atsHashIndex == null) {
 			LOG.warn("A valid atsHashIndex [oid: {}] has not been found for a timestamp with id {}",
 					atsHashIndexVersionIdentifier, timestampToken.getDSSIdAsString());
@@ -235,7 +235,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	private ASN1Sequence getVerifiedCertificatesHashIndex(final ASN1Sequence timestampHashIndex) {
 
-		final ASN1Sequence certHashes = DSSASN1Utils.getCertificatesHashIndex(timestampHashIndex);
+		final ASN1Sequence certHashes = CMSUtils.getCertificatesHashIndex(timestampHashIndex);
 		final List<DEROctetString> certHashesList = DSSASN1Utils.getDEROctetStrings(certHashes);
 
 		for (final CertificateToken certificateToken : certificates) {
@@ -308,7 +308,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	@SuppressWarnings("unchecked")
 	private ASN1Sequence getVerifiedCRLsHashIndex(final ASN1Sequence timestampHashIndex) {
 
-		final ASN1Sequence crlHashes = DSSASN1Utils.getCRLHashIndex(timestampHashIndex);
+		final ASN1Sequence crlHashes = CMSUtils.getCRLHashIndex(timestampHashIndex);
 		final List<DEROctetString> crlHashesList = DSSASN1Utils.getDEROctetStrings(crlHashes);
 
 		final SignedData signedData = SignedData.getInstance(cmsSignedData.toASN1Structure().getContent());
@@ -404,7 +404,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private ASN1Sequence getVerifiedUnsignedAttributesHashIndex(SignerInformation signerInformation, final ASN1Sequence timestampHashIndex, 
 			ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
 		
-		final ASN1Sequence unsignedAttributesHashes = DSSASN1Utils.getUnsignedAttributesHashIndex(timestampHashIndex);
+		final ASN1Sequence unsignedAttributesHashes = CMSUtils.getUnsignedAttributesHashIndex(timestampHashIndex);
 		final List<DEROctetString> timestampUnsignedAttributesHashesList = DSSASN1Utils.getDEROctetStrings(unsignedAttributesHashes);
 		
 		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
@@ -433,7 +433,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	}
 
 	private List<DEROctetString> getAttributeDerOctetStringHashes(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
-		List<byte[]> octets = DSSASN1Utils.getOctetStringForAtsHashIndex(attribute, atsHashIndexVersionIdentifier);
+		List<byte[]> octets = CMSUtils.getOctetStringForAtsHashIndex(attribute, atsHashIndexVersionIdentifier);
 		if (Utils.isCollectionNotEmpty(octets)) {
 			List<DEROctetString> derOctetStrings = new ArrayList<>();
 			for (byte[] bytes : octets) {

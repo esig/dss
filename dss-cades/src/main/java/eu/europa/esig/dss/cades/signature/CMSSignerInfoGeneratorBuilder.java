@@ -127,11 +127,11 @@ public class CMSSignerInfoGeneratorBuilder {
     protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(
             DigestCalculatorProvider digestCalculatorProvider, AttributeTable signedAttributes, AttributeTable unsignedAttributes) {
 
-        if (DSSASN1Utils.isEmpty(signedAttributes)) {
+        if (CMSUtils.isEmpty(signedAttributes)) {
             signedAttributes = null;
         }
         final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
-        if (DSSASN1Utils.isEmpty(unsignedAttributes)) {
+        if (CMSUtils.isEmpty(unsignedAttributes)) {
             unsignedAttributes = null;
         }
         final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);

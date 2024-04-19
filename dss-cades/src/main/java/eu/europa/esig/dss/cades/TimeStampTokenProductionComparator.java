@@ -72,8 +72,8 @@ public class TimeStampTokenProductionComparator implements Comparator<TimeStampT
 	}
 
 	private int compareByHashTableSize(TimeStampToken tst1, TimeStampToken tst2) {
-		ASN1Sequence atsHashIndexOne = DSSASN1Utils.getAtsHashIndex(tst1.getUnsignedAttributes());
-		ASN1Sequence atsHashIndexTwo = DSSASN1Utils.getAtsHashIndex(tst2.getUnsignedAttributes());
+		ASN1Sequence atsHashIndexOne = CMSUtils.getAtsHashIndex(tst1.getUnsignedAttributes());
+		ASN1Sequence atsHashIndexTwo = CMSUtils.getAtsHashIndex(tst2.getUnsignedAttributes());
 
 		if (atsHashIndexOne != null && atsHashIndexTwo != null) {
 			int hashTableSizeOne = getHashTableSize(atsHashIndexOne);

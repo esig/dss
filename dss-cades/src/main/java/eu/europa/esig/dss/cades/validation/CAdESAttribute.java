@@ -119,7 +119,7 @@ public class CAdESAttribute implements SignatureAttribute {
 	public TimeStampToken toTimeStampToken() {
 		if (isTimeStampToken()) {
 			try {
-				return DSSASN1Utils.getTimeStampToken(attribute);
+				return CMSUtils.getTimeStampToken(attribute);
 			} catch (Exception e) {
 				LOG.warn("Unable to build a timestamp token from the attribute [{}] : {}", this, e.getMessage());
 			}
