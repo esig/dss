@@ -11,7 +11,7 @@
 
 	<artifactId>dss-jades</artifactId>
 	<name>DSS JAdES</name>
-	<description>DSS JAdES contains the code for the creation and validation of JAdES signatures. (experimental)</description>
+	<description>DSS JAdES contains the code for the creation and validation of JAdES signatures.</description>
 
 	<properties>
 		<module-name>jpms_dss_jades</module-name>
