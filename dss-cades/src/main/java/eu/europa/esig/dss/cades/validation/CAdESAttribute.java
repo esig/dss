@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignatureAttribute;
@@ -94,7 +96,19 @@ public class CAdESAttribute implements SignatureAttribute {
 	 * @return TRUE if the attribute is a timestamp, FALSE otherwise
 	 */
 	public boolean isTimeStampToken() {
-		return DSSASN1Utils.getTimestampOids().contains(getASN1Oid());
+		return CMSUtils.getTimestampOids().contains(getASN1Oid());
+	}
+
+	/**
+	 * Returns type of the timestamp token, when applicable
+	 *
+	 * @return {@link TimestampType}
+	 */
+	public TimestampType getTimestampTokenType() {
+		if (isTimeStampToken()) {
+			return CMSUtils.getTimestampTypeByOid(getASN1Oid());
+		}
+		return null;
 	}
 
 	/**
