@@ -21,9 +21,8 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.validation.SignatureProperties;
-import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.AttributeTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,30 +34,29 @@ public abstract class CAdESSigProperties implements SignatureProperties<CAdESAtt
 
 	private static final long serialVersionUID = -1730805576179343914L;
 
-	/** The CMS AttributeTable */
-	private final AttributeTable attributeTable;
+	/** The CMS attribute table set */
+	private final ASN1Set asn1Set;
 
 	/**
 	 * The default constructor
 	 *
-	 * @param attributeTable {@link AttributeTable}
+	 * @param asn1Set {@link ASN1Set}
 	 */
-	CAdESSigProperties(AttributeTable attributeTable) {
-		this.attributeTable = attributeTable;
+	CAdESSigProperties(final ASN1Set asn1Set) {
+		this.asn1Set = asn1Set;
 	}
 
 	@Override
 	public boolean isExist() {
-		return attributeTable != null;
+		return asn1Set != null;
 	}
 
 	@Override
 	public List<CAdESAttribute> getAttributes() {
 		List<CAdESAttribute> attributes = new ArrayList<>();
 		if (isExist()) {
-			ASN1EncodableVector asn1EncodableVector = attributeTable.toASN1EncodableVector();
-			for (int ii = 0; ii < asn1EncodableVector.size(); ii++) {
-				Attribute attribute = (Attribute) asn1EncodableVector.get(ii);
+			for (int ii = 0; ii < asn1Set.size(); ii++) {
+				Attribute attribute = Attribute.getInstance(asn1Set.getObjectAt(ii));
 				attributes.add(new CAdESAttribute(attribute, ii));
 			}
 		}
