@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cades;
 import eu.europa.esig.dss.cades.signature.CustomMessageDigestCalculatorProvider;
 import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -67,11 +68,18 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
+import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
+import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificate;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCertificateV2;
 
@@ -90,6 +98,19 @@ public final class CMSUtils {
 
 	/** 01-01-2050 date, see RFC 3852 (month param is zero-based (i.e. 0 for January)) */
 	private static final Date JANUARY_2050 = DSSUtils.getUtcDate(2050, 0, 1);
+
+	/** Contains a list of all CAdES timestamp OIDs */
+	private static List<ASN1ObjectIdentifier> timestampOids;
+
+	static {
+		timestampOids = new ArrayList<>();
+		timestampOids.add(id_aa_ets_contentTimestamp);
+		timestampOids.add(id_aa_ets_archiveTimestampV2);
+		timestampOids.add(id_aa_ets_archiveTimestampV3);
+		timestampOids.add(id_aa_ets_certCRLTimestamp);
+		timestampOids.add(id_aa_ets_escTimeStamp);
+		timestampOids.add(id_aa_signatureTimeStampToken);
+	}
 
 	/**
 	 * Utils class
@@ -449,6 +470,51 @@ public final class CMSUtils {
 				return signingDate;
 			}
 			LOG.warn("Error when reading signing time. Unrecognized {}", attrValue.getClass());
+		}
+		return null;
+	}
+
+	/**
+	 * Returns a list of all CMS timestamp identifiers
+	 *
+	 * @return a list of {@link ASN1ObjectIdentifier}s
+	 */
+	public static List<ASN1ObjectIdentifier> getTimestampOids() {
+		return timestampOids;
+	}
+
+	/**
+	 * Checks if the attribute is of an allowed archive timestamp type
+	 *
+	 * @param attribute {@link Attribute} to check
+	 * @return true if the attribute represents an archive timestamp element, false
+	 *         otherwise
+	 */
+	public static boolean isArchiveTimeStampToken(Attribute attribute) {
+		ASN1ObjectIdentifier attrOid = attribute.getAttrType();
+		if (attrOid != null) {
+			return TimestampType.ARCHIVE_TIMESTAMP == getTimestampTypeByOid(attrOid);
+		}
+		return false;
+	}
+
+	/**
+	 * This method returns a corresponding TimestampType for the given CMS {@code oid}
+	 *
+	 * @param oid {@link ASN1ObjectIdentifier} of the timestamp attribute
+	 * @return {@link TimestampType}, null when OID is not recognized
+	 */
+	public static TimestampType getTimestampTypeByOid(ASN1ObjectIdentifier oid) {
+		if (id_aa_ets_contentTimestamp.equals(oid)) {
+			return TimestampType.CONTENT_TIMESTAMP;
+		} else if (id_aa_signatureTimeStampToken.equals(oid)) {
+			return TimestampType.SIGNATURE_TIMESTAMP;
+		} else if (id_aa_ets_certCRLTimestamp.equals(oid)) {
+			return TimestampType.VALIDATION_DATA_REFSONLY_TIMESTAMP;
+		} else if (id_aa_ets_escTimeStamp.equals(oid)) {
+			return TimestampType.VALIDATION_DATA_TIMESTAMP;
+		} else if (id_aa_ets_archiveTimestampV2.equals(oid) || id_aa_ets_archiveTimestampV3.equals(oid)) {
+			return TimestampType.ARCHIVE_TIMESTAMP;
 		}
 		return null;
 	}
