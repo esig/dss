@@ -52,6 +52,12 @@ public final class JAdESUtils extends AbstractJWSUtils {
 
 	private static final String RFC_SUBDIRECTORY = "rfcs/";
 
+	/** The RFC 7519 schema of definitions */
+	private static final String RFC7519_SCHEMA_LOCATION = "/schema/rfcs/rfc7519.json";
+
+	/** The RFC 7519 schema name URI */
+	private static final String RFC7519_SCHEMA_URI = "rfc7519.json";
+
 	/** The RFC 7797 schema of definitions */
 	private static final String RFC7797_SCHEMA_LOCATION = "/schema/rfcs/rfc7797.json";
 
@@ -125,6 +131,7 @@ public final class JAdESUtils extends AbstractJWSUtils {
 			for (Map.Entry<URI, String> entry : rfcDefinitions.entrySet()) {
 				definitions.put(URI.create(RFC_SUBDIRECTORY + entry.getKey().toString()), entry.getValue());
 			}
+			definitions.put(URI.create(RFC_SUBDIRECTORY + RFC7519_SCHEMA_URI), RFC7519_SCHEMA_LOCATION);
 			definitions.put(URI.create(RFC_SUBDIRECTORY + RFC7797_SCHEMA_URI), RFC7797_SCHEMA_LOCATION);
 
 		}
