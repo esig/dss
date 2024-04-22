@@ -22,6 +22,7 @@ package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -29,6 +30,9 @@ import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +47,9 @@ import java.util.stream.Collectors;
 public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecker<JAdESSignature> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JAdESBaselineRequirementsChecker.class);
+
+    /** 2025-05-15T00:00:00Z date, see TS 119 182-1 */
+    private static final Date SIG_T_OBSOLESCENCE_DATE = DSSUtils.getUtcDate(2025, Calendar.MAY, 15);
 
     /**
      * Default constructor
@@ -74,8 +81,7 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // sigT (Cardinality == 1)
-        if (Utils.isStringEmpty(jws.getProtectedHeaderValueAsString(JAdESHeaderParameterNames.SIG_T))) {
-            LOG.warn("sigT header shall be present for JAdES-BASELINE-B signature (cardinality == 1)!");
+        if (!signingTimeRequirement(jws)) {
             return false;
         }
         // x5t#256 / x5t#o / sigX5ts (Cardinality == 1)
@@ -168,6 +174,45 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                 return false;
             }
         }
+        return true;
+    }
+
+    private boolean signingTimeRequirement(JWS jws) {
+        /*
+         * a) Requirements for iat and sigT. Before 2025-05-15T00:00:00Z the generator should include
+         *    the iat header parameter for indicating the claimed signing time in new JAdES signatures
+         *    and should not include the iat header parameter for indicating the claimed signing time
+         *    in new JAdES signatures. Starting at 2025-05-15T00:00:00Z the generator shall include the
+         *    iat header parameter for indicating the claimed signing time in new JAdES signatures.
+         */
+        Number iat = jws.getProtectedHeaderValueAsNumber(JAdESHeaderParameterNames.IAT);
+        String sigT = jws.getProtectedHeaderValueAsString(JAdESHeaderParameterNames.SIG_T);
+        Date signingTime = signature.getSigningTime();
+
+        // iat or sigT (Cardinality == 1)
+        if (iat == null && Utils.isStringEmpty(sigT)) {
+            LOG.warn("Either iat header or sigT header (for signatures before 2025-05-15T00:00:00Z) shall be present " +
+                    "for JAdES-BASELINE-B signature (cardinality == 1)!");
+            return false;
+
+        } else if (signingTime == null) {
+            LOG.warn("Invalid date format extracted from {} header parameter for JAdES-BASELINE-B signature (cardinality == 1)!",
+                    iat != null ? "iat" : "sigT");
+            return false;
+
+        } else if (iat == null) {
+            if (signingTime.before(SIG_T_OBSOLESCENCE_DATE)) {
+                LOG.debug("iat header should be present for JAdES-BASELINE-B signature produced before 2025-05-15T00:00:00Z (cardinality == 0 or 1)!");
+            } else {
+                LOG.warn("iat header shall be present for JAdES-BASELINE-B signature produced starting at 2025-05-15T00:00:00Z (cardinality == 1)!");
+                return false;
+            }
+
+        } else if (Utils.isStringNotEmpty(sigT)) {
+            LOG.warn("Both iat and sigT headers are not allowed for JAdES-BASELINE-B signature (cardinality == 1)!");
+            return false;
+        }
+
         return true;
     }
 

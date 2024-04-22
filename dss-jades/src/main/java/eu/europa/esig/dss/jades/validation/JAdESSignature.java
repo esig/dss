@@ -164,7 +164,19 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public Date getSigningTime() {
-		return DSSJsonUtils.getDate(jws.getProtectedHeaderValueAsString(JAdESHeaderParameterNames.SIG_T));
+		Number iat = jws.getProtectedHeaderValueAsNumber(JAdESHeaderParameterNames.IAT);
+		String sigT = jws.getProtectedHeaderValueAsString(JAdESHeaderParameterNames.SIG_T);
+		if (iat != null && Utils.isStringNotEmpty(sigT)) {
+			LOG.debug("Unable to extract claimed signing-time: Conflict between 'iat' and 'sigT' header parameters! " +
+					"Only one shall be present.");
+			return null;
+		} else if (iat != null) {
+			return DSSJsonUtils.getDate(iat);
+		} else if (Utils.isStringNotEmpty(sigT)) {
+			return DSSJsonUtils.getDate(sigT);
+		}
+		LOG.debug("Unable to extract claimed signing-time: No signing-time identifying header was found.");
+		return null;
 	}
 
 	/**

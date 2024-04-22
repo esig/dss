@@ -43,11 +43,11 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.jwx.HeaderParameterNames;
@@ -350,13 +350,23 @@ public class JAdESLevelBaselineB {
 	}
 	
 	/**
-	 * Incorporates 5.2.1 The sigT (claimed signing time) header parameter
+	 * Incorporates 5.1.11 iat or 5.2.1 sigT (claimed signing time) header parameter
 	 */
 	protected void incorporateSigningTime() {
 		final Date signingDate = parameters.bLevel().getSigningDate();
-		final String stringSigningTime = DSSUtils.formatDateToRFC(signingDate);
-		
-		addHeader(JAdESHeaderParameterNames.SIG_T, stringSigningTime);
+		switch (parameters.getJadesSigningTimeType()) {
+			case IAT:
+				final long iatHeaderValue = signingDate.getTime();
+				addHeader(JAdESHeaderParameterNames.IAT, iatHeaderValue);
+				break;
+			case SIG_T:
+				final String stringSigningTime = DSSUtils.formatDateToRFC(signingDate);
+				addHeader(JAdESHeaderParameterNames.SIG_T, stringSigningTime);
+				break;
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The JAdESSigningTimeType '%s' is not supported!", parameters.getJadesSigningTimeType()));
+		}
 	}
 
 	/**

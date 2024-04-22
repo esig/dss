@@ -205,6 +205,16 @@ public class JWS extends JsonWebSignature implements Serializable {
 	 * Returns a protected header value with the {@code key}
 	 *
 	 * @param key {@link String}
+	 * @return {@link Number} value if present, NULL otherwise
+	 */
+	public Number getProtectedHeaderValueAsNumber(String key) {
+		return DSSJsonUtils.toNumber(getHeaders().getObjectHeaderValue(key), key);
+	}
+
+	/**
+	 * Returns a protected header value with the {@code key}
+	 *
+	 * @param key {@link String}
 	 * @return {@link Map} value if present, empty map otherwise
 	 */
 	public Map<?, ?> getProtectedHeaderValueAsMap(String key) {

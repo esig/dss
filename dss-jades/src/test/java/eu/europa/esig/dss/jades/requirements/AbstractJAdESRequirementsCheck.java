@@ -41,13 +41,11 @@ import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -166,11 +164,10 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 
 	protected void checkSigningTime(Map<String, Object> protectedHeaderMap) throws Exception {
 		String sigT = (String) protectedHeaderMap.get("sigT");
-		assertNotNull(sigT);
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // RFC 3339
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		Date date = sdf.parse(sigT);
+		assertNull(sigT);
+
+		Number iat = (Number) protectedHeaderMap.get("iat");
+		Date date = new Date(iat.longValue());
 		assertNotNull(date);
 	}
 

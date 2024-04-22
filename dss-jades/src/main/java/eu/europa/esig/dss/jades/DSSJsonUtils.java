@@ -79,6 +79,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.ADO_TST;
+import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.IAT;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_D;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_PID;
 import static eu.europa.esig.dss.jades.JAdESHeaderParameterNames.SIG_PL;
@@ -163,6 +164,8 @@ public class DSSJsonUtils {
 		protectedCriticalHeaders = Stream.of(
 				/* JAdES EN 119-812 constraints */
 				SIG_T, X5T_O, SIG_X5T_S, SR_CMS, SIG_PL, SR_ATS, ADO_TST, SIG_PID, SIG_D,
+				/* RFC 7519 'iat' */
+				IAT,
 				/* RFC7797 'b64' */
 				BASE64URL_ENCODE_PAYLOAD ).collect(Collectors.toSet());
 		
@@ -662,6 +665,29 @@ public class DSSJsonUtils {
 	}
 
 	/**
+	 * Parses a IETF RFC 7519 dateTime NumericDate
+	 *
+	 * @param dateTimeNumber {@link Number} in the RFC 7519 NumericDate format to parse
+	 * @return {@link Date}
+	 */
+	public static Date getDate(Number dateTimeNumber) {
+		/*
+		 * A JSON numeric value representing the number of seconds from
+		 * 1970-01-01T00:00:00Z UTC until the specified UTC date/time,
+		 * ignoring leap seconds.  This is equivalent to the IEEE Std 1003.1,
+		 * 2013 Edition [POSIX.1] definition "Seconds Since the Epoch", in
+		 * which each day is accounted for by exactly 86400 seconds, other
+		 * than that non-integer values can be represented.  See RFC 3339
+		 * [RFC3339] for details regarding date/times in general and UTC in
+		 * particular.
+		 */
+		if (dateTimeNumber != null) {
+			return new Date(dateTimeNumber.longValue());
+		}
+		return null;
+	}
+
+	/**
 	 * Parses the 'kid' header value as in IETF RFC 5035
 	 * 
 	 * @param value {@link String} IssuerSerial to parse
@@ -1105,6 +1131,50 @@ public class DSSJsonUtils {
 	}
 
 	/**
+	 * Method safely converts {@code Object} to {@code Number} if possible
+	 *
+	 * @param object {@link Object} to convert
+	 * @return {@link Number} if able to convert, null Number otherwise
+	 */
+	public static Number toNumber(Object object) {
+		return toNumber(object, null);
+	}
+
+	/**
+	 * Method safely converts {@code Object} to {@code Number} if possible.
+	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
+	 *
+	 * @param object {@link Object} to convert
+	 * @param headerName {@link String} name of the header attribute with the extracted value
+	 * @return {@link Number} if able to convert, null Number otherwise
+	 */
+	public static Number toNumber(Object object, String headerName) {
+		if (object == null) {
+			// continue
+
+		} else if (object instanceof Number) {
+			return (Number) object;
+
+		} else if (Utils.isStringNotEmpty(headerName)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process '{}' header parameter with value : '{}'. The Number type is expected!",
+						headerName, object);
+			} else {
+				LOG.warn("Unable to process '{}' header parameter. The Number type is expected!", headerName);
+			}
+
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Unable to process an obtained item with value : '{}'. The Number type is expected!", object);
+			} else {
+				LOG.warn("Unable to process an obtained item. The Number type is expected!");
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Gets a value from the {@code map} under the given {@code key} as {@code Map}
 	 *
 	 * @param map {@link Map} to extract the value from
@@ -1245,16 +1315,9 @@ public class DSSJsonUtils {
 		List<Number> listOfNumbers = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(list)) {
 			for (Object item : list) {
-				if (item instanceof Number) {
-					Number num = (Number) item;
+				Number num = toNumber(item);
+				if (num != null) {
 					listOfNumbers.add(num);
-
-				} else {
-					if (LOG.isDebugEnabled()) {
-						LOG.warn("Unable to process an obtained item with value : '{}'. The Number type is expected!", item);
-					} else {
-						LOG.warn("Unable to process an obtained item. The Number type is expected!");
-					}
 				}
 			}
 		}
