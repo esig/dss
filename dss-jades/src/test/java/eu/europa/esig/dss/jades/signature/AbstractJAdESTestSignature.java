@@ -64,6 +64,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -129,13 +130,16 @@ public abstract class AbstractJAdESTestSignature
 			}
 
 			Object crit = headers.getObjectHeaderValue(HeaderParameterNames.CRITICAL);
-			assertTrue(crit instanceof List<?>);
+			if (crit != null) {
+                assertInstanceOf(List.class, crit);
 
-			List<String> critArray = (List<String>) crit;
-			assertTrue(Utils.isCollectionNotEmpty(critArray));
-			for (String critItem : critArray) {
-				assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
-				assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
+				List<String> critArray = (List<String>) crit;
+				assertTrue(Utils.isCollectionNotEmpty(critArray));
+				for (String critItem : critArray) {
+					assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
+					assertTrue(DSSJsonUtils.isRequiredCriticalHeader(critItem));
+					assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
+				}
 			}
 		}
 	}

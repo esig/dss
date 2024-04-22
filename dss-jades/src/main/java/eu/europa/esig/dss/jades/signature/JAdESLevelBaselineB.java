@@ -255,17 +255,14 @@ public class JAdESLevelBaselineB {
 	 */
 	protected void incorporateCritical() {
 		/*
-		 * RFC 7515 : "4.1.11.  "crit" (Critical) Header Parameter"
+		 * ETSI TS 119 182-1, 5.1.9	The crit (critical) header parameter
 		 * 
-		 * Producers MUST NOT include Header Parameter names defined by this specification
-		 * or [JWA] for use with JWS, duplicate names, or names that do not
-		 * occur as Header Parameter names within the JOSE Header in the "crit"
-		 * list. Producers MUST NOT use the empty list "[]" as the "crit" value.
+		 * If the JAdES signature includes the sigD header parameter,
+		 * the crit header parameter shall also be present and "sigD" shall be one of its JSON array elements.
 		 */
-		
 		List<String> criticalHeaderNames = new ArrayList<>();
 		for (String header : signedProperties.keySet()) {
-			if (!DSSJsonUtils.isCriticalHeaderException(header)) {
+			if (DSSJsonUtils.isRequiredCriticalHeader(header)) {
 				criticalHeaderNames.add(header);
 			}
 		}

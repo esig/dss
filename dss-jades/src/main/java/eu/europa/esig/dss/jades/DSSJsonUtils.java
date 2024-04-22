@@ -148,6 +148,11 @@ public class DSSJsonUtils {
 	 * Contains protected header names that are supported and can be present in the critical ('crit') attribute
 	 */
 	private static final Set<String> protectedCriticalHeaders;
+
+	/**
+	 * Contains protected header names that are required to be present in the critical ('crit') attribute, when used
+	 */
+	private static final Set<String> requiredCriticalHeaders;
 	
 	/**
 	 * Contains a list of headers that MUST NOT be incorporated into a 'crit' header (includes RFC 7515, RFC 7518) 
@@ -168,6 +173,12 @@ public class DSSJsonUtils {
 				/* RFC 7518 */
 				EPHEMERAL_PUBLIC_KEY, AGREEMENT_PARTY_U_INFO, AGREEMENT_PARTY_V_INFO, INITIALIZATION_VECTOR, AUTHENTICATION_TAG, 
 				PBES2_SALT_INPUT, PBES2_ITERATION_COUNT, ENCRYPTION_METHOD, ZIP ).collect(Collectors.toSet());
+
+		requiredCriticalHeaders = Stream.of(
+				/* JAdES EN 119-812 constraints */
+				SIG_D,
+				/* RFC7797 'b64' */
+				BASE64URL_ENCODE_PAYLOAD ).collect(Collectors.toSet());
 	}
 	
 	private DSSJsonUtils() {
@@ -341,6 +352,16 @@ public class DSSJsonUtils {
 	 */
 	public static boolean isCriticalHeaderException(String headerName) {
 		return criticalHeaderExceptions.contains(headerName);
+	}
+
+	/**
+	 * Checks if the given {@code headerName} is required to be incorporated within 'crit' header, when used
+	 *
+	 * @param headerName {@link String} header name to check
+	 * @return TRUE if the header is required within 'crit' header when used, FALSE otherwise
+	 */
+	public static boolean isRequiredCriticalHeader(String headerName) {
+		return requiredCriticalHeaders.contains(headerName);
 	}
 	
 	/**

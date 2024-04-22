@@ -68,14 +68,8 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("cty header shall not be present for a JAdES-BASELINE-B counter signature!");
             return false;
         }
-        // crit (conditional presence, but shall be included for other mandatory headers, therefore it is mandatory)
-        Object crit = jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.CRITICAL);
-        if (crit == null) {
-            LOG.warn("crit header shall be present for a JAdES-BASELINE-B signature!");
-            return false;
-        }
         // verify 'crit' as of RFC 7515 and ETSI TS 119 182-1
-        if (!critRequirements(jws, crit)) {
+        if (!critRequirements(jws)) {
             // validation errors returned inside
             return false;
         }
@@ -108,24 +102,31 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    private boolean critRequirements(JWS jws, Object crit) {
-        // crit shall be an array (List)
-        if (!(crit instanceof List<?>)) {
-            LOG.warn("crit header shall be an instance of json array type for a JAdES-BASELINE-B signature!");
-            return false;
+    private boolean critRequirements(JWS jws) {
+        List<?> critList = new ArrayList<>();
+
+        // crit (conditional presence, required only for some elements)
+        Object crit = jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.CRITICAL);
+        if (crit != null) {
+            // crit shall be an array (List)
+            if (!(crit instanceof List<?>)) {
+                LOG.warn("crit header shall be an instance of json array type for a JAdES-BASELINE-B signature!");
+                return false;
+            }
+            // crit cannot be empty
+            critList = (List<?>) crit;
+            if (Utils.isCollectionEmpty(critList)) {
+                LOG.warn("crit header shall not be empty for a JAdES-BASELINE-B signature (see RFC 7515)!");
+                return false;
+            }
+            Set<Object> uniqueEntries = new HashSet<>();
+            Set<Object> duplicates = critList.stream().filter(e -> !uniqueEntries.add(e)).collect(Collectors.toSet());
+            if (Utils.isCollectionNotEmpty(duplicates)) {
+                LOG.warn("crit header shall not contain duplicates for a JAdES-BASELINE-B signature (see RFC 7515)! Found duplicates : '{}'", duplicates);
+                return false;
+            }
         }
-        // crit cannot be empty
-        List<?> critList = (List<?>) crit;
-        if (Utils.isCollectionEmpty(critList)) {
-            LOG.warn("crit header shall not be empty for a JAdES-BASELINE-B signature (see RFC 7515)!");
-            return false;
-        }
-        Set<Object> uniqueEntries = new HashSet<>();
-        Set<Object> duplicates = critList.stream().filter(e -> !uniqueEntries.add(e)).collect(Collectors.toSet());
-        if (Utils.isCollectionNotEmpty(duplicates)) {
-            LOG.warn("crit header shall not contain duplicates for a JAdES-BASELINE-B signature (see RFC 7515)! Found duplicates : '{}'", duplicates);
-            return false;
-        }
+
         Set<String> keySet = DSSJsonUtils.extractJOSEHeaderMembersSet(jws);
         for (String key : keySet) {
             // critical headers shall not be present within crit
@@ -135,12 +136,13 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                             "for a JAdES-BASELINE-B signature (see RFC 7515)! Found header : '{}'", key);
                     return false;
                 }
-                // The elements of the crit JSON array shall be the names of all the signed header parameters
-                // that are present in the JAdES signatures and specified in clause 5.2.
-            } else if (DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(key)) {
-                if (!critList.contains(key)) {
-                    LOG.warn("crit header shall contain all headers present in a signature and specified in clause 5.2 " +
-                            "of ETSI TS 119 182-1 or RFC 7797 ('b64') for a JAdES-BASELINE-B signature! Not present header : '{}'", key);
+
+            } else if (DSSJsonUtils.isRequiredCriticalHeader(key)) {
+                if (crit == null) {
+                    LOG.warn("crit header shall be present when '{}' header is present in a signature for a JAdES-BASELINE-B signature!", key);
+                    return false;
+                } else if (!critList.contains(key)) {
+                    LOG.warn("crit header shall contain '{}' header when present in a signature for a JAdES-BASELINE-B signature!", key);
                     return false;
                 }
             }
