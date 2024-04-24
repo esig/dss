@@ -32,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -398,9 +399,61 @@ public class ValidationProcessUtils {
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
 				return MessageTag.ACCM_POS_ER_TST_SEQ;
 			default:
-				throw new IllegalArgumentException(String.format("The provided DigestMatcherType '%s' is not supported!",
-						digestMatcher.getType()));
+				throw new IllegalArgumentException(String.format(
+						"The provided DigestMatcherType '%s' is not supported!", digestMatcher.getType()));
 		}
+	}
+
+	/**
+	 * Returns crypto position MessageTag for the given collection of XmlDigestMatchers
+	 *
+	 * @param digestMatchers a collection of {@link XmlDigestMatcher}s to get crypto position for
+	 * @return {@link MessageTag} position
+	 */
+	public static MessageTag getDigestMatcherCryptoPosition(Collection<XmlDigestMatcher> digestMatchers) {
+		if (Utils.isCollectionEmpty(digestMatchers)) {
+			throw new IllegalArgumentException("Collection of DigestMatchers cannot be null!");
+		} else if (Utils.collectionSize(digestMatchers) == 1) {
+			return getDigestMatcherCryptoPosition(digestMatchers.iterator().next());
+		} else {
+			DigestMatcherType digestMatcherType = getDigestMatcherType(digestMatchers);
+			switch (digestMatcherType) {
+				case OBJECT:
+				case REFERENCE:
+				case XPOINTER:
+					return MessageTag.ACCM_POS_REF_PL;
+				case MANIFEST:
+					return MessageTag.ACCM_POS_MAN_PL;
+				case MANIFEST_ENTRY:
+					return MessageTag.ACCM_POS_MAN_ENT_PL;
+				case SIGNED_PROPERTIES:
+					return MessageTag.ACCM_POS_SIGND_PRT;
+				case KEY_INFO:
+					return MessageTag.ACCM_POS_KEY_PL;
+				case SIGNATURE_PROPERTIES:
+					return MessageTag.ACCM_POS_SIGNTR_PRT;
+				case COUNTER_SIGNATURE:
+				case COUNTER_SIGNED_SIGNATURE_VALUE:
+					return MessageTag.ACCM_POS_CNTR_SIG_PL;
+				case SIG_D_ENTRY:
+					return MessageTag.ACCM_POS_SIG_D_ENT_PL;
+				case EVIDENCE_RECORD_ARCHIVE_OBJECT:
+					return MessageTag.ACCM_POS_ER_ADO_PL;
+				case EVIDENCE_RECORD_ORPHAN_REFERENCE:
+					return MessageTag.ACCM_POS_ER_OR_PL;
+				default:
+					throw new IllegalArgumentException(String.format(
+							"The provided DigestMatcherType '%s' is not supported for multiple digest matchers!", digestMatcherType));
+			}
+		}
+
+	}
+
+	private static DigestMatcherType getDigestMatcherType(Collection<XmlDigestMatcher> digestMatchers) {
+		if (Utils.isCollectionNotEmpty(digestMatchers)) {
+			return digestMatchers.iterator().next().getType(); // same position shall be provided
+		}
+		return null;
 	}
 
 	/**

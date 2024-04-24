@@ -40,9 +40,9 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.CryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.AllCertificatesInPathReferencedCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckerResultCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateRefDigestCryptographicCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferencesValidityCheck;
@@ -165,25 +165,15 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		// process digestMatchers
 		List<XmlDigestMatcher> digestMatchers = token.getDigestMatchers();
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
-			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				DigestAlgorithm digestAlgorithm = digestMatcher.getDigestMethod();
-				if (digestAlgorithm == null) {
-					continue;
-				}
-				
-				position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
-				DigestCryptographicChecker dac = new DigestCryptographicChecker(
-						i18nProvider, digestAlgorithm, currentTime, position, constraint);
-				XmlCC dacResult = dac.execute();
-				
-				item = item.setNextItem(digestAlgorithmCheckResult(digestMatcher, dacResult, position, constraint));
-				
-				if (!isValid(dacResult)) {
-					// update the failed constraints and brake the loop
-					cryptographicValidation = getCryptographicValidation(dacResult);
-					cryptographicValidation.setConcernedMaterial(getDigestMatcherDescription(digestMatcher, position));
-					break;
-				}
+			DigestMatcherListCryptographicChainBuilder<XmlSAV> digestMatcherCCBuilder =
+					new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, digestMatchers, currentTime, constraint);
+			item = digestMatcherCCBuilder.build(item);
+
+			XmlCC failedCC = digestMatcherCCBuilder.getConcernedCC();
+			if (failedCC != null && !isValid(failedCC)) {
+				cryptographicValidation = getCryptographicValidation(failedCC);
+				List<String> failedMaterial = digestMatcherCCBuilder.getConcernedMaterial();
+				cryptographicValidation.setConcernedMaterial(getConcernedMaterialDescription(failedMaterial, position));
 			}
 		}
 		
@@ -229,12 +219,6 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicConstraint constraint) {
 		return new CryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position, ccResult, constraint);
 	}
-	
-	private ChainItem<XmlSAV> digestAlgorithmCheckResult(XmlDigestMatcher digestMatcher, XmlCC ccResult,
-			MessageTag position, CryptographicConstraint constraint) {
-		return new DigestMatcherCryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position,
-				digestMatcher.getName(), ccResult, constraint);
-	}
 
 	private ChainItem<XmlSAV> signingCertificateRefDigestAlgoCheckResult(CertificateRefWrapper certificateRefWrapper,
 																		 XmlCC ccResult) {
@@ -276,9 +260,9 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		return cryptographicValidation;
 	}
 
-	private String getDigestMatcherDescription(XmlDigestMatcher digestMatcher, MessageTag position) {
-		if (Utils.isStringNotEmpty(digestMatcher.getName())) {
-			return i18nProvider.getMessage(MessageTag.ACCM_DESC_WITH_NAME, position, digestMatcher.getName());
+	private String getConcernedMaterialDescription(List<String> referenceNames, MessageTag position) {
+		if (Utils.isCollectionNotEmpty(referenceNames)) {
+			return i18nProvider.getMessage(MessageTag.ACCM_DESC_WITH_NAME, position, Utils.joinStrings(referenceNames, ", "));
 		}
 		return i18nProvider.getMessage(position);
 	}

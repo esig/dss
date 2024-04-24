@@ -166,7 +166,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         assertEquals(1, atLeastOneDataObjectFoundCounter);
         assertEquals(1, dataObjectGroupCheckCounter);
         assertEquals(2, tstCheckCounter);
-        assertEquals(3, dataObjectCryptoCheckCounter);
+        assertEquals(1, dataObjectCryptoCheckCounter);
 
         List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
         assertEquals(2, timestamps.size());
@@ -808,7 +808,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         assertEquals(3, dataObjectFoundCheckCounter);
         assertEquals(3, dataObjectIntactCheckCounter);
         assertEquals(2, tstCheckCounter);
-        assertEquals(3, dataObjectCryptoCheckCounter);
+        assertEquals(1, dataObjectCryptoCheckCounter);
 
         List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
         assertEquals(2, timestamps.size());
@@ -1322,7 +1322,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         assertEquals(1, atLeastOneDataObjectFoundCounter);
         assertEquals(1, dataObjectGroupCheckCounter);
         assertEquals(2, tstCheckCounter);
-        assertEquals(3, dataObjectCryptoCheckCounter);
+        assertEquals(2, dataObjectCryptoCheckCounter);
 
         List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
         assertEquals(2, timestamps.size());
@@ -2053,7 +2053,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
         assertEquals(3, dataObjectIntactCheckCounter);
         assertEquals(2, validTstCheckCounter);
         assertEquals(0, invalidTstCheckCounter);
-        assertEquals(3, dataObjectCryptoCheckCounter);
+        assertEquals(1, dataObjectCryptoCheckCounter);
 
         List<eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp> timestamps = xmlEvidenceRecord.getTimestamps();
         assertEquals(2, timestamps.size());

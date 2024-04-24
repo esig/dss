@@ -42,7 +42,6 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
@@ -59,8 +58,8 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
@@ -315,10 +314,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			// check validity of Cryptographic Constraints for the Signature
 			item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtPoeTime(currentSignature, bestSignatureTime.getTime(), 
 					ValidationProcessUtils.getCryptoPosition(currentContext), signatureConstraint));
-			
-			for (XmlDigestMatcher digestMatcher : currentSignature.getDigestMatchers()) {
-				item = item.setNextItem(digestMatcherIsSecureAtPoeTime(digestMatcher, bestSignatureTime.getTime(), signatureConstraint));
-			}
+
+			DigestMatcherListCryptographicChainBuilder<XmlValidationProcessLongTermData> digestMatcherCCBuilder =
+					new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, currentSignature.getDigestMatchers(),
+							bestSignatureTime.getTime(), signatureConstraint);
+			item = digestMatcherCCBuilder.build(item);
 
 			for (CertificateRefWrapper certificateRef : currentSignature.getSigningCertificateReferences()) {
 				item = item.setNextItem(signCertRefIsSecureAtPoeTime(certificateRef, bestSignatureTime.getTime(), currentContext));
@@ -568,12 +568,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> tokenUsedAlgorithmsAreSecureAtPoeTime(TokenProxy currentToken, Date validationDate, 
 			MessageTag position, CryptographicConstraint constraint) {
 		return new CryptographicCheck<>(i18nProvider, result, currentToken,  position, validationDate, constraint);
-	}
-	
-	private ChainItem<XmlValidationProcessLongTermData> digestMatcherIsSecureAtPoeTime(XmlDigestMatcher digestMatcher, Date validationDate, 
-			CryptographicConstraint constraint) {
-		MessageTag position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
-		return new DigestMatcherCryptographicCheck<>(i18nProvider, digestMatcher.getDigestMethod(), result, validationDate, position, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> signCertRefIsSecureAtPoeTime(

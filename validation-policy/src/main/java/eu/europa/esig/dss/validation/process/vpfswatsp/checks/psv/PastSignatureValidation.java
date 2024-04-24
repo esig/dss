@@ -29,7 +29,6 @@ import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -44,8 +43,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
@@ -272,9 +271,10 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 					ValidationProcessUtils.getCryptoPosition(context), cryptographicConstraint));
 
 			if (Utils.isCollectionNotEmpty(token.getDigestMatchers())) {
-				for (XmlDigestMatcher digestMatcher : token.getDigestMatchers()) {
-					item = item.setNextItem(digestMatcherIsSecureAtPoeTime(digestMatcher, lowestPoeTime, cryptographicConstraint));
-				}
+				DigestMatcherListCryptographicChainBuilder<XmlPSV> digestMatcherCCBuilder =
+						new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, token.getDigestMatchers(),
+								lowestPoeTime, cryptographicConstraint);
+				item = digestMatcherCCBuilder.build(item);
 			}
 
 			for (CertificateRefWrapper certificateRef : token.getSigningCertificateReferences()) {
@@ -349,12 +349,6 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	private CryptographicCheck<XmlPSV> tokenUsedAlgorithmsAreSecureAtPoeTime(
 			TokenProxy currentToken, Date validationDate, MessageTag position, CryptographicConstraint constraint) {
 		return new CryptographicCheck<>(i18nProvider, result, currentToken,  position, validationDate, constraint);
-	}
-	
-	private ChainItem<XmlPSV> digestMatcherIsSecureAtPoeTime(XmlDigestMatcher digestMatcher, Date validationDate, 
-			CryptographicConstraint constraint) {
-		MessageTag position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
-		return new DigestMatcherCryptographicCheck<>(i18nProvider, digestMatcher.getDigestMethod(), result, validationDate, position, constraint);
 	}
 
 	private ChainItem<XmlPSV> signCertRefIsSecureAtPoeTime(

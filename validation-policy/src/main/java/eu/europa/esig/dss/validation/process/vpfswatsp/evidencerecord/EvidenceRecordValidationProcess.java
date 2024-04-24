@@ -43,13 +43,11 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.AtLeastOneReferenceDataObjectFoundCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataGroupCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.TimestampValidationCheck;
 
 import java.util.Collection;
@@ -235,18 +233,13 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
         if (Utils.isCollectionNotEmpty(digestMatchers)) {
             CryptographicConstraint cryptographicConstraint = policy.getEvidenceRecordCryptographicConstraint();
 
-            for (XmlDigestMatcher digestMatcher : digestMatchers) {
+            DigestMatcherListCryptographicChainBuilder<XmlValidationProcessEvidenceRecord> digestMatcherCCBuilder =
+                    new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, digestMatchers, lowestPOE.getTime(), cryptographicConstraint);
+            item = digestMatcherCCBuilder.build(item);
 
-                MessageTag position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
-                XmlCC xmlCC = executeDigestMatcherCryptographicCheck(digestMatcher, lowestPOE.getTime(), cryptographicConstraint, position);
-
-                item = item.setNextItem(digestMatcherIsSecureAtPoeTime(digestMatcher, lowestPOE.getTime(), cryptographicConstraint));
-
-                // overwrite only if previous checks are secure
-                if (cryptographicValidation == null || (cryptographicValidation.isSecure() && !isValid(xmlCC))) {
-                    cryptographicValidation = getCryptographicValidation(xmlCC, lowestPOE.getTime());
-                }
-
+            XmlCC failedCC = digestMatcherCCBuilder.getConcernedCC();
+            if (failedCC != null && (cryptographicValidation == null || (cryptographicValidation.isSecure() && !isValid(failedCC)))) {
+                cryptographicValidation = getCryptographicValidation(failedCC, lowestPOE.getTime());
             }
         }
 
@@ -278,19 +271,6 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
             TimestampWrapper timestampWrapper, XmlValidationProcessArchivalDataTimestamp timestampValidationResult) {
         return new TimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
                 timestampValidationResult, getFailLevelConstraint());
-    }
-
-    private ChainItem<XmlValidationProcessEvidenceRecord> digestMatcherIsSecureAtPoeTime(XmlDigestMatcher digestMatcher, Date validationDate,
-                                                             CryptographicConstraint constraint) {
-        MessageTag position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatcher);
-        return new DigestMatcherCryptographicCheck<>(i18nProvider, digestMatcher.getDigestMethod(), result, validationDate, position, constraint);
-    }
-
-    private XmlCC executeDigestMatcherCryptographicCheck(XmlDigestMatcher digestMatcher, Date validationDate,
-                                                         CryptographicConstraint constraint, MessageTag position) {
-        DigestCryptographicChecker dac = new DigestCryptographicChecker(
-                i18nProvider, digestMatcher.getDigestMethod(), validationDate, position, constraint);
-        return dac.execute();
     }
 
     private XmlValidationProcessArchivalDataTimestamp getTimestampValidation(TimestampWrapper newestTimestamp) {
