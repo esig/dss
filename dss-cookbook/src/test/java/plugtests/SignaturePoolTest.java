@@ -163,7 +163,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 		String signaturePoolFolder = System.getProperty("signature.pool.folder", "src/test/resources/signature-pool");
 		File folder = new File(signaturePoolFolder);
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "asice", "asics", "bdoc", "csig", "ddoc",
-				"es3", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "sce", "scs", "xml", "xsig" }, true);
+				"ers", "es3", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "sce", "scs", "xml", "xsig" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(Arguments.of(file));
