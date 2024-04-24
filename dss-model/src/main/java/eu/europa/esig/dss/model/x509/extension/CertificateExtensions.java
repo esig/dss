@@ -404,7 +404,9 @@ public class CertificateExtensions implements Serializable {
     }
 
     private void addToAllExtensionsList(CertificateExtension certificateExtension) {
-        this.allExtensions.add(certificateExtension);
+        if (certificateExtension != null) {
+            this.allExtensions.add(certificateExtension);
+        }
     }
 
 }
