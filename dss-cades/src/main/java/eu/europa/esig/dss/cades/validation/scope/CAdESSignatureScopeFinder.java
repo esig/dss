@@ -28,6 +28,7 @@ import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
@@ -81,8 +82,9 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
                 if (manifestEntry.isIntact()) {
-                    manifestSignatureScope.addChildSignatureScope(new FullSignatureScope(
-                            manifestEntry.getFileName(), createDigestDocument(manifestEntry.getDigest())));
+                    DSSDocument referencedDocument = getReferencedDocument(manifestEntry, cadesSignature.getContainerContents());
+                    manifestSignatureScope.addChildSignatureScope(
+                            new FullSignatureScope(manifestEntry.getFileName(), referencedDocument));
                 }
             }
 
@@ -162,6 +164,21 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
     @Override
     protected boolean isASiCSArchive(AdvancedSignature advancedSignature) {
         return super.isASiCSArchive(advancedSignature) && !super.isASiCEArchive(advancedSignature);
+    }
+
+    /**
+     * This method returns a document references from the {@code manifestEntry}
+     *
+     * @param manifestEntry {@link ManifestEntry} to get document for
+     * @param detachedDocuments a list of {@link DSSDocument}s representing the ASiC's content
+     * @return {@link DSSDocument}
+     */
+    protected DSSDocument getReferencedDocument(ManifestEntry manifestEntry, List<DSSDocument> detachedDocuments) {
+        DSSDocument document = DSSUtils.getDocumentWithName(detachedDocuments, manifestEntry.getFileName());
+        if (document == null) {
+            document = createDigestDocument(manifestEntry.getDigest());
+        }
+        return document;
     }
 
 }
