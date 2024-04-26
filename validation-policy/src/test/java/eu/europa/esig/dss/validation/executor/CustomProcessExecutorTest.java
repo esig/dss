@@ -8801,6 +8801,96 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void formFillChangesTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_object_modifications.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+
+		XmlObjectModification objectModification = new XmlObjectModification();
+		objectModification.setAction(PdfObjectModificationType.CREATION);
+
+		xmlSignature.getPDFRevision().getModificationDetection()
+				.getObjectModifications().getSignatureOrFormFill().add(objectModification);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setFormFillChanges(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		boolean certificationSigFound = false;
+		boolean secondSigFound = false;
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			if (Indication.TOTAL_FAILED.equals(simpleReport.getIndication(sigId))) {
+				assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(sigId));
+				assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(sigId),
+						i18nProvider.getMessage(MessageTag.BBB_FC_DSCNFFSM_ANS)));
+				certificationSigFound = true;
+
+			} else if (Indication.TOTAL_PASSED.equals(simpleReport.getIndication(sigId))) {
+				secondSigFound = true;
+			}
+
+		}
+		assertTrue(certificationSigFound);
+		assertTrue(secondSigFound);
+	}
+
+	@Test
+	public void annotationChangesTest() throws Exception {
+		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag_data_with_object_modifications.xml"));
+		assertNotNull(xmlDiagnosticData);
+
+		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
+
+		XmlObjectModification objectModification = new XmlObjectModification();
+		objectModification.setAction(PdfObjectModificationType.CREATION);
+
+		xmlSignature.getPDFRevision().getModificationDetection()
+				.getObjectModifications().getAnnotationChanges().add(objectModification);
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setAnnotationChanges(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(xmlDiagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		boolean certificationSigFound = false;
+		boolean secondSigFound = false;
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			if (Indication.TOTAL_FAILED.equals(simpleReport.getIndication(sigId))) {
+				assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(sigId));
+				assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(sigId),
+						i18nProvider.getMessage(MessageTag.BBB_FC_DSCNACMDM_ANS)));
+				certificationSigFound = true;
+
+			} else if (Indication.TOTAL_PASSED.equals(simpleReport.getIndication(sigId))) {
+				secondSigFound = true;
+			}
+
+		}
+		assertTrue(certificationSigFound);
+		assertTrue(secondSigFound);
+	}
+
+	@Test
 	public void undefinedChangesTest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag_data_with_object_modifications.xml"));

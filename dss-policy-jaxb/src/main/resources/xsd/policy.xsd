@@ -612,6 +612,16 @@
 					<xsd:documentation>Verifies validity of a signature against the lock dictionary /SigFieldLock, when present</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="FormFillChanges" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies whether the document does not contain changes concerning form filling or signing after the signature revision (corresponds to /DocMDP /P=2 level)</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnnotationChanges" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies whether the document does not contain changes concerning creation, modification or deletion of annotations after the signature revision (corresponds to /DocMDP /P=3 level)</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="UndefinedChanges" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Verifies whether the document does not contain undefined changes after the signature revision</xsd:documentation> <!-- PAdES only -->

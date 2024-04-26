@@ -740,6 +740,8 @@ The following constraints are available to verify the validity of a signature ba
 * `<DocMDP>` - when a `/DocMDP` dictionary is present within a signature, verifies whether the performed modifications in a PDF document are permitted according to the defined level.
 * `FieldMDP` - when a `/FieldMDP` dictionary is present within a signature, verifies whether the performed modifications in a PDF document are permitted according to the defined level.
 * `SigFieldLock` - when a `/FieldMDP` dictionary is present within a signature, verifies whether the performed modifications in a PDF document are permitted.
+* `FormFillChanges` - verifies whether the document contains form fill-in or signing modifications.
+* `AnnotationChanges` - verifies whether the document contains annotation creation, modification or deletion changes.
 * `UndefinedChanges` - verifies whether the document contains modifications that cannot be unambiguously identified.
 
 The search of the object differences may be configured within an instance of `IPdfObjFactory` provided to a `PdfDocumentValidator`. The categorization is done by a  `PdfObjectModificationsFilter` class.

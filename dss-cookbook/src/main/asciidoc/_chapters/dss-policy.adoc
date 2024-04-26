@@ -621,11 +621,43 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
+* `FormFillChanges` - this constraint is used to check whether a PDF document does not contain any form fill-in or signing changes. This constraint corresponds to the changes listed under `/P 2` of `/DocMDP` dictionary defined in ISO 32000-1 (cf. <<R06>>). If a provided PDF document contains any of the changes within internal PDF objects occurred between the signed PDF document revision and the final PDF document revision, the check will fail.
+
+Default: not executed
+
+Note: executed for PAdES only. This does not fail under signature augmentation modifications.
+
+[source,xml,indent=0]
+.Example of FormFillChanges usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <FormFillChanges Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `AnnotationChanges` - this constraint is used to check whether a PDF document does not contain any annotation creation, modification or deletion changes. This constraint corresponds to the changes listed under `/P 3` of `/DocMDP` dictionary defined in ISO 32000-1 (cf. <<R06>>). If a provided PDF document contains any of the changes within internal PDF objects occurred between the signed PDF document revision and the final PDF document revision, the check will fail.
+
+Default: not executed
+
+Note: executed for PAdES only. This does not fail under signature augmentation modifications.
+
+[source,xml,indent=0]
+.Example of AnnotationChanges usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <AnnotationChanges Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
 * `UndefinedChanges` - this constraint is used to check whether a PDF document does not contain any undefined (suspicious) changes, i.e. no signature addition, extension, timestamp addition or annotation addition/edition. If a provided PDF document contains undefined changes within internal PDF objects occurred between the signed PDF document revision and the final PDF document revision, the check will fail.
 
 Default: `WARN`
 
-Note: executed for PAdES only
+Note: executed for PAdES only. This does not fail under signature augmentation modifications.
 
 [source,xml,indent=0]
 .Example of UndefinedChanges usage (with WARN validation level)
@@ -2607,18 +2639,20 @@ This table defines the correspondence between the enforced validation policy con
                                   |ByteRangeAllDocument            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfSignatureDictionary          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfPageDifference               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-.11+|BasicSignatureConstraints    |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+.12+|BasicSignatureConstraints    |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfVisualDifference             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |DocMDP                          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |SigFieldLock                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |FormFillChanges                 |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |AnnotationChanges               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |UndefinedChanges                |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |TrustServiceTypeIdentifier      |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |TrustServiceStatus              |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
-                                  |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
-.12+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
+.12+|CertificateConstraints       |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
+                                  |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                .2+|NotExpired                   .2+|LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
                                                                                                                               OUT_OF_BOUNDS_NOT_REVOKED
@@ -2630,8 +2664,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |CRLNextUpdatePresent            |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
-                                  |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-.12+|CertificateConstraints       |CA                              |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+.12+|CertificateConstraints       |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |CA                              |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |MaxPathLength                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE +
                                                                                                                               CERTIFICATE_CHAIN_GENERAL_FAILURE
@@ -2643,8 +2677,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.11+|CertificateConstraints       |Title                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Title                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Email                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |OrganizationIdentifier          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE

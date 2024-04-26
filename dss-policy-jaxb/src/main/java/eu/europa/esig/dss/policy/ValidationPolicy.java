@@ -961,6 +961,24 @@ public interface ValidationPolicy {
 	LevelConstraint getSigFieldLockConstraint(Context context);
 
 	/**
+	 * This constraint checks whether a PDF document contains form fill or signing modifications
+	 * after the current signature's revisions
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if FormFillChanges element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getFormFillChangesConstraint(Context context);
+
+	/**
+	 * This constraint checks whether a PDF document contains annotation creation, modification or deletion modifications
+	 * after the current signature's revisions
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if AnnotationChanges element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getAnnotationChangesConstraint(Context context);
+
+	/**
 	 * This constraint checks whether a PDF document contains undefined object modifications
 	 * after the current signature's revisions
 	 *

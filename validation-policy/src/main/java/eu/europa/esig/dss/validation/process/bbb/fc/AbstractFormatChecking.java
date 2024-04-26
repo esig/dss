@@ -35,12 +35,14 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableMimetypeFileContentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.AnnotationChangesCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeAllDocumentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeCollisionCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ContainerTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.DocMDPCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FieldMDPCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormFillChangesCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.MimeTypeFilePresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PDFAComplianceCheck;
@@ -139,6 +141,10 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
             if (pdfRevision.getSigFieldLock() != null) {
                 item = item.setNextItem(sigFieldLockCheck());
             }
+
+            item = item.setNextItem(formFillChangesCheck());
+
+            item = item.setNextItem(annotationChangesCheck());
 
             item = item.setNextItem(undefinedChangesCheck());
 
@@ -263,6 +269,16 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
     private ChainItem<XmlFC> sigFieldLockCheck() {
         LevelConstraint constraint = policy.getSigFieldLockConstraint(context);
         return new SigFieldLockCheck(i18nProvider, result, token.getPDFRevision(), constraint);
+    }
+
+    private ChainItem<XmlFC> formFillChangesCheck() {
+        LevelConstraint constraint = policy.getFormFillChangesConstraint(context);
+        return new FormFillChangesCheck(i18nProvider, result, token.getPDFRevision(), constraint);
+    }
+
+    private ChainItem<XmlFC> annotationChangesCheck() {
+        LevelConstraint constraint = policy.getAnnotationChangesConstraint(context);
+        return new AnnotationChangesCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> undefinedChangesCheck() {
