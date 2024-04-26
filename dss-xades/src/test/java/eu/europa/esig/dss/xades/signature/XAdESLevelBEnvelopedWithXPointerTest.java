@@ -66,7 +66,7 @@ public class XAdESLevelBEnvelopedWithXPointerTest extends AbstractXAdESTestSigna
         DSSReference reference = new DSSReference();
         reference.setContents(documentToSign);
         reference.setId("REF-ID1");
-        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
         reference.setUri("#xpointer(/)");
         List<DSSTransform> transforms = new ArrayList<>();
         DSSTransform transform = new XPath2FilterTransform("/*/ds:Signature", "subtract");

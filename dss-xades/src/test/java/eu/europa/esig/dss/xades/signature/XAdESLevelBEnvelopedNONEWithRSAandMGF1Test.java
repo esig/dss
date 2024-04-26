@@ -20,19 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -45,6 +34,15 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Tag("slow")
 public class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTestSignature {
@@ -56,7 +54,7 @@ public class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTes
 	private static Stream<Arguments> data() {
 		List<Arguments> args = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
-			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
+			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, digestAlgorithm) != null) {
 				args.add(Arguments.of(digestAlgorithm));
 			}
 		}
@@ -74,7 +72,7 @@ public class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTes
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(digestAlgo);
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
 		service = new XAdESService(getOfflineCertificateVerifier());
 
@@ -92,7 +90,7 @@ public class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTes
 		byte[] originalDigest = DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes());
 		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), originalDigest);
 
-		SignatureValue signatureValue = getToken().signDigest(digest, MaskGenerationFunction.MGF1, getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().signDigest(digest, signatureParameters.getSignatureAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 

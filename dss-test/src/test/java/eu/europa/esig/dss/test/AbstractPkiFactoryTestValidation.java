@@ -520,7 +520,6 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkNumberOfSignatures(diagnosticData);
 		checkDigestAlgorithm(diagnosticData);
 		checkEncryptionAlgorithm(diagnosticData);
-		checkMaskGenerationFunction(diagnosticData);
 		checkSigningCertificateValue(diagnosticData);
 		checkIssuerSigningCertificateValue(diagnosticData);
 		checkCertificateChain(diagnosticData);
@@ -594,10 +593,6 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertNotNull(signatureWrapper.getEncryptionAlgorithm());
 		}
-	}
-	
-	protected void checkMaskGenerationFunction(DiagnosticData diagnosticData) {
-		// not implemented by default
 	}
 
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {

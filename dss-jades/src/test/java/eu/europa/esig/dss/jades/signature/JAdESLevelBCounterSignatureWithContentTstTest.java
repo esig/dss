@@ -45,6 +45,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -86,8 +87,7 @@ public class JAdESLevelBCounterSignatureWithContentTstTest extends AbstractJAdES
 	@Test
 	public void test() throws Exception {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = getValidator(signedDocument);
@@ -95,12 +95,11 @@ public class JAdESLevelBCounterSignatureWithContentTstTest extends AbstractJAdES
 		
 		service.setTspSource(getGoodTsa());
 		TimestampToken contentTimestamp = service.getContentTimestamp(new InMemoryDocument(masterSignature.getSignatureValue()), counterSignatureParameters);
-		counterSignatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+		counterSignatureParameters.setContentTimestamps(Collections.singletonList(contentTimestamp));
 		
 		counterSignatureParameters.setSignatureIdToCounterSign(masterSignature.getId());
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
 		verify(counterSignedSignature);

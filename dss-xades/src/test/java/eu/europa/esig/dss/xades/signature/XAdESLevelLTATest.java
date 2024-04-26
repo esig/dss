@@ -56,7 +56,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESLevelLTATest extends AbstractXAdESTestSignature {
@@ -162,25 +161,21 @@ public class XAdESLevelLTATest extends AbstractXAdESTestSignature {
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
 		for (SignatureWrapper wrapper: allSignatures) {
 			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
-			assertNull(wrapper.getMaskGenerationFunction());
 		}
 
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
 		for (CertificateWrapper wrapper: usedCertificates) {
 			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
-			assertNull(wrapper.getMaskGenerationFunction());
 		}
 
 		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
 		for (RevocationWrapper wrapper : allRevocationData) {
 			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
-			assertNull(wrapper.getMaskGenerationFunction());
 		}
 
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
 		for (TimestampWrapper wrapper : timestampList) {
 			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
-			assertNull(wrapper.getMaskGenerationFunction());
 		}
 	}
 

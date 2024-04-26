@@ -120,8 +120,7 @@ public class XAdESSignWithReInitParametersTest extends AbstractXAdESTestSignatur
         XAdESSignatureParameters params = getSignatureParameters();
 
         ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 
         params.reinit();

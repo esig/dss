@@ -51,8 +51,7 @@ public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureT
 		signatureParameters.bLevel().setSigningDate(new Date());
 		
 		ToBeSigned dataToSign = service.getDataToSign(signedDocument, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
 		Reports reports = verify(doubleSignedDocument);

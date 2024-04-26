@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -166,7 +166,9 @@ public class KeyEntityTSPSourceTest {
     @Test
     public void digestAlgoTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
         tspSource.setTsaPolicy(TSA_POLICY);
+
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
@@ -182,13 +184,14 @@ public class KeyEntityTSPSourceTest {
     @Test
     public void pssTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
         tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
         assertEquals(SignatureAlgorithm.RSA_SHA256.getOid(), timeStampToken.toCMSSignedData().getSignerInfos().get(timeStampToken.getSID()).getEncryptionAlgOID());
 
-        tspSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        tspSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
         timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         timeStampToken = assertTimestampValid(timeStampResponse, digest);

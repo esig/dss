@@ -141,7 +141,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         List<DSSDocument> signatures = asicValidator.getSignatureDocuments();
         assertTrue(Utils.isCollectionNotEmpty(signatures));
 
-        byte[] signatureDigest = signatures.get(0).getDigestValue(DigestAlgorithm.SHA256);
+        byte[] signatureDigest = signatures.get(0).getDigestValue(DigestAlgorithm.SHA512);
 
         List<DSSDocument> archiveManifests = asicValidator.getArchiveManifestDocuments();
         assertTrue(Utils.isCollectionNotEmpty(archiveManifests));

@@ -117,8 +117,7 @@ public class CAdESSignWithReInitParametersTest extends AbstractCAdESTestSignatur
         CAdESSignatureParameters params = getSignatureParameters();
 
         ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 
         params.reinit();
@@ -129,7 +128,7 @@ public class CAdESSignWithReInitParametersTest extends AbstractCAdESTestSignatur
     @Override
     protected List<DSSDocument> getDetachedContents() {
         if (SignaturePackaging.DETACHED.equals(signatureParameters.getSignaturePackaging())) {
-            return Arrays.asList(getDocumentToSign());
+            return Collections.singletonList(getDocumentToSign());
         }
         return Collections.emptyList();
     }

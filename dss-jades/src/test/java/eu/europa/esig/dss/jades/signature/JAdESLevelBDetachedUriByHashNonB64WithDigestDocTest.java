@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -36,6 +30,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.Date;
 
 public class JAdESLevelBDetachedUriByHashNonB64WithDigestDocTest extends AbstractJAdESTestSignature {
 
@@ -61,7 +60,7 @@ public class JAdESLevelBDetachedUriByHashNonB64WithDigestDocTest extends Abstrac
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 
 		signatureParameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
-		signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA512);
 		signatureParameters.setBase64UrlEncodedPayload(false);
 
 		return signatureParameters;
@@ -75,7 +74,7 @@ public class JAdESLevelBDetachedUriByHashNonB64WithDigestDocTest extends Abstrac
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
-		validator.setDetachedContents(Arrays.asList(documentToSign));
+		validator.setDetachedContents(Collections.singletonList(documentToSign));
 		return validator;
 	}
 

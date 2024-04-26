@@ -45,7 +45,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
@@ -135,7 +134,7 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
 		boolean docTimeStampFound = false;
 		boolean newFieldFound = false;
 		List<XmlObjectModification> secureChanges = signatureWrapper.getPdfExtensionChanges();
-		assertTrue(secureChanges.stream().map(c -> c.getType()).collect(Collectors.toSet()).contains("DocTimeStamp"));
+		assertTrue(secureChanges.stream().map(XmlObjectModification::getType).collect(Collectors.toSet()).contains("DocTimeStamp"));
 		for (XmlObjectModification objectModification : secureChanges) {
 			assertEquals(PdfObjectModificationType.CREATION, objectModification.getAction());
 			if (objectModification.getValue().contains("/DSS")) {
@@ -160,26 +159,22 @@ public class PAdESLevelLTATest extends AbstractPAdESTestSignature {
         Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
         for (SignatureWrapper wrapper: allSignatures) {
             assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
-            assertNull(wrapper.getMaskGenerationFunction());
         }
 
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
         for (CertificateWrapper wrapper: usedCertificates) {
             assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
-            assertNull(wrapper.getMaskGenerationFunction());
         }
 
         Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
         for (RevocationWrapper wrapper : allRevocationData) {
             assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
-            assertNull(wrapper.getMaskGenerationFunction());
         }
 
         List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
         for (TimestampWrapper wrapper : timestampList) {
-            assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
-            assertNull(wrapper.getMaskGenerationFunction());
-        }
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
     }
 
 	@Override

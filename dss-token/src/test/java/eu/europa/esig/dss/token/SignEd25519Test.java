@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore.PasswordProtection;
 import java.security.Signature;
@@ -54,7 +55,7 @@ public class SignEd25519Test {
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
             KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
 
-            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
+            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
 
             SignatureValue signValue = signatureToken.sign(toBeSigned, DigestAlgorithm.SHA512, entry);
             assertNotNull(signValue.getAlgorithm());
@@ -77,7 +78,7 @@ public class SignEd25519Test {
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
             KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
 
-            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
+            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
 
             SignatureValue signValue = signatureToken.sign(toBeSigned, SignatureAlgorithm.ED25519, entry);
             assertNotNull(signValue.getAlgorithm());
@@ -100,7 +101,7 @@ public class SignEd25519Test {
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
             KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
 
-            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
+            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
 
             Exception exception = assertThrows(IllegalArgumentException.class, () ->
                     signatureToken.sign(toBeSigned, SignatureAlgorithm.RSA_SHA512, entry));
@@ -116,7 +117,7 @@ public class SignEd25519Test {
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
             KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
 
-            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
+            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
 
             DigestAlgorithm digestAlgo = DigestAlgorithm.SHA512;
 
@@ -127,11 +128,11 @@ public class SignEd25519Test {
 
             Exception exception = assertThrows(UnsupportedOperationException.class, () -> signatureToken.signDigest(digest, entry));
             assertEquals("The SignatureAlgorithm for digest signing is not found for the given configuration " +
-                    "[EncryptionAlgorithm: EDDSA; MaskGenerationFunction: null]", exception.getMessage());
+                    "[EncryptionAlgorithm: EDDSA]", exception.getMessage());
 
             exception = assertThrows(UnsupportedOperationException.class, () -> signatureToken.signDigest(digest, SignatureAlgorithm.ED25519, entry));
             assertEquals("The SignatureAlgorithm for digest signing is not found for the given configuration " +
-                    "[EncryptionAlgorithm: EDDSA; MaskGenerationFunction: null]", exception.getMessage());
+                    "[EncryptionAlgorithm: EDDSA]", exception.getMessage());
         }
     }
 

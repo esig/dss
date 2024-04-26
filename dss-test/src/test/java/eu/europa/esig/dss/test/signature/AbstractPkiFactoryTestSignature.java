@@ -43,7 +43,6 @@ import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -74,11 +73,11 @@ import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
 import eu.europa.esig.validationreport.jaxb.SASignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
+import jakarta.xml.bind.JAXBElement;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -118,7 +117,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 		// signedDocument.save("target/" + signedDocument.getName());
 
-		byte[] byteArray = DSSUtils.toByteArray(signedDocument);
+        byte[] byteArray = DSSUtils.toByteArray(signedDocument);
 		onDocumentSigned(byteArray);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug(new String(byteArray));
@@ -156,16 +155,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
 		super.checkDigestAlgorithm(diagnosticData);
 		assertEquals(getSignatureParameters().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
-	}
-
-	@Override
-	protected void checkMaskGenerationFunction(DiagnosticData diagnosticData) {
-		super.checkMaskGenerationFunction(diagnosticData);
-		
-		MaskGenerationFunction maskGenerationFunction = getSignatureParameters().getMaskGenerationFunction();
-		if (maskGenerationFunction != null) {
-			assertEquals(maskGenerationFunction, diagnosticData.getSignatureMaskGenerationFunction(diagnosticData.getFirstSignatureId()));
-		}
 	}
 
 	@SuppressWarnings({ "unchecked" })

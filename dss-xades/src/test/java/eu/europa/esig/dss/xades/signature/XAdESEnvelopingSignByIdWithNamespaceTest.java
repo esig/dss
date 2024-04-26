@@ -57,7 +57,7 @@ public class XAdESEnvelopingSignByIdWithNamespaceTest extends AbstractXAdESTestS
 
         DSSReference reference = new DSSReference();
         reference.setId("REF-ID1");
-        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
         reference.setUri("#signedData");
         reference.setTransforms(Collections.singletonList(new CanonicalizationTransform(CanonicalizationMethod.INCLUSIVE)));
         reference.setContents(documentToSign);

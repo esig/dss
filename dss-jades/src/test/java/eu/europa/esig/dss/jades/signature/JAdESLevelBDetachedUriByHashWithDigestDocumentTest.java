@@ -70,7 +70,7 @@ public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends Abstract
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 
 		signatureParameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
-		signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA512);
 
 		return signatureParameters;
 	}
@@ -78,8 +78,8 @@ public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends Abstract
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		byte[] base64UrlEncodedDocument = DSSJsonUtils.toBase64Url(documentToSign).getBytes();
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, base64UrlEncodedDocument);
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, Utils.toBase64(digest));
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, base64UrlEncodedDocument);
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, Utils.toBase64(digest));
 		digestDocument.setName(documentToSign.getName());
 		return digestDocument;
 	}

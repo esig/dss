@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.extension;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.exception.IllegalInputException;
@@ -60,6 +61,7 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 				exception.getMessage());
 
 		parameters.setGenerateTBSWithoutCertificate(true);
+		parameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 
 		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.",
@@ -83,7 +85,7 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 	@Test
 	public void digestDocumentWithLTALevelTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.xml");
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, doc)));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA512, doc)));
 
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

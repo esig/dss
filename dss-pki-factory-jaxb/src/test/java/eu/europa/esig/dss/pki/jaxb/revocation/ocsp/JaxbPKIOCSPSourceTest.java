@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pki.jaxb.revocation.ocsp;
 
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.exception.PKIException;
@@ -77,6 +77,18 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     @Test
     public void testOCSP() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
+        OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
+        assertNotNull(ocspToken);
+        assertNotNull(ocspToken.getBasicOCSPResp());
+        assertEquals(SignatureAlgorithm.RSA_SHA512, ocspToken.getSignatureAlgorithm());
+        assertEquals(goodCa, ocspToken.getIssuerCertificateToken());
+        assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
+    }
+
+    @Test
+    public void testOCSPSha256() {
+        PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
+        ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
@@ -168,10 +180,10 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     @Test
     public void testOCSPWithPss() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
-        ocspSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        ocspSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, rootToken);
         assertNotNull(ocspToken);
-        assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, ocspToken.getSignatureAlgorithm());
+        assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, ocspToken.getSignatureAlgorithm());
     }
 
     @Test

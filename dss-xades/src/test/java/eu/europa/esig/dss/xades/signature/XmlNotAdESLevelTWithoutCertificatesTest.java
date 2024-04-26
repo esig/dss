@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -56,6 +57,7 @@ public class XmlNotAdESLevelTWithoutCertificatesTest extends AbstractXAdESTestSi
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         signatureParameters.setGenerateTBSWithoutCertificate(true);
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 
         service = new XAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());

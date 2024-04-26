@@ -145,16 +145,16 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	/**
 	 * Set the signing certificate. The encryption algorithm is also set from the
 	 * public key.
+	 * Note: This method overwrites the {@code encryptionAlgorithm} value by extracting the encryption algorithm
+	 * from the provided signing-certificate.
+	 * In order to enforce a specific encryption algorithm (when supported by the key), please execute
+	 * {@code #setEncryptionAlgorithm} method after this method.
 	 *
 	 * @param signingCertificate the signing certificate
 	 */
 	public void setSigningCertificate(final CertificateToken signingCertificate) {
 		this.signingCertificate = signingCertificate;
-
-		EncryptionAlgorithm keyEncryptionAlgorithm = EncryptionAlgorithm.forKey(signingCertificate.getPublicKey());
-		if (keyEncryptionAlgorithm != null && !keyEncryptionAlgorithm.isEquivalent(getEncryptionAlgorithm())) {
-			setEncryptionAlgorithm(keyEncryptionAlgorithm);
-		}
+		setEncryptionAlgorithm(EncryptionAlgorithm.forKey(signingCertificate.getPublicKey()));
 	}
 
 	/**

@@ -44,7 +44,7 @@ public class DSSReference implements Serializable {
 	private String type;
 
 	/** The DigestAlgorithm of the reference to compute digest value */
-	private DigestAlgorithm digestMethod = DigestAlgorithm.SHA256;
+	private DigestAlgorithm digestMethod = DigestAlgorithm.SHA512;
 
 	/** The referenced data */
 	private DSSDocument contents;

@@ -115,7 +115,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setTransforms(transforms);
 			// set empty URI to cover the whole document
 			dssReference.setUri("");
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 			references.add(dssReference);
 			// set references
 			parameters.setReferences(references);
@@ -260,7 +260,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setTransforms(transforms);
 			// set empty URI to cover the whole document
 			dssReference.setUri("#" + document.getName());
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 			references.add(dssReference);
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -326,7 +326,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setId("r-" + toSignDocument.getName());
 			dssReference.setTransforms(transforms);
 			dssReference.setUri("");
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 			references.add(dssReference);
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -393,7 +393,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setId("r-" + toSignDocument.getName());
 			dssReference.setTransforms(transforms);
 			dssReference.setUri("");
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 			references.add(dssReference);
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -468,9 +468,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setId("DSS-REF-1");
 			dssReference.setUri("");
 			dssReference.setContents(toSignDocument);
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 
-			dssReference.setTransforms(Arrays.asList(xPathTransform));
+			dssReference.setTransforms(Collections.singletonList(xPathTransform));
 			references.add(dssReference);
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();

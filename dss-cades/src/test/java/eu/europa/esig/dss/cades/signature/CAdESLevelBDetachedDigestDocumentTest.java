@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 	private static final String DOCUMENT_NAME = "test.text";
-	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA256;
+	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA512;
 
 	@Test
 	public void testWithCompleteDocument() {

@@ -158,8 +158,7 @@ public class ASiCECAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 
 	private DSSDocument sign(DSSDocument documentToSign, ASiCWithCAdESSignatureParameters signatureParameters) {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 

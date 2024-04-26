@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pki.jaxb.revocation.crl;
 
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -78,6 +78,17 @@ public class JaxbPKICRLSourceTest extends AbstractTestJaxbPKI {
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
         assertNotNull(revocationToken);
         assertEquals(rootCa, revocationToken.getIssuerCertificateToken());
+        assertEquals(SignatureAlgorithm.RSA_SHA512, revocationToken.getSignatureAlgorithm());
+        assertEquals(CertificateStatus.GOOD, revocationToken.getStatus());
+    }
+
+    @Test
+    public void getRevocationTokenSha256Test() {
+        PKICRLSource pkiCRLSource = initPkiCRLSource();
+        pkiCRLSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
+        CRLToken revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
+        assertNotNull(revocationToken);
+        assertEquals(rootCa, revocationToken.getIssuerCertificateToken());
         assertEquals(SignatureAlgorithm.RSA_SHA256, revocationToken.getSignatureAlgorithm());
         assertEquals(CertificateStatus.GOOD, revocationToken.getStatus());
     }
@@ -119,10 +130,10 @@ public class JaxbPKICRLSourceTest extends AbstractTestJaxbPKI {
     @Test
     public void getRevocationTokenWithMaskGenerationFunction() {
         PKICRLSource pkiCRLSource = initPkiCRLSource();
-        pkiCRLSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        pkiCRLSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         CRLToken revocationToken = pkiCRLSource.getRevocationToken(goodCa, rootCa);
         assertNotNull(revocationToken);
-        assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, revocationToken.getSignatureAlgorithm());
+        assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, revocationToken.getSignatureAlgorithm());
     }
 
     @Test

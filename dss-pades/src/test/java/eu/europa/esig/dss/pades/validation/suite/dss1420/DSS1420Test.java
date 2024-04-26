@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.dss1420;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -36,6 +28,13 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DSS1420Test extends AbstractPAdESTestValidation {
 
@@ -58,7 +57,6 @@ public class DSS1420Test extends AbstractPAdESTestValidation {
 
 		assertEquals(EncryptionAlgorithm.RSA, pades.getEncryptionAlgorithm());
 		assertEquals(DigestAlgorithm.SHA3_256, pades.getDigestAlgorithm());
-		assertNull(pades.getMaskGenerationFunction());
 	}
 	
 	@Override

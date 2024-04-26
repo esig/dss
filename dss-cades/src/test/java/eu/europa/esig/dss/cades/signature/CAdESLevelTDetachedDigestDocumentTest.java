@@ -45,7 +45,7 @@ public class CAdESLevelTDetachedDigestDocumentTest extends AbstractCAdESTestSign
     @BeforeEach
     public void init() throws Exception {
         DSSDocument originalDocument = new InMemoryDocument("Hello World!".getBytes());
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA512, originalDocument.getDigestValue(DigestAlgorithm.SHA512));
 
         signatureParameters = new CAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());

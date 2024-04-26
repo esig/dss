@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.ws.server.signing.common;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
@@ -36,6 +37,8 @@ import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,8 @@ import java.util.List;
  * Default implementation of a remote signing service
  */
 public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenConnection {
+
+	private static final Logger LOG = LoggerFactory.getLogger(RemoteSignatureTokenConnectionImpl.class);
 
 	/** The KeyStore token connection */
 	private AbstractKeyStoreTokenConnection token;
@@ -82,13 +87,29 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 
 	@Override
 	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, String alias) throws DSSException {
-		return sign(toBeSigned, digestAlgorithm, null, alias);
+		DSSPrivateKeyEntry key = token.getKey(alias);
+		SignatureValue signatureValue = token.sign(DTOConverter.toToBeSigned(toBeSigned), digestAlgorithm, key);
+		return DTOConverter.toSignatureValueDTO(signatureValue);
 	}
 
 	@Override
+	@Deprecated
 	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
-		SignatureValue signatureValue = token.sign(DTOConverter.toToBeSigned(toBeSigned), digestAlgorithm, mgf, key);
+		EncryptionAlgorithm encryptionAlgorithm = key.getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
+			LOG.info("Usage of deprecated method with EncryptionAlgorithm '{}' and MaskGenerationFunction '{}'. " +
+					"The EncryptionAlgorithm is converted to '{}'", encryptionAlgorithm, mgf, EncryptionAlgorithm.RSASSA_PSS.getName());
+			encryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
+		}
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		if (signatureAlgorithm == null) {
+			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm is not found for the given configuration " +
+							"[EncryptionAlgorithm: %s; DigestAlgorithm: %s]",
+					encryptionAlgorithm, digestAlgorithm));
+		}
+
+		SignatureValue signatureValue = token.sign(DTOConverter.toToBeSigned(toBeSigned), signatureAlgorithm, key);
 		return DTOConverter.toSignatureValueDTO(signatureValue);
 	}
 
@@ -106,9 +127,23 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	}
 
 	@Override
+	@Deprecated
 	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
-		SignatureValue signatureValue = token.signDigest(DTOConverter.toDigest(digest), mgf, key);
+		EncryptionAlgorithm encryptionAlgorithm = key.getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
+			LOG.info("Usage of deprecated method with EncryptionAlgorithm '{}' and MaskGenerationFunction '{}'. " +
+					"The EncryptionAlgorithm is converted to '{}'", encryptionAlgorithm, mgf, EncryptionAlgorithm.RSASSA_PSS.getName());
+			encryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
+		}
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digest.getAlgorithm());
+		if (signatureAlgorithm == null) {
+			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm is not found for the given configuration " +
+							"[EncryptionAlgorithm: %s; DigestAlgorithm: %s]",
+					encryptionAlgorithm, digest.getAlgorithm()));
+		}
+
+		SignatureValue signatureValue = token.signDigest(DTOConverter.toDigest(digest), signatureAlgorithm, key);
 		return DTOConverter.toSignatureValueDTO(signatureValue);
 	}
 

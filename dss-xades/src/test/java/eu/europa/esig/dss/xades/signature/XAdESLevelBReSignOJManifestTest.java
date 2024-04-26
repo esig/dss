@@ -81,7 +81,7 @@ public class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature 
 
         DSSReference manifestReference = new DSSReference();
         manifestReference.setContents(originalOJManifest);
-        manifestReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        manifestReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
         manifestReference.setType("http://www.w3.org/2000/09/xmldsig#Manifest");
         manifestReference.setId("r-manifest");
         manifestReference.setUri("#manifest");
@@ -94,7 +94,7 @@ public class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature 
 
         DSSReference oldSignatureReference = new DSSReference();
         oldSignatureReference.setContents(signedOJ);
-        oldSignatureReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        oldSignatureReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
         oldSignatureReference.setType("http://www.w3.org/2000/09/xmldsig#Object");
         oldSignatureReference.setId("r-" + signatureParameters.getDeterministicId() + "-1");
         oldSignatureReference.setUri("#o-" +  signatureParameters.getDeterministicId() + "-1");

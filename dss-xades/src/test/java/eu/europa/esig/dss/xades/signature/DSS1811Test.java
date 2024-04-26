@@ -42,8 +42,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1811Test extends PKIFactoryAccess {
@@ -57,7 +57,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocument = getCompleteDocument();
 
-		assertNotEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
+		assertEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
 
 		ToBeSigned toBeSigned = service.getDataToSign(completeDocument, params);
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -77,7 +77,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
 
-		assertNotEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
+		assertEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
 
 		ToBeSigned toBeSigned = service.getDataToSign(completeDocumentNoName, params);
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -97,7 +97,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 		XAdESSignatureParameters params = getParams();
 		DSSDocument digestDocument = getDigestDocument();
 
-		assertNotEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
+		assertEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
 
 		ToBeSigned toBeSigned = service.getDataToSign(digestDocument, params);
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());

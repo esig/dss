@@ -119,8 +119,7 @@ public class PAdESLevelLTASignRevokedSigWithPOETest extends AbstractPAdESTestVal
     @Override
     protected DSSDocument getSignedDocument() {
         ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-                signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
         return service.signDocument(documentToSign, signatureParameters, signatureValue);
     }

@@ -26,6 +26,8 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -36,6 +38,8 @@ import java.util.Objects;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractSerializableSignatureParameters<TP extends SerializableTimestampParameters> implements SerializableSignatureParameters {
+
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractSerializableSignatureParameters.class);
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
@@ -79,7 +83,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	/**
 	 * XAdES: The ds:SignatureMethod indicates the algorithms used to sign ds:SignedInfo.
 	 */
-	private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
+	private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1;
 
 	/**
 	 * The encryption algorithm shall be automatically extracted from the signing token.
@@ -95,11 +99,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * XAdES: The digest algorithm used to hash ds:Reference.
 	 */
 	private DigestAlgorithm referenceDigestAlgorithm;
-
-	/**
-	 * The mask generation function
-	 */
-	private MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
 
 	/**
 	 * The object representing the parameters related to B- level.
@@ -204,6 +203,8 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	/**
 	 * Allows to change the default behaviour regarding the requirements of signing certificate
 	 * to generate ToBeSigned data.
+	 * NOTE: when using this method, it is important to ensure the same {@code EncryptionAlgorithm} is provided within
+	 *       {@code #setEncryptionAlgorithm} as the one used on a signature value creation
 	 *
 	 * @param generateTBSWithoutCertificate
 	 *            true if it should be possible to generate ToBeSigned data without certificate.
@@ -266,7 +267,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
 		this.digestAlgorithm = digestAlgorithm;
 		if (this.encryptionAlgorithm != null) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
 		}
 	}
 
@@ -274,17 +275,36 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * Sets the mask generation function if used with the given SignatureAlgorithm
 	 *
 	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method with
+	 *             value EncryptionAlgorithm.RSASSA_PSS in order to set MGF1, or
+	 *             value EncryptionAlgorithm.RSA to reset mask generation function
 	 */
+	@Deprecated
 	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		this.maskGenerationFunction = maskGenerationFunction;
-		if (this.digestAlgorithm != null && this.encryptionAlgorithm != null) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
+		LOG.warn("Use of deprecated method #setMaskGenerationFunction! " +
+				"Please use #setEncryptionAlgorithm with EncryptionAlgorithm.RSASSA_PSS value to enable MGF1, " +
+				"or EncryptionAlgorithm.RSA to disable.");
+		if (MaskGenerationFunction.MGF1 == maskGenerationFunction && EncryptionAlgorithm.RSA == encryptionAlgorithm) {
+			LOG.info("MaskGenerationFunction '{}' has been provided. The EncryptionAlgorithm changed to '{}'.",
+					maskGenerationFunction, EncryptionAlgorithm.RSASSA_PSS);
+			setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+		} else if (maskGenerationFunction == null && EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+			LOG.info("MaskGenerationFunction '{}' has been provided. The EncryptionAlgorithm changed to '{}'.",
+					maskGenerationFunction, EncryptionAlgorithm.RSA);
+			setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+		} else if (!EncryptionAlgorithm.RSA.isEquivalent(encryptionAlgorithm)) {
+			LOG.info("Not allowed combination of MaskGenerationFunction '{}' and EncryptionAlgorithm '{}'. The value is skipped.",
+					maskGenerationFunction, encryptionAlgorithm);
 		}
 	}
 
 	@Override
+	@Deprecated
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		return maskGenerationFunction;
+		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+			return MaskGenerationFunction.MGF1;
+		}
+		return null;
 	}
 
 	@Override
@@ -293,8 +313,11 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
-	 * This setter should be used only when dealing with web services (or when signing in three steps). Usually the
-	 * encryption algorithm is automatically extrapolated from the private key.
+	 * This method sets encryption algorithm to be used on signature creation.
+	 * The method is useful when a specific encryption algorithm is expected.
+	 * The defined encryption algorithm shall be the one used to create the SignatureValue.
+	 * Note: The encryption algorithm is automatically extracted from the certificate's key
+	 * with {@code #setSigningCertificate} method.
 	 *
 	 * @param encryptionAlgorithm
 	 *            the encryption algorithm to use
@@ -302,7 +325,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 		this.encryptionAlgorithm = encryptionAlgorithm;
 		if (this.digestAlgorithm != null) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
+			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
 		}
 	}
 
@@ -412,9 +435,9 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		return "AbstractSerializableSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", generateTBSWithoutCertificate="
 				+ generateTBSWithoutCertificate + ", signatureLevel=" + signatureLevel + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm="
 				+ signatureAlgorithm + ", encryptionAlgorithm=" + encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm="
-				+ referenceDigestAlgorithm + ", maskGenerationFunction=" + maskGenerationFunction + ", bLevelParams=" + bLevelParams
-				+ ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" + signatureTimestampParameters
-				+ ", archiveTimestampParameters=" + archiveTimestampParameters + "]";
+				+ referenceDigestAlgorithm + ", bLevelParams=" + bLevelParams + ", contentTimestampParameters="
+				+ contentTimestampParameters + ", signatureTimestampParameters=" + signatureTimestampParameters + ", archiveTimestampParameters="
+				+ archiveTimestampParameters + "]";
 	}
 
 	@Override
@@ -427,7 +450,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		result = prime * result + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
 		result = prime * result + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
 		result = prime * result + (generateTBSWithoutCertificate ? 1231 : 1237);
-		result = prime * result + ((maskGenerationFunction == null) ? 0 : maskGenerationFunction.hashCode());
 		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
 		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
 		result = prime * result + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
@@ -478,9 +500,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 			return false;
 		}
 		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
-			return false;
-		}
-		if (maskGenerationFunction != other.maskGenerationFunction) {
 			return false;
 		}
 		if (referenceDigestAlgorithm != other.referenceDigestAlgorithm) {

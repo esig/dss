@@ -245,7 +245,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		ref1.setTransforms(transforms);
 		ref1.setType(Reference.OBJECT_URI);
 		ref1.setUri('#' + document.getName());
-		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		
 		List<DSSReference> refs = new ArrayList<>();
 		refs.add(ref1);

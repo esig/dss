@@ -97,9 +97,13 @@ public interface RestSignatureTokenConnection extends Serializable {
 	 * @param alias
 	 *                        The key alias to be used
 	 * @return The array of bytes representing the signature value
+	 * @deprecated since DSS 6.1. Please use {@code #sign(toBeSigned, signatureAlgorithm, alias)} method instead.
+	 *             Specify the use of mask generation function with a signature parameter,
+	 *             using RSA for none MGF or RSASSA-PSS for MGF1.
 	 */
 	@POST
 	@Path("sign/{alias}/{digest-algo}/{mask}")
+	@Deprecated
 	SignatureValueDTO sign(ToBeSignedDTO toBeSigned, @PathParam("digest-algo") DigestAlgorithm digestAlgorithm, @PathParam("mask") MaskGenerationFunction mgf,
 			@PathParam("alias") String alias);
 
@@ -147,9 +151,13 @@ public interface RestSignatureTokenConnection extends Serializable {
 	 *               The key alias to be used
 	 * @return the signature value representation with the used algorithm and the
 	 *         binary value
+	 * @deprecated since DSS 6.1. Please use {@code #signDigest(digest, signatureAlgorithm, alias)} method instead.
+	 *             Specify the use of mask generation function with a signature parameter,
+	 *             using RSA for none MGF or RSASSA-PSS for MGF1.
 	 */
 	@POST
 	@Path("sign-digest/{alias}/{mask}")
+	@Deprecated
 	SignatureValueDTO signDigest(DigestDTO digest, @PathParam("mask") MaskGenerationFunction mgf, @PathParam("alias") String alias);
 
 	/**

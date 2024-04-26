@@ -115,9 +115,6 @@ public class RemoteTrustedListSignatureServiceImpl extends AbstractRemoteSignatu
         if (parameters.getDigestAlgorithm() != null) {
             tlParametersBuilder.setDigestAlgorithm(parameters.getDigestAlgorithm());
         }
-        if (parameters.getMaskGenerationFunction() != null) {
-            tlParametersBuilder.setMaskGenerationFunction(parameters.getMaskGenerationFunction());
-        }
         if (parameters.getBLevelParameters() != null) {
             tlParametersBuilder.setBLevelParams(toBLevelParameters(parameters.getBLevelParameters()));
         }

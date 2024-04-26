@@ -69,7 +69,7 @@ public class XAdESLevelBEnvelopedWithXPathTest extends AbstractXAdESTestSignatur
 		DSSReference reference = new DSSReference();
 		reference.setContents(documentToSign);
 		reference.setId("REF-ID1");
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference.setUri("");
 		List<DSSTransform> transforms1 = new ArrayList<>();
 		XPathEnvelopedSignatureTransform transform1 = new XPathEnvelopedSignatureTransform();

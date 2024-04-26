@@ -675,30 +675,18 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	@Deprecated
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		try {
-			final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
-			if (signatureAlgorithm != null && EncryptionAlgorithm.RSASSA_PSS.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
-				byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
-				if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
-					RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
-					AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
-					if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
-						return MaskGenerationFunction.MGF1;
-					} else {
-						LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
-					}
-				}
-			}
-		} catch (IOException e) {
-			LOG.warn("Unable to analyze EncryptionAlgParams", e);
+		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+			return MaskGenerationFunction.MGF1;
 		}
 		return null;
 	}
 
 	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
-		return SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm(), getMaskGenerationFunction());
+		return SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm());
 	}
 
 	@Override

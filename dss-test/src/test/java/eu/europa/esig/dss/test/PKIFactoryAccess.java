@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
@@ -207,12 +207,12 @@ public abstract class PKIFactoryAccess {
         return certificateVerifier;
     }
 
-    protected CertificateVerifier getCertificateVerifierWithMGF1() {
+    protected CertificateVerifier getCertificateVerifierWithPSS() {
         PKICRLSource pkicrlSource = pkiCRLSource();
-        pkicrlSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        pkicrlSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
         PKIOCSPSource pKIOCSPSource = pkiOCSPSource();
-        pKIOCSPSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        pKIOCSPSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
         return getCertificateVerifier(pKIOCSPSource, pkicrlSource, pkiAIASource(), getTrustedCertificateSource());
     }
@@ -533,7 +533,7 @@ public abstract class PKIFactoryAccess {
 
     protected PKITSPSource getKeyStoreTSPSourceByNameWithPss(String tsaName) {
         PKITSPSource entityStoreTSPSource = getPKITSPSourceByName(tsaName);
-        entityStoreTSPSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        entityStoreTSPSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         return entityStoreTSPSource;
     }
 

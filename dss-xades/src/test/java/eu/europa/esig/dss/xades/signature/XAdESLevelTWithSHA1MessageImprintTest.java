@@ -43,7 +43,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class XAdESLevelTWithSHA1MessageImprintTest extends AbstractXAdESTestSignature {
 
@@ -104,9 +103,8 @@ public class XAdESLevelTWithSHA1MessageImprintTest extends AbstractXAdESTestSign
 		assertEquals(DigestMatcherType.MESSAGE_IMPRINT, xmlDigestMatcher.getType());
 		assertEquals(DigestAlgorithm.SHA1, xmlDigestMatcher.getDigestMethod());
 
-		assertEquals(DigestAlgorithm.SHA256, timestampWrapper.getDigestAlgorithm());
+		assertEquals(DigestAlgorithm.SHA512, timestampWrapper.getDigestAlgorithm());
 		assertEquals(EncryptionAlgorithm.RSA, timestampWrapper.getEncryptionAlgorithm());
-		assertNull(timestampWrapper.getMaskGenerationFunction());
 	}
 
 }

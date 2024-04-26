@@ -97,8 +97,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);

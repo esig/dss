@@ -21,12 +21,13 @@
 package eu.europa.esig.dss.cookbook.example.sources;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.junit.jupiter.api.Test;
 
@@ -60,7 +61,7 @@ public class KeyEntityTSPSourceTest {
         keyStore.load(Files.newInputStream(keyStoreFile.toPath()), keyStorePassword);
 
         // instantiate the KeyStoreTSPSource
-        eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource entityStoreTSPSource = new eu.europa.esig.dss.spi.x509.tsp.KeyEntityTSPSource(keyStore, "self-signed-tsa", keyStorePassword);
+       KeyEntityTSPSource entityStoreTSPSource = new KeyEntityTSPSource(keyStore, "self-signed-tsa", keyStorePassword);
 
         // This method allows definition of a timestamping policy
         // NOTE: The TSA Policy is mandatory to be provided!
@@ -76,12 +77,13 @@ public class KeyEntityTSPSourceTest {
         entityStoreTSPSource.setProductionTime(new Date());
 
         // This method allows definition of a digest algorithm to be used for a signature of the generated time-stamp
-        // Default: SHA-256
-        entityStoreTSPSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
+        // Default: SHA-512
+        entityStoreTSPSource.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
-        // This method defines a Mask Generation Function to be used on signing
-        // Default: NONE (no PSS is used)
-        entityStoreTSPSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        // This method defines an Encryption algorithms to be used on signature creation
+        // NOTE: the encryption algorithm shall be compatible with the used key on timestamp creation
+        // Default: NONE (encryption algorithm returned by the key is used)
+        entityStoreTSPSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         // end::demo[]
 
         DSSDocument documentToTimestamp = new InMemoryDocument("Hello World!".getBytes());

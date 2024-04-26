@@ -85,8 +85,7 @@ public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestVali
 	@Override
 	protected DSSDocument getSignedDocument() {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 

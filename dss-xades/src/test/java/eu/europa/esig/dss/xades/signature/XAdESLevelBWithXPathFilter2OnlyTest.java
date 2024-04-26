@@ -65,7 +65,7 @@ public class XAdESLevelBWithXPathFilter2OnlyTest extends AbstractXAdESTestSignat
 		dssReference.setId("DSS-REF-1");
 		dssReference.setUri("sample-c14n-dss.xml");
 		dssReference.setContents(documentToSign);
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		DSSTransform transform = new XPath2FilterTransform("//*[@attr='Hello']", "intersect");
 		dssReference.setTransforms(Arrays.asList(transform));
 		references.add(dssReference);

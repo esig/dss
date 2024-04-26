@@ -36,7 +36,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class JAdESLevelLTDetachedUriByHashWithDigestDocumentTest extends Abstrac
     @BeforeEach
     public void init() throws Exception {
         DSSDocument originalDocument = new FileDocument(new File("src/test/resources/sample.json"));
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA512, originalDocument.getDigestValue(DigestAlgorithm.SHA512));
         documentToSign.setName(originalDocument.getName());
 
         signatureParameters = new JAdESSignatureParameters();
@@ -61,7 +61,7 @@ public class JAdESLevelLTDetachedUriByHashWithDigestDocumentTest extends Abstrac
         signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
         signatureParameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
-        signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
+        signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA512);
 
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -69,7 +69,7 @@ public class JAdESLevelLTDetachedUriByHashWithDigestDocumentTest extends Abstrac
 
     @Override
     protected List<DSSDocument> getDetachedContents() {
-        return Arrays.asList(documentToSign);
+        return Collections.singletonList(documentToSign);
     }
 
     @Override

@@ -87,7 +87,11 @@ public interface RemoteSignatureTokenConnection {
 	 * @return The array of bytes representing the signature value
 	 * @throws DSSException
 	 *                      If there is any problem during the signature process
+	 * @deprecated since DSS 6.1. Please use {@code #sign(toBeSigned, signatureAlgorithm, alias)} method instead
+	 *            in order to specify the target algorithm with a mask generation function
+	 *            (i.e. RSA for none MGF, RSASSA-PSS for MGF1)
 	 */
+	@Deprecated
 	SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException;
 
 	/**
@@ -135,7 +139,11 @@ public interface RemoteSignatureTokenConnection {
 	 *         binary value
 	 * @throws DSSException
 	 *                      If there is any problem during the signature process
+	 * @deprecated since DSS 6.1. Please use {@code #signDigest} method instead
+	 *             in order to specify the target algorithm with a mask generation function
+	 *             (i.e. RSA for none MGF, RSASSA-PSS for MGF1)
 	 */
+	@Deprecated
 	SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) throws DSSException;
 
 	/**

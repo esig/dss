@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAccess {
 		
-	private static final DigestAlgorithm digestAlgo = DigestAlgorithm.SHA256;
+	private static final DigestAlgorithm digestAlgo = DigestAlgorithm.SHA512;
 
 	@Test
 	public void testSignWithCompleteDocumentExtendWithCompleteDocument() {

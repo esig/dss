@@ -53,9 +53,9 @@ public class PAdESLevelBEnvelopedRSASSAPSSTest extends AbstractPAdESTestSignatur
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.setDigestAlgorithm(digestAlgo);
-        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
@@ -68,7 +68,7 @@ public class PAdESLevelBEnvelopedRSASSAPSSTest extends AbstractPAdESTestSignatur
     protected DSSDocument sign() {
         ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, signatureParameters.getDigestAlgorithm(), null);
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, signatureParameters.getDigestAlgorithm());
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureAlgorithm, getPrivateKeyEntry());
         assertEquals(signatureAlgorithm, signatureValue.getAlgorithm());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));

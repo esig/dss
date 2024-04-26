@@ -88,52 +88,52 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     /**
      * RSA with MGF1 without digest algorithm
      */
-    RSA_SSA_PSS_RAW_MGF1(EncryptionAlgorithm.RSASSA_PSS, null, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_RAW_MGF1(EncryptionAlgorithm.RSASSA_PSS, null),
 
     /**
      * RSA with MGF1 with SHA-1
      */
-    RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA1, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA1_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA1),
 
     /**
      * RSA with MGF1 with SHA-224
      */
-    RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA224, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA224_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA224),
 
     /**
      * RSA with MGF1 with SHA-256
      */
-    RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA256_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA256),
 
     /**
      * RSA with MGF1 with SHA-384
      */
-    RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA384, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA384_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA384),
 
     /**
      * RSA with MGF1 with SHA-512
      */
-    RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA512_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA512),
 
     /**
      * RSA with MGF1 with SHA3-224
      */
-    RSA_SSA_PSS_SHA3_224_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_224, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA3_224_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_224),
 
     /**
      * RSA with MGF1 with SHA3-256
      */
-    RSA_SSA_PSS_SHA3_256_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_256, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA3_256_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_256),
 
     /**
      * RSA with MGF1 with SHA3-384
      */
-    RSA_SSA_PSS_SHA3_384_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_384, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA3_384_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_384),
 
     /**
      * RSA with MGF1 with SHA3-512
      */
-    RSA_SSA_PSS_SHA3_512_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_512, MaskGenerationFunction.MGF1),
+    RSA_SSA_PSS_SHA3_512_MGF1(EncryptionAlgorithm.RSASSA_PSS, DigestAlgorithm.SHA3_512),
 
     /**
      * RSA with RIPEMD160
@@ -375,11 +375,6 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
      * The digest algorithm
      */
     private final DigestAlgorithm digestAlgo;
-
-    /**
-     * The mask generation function
-     */
-    private final MaskGenerationFunction maskGenerationFunction;
 
     /**
      * OID URI (RFC 3061)
@@ -781,13 +776,13 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
             throw new IllegalArgumentException(String.format(UNSUPPORTED_ALGO_MSG, oid));
         }
 
-        if (sigAlgParams != null && algorithm.getMaskGenerationFunction() != null) {
+        if (EncryptionAlgorithm.RSASSA_PSS == algorithm.getEncryptionAlgorithm() && sigAlgParams != null) {
             try {
                 AlgorithmParameters algoParams = AlgorithmParameters.getInstance("PSS");
                 algoParams.init(sigAlgParams);
                 PSSParameterSpec pssParam = algoParams.getParameterSpec(PSSParameterSpec.class);
                 DigestAlgorithm digestAlgorithm = DigestAlgorithm.forJavaName(pssParam.getDigestAlgorithm());
-                algorithm = getAlgorithm(algorithm.getEncryptionAlgorithm(), digestAlgorithm, algorithm.getMaskGenerationFunction());
+                algorithm = getAlgorithm(algorithm.getEncryptionAlgorithm(), digestAlgorithm);
             } catch (GeneralSecurityException | IOException e) {
                 throw new IllegalArgumentException("Unable to initialize PSS", e);
             }
@@ -890,7 +885,13 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
      * @return the corresponding combination of both algorithms
      */
     public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
-        return getAlgorithm(encryptionAlgorithm, digestAlgorithm, null);
+        for (SignatureAlgorithm currentAlgo : values()) {
+            if (Objects.equals(currentAlgo.getEncryptionAlgorithm(), encryptionAlgorithm)
+                    && Objects.equals(currentAlgo.getDigestAlgorithm(), digestAlgorithm)) {
+                return currentAlgo;
+            }
+        }
+        return null;
     }
 
     /**
@@ -900,38 +901,17 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
      * @param digestAlgorithm     the digest algorithm
      * @param mgf                 the mask generation function
      * @return the corresponding combination of both algorithms
+     * @deprecated since DSS 6.1. Please use {@code #getAlgorithm(encryptionAlgorithm, digestAlgorithm)} method instead.
+     *             Use {@code EncryptionAlgorithm.RSA} or {@code EncryptionAlgorithm.RSASSA_PSS} to differentiate between MGF use.
      */
+    @Deprecated
     public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
                                                   final MaskGenerationFunction mgf) {
-        final EncryptionAlgorithm targetEncryptionAlgorithm = ensureEncryptionAlgorithm(encryptionAlgorithm, mgf);
-        final DigestAlgorithm targetDigestAlgorithm = digestAlgorithm;
-        final MaskGenerationFunction targetMaskGenerationFunction = ensureMaskGenerationFunction(encryptionAlgorithm, mgf);
-        for (SignatureAlgorithm currentAlgo : values()) {
-            if (Objects.equals(currentAlgo.getEncryptionAlgorithm(), targetEncryptionAlgorithm)
-                    && Objects.equals(currentAlgo.getDigestAlgorithm(), targetDigestAlgorithm)
-                    && Objects.equals(currentAlgo.getMaskGenerationFunction(), targetMaskGenerationFunction)) {
-                return currentAlgo;
-            }
+        EncryptionAlgorithm targetEncryptionAlgorithm = encryptionAlgorithm;
+        if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
+            targetEncryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
         }
-        return null;
-    }
-
-    private static EncryptionAlgorithm ensureEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final MaskGenerationFunction mgf) {
-        if (EncryptionAlgorithm.RSA == encryptionAlgorithm && mgf != null) {
-            return EncryptionAlgorithm.RSASSA_PSS;
-        }
-        return encryptionAlgorithm;
-    }
-
-    private static MaskGenerationFunction ensureMaskGenerationFunction(final EncryptionAlgorithm encryptionAlgorithm, final MaskGenerationFunction mgf) {
-        if (mgf == null && EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-            return MaskGenerationFunction.MGF1;
-        }
-        if (mgf != null && !EncryptionAlgorithm.RSASSA_PSS.isEquivalent(encryptionAlgorithm)) {
-            // not applicable
-            return null;
-        }
-        return mgf;
+        return getAlgorithm(targetEncryptionAlgorithm, digestAlgorithm);
     }
 
     /**
@@ -943,21 +923,6 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm) {
         this.encryptionAlgo = encryptionAlgorithm;
         this.digestAlgo = digestAlgorithm;
-        this.maskGenerationFunction = null;
-    }
-
-    /**
-     * The default constructor.
-     *
-     * @param encryptionAlgorithm    the encryption algorithm
-     * @param digestAlgorithm        the digest algorithm
-     * @param maskGenerationFunction the mask generation function
-     */
-    SignatureAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
-                       final MaskGenerationFunction maskGenerationFunction) {
-        this.encryptionAlgo = encryptionAlgorithm;
-        this.digestAlgo = digestAlgorithm;
-        this.maskGenerationFunction = maskGenerationFunction;
     }
 
     /**
@@ -982,9 +947,15 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
      * This method returns the mask generation function.
      *
      * @return the mask generation function
+     * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} in order to differentiate between 
+     *             MGF values (use RSA for none MGF, RSASSA_PSS for MGF1)
      */
+    @Deprecated
     public MaskGenerationFunction getMaskGenerationFunction() {
-        return maskGenerationFunction;
+        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgo) {
+            return MaskGenerationFunction.MGF1;
+        }
+        return null;
     }
 
     /**
@@ -1049,10 +1020,6 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
         if (digestAlgo != null) {
             stringBuilder.append(" with ");
             stringBuilder.append(digestAlgo.getName());
-        }
-        if (maskGenerationFunction != null) {
-            stringBuilder.append(" and ");
-            stringBuilder.append(maskGenerationFunction.getName());
         }
         return stringBuilder.toString();
     }

@@ -140,6 +140,81 @@ boolean result = CMSUtils.isArchiveTimeStampToken(attribute);
 ...
 ----
 
+|MaskGenerationFunction deprecation          a|
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+signatureParmeters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+...
+----
+a|
+Use `EncryptionAlgorithm.RSASSA_PSS` instead to distinguish a use of mask generation function.
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+...
+----
+
+|`SHA512` as default digest algorithm          a|
+`SHA256` is default.
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+...
+----
+a|
+`SHA512` is default. To get back to `SHA256` please use:
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+...
+----
+
+|`RSASSA_PSS` as default encryption algorithm          a|
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+signatureParmeters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+...
+----
+a|
+DSS will choose encryption algorithm based on the algorithm name in the signing-certificate key (i.e. `RSA`, `RSASSA_PSS` or other). When signing without certificate or in order to enforce target encryption algorithm, provide encryption algorithm explicitly.
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setSigningCertificate(signingCertificate);
+...
+or
+...
+signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+...
+----
+
 |===
 
 [cols="2,5,5"]

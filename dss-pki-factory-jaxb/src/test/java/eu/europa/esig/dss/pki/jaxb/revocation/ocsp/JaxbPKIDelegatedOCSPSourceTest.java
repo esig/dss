@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pki.jaxb.revocation.ocsp;
 
 import eu.europa.esig.dss.enumerations.CertificateStatus;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.exception.PKIException;
@@ -63,6 +64,23 @@ public class JaxbPKIDelegatedOCSPSourceTest extends AbstractTestJaxbPKI {
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
+        assertEquals(SignatureAlgorithm.RSA_SHA512, ocspToken.getSignatureAlgorithm());
+        assertEquals(ocspResponder, ocspToken.getIssuerCertificateToken());
+        assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
+    }
+
+    @Test
+    public void testDelegateSha256() {
+        PKIDelegatedOCSPSource ocspSource = new PKIDelegatedOCSPSource(repository);
+        ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
+
+        Map<CertEntity, CertEntity> ocspResponders = new HashMap<>();
+        ocspResponders.put(repository.getByCertificateToken(goodCa), repository.getByCertificateToken(ocspResponder));
+        ocspSource.setOcspResponders(ocspResponders);
+
+        OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
+        assertNotNull(ocspToken);
+        assertNotNull(ocspToken.getBasicOCSPResp());
         assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
         assertEquals(ocspResponder, ocspToken.getIssuerCertificateToken());
         assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
@@ -75,7 +93,7 @@ public class JaxbPKIDelegatedOCSPSourceTest extends AbstractTestJaxbPKI {
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
-        assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
+        assertEquals(SignatureAlgorithm.RSA_SHA512, ocspToken.getSignatureAlgorithm());
         assertEquals(goodCa, ocspToken.getIssuerCertificateToken());
         assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
     }
@@ -88,7 +106,7 @@ public class JaxbPKIDelegatedOCSPSourceTest extends AbstractTestJaxbPKI {
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
-        assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
+        assertEquals(SignatureAlgorithm.RSA_SHA512, ocspToken.getSignatureAlgorithm());
         assertEquals(goodCa, ocspToken.getIssuerCertificateToken());
         assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
     }
@@ -101,7 +119,7 @@ public class JaxbPKIDelegatedOCSPSourceTest extends AbstractTestJaxbPKI {
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
-        assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
+        assertEquals(SignatureAlgorithm.RSA_SHA512, ocspToken.getSignatureAlgorithm());
         assertEquals(goodCa, ocspToken.getIssuerCertificateToken());
         assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
     }
@@ -117,7 +135,7 @@ public class JaxbPKIDelegatedOCSPSourceTest extends AbstractTestJaxbPKI {
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
         assertNotNull(ocspToken.getBasicOCSPResp());
-        assertEquals(SignatureAlgorithm.RSA_SHA256, ocspToken.getSignatureAlgorithm());
+        assertEquals(SignatureAlgorithm.RSA_SHA512, ocspToken.getSignatureAlgorithm());
         assertEquals(goodCa, ocspToken.getIssuerCertificateToken());
         assertEquals(CertificateStatus.GOOD, ocspToken.getStatus());
     }

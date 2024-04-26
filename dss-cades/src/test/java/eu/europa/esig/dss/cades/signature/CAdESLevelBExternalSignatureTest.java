@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -68,6 +69,7 @@ public class CAdESLevelBExternalSignatureTest extends AbstractCAdESTestSignature
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setGenerateTBSWithoutCertificate(true);
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 
 		signingDate = new Date();
 		signatureParameters.bLevel().setSigningDate(signingDate);
@@ -133,8 +135,7 @@ public class CAdESLevelBExternalSignatureTest extends AbstractCAdESTestSignature
 			LOG.error("Error while simulating external CAdES signature", e);
 		}
 
-		SignatureValue signatureValue = getToken().sign(toBeSigned, getSignatureParameters().getDigestAlgorithm(),
-				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(toBeSigned, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
 		assertTrue(service.isValidSignatureValue(toBeSigned, signatureValue, getSigningCert()));
 		externalSignatureResult.setSignatureValue(signatureValue);
 

@@ -65,7 +65,7 @@ public class XAdESLevelBXPathEnvelopedWithContentTstTest extends AbstractXAdESTe
 		DSSReference dssReference = new DSSReference();
 		dssReference.setContents(documentToSign);
 		dssReference.setId("Canonicalization-Ref-Test");
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		dssReference.setUri("");
 		dssReference.setTransforms(Arrays.asList(new XPathEnvelopedSignatureTransform()));
 		

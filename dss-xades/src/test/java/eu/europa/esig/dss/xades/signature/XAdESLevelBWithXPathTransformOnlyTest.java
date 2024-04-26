@@ -66,7 +66,7 @@ public class XAdESLevelBWithXPathTransformOnlyTest extends AbstractXAdESTestSign
 		dssReference.setId("DSS-REF-1");
 		dssReference.setUri("");
 		dssReference.setContents(documentToSign);
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		DSSTransform xPathTransform = new XPathTransform("ancestor-or-self::*[@attr='Hello']");
 		dssReference.setTransforms(Arrays.asList(xPathTransform));
 		references.add(dssReference);

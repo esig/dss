@@ -24,7 +24,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -51,9 +50,6 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 
 	/** The Digest algorithm */
 	protected final DigestAlgorithm digestAlgorithm;
-
-	/** Mask generation function when present */
-	protected final MaskGenerationFunction maskGenerationFunction;
 
 	/** Used Key length */
 	protected final String keyLengthUsedToSignThisToken;
@@ -82,7 +78,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	protected AbstractCryptographicChecker(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm,
 										   Date validationDate, MessageTag position,
 										   CryptographicConstraint constraint) {
-		this(i18nProvider, null, digestAlgorithm, null, null,
+		this(i18nProvider, null, digestAlgorithm, null,
 				validationDate, position, constraint);
 	}
 
@@ -92,21 +88,18 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
 	 * @param digestAlgorithm {@link DigestAlgorithm}
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
 	 * @param keyLengthUsedToSignThisToken {@link String}
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
 	 * @param constraint {@link CryptographicConstraint}
 	 */
 	protected AbstractCryptographicChecker(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgorithm,
-										   DigestAlgorithm digestAlgorithm, MaskGenerationFunction maskGenerationFunction,
-										   String keyLengthUsedToSignThisToken, Date validationDate,
-										   MessageTag position, CryptographicConstraint constraint) {
+										   DigestAlgorithm digestAlgorithm, String keyLengthUsedToSignThisToken,
+										   Date validationDate, MessageTag position, CryptographicConstraint constraint) {
 		super(i18nProvider, new XmlCC());
 		
 		this.encryptionAlgorithm = encryptionAlgorithm;
 		this.digestAlgorithm = digestAlgorithm;
-		this.maskGenerationFunction = maskGenerationFunction;
 		this.keyLengthUsedToSignThisToken = keyLengthUsedToSignThisToken;
 		this.validationDate = validationDate;
 		
@@ -217,8 +210,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 
 			} else if (encryptionAlgorithm != null) {
 				// if EncryptionAlgorithm and DigestAlgorithm are defined
-				SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(
-						digestAlgorithm, encryptionAlgorithm, maskGenerationFunction);
+				SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(digestAlgorithm, encryptionAlgorithm);
 				cryptographicAlgorithm.setName(signatureAlgorithm.getName());
 				cryptographicAlgorithm.setUri(getSignatureAlgorithmUri(signatureAlgorithm));
 				cryptographicAlgorithm.setKeyLength(keyLengthUsedToSignThisToken);
@@ -233,8 +225,8 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	}
 
 	private SignatureAlgorithm getSignatureAlgorithm(DigestAlgorithm digestAlgorithm,
-											EncryptionAlgorithm encryptionAlgorithm, MaskGenerationFunction maskGenerationFunction) {
-		return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+											EncryptionAlgorithm encryptionAlgorithm) {
+		return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 	}
 
 	private String getSignatureAlgorithmUri(SignatureAlgorithm signatureAlgorithm) {

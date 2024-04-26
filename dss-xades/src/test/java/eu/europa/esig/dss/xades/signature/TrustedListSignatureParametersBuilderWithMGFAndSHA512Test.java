@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 
@@ -35,7 +35,7 @@ public class TrustedListSignatureParametersBuilderWithMGFAndSHA512Test extends T
     protected TrustedListSignatureParametersBuilder getSignatureParametersBuilder() {
         return super.getSignatureParametersBuilder()
                 .setDigestAlgorithm(DigestAlgorithm.SHA512)
-                .setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+                .setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
     }
 
     @Override

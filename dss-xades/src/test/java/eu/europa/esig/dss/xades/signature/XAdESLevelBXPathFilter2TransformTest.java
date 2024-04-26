@@ -65,7 +65,7 @@ public class XAdESLevelBXPathFilter2TransformTest extends AbstractXAdESTestSigna
 		dssReference.setId("DSS-REF-1");
 		dssReference.setUri("");
 		dssReference.setContents(documentToSign);
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		
 		DSSTransform xPathTransform = new XPath2FilterTransform("/descendant::tr", "intersect");
 		dssReference.setTransforms(Arrays.asList(xPathTransform));

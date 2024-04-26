@@ -53,9 +53,9 @@ public class XAdESLevelBEnvelopedRSASSAPSSTest extends AbstractXAdESTestSignatur
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.setDigestAlgorithm(digestAlgo);
-        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
@@ -68,7 +68,7 @@ public class XAdESLevelBEnvelopedRSASSAPSSTest extends AbstractXAdESTestSignatur
     protected DSSDocument sign() {
         ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, signatureParameters.getDigestAlgorithm(), null);
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, signatureParameters.getDigestAlgorithm());
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureAlgorithm, getPrivateKeyEntry());
         assertEquals(signatureAlgorithm, signatureValue.getAlgorithm());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));

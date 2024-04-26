@@ -73,7 +73,7 @@ public class XAdESLevelBEnvelopingCustomDataObjectFormatTest extends AbstractXAd
         ref1.setTransforms(transforms);
         ref1.setType(Reference.OBJECT_URI);
         ref1.setUri('#' + documentToSign.getName());
-        ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 
         signatureParameters.setReferences(Collections.singletonList(ref1));
 

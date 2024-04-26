@@ -169,9 +169,9 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * The {@code DigestAlgorithm} used to incorporate CompleteCertificateRefs/CompleteRevocationRefs on -C level
 	 *
-	 * Default: SHA256
+	 * Default: SHA512
 	 */
-	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA256;
+	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA512;
 
 	/**
 	 * List of custom xades:DataObjectFormat elements incorporated within xades:SignedDataObjectProperties element of the signature
@@ -198,6 +198,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 * 7.2.2 The SigningCertificate element (101 903 V1.4.2 (2010-12) XAdES)<br>
 	 * The digest method indicates the digest algorithm to be used to calculate the CertDigest element that contains the
 	 * digest for each certificate referenced in the sequence.
+	 * Default: SHA512 (DigestAlgorithm.SHA512)
 	 *
 	 * @param signingCertificateDigestMethod {@link DigestAlgorithm}
 	 */
@@ -624,7 +625,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * Sets a {@code DigestAlgorithm} to create CompleteCertificateRefs/CompleteRevocationRefs for -C level
 	 *
-	 * Default : SHA256
+	 * Default : SHA512
 	 *
 	 * @param tokenReferencesDigestAlgorithm {@link DigestAlgorithm}
 	 */

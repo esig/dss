@@ -45,8 +45,8 @@ public class CryptographicChecker extends AbstractCryptographicChecker {
 	 */
 	public CryptographicChecker(I18nProvider i18nProvider, TokenProxy token, Date validationDate, MessageTag position,
 								CryptographicConstraint constraint) {
-		super(i18nProvider, token.getEncryptionAlgorithm(), token.getDigestAlgorithm(), 
-				token.getMaskGenerationFunction(), token.getKeyLengthUsedToSignThisToken(), validationDate, position, constraint);
+		super(i18nProvider, token.getEncryptionAlgorithm(), token.getDigestAlgorithm(),
+				token.getKeyLengthUsedToSignThisToken(), validationDate, position, constraint);
 	}
 
 	@Override

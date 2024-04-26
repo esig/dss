@@ -37,7 +37,7 @@ public class RemoteTimestampParameters implements Serializable {
 	/**
 	 * The digest algorithm to provide to the timestamping authority
 	 */
-	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
+	private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA512;
 
 	/**
 	 * This is the default canonicalization method for XMLDSIG used for timestamps. Another complication arises because

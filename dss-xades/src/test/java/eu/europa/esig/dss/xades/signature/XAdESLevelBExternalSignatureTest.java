@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -61,6 +62,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 		signatureParameters.setSignedPropertiesCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 		signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 		signatureParameters.setGenerateTBSWithoutCertificate(true);
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}
@@ -121,8 +123,7 @@ public class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature
 			externalSignatureResult.setSignedAdESObject(serializedObject);
 
 			// Calculate signature
-			SignatureValue signatureValue = getToken().sign(toBeSigned, getSignatureParameters().getDigestAlgorithm(),
-					getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+			SignatureValue signatureValue = getToken().sign(toBeSigned, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
 			assertTrue(service.isValidSignatureValue(toBeSigned, signatureValue, getSigningCert()));
 			externalSignatureResult.setSignatureValue(signatureValue);
 		} catch (Exception e) {

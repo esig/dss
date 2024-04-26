@@ -88,7 +88,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
         cmsParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 
         ToBeSignedDTO dataToSign = externalCMSService.getDataToSign(messageDigest, cmsParameters);
-        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
         RemoteDocument cmsSignature = externalCMSService.signMessageDigest(messageDigest, cmsParameters,
                 DTOConverter.toSignatureValueDTO(signatureValue));
         assertNotNull(cmsSignature);
@@ -115,7 +115,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
         cmsParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 
         ToBeSignedDTO dataToSign = externalCMSService.getDataToSign(messageDigest, cmsParameters);
-        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
         RemoteDocument cmsSignature = externalCMSService.signMessageDigest(messageDigest, cmsParameters,
                 DTOConverter.toSignatureValueDTO(signatureValue));
         assertNotNull(cmsSignature);
@@ -142,7 +142,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
         cmsParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 
         ToBeSignedDTO dataToSign = externalCMSService.getDataToSign(messageDigest, cmsParameters);
-        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
         RemoteDocument cmsSignature = externalCMSService.signMessageDigest(messageDigest, cmsParameters,
                 DTOConverter.toSignatureValueDTO(signatureValue));
         assertNotNull(cmsSignature);
@@ -169,7 +169,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
         cmsParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 
         ToBeSignedDTO dataToSign = externalCMSService.getDataToSign(messageDigest, cmsParameters);
-        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
         RemoteDocument cmsSignature = externalCMSService.signMessageDigest(messageDigest, cmsParameters,
                 DTOConverter.toSignatureValueDTO(signatureValue));
         assertNotNull(cmsSignature);
@@ -203,7 +203,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
         cmsParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 
         ToBeSignedDTO dataToSign = externalCMSService.getDataToSign(messageDigest, cmsParameters);
-        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
         RemoteDocument cmsSignature = externalCMSService.signMessageDigest(messageDigest, cmsParameters,
                 DTOConverter.toSignatureValueDTO(signatureValue));
         assertNotNull(cmsSignature);

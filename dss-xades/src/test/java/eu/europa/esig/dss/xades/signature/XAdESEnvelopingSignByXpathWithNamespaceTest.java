@@ -45,7 +45,7 @@ public class XAdESEnvelopingSignByXpathWithNamespaceTest extends AbstractXAdESTe
 
         DSSReference reference = new DSSReference();
         reference.setId("REF-ID1");
-        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
         reference.setUri("");
 
         List<DSSTransform> transforms = new ArrayList<>();

@@ -68,7 +68,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		ref1.setTransforms(transforms);
 		ref1.setType(Reference.OBJECT_URI);
 		ref1.setUri('#' + doc1.getName());
-		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 
 		DSSReference ref2 = new DSSReference();
 		ref2.setContents(doc2);
@@ -76,7 +76,7 @@ public class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		ref2.setTransforms(transforms);
 		ref2.setType(Reference.OBJECT_URI);
 		ref2.setUri('#' + doc2.getName());
-		ref2.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		ref2.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 
 		refs.add(ref1);
 		refs.add(ref2);

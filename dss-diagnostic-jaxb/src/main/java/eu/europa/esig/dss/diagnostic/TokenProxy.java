@@ -80,7 +80,10 @@ public interface TokenProxy {
 	 * Returns the MaskGenerationFunction if has been used on signature creation
 	 *
 	 * @return {@link MaskGenerationFunction}
+	 * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} method instead to differentiate
+	 *             between mask generation function use (i.e. RSA for none MGF, RSASSA-PSS for MGF1)
 	 */
+	@Deprecated
 	MaskGenerationFunction getMaskGenerationFunction();
 
 	/**

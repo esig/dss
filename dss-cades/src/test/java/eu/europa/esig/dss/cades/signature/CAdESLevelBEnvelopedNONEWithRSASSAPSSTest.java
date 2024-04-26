@@ -3,7 +3,6 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -31,7 +30,7 @@ public class CAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractCAdESTest
     private static Stream<Arguments> data() {
         List<Arguments> args = new ArrayList<>();
         for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
-            if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
+            if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, digestAlgorithm) != null) {
                 args.add(Arguments.of(digestAlgorithm));
             }
         }

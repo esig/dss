@@ -69,7 +69,7 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	/**
 	 * The DigestAlgorithm to be used for an Enveloped reference
 	 */
-	private DigestAlgorithm referenceDigestAlgorithm = DigestAlgorithm.SHA256;
+	private DigestAlgorithm referenceDigestAlgorithm = DigestAlgorithm.SHA512;
 	
 	/**
 	 * The constructor to build Signature Parameters for a Trusted List signing with respect to ETSI TS 119 612
@@ -117,6 +117,7 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	}
 
 	@Override
+	@Deprecated
 	public TrustedListSignatureParametersBuilder setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
 		return (TrustedListSignatureParametersBuilder) super.setMaskGenerationFunction(maskGenerationFunction);
 	}

@@ -20,12 +20,8 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -33,6 +29,9 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Date;
 
 public class PAdESLevelBWithSHA256andMGF1Test extends AbstractPAdESTestSignature {
 
@@ -50,7 +49,7 @@ public class PAdESLevelBWithSHA256andMGF1Test extends AbstractPAdESTestSignature
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 		signatureParameters.setLocation("Luxembourg");
 		signatureParameters.setReason("DSS testing");
 		signatureParameters.setContactInfo("Jira");

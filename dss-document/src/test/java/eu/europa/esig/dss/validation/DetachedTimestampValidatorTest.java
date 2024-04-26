@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -68,12 +69,12 @@ public class DetachedTimestampValidatorTest {
 
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
 		for (CertificateWrapper cert : diagnosticData.getUsedCertificates()) {
-			assertNotNull(cert.getMaskGenerationFunction());
+			assertEquals(EncryptionAlgorithm.RSASSA_PSS, cert.getEncryptionAlgorithm());
 		}
 
 		assertEquals(1, diagnosticData.getTimestampList().size());
 		for (TimestampWrapper tst : diagnosticData.getTimestampList()) {
-			assertNotNull(tst.getMaskGenerationFunction());
+			assertEquals(EncryptionAlgorithm.RSASSA_PSS, tst.getEncryptionAlgorithm());
 		}
 
 		validate(reports);

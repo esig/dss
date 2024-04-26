@@ -50,4 +50,9 @@ public class TrustedListSignatureParametersBuilderEnforcedEncryptionAlgoTest ext
         // skip
     }
 
+    @Override
+    protected String getSigningAlias() {
+        return ED25519_GOOD_USER;
+    }
+
 }

@@ -80,7 +80,10 @@ public interface SignatureTokenConnection extends AutoCloseable {
 	 * @return the signature value representation with the used algorithm and the binary value
 	 * @throws DSSException
 	 *             If there is any problem during the signature process
+	 * @deprecated since DSS 6.1. Please use {@code #sign(toBeSigned, signatureAlgorithm, keyEntry)}
+	 *             in order to specify an algorithm with a used MGF
 	 */
+	@Deprecated
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 	/**
@@ -128,7 +131,10 @@ public interface SignatureTokenConnection extends AutoCloseable {
 	 *         binary value
 	 * @throws DSSException
 	 *                      If there is any problem during the signature process
+	 * @deprecated since DSS 6.1. Please use {@code signDigest(digest, signatureAlgorithm, keyEntry)} method
+	 *             in order to specify an algorithm with an expected mask generation function
 	 */
+	@Deprecated
 	SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 	/**

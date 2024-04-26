@@ -156,7 +156,10 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * Retrieves the mask generation function used for generating the signature.
 	 *
 	 * @return {@code MaskGenerationFunction}
+	 * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} method instead in order to determine
+	 *             mask generation function (i.e. EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1)
 	 */
+	@Deprecated
 	MaskGenerationFunction getMaskGenerationFunction();
 
 	/**

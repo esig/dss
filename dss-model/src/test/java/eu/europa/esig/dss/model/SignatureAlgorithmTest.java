@@ -34,7 +34,7 @@ public class SignatureAlgorithmTest {
 	public void getAlgorithm() {
 		for (SignatureAlgorithm sigAlgo : SignatureAlgorithm.values()) {
 			assertEquals(sigAlgo,
-					SignatureAlgorithm.getAlgorithm(sigAlgo.getEncryptionAlgorithm(), sigAlgo.getDigestAlgorithm(), sigAlgo.getMaskGenerationFunction()));
+					SignatureAlgorithm.getAlgorithm(sigAlgo.getEncryptionAlgorithm(), sigAlgo.getDigestAlgorithm()));
 		}
 	}
 

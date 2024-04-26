@@ -114,8 +114,8 @@ public class JAXBPKICreationTest {
         PKICRLSource crlSource = new PKICRLSource(repository);
 
         // Configure DigestAlgorithm to be used on CRL generation
-        // Default: SHA256
-        crlSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
+        // Default: SHA512
+        crlSource.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
         // Configure thisUpdate
         crlSource.setThisUpdate(new Date());
@@ -147,8 +147,8 @@ public class JAXBPKICreationTest {
         ocspSource.setOcspResponder(ocspResponder);
 
         // Configure DigestAlgorithm to be used on OCSP generation
-        // Default: SHA256
-        ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
+        // Default: SHA512
+        ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
         // Configure thisUpdate
         ocspSource.setThisUpdate(new Date());

@@ -87,17 +87,12 @@ public class PKICRLSource implements CRLSource {
     /**
      * The DigestAlgorithm to be used on CRL signing
      */
-    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
+    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA512;
 
     /**
      * Encryption algorithm of the signature of the CRL
      */
     private EncryptionAlgorithm encryptionAlgorithm;
-
-    /**
-     * Mask Generation Function of the signature of the CRL
-     */
-    private MaskGenerationFunction maskGenerationFunction;
 
     /**
      * Creates a PKICRLSource instance with a CRL issuer being the issuer certificate token provided on the CRL request
@@ -163,7 +158,7 @@ public class PKICRLSource implements CRLSource {
 
     /**
      * Sets Digest Algorithm to be used on CRL request signature
-     * Default: SHA256 ({@code DigestAlgorithm.SHA256})
+     * Default: SHA512 ({@code DigestAlgorithm.SHA512})
      *
      * @param digestAlgorithm {@link DigestAlgorithm}
      */
@@ -187,9 +182,16 @@ public class PKICRLSource implements CRLSource {
      * NOTE: The used encryption algorithm should support the given parameter.
      *
      * @param maskGenerationFunction {@link MaskGenerationFunction}
+     * @deprecated since DSS 6.1. Please use {@code setEncryptionAlgorithm} method
+     *             to specify RSA (none MGF) or RSASSA-PSS (MGF1) algorithm
      */
+    @Deprecated
     public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-        this.maskGenerationFunction = maskGenerationFunction;
+        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
+            setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+        } else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
+            setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+        }
     }
 
     /**
@@ -327,7 +329,7 @@ public class PKICRLSource implements CRLSource {
         } else {
             encryptionAlgorithm = crlIssuer.getEncryptionAlgorithm();
         }
-        return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+        return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
     }
 
     /**

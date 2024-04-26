@@ -109,7 +109,7 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		ref1.setId("r-" + document.getName());
 		ref1.setTransforms(dssTransforms);
 		ref1.setUri(document.getName());
-		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		
 		List<DSSReference> refs = new ArrayList<>();
 		refs.add(ref1);

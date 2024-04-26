@@ -198,12 +198,31 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 	 */
 	protected void fillParameters(AbstractSignatureParameters<TimestampParameters> parameters,
 								  RemoteSignatureParameters remoteParameters) {
+		// certificate shall be provided first
+		RemoteCertificate signingCertificate = remoteParameters.getSigningCertificate();
+		if (signingCertificate != null) { // extends do not require signing certificate
+			CertificateToken certificateToken = RemoteCertificateConverter.toCertificateToken(signingCertificate);
+			parameters.setSigningCertificate(certificateToken);
+		}
+
+		List<RemoteCertificate> remoteCertificateChain = remoteParameters.getCertificateChain();
+		if (Utils.isCollectionNotEmpty(remoteCertificateChain)) {
+			parameters.setCertificateChain(RemoteCertificateConverter.toCertificateTokens(remoteCertificateChain));
+		}
+
 		parameters.setBLevelParams(toBLevelParameters(remoteParameters.getBLevelParams()));
 		parameters.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(remoteParameters.getDetachedContents()));
-		parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
-		parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
-		parameters.setMaskGenerationFunction(remoteParameters.getMaskGenerationFunction());
-		parameters.setReferenceDigestAlgorithm(remoteParameters.getReferenceDigestAlgorithm());
+
+		if (remoteParameters.getDigestAlgorithm() != null) {
+			parameters.setDigestAlgorithm(remoteParameters.getDigestAlgorithm());
+		}
+		if (remoteParameters.getEncryptionAlgorithm() != null) {
+			parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
+		}
+		if (remoteParameters.getReferenceDigestAlgorithm() != null) {
+			parameters.setReferenceDigestAlgorithm(remoteParameters.getReferenceDigestAlgorithm());
+		}
+
 		parameters.setSignatureLevel(remoteParameters.getSignatureLevel());
 		parameters.setSignaturePackaging(remoteParameters.getSignaturePackaging());
 		if (remoteParameters.getContentTimestamps() != null) {
@@ -217,17 +236,6 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 				remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType()));
 		parameters.setSignWithExpiredCertificate(remoteParameters.isSignWithExpiredCertificate()); // TODO : To be removed in DSS 6.2
 		parameters.setGenerateTBSWithoutCertificate(remoteParameters.isGenerateTBSWithoutCertificate());
-
-		RemoteCertificate signingCertificate = remoteParameters.getSigningCertificate();
-		if (signingCertificate != null) { // extends do not require signing certificate
-			CertificateToken certificateToken = RemoteCertificateConverter.toCertificateToken(signingCertificate);
-			parameters.setSigningCertificate(certificateToken);
-		}
-
-		List<RemoteCertificate> remoteCertificateChain = remoteParameters.getCertificateChain();
-		if (Utils.isCollectionNotEmpty(remoteCertificateChain)) {
-			parameters.setCertificateChain(RemoteCertificateConverter.toCertificateTokens(remoteCertificateChain));
-		}
 	}
 
 	/**

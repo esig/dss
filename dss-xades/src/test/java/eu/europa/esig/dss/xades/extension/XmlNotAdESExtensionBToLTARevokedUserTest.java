@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
@@ -72,6 +73,7 @@ public class XmlNotAdESExtensionBToLTARevokedUserTest extends AbstractXAdESTestE
         signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         signatureParameters.setGenerateTBSWithoutCertificate(true);
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
         return signatureParameters;
     }
 

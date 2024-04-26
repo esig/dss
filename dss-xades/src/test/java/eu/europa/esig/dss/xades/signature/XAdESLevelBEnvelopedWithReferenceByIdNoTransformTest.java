@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -62,15 +63,15 @@ public class XAdESLevelBEnvelopedWithReferenceByIdNoTransformTest extends Abstra
 		dssReferenceWholeDocument.setId("r-wholeDocument");
 		dssReferenceWholeDocument.setUri("");
 		dssReferenceWholeDocument.setContents(documentToSign);
-		dssReferenceWholeDocument.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
-		dssReferenceWholeDocument.setTransforms(Arrays.asList(new XPath2FilterEnvelopedSignatureTransform()));
+		dssReferenceWholeDocument.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
+		dssReferenceWholeDocument.setTransforms(Collections.singletonList(new XPath2FilterEnvelopedSignatureTransform()));
 		references.add(dssReferenceWholeDocument);
 		
 		DSSReference dssReferenceById = new DSSReference();
 		dssReferenceById.setId("r-byId");
 		dssReferenceById.setUri("#hello");
 		dssReferenceById.setContents(documentToSign);
-		dssReferenceById.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReferenceById.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		references.add(dssReferenceById);
 
 		signatureParameters.setReferences(references);

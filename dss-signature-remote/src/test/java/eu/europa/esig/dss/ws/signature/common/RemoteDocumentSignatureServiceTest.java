@@ -24,10 +24,11 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
@@ -64,7 +65,6 @@ import org.junit.jupiter.api.Test;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -139,11 +139,11 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		assertNotNull(signedDocument);
 
 		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
-		validate(iMD, RemoteDocumentConverter.toDSSDocuments(Arrays.asList(digestDocument)));
+		validate(iMD, RemoteDocumentConverter.toDSSDocuments(Collections.singletonList(digestDocument)));
 
 		RemoteSignatureParameters extensionParameters = new RemoteSignatureParameters();
 		extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		extensionParameters.setDetachedContents(Arrays.asList(digestDocument));
+		extensionParameters.setDetachedContents(Collections.singletonList(digestDocument));
 		Exception exception = assertThrows(IllegalArgumentException.class,
 				() -> signatureService.extendDocument(signedDocument, extensionParameters));
 		assertEquals("XAdES-LTA requires complete binaries of signed documents! Extension with a DigestDocument is not possible.", exception.getMessage());
@@ -172,14 +172,19 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		parameters.setDetachedContents(Arrays.asList(toSignDocument));
+		parameters.setDetachedContents(Collections.singletonList(toSignDocument));
+
+		RemoteTimestampParameters timestampParameters = new RemoteTimestampParameters();
+		timestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		parameters.setSignatureTimestampParameters(timestampParameters);
+		parameters.setArchiveTimestampParameters(timestampParameters);
 
 		RemoteDocument extendedDocument = signatureService.extendDocument(signedDocument, parameters);
 
 		assertNotNull(extendedDocument);
 
 		InMemoryDocument iMD = new InMemoryDocument(extendedDocument.getBytes());
-		validate(iMD, RemoteDocumentConverter.toDSSDocuments(Arrays.asList(toSignDocument)));
+		validate(iMD, RemoteDocumentConverter.toDSSDocuments(Collections.singletonList(toSignDocument)));
 	}
 
 	@Test
@@ -189,7 +194,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		parameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+		parameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileToSign), DigestAlgorithm.SHA256,
@@ -198,7 +203,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		ToBeSignedDTO dataToSign = signatureService.getDataToSign(toSignDocument, parameters);
 		assertNotNull(dataToSign);
 
-		SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, MaskGenerationFunction.MGF1, getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, getPrivateKeyEntry());
 		RemoteDocument signedDocument = signatureService.signDocument(toSignDocument, parameters,
 				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
 
@@ -206,14 +211,19 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		parameters.setDetachedContents(Arrays.asList(toSignDocument));
+		parameters.setDetachedContents(Collections.singletonList(toSignDocument));
+
+		RemoteTimestampParameters timestampParameters = new RemoteTimestampParameters();
+		timestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		parameters.setSignatureTimestampParameters(timestampParameters);
+		parameters.setArchiveTimestampParameters(timestampParameters);
 
 		RemoteDocument extendedDocument = signatureService.extendDocument(signedDocument, parameters);
 
 		assertNotNull(extendedDocument);
 
 		InMemoryDocument iMD = new InMemoryDocument(extendedDocument.getBytes());
-		validate(iMD, RemoteDocumentConverter.toDSSDocuments(Arrays.asList(toSignDocument)));
+		validate(iMD, RemoteDocumentConverter.toDSSDocuments(Collections.singletonList(toSignDocument)));
 	}
 	
 	@Test
@@ -364,7 +374,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		assertNotNull(signedDocument);
 		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
-		validate(iMD, Arrays.asList(fileToSign));
+		validate(iMD, Collections.singletonList(fileToSign));
 	}
 
 	@Test
@@ -444,7 +454,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
 
 		DiagnosticData diagnosticData = validate(new InMemoryDocument(signedDocument.getBytes()),
-				Arrays.asList(fileToSign));
+				Collections.singletonList(fileToSign));
 		assertEquals(1, diagnosticData.getAllSignatures().size());
 		assertEquals(0, diagnosticData.getAllCounterSignatures().size());
 
@@ -453,7 +463,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 		parameters.setSignatureIdToCounterSign(diagnosticData.getFirstSignatureId());
-		parameters.setDetachedContents(Arrays.asList(toSignDocument));
+		parameters.setDetachedContents(Collections.singletonList(toSignDocument));
 
 		ToBeSignedDTO dataToBeCounterSigned = signatureService.getDataToBeCounterSigned(signedDocument, parameters);
 		assertNotNull(dataToBeCounterSigned);
@@ -465,7 +475,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 
 		assertNotNull(counterSignedDocument);
 
-		diagnosticData = validate(new InMemoryDocument(counterSignedDocument.getBytes()), Arrays.asList(fileToSign));
+		diagnosticData = validate(new InMemoryDocument(counterSignedDocument.getBytes()), Collections.singletonList(fileToSign));
 		assertEquals(1, diagnosticData.getAllSignatures().size());
 		assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getAllSignatures().iterator().next().getId()));
 		assertEquals(1, diagnosticData.getAllCounterSignatures().size());

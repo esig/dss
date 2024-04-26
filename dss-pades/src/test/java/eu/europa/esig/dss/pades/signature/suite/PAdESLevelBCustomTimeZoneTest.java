@@ -108,8 +108,7 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
         signatureParameters.setSigningTimeZone(TimeZone.getTimeZone("GMT+3"));
 
         ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-                signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
@@ -135,8 +134,7 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
         PAdESSignatureParameters signatureParameters = getSignatureParameters();
 
         ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-                signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+0"));
         DSSDocument signedDocument = service.signDocument(getDocumentToSign(), signatureParameters, signatureValue);
@@ -157,8 +155,7 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
         signatureParameters.setSigningTimeZone(DEFAULT_TIME_ZONE);
 
         ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-                signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+0"));
         DSSDocument signedDocument = service.signDocument(getDocumentToSign(), signatureParameters, signatureValue);

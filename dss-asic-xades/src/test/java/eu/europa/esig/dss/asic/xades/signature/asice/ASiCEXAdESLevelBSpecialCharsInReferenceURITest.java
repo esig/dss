@@ -54,7 +54,7 @@ public class ASiCEXAdESLevelBSpecialCharsInReferenceURITest extends AbstractASiC
         dssReference.setId("r-" + signatureParameters.getDeterministicId());
         dssReference.setUri(documentToSign.getName());
         dssReference.setContents(documentToSign);
-        dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 
         signatureParameters.setReferences(Arrays.asList(dssReference));
 

@@ -100,7 +100,7 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * The DigestAlgorithm used to create a reference to a signing certificate,
 	 * namely 'x5t#256' for SHA256 or 'x5t#o' for other algorithms
 	 */
-	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA256;
+	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA512;
 	
 	/**
 	 * Defines a JWS signature type according to RFC 7515, 3. JSON Web Signature (JWS) Overview

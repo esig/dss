@@ -11,7 +11,6 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -41,9 +40,8 @@ public class ASiCECAdESWithPSSTest extends AbstractASiCECAdESTestSignature {
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
-        service = new ASiCWithCAdESService(getCertificateVerifierWithMGF1());
+        service = new ASiCWithCAdESService(getCertificateVerifierWithPSS());
         service.setTspSource(getPSSGoodTsa());
     }
 
@@ -63,25 +61,21 @@ public class ASiCECAdESWithPSSTest extends AbstractASiCECAdESTestSignature {
         Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
         for(SignatureWrapper wrapper: allSignatures) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
 
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
         for(CertificateWrapper wrapper: usedCertificates) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
 
         Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
         for(RevocationWrapper wrapper : allRevocationData) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
 
         List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
         for(TimestampWrapper wrapper : timestampList) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
     }
 

@@ -24,7 +24,6 @@ import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
@@ -56,7 +55,6 @@ public class DSS1419Sha3RsaMgf1Test extends AbstractCAdESTestValidation {
 
 		assertEquals(EncryptionAlgorithm.RSASSA_PSS, cades.getEncryptionAlgorithm());
 		assertEquals(DigestAlgorithm.SHA3_256, cades.getDigestAlgorithm());
-		assertEquals(MaskGenerationFunction.MGF1, cades.getMaskGenerationFunction());
 	}
 
 }

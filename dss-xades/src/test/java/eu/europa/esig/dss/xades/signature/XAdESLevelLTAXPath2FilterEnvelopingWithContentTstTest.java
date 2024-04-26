@@ -67,7 +67,7 @@ public class XAdESLevelLTAXPath2FilterEnvelopingWithContentTstTest extends Abstr
 		DSSReference dssReference = new DSSReference();
 		dssReference.setContents(documentToSign);
 		dssReference.setId("Canonicalization-Ref-Test");
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		dssReference.setUri("#document");
 		dssReference.setType(Reference.OBJECT_URI);
 		dssReference.setTransforms(Arrays.asList(new XPath2FilterTransform("//*[@Id='dss1']", "intersect")));

@@ -63,8 +63,8 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 	@Test
 	public void digestDocumentWithLTALevelTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.json");
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, 
-				Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, doc)), "sample");
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512,
+				Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA512, doc)), "sample");
 
 		JAdESService service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

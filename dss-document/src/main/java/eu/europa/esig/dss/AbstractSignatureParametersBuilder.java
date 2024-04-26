@@ -57,11 +57,6 @@ public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSign
 	 * The digest algorithm used to hash signed data on signing
 	 */
 	private DigestAlgorithm digestAlgorithm;
-
-	/**
-	 * The mask generation function used on signing
-	 */
-	private MaskGenerationFunction maskGenerationFunction;
 	
 	/**
 	 * BLevelParameters
@@ -122,9 +117,16 @@ public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSign
 	 *
 	 * @param maskGenerationFunction {@link MaskGenerationFunction}
 	 * @return this {@link AbstractSignatureParametersBuilder}
+	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} specifying correct algorithm
+	 *             (i.e. EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1)
 	 */
+	@Deprecated
 	public AbstractSignatureParametersBuilder setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		this.maskGenerationFunction = maskGenerationFunction;
+		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
+			setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+		} else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
+			setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+		}
 		return this;
 	}
 
@@ -160,9 +162,6 @@ public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSign
 		}
 		if (digestAlgorithm != null) {
 			signatureParameters.setDigestAlgorithm(digestAlgorithm);
-		}
-		if (maskGenerationFunction != null) {
-			signatureParameters.setMaskGenerationFunction(maskGenerationFunction);
 		}
 		return signatureParameters;
 	}

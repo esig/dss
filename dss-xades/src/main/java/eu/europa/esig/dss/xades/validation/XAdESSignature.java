@@ -344,12 +344,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	@Deprecated
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
-		if (signatureAlgorithm == null) {
-			return null;
+		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+			return MaskGenerationFunction.MGF1;
 		}
-		return signatureAlgorithm.getMaskGenerationFunction();
+		return null;
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class XAdESLevelLTDetachedDigestDocumentTest extends AbstractXAdESTestSig
     @BeforeEach
     public void init() throws Exception {
         DSSDocument originalDocument = new FileDocument("src/test/resources/sample.xml");
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA512, originalDocument.getDigestValue(DigestAlgorithm.SHA512));
 
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());

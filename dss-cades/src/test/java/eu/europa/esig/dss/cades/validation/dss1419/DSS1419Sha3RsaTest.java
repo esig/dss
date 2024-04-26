@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation.dss1419;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -36,6 +28,13 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.AdvancedSignature;
+
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class DSS1419Sha3RsaTest extends AbstractCAdESTestValidation {
 
@@ -58,7 +57,6 @@ public class DSS1419Sha3RsaTest extends AbstractCAdESTestValidation {
 
 		assertEquals(EncryptionAlgorithm.RSA, cades.getEncryptionAlgorithm());
 		assertEquals(DigestAlgorithm.SHA3_256, cades.getDigestAlgorithm());
-		assertNull(cades.getMaskGenerationFunction());
 	}
 	
 	@Override

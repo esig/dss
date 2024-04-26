@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -43,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @Tag("slow")
 public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignature {
 
@@ -55,7 +56,7 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 	private static Stream<Arguments> data() {
 		List<Arguments> args = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
-			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1);
+			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, digestAlgorithm);
 			if (signatureAlgorithm != null) {
 				args.add(Arguments.of(signatureAlgorithm));
 			}
@@ -75,7 +76,6 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		signatureParameters.setDigestAlgorithm(signatureAlgorithm.getDigestAlgorithm());
 		signatureParameters.setEncryptionAlgorithm(signatureAlgorithm.getEncryptionAlgorithm());
-		signatureParameters.setMaskGenerationFunction(signatureAlgorithm.getMaskGenerationFunction());
 
 		service = new CAdESService(getOfflineCertificateVerifier());
 
@@ -94,6 +94,7 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), originalDigest);
 
 		SignatureValue signatureValue = getToken().signDigest(digest, signatureParameters.getSignatureAlgorithm(), getPrivateKeyEntry());
+		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 

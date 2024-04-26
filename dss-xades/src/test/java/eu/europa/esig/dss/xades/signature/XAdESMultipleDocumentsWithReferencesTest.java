@@ -73,7 +73,7 @@ public class XAdESMultipleDocumentsWithReferencesTest extends AbstractXAdESMulti
 		DSSReference reference1 = new DSSReference();
 		reference1.setContents(firstDocument);
 		reference1.setId("REF-ID1");
-		reference1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference1.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference1.setUri("#document-1");
 		reference1.setType(Reference.OBJECT_URI);
 		DSSTransform transform1_one = new XPath2FilterTransform("//e4", "subtract");
@@ -84,7 +84,7 @@ public class XAdESMultipleDocumentsWithReferencesTest extends AbstractXAdESMulti
 		DSSReference reference2 = new DSSReference();
 		reference2.setContents(secondDocument);
 		reference2.setId("REF-ID2");
-		reference2.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference2.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference2.setUri("#document-2");
 		reference2.setType(Reference.OBJECT_URI);
 		DSSTransform transform2_one = new XPath2FilterTransform("//*[@id='data1']", "intersect");

@@ -98,7 +98,10 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * Returns the mask generation function
 	 * 
 	 * @return {@link MaskGenerationFunction}
+	 * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} method instead to differentiate
+	 *             between RSA (none MGF) and RSASSA_PSS (MGF1)
 	 */
+	@Deprecated
 	MaskGenerationFunction getMaskGenerationFunction();
 
 	/**

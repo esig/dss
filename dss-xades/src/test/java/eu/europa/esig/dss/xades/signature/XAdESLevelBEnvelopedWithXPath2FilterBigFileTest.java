@@ -67,7 +67,7 @@ public class XAdESLevelBEnvelopedWithXPath2FilterBigFileTest extends AbstractXAd
 		List<DSSReference> dssReferences = new ArrayList<>();
 		DSSReference reference = new DSSReference();
 		reference.setContents(documentToSign);
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference.setUri("");
 		List<DSSTransform> transforms1 = new ArrayList<>();
 		XPath2FilterEnvelopedSignatureTransform transform1 = new XPath2FilterEnvelopedSignatureTransform();

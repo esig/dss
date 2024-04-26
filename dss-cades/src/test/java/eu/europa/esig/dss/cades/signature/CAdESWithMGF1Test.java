@@ -8,7 +8,6 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,9 +36,9 @@ public class CAdESWithMGF1Test extends AbstractCAdESTestSignature {
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
-        service = new CAdESService(getCertificateVerifierWithMGF1());
+        service = new CAdESService(getCertificateVerifierWithPSS());
         service.setTspSource(getPSSGoodTsa());
     }
 
@@ -50,25 +49,21 @@ public class CAdESWithMGF1Test extends AbstractCAdESTestSignature {
         Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
         for (SignatureWrapper wrapper: allSignatures) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
 
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
         for (CertificateWrapper wrapper: usedCertificates) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
 
         Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
         for (RevocationWrapper wrapper : allRevocationData) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
 
         List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
         for (TimestampWrapper wrapper : timestampList) {
             assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
         }
     }
 

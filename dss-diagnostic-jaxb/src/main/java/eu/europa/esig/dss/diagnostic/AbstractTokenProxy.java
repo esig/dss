@@ -122,9 +122,8 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
 		DigestAlgorithm digestAlgorithm = getDigestAlgorithm();
-		MaskGenerationFunction maskGenerationFunction = getMaskGenerationFunction();
-		if (encryptionAlgorithm != null && digestAlgorithm != null) { // MGF can be null
-			return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+		if (encryptionAlgorithm != null && digestAlgorithm != null) {
+			return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		}
 		return null;
 	}
@@ -148,10 +147,14 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	}
 
 	@Override
+	@Deprecated
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		if (basicSignature != null) {
-			return basicSignature.getMaskGenerationFunctionUsedToSignThisToken();
+			EncryptionAlgorithm encryptionAlgorithm = basicSignature.getEncryptionAlgoUsedToSignThisToken();
+			if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+				return MaskGenerationFunction.MGF1;
+			}
 		}
 		return null;
 	}
@@ -252,7 +255,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	
 	/**
 	 * Checks if the certificate chain is trusted from a Trusted Store
-	 *
 	 * NOTE: Not from Trusted List!
 	 *
 	 * @return TRUE if a certificate chain is trusted from a trusted store, FALSE otherwise

@@ -213,7 +213,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 			// assertEquals(1, seqDigest.size());
 
 			ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier.getInstance(seqDigest.getObjectAt(0));
-			assertEquals(new ASN1ObjectIdentifier(DigestAlgorithm.SHA256.getOid()), oidDigestAlgo);
+			assertEquals(new ASN1ObjectIdentifier(DigestAlgorithm.SHA512.getOid()), oidDigestAlgo);
 
 			ASN1Sequence seqEncapsulatedInfo = ASN1Sequence.getInstance(seq.getObjectAt(2));
 			logger.info("ENCAPSULATED INFO : " + seqEncapsulatedInfo.toString());
@@ -228,7 +228,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 			assertEquals(HELLO_WORLD, content);
 			logger.info("CONTENT : " + content);
 
-			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, HELLO_WORLD.getBytes());
+			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, HELLO_WORLD.getBytes());
 			String encodeHexDigest = Hex.toHexString(digest);
 			logger.info("CONTENT DIGEST COMPUTED : " + encodeHexDigest);
 
@@ -273,7 +273,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 			logger.info("Decrypted Base64 : " + decryptedDigestEncodeBase64);
 
 			byte[] encoded = signedInfo.getAuthenticatedAttributes().getEncoded();
-			MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getName());
+			MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA512.getName());
 			byte[] digestOfAuthenticatedAttributes = messageDigest.digest(encoded);
 
 			String computedDigestEncodeBase64 = Utils.toBase64(digestOfAuthenticatedAttributes);

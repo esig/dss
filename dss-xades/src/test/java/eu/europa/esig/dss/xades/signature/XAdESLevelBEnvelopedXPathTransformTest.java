@@ -68,7 +68,7 @@ public class XAdESLevelBEnvelopedXPathTransformTest extends AbstractXAdESTestSig
 		dssReference.setId("DSS-REF-1");
 		dssReference.setUri("");
 		dssReference.setContents(documentToSign);
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		DSSTransform xPathTransform = new XPathTransform("ancestor-or-self::*[@Id='hello']");
 		CanonicalizationTransform canonicalizationTransform = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE);
 		dssReference.setTransforms(Arrays.asList(xPathTransform, canonicalizationTransform));

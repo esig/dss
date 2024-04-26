@@ -83,7 +83,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 		DSSDocument signedDocument = sign();
 		Reports reports = verify(signedDocument);
 		
-        byte[] expectedDigest = documentToSign.getDigestValue(DigestAlgorithm.SHA256);
+        byte[] expectedDigest = documentToSign.getDigestValue(DigestAlgorithm.SHA512);
 		
 		documentToSign = signedDocument;
 		user = EE_GOOD_USER;
@@ -110,7 +110,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 
 			XmlDigestMatcher xmlDigestMatcher = digestMatchers.get(0);
 			assertEquals(DigestMatcherType.MESSAGE_DIGEST, xmlDigestMatcher.getType());
-			assertEquals(DigestAlgorithm.SHA256, xmlDigestMatcher.getDigestMethod());
+			assertEquals(DigestAlgorithm.SHA512, xmlDigestMatcher.getDigestMethod());
 			assertArrayEquals(expectedDigest, xmlDigestMatcher.getDigestValue());
 		}
 

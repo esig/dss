@@ -97,8 +97,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
         signerDocument.setMimeType(MimeTypeEnum.HTML);
 
         ToBeSigned dataToSign = service.getDataToSign(asicContent, signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
         return service.signDocument(asicContent, signatureParameters, signatureValue);
     }

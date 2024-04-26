@@ -97,7 +97,7 @@ public class XAdESXPath2FilterDoubleSignatureTest extends PKIFactoryAccess {
 		DSSReference reference = new DSSReference();
 		reference.setContents(documentToSign);
 		reference.setId(id);
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference.setUri("");
 		List<DSSTransform> transforms1 = new ArrayList<>();
 		XPath2FilterEnvelopedSignatureTransform transform1 = new XPath2FilterEnvelopedSignatureTransform();

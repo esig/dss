@@ -62,7 +62,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		parametersSignatureValue.setPasswordProtection(correctProtectionPhrase);
 		parametersSignatureValue.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		
-		SignatureValue signatureValue = getToken().sign(dataToSign, parametersSignatureValue.getDigestAlgorithm(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, parametersSignatureValue.getSignatureAlgorithm(), getPrivateKeyEntry());
 
 		PAdESSignatureParameters parametersSign = getParameters();
 		parametersSign.bLevel().setSigningDate(date);
