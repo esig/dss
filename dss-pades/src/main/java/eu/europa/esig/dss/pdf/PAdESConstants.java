@@ -98,6 +98,14 @@ public final class PAdESConstants {
 	public static final String DOCUMENT_RESOURCES_NAME = "DR";
 	/** 'Extensions' */
 	public static final String EXTENSIONS_NAME = "Extensions";
+	/** 'BaseVersion' */
+	public static final String BASE_VERSION_NAME = "BaseVersion";
+	/** 'ExtensionLevel' */
+	public static final String EXTENSION_LEVEL_NAME = "ExtensionLevel";
+	/** 'ExtensionRevision' */
+	public static final String EXTENSION_REVISION_NAME = "ExtensionRevision";
+	/** 'URL' */
+	public static final String URL_NAME = "URL";
 	/** 'FieldMDP' */
 	public static final String FIELD_MDP_NAME = "FieldMDP";
 	/** 'Fields' */

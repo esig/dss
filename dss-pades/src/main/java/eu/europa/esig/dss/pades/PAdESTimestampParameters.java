@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -146,6 +147,12 @@ public class PAdESTimestampParameters extends CAdESTimestampParameters implement
 	 */
 	public void setAppName(String appName) {
 		this.appName = appName;
+	}
+
+	@Override
+	public EncryptionAlgorithm getEncryptionAlgorithm() {
+		// not implemented
+		return null;
 	}
 
 	@Override

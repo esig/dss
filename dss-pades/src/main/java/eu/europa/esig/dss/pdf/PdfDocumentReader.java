@@ -160,4 +160,40 @@ public interface PdfDocumentReader extends Closeable {
 	 */
 	PdfDict getCatalogDictionary();
 
+	/**
+	 * Returns version of the PDF document defined in the document's header.
+	 *
+	 * @return document version from file's header
+	 */
+	float getPdfHeaderVersion();
+
+	/**
+	 * Returns version of the PDF document. Returns version defined in the file header,
+	 * or catalog's /Version, when latest is present.
+	 *
+	 * @return document version
+	 */
+	float getVersion();
+
+	/**
+	 * Sets PDF version number, by upgrading /Catalog dictionary /Version parameter
+	 *
+	 * @param version value (e.g. 1.7)
+	 */
+	void setVersion(float version);
+
+	/**
+	 * Creates an empty {@code PdfDict}
+	 *
+	 * @return {@link PdfDict}
+	 */
+	PdfDict createPdfDict();
+
+	/**
+	 * Creates an empty {@code PdfArray}
+	 *
+	 * @return {@link PdfArray}
+	 */
+	PdfArray createPdfArray();
+
 }

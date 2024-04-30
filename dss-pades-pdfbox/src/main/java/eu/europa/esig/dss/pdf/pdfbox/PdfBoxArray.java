@@ -66,6 +66,16 @@ class PdfBoxArray implements PdfArray {
 	private final PdfObject parent;
 
 	/**
+	 * Constructor to create a new empty array
+	 *
+	 * @param document {@link PDDocument}
+	 */
+	public PdfBoxArray(final PDDocument document) {
+		this(new COSArray(), document);
+	}
+
+
+	/**
 	 * Default constructor
 	 *
 	 * @param wrapped {@link COSArray}
@@ -90,8 +100,8 @@ class PdfBoxArray implements PdfArray {
 	}
 
 	@Override
-	public PdfObject getValue() {
-		return this;
+	public COSArray getValue() {
+		return wrapped;
 	}
 
 	@Override
@@ -196,6 +206,20 @@ class PdfBoxArray implements PdfArray {
 			LOG.warn("Unable to process an entry on position '{}' of type '{}'.", i, dictionaryObject.getClass());
 		}
 		return null;
+	}
+
+	@Override
+	public void addObject(PdfObject pdfObject) {
+		Object value = pdfObject.getValue();
+		if (!(value instanceof COSBase)) {
+			throw new UnsupportedOperationException("The object to be added shall be of type COSBase!");
+		}
+		wrapped.add((COSBase) value);
+	}
+
+	@Override
+	public void setDirect(boolean direct) {
+		wrapped.setDirect(direct);
 	}
 
 	@Override

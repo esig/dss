@@ -66,6 +66,15 @@ class PdfBoxDict implements PdfDict {
 	private final PdfObject parent;
 
 	/**
+	 * Creates an empty dictionary
+	 *
+	 * @param document {@link PDDocument}
+	 */
+	public PdfBoxDict(final PDDocument document) {
+		this(new COSDictionary(), document);
+	}
+
+	/**
 	 * Default constructor
 	 *
 	 * @param wrapped {@link COSDictionary}
@@ -90,8 +99,8 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
-	public PdfObject getValue() {
-		return this;
+	public COSDictionary getValue() {
+		return wrapped;
 	}
 
 	@Override
@@ -240,6 +249,51 @@ class PdfBoxDict implements PdfDict {
 			}
 		}
 		return -1;
+	}
+
+	@Override
+	public void setPdfObjectValue(String key, PdfObject pdfObject) {
+		Object value = pdfObject.getValue();
+		if (!(value instanceof COSBase)) {
+			throw new UnsupportedOperationException("pdfObject argument shall be of COSBase type!");
+		}
+		wrapped.setItem(key, (COSBase) value);
+	}
+
+	@Override
+	public void setNameValue(String key, String value) {
+		wrapped.setName(key, value);
+	}
+
+	@Override
+	public void setStringValue(String key, String value) {
+		wrapped.setString(key, value);
+	}
+
+	@Override
+	public void setIntegerValue(String key, Integer value) {
+		wrapped.setInt(key, value);
+	}
+
+	@Override
+	public void setDirect(boolean direct) {
+		wrapped.setDirect(direct);
+	}
+
+	@Override
+	public boolean match(PdfDict pdfDict) {
+		if (!(pdfDict instanceof PdfBoxDict)) {
+			throw new UnsupportedOperationException("pdfDict argument shall be of PdfBoxDict type!");
+		}
+		PdfBoxDict pdfBoxDict = (PdfBoxDict) pdfDict;
+		for (COSName key : pdfBoxDict.wrapped.keySet()) {
+			COSBase targetObject = pdfBoxDict.wrapped.getDictionaryObject(key);
+			COSBase currentObject = wrapped.getDictionaryObject(key);
+			if (targetObject != null && !targetObject.equals(currentObject)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	@Override

@@ -89,4 +89,18 @@ public interface PdfArray extends PdfObject {
 	 */
 	PdfObject getObject(int i);
 
+	/**
+	 * Adds {@code pdfObject}
+	 *
+	 * @param pdfObject {@link PdfObject}
+	 */
+	void addObject(PdfObject pdfObject);
+
+	/**
+	 * Sets whether the array shall be written directly to its parent
+	 *
+	 * @param direct whether the array shall be written directly
+	 */
+	void setDirect(boolean direct);
+
 }

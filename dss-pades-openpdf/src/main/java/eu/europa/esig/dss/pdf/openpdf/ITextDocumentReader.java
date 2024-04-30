@@ -454,4 +454,49 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		}
 	}
 
+	@Override
+	public float getPdfHeaderVersion() {
+		// last char is returned, for instance for "1.x", the returned result is "x"
+		char pdfVersionLastChar = pdfReader.getPdfVersion();
+
+		float numVersion = 1 + Character.getNumericValue(pdfVersionLastChar) / 10f; // transform to "1 + 0.x = 1.x"
+		if (numVersion == 1) {
+			// OpenPdf returns 0 for PDF 2.0
+			++numVersion; // TODO : improve
+		}
+		return numVersion;
+	}
+
+	@Override
+	public float getVersion() {
+		float version = getPdfHeaderVersion();
+		PdfDictionary catalog = pdfReader.getCatalog();
+		try {
+			if (catalog != null) {
+				PdfName versionName = catalog.getAsName(PdfName.VERSION);
+				if (versionName != null) {
+					version = Float.parseFloat(PdfName.decodeName(versionName.toString()));
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn("An error occurred on catalog /Version extraction : {}", e.getMessage(), e);
+		}
+		return version;
+	}
+
+	@Override
+	public void setVersion(float version) {
+		pdfReader.getCatalog().put(PdfName.VERSION, new PdfName(PdfName.encodeName(Float.toString(version))));
+	}
+
+	@Override
+	public PdfDict createPdfDict() {
+		return new ITextPdfDict();
+	}
+
+	@Override
+	public eu.europa.esig.dss.pdf.PdfArray createPdfArray() {
+		return new ITextPdfArray();
+	}
+
 }

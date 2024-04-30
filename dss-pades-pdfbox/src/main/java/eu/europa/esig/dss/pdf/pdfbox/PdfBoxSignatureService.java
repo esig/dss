@@ -199,7 +199,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 		final PDSignature pdSignature = createSignatureDictionary(pdDocument, parameters);
 		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, fieldParameters);
-
 		if (pdSignatureField != null) {
 			setSignatureToField(pdDocument, pdSignatureField, pdSignature);
 		}
@@ -233,6 +232,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (pdDocument.getDocumentId() == null) {
 				pdDocument.setDocumentId(documentReader.generateDocumentId(parameters));
 			}
+			digitalSignatureEnhancement(documentReader, parameters);
+
 			checkEncryptedAndSaveIncrementally(pdDocument, outputStream, parameters);
 
 			return new DSSMessageDigest(digestAlgorithm, digest.digest());
@@ -473,7 +474,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
-			 PDDocument pdDocument = PDDocument.load(is, getPasswordString(pwd))) {
+			 PDDocument pdDocument = PDDocument.load(is, getPasswordString(pwd));
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(pdDocument)) {
 
 			if (!validationDataForInclusion.isEmpty()) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
@@ -481,6 +483,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						buildDSSDictionary(pdDocument, validationDataForInclusion, includeVRIDict));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
+			ensureESICDeveloperExtension1(documentReader);
 			
 			// encryption is not required (no signature/timestamp is added on the step)
 			saveDocumentIncrementally(pdDocument, os);
