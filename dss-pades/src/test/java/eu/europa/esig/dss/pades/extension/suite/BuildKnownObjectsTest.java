@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.extension.suite;
 
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -65,7 +66,8 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		DSSDocument dssDocument = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/dss-1696/Test.signed_Certipost-2048-SHA512.extended.pdf"));
 		PDFDocumentValidator validator = new PDFDocumentValidator(dssDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 
 		// <</Type /DSS
 		// /Certs [20 0 R 26 0 R 30 0 R] -> 20 30
@@ -79,9 +81,9 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		assertEquals(3, dssDictionary.getCERTs().size());
 		assertEquals(5, dssDictionary.getCRLs().size());
 
-		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert());
 		certificateVerifier.setAlertOnUncoveredPOE(new LogOnStatusAlert());
+		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 
 		CertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
