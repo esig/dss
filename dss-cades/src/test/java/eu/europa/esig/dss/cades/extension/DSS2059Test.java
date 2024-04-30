@@ -73,7 +73,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnInvalidTimestamp(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.WARN));
-		// certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
+		certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
 
 		certificateVerifier.setCrlSource(getCompositeCRLSource());
 
