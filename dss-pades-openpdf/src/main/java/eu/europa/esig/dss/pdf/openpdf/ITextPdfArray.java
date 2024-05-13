@@ -56,6 +56,13 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	private final PdfObject parent;
 
 	/**
+	 * Constructor to create a new empty array
+	 */
+	public ITextPdfArray() {
+		this(new PdfArray(), null);
+	}
+
+	/**
 	 * Default constructor
 	 *
 	 * @param wrapped {@link PdfArray}
@@ -77,8 +84,8 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	}
 
 	@Override
-	public PdfObject getValue() {
-		return this;
+	public PdfArray getValue() {
+		return wrapped;
 	}
 
 	@Override
@@ -166,6 +173,20 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 			LOG.warn("Unable to process an entry on position '{}' of type '{}'.", i, directObject.getClass());
 		}
 		return null;
+	}
+
+	@Override
+	public void addObject(PdfObject pdfObject) {
+		Object value = pdfObject.getValue();
+		if (!(value instanceof com.lowagie.text.pdf.PdfObject)) {
+			throw new UnsupportedOperationException("The object to be added shall be of type PdfObject!");
+		}
+		wrapped.add((com.lowagie.text.pdf.PdfObject) value);
+	}
+
+	@Override
+	public void setDirect(boolean direct) {
+		// not supported
 	}
 
 	@Override

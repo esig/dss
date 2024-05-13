@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
 
 import java.io.Serializable;
@@ -73,6 +74,13 @@ public interface PAdESCommonParameters extends Serializable {
 	 * @return {@link DigestAlgorithm}
 	 */
 	DigestAlgorithm getDigestAlgorithm();
+
+	/**
+	 * Returns a EncryptionAlgorithm to be used to hash the signed/timestamped data
+	 *
+	 * @return {@link EncryptionAlgorithm}
+	 */
+	EncryptionAlgorithm getEncryptionAlgorithm();
 	
 	/**
 	 * Returns a password used to encrypt a document

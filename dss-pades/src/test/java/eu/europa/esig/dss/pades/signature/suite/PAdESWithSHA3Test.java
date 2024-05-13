@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.signature.suite;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -33,8 +34,6 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -57,36 +56,33 @@ public class PAdESWithSHA3Test extends AbstractPAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
+		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA3_256);
 		
 		service = new PAdESService(getCertificateVerifierWithSHA3_256());
 		service.setTspSource(getSHA3GoodTsa());
 	}
 
 	@Override
-	protected void onDocumentSigned(byte[] byteArray) {
-		super.onDocumentSigned(byteArray);
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
 
-		InMemoryDocument doc = new InMemoryDocument(byteArray);
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		for (SignatureWrapper wrapper : signatures) {
+			assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
+		}
 
-		SignedDocumentValidator validator = getValidator(doc);
-
-		Reports reports = validator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		verifyDiagnosticData(diagnosticData);
-		
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
-		for(CertificateWrapper wrapper: usedCertificates) {
+		for (CertificateWrapper wrapper : usedCertificates) {
 			assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
 		}
-		
+
 		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
-		for(RevocationWrapper wrapper : allRevocationData) {
+		for (RevocationWrapper wrapper : allRevocationData) {
 			assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
 		}
-		
+
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		for(TimestampWrapper wrapper : timestampList) {
+		for (TimestampWrapper wrapper : timestampList) {
 			assertEquals(DigestAlgorithm.SHA3_256, wrapper.getDigestAlgorithm());
 		}
 	}

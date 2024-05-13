@@ -135,4 +135,53 @@ public interface PdfDict extends PdfObject {
 	 */
 	long getRawStreamSize() throws IOException;
 
+	/**
+	 * Sets the Dictionary {@code pdfObject} with the given {@code key}
+	 *
+	 * @param key {@link String}
+	 * @param pdfObject {@link PdfObject}
+	 */
+	void setPdfObjectValue(String key, PdfObject pdfObject);
+
+	/**
+	 * Sets the Name {@code value} with the given {@code key}
+	 *
+	 * @param key {@link String}
+	 * @param value {@link String}
+	 */
+	void setNameValue(String key, String value);
+
+	/**
+	 * Sets the String {@code value} with the given {@code key}
+	 *
+	 * @param key {@link String}
+	 * @param value {@link String}
+	 */
+	void setStringValue(String key, String value);
+
+	/**
+	 * Sets the Integer {@code value} with the given {@code key}
+	 *
+	 * @param key {@link String}
+	 * @param value {@link Integer}
+	 */
+	void setIntegerValue(String key, Integer value);
+
+	/**
+	 * Sets whether the object shall be written directly to its parent
+	 *
+	 * @param direct whether the object shall be written directly
+	 */
+	void setDirect(boolean direct);
+
+	/**
+	 * This method verifies if the content of the {@code pdfDict} matches
+	 * the corresponding attributes of the current dictionary.
+	 * NOTE: this method is different from {@code #equals}, as it does not ensure full equality.
+	 *
+	 * @param pdfDict {@link PdfDict} to compare
+	 * @return TRUE if the content of pdfDict matches, FALSE otherwise
+	 */
+	boolean match(PdfDict pdfDict);
+
 }

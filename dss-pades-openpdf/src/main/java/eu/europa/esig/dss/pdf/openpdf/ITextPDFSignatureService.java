@@ -163,6 +163,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		HashMap exc = new HashMap();
 		exc.put(PdfName.CONTENTS, csize * 2 + 2);
 
+		digitalSignatureEnhancement(documentReader, parameters);
 		sap.preClose(exc);
 
 		return stp;
@@ -346,7 +347,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
-			 PdfReader reader = new PdfReader(is, getPasswordBytes(pwd))) {
+			 PdfReader reader = new PdfReader(is, getPasswordBytes(pwd));
+			 ITextDocumentReader documentReader = new ITextDocumentReader(reader)) {
 
 			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			PdfWriter writer = stp.getWriter();
@@ -359,6 +361,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 				writer.addToBody(reader.getCatalog(), reader.getCatalog().getIndRef(), false);
 			}
+			ensureESICDeveloperExtension1(documentReader);
 
 			stp.close();
 

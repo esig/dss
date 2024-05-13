@@ -58,6 +58,13 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	private final PdfObject parent;
 
 	/**
+	 * Constructor to create a new empty dictionary
+	 */
+	public ITextPdfDict() {
+		this(new PdfDictionary(), null);
+	}
+
+	/**
 	 * Default constructor
 	 *
 	 * @param wrapped {@link PdfDictionary}
@@ -79,8 +86,8 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	}
 
 	@Override
-	public PdfObject getValue() {
-		return this;
+	public PdfDictionary getValue() {
+		return wrapped;
 	}
 
 	@Override
@@ -227,6 +234,52 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 			return streamBytesRaw.length;
 		}
 		return -1;
+	}
+
+	@Override
+	public void setPdfObjectValue(String key, PdfObject pdfObject) {
+		Object value = pdfObject.getValue();
+		if (!(value instanceof com.lowagie.text.pdf.PdfObject)) {
+			throw new UnsupportedOperationException("pdfObject argument shall be of PdfObject type!");
+		}
+		wrapped.put(new PdfName(key), (com.lowagie.text.pdf.PdfObject) value);
+	}
+
+	@Override
+	public void setNameValue(String key, String value) {
+		wrapped.put(new PdfName(key), new PdfName(value));
+	}
+
+	@Override
+	public void setStringValue(String key, String value) {
+		wrapped.put(new PdfName(key), new PdfString(value));
+	}
+
+	@Override
+	public void setIntegerValue(String key, Integer value) {
+		wrapped.put(new PdfName(key), new PdfNumber(value));
+	}
+
+	@Override
+	public void setDirect(boolean direct) {
+		// not supported
+	}
+
+	@Override
+	public boolean match(PdfDict pdfDict) {
+		if (!(pdfDict instanceof ITextPdfDict)) {
+			throw new UnsupportedOperationException("pdfDict argument shall be of ITextPdfDict type!");
+		}
+		ITextPdfDict iTextPdfDict = (ITextPdfDict) pdfDict;
+		for (PdfName key : iTextPdfDict.wrapped.getKeys()) {
+			com.lowagie.text.pdf.PdfObject targetObject = iTextPdfDict.wrapped.get(key);
+			com.lowagie.text.pdf.PdfObject currentObject = wrapped.get(key);
+			// TODO : equals not implemented for all ?
+			if (targetObject != null && !targetObject.equals(currentObject)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

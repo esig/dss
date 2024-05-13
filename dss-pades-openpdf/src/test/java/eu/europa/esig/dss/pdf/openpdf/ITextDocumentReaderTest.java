@@ -141,6 +141,44 @@ public class ITextDocumentReaderTest extends PKIFactoryAccess {
         }
     }
 
+    @Test
+    public void fileHeaderVersionTest() throws IOException {
+        DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+        assertEquals(1.4f, new ITextDocumentReader(dssDocument).getPdfHeaderVersion());
+        dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
+        assertEquals(1.7f, new ITextDocumentReader(dssDocument).getPdfHeaderVersion());
+        dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/pdf-2.0.pdf"));
+        assertEquals(2.0f, new ITextDocumentReader(dssDocument).getPdfHeaderVersion());
+        dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/muestra-firmado-firmado.pdf"));
+        assertEquals(1.4f, new ITextDocumentReader(dssDocument).getPdfHeaderVersion());
+    }
+
+    @Test
+    public void versionTest() throws IOException {
+        DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+        assertEquals(1.4f, new ITextDocumentReader(dssDocument).getVersion());
+        dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
+        assertEquals(1.7f, new ITextDocumentReader(dssDocument).getVersion());
+        dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/pdf-2.0.pdf"));
+        assertEquals(2.0f, new ITextDocumentReader(dssDocument).getVersion());
+        dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/muestra-firmado-firmado.pdf"));
+        assertEquals(2.0f, new ITextDocumentReader(dssDocument).getVersion());
+    }
+
+    @Test
+    public void setVersionTest() throws IOException {
+        DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
+
+        ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument);
+        assertEquals(1.4f, documentReader.getVersion());
+
+        documentReader.setVersion(1.7f);
+        assertEquals(1.7f, documentReader.getVersion());
+
+        documentReader.setVersion(2.0f);
+        assertEquals(2.0f, documentReader.getVersion());
+    }
+
     @Override
     protected String getSigningAlias() {
         return null;
