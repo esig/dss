@@ -35,7 +35,7 @@ public abstract class DSS2236ReplaceTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2236/replace.pdf"));
+		return new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2236/hide.pdf"));
 	}
 	
 	@Override
