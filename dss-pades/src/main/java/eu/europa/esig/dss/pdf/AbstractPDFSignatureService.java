@@ -442,6 +442,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 */
 	protected boolean isISO_32002(PAdESCommonParameters parameters) {
 		// TODO : add support of ECDSA elliptic curves
+		// Note: ISO 32002 mistakenly refers id-shake256 instead of id-shake256-len digest algorithm for Ed448 algorithm.
+		// See {@link https://github.com/pdf-association/pdf-issues/issues/404} for more information.
+		// However, the developer extension for id-shake256-len is not enforced in order to stay compliant with the current version of ISO 32002.
 		return (PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(parameters.getSubFilter()) ||
 				PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(parameters.getSubFilter()) ||
 				PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(parameters.getSubFilter())) &&
