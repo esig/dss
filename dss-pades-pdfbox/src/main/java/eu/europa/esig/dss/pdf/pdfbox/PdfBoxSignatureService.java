@@ -638,7 +638,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			for (PDSignatureField pdSignatureField : signatureFields) {
 				PDSignature signature = pdSignatureField.getSignature();
 				if (signature == null) {
-					result.add(pdSignatureField.getPartialName());
+					result.add(pdSignatureField.getFullyQualifiedName());
 				}
 			}
 		} catch (InvalidPasswordException e) {
