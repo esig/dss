@@ -55,6 +55,7 @@ import java.util.List;
 
 /**
  * A common implementation of {@code AdvancedSignature}
+ *
  */
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 

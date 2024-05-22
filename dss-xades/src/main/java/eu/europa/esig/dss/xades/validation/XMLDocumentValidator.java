@@ -138,7 +138,7 @@ public class XMLDocumentValidator extends SignedDocumentValidator {
 			xadesSignature.setContainerContents(containerContents);
 			xadesSignature.setSigningCertificateSource(signingCertificateSource);
 			xadesSignature.setDisableXSWProtection(disableXSWProtection);
-			xadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+			xadesSignature.initBaselineRequirementsChecker(certificateVerifier);
 			signatures.add(xadesSignature);
 		}
 		return signatures;

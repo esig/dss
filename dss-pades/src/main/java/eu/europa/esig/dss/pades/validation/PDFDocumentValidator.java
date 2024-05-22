@@ -216,7 +216,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
                     padesSignature.setDssOCSPSource(listOCSPSource);
 
                     if (certificateVerifier != null) {
-                        padesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+                        padesSignature.initBaselineRequirementsChecker(certificateVerifier);
                     }
 
                     signatures.add(padesSignature);

@@ -24,11 +24,11 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentDiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.NonASN1SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidatorLoader;
+import eu.europa.esig.dss.validation.reports.diagnostic.SignedDocumentDiagnosticDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

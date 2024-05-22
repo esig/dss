@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentDiagnosticDataBuilder;
+import eu.europa.esig.dss.validation.reports.diagnostic.SignedDocumentDiagnosticDataBuilder;
 
 /**
  * DiagnosticDataBuilder for a CMS signature

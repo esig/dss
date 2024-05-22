@@ -21,11 +21,11 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidatorFactory;
@@ -35,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -110,7 +109,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 				cadesSignature.setContainerContents(containerContents);
 				cadesSignature.setManifestFile(manifestFile);
 				cadesSignature.setSigningCertificateSource(signingCertificateSource);
-				cadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+				cadesSignature.initBaselineRequirementsChecker(certificateVerifier);
 				signatures.add(cadesSignature);
 			}
 		}
@@ -135,7 +134,7 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
 	public List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature) {
 		final CAdESSignature cadesSignature = (CAdESSignature) advancedSignature;
 		try {
-			return Arrays.asList(cadesSignature.getOriginalDocument());
+			return Collections.singletonList(cadesSignature.getOriginalDocument());
 		} catch (DSSException e) {
 			LOG.error("Cannot retrieve a list of original documents");
 			return Collections.emptyList();

@@ -5,7 +5,7 @@
 		<artifactId>sd-dss</artifactId>
 		<version>6.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>validation-policy</artifactId>
+	<artifactId>dss-validation</artifactId>
 
 	<properties>
 		<module-name>jpms_dss_validation_policy</module-name>
