@@ -30,6 +30,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
+import eu.europa.esig.dss.model.timedependent.BaseTimeDependent;
+import eu.europa.esig.dss.model.timedependent.MutableTimeDependentValues;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import org.junit.jupiter.api.Test;
 
 

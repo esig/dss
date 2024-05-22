@@ -34,8 +34,8 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Arrays;

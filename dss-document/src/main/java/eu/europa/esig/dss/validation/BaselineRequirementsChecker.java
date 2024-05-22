@@ -21,7 +21,12 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;

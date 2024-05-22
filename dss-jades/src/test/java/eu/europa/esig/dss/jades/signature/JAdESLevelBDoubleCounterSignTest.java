@@ -40,7 +40,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 public class JAdESLevelBDoubleCounterSignTest extends AbstractJAdESCounterSignatureTest {
 

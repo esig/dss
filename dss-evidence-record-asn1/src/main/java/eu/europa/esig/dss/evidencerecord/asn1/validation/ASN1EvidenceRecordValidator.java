@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;

@@ -30,7 +30,7 @@ import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;

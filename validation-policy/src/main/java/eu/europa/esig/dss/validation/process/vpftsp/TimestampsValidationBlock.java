@@ -33,7 +33,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.validation.executor.ValidationLevel;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.validation.process.qualification.timestamp.TimestampQualificationBlock;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpftspwatsp.ValidationProcessForTimestampsWithArchivalData;

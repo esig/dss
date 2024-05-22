@@ -34,7 +34,7 @@ import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 public class PAdESSignatureDigestReferenceTest extends AbstractPAdESTestValidation {
 

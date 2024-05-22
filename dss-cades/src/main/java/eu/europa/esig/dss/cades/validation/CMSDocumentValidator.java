@@ -21,15 +21,14 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidatorFactory;
-import eu.europa.esig.dss.validation.scope.SignatureScopeFinder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;

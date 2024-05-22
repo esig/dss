@@ -33,7 +33,7 @@ import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 

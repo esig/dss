@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.scope.SignatureScope;
@@ -44,10 +44,10 @@ import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
 
 import java.util.ArrayList;
 import java.util.Collection;

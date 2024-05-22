@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.tsl.sync;
 
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
 
 /**
  * Defines a behaviour for a trusted certificate source synchronization

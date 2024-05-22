@@ -13,10 +13,10 @@
 	
 	<dependencies>
 		<dependency>
-            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-utils</artifactId>
-        </dependency>
-		
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-spi</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-policy-jaxb</artifactId>

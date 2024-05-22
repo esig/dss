@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.xades.validation;
 import eu.europa.esig.dss.asic.common.SecureContainerHandlerBuilder;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;

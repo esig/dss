@@ -33,7 +33,7 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESProfileParameters;

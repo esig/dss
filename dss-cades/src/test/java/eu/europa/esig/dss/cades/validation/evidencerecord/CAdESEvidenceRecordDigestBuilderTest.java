@@ -2,7 +2,7 @@ package eu.europa.esig.dss.cades.validation.evidencerecord;
 
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -11,7 +11,6 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERSet;

@@ -48,14 +48,15 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommitmentTypeIndication;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
 import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.SignatureDigestReference;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
+import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.EnforcedResolverFragment;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
@@ -895,8 +896,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected XAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
-		return new XAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
+	protected XAdESBaselineRequirementsChecker createBaselineRequirementsChecker(CertificateVerifier certificateVerifier) {
+		return new XAdESBaselineRequirementsChecker(this, certificateVerifier);
 	}
 
 	@Override

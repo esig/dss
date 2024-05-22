@@ -33,7 +33,7 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

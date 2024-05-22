@@ -42,6 +42,7 @@ import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeUnit;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;

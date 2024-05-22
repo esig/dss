@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.jades.validation;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import org.junit.jupiter.api.Test;

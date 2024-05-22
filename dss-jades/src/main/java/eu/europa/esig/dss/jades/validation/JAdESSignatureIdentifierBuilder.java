@@ -22,7 +22,7 @@ package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 /**
  * The DSS identifier for a JAdES signature

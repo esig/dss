@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation.policy;
 
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidationResult;
+import eu.europa.esig.dss.model.signature.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.xades.validation.XAdESSignaturePolicy;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import eu.europa.esig.dss.validation.policy.AbstractSignaturePolicyValidator;
 
 import java.io.IOException;

@@ -43,7 +43,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
+import eu.europa.esig.dss.spi.validation.timestamp.DetachedTimestampValidator;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;

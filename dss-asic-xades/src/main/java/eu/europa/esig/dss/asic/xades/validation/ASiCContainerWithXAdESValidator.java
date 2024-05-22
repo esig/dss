@@ -35,7 +35,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;

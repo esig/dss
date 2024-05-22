@@ -24,7 +24,7 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfTemplate;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.visible.DSSFontMetrics;

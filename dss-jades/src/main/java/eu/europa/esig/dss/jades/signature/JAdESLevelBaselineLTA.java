@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -38,10 +38,10 @@ import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import org.jose4j.json.internal.json_simple.JSONArray;
 
 import java.util.Collections;

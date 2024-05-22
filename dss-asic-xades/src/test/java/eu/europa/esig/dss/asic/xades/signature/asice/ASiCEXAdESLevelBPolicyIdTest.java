@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.signature.SignaturePolicyProvider;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 public class ASiCEXAdESLevelBPolicyIdTest extends AbstractASiCEXAdESTestSignature {

@@ -26,7 +26,7 @@ import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
 import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;

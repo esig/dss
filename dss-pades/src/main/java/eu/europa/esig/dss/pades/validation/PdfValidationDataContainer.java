@@ -29,7 +29,7 @@ import eu.europa.esig.dss.pades.validation.dss.PdfDssDictOCSPSource;
 import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 
 import java.util.Collection;
 import java.util.HashMap;

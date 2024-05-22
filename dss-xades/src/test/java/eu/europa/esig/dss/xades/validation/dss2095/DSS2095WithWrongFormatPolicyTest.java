@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.signature.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;

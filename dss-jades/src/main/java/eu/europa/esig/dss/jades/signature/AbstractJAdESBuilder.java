@@ -26,7 +26,7 @@ import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

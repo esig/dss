@@ -36,7 +36,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;

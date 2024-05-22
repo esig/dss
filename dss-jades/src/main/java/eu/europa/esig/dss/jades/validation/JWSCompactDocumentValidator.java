@@ -21,14 +21,14 @@
 package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 import java.util.Collections;
 import java.util.List;

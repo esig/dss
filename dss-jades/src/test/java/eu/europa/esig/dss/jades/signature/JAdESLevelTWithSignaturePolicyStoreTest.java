@@ -42,7 +42,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;

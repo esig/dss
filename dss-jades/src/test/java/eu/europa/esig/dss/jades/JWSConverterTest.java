@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;

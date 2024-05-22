@@ -15,7 +15,7 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.params.ParameterizedTest;

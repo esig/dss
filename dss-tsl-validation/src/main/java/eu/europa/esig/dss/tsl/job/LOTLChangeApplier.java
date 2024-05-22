@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.tsl.job;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.access.TLChangesCacheAccess;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;

@@ -36,6 +36,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.xades.definition.xades141.XAdES141Attribute;

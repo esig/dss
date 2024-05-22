@@ -55,7 +55,7 @@ import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

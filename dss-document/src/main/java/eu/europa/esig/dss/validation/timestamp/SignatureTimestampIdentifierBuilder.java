@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampIdentifierBuilder;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignatureAttribute;
 import org.bouncycastle.tsp.TimeStampToken;
 

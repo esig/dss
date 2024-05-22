@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import org.w3c.dom.Element;
 
 import java.util.Collections;

@@ -32,7 +32,7 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateRepor
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;

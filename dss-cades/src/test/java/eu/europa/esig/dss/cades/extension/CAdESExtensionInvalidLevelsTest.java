@@ -27,7 +27,7 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

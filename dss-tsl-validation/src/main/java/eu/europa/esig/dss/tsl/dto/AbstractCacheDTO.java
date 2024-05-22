@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
-import eu.europa.esig.dss.spi.tsl.InfoRecord;
+import eu.europa.esig.dss.model.tsl.InfoRecord;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 
 import java.util.Date;

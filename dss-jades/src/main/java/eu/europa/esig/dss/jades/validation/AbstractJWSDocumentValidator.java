@@ -23,7 +23,7 @@ package eu.europa.esig.dss.jades.validation;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentDiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;

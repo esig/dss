@@ -34,7 +34,7 @@ import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class DSS1469LTTest extends AbstractPAdESTestValidation {

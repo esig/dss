@@ -24,24 +24,30 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.model.signature.SignaturePolicyValidationResult;
+import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.model.scope.SignatureScope;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.timestamp.TimestampSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,8 +59,6 @@ import java.util.List;
 public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	private static final long serialVersionUID = 6452189007886779360L;
-
-	private static final Logger LOG = LoggerFactory.getLogger(DefaultAdvancedSignature.class);
 
 	/**
 	 * In case of a detached signature this is the signed document.
@@ -87,11 +91,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * A list of error messages occurred during a structure validation
 	 */
 	protected List<String> structureValidationMessages;
-
-	/**
-	 * The offline copy of a CertificateVerifier
-	 */
-	protected CertificateVerifier offlineCertificateVerifier;
 
 	/**
 	 * The certificate source of a signing certificate
@@ -132,6 +131,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * The SignaturePolicy identifier
 	 */
 	protected SignaturePolicy signaturePolicy;
+
+	/**
+	 * The validation result of the signature policy's identifier
+	 */
+	private SignaturePolicyValidationResult signaturePolicyValidationResult;
 
 	/**
 	 * A list of found {@code SignatureScope}s
@@ -337,15 +341,17 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	public void prepareOfflineCertificateVerifier(final CertificateVerifier certificateVerifier) {
-		offlineCertificateVerifier = new CertificateVerifierBuilder(certificateVerifier).buildOfflineAndSilentCopy();
+	public void initBaselineRequirementsChecker(CertificateVerifier certificateVerifier) {
+		CertificateVerifier offlineCertificateVerifier =
+				new CertificateVerifierBuilder(certificateVerifier).buildOfflineAndSilentCopy();
+		this.baselineRequirementsChecker = createBaselineRequirementsChecker(offlineCertificateVerifier);
 	}
 
 	/**
 	 * Returns an unmodifiable list of all certificate tokens encapsulated in the
 	 * signature
 	 * 
-	 * @see eu.europa.esig.dss.validation.AdvancedSignature#getCertificates()
+	 * @see AdvancedSignature#getCertificates()
 	 */
 	@Override
 	public List<CertificateToken> getCertificates() {
@@ -523,6 +529,20 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 */
 	protected abstract SignaturePolicy buildSignaturePolicy();
 
+	@Override
+	public SignaturePolicyValidationResult getSignaturePolicyValidationResult() {
+		return signaturePolicyValidationResult;
+	}
+
+	/**
+	 * Sets the signature policy's validation result
+	 *
+	 * @param signaturePolicyValidationResult {@link SignaturePolicyValidationResult}
+	 */
+	public void setSignaturePolicyValidationResult(SignaturePolicyValidationResult signaturePolicyValidationResult) {
+		this.signaturePolicyValidationResult = signaturePolicyValidationResult;
+	}
+
 	/**
 	 * Returns a cached instance of the {@code BaselineRequirementsChecker}
 	 *
@@ -531,7 +551,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@SuppressWarnings("rawtypes")
 	protected BaselineRequirementsChecker getBaselineRequirementsChecker() {
 		if (baselineRequirementsChecker == null) {
-			baselineRequirementsChecker = createBaselineRequirementsChecker();
+			throw new IllegalStateException("Please call #initBaselineRequirementsChecker method before!");
 		}
 		return baselineRequirementsChecker;
 	}
@@ -539,10 +559,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * Instantiates a {@code BaselineRequirementsChecker} according to the signature format
 	 *
+	 * @param certificateVerifier {@link CertificateVerifier} to be used
 	 * @return {@link BaselineRequirementsChecker}
 	 */
 	@SuppressWarnings("rawtypes")
-	protected abstract BaselineRequirementsChecker createBaselineRequirementsChecker();
+	protected abstract BaselineRequirementsChecker createBaselineRequirementsChecker(CertificateVerifier certificateVerifier);
 
 	@Override
 	public boolean hasBProfile() {

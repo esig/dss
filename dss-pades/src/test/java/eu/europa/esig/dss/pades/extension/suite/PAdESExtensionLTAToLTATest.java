@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pades.extension.suite;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 

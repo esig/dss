@@ -26,7 +26,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 
 /**
  * PAdES Baseline LTA signature

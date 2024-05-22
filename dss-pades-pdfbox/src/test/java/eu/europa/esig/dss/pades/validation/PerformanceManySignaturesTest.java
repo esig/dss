@@ -28,7 +28,7 @@ import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.junit.jupiter.api.Test;
 

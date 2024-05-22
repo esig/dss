@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.model.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import org.junit.jupiter.api.Test;

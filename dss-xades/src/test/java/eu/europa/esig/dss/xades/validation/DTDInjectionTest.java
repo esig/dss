@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;

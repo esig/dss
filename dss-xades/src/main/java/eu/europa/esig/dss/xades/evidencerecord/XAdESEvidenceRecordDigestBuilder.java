@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.xades.evidencerecord;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
@@ -9,7 +9,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.evidencerecord.AbstractSignatureEvidenceRecordDigestBuilder;
 import eu.europa.esig.dss.validation.evidencerecord.ByteArrayComparator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;

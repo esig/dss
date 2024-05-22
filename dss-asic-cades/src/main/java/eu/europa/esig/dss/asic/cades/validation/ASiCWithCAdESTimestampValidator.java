@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
+import eu.europa.esig.dss.spi.validation.timestamp.DetachedTimestampValidator;
 
 import java.util.List;
 

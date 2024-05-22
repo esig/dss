@@ -66,7 +66,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
 import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;

@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

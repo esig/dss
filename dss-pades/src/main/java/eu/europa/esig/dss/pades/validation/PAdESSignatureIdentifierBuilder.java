@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 /**
  * Builds a signature identifier for a PAdES signature

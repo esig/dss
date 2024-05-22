@@ -31,7 +31,7 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;

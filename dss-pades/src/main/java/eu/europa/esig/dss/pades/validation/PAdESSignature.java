@@ -42,10 +42,11 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignatureDigestReference;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
 import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
@@ -306,8 +307,8 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	protected PAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
-		return new PAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
+	protected PAdESBaselineRequirementsChecker createBaselineRequirementsChecker(CertificateVerifier certificateVerifier) {
+		return new PAdESBaselineRequirementsChecker(this, certificateVerifier);
 	}
 
 	/**

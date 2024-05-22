@@ -2,9 +2,9 @@ package eu.europa.esig.dss.pades.signature;
 
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.status.SignatureStatus;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.status.SignatureStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

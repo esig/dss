@@ -126,6 +126,7 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;

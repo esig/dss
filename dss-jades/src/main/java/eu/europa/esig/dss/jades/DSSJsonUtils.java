@@ -22,7 +22,7 @@ package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
 import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
@@ -40,7 +40,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.jades.JAdESUtils;
 import org.bouncycastle.asn1.x509.IssuerSerial;

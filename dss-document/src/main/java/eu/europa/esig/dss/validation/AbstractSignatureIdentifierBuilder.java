@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.utils.Utils;
 

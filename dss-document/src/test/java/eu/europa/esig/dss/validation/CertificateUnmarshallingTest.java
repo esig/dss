@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.module.jakarta.xmlbind.JakartaXmlBindAnnotationIntrospector;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import jakarta.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 

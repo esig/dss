@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.status;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.status.RevocationFreshnessStatus;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

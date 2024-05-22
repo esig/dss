@@ -23,6 +23,7 @@ package eu.europa.esig.dss.validation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import eu.europa.esig.dss.model.OidRepository;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.CertificatePolicy;

@@ -32,7 +32,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 

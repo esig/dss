@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidatorFactory;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;

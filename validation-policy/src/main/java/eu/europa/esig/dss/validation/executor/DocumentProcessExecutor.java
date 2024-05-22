@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 /**

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.tsl.runnable;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformat
 import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformationType;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampIdentifierBuilder;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;

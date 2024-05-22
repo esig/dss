@@ -32,7 +32,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

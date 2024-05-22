@@ -26,7 +26,7 @@ import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.DocumentValidator;

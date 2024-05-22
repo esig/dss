@@ -30,8 +30,8 @@ import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 
 import java.util.List;
 

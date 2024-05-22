@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.tsl.function.converter;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.MRA;
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.MRA;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.mra.MutualRecognitionAgreementInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.AdditionalInformationType;

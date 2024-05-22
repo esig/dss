@@ -24,9 +24,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.pdfa.PDFAStructureValidator;
 import eu.europa.esig.dss.pdfa.PDFAValidationResult;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.DiagnosticDataBuilder;
-import eu.europa.esig.dss.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.List;

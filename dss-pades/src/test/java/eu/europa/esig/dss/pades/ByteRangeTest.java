@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import org.junit.jupiter.api.Test;
 

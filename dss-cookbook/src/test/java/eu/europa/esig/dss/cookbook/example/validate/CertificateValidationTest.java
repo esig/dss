@@ -27,8 +27,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 

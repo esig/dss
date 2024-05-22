@@ -33,7 +33,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;

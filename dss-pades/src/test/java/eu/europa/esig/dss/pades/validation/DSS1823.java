@@ -41,7 +41,7 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.ExternalResourcesCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 

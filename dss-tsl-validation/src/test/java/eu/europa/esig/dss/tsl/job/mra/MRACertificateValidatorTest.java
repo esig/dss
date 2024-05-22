@@ -27,13 +27,13 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.model.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 

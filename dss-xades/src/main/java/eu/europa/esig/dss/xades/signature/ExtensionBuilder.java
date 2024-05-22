@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;

@@ -46,7 +46,7 @@ import eu.europa.esig.dss.pdf.modifications.PdfModification;
 import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModifications;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.math.BigInteger;
