@@ -49,9 +49,6 @@ public class XmlPolicyBuilder {
 	/** The {@code SignaturePolicy} to incorporate into the DiagnosticData */
 	private final SignaturePolicy signaturePolicy;
 
-	/** The result of a signature policy validation */
-	private final SignaturePolicyValidationResult validationResult;
-
 	/** The found SignaturePolicyStore from a signature */
 	private SignaturePolicyStore signaturePolicyStore;
 	
@@ -59,13 +56,10 @@ public class XmlPolicyBuilder {
 	 * The default constructor
 	 * 
 	 * @param signaturePolicy {@link SignaturePolicy} to build {@code XmlPolicy} from
-	 * @param validationResult {@link SignaturePolicyValidationResult} the output of signature policy validation
 	 */
-	public XmlPolicyBuilder(final SignaturePolicy signaturePolicy, final SignaturePolicyValidationResult validationResult) {
+	public XmlPolicyBuilder(final SignaturePolicy signaturePolicy) {
 		Objects.requireNonNull(signaturePolicy, "SignaturePolicy cannot be null!");
-		Objects.requireNonNull(validationResult, "The result of a signature policy validation cannot be null!");
 		this.signaturePolicy = signaturePolicy;
-		this.validationResult = validationResult;
 	}
 
 	/**
@@ -119,6 +113,8 @@ public class XmlPolicyBuilder {
 			xmlPolicy.setTransformations(transformsDescription);
 		}
 
+		final SignaturePolicyValidationResult validationResult = signaturePolicy.getValidationResult();
+
 		XmlPolicyDigestAlgoAndValue xmlPolicyDigestAlgoAndValue = new XmlPolicyDigestAlgoAndValue();
 		if (signaturePolicy.isZeroHash()) {
 			xmlPolicyDigestAlgoAndValue.setZeroHash(signaturePolicy.isZeroHash());
@@ -165,6 +161,7 @@ public class XmlPolicyBuilder {
 		}
 		DSSDocument signaturePolicyContent = signaturePolicyStore.getSignaturePolicyContent();
 		if (signaturePolicyContent != null) {
+			final SignaturePolicyValidationResult validationResult = signaturePolicy.getValidationResult();
 			Digest recalculatedDigest = validationResult.getDigest();
 			if (recalculatedDigest != null) {
 				xmlSignaturePolicyStore.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(recalculatedDigest));

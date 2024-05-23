@@ -504,6 +504,9 @@ public class RevocationDataVerifier {
                         revocationSkipCertificateExtensions)) {
             return true;
         }
+        if (Utils.isCollectionEmpty(revocationSkipCertificatePolicies)) {
+            return false;
+        }
         CertificatePolicies certificatePolicies = certificateExtensions.getCertificatePolicies();
         if (certificatePolicies != null && Utils.isCollectionNotEmpty(certificatePolicies.getPolicyList()) &&
                 Utils.containsAny(certificatePolicies.getPolicyList().stream().map(CertificatePolicy::getOid).collect(Collectors.toSet()),

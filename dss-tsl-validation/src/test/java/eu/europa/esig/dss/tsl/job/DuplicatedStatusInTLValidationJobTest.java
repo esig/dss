@@ -30,7 +30,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.model.tsl.TrustProperties;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.model.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.validation.CertificateValidator;

@@ -73,8 +73,8 @@ public class XAdES132OnlyTest {
 
 		// tag::trustAnchors[]
 		// import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-		// import eu.europa.esig.dss.validation.CertificateVerifier;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 		// Initialize document validator

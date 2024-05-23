@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
-import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
+import eu.europa.esig.dss.spi.signature.identifier.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 /**

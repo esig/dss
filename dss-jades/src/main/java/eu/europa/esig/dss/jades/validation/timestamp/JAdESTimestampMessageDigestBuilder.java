@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
+import eu.europa.esig.dss.spi.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.jose4j.json.internal.json_simple.JSONValue;
 import org.slf4j.Logger;

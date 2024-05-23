@@ -28,11 +28,11 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.spi.validation.timestamp.DetachedTimestampValidator;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimestampValidationTest {
 
@@ -40,7 +40,7 @@ public class TimestampValidationTest {
 	public void test() {
 		DSSDocument document = new FileDocument("src/test/resources/validation/d-trust.tsr");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
-		assertTrue(validator instanceof DetachedTimestampValidator);
+        assertInstanceOf(DetachedTimestampValidator.class, validator);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 		Reports reports = validator.validateDocument();
 		assertNotNull(reports);

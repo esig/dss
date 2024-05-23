@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.signature.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;

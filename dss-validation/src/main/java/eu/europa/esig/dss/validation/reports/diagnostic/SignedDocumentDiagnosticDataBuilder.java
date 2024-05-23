@@ -683,9 +683,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private XmlPolicyBuilder getPolicyBuilder(AdvancedSignature signature) {
 		SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
 		SignaturePolicyStore signaturePolicyStore = signature.getSignaturePolicyStore();
-        SignaturePolicyValidationResult validationResult = signature.getSignaturePolicyValidationResult();
 
-        XmlPolicyBuilder xmlPolicyBuilder = new XmlPolicyBuilder(signaturePolicy, validationResult);
+        XmlPolicyBuilder xmlPolicyBuilder = new XmlPolicyBuilder(signaturePolicy);
 		xmlPolicyBuilder.setSignaturePolicyStore(signaturePolicyStore);
 		return xmlPolicyBuilder;
 	}

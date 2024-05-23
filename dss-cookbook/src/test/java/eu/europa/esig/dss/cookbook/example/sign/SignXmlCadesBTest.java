@@ -67,7 +67,7 @@ public class SignXmlCadesBTest extends CookbookTools {
 			// import eu.europa.esig.dss.model.DSSDocument;
 			// import eu.europa.esig.dss.model.SignatureValue;
 			// import eu.europa.esig.dss.model.ToBeSigned;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
 			// Preparing parameters for the CAdES signature
 			CAdESSignatureParameters parameters = new CAdESSignatureParameters();

@@ -96,7 +96,7 @@ The `CommonTrustedCertificateSource` is a certificate source for trusted certifi
 
 This class and its sub-classes are used to extract and collect certificates from signatures / timestamps. It also has methods to retrieve certificates / certificate references by their origin (e.g. SigningCertificate attribute, DSS Dictionary, etc.).
 
-* `eu.europa.esig.dss.model.tsl.TrustedListsCertificateSource`
+* `eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource`
 
 Certificates coming from the list of Trusted Lists. This class inherits of `CommonTrustedCertificateSource` and  gives the mechanism to define the set of trusted certificates (trust anchors). They are used in the validation process to decide if the prospective certificate chain has a trust anchor. See section <<tlValidationJob>> to get more information about trusted lists loading (e.g. EU Trusted List).
 
@@ -694,7 +694,7 @@ The signature policy document can be retrieved from the signature itself when a 
 
 The interface `SignaturePolicyValidator` is used to validate a signature policy reference extracted from a signature. The choice of the implementation is format-specific. The following implementations are provided:
 
-* `BasicASNSignaturePolicyValidator`: validates ASN.1 signature policies;
+* `BasicASN1SignaturePolicyValidator`: validates ASN.1 signature policies;
 * `XMLSignaturePolicyValidator`: validates XML signature policies supporting transformations;
 * `NonASN1SignaturePolicyValidator`: validates a policy by digest computed on an original file's content;
 * `ZeroHashSignaturePolicyValidator`: validates a policy if "zero hash" value is defined in a signature (see <<R02>>);

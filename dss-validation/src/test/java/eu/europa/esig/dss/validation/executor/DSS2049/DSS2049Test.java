@@ -120,7 +120,7 @@ public class DSS2049Test extends AbstractTestValidationExecutor {
 	
 	private XmlDiagnosticData getDiagnosticData(boolean isLOTLWellSigned, boolean isSigTLWellSigned, boolean isTstTLWellSigned) throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/DSS-2049/dss2049-diag-data.xml"));
+				new File("src/test/resources/diag-data/DSS-2049/dss2049-diag-data.xml"));
 		assertNotNull(diagnosticData);
 		
 		List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();

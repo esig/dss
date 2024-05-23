@@ -27,6 +27,11 @@
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-xml-utils</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-validation</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>org.junit.platform</groupId>

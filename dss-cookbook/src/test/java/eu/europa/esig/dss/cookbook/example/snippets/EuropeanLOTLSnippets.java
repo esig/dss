@@ -28,7 +28,7 @@ import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.model.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
@@ -91,7 +91,7 @@ public class EuropeanLOTLSnippets {
 	// import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
 	// import eu.europa.esig.dss.tsl.source.LOTLSource;
 	// import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
-	// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+	// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 	// import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 	// import eu.europa.esig.dss.validation.SignedDocumentValidator;
 	// import java.io.File;

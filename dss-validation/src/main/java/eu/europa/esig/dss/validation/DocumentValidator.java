@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.signature.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.spi.x509.CertificateSource;

@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.validation.executor;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -37,12 +28,20 @@ import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DSS1566Test extends AbstractTestValidationExecutor {
 	
 	@Test
 	public void test() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/dss1566-diagnostic.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/dss1566-diagnostic.xml"));
 
 		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setValidationPolicy(loadDefaultPolicy());

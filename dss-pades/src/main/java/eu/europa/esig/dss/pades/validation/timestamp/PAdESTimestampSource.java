@@ -40,8 +40,8 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.validation.timestamp.TimestampMessageDigestBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;

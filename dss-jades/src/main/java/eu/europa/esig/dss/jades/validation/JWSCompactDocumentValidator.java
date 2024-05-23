@@ -74,6 +74,7 @@ public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 		jadesSignature.setSigningCertificateSource(signingCertificateSource);
 		jadesSignature.setDetachedContents(detachedContents);
 		jadesSignature.initBaselineRequirementsChecker(certificateVerifier);
+		validateSignaturePolicy(jadesSignature);
 		return Collections.singletonList(jadesSignature);
 	}
 

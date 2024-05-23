@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.scope.SignatureScope;
@@ -38,16 +37,17 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.spi.validation.ValidationContext;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -121,6 +121,12 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
         List<PdfDocDssRevision> dssRevisions = getDssRevisions();
         prepareDssDictionaryValidationContext(validationContext, dssRevisions);
         return validationContext;
+    }
+
+    @Override
+    protected PAdESDiagnosticDataBuilder createDiagnosticDataBuilder(ValidationContext validationContext,
+            List<AdvancedSignature> signatures, List<EvidenceRecord> detachedEvidenceRecords) {
+        return (PAdESDiagnosticDataBuilder) super.createDiagnosticDataBuilder(validationContext, signatures, detachedEvidenceRecords);
     }
 
     @Override
@@ -218,6 +224,7 @@ public class PDFDocumentValidator extends SignedDocumentValidator {
                     if (certificateVerifier != null) {
                         padesSignature.initBaselineRequirementsChecker(certificateVerifier);
                     }
+                    validateSignaturePolicy(padesSignature);
 
                     signatures.add(padesSignature);
 

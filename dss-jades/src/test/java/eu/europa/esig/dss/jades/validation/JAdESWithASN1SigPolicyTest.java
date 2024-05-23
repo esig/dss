@@ -25,7 +25,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.jades.validation;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
+import eu.europa.esig.dss.spi.signature.BaselineRequirementsChecker;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;

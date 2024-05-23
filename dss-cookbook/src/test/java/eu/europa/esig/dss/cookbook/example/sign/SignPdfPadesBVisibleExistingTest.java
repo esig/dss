@@ -78,7 +78,7 @@ public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 			// import eu.europa.esig.dss.pades.SignatureImageParameters;
 			// import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 			// import eu.europa.esig.dss.pades.signature.PAdESService;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
 			// Preparing parameters for the PAdES signature
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();

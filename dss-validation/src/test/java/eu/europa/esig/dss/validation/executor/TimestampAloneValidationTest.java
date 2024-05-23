@@ -68,7 +68,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 	@Test
 	public void qtsa() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamp-validation/qtsa.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/qtsa.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -89,7 +89,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 	@Test
 	public void tsa() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamp-validation/tsa.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/tsa.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -110,7 +110,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 	@Test
 	public void expiredTsa() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamp-validation/expired-tsa.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/expired-tsa.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -131,7 +131,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	@Test
 	public void expiredTsaAndHashFailure() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
-				.unmarshall(new File("src/test/resources/timestamp-validation/expired-tsa-and-hash-failure.xml"));
+				.unmarshall(new File("src/test/resources/diag-data/timestamp-validation/expired-tsa-and-hash-failure.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -151,7 +151,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 	@Test
 	public void na() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamp-validation/na.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/na.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -172,7 +172,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 	@Test
 	public void sigAndTst() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamp-validation/sig-and-tst.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/sig-and-tst.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -195,7 +195,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 
 	@Test
 	public void sigAndTst2() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/timestamp-validation/sig-and-tst2.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/sig-and-tst2.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -218,7 +218,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	@Test
 	public void diffResultQualAtGenTimeTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/timestamp-validation/tsa-diff-qual-at-gen-time.xml"));
+				new File("src/test/resources/diag-data/timestamp-validation/tsa-diff-qual-at-gen-time.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -301,7 +301,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	@Test
 	public void diffResultQualAtPoeTimeTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/timestamp-validation/tsa-diff-qual-at-poe-time.xml"));
+				new File("src/test/resources/diag-data/timestamp-validation/tsa-diff-qual-at-poe-time.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -385,7 +385,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	@Test
 	public void twoTstPastValidationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/timestamp-validation/two-tst-past-val.xml"));
+				new File("src/test/resources/diag-data/timestamp-validation/two-tst-past-val.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -492,7 +492,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	@Test
 	public void twoTstTimestampOnlyValidationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/timestamp-validation/two-tst-past-val.xml"));
+				new File("src/test/resources/diag-data/timestamp-validation/two-tst-past-val.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -565,7 +565,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	@Test
 	public void twoTstsBasicValidationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/timestamp-validation/two-tst-past-val.xml"));
+				new File("src/test/resources/diag-data/timestamp-validation/two-tst-past-val.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -591,7 +591,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	@Test
 	public void tstWithErValidationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/timestamp-validation/tst-and-er.xml"));
+				new File("src/test/resources/diag-data/timestamp-validation/tst-and-er.xml"));
 		assertNotNull(diagnosticData);
 
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -668,7 +668,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	@Test
 	public void tstWithErValidationInvalidTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/timestamp-validation/tst-and-er.xml"));
+				new File("src/test/resources/diag-data/timestamp-validation/tst-and-er.xml"));
 		assertNotNull(diagnosticData);
 
 		eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord xmlEvidenceRecord = diagnosticData.getEvidenceRecords().get(0);

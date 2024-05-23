@@ -43,9 +43,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ExecuteDifferentPoliciesTest {
 
 	public static Stream<Arguments> data() throws Exception {
-		File folderPolicy = new File("src/test/resources/policy");
+		File folderPolicy = new File("src/test/resources/diag-data/policy");
 		File[] policyFiles = folderPolicy.listFiles();
-		File folderDiagnosticData = new File("src/test/resources");
+		File folderDiagnosticData = new File("src/test/resources/diag-data");
 		File[] diagDataFiles = folderDiagnosticData.listFiles();
 		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File diagData : diagDataFiles) {

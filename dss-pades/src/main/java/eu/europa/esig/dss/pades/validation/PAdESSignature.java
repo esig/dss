@@ -47,7 +47,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.model.signature.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.Arrays;

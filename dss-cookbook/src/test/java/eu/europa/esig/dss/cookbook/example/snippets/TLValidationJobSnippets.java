@@ -34,7 +34,7 @@ import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.model.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
@@ -82,8 +82,8 @@ public class TLValidationJobSnippets {
 	public void sample() throws IOException {
 
 		// tag::multi-trusted-certificate-sources[]
-		// import eu.europa.esig.dss.validation.CertificateVerifier;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
 		CertificateVerifier cv = new CommonCertificateVerifier();
 		cv.setTrustedCertSources(trustStoreSource(), trustedListSource());

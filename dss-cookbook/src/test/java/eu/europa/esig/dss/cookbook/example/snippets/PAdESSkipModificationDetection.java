@@ -44,7 +44,7 @@ public class PAdESSkipModificationDetection {
         // import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
         // import eu.europa.esig.dss.pdf.modifications.DefaultPdfDifferencesFinder;
         // import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
-        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
         // Initialize validator
         PDFDocumentValidator validator = new PDFDocumentValidator(signedDocument);

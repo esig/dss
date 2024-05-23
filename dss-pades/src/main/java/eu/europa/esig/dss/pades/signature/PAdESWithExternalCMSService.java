@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.FileNameBuilder;
+import eu.europa.esig.dss.signature.FileNameBuilder;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;

@@ -22,10 +22,9 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureAttribute;
-import eu.europa.esig.dss.validation.SignatureAttributeIdentifier;
+import eu.europa.esig.dss.spi.validation.SignatureAttribute;
+import eu.europa.esig.dss.spi.validation.identifier.SignatureAttributeIdentifier;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;

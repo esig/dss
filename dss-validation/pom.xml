@@ -8,7 +8,7 @@
 	<artifactId>dss-validation</artifactId>
 
 	<properties>
-		<module-name>jpms_dss_validation_policy</module-name>
+		<module-name>jpms_dss_validation</module-name>
 	</properties>
 	
 	<dependencies>
@@ -88,6 +88,17 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-utils-google-guava</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Choose your implementation -->
+		<!-- 		<dependency> -->
+		<!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->
+		<!-- 			<artifactId>dss-crl-parser-x509crl</artifactId> -->
+		<!-- 			<scope>test</scope> -->
+		<!-- 		</dependency> -->
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-crl-parser-stream</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

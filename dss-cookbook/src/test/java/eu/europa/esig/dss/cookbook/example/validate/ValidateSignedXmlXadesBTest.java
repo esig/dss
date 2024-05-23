@@ -64,8 +64,8 @@ public class ValidateSignedXmlXadesBTest {
 		// import eu.europa.esig.dss.simplereport.SimpleReport;
 		// import eu.europa.esig.dss.spi.x509.CertificateSource;
 		// import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-		// import eu.europa.esig.dss.validation.CertificateVerifier;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
 		// import eu.europa.esig.dss.validation.reports.Reports;

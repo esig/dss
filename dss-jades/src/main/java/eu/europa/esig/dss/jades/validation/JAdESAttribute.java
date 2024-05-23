@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import eu.europa.esig.dss.validation.SignatureAttribute;
+import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 
 import java.util.Objects;
 

@@ -35,6 +35,7 @@ import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
 import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
+import eu.europa.esig.dss.validation.RevocationDataVerifierFactory;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.slf4j.event.Level;
 
@@ -57,8 +58,8 @@ public class CertificateVerifierSnippet {
         // import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
         // import eu.europa.esig.dss.alert.LogOnStatusAlert;
         // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-        // import eu.europa.esig.dss.validation.CertificateVerifier;
-        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
         // import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
         // import eu.europa.esig.dss.validation.RevocationDataVerifier;
         // import org.slf4j.event.Level;
@@ -195,6 +196,7 @@ public class CertificateVerifierSnippet {
         // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
         // import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
         // import eu.europa.esig.dss.validation.RevocationDataVerifier;
+        // import eu.europa.esig.dss.validation.RevocationDataVerifierFactory;
         // import java.util.Arrays;
         // import java.util.HashMap;
         // import java.util.Map;
@@ -202,14 +204,15 @@ public class CertificateVerifierSnippet {
         // The following method is used to create a RevocationDataVerifier synchronized with a default validation policy
         revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
 
-        // It is also possible to instantiate a RevocationDataVerifier from a custom validation policy
-        revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicy(validationPolicy);
-
-        // A validation time can be also defined to enforce verification of specific cryptographic algorithms at the given time
-        revocationDataVerifier = RevocationDataVerifier.createRevocationDataVerifierFromPolicyWithTime(validationPolicy, validationTime);
-
         // This method created a RevocationDataVerifier with en empty configuration. All configuration shall be provided manually.
         revocationDataVerifier = RevocationDataVerifier.createEmptyRevocationDataVerifier();
+
+        // It is also possible to instantiate a RevocationDataVerifier from a custom validation policy
+        // Please use a RevocationDataVerifierFactory class for that
+        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
+
+        // A validation time can be also defined to enforce verification of specific cryptographic algorithms at the given time
+        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).setValidationTime(validationTime).create();
 
         // For customization directly in RevocationDataVerifier, the following methods may be used:
 

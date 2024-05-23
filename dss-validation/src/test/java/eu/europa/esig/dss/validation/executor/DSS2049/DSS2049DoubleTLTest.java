@@ -117,7 +117,7 @@ public class DSS2049DoubleTLTest extends AbstractTestValidationExecutor {
 	
 	private XmlDiagnosticData getDiagnosticData(boolean isLOTLWellSigned, boolean czTLWellSigned, boolean skTLWellSigned) throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-				new File("src/test/resources/DSS-2049/dss2049-doubleTL.xml"));
+				new File("src/test/resources/diag-data/DSS-2049/dss2049-doubleTL.xml"));
 		assertNotNull(diagnosticData);
 		
 		List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.AbstractSignatureParametersBuilder;
+import eu.europa.esig.dss.signature.AbstractSignatureParametersBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MaskGenerationFunction;

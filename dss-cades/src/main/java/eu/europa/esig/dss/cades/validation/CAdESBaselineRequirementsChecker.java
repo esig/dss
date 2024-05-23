@@ -34,7 +34,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
+import eu.europa.esig.dss.spi.signature.BaselineRequirementsChecker;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;

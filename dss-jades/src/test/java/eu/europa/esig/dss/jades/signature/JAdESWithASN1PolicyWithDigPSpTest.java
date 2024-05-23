@@ -36,8 +36,8 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.model.signature.SignaturePolicy;
-import eu.europa.esig.dss.spi.signature.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
+import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.policy.BasicASN1SignaturePolicyValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -72,7 +72,7 @@ public class JAdESWithASN1PolicyWithDigPSpTest extends AbstractJAdESTestSignatur
         signaturePolicy.setSpuri(HTTP_SPURI_TEST);
         signaturePolicy.setHashAsInTechnicalSpecification(true);
 
-        BasicASNSignaturePolicyValidator asnSignaturePolicyValidator = new BasicASNSignaturePolicyValidator();
+        BasicASN1SignaturePolicyValidator asnSignaturePolicyValidator = new BasicASN1SignaturePolicyValidator();
         Digest digest = asnSignaturePolicyValidator.getComputedDigest(POLICY_CONTENT, DigestAlgorithm.SHA256);
         signaturePolicy.setDigestAlgorithm(digest.getAlgorithm());
         signaturePolicy.setDigestValue(digest.getValue());

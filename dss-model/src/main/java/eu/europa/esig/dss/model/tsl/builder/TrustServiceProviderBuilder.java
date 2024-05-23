@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.model.tsl.builder;
 
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.model.tsl.TrustService;
 import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.util.TimeDependentValues;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -255,7 +254,7 @@ public class TrustServiceProviderBuilder {
 	
 	private <T extends Object> List<T> getUnmodifiableList(List<T> originalList) {
 		List<T> newList = new ArrayList<>();
-		if (Utils.isCollectionNotEmpty(originalList)) {
+		if (originalList != null && !originalList.isEmpty()) {
 			newList.addAll(originalList);
 		}
 		return Collections.unmodifiableList(newList);
@@ -263,7 +262,7 @@ public class TrustServiceProviderBuilder {
 	
 	private <T extends Object, K extends Object> Map<T, K> getUnmodifiableMap(Map<T, K> originalMap) {
 		Map<T, K> newMap = new HashMap<>();
-		if (Utils.isMapNotEmpty(originalMap)) {
+		if (originalMap != null && !originalMap.isEmpty()) {
 			newMap.putAll(originalMap);
 		}
 		return Collections.unmodifiableMap(newMap);
@@ -271,7 +270,7 @@ public class TrustServiceProviderBuilder {
 	
 	private Map<String, List<String>> getUnmodifiableMapWithLists(Map<String, List<String>> originalMap) {
 		Map<String, List<String>> copyMap = new HashMap<>();
-		if (Utils.isMapNotEmpty(originalMap)) {
+		if (originalMap != null && !originalMap.isEmpty()) {
 			for (Map.Entry<String, List<String>> mapEntry : originalMap.entrySet()) {
 				copyMap.put(mapEntry.getKey(), Collections.unmodifiableList(mapEntry.getValue()));
 			}
@@ -281,7 +280,7 @@ public class TrustServiceProviderBuilder {
 	
 	private List<TrustService> getUnmodifiableTrustServices(List<TrustService> originalTrustServices) {
 		List<TrustService> copyTrustServices = new ArrayList<>();
-		if (Utils.isCollectionNotEmpty(originalTrustServices)) {
+		if (originalTrustServices != null && !originalTrustServices.isEmpty()) {
 			for (TrustService trustService : originalTrustServices) {
 				TrustService.TrustServiceBuilder trustServiceBuilder = new TrustService.TrustServiceBuilder();
 				TrustService copyTrustService = trustServiceBuilder.setCertificates(getUnmodifiableList(trustService.getCertificates()))

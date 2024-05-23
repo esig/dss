@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.model.tsl;
 
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.util.TimeDependentValues;
 
 import java.io.Serializable;
 import java.util.List;

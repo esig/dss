@@ -78,7 +78,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			// import eu.europa.esig.dss.model.SignatureValue;
 			// import eu.europa.esig.dss.model.SignerLocation;
 			// import eu.europa.esig.dss.model.ToBeSigned;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 			// import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 			// import eu.europa.esig.dss.xades.signature.XAdESService;

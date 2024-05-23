@@ -82,6 +82,11 @@ public class SignaturePolicy implements Serializable {
 	private SpDocSpecification docSpecification;
 
 	/**
+	 * Validation result of the current signature policy
+	 */
+	private SignaturePolicyValidationResult validationResult;
+
+	/**
 	 * The default constructor for SignaturePolicy. It represents the implied policy.
 	 */
 	public SignaturePolicy() {
@@ -279,6 +284,25 @@ public class SignaturePolicy implements Serializable {
 	 */
 	public void setDocSpecification(SpDocSpecification docSpecification) {
 		this.docSpecification = docSpecification;
+	}
+
+
+	/**
+	 * Gets validation result of the signature policy
+	 *
+	 * @return {@link SignaturePolicyValidationResult}
+	 */
+	public SignaturePolicyValidationResult getValidationResult() {
+		return validationResult;
+	}
+
+	/**
+	 * Sets the signature policy's validation result
+	 *
+	 * @param validationResult {@link SignaturePolicyValidationResult}
+	 */
+	public void setValidationResult(SignaturePolicyValidationResult validationResult) {
+		this.validationResult = validationResult;
 	}
 
 }

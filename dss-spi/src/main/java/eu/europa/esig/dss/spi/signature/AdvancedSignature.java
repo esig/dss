@@ -37,7 +37,6 @@ import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
 import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
 import eu.europa.esig.dss.model.signature.SignatureDigestReference;
 import eu.europa.esig.dss.model.signature.SignaturePolicy;
-import eu.europa.esig.dss.model.signature.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
 import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -308,13 +307,6 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * @return {@code SignaturePolicyStore}
 	 */
 	SignaturePolicyStore getSignaturePolicyStore();
-
-	/**
-	 * Gets the signature policy's validation result
-	 *
-	 * @return {@link SignaturePolicyValidationResult}
-	 */
-	SignaturePolicyValidationResult getSignaturePolicyValidationResult();
 
 	/**
 	 * Returns information about the place where the signature was generated

@@ -44,7 +44,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.signature.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
 import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
@@ -829,6 +829,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 										   final AdvancedSignature signature) {
 		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
 			counterSignature.initBaselineRequirementsChecker(certificateVerifier);
+			validateSignaturePolicy(counterSignature);
 			allSignatureList.add(counterSignature);
 			
 			appendCounterSignatures(allSignatureList, counterSignature);
@@ -1141,17 +1142,19 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * This method is used to perform validation of the signature policy's identifier, when present
 	 *
 	 * @param signature {@link AdvancedSignature}, which policy will be verified
-	 * @return {@link SignaturePolicyValidationResult} when signature policy identifier is present, null otherwise
 	 */
-	protected SignaturePolicyValidationResult validateSignaturePolicy(AdvancedSignature signature) {
+	protected void validateSignaturePolicy(AdvancedSignature signature) {
 		SignaturePolicy signaturePolicy = signature.getSignaturePolicy();
-		SignaturePolicyStore signaturePolicyStore = signature.getSignaturePolicyStore();
+		if (signaturePolicy != null) {
+			SignaturePolicyStore signaturePolicyStore = signature.getSignaturePolicyStore();
+			DSSDocument policyContent = extractSignaturePolicyContent(signaturePolicy, signaturePolicyStore);
+			signaturePolicy.setPolicyContent(policyContent);
 
-		DSSDocument policyContent = extractSignaturePolicyContent(signaturePolicy, signaturePolicyStore);
-		signaturePolicy.setPolicyContent(policyContent);
+			SignaturePolicyValidator signaturePolicyValidator = getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
 
-		SignaturePolicyValidator signaturePolicyValidator = getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
-		return signaturePolicyValidator.validate(signaturePolicy);
+			SignaturePolicyValidationResult validationResult = signaturePolicyValidator.validate(signaturePolicy);
+			signaturePolicy.setValidationResult(validationResult);
+		}
 	}
 
 	private DSSDocument extractSignaturePolicyContent(SignaturePolicy signaturePolicy, SignaturePolicyStore signaturePolicyStore) {

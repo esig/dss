@@ -40,7 +40,7 @@ public class RevocationDataVerifierFactory {
     private final ValidationPolicy validationPolicy;
 
     /** The used validation time */
-    private Date validationTime = new Date();
+    private Date validationTime;
 
     /**
      * Default constructor
@@ -49,6 +49,18 @@ public class RevocationDataVerifierFactory {
      */
     public RevocationDataVerifierFactory(final ValidationPolicy validationPolicy) {
         this.validationPolicy = validationPolicy;
+    }
+
+    /**
+     * Gets validation time. Instantiates value to the current time, if not provided explicitly.
+     *
+     * @return {@link Date}
+     */
+    protected Date getValidationTime() {
+        if (validationTime == null) {
+            validationTime = new Date();
+        }
+        return validationTime;
     }
 
     /**
@@ -69,21 +81,22 @@ public class RevocationDataVerifierFactory {
      */
     public RevocationDataVerifier create() {
         final RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createEmptyRevocationDataVerifier();
-        instantiateCryptographicConstraints(revocationDataVerifier, validationPolicy, validationTime);
+        instantiateCryptographicConstraints(revocationDataVerifier, validationPolicy);
         instantiateRevocationSkipConstraints(revocationDataVerifier, validationPolicy);
         instantiateRevocationFreshnessConstraints(revocationDataVerifier, validationPolicy);
         return revocationDataVerifier;
     }
 
     private void instantiateCryptographicConstraints(final RevocationDataVerifier revocationDataVerifier,
-                                                            ValidationPolicy validationPolicy, Date validationTime) {
+                                                     ValidationPolicy validationPolicy) {
         List<DigestAlgorithm> acceptableDigestAlgorithms;
         Map<EncryptionAlgorithm, Integer> acceptableEncryptionAlgorithms;
 
         final CryptographicConstraintWrapper constraint = getRevocationCryptographicConstraints(validationPolicy);
         if (constraint != null && Level.FAIL.equals(constraint.getLevel())) {
-            acceptableDigestAlgorithms = constraint.getReliableDigestAlgorithmsAtTime(validationTime);
-            acceptableEncryptionAlgorithms = constraint.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(validationTime);
+            Date currentTime = getValidationTime();
+            acceptableDigestAlgorithms = constraint.getReliableDigestAlgorithmsAtTime(currentTime);
+            acceptableEncryptionAlgorithms = constraint.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(currentTime);
         } else {
             LOG.info("No enforced cryptographic constraints have been found in the provided validation policy. Accept all cryptographic algorithms.");
             acceptableDigestAlgorithms = Arrays.asList(DigestAlgorithm.values());

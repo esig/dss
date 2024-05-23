@@ -24,6 +24,11 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-xades</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation</artifactId>
+			<optional>true</optional>
+		</dependency>
 		
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

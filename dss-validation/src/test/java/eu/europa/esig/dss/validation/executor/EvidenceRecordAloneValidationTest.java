@@ -90,7 +90,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void validERTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -238,7 +238,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void brokenTstERTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         diagnosticData.getUsedTimestamps().get(1).getBasicSignature().setSignatureIntact(false);
@@ -415,7 +415,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void dataObjectRefNotFoundTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         diagnosticData.getEvidenceRecords().get(0).getDigestMatchers().get(0).setDataFound(false);
@@ -565,7 +565,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void invalidDataObjectRefTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         diagnosticData.getEvidenceRecords().get(0).getDigestMatchers().get(0).setDataIntact(false);
@@ -716,7 +716,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void validERWithExpiredCryptoTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
@@ -965,7 +965,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void invalidERWithExpiredCryptoTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
@@ -1225,7 +1225,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void erWithPartialDetachedDataWarnLevelTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
@@ -1394,7 +1394,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void erWithPartialDetachedDataFailLevelTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
@@ -1567,7 +1567,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void erNoneOfTheProvidedObjectsFoundFailLevelTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
@@ -1743,7 +1743,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void originalDocNotCoveredByHashtreeRenewalTstTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         List<XmlDigestMatcher> digestMatchers = diagnosticData.getUsedTimestamps().get(1).getDigestMatchers();
@@ -1949,7 +1949,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void originalDocNotCoveredByHashtreeRenewalTstWarnLevelTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         List<XmlDigestMatcher> digestMatchers = diagnosticData.getUsedTimestamps().get(1).getDigestMatchers();
@@ -2147,7 +2147,7 @@ public class EvidenceRecordAloneValidationTest extends AbstractTestValidationExe
 
     @Test
     public void wrongHashByHashtreeRenewalTstTest() throws Exception {
-        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/er-validation/er-valid.xml"));
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
         assertNotNull(diagnosticData);
 
         List<XmlDigestMatcher> digestMatchers = diagnosticData.getUsedTimestamps().get(1).getDigestMatchers();

@@ -74,7 +74,7 @@ public class SignProtectedPdfPadesBLevelTest extends CookbookTools {
 
             // tag::validate[]
             // import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
             // import eu.europa.esig.dss.validation.reports.Reports;
 
             // Prepare DocumentValidator

@@ -93,6 +93,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
 			jadesSignature.setSigningCertificateSource(signingCertificateSource);
 			jadesSignature.setDetachedContents(detachedContents);
 			jadesSignature.initBaselineRequirementsChecker(certificateVerifier);
+			validateSignaturePolicy(jadesSignature);
 			signatures.add(jadesSignature);
 		}
 		return signatures;

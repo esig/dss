@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;

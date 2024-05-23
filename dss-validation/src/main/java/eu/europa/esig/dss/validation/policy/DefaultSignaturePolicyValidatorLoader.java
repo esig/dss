@@ -81,7 +81,7 @@ public class DefaultSignaturePolicyValidatorLoader implements SignaturePolicyVal
             }
             if (validator == null) {
                 // if not empty and no other implementation is found for ASN1 signature policies
-                validator = new BasicASNSignaturePolicyValidator();
+                validator = new BasicASN1SignaturePolicyValidator();
             }
         }
         return validator;

@@ -41,41 +41,41 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	@Test
 	public void signingCertificateWrongCryptographicConstrainsTest() throws Exception {
 		
-		initializeExecutor("src/test/resources/universign.xml");
-		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
-		
+		initializeExecutor("src/test/resources/diag-data/universign.xml");
+		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
+
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		setValidationPolicy(constraintsParameters);
 		SimpleReport simpleReport = createSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		
+
 		CertificateConstraints signingCertificateConstraints = getSigningCertificateConstraints(constraintsParameters);
 		CryptographicConstraint signingCertCryptographicConstraint = signingCertificateConstraints.getCryptographic();
 		List<Algo> listEncryptionAlgo = signingCertCryptographicConstraint.getAcceptableDigestAlgo().getAlgos();
 		removeAlgo(listEncryptionAlgo, ALGORITHM_SHA256, 0);
-		
+
 		signingCertificateConstraints.setCryptographic(signingCertCryptographicConstraint);
 		setSigningCertificateConstraints(constraintsParameters, signingCertCryptographicConstraint);
 		setValidationPolicy(constraintsParameters);
 		simpleReport = createSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
-		
+
 	}
-	
+
 	@Test
 	public void caCertificateWrongCryptographicConstrainsTest() throws Exception {
-		
-		initializeExecutor("src/test/resources/universign.xml");
-		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
-		
+
+		initializeExecutor("src/test/resources/diag-data/universign.xml");
+		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
+
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		setValidationPolicy(constraintsParameters);
 		SimpleReport simpleReport = createSimpleReport();
 		// good case
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
-		
-		// force past validation, but with a valid timestamp on the RSA algorithm expiration date 
+
+		// force past validation, but with a valid timestamp on the RSA algorithm expiration date
 		CryptographicConstraint sigCryptographicConstraint = getSignatureCryptographicConstraint(constraintsParameters);
 		setAlgoExpDate(sigCryptographicConstraint, ALGORITHM_SHA256, 0, "2018-01-01");
 		setSignatureCryptographicConstraint(constraintsParameters, sigCryptographicConstraint);
@@ -83,12 +83,12 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 		simpleReport = createSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 	}
-	
+
 	@Test
 	public void timestampConstraintsTest() throws Exception {
-		
-		initializeExecutor("src/test/resources/passed_out_of_bounds_with_timestamps.xml");
-		validationPolicyFile = new File("src/test/resources/policy/all-constraint-specified-policy.xml");
+
+		initializeExecutor("src/test/resources/diag-data/passed_out_of_bounds_with_timestamps.xml");
+		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
 		
 		ConstraintsParameters constraintsParameters = loadConstraintsParameters();
 		setValidationPolicy(constraintsParameters);

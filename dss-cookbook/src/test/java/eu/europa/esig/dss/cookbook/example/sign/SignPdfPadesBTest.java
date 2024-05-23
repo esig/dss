@@ -74,7 +74,7 @@ public class SignPdfPadesBTest extends CookbookTools {
 			// import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 			// import eu.europa.esig.dss.enumerations.SignatureLevel;
 			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 			// import eu.europa.esig.dss.pades.signature.PAdESService;
 			// import eu.europa.esig.dss.model.ToBeSigned;
 			// import eu.europa.esig.dss.model.SignatureValue;
@@ -165,7 +165,7 @@ public class SignPdfPadesBTest extends CookbookTools {
 			// Extract PDF/A validation result
 			// This report contains only validation of a document against PDF/A specification
 			// and no signature validation process result
-			PDFAValidationResult pdfaValidationResult = documentValidator.getPdfValidationResult();
+			PDFAValidationResult pdfaValidationResult = documentValidator.getPdfAValidationResult();
 
 			// This variable contains the name of the identified PDF/A profile (or closest if validation failed)
 			String profileId = pdfaValidationResult.getProfileId();

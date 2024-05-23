@@ -37,12 +37,12 @@ public class ValidationTimePresentCheckTest extends AbstractTestValidationExecut
 	
 	@Test
 	public void test() throws Exception {
-		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/universign.xml"));
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/universign.xml"));
 		assertNotNull(diagnosticData);
 		
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
-		executor.setValidationPolicy(loadPolicy("src/test/resources/policy/default-only-constraint-policy.xml"));
+		executor.setValidationPolicy(loadPolicy("src/test/resources/diag-data/policy/default-only-constraint-policy.xml"));
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 		
 		Reports reports = executor.execute();

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.FileNameBuilder;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
 import eu.europa.esig.xades.definition.XAdESPath;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

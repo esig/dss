@@ -22,6 +22,7 @@ package eu.europa.esig.dss;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades;
 
-import eu.europa.esig.dss.ProfileParameters;
+import eu.europa.esig.dss.signature.ProfileParameters;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
 
 /**

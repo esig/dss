@@ -39,7 +39,7 @@ import eu.europa.esig.dss.pdfa.validation.PDFADocumentValidator;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.test.UnmarshallingTester;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;

@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustProperties;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
-import eu.europa.esig.dss.model.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.model.tsl.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.model.timedependent.MutableTimeDependentValues;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;

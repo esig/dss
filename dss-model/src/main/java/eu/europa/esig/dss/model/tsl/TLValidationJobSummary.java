@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.model.tsl;
 
 import eu.europa.esig.dss.model.identifier.Identifier;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.io.Serializable;
 import java.util.List;
@@ -54,7 +53,7 @@ public class TLValidationJobSummary implements Serializable {
 	 *                     LOTLs
 	 */
 	public TLValidationJobSummary(final List<LOTLInfo> lotlInfos, final List<TLInfo> otherTLInfos) {
-		if (Utils.isCollectionEmpty(lotlInfos) && Utils.isCollectionEmpty(otherTLInfos)) {
+		if ((lotlInfos == null || lotlInfos.isEmpty()) && (otherTLInfos == null || otherTLInfos.isEmpty())) {
 			throw new IllegalArgumentException("LOTL or TL Info shall be provided!");
 		}
 		this.lotlInfos = lotlInfos;
@@ -83,10 +82,10 @@ public class TLValidationJobSummary implements Serializable {
 	 */
 	public int getNumberOfProcessedTLs() {
 		int amount = 0;
-		if (Utils.isCollectionNotEmpty(otherTLInfos)) {
+		if (otherTLInfos != null && !otherTLInfos.isEmpty()) {
 			amount += otherTLInfos.size();
 		}
-		if (Utils.isCollectionNotEmpty(lotlInfos)) {
+		if (lotlInfos != null && !lotlInfos.isEmpty()) {
 			for (LOTLInfo lotlInfo : lotlInfos) {
 				amount += lotlInfo.getTLInfos().size();
 			}
@@ -99,7 +98,7 @@ public class TLValidationJobSummary implements Serializable {
 	 * @return {@code int} number of processed LOTLs
 	 */
 	public int getNumberOfProcessedLOTLs() {
-		if (Utils.isCollectionNotEmpty(lotlInfos)) {
+		if (lotlInfos != null && !lotlInfos.isEmpty()) {
 			return lotlInfos.size();
 		}
 		return 0;
@@ -113,7 +112,7 @@ public class TLValidationJobSummary implements Serializable {
 	 * @return a TLInfo or null
 	 */
 	public TLInfo getTLInfoById(Identifier identifier) {
-		if (Utils.isCollectionNotEmpty(otherTLInfos)) {
+		if (otherTLInfos != null && !otherTLInfos.isEmpty()) {
 			for (TLInfo tlInfo : otherTLInfos) {
 				if (identifier.equals(tlInfo.getDSSId())) {
 					return tlInfo;
@@ -121,9 +120,9 @@ public class TLValidationJobSummary implements Serializable {
 			}
 		}
 
-		if (Utils.isCollectionNotEmpty(lotlInfos)) {
+		if (lotlInfos != null && !lotlInfos.isEmpty()) {
 			for (LOTLInfo lotlInfo : lotlInfos) {
-				if (Utils.isCollectionNotEmpty(lotlInfo.getTLInfos())) {
+				if (lotlInfo.getTLInfos() != null && !lotlInfo.getTLInfos().isEmpty()) {
 					for (TLInfo tlInfo : lotlInfo.getTLInfos()) {
 						if (identifier.equals(tlInfo.getDSSId())) {
 							return tlInfo;
@@ -144,7 +143,7 @@ public class TLValidationJobSummary implements Serializable {
 	 * @return a LOTLInfo or null
 	 */
 	public LOTLInfo getLOTLInfoById(Identifier identifier) {
-		if (Utils.isCollectionNotEmpty(lotlInfos)) {
+		if (lotlInfos != null && !lotlInfos.isEmpty()) {
 			for (LOTLInfo lotlInfo : lotlInfos) {
 				if (identifier.equals(lotlInfo.getDSSId())) {
 					return lotlInfo;
