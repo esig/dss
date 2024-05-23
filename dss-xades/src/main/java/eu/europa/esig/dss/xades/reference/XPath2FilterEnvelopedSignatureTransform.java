@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 
 /**
  * Enveloped signature transformation by Filter 2.0. Excludes all signatures from the XML.

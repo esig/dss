@@ -44,7 +44,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xml.common.definition.XPathExpressionBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import org.junit.jupiter.api.RepeatedTest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

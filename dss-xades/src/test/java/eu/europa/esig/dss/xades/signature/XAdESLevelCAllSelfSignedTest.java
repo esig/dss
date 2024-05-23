@@ -44,7 +44,7 @@ import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import jakarta.xml.bind.JAXBElement;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;

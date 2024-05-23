@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
-import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestPath;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestAttribute;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestPath;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;

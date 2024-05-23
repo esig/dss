@@ -51,7 +51,7 @@ import eu.europa.esig.dss.xades.reference.XsltTransform;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 

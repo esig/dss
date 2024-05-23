@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.asic.common.definition;
 
 import eu.europa.esig.asic.manifest.ASiCManifestUtils;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
 import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;

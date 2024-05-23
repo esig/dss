@@ -34,7 +34,7 @@ import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
