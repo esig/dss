@@ -5,7 +5,10 @@
 		<artifactId>sd-dss</artifactId>
 		<version>6.1-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>dss-validation</artifactId>
+	<name>DSS Validation</name>
+	<description>DSS Validation contains the code for signature and certificate validation according to ETSI EN 319 102-1 and ETSI TS 119 615.</description>
 
 	<properties>
 		<module-name>jpms_dss_validation</module-name>

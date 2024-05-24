@@ -17,6 +17,84 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 .Code changes from version 6.0 to 6.1
 |===
 |Title                               |v6.0                            |v6.1
+|`dss-validation` module introduction           a|
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-xades</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+                                                                     a|
+`dss-validation` module is required to perform signature augmentation or validation
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-xades</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-validation</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
+|CertificateVerifier package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+...
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+...
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+
+|UserFriendlyIdentifierProvider package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
+
+|AdvancedSignature package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.AdvancedSignature;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+
+|TLValidationJobSummary package           a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+
+|ValidationLevel package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.enumerations.ValidationLevel;
+
 |CMS attribute extraction           a|
 [source,java]
 ----
@@ -214,6 +292,34 @@ or
 signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 ...
 ----
+
+|XMLDSig definitions           a|
+[source,java]
+----
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+...
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+...
+
+|XAdES definitions           a|
+[source,java]
+----
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+...
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+...
 
 |===
 
