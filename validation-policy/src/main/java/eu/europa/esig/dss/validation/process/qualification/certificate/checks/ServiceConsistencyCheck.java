@@ -72,11 +72,6 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 				return false;
 			}
 
-			if (!TrustServiceChecker.isLegalPersonConsistent(trustService)) {
-				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS2;
-				return false;
-			}
-
 			if (!TrustServiceChecker.isQSCDConsistent(trustService)) {
 				errorMessage = MessageTag.QUAL_TL_SERV_CONS_ANS3;
 				return false;

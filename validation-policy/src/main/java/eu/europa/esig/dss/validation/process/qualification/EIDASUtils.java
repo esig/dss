@@ -32,6 +32,7 @@ public final class EIDASUtils {
 	 * Empty constructor
 	 */
 	private EIDASUtils() {
+		// empty
 	}
 
 	/**
@@ -39,12 +40,12 @@ public final class EIDASUtils {
 	 * 
 	 * Regulation was signed in Brussels : 1st of July 00:00 Brussels = 30th of June 22:00 UTC
 	 */
-	private static final Date EIDAS_DATE = DatatypeConverter.parseDateTime("2016-06-30T22:00:00.000Z").getTime();
+	public static final Date EIDAS_DATE = DatatypeConverter.parseDateTime("2016-06-30T22:00:00.000Z").getTime();
 
 	/**
 	 * End of the grace period for eIDAS regulation
 	 */
-	private static final Date EIDAS_GRACE_DATE = DatatypeConverter.parseDateTime("2017-06-30T22:00:00.000Z").getTime();
+	public static final Date EIDAS_GRACE_DATE = DatatypeConverter.parseDateTime("2017-06-30T22:00:00.000Z").getTime();
 
 	/**
 	 * Gets if the given date relates to a post eIDAS time
