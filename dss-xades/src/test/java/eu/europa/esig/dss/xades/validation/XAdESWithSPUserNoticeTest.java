@@ -25,7 +25,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

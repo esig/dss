@@ -110,7 +110,7 @@ import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;

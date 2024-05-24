@@ -41,7 +41,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 public class ASN1PolicyTest extends AbstractPAdESTestValidation {

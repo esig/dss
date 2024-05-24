@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.policy.BasicASN1SignaturePolicyValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;

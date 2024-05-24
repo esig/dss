@@ -36,7 +36,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;

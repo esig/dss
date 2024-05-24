@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.spi.validation;
+package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -32,6 +32,7 @@ import java.util.Map;
 
 /**
  * The class is used to retrieve a policy by its SignaturePolicyIdentifier
+ *
  */
 public class SignaturePolicyProvider {
 

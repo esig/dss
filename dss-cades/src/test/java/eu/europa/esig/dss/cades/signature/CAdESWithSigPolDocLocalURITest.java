@@ -37,7 +37,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import org.bouncycastle.asn1.ASN1IA5String;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;

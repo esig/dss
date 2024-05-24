@@ -44,7 +44,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.NativeHTTPDataLoader;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
 import eu.europa.esig.dss.spi.validation.SignatureValidationContext;

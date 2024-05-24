@@ -58,7 +58,7 @@ import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.ValidationReportUtils;

@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
