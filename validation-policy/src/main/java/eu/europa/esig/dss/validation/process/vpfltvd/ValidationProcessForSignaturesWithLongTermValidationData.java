@@ -274,15 +274,32 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 		/*
 		 * 4) Comparing times:
-		 * a) If step 2) returned the indication INDETERMINATE with the sub-indication REVOKED_NO_POE or REVOKED_CA_NO_POE:
-		 * If the returned revocation time is posterior to best-signature-time, the process shall perform step 4-e).
-		 * Otherwise, the process shall return the indication INDETERMINATE with the sub-indication REVOKED_NO_POE or 
-		 * REVOKED_CA_NO_POE, respectively.
+		 * a) If step 2) returned the indication INDETERMINATE with the sub-indication REVOKED_NO_POE or
+		 * REVOKED_CA_NO_POE:
+		 * a. If the returned revocation time is posterior to best-signature-time, then:
+		 *     i.   If best-signature-time is before the issuance date of the signing certificate, the process shall
+		 *          return the indication FAILED with the sub-indication NOT_YET_VALID.
+		 *     ii.  If best-signature-time is before the expiration date of the signing certificate, the process shall
+		 *          perform step 4)e).
+		 *     iii. Otherwise, the process shall return the indication
+		 *          INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED.
+		 * b. Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
+		 *    REVOKED_NO_POE or REVOKED_CA_NO_POE, respectively.
 		 */
 		XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) &&
 				(SubIndication.REVOKED_NO_POE.equals(bsConclusion.getSubIndication()) || SubIndication.REVOKED_CA_NO_POE.equals(bsConclusion.getSubIndication()))) {
+
 			item = revocationDateAfterBestSignatureTimeValidation(item, bestSignatureTime.getTime(), bsConclusion.getSubIndication());
+
+			if (currentSignature.getSigningCertificate() != null) {
+
+				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime()));
+
+				item = item.setNextItem(bestSignatureTimeBeforeCertificateExpiration(bestSignatureTime.getTime()));
+
+			}
+
 		}
 
 		/*
@@ -515,22 +532,24 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDateAfterBestSignatureTimeValidation(
 			ChainItem<XmlValidationProcessLongTermData> item, Date bestSignatureTime, SubIndication subIndication) {
-		
+
 		LevelConstraint constraint = policy.getRevocationTimeAgainstBestSignatureTimeConstraint();
 		
 		for (Map.Entry<CertificateWrapper, CertificateRevocationWrapper> certRevMapEntry : certificateRevocationMap.entrySet()) {
 			CertificateWrapper certificate = certRevMapEntry.getKey();
 			CertificateRevocationWrapper revocationData = certRevMapEntry.getValue();
 			SubContext subContext = getSubContext(certificate);
-			
+
 			// separate cases to check based on the returned subIndication
 			if ((SubContext.SIGNING_CERT.equals(subContext) && SubIndication.REVOKED_NO_POE.equals(subIndication)) ||
 					SubContext.CA_CERTIFICATE.equals(subContext) && SubIndication.REVOKED_CA_NO_POE.equals(subIndication)) {
+
 				item = item.setNextItem(new RevocationDateAfterBestSignatureTimeCheck(i18nProvider, result, revocationData, 
 						bestSignatureTime, constraint, subContext));
+
 			}
 		}
-		
+
 		return item;
 	}
 

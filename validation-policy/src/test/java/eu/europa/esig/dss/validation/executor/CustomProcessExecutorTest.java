@@ -1594,7 +1594,134 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.INDETERMINATE, crs.getConclusion().getIndication());
 		assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, crs.getConclusion().getSubIndication());
 	}
-	
+
+	@Test
+	public void revokedNotYetValidWithTimestamp() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/revoked-not-yet-valid-with-timestamp.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NOT_YET_VALID, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.TSV_IBSTAIDOSC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.REVOKED_NO_POE, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		assertEquals(1, timestampIds.size());
+
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(0)));
+
+		assertEquals(Indication.FAILED, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.NOT_YET_VALID, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		assertNotNull(xmlSignature);
+
+		XmlValidationProcessLongTermData ltv = xmlSignature.getValidationProcessLongTermData();
+		assertNotNull(ltv);
+
+		assertEquals(Indication.FAILED, ltv.getConclusion().getIndication());
+		assertEquals(SubIndication.NOT_YET_VALID, ltv.getConclusion().getSubIndication());
+
+		boolean revocationPosteriorToBSTCheckFound = false;
+		boolean bstBeforeIssuanceSignCertCheckFound = false;
+		for (XmlConstraint constraint : ltv.getConstraint()) {
+			if (MessageTag.ADEST_IRTPTBST.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				revocationPosteriorToBSTCheckFound = true;
+			} else if (MessageTag.TSV_IBSTAIDOSC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.TSV_IBSTAIDOSC_ANS.getId(), constraint.getError().getKey());
+				bstBeforeIssuanceSignCertCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(revocationPosteriorToBSTCheckFound);
+		assertTrue(bstBeforeIssuanceSignCertCheckFound);
+
+		validateBestSigningTimes(reports);
+		checkReports(reports);
+	}
+
+	@Test
+	public void revokedExpiredWithTimestamp() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/revoked-expired-with-timestamp.xml"));
+		assertNotNull(diagnosticData);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		assertNotNull(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.TSV_IBSTBCEC_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.REVOKED_NO_POE, detailedReport.getBasicValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		List<String> timestampIds = detailedReport.getTimestampIds();
+		assertEquals(1, timestampIds.size());
+
+		assertEquals(Indication.PASSED, detailedReport.getBasicTimestampValidationIndication(timestampIds.get(0)));
+
+		assertEquals(Indication.INDETERMINATE, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, detailedReport.getLongTermValidationSubIndication(detailedReport.getFirstSignatureId()));
+
+		eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+		assertNotNull(xmlSignature);
+
+		XmlValidationProcessLongTermData ltv = xmlSignature.getValidationProcessLongTermData();
+		assertNotNull(ltv);
+
+		assertEquals(Indication.INDETERMINATE, ltv.getConclusion().getIndication());
+		assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, ltv.getConclusion().getSubIndication());
+
+		boolean revocationPosteriorToBSTCheckFound = false;
+		boolean bstBeforeIssuanceSignCertCheckFound = false;
+		boolean bstBeforeExpirationSignCertCheckFound = false;
+		for (XmlConstraint constraint : ltv.getConstraint()) {
+			if (MessageTag.ADEST_IRTPTBST.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				revocationPosteriorToBSTCheckFound = true;
+			} else if (MessageTag.TSV_IBSTAIDOSC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				bstBeforeIssuanceSignCertCheckFound = true;
+			} else if (MessageTag.TSV_IBSTBCEC.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.TSV_IBSTBCEC_ANS.getId(), constraint.getError().getKey());
+				bstBeforeExpirationSignCertCheckFound = true;
+			} else {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+			}
+		}
+		assertTrue(revocationPosteriorToBSTCheckFound);
+		assertTrue(bstBeforeIssuanceSignCertCheckFound);
+		assertTrue(bstBeforeExpirationSignCertCheckFound);
+
+		validateBestSigningTimes(reports);
+		checkReports(reports);
+	}
+
 	@Test
 	public void revokedCATest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/ca-revoked.xml"));
