@@ -498,7 +498,7 @@ public class ValidationProcessUtils {
 			case TIMESTAMP:
 				return MessageTag.TIMESTAMP;
 			case REVOCATION:
-				return MessageTag.ACCM_POS_CERT_CHAIN_REVOC;
+				return MessageTag.REVOCATION;
 			default:
 				throw new IllegalArgumentException("Unsupported context " + context);
 		}

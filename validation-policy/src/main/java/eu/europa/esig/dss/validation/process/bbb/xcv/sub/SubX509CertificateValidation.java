@@ -111,6 +111,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private final CertificateWrapper currentCertificate;
 
 	/** Validation time */
+	private final Date validationDate;
+
+	/** Current time when validation is performed */
 	private final Date currentTime;
 
 	/** Validation context */
@@ -127,19 +130,21 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param currentCertificate {@link CertificateWrapper}
-	 * @param currentTime {@link Date} validation time
+	 * @param validationDate {@link Date} validation time returned by the corresponding validation model
+	 * @param currentTime {@link Date} time when validation is performed
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
 	 * @param validationPolicy {@link ValidationPolicy}
 	 */
-	public SubX509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate, Date currentTime, 
-			Context context, SubContext subContext, ValidationPolicy validationPolicy) {
+	public SubX509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate, Date validationDate,
+			Date currentTime, Context context, SubContext subContext, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlSubXCV());
 		result.setId(currentCertificate.getId());
 		result.setTrustAnchor(currentCertificate.isTrusted());
 		result.setSelfSigned(currentCertificate.isSelfSigned());
 
 		this.currentCertificate = currentCertificate;
+		this.validationDate = validationDate;
 		this.currentTime = currentTime;
 
 		this.context = context;
@@ -260,7 +265,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			if (Utils.isCollectionNotEmpty(currentCertificate.getCertificateRevocationData())) {
 
 				CertificateRevocationSelector certificateRevocationSelector = new CertificateRevocationSelector(
-						i18nProvider, currentCertificate, currentTime, validationPolicy);
+						i18nProvider, currentCertificate, validationDate, validationPolicy);
 				XmlCRS xmlCRS = certificateRevocationSelector.execute();
 				result.setCRS(xmlCRS);
 
@@ -274,12 +279,12 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 				if (isValid(xmlCRS)) {
 
-					item = item.setNextItem(certificateNotRevoked(latestCertificateRevocation, subContext));
+					item = item.setNextItem(certificateNotRevoked(latestCertificateRevocation, subContext, validationDate));
 
-					item = item.setNextItem(certificateNotOnHold(latestCertificateRevocation, subContext));
+					item = item.setNextItem(certificateNotOnHold(latestCertificateRevocation, subContext, validationDate));
 
 					RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, latestCertificateRevocation,
-							currentTime, context, subContext, validationPolicy);
+							validationDate, context, subContext, validationPolicy);
 					XmlRFC rfcResult = rfc.execute();
 					result.setRFC(rfcResult);
 
@@ -293,11 +298,13 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			item = item.setNextItem(revocationDataRequired);
 		}
 
-		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext));
+		// NOTE: cryptographic constraint shall be validated against the current time,
+		// and not against time returned by the used validation model
+		item = item.setNextItem(certificateCryptographic(currentCertificate, context, subContext, currentTime));
 
 		if (SubContext.SIGNING_CERT == subContext) {
 
-			item = item.setNextItem(certificateValidityRange(currentCertificate, latestCertificateRevocation, subContext));
+			item = item.setNextItem(certificateValidityRange(currentCertificate, latestCertificateRevocation, subContext, currentTime));
 
 			if (latestCertificateRevocation != null) {
 				CertificateWrapper revocationIssuerCertificate = latestCertificateRevocation.getSigningCertificate();
@@ -305,7 +312,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 					if (revocationIssuerCertificate.isTrusted()) {
 						item = item.setNextItem(revocationDataIssuerTrusted(revocationIssuerCertificate));
 					} else  {
-						item = item.setNextItem(revocationIssuerValidityRange(latestCertificateRevocation, subContext));
+						item = item.setNextItem(revocationIssuerValidityRange(latestCertificateRevocation, subContext, currentTime));
 					}
 				}
 			}
@@ -324,9 +331,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 
 	private ChainItem<XmlSubXCV> certificateValidityRange(CertificateWrapper certificate, CertificateRevocationWrapper usedCertificateRevocation,
-														  SubContext subContext) {
+														  SubContext subContext, Date validationTime) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
-		return new CertificateValidityRangeCheck<>(i18nProvider, result, certificate, usedCertificateRevocation, currentTime, constraint);
+		return new CertificateValidityRangeCheck<>(i18nProvider, result, certificate, usedCertificateRevocation, validationTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {
@@ -334,9 +341,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 
 	private ChainItem<XmlSubXCV> revocationIssuerValidityRange(CertificateRevocationWrapper usedCertificateRevocation,
-															   SubContext subContext) {
+															   SubContext subContext, Date validationTime) {
 		LevelConstraint constraint = validationPolicy.getRevocationIssuerNotExpiredConstraint(context, subContext);
-		return new RevocationIssuerValidityRangeCheck<>(i18nProvider, result, usedCertificateRevocation, currentTime, constraint);
+		return new RevocationIssuerValidityRangeCheck<>(i18nProvider, result, usedCertificateRevocation, validationTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> ca(CertificateWrapper certificate, SubContext subContext) {
@@ -488,14 +495,16 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificateSignatureValidCheck<>(i18nProvider, result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> certificateNotRevoked(CertificateRevocationWrapper latestCertificateRevocation, SubContext subContext) {
+	private ChainItem<XmlSubXCV> certificateNotRevoked(CertificateRevocationWrapper latestCertificateRevocation,
+													   SubContext subContext, Date validationTime) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotRevokedConstraint(context, subContext);
-		return new CertificateNotRevokedCheck(i18nProvider, result, latestCertificateRevocation, currentTime, constraint, subContext);
+		return new CertificateNotRevokedCheck(i18nProvider, result, latestCertificateRevocation, validationTime, constraint, subContext);
 	}
 
-	private ChainItem<XmlSubXCV> certificateNotOnHold(CertificateRevocationWrapper latestCertificateRevocation, SubContext subContext) {
+	private ChainItem<XmlSubXCV> certificateNotOnHold(CertificateRevocationWrapper latestCertificateRevocation,
+													  SubContext subContext, Date validationTime) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotOnHoldConstraint(context, subContext);
-		return new CertificateNotOnHoldCheck(i18nProvider, result, latestCertificateRevocation, currentTime, constraint);
+		return new CertificateNotOnHoldCheck(i18nProvider, result, latestCertificateRevocation, validationTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> notSelfSigned(CertificateWrapper certificate, SubContext subContext) {
@@ -593,10 +602,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		return new CertificatePS2DQcCompetentAuthorityIdCheck(i18nProvider, result, certificate, constraint);
 	}
 
-	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context, SubContext subcontext) {
+	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context,
+														  SubContext subcontext, Date validationTime) {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
 		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
-		return new CryptographicCheck<>(i18nProvider, result, certificate, position, currentTime, cryptographicConstraint);
+		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, cryptographicConstraint);
 	}
 
 	@Override
