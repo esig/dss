@@ -226,12 +226,13 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 					}
 				}
 				/*
-				 * c) If the certificate is not marked as revoked in all of the revocation status information
-				 * found in step a), the building block shall select the revocation status information that
-				 * has been issued the latest, run the Revocation Freshness Checker with that
-				 * revocation information status information, the certificate for which the revocation status
-				 * is being checked and the control time. If it returns FAILED, the building block shall set
-				 * control time to the issuance time of the revocation status information.
+				 * c) If the certificate is not marked as revoked in all of the revocation data found in step a),
+				 * the building block shall select the revocation data that has been issued the latest,
+				 * run the Revocation Freshness Checker with that revocation data, the certificate for which
+				 * the revocation status is being checked and the control time. If it returns FAILED,
+				 * the building block shall set control time to the time that is the earliest between time
+				 * A and time B, where time A is the current value of control time and time B is
+				 * the issuance time of the revocation status information contained within the revocation data.
 				 * Otherwise, the building block shall not change the value of control time.
 				 */
 				else {
@@ -239,7 +240,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 							i18nProvider, latestCompliantRevocation, controlTime, context, subContext, policy);
 					XmlRFC execute = rfc.execute();
 					if (execute.getConclusion() != null && Indication.FAILED.equals(execute.getConclusion().getIndication())) {
-						controlTime = latestCompliantRevocation.getThisUpdate();
+						Date thisUpdate = latestCompliantRevocation.getThisUpdate();
+						if (thisUpdate.before(controlTime)) {
+							controlTime = thisUpdate;
+						}
 					}
 				}
 
