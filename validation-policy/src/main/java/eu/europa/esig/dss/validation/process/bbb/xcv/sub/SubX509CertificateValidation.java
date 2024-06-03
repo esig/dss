@@ -256,7 +256,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		RevocationDataRequiredCheck<XmlSubXCV> revocationDataRequired = revocationDataRequired(currentCertificate, subContext);
 
-		if (revocationDataRequired.process()) {
+		boolean isRevocationDataRequired = revocationDataRequired.process();
+		if (isRevocationDataRequired) {
 
 			item = item.setNextItem(revocationInfoAccessPresent(currentCertificate, subContext));
 			
@@ -304,7 +305,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		if (SubContext.SIGNING_CERT == subContext) {
 
-			item = item.setNextItem(certificateValidityRange(currentCertificate, latestCertificateRevocation, subContext, currentTime));
+			item = item.setNextItem(certificateValidityRange(currentCertificate,
+					latestCertificateRevocation, isRevocationDataRequired, subContext, currentTime));
 
 			if (latestCertificateRevocation != null) {
 				CertificateWrapper revocationIssuerCertificate = latestCertificateRevocation.getSigningCertificate();
@@ -331,9 +333,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	}
 
 	private ChainItem<XmlSubXCV> certificateValidityRange(CertificateWrapper certificate, CertificateRevocationWrapper usedCertificateRevocation,
-														  SubContext subContext, Date validationTime) {
+														  boolean revocationDataRequired, SubContext subContext, Date validationTime) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
-		return new CertificateValidityRangeCheck<>(i18nProvider, result, certificate, usedCertificateRevocation, validationTime, constraint);
+		return new CertificateValidityRangeCheck<>(i18nProvider, result, certificate, usedCertificateRevocation, revocationDataRequired, validationTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {

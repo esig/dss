@@ -454,7 +454,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
 		if (basicSignature != null) {
 			CryptographicConstraint sigCryptographic = basicSignature.getCryptographic();
-			initializeCryptographicConstraint(sigCryptographic);
+			initializeCryptographicConstraint(sigCryptographic, getDefaultCryptographicConstraint());
 			return sigCryptographic;
 		}
 		return null;
@@ -465,7 +465,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			CryptographicConstraint certCryptographic = certificateConstraints.getCryptographic();
-			initializeCryptographicConstraint(certCryptographic);
+			initializeCryptographicConstraint(certCryptographic, getSignatureCryptographicConstraint(context));
 			return certCryptographic;
 		}
 		return null;
@@ -476,9 +476,9 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	 * by the default {@link CryptographicConstraint}
 	 *
 	 * @param cryptographicConstraint {@link CryptographicConstraint}
+	 * @param defaultConstraint {@link CryptographicConstraint}
 	 */
-	private void initializeCryptographicConstraint(CryptographicConstraint cryptographicConstraint) {
-		CryptographicConstraint defaultConstraint = getDefaultCryptographicConstraint();
+	private void initializeCryptographicConstraint(CryptographicConstraint cryptographicConstraint, CryptographicConstraint defaultConstraint) {
 		if (defaultConstraint != null) {
 			if (cryptographicConstraint.getAcceptableDigestAlgo() == null) {
 				cryptographicConstraint.setAcceptableDigestAlgo(defaultConstraint.getAcceptableDigestAlgo());
@@ -1370,7 +1370,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
 		if (evidenceRecordConstraints != null) {
 			CryptographicConstraint evidenceRecordCryptographic = evidenceRecordConstraints.getCryptographic();
-			initializeCryptographicConstraint(evidenceRecordCryptographic);
+			initializeCryptographicConstraint(evidenceRecordCryptographic, getDefaultCryptographicConstraint());
 			return evidenceRecordCryptographic;
 		}
 		return null;

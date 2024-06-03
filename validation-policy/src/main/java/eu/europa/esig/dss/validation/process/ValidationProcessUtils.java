@@ -29,6 +29,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
@@ -137,7 +139,9 @@ public class ValidationProcessUtils {
 					|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 					|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-					|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
+					|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.SIG_CONSTRAINTS_FAILURE.equals(conclusion.getSubIndication())
+				    || SubIndication.TRY_LATER.equals(conclusion.getSubIndication())));
 	}
 	
 	/**
@@ -233,6 +237,32 @@ public class ValidationProcessUtils {
 													 RevocationWrapper revocationData) {
 		XmlRAC xmlRAC = getRevocationAcceptanceCheckerResult(bbb, certificate.getId(), revocationData.getId());
 		return xmlRAC != null && xmlRAC.getConclusion() != null && Indication.PASSED.equals(xmlRAC.getConclusion().getIndication());
+	}
+
+	/**
+	 * This method verifies if the signature contains long-term availability and integrity material within its structure
+	 *
+	 * @param signature {@link SignatureWrapper} to verify
+	 * @return TRUE if the long-term availability and integrity material is present, FALSE otherwise
+	 */
+	public static boolean isLongTermAvailabilityAndIntegrityMaterialPresent(SignatureWrapper signature) {
+		return signature.isThereALevel() || timestampCoveringOtherSignatureTimestampsPresent(signature)
+				|| Utils.isCollectionNotEmpty(signature.getEvidenceRecords());
+	}
+
+	private static boolean timestampCoveringOtherSignatureTimestampsPresent(SignatureWrapper signature) {
+		for (TimestampWrapper timestamp : signature.getTimestampList()) {
+			List<TimestampWrapper> timestampedTimestamps = timestamp.getTimestampedTimestamps();
+			if (Utils.isCollectionNotEmpty(timestampedTimestamps)) {
+				for (TimestampWrapper timestampedTimestamp : timestampedTimestamps) {
+					if (!timestampedTimestamp.getType().isContentTimestamp() &&
+							Utils.isCollectionNotEmpty(timestampedTimestamp.getTimestampedSignatures())) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	/**

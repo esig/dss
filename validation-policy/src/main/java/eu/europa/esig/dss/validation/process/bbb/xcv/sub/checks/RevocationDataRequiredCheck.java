@@ -29,7 +29,7 @@ public class RevocationDataRequiredCheck<T extends XmlConstraintsConclusion> ext
      */
     public RevocationDataRequiredCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
                                        CertificateValuesConstraint constraint) {
-        super(i18nProvider, result, constraint);
+        super(i18nProvider, result, certificate, constraint);
         this.certificate = certificate;
     }
 

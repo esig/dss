@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -35,7 +35,7 @@ import java.util.Date;
 /**
  * Checks if the claimed signing time + timestamp's delay is after the best-signature-time
  */
-public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermData> {
+public class TimestampDelayCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** Signature to check */
 	private final SignatureWrapper signature;
@@ -50,12 +50,12 @@ public class TimestampDelayCheck extends ChainItem<XmlValidationProcessLongTermD
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param result {@link XmlValidationProcessLongTermData}
+	 * @param result {@link XmlConstraintsConclusion}
 	 * @param signature {@link SignatureWrapper}
 	 * @param bestSignatureTime {@link Date}
 	 * @param timeConstraint {@link TimeConstraint}
 	 */
-	public TimestampDelayCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
+	public TimestampDelayCheck(I18nProvider i18nProvider, T result,
 							   SignatureWrapper signature, Date bestSignatureTime, TimeConstraint timeConstraint) {
 		super(i18nProvider, result, timeConstraint);
 

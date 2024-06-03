@@ -35,6 +35,20 @@ public abstract class AbstractCertificateCheckItem<T extends XmlConstraintsConcl
     }
 
     /**
+     * Default constructor with Id
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result the result
+     * @param certificate {@link CertificateWrapper}
+     * @param constraint {@link MultiValuesConstraint}
+     */
+    protected AbstractCertificateCheckItem(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
+                                           CertificateValuesConstraint constraint) {
+        super(i18nProvider, result, constraint, certificate.getId());
+        this.constraint = constraint;
+    }
+
+    /**
      * Checks the certificate
      *
      * @param certificate {@link CertificateWrapper} to check

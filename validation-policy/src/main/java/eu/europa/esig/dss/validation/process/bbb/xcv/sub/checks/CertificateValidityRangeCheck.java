@@ -49,6 +49,9 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	/** The certificate's revocation */
 	private final CertificateRevocationWrapper usedCertificateRevocation;
 
+	/** Defines whether revocation data is required for the certificate */
+	private final boolean revocationDataRequired;
+
 	/** The SubIndication if validation fails */
 	private SubIndication subIndication;
 
@@ -63,11 +66,13 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public CertificateValidityRangeCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
-										 CertificateRevocationWrapper usedCertificateRevocation, Date currentTime, LevelConstraint constraint) {
+										 CertificateRevocationWrapper usedCertificateRevocation, boolean revocationDataRequired,
+										 Date currentTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTime = currentTime;
 		this.certificate = certificate;
 		this.usedCertificateRevocation = usedCertificateRevocation;
+		this.revocationDataRequired = revocationDataRequired;
 	}
 
 	@Override
@@ -75,7 +80,7 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 		boolean inValidityRange = isInValidityRange();
 		if (!inValidityRange) {
 			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
-			if (usedCertificateRevocation != null && !usedCertificateRevocation.isRevoked()) {
+			if (!revocationDataRequired || (usedCertificateRevocation != null && !usedCertificateRevocation.isRevoked())) {
 				subIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
 			}
 		}

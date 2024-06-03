@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -35,7 +35,7 @@ import java.util.Date;
 /**
  * Checks if the best-signature-time is before certificate's expiration
  */
-public class BestSignatureTimeBeforeCertificateExpirationCheck extends ChainItem<XmlValidationProcessLongTermData> {
+public class BestSignatureTimeBeforeCertificateExpirationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** Best signature time */
 	private final Date bestSignatureTime;
@@ -47,13 +47,13 @@ public class BestSignatureTimeBeforeCertificateExpirationCheck extends ChainItem
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
-	 * @param result {@link XmlValidationProcessLongTermData}
+	 * @param result {@link XmlConstraintsConclusion}
 	 * @param bestSignatureTime {@link Date}
 	 * @param signingCertificate {@link CertificateWrapper}
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public BestSignatureTimeBeforeCertificateExpirationCheck(I18nProvider i18nProvider,
-															 XmlValidationProcessLongTermData result,
+															 T result,
 															 Date bestSignatureTime,
 															 CertificateWrapper signingCertificate,
 															 LevelConstraint constraint) {
@@ -64,7 +64,8 @@ public class BestSignatureTimeBeforeCertificateExpirationCheck extends ChainItem
 
 	@Override
 	protected boolean process() {
-		return bestSignatureTime.before(signingCertificate.getNotAfter());
+		// inclusive by RFC 5280
+		return bestSignatureTime.compareTo(signingCertificate.getNotAfter()) <= 0;
 	}
 
 	@Override

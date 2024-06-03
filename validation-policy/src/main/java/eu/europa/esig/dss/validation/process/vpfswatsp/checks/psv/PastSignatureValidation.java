@@ -25,12 +25,14 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -46,7 +48,9 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.PastCertificateValidation;
@@ -129,15 +133,14 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		ChainItem<XmlPSV> item = null;
 
 		/*
-		 * 1) The building block shall verify that there is at least one revocation information instance
-		 * that is known to contain revocation information about the signing certificate for which
-		 * the set of POEs contains a POE for the certificate of its issuer after the issuance date and
-		 * before the expiration date of that certificate:
+		 * 1) The building block shall verify that there is at least one revocation data instance
+		 * that is known to contain revocation status information about the signing certificate
+		 * for which the set of POEs contains a POE for the signing certificate issuer's certificate
+		 * after the issuance date and before the expiration date of the signing certificate issuer's certificate:
 		 *
-		 * a. If there is such a revocation information, the building block shall remove from
-		 *    the Certificate Validation Data all revocation information known to contain revocation information
-		 *    about the signing certificate for which there is no such POE and
-		 *    set sig_cert_revocation_poe-status to PASSED.
+		 * a. If there is such a revocation data, the building block shall remove from the Certificate
+		 *    Validation Data all revocation data known to contain revocation status information about
+		 *    the signing certificate for which there is no such POE and set sig_cert_revocation_poe-status to PASSED.
 		 *
 		 * b. Otherwise the building block shall set sig_cert_revocation_poe-status to INDETERMINATE with
 		 *    the sub-indication REVOCATION_OUT_OF_BOUNDS_NO_POE.
@@ -174,11 +177,12 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		}
 
 		/*
-		 * 2) The building block shall perform the past certificate validation process with the following inputs:
-		 * the signature, the target certificate, the X.509 validation parameters, certificate validation data, chain
-		 * constraints, cryptographic constraints and the set of POEs. If it returns PASSED/validation time, the
-		 * building block shall go to the next step. Otherwise, the building block shall return the current time status
-		 * and sub-indication with an explanation of the failure.
+		 * 2) The building block shall perform the past certificate validation process specified
+		 * in clause 5.6.2.1  with the following inputs: the signature, the target certificate,
+		 * the X.509 validation parameters, certificate validation data, X.509 validation constraints,
+		 * cryptographic constraints and the set of POEs. If it returns PASSED/validation time,
+		 * the building block shall go to the next step. Otherwise, the building block shall return
+		 * the current time status and sub indication with an explanation of the failure.
 		 */
 		PastCertificateValidation pcv = new PastCertificateValidation(i18nProvider, token, bbbs, poe, currentTime, policy, context);
 		XmlPCV pcvResult = pcv.execute();
@@ -201,26 +205,50 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		if (poeExists) {
 			item = item.setNextItem(poeExist());
 		}
+		Date bestSignatureTime = poe.getLowestPOETime(token.getId());
 
 		/*
-		 * - If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE or
-		 *   INDETERMINATE/REVOCATION_OUT_OF_BOUNDS_NO_POE, the building block shall go to step 6.
+		 * - If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE,
+		 *   INDETERMINATE/REVOCATION_OUT_OF_BOUNDS_NO_POE or INDETERMINATE/TRY_LATER
+		 *   because the certificate has been found to be suspended, then:
 		 */
 		if (poeExists && Indication.INDETERMINATE.equals(currentConclusion.getIndication())
 				&& (SubIndication.REVOKED_NO_POE.equals(currentConclusion.getSubIndication())
-						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(currentConclusion.getSubIndication()))) {
-			// continue
+						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(currentConclusion.getSubIndication())
+						|| (SubIndication.TRY_LATER.equals(currentConclusion.getSubIndication()) && isCertificateSuspended()))) {
+			/*
+			 * a) If best-signature-time is before the issuance date of the signing certificate,
+			 *    the process shall return the indication FAILED with the sub-indication NOT_YET_VALID
+			 * b) If best-signature-time is within the validity period of the signing certificate,
+			 *    the building block shall go to step 7).
+			 * c) Otherwise the building block shall set the current time indication/sub-indication to
+			 *    INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED and continue the process.
+			 */
+
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
+
+			item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(
+					bestSignatureTime, signingCertificate, SubIndication.OUT_OF_BOUNDS_NOT_REVOKED));
+
 		}
 
 		/*
-		 * - If current time indication/sub-indication is INDETERMINATE/REVOKED_CA_NO_POE and
-		 *   there is a POE for the revocation information of the signer certificate at (or before)
-		 *   the revocation time of the CA certificate, the building block shall go to step 6.
-		 *   Otherwise, the building block shall return with the indication INDETERMINATE and
-		 *   the sub-indication REVOKED_CA_NO_POE.
+		 * - If current time indication/sub-indication is INDETERMINATE/REVOKED_CA_NO_POE then:
 		 */
 		else if (poeExists && Indication.INDETERMINATE.equals(currentConclusion.getIndication())
 				&& SubIndication.REVOKED_CA_NO_POE.equals(currentConclusion.getSubIndication())) {
+			/*
+			 * a) If there is a POE for the revocation data containing the revocation status information
+			 *    of the signer certificate at (or before) the revocation time of the CA certificate, then:
+			 *    i.  If best signature time (lowest time at which there exists a POE for the signature value
+			 *        in the set of POEs) is within the validity period of the signing certificate,
+			 *        the building block shall go to step 7).
+			 *    ii. Otherwise the building block shall set the current time indication/sub-indication to
+			 *        OUT_OF_BOUNDS_NOT_REVOKED and continue the process.
+			 * b) Otherwise, the building block shall return with the indication INDETERMINATE and the
+			 *    sub-indication REVOKED_CA_NO_POE.
+			 */
+
 			CertificateWrapper caCertificate = signingCertificate.getSigningCertificate();
 			CertificateRevocationWrapper latestCARevocationData = caCertificate == null ? null :
 					ValidationProcessUtils.getLatestAcceptableRevocationData(token, caCertificate,
@@ -228,6 +256,12 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			if (latestCARevocationData != null) {
 				item = item.setNextItem(poeExistNotAfterCARevocationTimeCheck(signingCertificateRevocations, latestCARevocationData.getRevocationDate()));
 			}
+
+			// NOTE: executed as a part of the check below (see "continue the process" reference)
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
+
+			item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(
+					bestSignatureTime, signingCertificate, SubIndication.OUT_OF_BOUNDS_NOT_REVOKED));
 
 		}
 
@@ -240,13 +274,11 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 *
 		 * b) If best-signature-time (lowest time at which there exists a POE for the signature value in the set of POEs)
 		 *    is after the issuance date and before the expiration date of the signing certificate,
-		 *    the building block shall go to step 6.
+		 *    the building block shall go to step 7.
 		 */
 		else if (poeExists && Indication.INDETERMINATE.equals(currentConclusion.getIndication())
 				&& (SubIndication.OUT_OF_BOUNDS_NO_POE.equals(currentConclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(currentConclusion.getSubIndication()))) {
-
-			Date bestSignatureTime = poe.getLowestPOETime(token.getId());
 
 			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
 
@@ -259,7 +291,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * 4) If current time indication/ sub-indication is INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE and for
 		 * each algorithm (or key size) in the list concerned by the failure, there is a POE for the material that
 		 * uses this algorithm (or key size) at a time before the time up to which the algorithm in question was
-		 * considered secure, the building block shall go to step 6).
+		 * considered secure, the building block shall go to step 7).
 		 */
 		else if (Indication.INDETERMINATE.equals(currentConclusion.getIndication())
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentConclusion.getSubIndication())) {
@@ -287,15 +319,35 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		}
 
 		/*
-		 * 5) In all other cases, the building block shall return the current time indication/sub-indication together
-		 * with an explanation of the failure.
+		 * 5) If current time indication/sub indication is INDETERMINATE/TRY_LATER because
+		 * the revocation information of the target certificate was not fresh enough:
+		 */
+		else if (Indication.INDETERMINATE.equals(currentConclusion.getIndication())
+				&& SubIndication.TRY_LATER.equals(currentConclusion.getSubIndication()) && !isCertificateSuspended()) {
+			/*
+		     * a) The building block shall determine from the set of POEs the earliest time at which
+			 *    the existence of the signature can be proven.
+			 * b) The building block shall run the Revocation Freshness Checker (clause 5.2.5) with
+			 *    the corresponding revocation status information, the target certificate and the time
+			 *    determined in step a) above.
+			 * c) If the checker returns PASSED, the building block shall go to step 7). Otherwise,
+		     *    the building block shall return the indication INDETERMINATE, the sub indication
+		     *    TRY_LATER and, if returned from the Revocation Freshness Checker, the suggestion
+			 *    for when to try the validation again.
+		     */
+			item = revocationIsFresh(item, bestSignatureTime);
+		}
+
+		/*
+		 * 6) In all other cases, the building block shall return the current time indication/sub-indication
+		 * together with an explanation of the failure.
 		 */
 		else {
 			item = item.setNextItem(currentTimeIndicationCheck());
 		}
 
 		/*
-		 * 6) The building block shall return the indication and sub-indication contained
+		 * 7) The building block shall return the indication and sub-indication contained
 		 * in sig_cert_revocation_poe-status.
 		 */
 		item = item.setNextItem(pastRevocationDataValidationConclusive(sigCertRevocationPoeStatus));
@@ -413,9 +465,64 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		}
 		return item;
 	}
+
+	private ChainItem<XmlPSV> revocationIsFresh(ChainItem<XmlPSV> item, Date bestSignatureTime) {
+		for (CertificateWrapper certificate : token.getCertificateChain()) {
+			SubContext subContext = getSubContext(certificate);
+			if (isRevocationDataRequired(certificate, subContext)) {
+				PastSignatureValidationCertificateRevocationSelector certificateRevocationSelector =
+						new PastSignatureValidationCertificateRevocationSelector(
+								i18nProvider, certificate, currentTime, bbbs, token.getId(), poe, policy);
+
+				certificateRevocationSelector.execute();
+				CertificateRevocationWrapper latestCertificateRevocation = certificateRevocationSelector.getLatestAcceptableCertificateRevocation();
+
+				RevocationFreshnessChecker rfc = new RevocationFreshnessChecker(i18nProvider, latestCertificateRevocation,
+						bestSignatureTime, context, subContext, policy);
+				XmlRFC xmlRFC = rfc.execute();
+				item = item.setNextItem(checkRevocationFreshnessCheckerResult(xmlRFC));
+			}
+		}
+		return item;
+	}
+
+	private SubContext getSubContext(CertificateWrapper certificateWrapper) {
+		return token.getSigningCertificate().getId().equals(certificateWrapper.getId()) ?
+				SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+	}
+
+	private ChainItem<XmlPSV> checkRevocationFreshnessCheckerResult(XmlRFC rfcResult) {
+		return new RevocationFreshnessCheckerResultCheck<XmlPSV>(i18nProvider, result, rfcResult, getFailLevelConstraint()) {
+			@Override
+			protected Indication getFailedIndicationForConclusion() {
+				return Indication.INDETERMINATE;
+			}
+
+			@Override
+			protected SubIndication getFailedSubIndicationForConclusion() {
+				return SubIndication.TRY_LATER;
+			}
+		};
+	}
 	
 	private Date getLowestPoeTime(TokenProxy token) {
 		return poe.getLowestPOETime(token.getId());
+	}
+
+	private boolean isCertificateSuspended() {
+		for (CertificateWrapper certificate : token.getCertificateChain()) {
+			if (certificate.isTrusted()) {
+				break;
+			}
+			List<CertificateRevocationWrapper> revocationData = certificate.getCertificateRevocationData();
+			CertificateRevocationWrapper latestRevocationData = ValidationProcessUtils
+					.getLatestAcceptableRevocationData(token, certificate, revocationData, currentTime, bbbs, poe);
+			if (latestRevocationData != null && latestRevocationData.isRevoked()
+					&& RevocationReason.CERTIFICATE_HOLD.equals(latestRevocationData.getReason())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

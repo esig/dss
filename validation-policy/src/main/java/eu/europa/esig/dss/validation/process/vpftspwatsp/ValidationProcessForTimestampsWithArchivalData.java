@@ -44,6 +44,8 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.MessageImprintDigestAlgorithmValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.TimestampAcceptanceValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.TimestampAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POE;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.EvidenceRecordValidationCheck;
@@ -165,11 +167,10 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
             XmlSAV davResult = midav.execute();
 
             /*
-             * b) If PASSED is returned and the cryptographic hash function used in the time-stamp
-             * (messageImprint.hashAlgorithm) is considered reliable at the generation time of the time-stamp,
-             * the long term validation process shall perform the POE extraction process with the signature, the
-             * time-stamp and the cryptographic constraints as inputs. The long term validation process shall
-             * add the returned POEs to the set of POEs.
+             * b) If PASSED is returned and a POE exists for the time-stamp for a time when the cryptographic hash
+             * function used in the time-stamp (messageImprint.hashAlgorithm) has been considered reliable, the SVA
+             * shall perform the POE extraction process (clause 5.6.2.3) with the signature, the time-stamp and the
+             * cryptographic constraints as inputs. The SVA shall add the returned POEs to the set of POEs.
              */
             if (isValid(vpftsp)) {
 
@@ -179,20 +180,41 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
                     item = item.setNextItem(timestampMessageImprint(timestamp));
 
+                    // NOTE: POE is extracted outside the class
+
                 }
 
             }
 
             /*
              * c) If the output of the validation is INDETERMINATE/REVOKED_NO_POE,
-             * INDETERMINATE/REVOKED_CA_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NO_POE or
-             * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE, the SVA shall perform past
+             * INDETERMINATE/REVOKED_CA_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NO_POE,
+             * INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED,
+             * INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE or
+             * INDETERMINATE/REVOCATION_OUT_OF_BOUNDS_NO_POE,, the SVA shall perform past
              * signature validation process (as per clause 5.6.2.4) with the following inputs: the time-stamp, the
-             * indication/sub-indication returned by the time-stamp validation process in step 5a, the TSA's certificate,
+             * indication/sub-indication returned by the time-stamp validation process in step 5)a), the TSA's certificate,
              * the X.509 validation parameters, X.509 validation constraints, cryptographic constraints, certificate
-             * validation data and the set of POEs.
+             * validation data and the set of POEs. Then:
+             *
+             * i)    If it returns PASSED the SVA shall determine from the set of POEs the earliest time the existence
+             *       of the time-stamp can be proven.
+             *
+             * ii)   The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the
+             *       following inputs:
+             *       - The Signed Data Object(s).
+             *       - The time determined in step i) above as the validation time parameter.
+             *       - The Cryptographic Constraints.
+             *       If the Signature Acceptance Validation process returns PASSED, the SVA shall go to the next step.
+             *       Otherwise, the SVA shall go to step d).
+             *
+             * iii) If a POE exists for the time-stamp for a time when the cryptographic hash function used in the
+             *      time-stamp has been considered reliable, the SVA shall perform the POE extraction process
+             *      (clause 5.6.2.3) and shall add the returned POEs to the set of POEs, and shall continue with
+             *      step 5)a) using the next time-stamp attribute.
              */
-            else {
+            else if (ValidationProcessUtils.isAllowedBasicTimestampValidation(davResult.getConclusion())) {
+
                 PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, timestamp, bbbs,
                         basicTimestampConclusion, poe, currentTime, policy, Context.TIMESTAMP);
                 XmlPSV psvResult = psv.execute();
@@ -210,11 +232,15 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
                  */
                 if (isValid(psvResult)) {
 
+                    item = item.setNextItem(timestampIsAcceptable(timestamp, lowestPOETime));
+
                     item = item.setNextItem(messageImprintDigestAlgorithm(timestamp, davResult, lowestPOETime));
 
                     if (isValid(davResult)) {
 
                         item = item.setNextItem(timestampMessageImprint(timestamp));
+
+                        // NOTE: POE is extracted outside the class
 
                     }
                 }
@@ -283,6 +309,12 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampMessageImprint(TimestampWrapper timestampWrapper) {
         return new TimestampMessageImprintCheck<>(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
+    }
+
+    private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampIsAcceptable(TimestampWrapper timestamp, Date lowestPOE) {
+        TimestampAcceptanceValidation tav = new TimestampAcceptanceValidation(i18nProvider, lowestPOE, timestamp, policy);
+        XmlSAV savResult = tav.execute();
+        return new TimestampAcceptanceValidationResultCheck<>(i18nProvider, result, savResult, getFailLevelConstraint());
     }
 
     private LevelConstraint getEvidenceRecordValidationConstraintLevel() {

@@ -177,13 +177,14 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * 
 		 * If this validation returns PASSED, INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE,
 		 * INDETERMINATE/REVOKED_NO_POE, INDETERMINATE/REVOKED_CA_NO_POE,
-		 * INDETERMINATE/TRY_LATER or INDETERMINATE/OUT_OF_BOUNDS_NO_POE, the SVA shall go
-		 * to the next step. Otherwise, the process shall return the status and information returned by the validation
-		 * process for Basic Signatures. 
+		 * INDETERMINATE/TRY_LATER, INDETERMINATE/OUT_OF_BOUNDS_NO_POE or
+		 * INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED, the SVA shall go to the next step. Otherwise, the
+		 * process shall return the status and information returned by the validation process for Basic Signatures.
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
 
-		if (!ValidationProcessUtils.isAllowedBasicSignatureValidation(basicSignatureValidation.getConclusion())) {
+		final XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
+		if (!ValidationProcessUtils.isAllowedBasicSignatureValidation(bsConclusion)) {
 			return;
 		}
 		
@@ -289,7 +290,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * b. Otherwise, the process shall return the indication INDETERMINATE with the sub-indication
 		 *    REVOKED_NO_POE or REVOKED_CA_NO_POE, respectively.
 		 */
-		XmlConclusion bsConclusion = basicSignatureValidation.getConclusion();
 		if (Indication.INDETERMINATE.equals(bsConclusion.getIndication()) &&
 				(SubIndication.REVOKED_NO_POE.equals(bsConclusion.getSubIndication()) || SubIndication.REVOKED_CA_NO_POE.equals(bsConclusion.getSubIndication()))) {
 
@@ -315,10 +315,17 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		if (Indication.PASSED.equals(bsConclusion.getIndication()) ||
 				(Indication.INDETERMINATE.equals(bsConclusion.getIndication()) && SubIndication.OUT_OF_BOUNDS_NO_POE.equals(bsConclusion.getSubIndication()))) {
+
 			// verify signing certificate presence for the check
 			if (currentSignature.getSigningCertificate() != null) {
+
 				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(
 						bestSignatureTime.getTime(), bsConclusion.getIndication(), bsConclusion.getSubIndication()));
+
+				if (!Indication.PASSED.equals(bsConclusion.getIndication())) {
+					return;
+				}
+
 			}
 		}
 
@@ -499,11 +506,14 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	
 	private ChainItem<XmlValidationProcessLongTermData> revocationIsFresh(ChainItem<XmlValidationProcessLongTermData> item, 
 			Date bestSignatureTime, Context currentContext) {
-		for (Map.Entry<CertificateWrapper, CertificateRevocationWrapper> certRevocEntry : certificateRevocationMap.entrySet()) {
-			CertificateWrapper certificate = certRevocEntry.getKey();
+		for (CertificateWrapper certificate : currentSignature.getCertificateChain()) {
+			CertificateRevocationWrapper revocationData = certificateRevocationMap.get(certificate);
+			if (revocationData == null) {
+				continue;
+			}
+
 			SubContext subContext = getSubContext(certificate);
 
-			CertificateRevocationWrapper revocationData = certRevocEntry.getValue();
 			if (RevocationReason.CERTIFICATE_HOLD.equals(revocationData.getReason())) {
 				item = item.setNextItem(checkCertificateSuspensionNotBeforeBestSignatureTime(revocationData,
 						bestSignatureTime, currentContext, subContext));
@@ -585,7 +595,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeBeforeCertificateExpiration(Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
-		return new BestSignatureTimeBeforeCertificateExpirationCheck(i18nProvider, result, bestSignatureTime, signingCertificate,
+		return new BestSignatureTimeBeforeCertificateExpirationCheck<>(i18nProvider, result, bestSignatureTime, signingCertificate,
 				policy.getBestSignatureTimeBeforeExpirationDateOfSigningCertificateConstraint());
 	}
 
@@ -598,7 +608,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> timestampDelay(Date bestSignatureTime) {
-		return new TimestampDelayCheck(i18nProvider, result, currentSignature, bestSignatureTime, policy.getTimestampDelayConstraint());
+		return new TimestampDelayCheck<>(i18nProvider, result, currentSignature, bestSignatureTime, policy.getTimestampDelayConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> tokenUsedAlgorithmsAreSecureAtTime(TokenProxy currentToken, Date validationDate,
