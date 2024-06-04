@@ -94,10 +94,7 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends Abst
 		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
 		
 		XmlConclusion conclusion = result.getConclusion();
-		assertNotNull(conclusion);
-		assertEquals(currentIndication, conclusion.getIndication());
-		assertEquals(currentSubIndication, conclusion.getSubIndication());
-		
+		assertNull(conclusion);
 	}
 
 	@Test

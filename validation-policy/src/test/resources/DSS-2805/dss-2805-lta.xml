@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>FOR_TESTING_LT_OCSP_AND_SIGNER_EXPIRED.asice</DocumentName>
+    <ValidationDate>2024-06-03T11:30:17Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-e+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/manifest.xml</Filename>
+                <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
+                <Entries>
+                    <Entry>test.txt</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>test.txt</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures>
+        <Signature Id="S-69EFD77893836458DD3AE07BCDDC45B4E52E86BF8022C421A4A3B55788C819D3">
+            <DAIdentifier>S0</DAIdentifier>
+            <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
+            <ClaimedSigningTime>2018-09-21T10:20:31Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="REFERENCE" name="S0-RefId0">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>GBIQ+PnHecJtodmyB1veAScwLuDj/KOMmoP1sd2OXTs=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" name="S0-RefId1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>CT9N7wjVwlaf+BH48pW4qoaBEY4nW6MrMmaSEwatyhM=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A47D37FBA0C9B879B5299B917FA3D47A1754AC02B7E32B69099B82A3F746E8BE"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A47D37FBA0C9B879B5299B917FA3D47A1754AC02B7E32B69099B82A3F746E8BE"/>
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <MimeType>text/plain</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-0251B5BED0DA1CBC449DF250DA466B2077AFBC53CFB213F78C8A9593865B58A3">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-A47D37FBA0C9B879B5299B917FA3D47A1754AC02B7E32B69099B82A3F746E8BE">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHswZ6RlMGMxCzAJBgNVBAYTAkVFMSIwIAYDVQQKExlBUyBTZXJ0aWZpdHNlZXJpbWlza2Vza3VzMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzEXMBUGA1UEAxMORVNURUlELVNLIDIwMTUCEH4W4MKfifS7Wngo1ufAfhI=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>JG6L6kfTf7fjK2kJm4Kj97oMm4ebUpm5F/o9R6F1SsA=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-C1842EAFFBB3240B9FD06DF37507EDFB5139F89F0BD761472552AA5D185E8DCF">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-4C9D5BE6FEDDC893B6CE45DC9A02D3DCEE1771BADB66D952BA31C89776761EE9"/>
+                <FoundTimestamp Timestamp="T-EDDC893B6CE45DC9A02D3DCEE1771BADB66D952BA31C8974C9D5BE6F76761EE9"/>
+            </FoundTimestamps>
+            <FoundEvidenceRecords/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-79FC33195D3A60FBD0585D1FC3AA96A8973ABE8E32C5F4CC1DE4F35D8F4A93F9">
+                    <Scope>FULL</Scope>
+                    <Name>test.txt</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ZWK8OlTU1vEBx2KzLvm3swub70JhUgCFn+8FlBJa7Gg=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>p1I+BZNAHQmneynjcgVTTsVGlEuE3lMdTtpLTRbIonM=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>nO4m+s/rPWcjzujXG7WBAEh1Qsd9U22P1C5o0SckqO5BdbJ3h65CRygOW8T9bRrrAZ3uWoLwUQD12BMJsRsVhGm+msKzVhtnbm2zqZPUYHkY+ACFqvPG/H/Omaw2nDlj</SignatureValue>
+        </Signature>
+    </Signatures>
+    <EvidenceRecords/>
+    <UsedCertificates>
+        <Certificate Id="C-0251B5BED0DA1CBC449DF250DA466B2077AFBC53CFB213F78C8A9593865B58A3">
+            <SubjectDistinguishedName Format="CANONICAL">cn=esteid-sk 2015 aia ocsp responder 201809,ou=ocsp,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=ESTEID-SK 2015 AIA OCSP RESPONDER 201809,OU=OCSP,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=esteid-sk 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ESTEID-SK 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>128156094997451856848702653590628845664</SerialNumber>
+            <CommonName>ESTEID-SK 2015 AIA OCSP RESPONDER 201809</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationIdentifier>NTREE-10747013</OrganizationIdentifier>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <OrganizationalUnit>OCSP</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2018-10-05T21:00:00Z</NotAfter>
+            <NotBefore>2018-08-31T21:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-4703D50DE11BE61BFC10350082F9440F217C8722E2811C955CB8AF7B83D76956</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>s6uIvJnVYqSFKgjNtB1yO4NyR1E=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>gz6vmfmQHSrMhM5hpMP6MNH5xfs=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://sk.ee/upload/files/ESTEID-SK_2015.der.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders />
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>AlG1vtDaHLxEnfJQ2kZrIHevvFPPshP3jIqVk4ZbWKM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-1DF352DA003700E3C690EBDA4314D81E15E6BFD35771D15E916A8C528E0A6183">
+            <SubjectDistinguishedName Format="CANONICAL">c=ee,o=sk id solutions as,2.5.4.97=#0c0e4e545245452d3130373437303133,cn=esteid-sk 2015 aia ocsp responder 202406</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=EE,O=SK ID Solutions AS,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=ESTEID-SK 2015 AIA OCSP RESPONDER 202406</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=esteid-sk 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ESTEID-SK 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>64901712824402275738091731139168351044</SerialNumber>
+            <CommonName>ESTEID-SK 2015 AIA OCSP RESPONDER 202406</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationIdentifier>NTREE-10747013</OrganizationIdentifier>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2024-07-05T21:00:00Z</NotAfter>
+            <NotBefore>2024-05-31T21:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-FAF21959EB1D63FE1924839FC004E203FF4CD38E84E17B60E3624540F3384811</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>s6uIvJnVYqSFKgjNtB1yO4NyR1E=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Eygia90m3rf3rl+dbGnU6IR/g7Y=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://sk.ee/upload/files/ESTEID-SK_2015.der.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>HfNS2gA3AOPGkOvaQxTYHhXmv9NXcdFekWqMUo4KYYM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-1E49F497D89D430AAD534B622D82BD9B9D0D4AFDB7B7D36986C5DF0981D9067D">
+            <SubjectDistinguishedName Format="CANONICAL">cn=sk timestamping authority,ou=tsa,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SK TIMESTAMPING AUTHORITY,OU=TSA,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>48765665071482659663074918749208248665</SerialNumber>
+            <CommonName>SK TIMESTAMPING AUTHORITY</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
+            <OrganizationalUnit>TSA</OrganizationalUnit>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2019-09-16T08:40:38Z</NotAfter>
+            <NotBefore>2014-09-16T08:40:38Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-2D8B264193FD4C5EE70BD9F920C5A57DCE30DE3586D5CE8EF3EF9A20BBDAE445</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>EvJaPupWHL/NBqzx8SXJqUvUFJk=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>sbC99+agaRZsIOVR+1z0MGJzVyc=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.sk.ee/repository/crls/eeccrca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Hkn0l9idQwqtU0tiLYK9m50NSv23t9NphsXfCYHZBn0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-A47D37FBA0C9B879B5299B917FA3D47A1754AC02B7E32B69099B82A3F746E8BE">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#30b33386323736173133230336,2.5.4.42=#241554c0c045,2.5.4.4=#4554534d410c064d,cn=superuser\,bob\,66382710627,ou=digital signature,o=esteid (digi-id),c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#30b33386323736173133230336,2.5.4.42=#241554c0c045,2.5.4.4=#4554534d410c064d,CN=superuser\,bob\,66382710627,OU=digital signature,O=ESTEID (DIGI-ID),C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=esteid-sk 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ESTEID-SK 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>11223344</SerialNumber>
+            <SubjectSerialNumber>66382710627</SubjectSerialNumber>
+            <CommonName>superuser,bob,66382710627</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>ID ORG</OrganizationName>
+            <OrganizationalUnit>digital signature</OrganizationalUnit>
+            <GivenName>bob</GivenName>
+            <Surname>superuser</Surname>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-02-04T21:59:59Z</NotAfter>
+            <NotBefore>2018-02-05T09:50:14Z</NotBefore>
+            <PublicKeySize>384</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-51119E2D7411126AF60742E36CA2515B3A671D978A96FC6B74907B284E0BA281</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>s6uIvJnVYqSFKgjNtB1yO4NyR1E=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>pHe76nPR72ESvlx2P9GctcNc0fg=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.sk.ee/repositoorium/CPS">1.3.6.1.4.1.10015.1.2</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://c.sk.ee/ESTEID-SK_2015.der.crt</caIssuersUrl>
+                    <ocspUrl>http://aia.sk.ee/esteid2015</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.sk.ee/crls/esteid/esteid2015.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="EN">https://sk.ee/en/repository/conditions-for-use-of-certificates/</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders />
+            <Revocations>
+                <CertificateRevocation Revocation="R-C1842EAFFBB3240B9FD06DF37507EDFB5139F89F0BD761472552AA5D185E8DCF">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>JG6L6kfTf7fjK2kJm4Kj97oMm4ebUpm5F/o9R6F1SsA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>112324828676200291871926431888494945866</SerialNumber>
+            <CommonName>EE Certification Centre Root CA</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
+            <Email>pki@sk.ee</Email>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2030-12-17T23:59:59Z</NotAfter>
+            <NotBefore>2010-10-30T10:10:30Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-56174D3AD971A8944964B189811F3008493A6A90422E3C5804EC838D4F94F622</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>EvJaPupWHL/NBqzx8SXJqUvUFJk=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="codeSigning">1.3.6.1.5.5.7.3.3</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PoS6Q0KQhRbndXPAmS8JecoITkaFaB/xlcy6iiKbinY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F">
+            <SubjectDistinguishedName Format="CANONICAL">cn=esteid-sk 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=ESTEID-SK 2015,2.5.4.97=#0c0e4e545245452d3130373437303133,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>92090760538140121355861069916590054235</SerialNumber>
+            <CommonName>ESTEID-SK 2015</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationIdentifier>NTREE-10747013</OrganizationIdentifier>
+            <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2030-12-17T23:59:59Z</NotAfter>
+            <NotBefore>2015-12-17T12:38:43Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-725E317CAB91765067B50101A1B0D27779CFB7C19A98EFE56102C9829F9020AF</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA384</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>EvJaPupWHL/NBqzx8SXJqUvUFJk=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>s6uIvJnVYqSFKgjNtB1yO4NyR1E=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.sk.ee/CPS">1.3.6.1.4.1.10015.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.10015.1.2</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.10015.1.3</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.10015.1.4</certificatePolicy>
+                </CertificatePolicies>
+                <NameConstraints OID="2.5.29.30" critical="false">
+                    <ExcludedSubtree minimum="0" type="dNSName">""</ExcludedSubtree>
+                    <ExcludedSubtree minimum="0" type="iPAddress">#0000000000000000</ExcludedSubtree>
+                    <ExcludedSubtree minimum="0" type="iPAddress">#0000000000000000000000000000000000000000000000000000000000000000</ExcludedSubtree>
+                </NameConstraints>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.sk.ee/certs/EE_Certification_Centre_Root_CA.der.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.sk.ee/CA</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.sk.ee/repository/crls/eeccrca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders />
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>dNmS05ELz340uLXNKPkerrT0Hz2mOU14uMQ2ctQ/Tw8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-C1842EAFFBB3240B9FD06DF37507EDFB5139F89F0BD761472552AA5D185E8DCF">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2018-09-21T10:20:32Z</ProductionDate>
+            <ThisUpdate>2018-09-21T10:20:32Z</ThisUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-0251B5BED0DA1CBC449DF250DA466B2077AFBC53CFB213F78C8A9593865B58A3"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-0251B5BED0DA1CBC449DF250DA466B2077AFBC53CFB213F78C8A9593865B58A3"/>
+                <ChainItem Certificate="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F"/>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-0251B5BED0DA1CBC449DF250DA466B2077AFBC53CFB213F78C8A9593865B58A3">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=ESTEID-SK 2015 AIA OCSP RESPONDER 201809, OU=OCSP, OID.2.5.4.97=NTREE-10747013, O=SK ID Solutions AS, C=EE</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wYQur/uzJAuf0G3zdQft+1E5+J8L12FHJVKqXRhejc8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-4C9D5BE6FEDDC893B6CE45DC9A02D3DCEE1771BADB66D952BA31C89776761EE9">
+            <ProductionTime>2018-09-21T10:20:32Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Rn0GrskvQhjbEWUJGmXqdvZL+JTdfaGMMrWoM9Ueh3s=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-1E49F497D89D430AAD534B622D82BD9B9D0D4AFDB7B7D36986C5DF0981D9067D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-1E49F497D89D430AAD534B622D82BD9B9D0D4AFDB7B7D36986C5DF0981D9067D"/>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>EMAILADDRESS=pki@sk.ee, CN=EE Certification Centre Root CA, O=AS Sertifitseerimiskeskus, C=EE</IssuerName>
+                    <SerialNumber>48765665071482659663074918749208248665</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">CN=SK TIMESTAMPING AUTHORITY,OU=TSA,O=AS Sertifitseerimiskeskus,C=EE</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-1E49F497D89D430AAD534B622D82BD9B9D0D4AFDB7B7D36986C5DF0981D9067D">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGNMHmkdzB1MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEoMCYGA1UEAwwfRUUgQ2VydGlmaWNhdGlvbiBDZW50cmUgUm9vdCBDQTEYMBYGCSqGSIb3DQEJARYJcGtpQHNrLmVlAhAkr+zrEmjQAlQX94btbwFZ</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>stAhgvC5biocaH7OMjQII5gZMLY=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-79FC33195D3A60FBD0585D1FC3AA96A8973ABE8E32C5F4CC1DE4F35D8F4A93F9" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-69EFD77893836458DD3AE07BCDDC45B4E52E86BF8022C421A4A3B55788C819D3" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-A47D37FBA0C9B879B5299B917FA3D47A1754AC02B7E32B69099B82A3F746E8BE" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PmCDq6iESmHR2AcuJ/57Ffj1vKch/XP4Oh5qAoX332E=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-EDDC893B6CE45DC9A02D3DCEE1771BADB66D952BA31C8974C9D5BE6F76761EE9">
+            <ProductionTime>2018-09-21T22:20:32Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Rn0GrskvQhjbEWUJGmXqdvZL+JTdfaGMMrWoM9Ueh3s=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-1E49F497D89D430AAD534B622D82BD9B9D0D4AFDB7B7D36986C5DF0981D9067D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-1E49F497D89D430AAD534B622D82BD9B9D0D4AFDB7B7D36986C5DF0981D9067D"/>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>EMAILADDRESS=pki@sk.ee, CN=EE Certification Centre Root CA, O=AS Sertifitseerimiskeskus, C=EE</IssuerName>
+                    <SerialNumber>48765665071482659663074918749208248665</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">CN=SK TIMESTAMPING AUTHORITY,OU=TSA,O=AS Sertifitseerimiskeskus,C=EE</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-1E49F497D89D430AAD534B622D82BD9B9D0D4AFDB7B7D36986C5DF0981D9067D">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGNMHmkdzB1MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEoMCYGA1UEAwwfRUUgQ2VydGlmaWNhdGlvbiBDZW50cmUgUm9vdCBDQTEYMBYGCSqGSIb3DQEJARYJcGtpQHNrLmVlAhAkr+zrEmjQAlQX94btbwFZ</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>stAhgvC5biocaH7OMjQII5gZMLY=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-79FC33195D3A60FBD0585D1FC3AA96A8973ABE8E32C5F4CC1DE4F35D8F4A93F9" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-69EFD77893836458DD3AE07BCDDC45B4E52E86BF8022C421A4A3B55788C819D3" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-A47D37FBA0C9B879B5299B917FA3D47A1754AC02B7E32B69099B82A3F746E8BE" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-C1842EAFFBB3240B9FD06DF37507EDFB5139F89F0BD761472552AA5D185E8DCF" Category="REVOCATION"/>
+                <TimestampedObject Token="C-0251B5BED0DA1CBC449DF250DA466B2077AFBC53CFB213F78C8A9593865B58A3" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-74D992D3910BCF7E34B8B5CD28F91EAEB4F41F3DA6394D78B8C43672D43F4F0F" Category="CERTIFICATE"/>
+                <TimestampedObject Token="T-4C9D5BE6FEDDC893B6CE45DC9A02D3DCEE1771BADB66D952BA31C89776761EE9" Category="TIMESTAMP"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PmCDq6iESmHR2AcuJ/57Ffj1vKch/XP4Oh5qAoX332E=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-79FC33195D3A60FBD0585D1FC3AA96A8973ABE8E32C5F4CC1DE4F35D8F4A93F9">
+            <ReferencedName>test.txt</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>GBIQ+PnHecJtodmyB1veAScwLuDj/KOMmoP1sd2OXTs=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists />
+</DiagnosticData>

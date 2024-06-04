@@ -75,6 +75,7 @@ import eu.europa.esig.dss.validation.process.vpfltvd.checks.AcceptableBasicSigna
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeSuspensionTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.CertificateKnownToBeNotRevokedCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
@@ -323,6 +324,9 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 						bestSignatureTime.getTime(), bsConclusion.getIndication(), bsConclusion.getSubIndication()));
 
 				if (!Indication.PASSED.equals(bsConclusion.getIndication())) {
+
+					item = item.setNextItem(certificateKnownToBeNotRevoked(bsConclusion));
+
 					return;
 				}
 
@@ -585,6 +589,13 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(i18nProvider, result,
 				bestSignatureTime, signingCertificate, currentIndication, currentSubIndication, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevoked(XmlConclusion conclusion) {
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
+		CertificateRevocationWrapper revocationWrapper = certificateRevocationMap.get(signingCertificate);
+		return new CertificateKnownToBeNotRevokedCheck<>(i18nProvider, result, signingCertificate, revocationWrapper,
+				currentDate, conclusion, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {

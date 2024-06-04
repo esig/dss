@@ -52,9 +52,6 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	/** Defines whether revocation data is required for the certificate */
 	private final boolean revocationDataRequired;
 
-	/** The SubIndication if validation fails */
-	private SubIndication subIndication;
-
 	/**
 	 * Default constructor
 	 *
@@ -77,20 +74,19 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 
 	@Override
 	protected boolean process() {
-		boolean inValidityRange = isInValidityRange();
-		if (!inValidityRange) {
-			subIndication = SubIndication.OUT_OF_BOUNDS_NO_POE;
-			if (!revocationDataRequired || (usedCertificateRevocation != null && !usedCertificateRevocation.isRevoked())) {
-				subIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
-			}
-		}
-		return inValidityRange;
+		return isInValidityRange(certificate);
 	}
 
-	private boolean isInValidityRange() {
-		Date notBefore = certificate.getNotBefore();
-		Date notAfter = certificate.getNotAfter();
+	private boolean isInValidityRange(CertificateWrapper certificateWrapper) {
+		Date notBefore = certificateWrapper.getNotBefore();
+		Date notAfter = certificateWrapper.getNotAfter();
 		return (notBefore != null && (currentTime.compareTo(notBefore) >= 0)) && (notAfter != null && (currentTime.compareTo(notAfter) <= 0));
+	}
+
+	private boolean isRevocationDataValid() {
+		CertificateWrapper revocationDataIssuer = usedCertificateRevocation.getSigningCertificate();
+		return revocationDataIssuer != null && (revocationDataIssuer.isTrusted() ||
+				isInValidityRange(usedCertificateRevocation.getSigningCertificate())); // other checks are performed before
 	}
 
 	@Override
@@ -118,7 +114,12 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
-		return subIndication;
+		boolean certificateIsKnownToNotBeRevoked = usedCertificateRevocation != null
+				&& !usedCertificateRevocation.isRevoked() && isRevocationDataValid();
+		if (!revocationDataRequired || certificateIsKnownToNotBeRevoked) {
+			return SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
+		}
+		return SubIndication.OUT_OF_BOUNDS_NO_POE;
 	}
 
 }
