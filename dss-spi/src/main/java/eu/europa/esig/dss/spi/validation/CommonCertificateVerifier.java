@@ -92,6 +92,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private boolean revocationFallback = false;
 
 	/**
+	 * Verifies validity of a timestamp tokens encapsulated within the signature document.
+	 */
+	private TimestampTokenVerifier timestampTokenVerifier;
+
+	/**
 	 * The AIA source used to download a certificate's issuer by the AIA URI(s)
 	 * defining within a certificate.
 	 */
@@ -281,6 +286,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setRevocationFallback(boolean revocationFallback) {
 		this.revocationFallback = revocationFallback;
+	}
+
+	@Override
+	public TimestampTokenVerifier getTimestampTokenVerifier() {
+		return timestampTokenVerifier;
+	}
+
+	@Override
+	public void setTimestampTokenVerifier(TimestampTokenVerifier timestampTokenVerifier) {
+		this.timestampTokenVerifier = timestampTokenVerifier;
 	}
 
 	@Override
@@ -507,11 +522,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	@Deprecated
 	public boolean isExtractPOEFromUntrustedChains() {
 		return extractPOEFromUntrustedChains;
 	}
 
 	@Override
+	@Deprecated
 	public void setExtractPOEFromUntrustedChains(boolean extractPOEFromUntrustedChains) {
 		this.extractPOEFromUntrustedChains = extractPOEFromUntrustedChains;
 	}

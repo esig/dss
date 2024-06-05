@@ -302,10 +302,12 @@ import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 ...
 ----
                                                                      a|[source,java]
+----
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 ...
+----
 
 |XAdES definitions           a|
 [source,java]
@@ -316,10 +318,32 @@ import eu.europa.esig.xades.definition.xades132.XAdES132Path;
 ...
 ----
                                                                      a|[source,java]
+----
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 ...
+----
+
+|CertificateVerifier#setExtractPOEFromUntrustedChains deprecated     a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+certificateVerifier.setExtractPOEFromUntrustedChains(true);
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.spi.validation.TimestampTokenVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+
+TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
+timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
+certificateVerifier.setTimestampTokenVerifier(timestampTokenVerifier);
+----
 
 |===
 

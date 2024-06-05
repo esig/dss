@@ -107,7 +107,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void testBridgeCertificateMovesUpInsteadofSidewaysWithoutRootOnValidation() {
+	public void testBridgeCertificateMovesUpInsteadOfSidewaysWithoutRootOnValidation() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certificateVerifier.setTrustedCertSources(certSource);
@@ -139,7 +139,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void testBridgeCertificateMovesUpInsteadofSidewaysAndFindsRootOnValidation() {
+	public void testBridgeCertificateMovesUpInsteadOfSidewaysAndFindsRootOnValidation() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certificateVerifier.setTrustedCertSources(certSource);

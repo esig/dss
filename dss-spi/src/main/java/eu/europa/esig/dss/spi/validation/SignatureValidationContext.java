@@ -155,6 +155,9 @@ public class SignatureValidationContext implements ValidationContext {
 	/** Defines whether a revocation data still shall be returned, when validation of obtained revocation tokens failed */
 	private boolean revocationFallback;
 
+	/** This class is used to verify validity of a {@code TimestampToken} */
+	private TimestampTokenVerifier timestampTokenVerifier;
+
 	/** External trusted certificate sources */
 	private ListCertificateSource trustedCertSources;
 
@@ -170,7 +173,10 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * This variable indicates whether a POE should be extracted from timestamps
 	 * with certificate chains from untrusted sources.
+	 *
+	 * @deprecated since DSS 6.1. To be removed.
 	 */
+	@Deprecated
 	private boolean extractPOEFromUntrustedChains;
 
 	/**
@@ -211,6 +217,7 @@ public class SignatureValidationContext implements ValidationContext {
 		this.revocationDataLoadingStrategyFactory = certificateVerifier.getRevocationDataLoadingStrategyFactory();
 		this.revocationDataVerifier = certificateVerifier.getRevocationDataVerifier();
 		this.revocationFallback = certificateVerifier.isRevocationFallback();
+		this.timestampTokenVerifier = certificateVerifier.getTimestampTokenVerifier();
 	}
 
 	/**
@@ -227,6 +234,17 @@ public class SignatureValidationContext implements ValidationContext {
 			revocationDataVerifier.setTrustedCertificateSource(trustedCertSources);
 		}
 		return revocationDataVerifier;
+	}
+
+	private TimestampTokenVerifier getTimestampTokenVerifier() {
+		if (timestampTokenVerifier == null) {
+			timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
+			timestampTokenVerifier.setAcceptUntrustedCertificateChains(extractPOEFromUntrustedChains);
+		}
+		if (timestampTokenVerifier.getTrustedCertificateSource() == null) {
+			timestampTokenVerifier.setTrustedCertificateSource(trustedCertSources);
+		}
+		return timestampTokenVerifier;
 	}
 
 	@Override
@@ -417,13 +435,30 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @return the built certificate chain
 	 */
 	private List<Token> getCertChain(final Token token) {
-		List<Token> chain = new LinkedList<>();
+		final List<Token> chain = new LinkedList<>();
 		Token issuerCertificateToken = token;
 		do {
 			chain.add(issuerCertificateToken);
 			issuerCertificateToken = getIssuer(issuerCertificateToken);
 		} while (issuerCertificateToken != null && !chain.contains(issuerCertificateToken));
 		return chain;
+	}
+
+	/**
+	 * This method computes certificate chain for the given {@code token} without including the current {@code token}
+	 * to the chain, when it is not instance of {@code CertificateToken}
+	 *
+	 * @param token {@link Token}
+	 * @return a list of {@link CertificateToken}s
+	 */
+	private List<CertificateToken> getCertificateTokenChain(final Token token) {
+		final List<CertificateToken> certificateChain = new LinkedList<>();
+		for (Token chainItem : getCertChain(token)) {
+			if (chainItem instanceof CertificateToken) {
+				certificateChain.add((CertificateToken) chainItem);
+			}
+		}
+		return certificateChain;
 	}
 
 	private CertificateToken getIssuer(final Token token) {
@@ -739,21 +774,7 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @return TRUE if the timestamp is valid, FALSE otherwise
 	 */
 	protected boolean isTimestampValid(TimestampToken timestampToken) {
-		if (!extractPOEFromUntrustedChains && !containsTrustAnchor(getCertChain(timestampToken))) {
-			LOG.warn("POE extraction is skipped for untrusted timestamp : {}.", timestampToken.getDSSIdAsString());
-			return false;
-		}
-		if (!timestampToken.isMessageImprintDataIntact()) {
-			LOG.warn("POE extraction is skipped for timestamp : {}. The message-imprint is not intact!",
-					timestampToken.getDSSIdAsString());
-			return false;
-		}
-		if (!timestampToken.isSignatureIntact()) {
-			LOG.warn("POE extraction is skipped for timestamp : {}. The signature is not intact!",
-					timestampToken.getDSSIdAsString());
-			return false;
-		}
-		return true;
+		return getTimestampTokenVerifier().isAcceptable(timestampToken, getCertificateTokenChain(timestampToken));
 	}
 
 	private void registerPOE(String tokenId, TimestampToken timestampToken) {

@@ -27,14 +27,15 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.aia.AIASource;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
 import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
+import eu.europa.esig.dss.spi.validation.TimestampTokenVerifier;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.aia.AIASource;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.validation.RevocationDataVerifierFactory;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.slf4j.event.Level;
@@ -187,6 +188,13 @@ public class CertificateVerifierSnippet {
         // NOTE : the property is used for signature extension, but not for validation.
         cv.setRevocationFallback(false);
 
+        // DSS 6.1+ :
+        // Defines a behavior for acceptance of timestamp tokens present within a signature document as POE
+        // for the signature and data objects
+        // NOTE: The class is not synchronized with the rules defined within the used XML Validation Policy.
+        TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
+        cv.setTimestampTokenVerifier(timestampTokenVerifier);
+
         // end::demo[]
 
         final ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
@@ -201,10 +209,12 @@ public class CertificateVerifierSnippet {
         // import java.util.HashMap;
         // import java.util.Map;
 
-        // The following method is used to create a RevocationDataVerifier synchronized with a default validation policy
+        // The following method is used to create a RevocationDataVerifier synchronized
+        // with a default validation policy
         revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
 
-        // This method created a RevocationDataVerifier with en empty configuration. All configuration shall be provided manually.
+        // This method created a RevocationDataVerifier with en empty configuration.
+        // All configuration shall be provided manually.
         revocationDataVerifier = RevocationDataVerifier.createEmptyRevocationDataVerifier();
 
         // It is also possible to instantiate a RevocationDataVerifier from a custom validation policy
@@ -285,6 +295,23 @@ public class CertificateVerifierSnippet {
         revocationDataVerifier.setCheckRevocationFreshnessNextUpdate(false);
 
         // end::rev-data-verifier[]
+
+        // tag::tst-token-verifier[]
+
+        // The following method is used to create a TimestampTokenVerifier configured
+        // with default behavior (such as to accept only timestamps issued by trusted CAs)
+        timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
+
+        // This method created a TimestampTokenVerifier with en empty configuration.
+        // All configuration shall be provided manually.
+        timestampTokenVerifier = TimestampTokenVerifier.createEmptyTimestampTokenVerifier();
+
+        // Defines whether timestamp tokens created by untrusted CAs should be considered as valid,
+        // and their POE should be extracted during the validation process
+        // Default : FALSE (only trusted timestamps are accepted)
+        timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
+
+        // end::tst-token-verifier[]
 
         // tag::disable-augmentation-alert[]
         cv.setAugmentationAlertOnHigherSignatureLevel(new LogOnStatusAlert());

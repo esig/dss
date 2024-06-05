@@ -131,6 +131,26 @@ public interface CertificateVerifier {
 	void setRevocationFallback(boolean revocationFallback);
 
 	/**
+	 * Returns a {@code TimestampTokenVerifier} associated with this verifier.
+	 *
+	 * @return {@link TimestampTokenVerifier}
+	 */
+	TimestampTokenVerifier getTimestampTokenVerifier();
+
+	/**
+	 * Sets {@code TimestampTokenVerifier} used to validate acceptance of
+	 * the timestamp tokens encapsulated within the signature.
+	 * <p>
+	 * NOTE: This object is not synchronized by default with the used XML Validation Policy.
+	 *       Please configure the object yourself in case a customized behavior is expected for acceptance
+	 *       of timestamp tokens.
+	 *
+	 * @param timestampTokenVerifier
+	 *                    {@link TimestampTokenVerifier}
+	 */
+	void setTimestampTokenVerifier(final TimestampTokenVerifier timestampTokenVerifier);
+
+	/**
 	 * Returns the trusted certificate sources associated with this verifier. These
 	 * sources are used to identify the trusted anchors.
 	 *
@@ -467,7 +487,13 @@ public interface CertificateVerifier {
 	 * @param enable
 	 *               true if POE extraction is allowed for timestamps from untrusted
 	 *               certificate chains
+	 * @deprecated since DSS 6.1. Please use {@code
+	 * 		TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
+	 * 		timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
+	 * 	    certificateVerifier.setTimestampTokenVerifier(timestampTokenVerifier);
+	 * }
 	 */
+	@Deprecated
 	void setExtractPOEFromUntrustedChains(boolean enable);
 
 	/**
@@ -476,7 +502,12 @@ public interface CertificateVerifier {
 	 *
 	 * @return true if POEs should be extracted from timestamp with untrusted
 	 *         certificate chains
+	 * @deprecated since DSS 6.1. Please use {@code
+	 * 		TimestampTokenVerifier timestampTokenVerifier = certificateVerifier.getTimestampTokenVerifier();
+	 * 		boolean extractPOEFromUntrustedChains = timestampTokenVerifier.getAcceptUntrustedCertificateChains();
+	 * }
 	 */
+	@Deprecated
 	boolean isExtractPOEFromUntrustedChains();
 
 }

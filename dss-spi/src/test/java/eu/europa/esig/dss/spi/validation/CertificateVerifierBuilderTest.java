@@ -56,6 +56,7 @@ public class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.isRevocationFallback(), copy.isRevocationFallback());
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isCheckRevocationForUntrustedChains(), copy.isCheckRevocationForUntrustedChains());
+        assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
         assertEquals(certificateVerifier.isExtractPOEFromUntrustedChains(), copy.isExtractPOEFromUntrustedChains());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
@@ -88,6 +89,7 @@ public class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getDefaultDigestAlgorithm(), copy.getDefaultDigestAlgorithm());
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isExtractPOEFromUntrustedChains(), copy.isExtractPOEFromUntrustedChains());
+        assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertNull(copy.getAIASource());
@@ -120,6 +122,7 @@ public class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getRevocationDataLoadingStrategyFactory(), copy.getRevocationDataLoadingStrategyFactory());
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isCheckRevocationForUntrustedChains(), copy.isCheckRevocationForUntrustedChains());
+        assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
         assertEquals(certificateVerifier.isExtractPOEFromUntrustedChains(), copy.isExtractPOEFromUntrustedChains());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
@@ -153,6 +156,7 @@ public class CertificateVerifierBuilderTest {
         });
         certificateVerifier.setRevocationDataLoadingStrategyFactory(new CRLFirstRevocationDataLoadingStrategyFactory());
         certificateVerifier.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
+        certificateVerifier.setTimestampTokenVerifier(TimestampTokenVerifier.createDefaultTimestampTokenVerifier());
         certificateVerifier.setRevocationFallback(true);
         certificateVerifier.setCheckRevocationForUntrustedChains(true);
         certificateVerifier.setExtractPOEFromUntrustedChains(true);

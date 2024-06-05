@@ -54,6 +54,7 @@ public class CertificateVerifierBuilder {
 			copy.setRevocationDataLoadingStrategyFactory(certificateVerifier.getRevocationDataLoadingStrategyFactory());
 			copy.setRevocationFallback(certificateVerifier.isRevocationFallback());
 			copy.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
+			copy.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
 			copy.setExtractPOEFromUntrustedChains(certificateVerifier.isExtractPOEFromUntrustedChains());
 			copy.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
@@ -87,6 +88,7 @@ public class CertificateVerifierBuilder {
 			offlineCertificateVerifier.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 			offlineCertificateVerifier.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
+			offlineCertificateVerifier.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
 			offlineCertificateVerifier.setExtractPOEFromUntrustedChains(certificateVerifier.isExtractPOEFromUntrustedChains());
 		}
 		// disable alerting
