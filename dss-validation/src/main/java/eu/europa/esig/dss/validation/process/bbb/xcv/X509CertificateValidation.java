@@ -56,7 +56,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	private final CertificateWrapper currentCertificate;
 
 	/** The validation time */
-	private final Date validationDate;
+	private final Date currentTime;
 
 	/** The certificate usage time */
 	private final Date usageTime;
@@ -72,13 +72,13 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param currentCertificate {@link CertificateWrapper} to validate
-	 * @param validationDate {@link Date}
+	 * @param currentTime {@link Date}
 	 * @param context {@link Context}
 	 * @param validationPolicy {@link ValidationPolicy}
 	 */
 	public X509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate,
-			Date validationDate, Context context, ValidationPolicy validationPolicy) {
-		this(i18nProvider, currentCertificate, validationDate, validationDate, context, validationPolicy);
+									 Date currentTime, Context context, ValidationPolicy validationPolicy) {
+		this(i18nProvider, currentCertificate, currentTime, currentTime, context, validationPolicy);
 	}
 
 	/**
@@ -86,17 +86,17 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param currentCertificate {@link CertificateWrapper} to validate
-	 * @param validationDate {@link Date}
+	 * @param currentTime {@link Date}
 	 * @param usageTime {@link Date}
 	 * @param context {@link Context}
 	 * @param validationPolicy {@link ValidationPolicy}
 	 */
-	public X509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate, 
-			Date validationDate, Date usageTime, Context context, ValidationPolicy validationPolicy) {
+	public X509CertificateValidation(I18nProvider i18nProvider, CertificateWrapper currentCertificate,
+									 Date currentTime, Date usageTime, Context context, ValidationPolicy validationPolicy) {
 		super(i18nProvider, new XmlXCV());
 
 		this.currentCertificate = currentCertificate;
-		this.validationDate = validationDate;
+		this.currentTime = currentTime;
 		this.usageTime = usageTime;
 
 		this.context = context;
@@ -119,35 +119,36 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			item = item.setNextItem(trustServiceWithExpectedStatus());
 
-			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(i18nProvider, currentCertificate, validationDate, 
-					context, SubContext.SIGNING_CERT, validationPolicy);
+			SubX509CertificateValidation certificateValidation = new SubX509CertificateValidation(i18nProvider,
+					currentCertificate, currentTime, currentTime, context, SubContext.SIGNING_CERT, validationPolicy);
 			XmlSubXCV subXCV = certificateValidation.execute();
 			result.getSubXCV().add(subXCV);
+
+			item = item.setNextItem(checkSubXCVResult(subXCV));
 
 			boolean trustAnchorReached = currentCertificate.isTrusted();
 
 			final Model model = validationPolicy.getValidationModel();
 
 			// Check CA_CERTIFICATEs
-			Date lastDate = Model.SHELL.equals(model) ? validationDate : currentCertificate.getNotBefore();
+			Date lastDate = Model.SHELL.equals(model) ? currentTime : currentCertificate.getNotBefore();
 			List<CertificateWrapper> certificateChainList = currentCertificate.getCertificateChain();
 			if (Utils.isCollectionNotEmpty(certificateChainList)) {
 				for (CertificateWrapper certificate : certificateChainList) {
 					if (!trustAnchorReached) {
-						certificateValidation = new SubX509CertificateValidation(i18nProvider, certificate, lastDate, 
-								context, SubContext.CA_CERTIFICATE, validationPolicy);
+						certificateValidation = new SubX509CertificateValidation(i18nProvider,
+								certificate, lastDate, currentTime, context, SubContext.CA_CERTIFICATE, validationPolicy);
 						subXCV = certificateValidation.execute();
 						result.getSubXCV().add(subXCV);
 
+						item = item.setNextItem(checkSubXCVResult(subXCV));
+
 						trustAnchorReached = certificate.isTrusted();
-						lastDate = Model.HYBRID.equals(model) ? lastDate : (Model.SHELL.equals(model) ? validationDate : certificate.getNotBefore());
+						lastDate = Model.HYBRID.equals(model) ? lastDate : (Model.SHELL.equals(model) ? currentTime : certificate.getNotBefore());
 					}
 				}
 			}
 
-			for (XmlSubXCV subXCVResult : result.getSubXCV()) {
-				item = item.setNextItem(checkSubXCVResult(subXCVResult));
-			}
 		}
 	}
 

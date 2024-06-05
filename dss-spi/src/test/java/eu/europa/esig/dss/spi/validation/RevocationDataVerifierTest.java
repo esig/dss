@@ -208,7 +208,7 @@ public class RevocationDataVerifierTest {
         assertFalse(revocationDataVerifier.isRevocationDataFresh(ocspToken, new Date(), Context.REVOCATION));
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2022, Calendar.JUNE, 1);
+        calendar.set(2022, Calendar.JUNE, 1, 0, 0, 0);
         assertTrue(revocationDataVerifier.isRevocationDataFresh(ocspToken, calendar.getTime(), Context.SIGNATURE));
         assertTrue(revocationDataVerifier.isRevocationDataFresh(ocspToken, calendar.getTime(), Context.TIMESTAMP));
         assertTrue(revocationDataVerifier.isRevocationDataFresh(ocspToken, calendar.getTime(), Context.REVOCATION));
@@ -227,7 +227,7 @@ public class RevocationDataVerifierTest {
         assertTrue(revocationDataVerifier.isRevocationDataFresh(ocspToken, calendar.getTime(), Context.TIMESTAMP));
         assertTrue(revocationDataVerifier.isRevocationDataFresh(ocspToken, calendar.getTime(), Context.REVOCATION));
 
-        calendar.set(2022, Calendar.JUNE, 9);
+        calendar.set(2022, Calendar.JUNE, 9, 0, 0, 0);
         assertFalse(revocationDataVerifier.isRevocationDataFresh(ocspToken, calendar.getTime(), Context.SIGNATURE));
         assertFalse(revocationDataVerifier.isRevocationDataFresh(ocspToken, calendar.getTime(), Context.TIMESTAMP));
         assertFalse(revocationDataVerifier.isRevocationDataFresh(ocspToken, calendar.getTime(), Context.REVOCATION));
@@ -275,7 +275,7 @@ public class RevocationDataVerifierTest {
         assertFalse(revocationDataVerifier.isRevocationDataFresh(crlToken, new Date(), Context.REVOCATION));
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2021, Calendar.JUNE, 18, 8, 0);
+        calendar.set(2021, Calendar.JUNE, 18, 8, 0, 0);
         assertTrue(revocationDataVerifier.isRevocationDataFresh(crlToken, calendar.getTime(), Context.SIGNATURE));
         assertTrue(revocationDataVerifier.isRevocationDataFresh(crlToken, calendar.getTime(), Context.TIMESTAMP));
         assertTrue(revocationDataVerifier.isRevocationDataFresh(crlToken, calendar.getTime(), Context.REVOCATION));

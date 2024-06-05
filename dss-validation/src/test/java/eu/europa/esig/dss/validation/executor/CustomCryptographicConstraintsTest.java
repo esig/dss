@@ -843,6 +843,16 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 		cryptographic.setAlgoExpirationDate(algoExpirationDate);
 
 		simpleReport = createSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		acceptableEncryptionAlgos.getAlgos().add(createAlgo("RSA"));
+
+		simpleReport = createSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		miniPublicKeySize.getAlgos().add(createAlgo("RSA", 1024));
+
+		simpleReport = createSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
 		algoExpirationDate.getAlgos().clear();

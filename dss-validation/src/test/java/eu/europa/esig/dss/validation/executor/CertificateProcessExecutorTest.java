@@ -1012,6 +1012,29 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 		assertTrue(checkMessageValuePresence(simpleReport.getX509ValidationInfo(certId), i18nProvider.getMessage(MessageTag.BBB_XCV_CCCBB_ANS)));
 	}
 
+	@Test
+	public void certForESigQcForLegalPersonTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_forESig_qcForLegalPerson.xml"));
+		assertNotNull(diagnosticData);
+
+		String certId = "C-908DF0B8225D90BCD7336F1A551017D03D2973737100C451A0C682239BDB34A9";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+		executor.setCertificateId(certId);
+
+		CertificateReports reports = executor.execute();
+		SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(certId));
+		assertEquals(CertificateQualification.CERT_FOR_ESIG, simpleReport.getQualificationAtCertificateIssuance());
+		assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrorsAtIssuanceTime(certId),
+				i18nProvider.getMessage(MessageTag.QUAL_HAS_TS_CERT_TYPE_ANS)));
+		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
+	}
+
 	private void checkReports(CertificateReports reports) {
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticData());

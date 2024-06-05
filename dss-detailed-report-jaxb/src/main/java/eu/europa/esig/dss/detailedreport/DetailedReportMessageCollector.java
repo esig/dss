@@ -247,8 +247,12 @@ public class DetailedReportMessageCollector {
 		List<Message> result = new ArrayList<>();
 
 		XmlConstraintsConclusion highestConclusion = detailedReport.getHighestConclusion(xmlSignature.getId());
-		if (MessageType.ERROR != type || !Indication.PASSED.equals(highestConclusion.getConclusion().getIndication())) {
+		if (MessageType.ERROR != type || (xmlSignature.getValidationProcessBasicSignature() != null
+				&& highestConclusion.getConclusion().getSubIndication() == xmlSignature.getValidationProcessBasicSignature().getConclusion().getSubIndication())) {
 			addMessages(result, getMessages(type, xmlSignature.getValidationProcessBasicSignature()));
+		}
+		if (MessageType.ERROR != type || (xmlSignature.getValidationProcessLongTermData() != null
+				&& highestConclusion.getConclusion().getSubIndication() == xmlSignature.getValidationProcessLongTermData().getConclusion().getSubIndication())) {
 			addMessages(result, getMessages(type, xmlSignature.getValidationProcessLongTermData()));
 		}
 		addMessages(result, getMessages(type, highestConclusion));

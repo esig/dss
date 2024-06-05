@@ -123,18 +123,4 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlCon
 		return SubIndication.NOT_YET_VALID;
 	}
 
-	@Override
-	protected Indication getSuccessIndication() {
-		if (Indication.PASSED.equals(currentIndication)) {
-			// continue if PASSED returned
-			return null;
-		}
-		return currentIndication;
-	}
-
-	@Override
-	protected SubIndication getSuccessSubIndication() {
-		return currentSubIndication;
-	}
-
 }

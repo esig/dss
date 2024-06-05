@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
@@ -60,6 +61,11 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 			XmlConstraintsConclusion longTermValidationResult, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.longTermValidationResult = longTermValidationResult;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.LTV;
 	}
 
 	@Override

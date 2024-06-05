@@ -142,12 +142,6 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
                 acceptableCertificateRevocations, getFailLevelConstraint());
     }
 
-    @Override
-    public CertificateRevocationWrapper getLatestAcceptableCertificateRevocation() {
-        // not applicable
-        return null;
-    }
-
     /**
      * Returns a list of acceptable certificate revocation data in the past validation process
      *

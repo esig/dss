@@ -423,6 +423,8 @@
 			<xs:enumeration value="VTS" />
 			<xs:enumeration value="TST_PSV" />
 			<xs:enumeration value="TST" />
+			<xs:enumeration value="LTV" />
+			<xs:enumeration value="LTA" />
 			<xs:enumeration value="ER" />
 		</xs:restriction>
 	</xs:simpleType>

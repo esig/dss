@@ -31,9 +31,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -51,7 +51,9 @@ import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidati
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.LTALevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.TLevelTimeStampCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampDelayCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.EvidenceRecordValidationCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermAvailabilityAndIntegrityValidationMaterialCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.LongTermValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.PastSignatureValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.TimestampValidationCheck;
@@ -96,6 +98,9 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	/** Current validation context */
 	private Context context;
+
+	/** Cahced instance of PastSignatureValidation */
+	private XmlPSV psvResult;
 
 	/**
 	 * Default constructor
@@ -146,7 +151,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * account the following additional requirements when validating a time-stamp token at the time of the
 		 * following Archive Timestamp:
 		 */
-		// steps b) performed within ValidationProcessEvidenceRecord
+		// steps from b) are performed within ValidationProcessEvidenceRecord
 		/*
 		 * c) If step b) found the ER to be valid, the process shall add a POE for every object covered by the ER at
 		 * signing time value of the initial archive time-stamp.
@@ -177,50 +182,69 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		}
 
 		/*
-		 * 2) POE initialization: the long term validation process shall add a POE for each object in the signature
-		 * at the current time to the set of POEs.
-		 * NOTE 1: The set of POE in the input may have been initialized from external sources (e.g. provided from
-		 * an external archiving system). These POEs will be used without additional processing.
+		 * 2) The SVA shall add a POE for each object in the signature at the current time to the set of POEs.
 		 */
 
 		// POE provided to the validation
 
 		/*
-		 * 3) The long term validation process shall perform the validation process for Signatures with Time as per
-		 * clause 5.5 with all the inputs, including the processing of any signed attributes as specified.
+		 * 3) The SVA shall perform the Validation process for Signatures with Time and Signatures with
+		 * Long-Term Validation Material as per clause 5.5 with all the inputs, including the processing
+		 * of any signed attributes as specified.
 		 *
-		 * - If the validation outputs PASSED:
+		 * - If the signature does not contain any attributes for long term availability and integrity of
+		 *   validation material, the process shall return the indication/sub-indication and information returned
+		 *   by the Validation process for Signatures with Time and Signatures with Long-Term Validation Material.
+		 *   Additional information should be included indicating that only the signature-with-time-validation
+		 *   process has been performed.
+		 *
+		 * - If the Validation process for Signatures with Time and Signatures with Long-Term Validation Material
+		 *   returned PASSED:
 		 * -- If there is no validation constraint mandating the validation of the LTV attributes, the long term
 		 *    validation process shall return the indication PASSED.
 		 * -- Otherwise, the SVA shall go to step 4.
 		 *
-		 * - If the validation outputs one of the following indications/sub-indications:
-		 *   INDETERMINATE/REVOKED_NO_POE, INDETERMINATE/REVOKED_CA_NO_POE,
-		 *   INDETERMINATE/OUT_OF_BOUNDS_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED,
-		 *   INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE or INDETERMINATE/REVOCATION_OUT_OF_BOUNDS_NO_POE,
-		 *   the long term validation process shall go to the next step.
+		 * - If the Validation process for Signatures with Time and Signatures with Long-Term Validation Material
+		 *   returned one of the following indications/sub-indications: INDETERMINATE/REVOKED_NO_POE,
+		 *   INDETERMINATE/REVOKED_CA_NO_POE, INDETERMINATE/OUT_OF_BOUNDS_NO_POE,
+		 *   INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED,
+		 *   INDETERMINATE/CRYPTO_CONSTRAINTS_FAILURE_NO_POE,
+		 *   INDETERMINATE/REVOCATION_OUT_OF_BOUNDS_NO_POE,
+		 *   INDETERMINATE/SIG_CONSTRAINTS_FAILURE or INDETERMINATE/TRY_LATER, the long-term
+		 *   validation process shall go to the next step.
 		 *
-		 * - In all other cases, the long term validation process shall fail with returned code and information.
+		 * - In all other cases, the process shall return the indication/sub-indication and information
+		 *   returned by the Validation process for Signatures with Time and Signatures with
+		 *   Long-Term Validation Material.
 		 */
 		if (item == null) {
 			item = firstItem = longTermValidation();
 		} else {
 			item = item.setNextItem(longTermValidation());
 		}
-		result.setProofOfExistence(validationProcessLongTermData.getProofOfExistence());
+
+		XmlProofOfExistence proofOfExistence = validationProcessLongTermData.getProofOfExistence();
+		result.setProofOfExistence(proofOfExistence);
 
 		/*
-		 * NOTE 5: Steps 4) and 5) below are not part of the validation process per se,
-		 * but are present to collect POEs for steps 6) and 7).
+		 * Return long-term validation process indication
 		 */
-		// NOTE: we continue in order to obtain a proper best-signature-time
+		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())) {
+			return;
+		}
+
+		item = item.setNextItem(longTermAvailabilityAndIntegrityValidationMaterial());
+
+		if (!ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(signature)) {
+			return;
+		}
 		
 		/*
-		 * 4) The process shall add the best-signature-time returned in step 3 
-		 * as POE for the signature to the set of POEs.
+		 * 4) The process shall initialize best-signature-time to the best-signature-time returned in step 3)
+		 * and add this time as POE for the signature to the set of POEs.
 		 */
-		XmlProofOfExistence signatureProofOfExistence = validationProcessLongTermData.getProofOfExistence();
-		poe.addSignaturePOE(signature, toPOE(signatureProofOfExistence));
+		POE bestSignatureTime = toPOE(proofOfExistence);
+		poe.addSignaturePOE(signature, bestSignatureTime);
 
 		/*
 		 * 5) If there is at least one time-stamp attribute:
@@ -237,7 +261,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 				XmlValidationProcessArchivalDataTimestamp timestampValidation = getTimestampValidation(newestTimestamp);
 				if (bbbTsp != null && timestampValidation != null) {
 
-					// steps b) and c) are part of ValidationProcessArchivalDataTimestamp
+					// steps b) and c) are part of ValidationProcessForTimestampsWithArchivalData
 
 					item = item.setNextItem(timestampValidationConclusive(newestTimestamp, timestampValidation));
 
@@ -268,16 +292,10 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		item = item.setNextItem(ltaLevelTimeStamp());
 
 		/*
-		 * Return successful indication
+		 * 6) The SVA shall determine from the set of POEs the earliest time the existence of the signature
+		 * can be proven and set best-signature-time to this new determined time.
 		 */
-		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())) {
-			return;
-		}
-
-		/*
-		 * best-signature-time definition
-		 */
-		POE bestSignatureTime = poe.getLowestPOE(signature.getId());
+		bestSignatureTime = poe.getLowestPOE(signature.getId());
 		result.setProofOfExistence(toXmlProofOfExistence(bestSignatureTime));
 
 		if (isValid(validationProcessLongTermData)) {
@@ -286,47 +304,52 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		}
 
 		/*
-		 * 6) Past signature validation: the long term validation process shall perform the past signature validation
+		 * 7) Past signature validation: the long term validation process shall perform the past signature validation
 		 * process with the following inputs: the signature, the status indication/sub-indication returned in step 2,
 		 * the signing certificate, the X.509 validation parameters, certificate validation data, chain constraints,
-		 * cryptographic constraints and the set of POEs. If it returns PASSED the long term validation process shall go
-		 * to the next step. Otherwise, the long term validation process shall return the indication/sub-indication and
-		 * associated explanations returned from the past signature validation process.
+		 * cryptographic constraints, the set of POEs and best-signature-time. If it returns PASSED the long term
+		 * validation process shall go to the next step. Otherwise, the long term validation process shall return
+		 * the indication/sub-indication and associated explanations returned from the past signature validation process.
 		 */
 		XmlBasicBuildingBlocks sigBBB = bbbs.get(signature.getId());
 		PastSignatureValidation psv = new PastSignatureValidation(i18nProvider, signature, bbbs,
 				validationProcessLongTermData.getConclusion(), poe, currentTime, policy, context);
-		XmlPSV psvResult = psv.execute();
+		psvResult = psv.execute();
 		sigBBB.setPSV(psvResult);
 		enrichBBBWithPSVConclusion(sigBBB, psvResult);
 
 		item = item.setNextItem(pastSignatureValidation(psvResult));
 
 		/*
-		 * 7) The SVA shall determine from the set of POEs the earliest time the existence of the signature can be proved
+		 * 8) Handling time-stamp delay: If the signature contains a signature time stamp token and the validation
+		 * specify a time stamp delay:
+		 * a) If no signing time property/attribute is present, the process shall return the indication INDETERMINATE
+		 *    with the sub indication SIG_CONSTRAINTS_FAILURE.
+		 * b) If a signing time property/attribute is present, the process shall check that the claimed time in the
+		 *    attribute plus the time stamp delay is after the best-signature-time determined in step 6) above. If
+		 *    the check is successful, the process shall go to the next step. Otherwise, the process shall return
+		 *    the indication INDETERMINATE with the sub indication SIG_CONSTRAINTS_FAILURE.
 		 */
-		// done after step 5)
+		item = item.setNextItem(timestampDelay(bestSignatureTime.getTime()));
 
 		/*
-		 * 8) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
+		 * 9) The SVA shall perform the Signature Acceptance Validation process as per clause 5.2.8 with the following
 		 * inputs:
 		 * a) The Signed Data Object(s).
 		 * b) The time determined in step 7 as the validation time parameter.
 		 * c) The Cryptographic Constraints.
-		 * NOTE 6: This check has been performed already in step 3 as part of basic signature validation for current time but
-		 * is repeated here for the earliest time the signature is known to have existed to e.g. check if the algorithms
-		 * were reliable at that time. Signature elements constraints have already been dealt with in step 2 and need
-		 * not be rechecked.
-		 * If the signature acceptance validation process returns PASSED, the SVA shall go to the next step.
+		 *
+		 * If the Signature Acceptance Validation process returns PASSED, the SVA shall go to the next step. Otherwise,
+		 * the SVA shall return the indication and sub-indication returned by the Signature Acceptance Validation
+		 * Process.
 		 */
 		item = item.setNextItem(signatureIsAcceptable(bestSignatureTime.getTime(), context));
 
 		/*
-		 * 9) Data extraction: the SVA shall return the success indication PASSED. In addition, the long term validation
-		 * process should return additional information extracted from the signature and/or used by the intermediate
-		 * steps. In particular, the long term validation process should return intermediate results such as the
+		 * 10) Data extraction: the SVA shall return the success indication PASSED. In addition, the SVA should return
+		 * additional information extracted from the signature and/or used by the intermediate steps. In particular, the
+		 * SVA should return the best-signature-time determined in step 6) as well as intermediate results such as the
 		 * validation results of any time-stamp token.
-		 * NOTE 7: What the DA does with this information is out of the scope of the present document.
 		 */
 		
 		/*
@@ -342,6 +365,11 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {
 		return new LongTermValidationCheck(i18nProvider, result, validationProcessLongTermData, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlValidationProcessArchivalData> longTermAvailabilityAndIntegrityValidationMaterial() {
+		LevelConstraint constraint = isValid(validationProcessLongTermData) ? getInfoLevelConstraint() : getFailLevelConstraint();
+		return new LongTermAvailabilityAndIntegrityValidationMaterialCheck(i18nProvider, result, signature, validationProcessLongTermData, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> timestampValidationConclusive(
@@ -380,6 +408,10 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	private ChainItem<XmlValidationProcessArchivalData> ltaLevelTimeStamp() {
 		LevelConstraint constraint = policy.getLTALevelTimeStampConstraint(context);
 		return new LTALevelTimeStampCheck(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
+	}
+
+	private ChainItem<XmlValidationProcessArchivalData> timestampDelay(Date bestSignatureTime) {
+		return new TimestampDelayCheck<>(i18nProvider, result, signature, bestSignatureTime, policy.getTimestampDelayConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> signatureIsAcceptable(Date bestSignatureTime, Context context) {
@@ -445,6 +477,8 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
 		if (XmlBlockType.TST.equals(constraint.getBlockType()) && policy.getTimestampValidConstraint() == null) {
 			// skip propagating of validation messages for TSTs in default processing
+		} else if (XmlBlockType.LTA == constraint.getBlockType()) {
+			// skip LTA data missing message
 		} else {
 			super.collectMessages(conclusion, constraint);
 		}
@@ -452,9 +486,14 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	@Override
 	protected void collectAdditionalMessages(XmlConclusion conclusion) {
-		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())) {
+		if (!ValidationProcessUtils.isAllowedValidationWithLongTermData(validationProcessLongTermData.getConclusion())
+				|| !ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(signature)) {
 			conclusion.getWarnings().addAll(validationProcessLongTermData.getConclusion().getWarnings());
 			conclusion.getInfos().addAll(validationProcessLongTermData.getConclusion().getInfos());
+		}
+		if (psvResult != null && !isValid(psvResult)
+				&& psvResult.getConclusion().getSubIndication() != validationProcessLongTermData.getConclusion().getSubIndication()) {
+			conclusion.getErrors().addAll(psvResult.getConclusion().getErrors());
 		}
 	}
 

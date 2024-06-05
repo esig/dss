@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.dss1987;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.util.List;
-
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -42,6 +36,12 @@ import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class AbstractDSS1987Test extends AbstractXAdESTestValidation {
 	
@@ -60,6 +60,7 @@ public abstract class AbstractDSS1987Test extends AbstractXAdESTestValidation {
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		validator.setCertificateVerifier(getCertificateVerifier());
+		validator.setValidationTime(DSSUtils.parseRFCDate("2020-03-01T00:00:00Z"));
 		return validator;
 	}
 	

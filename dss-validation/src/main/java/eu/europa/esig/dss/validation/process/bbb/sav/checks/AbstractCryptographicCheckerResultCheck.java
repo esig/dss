@@ -65,7 +65,22 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	 */
 	protected AbstractCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, MessageTag position,
 													  XmlCC ccResult, LevelConstraint constraint) {
-		super(i18nProvider, result, constraint);
+		this(i18nProvider, result, position, ccResult, constraint, null);
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param position {@link MessageTag} cryptographic constrain position
+	 * @param ccResult {@link XmlCC}
+	 * @param constraint {@link LevelConstraint}
+	 * @param tokenId {@link String} identifier of the corresponding token
+	 */
+	protected AbstractCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, MessageTag position,
+													  XmlCC ccResult, LevelConstraint constraint, String tokenId) {
+		super(i18nProvider, result, constraint, tokenId);
 		this.position = position;
 		this.ccResult = ccResult;
 		this.checkerResultMessage = extractXmlMessage(ccResult, constraint);

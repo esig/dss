@@ -82,16 +82,16 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 									  Context context, SubContext subContext, ValidationPolicy policy) {
 		super(i18nProvider, new XmlRFC());
 
-		if (revocationData != null) {
-			result.setId(revocationData.getId());
-		}
-
 		this.revocationData = revocationData;
 		this.validationDate = validationDate;
 		this.policy = policy;
 
 		this.context = context;
 		this.subContext = subContext;
+
+		if (revocationData != null) {
+			result.setId(revocationData.getId());
+		}
 	}
     
 	@Override

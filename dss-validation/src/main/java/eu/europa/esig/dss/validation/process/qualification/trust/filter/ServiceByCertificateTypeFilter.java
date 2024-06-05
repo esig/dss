@@ -70,10 +70,14 @@ public class ServiceByCertificateTypeFilter extends AbstractTrustServiceFilter {
 			boolean qcForEseals = ServiceQualification.isQcForEseal(capturedQualifiers);
 			boolean qcForWSA = ServiceQualification.isQcForWSA(capturedQualifiers);
 
-			// if QcStatement and no types -> for eSig by default (see TS 119 615, Table 1)
+			// if QcCompliance and no types -> for eSig by default (see TS 119 615, Table 1)
 			qcForEsign = qcForEsign || (!qcForEseals && !qcForWSA && certificate.isQcCompliance());
 
 			boolean onlyOneQcForXXX = Stream.of(qcForEsign, qcForEseals, qcForWSA).filter(b -> b).count() == 1;
+
+			// QCForLegalPerson is not consistent with foreSignature type (see TS 119 615, PRO-4.4.4-12)
+			boolean qcForLegalPerson = ServiceQualification.isQcForLegalPerson(capturedQualifiers);
+			asiEsign = asiEsign && !qcForLegalPerson;
 
 			TypeStrategy strategy = TypeStrategyFactory.createTypeFromCert(certificate);
 			CertificateType certType = strategy.getType();

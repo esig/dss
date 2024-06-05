@@ -53,7 +53,23 @@ public class CryptographicCheckerResultCheck<T extends XmlConstraintsConclusion>
 	 */
 	public CryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate,
 										   MessageTag position, XmlCC ccResult, LevelConstraint constraint) {
-		super(i18nProvider, result, position, ccResult, constraint);
+		this(i18nProvider, result, validationDate, position, ccResult, constraint, null);
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param i18nProvider {@link I18nProvider}
+	 * @param result the result
+	 * @param validationDate {@link Date}
+	 * @param position {@link MessageTag}
+	 * @param ccResult {@link XmlCC}
+	 * @param constraint {@link LevelConstraint}
+	 * @param tokenId {@link String} identifier of the corresponding token
+	 */
+	public CryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate,
+										   MessageTag position, XmlCC ccResult, LevelConstraint constraint, String tokenId) {
+		super(i18nProvider, result, position, ccResult, constraint, tokenId);
 		this.validationDate = validationDate;
 	}
 	
