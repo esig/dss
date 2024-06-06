@@ -176,6 +176,7 @@ public class Sha2FileCacheDataLoader implements DSSCacheFileLoader {
             } else {
                 LOG.warn(errorMessage);
             }
+            refresh = true; // force the refresh
         }
 
         DSSDocument cachedDocument = null;

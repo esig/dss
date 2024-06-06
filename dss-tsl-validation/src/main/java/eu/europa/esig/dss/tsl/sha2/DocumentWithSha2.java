@@ -61,10 +61,7 @@ public class DocumentWithSha2 extends CommonDocument {
      * @param errorMessage {@link String} error
      */
     protected void addErrorMessage(String errorMessage) {
-        if (errors == null) {
-            errors = new ArrayList<>();
-        }
-        errors.add(errorMessage);
+        getErrors().add(errorMessage);
     }
 
     /**
@@ -74,6 +71,9 @@ public class DocumentWithSha2 extends CommonDocument {
      * @return a list of {@link String} errors, if any
      */
     public List<String> getErrors() {
+        if (errors == null) {
+            errors = new ArrayList<>();
+        }
         return errors;
     }
 
