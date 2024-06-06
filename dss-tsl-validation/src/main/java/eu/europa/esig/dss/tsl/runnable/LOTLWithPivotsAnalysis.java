@@ -29,6 +29,7 @@ import eu.europa.esig.dss.tsl.cache.access.CacheAccessFactory;
 import eu.europa.esig.dss.tsl.cache.access.ReadOnlyCacheAccess;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.dto.ValidationCacheDTO;
+import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
@@ -168,7 +169,11 @@ public class LOTLWithPivotsAnalysis extends LOTLAnalysis {
 			pivotSource.setLotlPredicate(lotlSource.getLotlPredicate());
 			pivotSource.setTlPredicate(lotlSource.getTlPredicate());
 			pivotSource.setPivotSupport(lotlSource.isPivotSupport());
-			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, pivotCacheAccess, getCacheAccessByKey(), dssFileLoader)));
+
+			// .sha2 is not supported by pivot
+			DSSFileLoader dataLoader = dssFileLoader instanceof Sha2FileCacheDataLoader ?
+					((Sha2FileCacheDataLoader) dssFileLoader).getDataLoader() : dssFileLoader;
+			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, pivotCacheAccess, getCacheAccessByKey(), dataLoader)));
 		}
 
 		Map<String, PivotProcessingResult> processingResults = new HashMap<>();
