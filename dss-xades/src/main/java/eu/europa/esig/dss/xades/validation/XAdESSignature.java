@@ -187,6 +187,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			LOG.error("ECDSA_RIPEMD160AT algorithm initialisation failed.", e);
 		}
 
+		initDefaultResolvers();
+
+	}
+
+	/**
+	 * Customized
+	 * org.apache.xml.security.utils.resolver.ResourceResolver.registerDefaultResolvers()
+	 *
+	 * Ignore references which point to a file (file://) or external http urls
+	 * Enforce ResolverFragment against XPath injections
+	 */
+	private static void initDefaultResolvers() {
+		ResourceResolver.register(new EnforcedResolverFragment(), false);
+		ResourceResolver.register(new ResolverXPointer(), false);
 	}
 
 	/**
@@ -1221,8 +1235,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			DSSXMLUtils.setIDIdentifier(rootElement);
 			DSSXMLUtils.recursiveIdBrowse(rootElement);
 
-			initDefaultResolvers();
-
 			// Secure validation disabled to support all signature algos
 			santuarioSignature = new XMLSignature(signatureElement, "", false);
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
@@ -1233,18 +1245,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		} catch (XMLSecurityException e) {
 			throw new DSSException(String.format("Unable to initialize Santuario XMLSignature. Reason : %s", e.getMessage()), e);
 		}
-	}
-
-	/**
-	 * Customized
-	 * org.apache.xml.security.utils.resolver.ResourceResolver.registerDefaultResolvers()
-	 *
-	 * Ignore references which point to a file (file://) or external http urls
-	 * Enforce ResolverFragment against XPath injections
-	 */
-	private void initDefaultResolvers() {
-		ResourceResolver.register(new EnforcedResolverFragment(), false);
-		ResourceResolver.register(new ResolverXPointer(), false);
 	}
 
 	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {
