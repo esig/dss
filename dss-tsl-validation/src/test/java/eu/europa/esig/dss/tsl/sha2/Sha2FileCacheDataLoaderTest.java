@@ -258,6 +258,39 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
+    public void errorOnDownloadTest() {
+        final HashMap<String, DSSDocument> urlMap = new HashMap<>();
+        urlMap.put("tl_ok.xml",
+                new FileDocument("src/test/resources/sk-tl.xml"));
+        urlMap.put("tl_ok.sha2",
+                new InMemoryDocument("8c43cc710e6d1cc77189c6ca4ef3932e98860575aaaaab77446f167c4fb11618".getBytes()));
+
+        FileCacheDataLoader fileDataLoader = new FileCacheDataLoader();
+        fileDataLoader.setCacheExpirationTime(Long.MAX_VALUE);
+        fileDataLoader.setDataLoader(new MockDataLoader(urlMap));
+        fileDataLoader.setFileCacheDirectory(cacheDirectory);
+
+        Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
+        sha2FileCacheDataLoader.setPredicate(predicate);
+
+        assertNull(sha2FileCacheDataLoader.getDocumentFromCache("tl_ok.xml"));
+
+        DSSDocument document = sha2FileCacheDataLoader.getDocument("tl_ok.xml");
+        assertNotNull(document);
+        assertInstanceOf(DocumentWithSha2.class, document);
+
+        DocumentWithSha2 documentWithSha2 = (DocumentWithSha2) document;
+        assertNotNull(documentWithSha2.getDocument());
+        assertNotNull(documentWithSha2.getSha2Document());
+        assertTrue(Utils.isCollectionEmpty(documentWithSha2.getErrors()));
+
+        urlMap.clear();
+
+        document = sha2FileCacheDataLoader.getDocument("tl_ok.xml");
+        assertNull(document);
+    }
+
+    @Test
     public void nullTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> new Sha2FileCacheDataLoader().getDocument(null));
         assertEquals("DSSCacheFileLoader shall be provided!", exception.getMessage());

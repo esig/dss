@@ -137,7 +137,16 @@ public class Sha2FileCacheDataLoader implements DSSCacheFileLoader {
     }
 
     /**
-     * Sets the file cache data loader to be used to load the
+     * Returns the file cache data loader used to load the documents
+     *
+     * @return {@link DSSCacheFileLoader}
+     */
+    public DSSCacheFileLoader getDataLoader() {
+        return dataLoader;
+    }
+
+    /**
+     * Sets the file cache data loader to be used to load the documents
      *
      * @param dataLoader {@link DSSCacheFileLoader}
      */
@@ -176,6 +185,7 @@ public class Sha2FileCacheDataLoader implements DSSCacheFileLoader {
             } else {
                 LOG.warn(errorMessage);
             }
+            refresh = true; // force the refresh
         }
 
         DSSDocument cachedDocument = null;
