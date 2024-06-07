@@ -29,6 +29,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationContextExecutor;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
@@ -74,10 +75,20 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	/**
 	 * Provides a {@code CertificateVerifier} to be used during the validation process.
 	 *
-	 * @param certVerifier
+	 * @param certificateVerifier
 	 *            {@code CertificateVerifier}
 	 */
-	void setCertificateVerifier(final CertificateVerifier certVerifier);
+	void setCertificateVerifier(final CertificateVerifier certificateVerifier);
+
+	/**
+	 * This method sets {@code ValidationContextExecutor} for validation of the prepared {@code ValidationContext}
+	 * Default: {@code eu.europa.esig.dss.validation.executor.context.DefaultValidationContextExecutor}
+	 *          (performs basic validation of tokens, including certificate chain building and
+	 *          revocation data extraction, without processing of validity checks)
+	 *
+	 * @param validationContextExecutor {@link ValidationContextExecutor}
+	 */
+	void setValidationContextExecutor(ValidationContextExecutor validationContextExecutor);
 
 	/**
 	 * This method allows to set the token extraction strategy to follow in the

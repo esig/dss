@@ -38,6 +38,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.validation.executor.context.CompleteValidationContextExecutor;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -297,6 +298,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		CMSDocumentValidator documentValidator = new CMSDocumentValidator(signedData);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(parameters.getDetachedContents());
+		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
 		return documentValidator;
 	}
 	

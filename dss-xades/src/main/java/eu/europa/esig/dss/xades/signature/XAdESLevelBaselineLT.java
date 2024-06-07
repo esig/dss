@@ -22,16 +22,14 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -45,8 +43,6 @@ import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_LT;
  *
  */
 public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelBaselineLT.class);
 
 	/**
 	 * The default constructor for XAdESLevelBaselineLT.

@@ -27,7 +27,6 @@ import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
 import eu.europa.esig.dss.model.signature.SignaturePolicy;
-import eu.europa.esig.dss.model.signature.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;

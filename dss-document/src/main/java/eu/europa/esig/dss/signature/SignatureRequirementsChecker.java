@@ -286,9 +286,7 @@ public class SignatureRequirementsChecker {
         validationContext.validate();
 
         validationContext.checkAllRequiredRevocationDataPresent();
-        for (AdvancedSignature signature : signatures) {
-            validationContext.checkCertificatesNotRevoked(signature);
-        }
+        validationContext.checkAllSignatureCertificatesNotRevoked();
     }
 
     /**

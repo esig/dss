@@ -43,6 +43,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.validation.executor.context.CompleteValidationContextExecutor;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -116,6 +117,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		documentValidator = new XMLDocumentValidator(dssDocument);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(params.getDetachedContents());
+		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
 
 		documentDom = documentValidator.getRootElement();
 

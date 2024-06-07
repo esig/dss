@@ -30,6 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.validation.executor.context.CompleteValidationContextExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,7 +85,7 @@ public class PAdESExtensionService {
      * @return {@link DSSDocument} extended document
      */
     public DSSDocument incorporateValidationData(DSSDocument document) {
-        return incorporateValidationData(document, (char[]) null);
+        return incorporateValidationData(document, null);
     }
 
     /**
@@ -160,6 +161,7 @@ public class PAdESExtensionService {
     private PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, char[] passwordProtection) {
         PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
         pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+        pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
         pdfDocumentValidator.setPasswordProtection(passwordProtection);
         pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
         return pdfDocumentValidator;

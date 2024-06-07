@@ -35,6 +35,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.executor.context.CompleteValidationContextExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,6 +155,7 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	protected PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {
 		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+		pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
 		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
 		pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
 		return pdfDocumentValidator;

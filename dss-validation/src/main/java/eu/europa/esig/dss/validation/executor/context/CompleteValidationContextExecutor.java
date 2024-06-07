@@ -1,0 +1,54 @@
+package eu.europa.esig.dss.validation.executor.context;
+
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContextExecutor;
+
+import java.util.Objects;
+
+/**
+ * This class executes complete validation of the {@code ValidationContext}, including running of all checks
+ * with the alerts processing specified in CertificateVerifier
+ *
+ */
+public class CompleteValidationContextExecutor implements ValidationContextExecutor {
+
+    /** Singleton instance */
+    private static CompleteValidationContextExecutor instance;
+
+    /**
+     * Default constructor
+     */
+    private CompleteValidationContextExecutor() {
+        // empty
+    }
+
+    /**
+     * Gets the instance of {@code CompleteValidationContextExecutor}
+     *
+     * @return {@link CompleteValidationContextExecutor}
+     */
+    public static CompleteValidationContextExecutor getInstance() {
+        if (instance == null) {
+            instance = new CompleteValidationContextExecutor();
+        }
+        return instance;
+    }
+
+    @Override
+    public void validate(ValidationContext validationContext) {
+        Objects.requireNonNull(validationContext, "ValidationContext cannot be null!");
+        validationContext.validate();
+        assertSignaturesValid(validationContext);
+    }
+
+    private void assertSignaturesValid(ValidationContext validationContext) {
+        validationContext.checkAllTimestampsValid();
+        validationContext.checkAllRequiredRevocationDataPresent();
+        validationContext.checkAllPOECoveredByRevocationData();
+
+        validationContext.checkAllSignaturesNotExpired();
+        validationContext.checkAllSignatureCertificatesNotRevoked();
+        validationContext.checkAllSignatureCertificateHaveFreshRevocationData();
+    }
+
+}

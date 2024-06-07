@@ -37,6 +37,7 @@ import java.util.Set;
 
 /**
  * This interface allows the implementation of the validators for: certificates, timestamps and revocation data.
+ *
  */
 public interface ValidationContext {
 
@@ -206,8 +207,20 @@ public interface ValidationContext {
 	 *
 	 * @param signature {@code AdvancedSignature} signature to be checked
 	 * @return true if all certificates are valid
+	 * @deprecated since DSS 6.1. Please use {@code #checkAllSignatureCertificatesNotRevoked} instead.
 	 */
+	@Deprecated
 	boolean checkCertificatesNotRevoked(AdvancedSignature signature);
+
+	/**
+	 * This method validates recursively whether none of the signature's certificate chain certificates are not revoked
+	 * <p>
+	 * Additionally, an alert can be handled
+	 * {@link CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 *
+	 * @return true if all certificates are valid
+	 */
+	boolean checkAllSignatureCertificatesNotRevoked();
 
 	/**
 	 * This method allows to verify if there is at least one revocation data present
@@ -219,9 +232,22 @@ public interface ValidationContext {
 	 * @param signature {@code AdvancedSignature} signature to be checked
 	 * @return true if the signing certificate is covered with a updated revocation
 	 *         data (after signature-timestamp production time)
-	 * 
+	 * @deprecated since DSS 6.1. Please use {@code #checkAllSignatureCertificateHaveFreshRevocationData} method instead
 	 */
+	@Deprecated
 	boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature);
+
+	/**
+	 * This method verifies whether for all signature's certificate chain certificates there is a fresh revocation data,
+	 * after the earliest available timestamp token production time
+	 * <p>
+	 * Additionally, an alert can be handled
+	 * {@link CertificateVerifier#setAlertOnNoRevocationAfterBestSignatureTime(eu.europa.esig.dss.alert.StatusAlert)}
+	 *
+	 * @return true if all signature certificates have an updated revocation data
+	 *         (after signature-time-stamp production time)
+	 */
+	boolean checkAllSignatureCertificateHaveFreshRevocationData();
 
 	/**
 	 * This method verifies if the signing certificate has not been expired yet or has a still valid timestamp
@@ -231,9 +257,20 @@ public interface ValidationContext {
 	 *
 	 * @param signature {@code AdvancedSignature} signature to be verified
 	 * @return true if the signing certificate or its POE(s) not yet expired, false otherwise
-	 *
+	 * @deprecated since DSS 6.1. Please use {@code #checkAllSignaturesNotExpired} method instead
 	 */
+	@Deprecated
 	boolean checkSignatureNotExpired(AdvancedSignature signature);
+
+	/**
+	 * This method verifies whether all signatures added to the ValidationContext are not yet expired
+	 *
+	 * Additionally, an alert can be handled
+	 * {@link CertificateVerifier#setAlertOnExpiredCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 *
+	 * @return true if the signing certificate or its POE(s) not yet expired, false otherwise
+	 */
+	boolean checkAllSignaturesNotExpired();
 
 	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the

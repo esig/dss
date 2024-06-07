@@ -47,6 +47,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
+import eu.europa.esig.dss.validation.executor.context.CompleteValidationContextExecutor;
 import org.bouncycastle.cms.CMSSignedData;
 
 import java.util.List;
@@ -132,6 +133,7 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
         if (lastTimestamp != null) {
             ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(asicContent);
             validator.setCertificateVerifier(certificateVerifier);
+            validator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
 
             final List<AdvancedSignature> allSignatures = validator.getAllSignatures();
             final List<TimestampToken> detachedTimestamps = validator.getDetachedTimestamps();

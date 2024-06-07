@@ -48,6 +48,7 @@ import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
 import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
 import eu.europa.esig.dss.spi.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContextExecutor;
 import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.spi.validation.scope.EvidenceRecordScopeFinder;
@@ -59,6 +60,8 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
+import eu.europa.esig.dss.validation.executor.context.DefaultValidationContextExecutor;
+import eu.europa.esig.dss.validation.executor.context.SkipValidationContextExecutor;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
@@ -150,6 +153,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	protected CertificateVerifier certificateVerifier;
 
 	/**
+	 * Performs validation of {@code ValidationContext}
+	 * Default : {@code DefaultValidationContextExecutor}
+	 */
+	private ValidationContextExecutor validationContextExecutor = DefaultValidationContextExecutor.getInstance();
+
+	/**
 	 * The used token extraction strategy to define tokens representation in DiagnosticData
 	 */
 	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
@@ -188,14 +197,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * Default: true
 	 */
 	private boolean enableEtsiValidationReport = true;
-
-	/**
-	 * Defines if the validation context processing shall be skipped
-	 * (Disable certificate chain building, revocation data collection,...)
-	 *
-	 * Default: false
-	 */
-	protected boolean skipValidationContextExecution = false;
 
 	/**
 	 * Cached list of signatures extracted from the document
@@ -265,6 +266,12 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public void setCertificateVerifier(final CertificateVerifier certificateVerifier) {
 		Objects.requireNonNull(certificateVerifier);
 		this.certificateVerifier = certificateVerifier;
+	}
+
+	@Override
+	public void setValidationContextExecutor(ValidationContextExecutor validationContextExecutor) {
+		Objects.requireNonNull(validationContextExecutor);
+		this.validationContextExecutor = validationContextExecutor;
 	}
 
 	@Override
@@ -513,10 +520,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopyForValidation();
 		final ValidationContext validationContext = prepareValidationContext(
 				allSignatures, detachedTimestamps, detachedEvidenceRecords, certificateVerifierForValidation);
+		validateContext(validationContext);
 
-		if (!skipValidationContextExecution) {
-			validateContext(validationContext);
-		}
 		return createDiagnosticDataBuilder(validationContext, allSignatures, detachedEvidenceRecords);
 	}
 
@@ -569,8 +574,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 				signatures, detachedTimestamps, Collections.emptyList(), certificateVerifier);
 		validateContext(validationContext);
 
-		assertSignaturesValid(signatures, validationContext);
-
 		ValidationDataContainer validationDataContainer = instantiateValidationDataContainer();
 		for (AdvancedSignature signature : signatures) {
 			ValidationData signatureValidationData = validationContext.getValidationData(signature);
@@ -599,19 +602,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	protected ValidationDataContainer instantiateValidationDataContainer() {
 		return new ValidationDataContainer();
-	}
-
-	private <T extends AdvancedSignature> void assertSignaturesValid(Collection<T> signatures,
-																	 ValidationContext validationContext) {
-		validationContext.checkAllTimestampsValid();
-		validationContext.checkAllRequiredRevocationDataPresent();
-		validationContext.checkAllPOECoveredByRevocationData();
-
-		for (final AdvancedSignature signature : signatures) {
-			validationContext.checkSignatureNotExpired(signature);
-			validationContext.checkCertificatesNotRevoked(signature);
-			validationContext.checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature);
-		}
 	}
 
 	/**
@@ -729,7 +719,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * @param validationContext {@link ValidationContext} to process
 	 */
 	protected void validateContext(final ValidationContext validationContext) {
-		validationContext.validate();
+		validationContextExecutor.validate(validationContext);
 	}
 	
 	@Override
@@ -1079,9 +1069,15 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * (skips certificate chain building, revocation requests, ...)
 	 *
 	 * @param skipValidationContextExecution if the context validation shall be skipped
+	 * @deprecated since DSS 6.1. Please use
+	 *             {@code #setValidationContextExecutor(SkipValidationContextExecutor.getInstance())} method instead
 	 */
+	@Deprecated
 	public void setSkipValidationContextExecution(boolean skipValidationContextExecution) {
-		this.skipValidationContextExecution = skipValidationContextExecution;
+		if (skipValidationContextExecution) {
+			LOG.warn("Use of deprecated method #setSkipValidationContextExecution. SkipValidationContextExecutor is instantiated.");
+			this.validationContextExecutor = SkipValidationContextExecutor.getInstance();
+		}
 	}
 
 	/**

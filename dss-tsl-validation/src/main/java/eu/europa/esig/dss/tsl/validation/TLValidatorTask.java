@@ -40,6 +40,7 @@ import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;
+import eu.europa.esig.dss.validation.executor.context.SkipValidationContextExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
@@ -90,7 +91,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		xmlDocumentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
 		xmlDocumentValidator.setEnableEtsiValidationReport(false); // Ignore ETSI VR
 		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
-		xmlDocumentValidator.setSkipValidationContextExecution(true); // Only need to validate against the trusted certificate source
+		xmlDocumentValidator.setValidationContextExecutor(SkipValidationContextExecutor.getInstance()); // Only need to validate against the trusted certificate source
 		xmlDocumentValidator.setSignaturePolicyProvider(new SignaturePolicyProvider()); // ignore signature policy loading
 
 		// To increase the security: the default {@code XAdESPaths} is used.

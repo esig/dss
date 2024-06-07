@@ -83,6 +83,11 @@ public class SignatureValidationContext implements ValidationContext {
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureValidationContext.class);
 
 	/**
+	 * A set of signatures to process
+	 */
+	private final Set<AdvancedSignature> processedSignatures = new HashSet<>();
+
+	/**
 	 * A set of certificates to process
 	 */
 	private final Set<CertificateToken> processedCertificates = new HashSet<>();
@@ -101,11 +106,6 @@ public class SignatureValidationContext implements ValidationContext {
 	 * The CertificateVerifier to use
 	 */
 	private CertificateVerifier certificateVerifier;
-
-	/**
-	 * Used to access certificate by AIA.
-	 */
-	private AIASource aiaSource;
 
 	/** Map of tokens defining if they have been processed yet */
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<>();
@@ -139,6 +139,9 @@ public class SignatureValidationContext implements ValidationContext {
 
 	/** Certificates collected from revocation tokens */
 	private final ListCertificateSource revocationCertificateSources = new ListCertificateSource();
+
+	/** Used to access certificate by AIA */
+	private AIASource aiaSource;
 
 	/** External OCSP source */
 	private RevocationSource<OCSP> remoteOCSPSource;
@@ -193,6 +196,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 	/**
 	 * Constructor instantiating object with null or empty values and provided time
+	 *
+	 * @param validationTime {@link Date} validation time to be used during the execution
 	 */
 	public SignatureValidationContext(Date validationTime) {
 		this.currentTime = validationTime;
@@ -249,6 +254,10 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public void addSignatureForVerification(final AdvancedSignature signature) {
+		if (signature == null) {
+			return;
+		}
+
 		addDocumentCertificateSource(signature.getCertificateSource());
 		addDocumentCRLSource(signature.getCRLSource());
 		addDocumentOCSPSource(signature.getOCSPSource());
@@ -281,6 +290,15 @@ public class SignatureValidationContext implements ValidationContext {
 
 		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 		prepareCounterSignatures(counterSignatures);
+
+		final boolean added = processedSignatures.add(signature);
+		if (LOG.isTraceEnabled()) {
+			if (added) {
+				LOG.trace("AdvancedSignature added to processedSignatures: {} ", processedSignatures);
+			} else {
+				LOG.trace("AdvancedSignature already present processedSignatures: {} ", processedSignatures);
+			}
+		}
 	}
 
 	@Override
@@ -503,8 +521,8 @@ public class SignatureValidationContext implements ValidationContext {
 		issuerCertificateToken = new TokenIssuerSelector(token, candidates).getIssuer();
 
 		// Request AIA only when no issuer has been found yet
-		if (issuerCertificateToken == null && token instanceof CertificateToken && aiaSource != null &&
-				!tokenIssuerMap.containsKey(token)) {
+		if (issuerCertificateToken == null && aiaSource != null
+				&& token instanceof CertificateToken && !tokenIssuerMap.containsKey(token)) {
 			final AIACertificateSource aiaCertificateSource = new AIACertificateSource((CertificateToken) token, aiaSource);
 			issuerCertificateToken = aiaCertificateSource.getIssuerFromAIA();
 			addCertificateSource(aiaCertificateSources, aiaCertificateSource);
@@ -1132,11 +1150,26 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
+	@Deprecated
 	public boolean checkCertificatesNotRevoked(AdvancedSignature signature) {
 		TokenStatus status = new TokenStatus();
-		CertificateToken signingCertificate = signature.getSigningCertificateToken();
-		if (signingCertificate != null) {
-			checkCertificateIsNotRevokedRecursively(signingCertificate, poeTimes.get(signature.getId()), status);
+		boolean success = checkSignatureCertificatesNotRevoked(signature, status);
+		if (!success) {
+			status.setMessage("Revoked/Suspended certificate(s) detected.");
+			certificateVerifier.getAlertOnRevokedCertificate().alert(status);
+		}
+		return success;
+	}
+
+	@Override
+	public boolean checkAllSignatureCertificatesNotRevoked() {
+		if (Utils.isCollectionEmpty(processedSignatures)) {
+			return true;
+		}
+
+		TokenStatus status = new TokenStatus();
+		for (AdvancedSignature signature : processedSignatures) {
+			checkSignatureCertificatesNotRevoked(signature, status);
 		}
 		boolean success = status.isEmpty();
 		if (!success) {
@@ -1144,6 +1177,14 @@ public class SignatureValidationContext implements ValidationContext {
 			certificateVerifier.getAlertOnRevokedCertificate().alert(status);
 		}
 		return success;
+	}
+
+	private boolean checkSignatureCertificatesNotRevoked(AdvancedSignature signature, TokenStatus status) {
+		CertificateToken signingCertificate = signature.getSigningCertificateToken();
+		if (signingCertificate != null) {
+			checkCertificateIsNotRevokedRecursively(signingCertificate, poeTimes.get(signature.getId()), status);
+		}
+		return status.isEmpty();
 	}
 
 	private boolean checkCertificateIsNotRevokedRecursively(CertificateToken certificateToken, List<POE> poeTimes) {
@@ -1331,8 +1372,35 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
+	@Deprecated
 	public boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature) {
 		RevocationFreshnessStatus status = new RevocationFreshnessStatus();
+		boolean success = checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature, status);
+		if (!success) {
+			status.setMessage("Fresh revocation data is missing for one or more certificate(s).");
+			certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime().alert(status);
+		}
+		return success;
+	}
+
+	@Override
+	public boolean checkAllSignatureCertificateHaveFreshRevocationData() {
+		if (Utils.isCollectionEmpty(processedSignatures)) {
+			return true;
+		}
+		RevocationFreshnessStatus status = new RevocationFreshnessStatus();
+		for (AdvancedSignature signature : processedSignatures) {
+			checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature, status);
+		}
+		boolean success = status.isEmpty();
+		if (!success) {
+			status.setMessage("Fresh revocation data is missing for one or more certificate(s).");
+			certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime().alert(status);
+		}
+		return success;
+	}
+
+	private boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature, RevocationFreshnessStatus status) {
 		CertificateToken signingCertificateToken = signature.getSigningCertificateToken();
 		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
 		for (Map.Entry<CertificateToken, List<CertificateToken>> entry : orderedCertificateChains.entrySet()) {
@@ -1342,12 +1410,7 @@ public class SignatureValidationContext implements ValidationContext {
 				checkRevocationForCertificateChainAgainstBestSignatureTime(entry.getValue(), bestSignatureTime, status);
 			}
 		}
-		boolean success = status.isEmpty();
-		if (!success) {
-			status.setMessage("Fresh revocation data is missing for one or more certificate(s).");
-			certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime().alert(status);
-		}
-		return success;
+		return status.isEmpty();
 	}
 	
 	private Date getEarliestTimestampTime() {
@@ -1364,8 +1427,35 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
+	@Deprecated
 	public boolean checkSignatureNotExpired(AdvancedSignature signature) {
 		SignatureStatus status = new SignatureStatus();
+		boolean success = checkSignatureNotExpired(signature, status);
+		if (!success) {
+			status.setMessage("Expired signature found.");
+			certificateVerifier.getAlertOnExpiredCertificate().alert(status);
+		}
+		return success;
+	}
+
+	@Override
+	public boolean checkAllSignaturesNotExpired() {
+		if (Utils.isCollectionEmpty(processedSignatures)) {
+			return true;
+		}
+		SignatureStatus status = new SignatureStatus();
+		for (AdvancedSignature signature : processedSignatures) {
+			checkSignatureNotExpired(signature, status);
+		}
+		boolean success = status.isEmpty();
+		if (!success) {
+			status.setMessage("Expired signature found.");
+			certificateVerifier.getAlertOnExpiredCertificate().alert(status);
+		}
+		return success;
+	}
+
+	private boolean checkSignatureNotExpired(AdvancedSignature signature, SignatureStatus status) {
 		CertificateToken signingCertificate = signature.getSigningCertificateToken();
 		if (signingCertificate != null) {
 			boolean signatureNotExpired = verifyCertificateTokenHasPOERecursively(signingCertificate, poeTimes.get(signature.getId()));
@@ -1374,8 +1464,6 @@ public class SignatureValidationContext implements ValidationContext {
 								"and there is no POE during its validity range : [%s - %s]!",
 						DSSUtils.formatDateToRFC(signingCertificate.getNotBefore()),
 						DSSUtils.formatDateToRFC(signingCertificate.getNotAfter())));
-				status.setMessage("Expired signature found.");
-				certificateVerifier.getAlertOnExpiredCertificate().alert(status);
 			}
 			return signatureNotExpired;
 		}
