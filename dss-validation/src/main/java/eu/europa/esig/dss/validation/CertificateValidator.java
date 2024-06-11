@@ -33,9 +33,11 @@ import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
 import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
 import eu.europa.esig.dss.spi.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContextExecutor;
 import eu.europa.esig.dss.validation.executor.ProcessExecutorProvider;
 import eu.europa.esig.dss.validation.executor.certificate.CertificateProcessExecutor;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
+import eu.europa.esig.dss.validation.executor.context.DefaultValidationContextExecutor;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.validation.reports.diagnostic.CertificateDiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.reports.diagnostic.DiagnosticDataBuilder;
@@ -68,6 +70,12 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 
 	/** The token identifier provider to use */
 	private TokenIdentifierProvider identifierProvider = new OriginalIdentifierProvider();
+
+	/**
+	 * Performs validation of {@code ValidationContext}
+	 * Default : {@code DefaultValidationContextExecutor}
+	 */
+	private ValidationContextExecutor validationContextExecutor = DefaultValidationContextExecutor.INSTANCE;
 	
 	/**
 	 * Locale to use for reports generation
@@ -153,6 +161,19 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	}
 
 	/**
+	 * This method sets {@code ValidationContextExecutor} for validation of the prepared {@code ValidationContext}
+	 * Default: {@code eu.europa.esig.dss.validation.executor.context.DefaultValidationContextExecutor}
+	 *          (performs basic validation of tokens, including certificate chain building and
+	 *          revocation data extraction, without processing of validity checks)
+	 *
+	 * @param validationContextExecutor {@link ValidationContextExecutor}
+	 */
+	public void setValidationContextExecutor(ValidationContextExecutor validationContextExecutor) {
+		Objects.requireNonNull(validationContextExecutor);
+		this.validationContextExecutor = validationContextExecutor;
+	}
+
+	/**
 	 * Validates the certificate with a default validation policy
 	 *
 	 * @return {@link CertificateReports}
@@ -235,11 +256,20 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link ValidationContext}
 	 */
 	protected ValidationContext prepareValidationContext(CertificateVerifier certificateVerifier) {
-		SignatureValidationContext svc = new SignatureValidationContext(getValidationTime());
+		final ValidationContext svc = createValidationContext();
 		svc.initialize(certificateVerifier);
 		svc.addCertificateTokenForVerification(token);
-		svc.setCurrentTime(getValidationTime());
 		return svc;
+	}
+
+	/**
+	 * This method creates a new instance of {@code ValidationContext} performing preparation of validation data,
+	 * certificate chain building, revocation request, as well as custom validation checks execution.
+	 *
+	 * @return {@link ValidationContext}
+	 */
+	protected ValidationContext createValidationContext() {
+		return new SignatureValidationContext(getValidationTime());
 	}
 
 	/**
@@ -251,8 +281,17 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		final CertificateVerifier certificateVerifierForValidation =
 				new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopyForValidation();
 		final ValidationContext validationContext = prepareValidationContext(certificateVerifierForValidation);
-		validationContext.validate();
+		validateContext(validationContext);
 		return createDiagnosticDataBuilder(validationContext);
+	}
+
+	/**
+	 * Process the validation
+	 *
+	 * @param validationContext {@link ValidationContext} to process
+	 */
+	protected void validateContext(final ValidationContext validationContext) {
+		validationContextExecutor.validate(validationContext);
 	}
 
 	/**

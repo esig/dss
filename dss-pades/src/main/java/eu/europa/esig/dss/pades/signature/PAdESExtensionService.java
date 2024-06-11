@@ -161,7 +161,7 @@ public class PAdESExtensionService {
     private PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, char[] passwordProtection) {
         PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
         pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
-        pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
+        pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
         pdfDocumentValidator.setPasswordProtection(passwordProtection);
         pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
         return pdfDocumentValidator;

@@ -156,7 +156,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * Performs validation of {@code ValidationContext}
 	 * Default : {@code DefaultValidationContextExecutor}
 	 */
-	private ValidationContextExecutor validationContextExecutor = DefaultValidationContextExecutor.getInstance();
+	private ValidationContextExecutor validationContextExecutor = DefaultValidationContextExecutor.INSTANCE;
 
 	/**
 	 * The used token extraction strategy to define tokens representation in DiagnosticData
@@ -539,12 +539,22 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 			final Collection<T> signatures, final Collection<TimestampToken> detachedTimestamps,
 			final Collection<EvidenceRecord> detachedEvidenceRecords,
 			final CertificateVerifier certificateVerifier) {
-		ValidationContext validationContext = new SignatureValidationContext(getValidationTime());
+		final ValidationContext validationContext = createValidationContext();
 		validationContext.initialize(certificateVerifier);
 		prepareSignatureValidationContext(validationContext, signatures);
 		prepareDetachedTimestampValidationContext(validationContext, detachedTimestamps);
 		prepareDetachedEvidenceRecordValidationContext(validationContext, detachedEvidenceRecords);
 		return validationContext;
+	}
+
+	/**
+	 * This method creates a new instance of {@code ValidationContext} performing preparation of validation data,
+	 * certificate chain building, revocation request, as well as custom validation checks execution.
+	 *
+	 * @return {@link ValidationContext}
+	 */
+	protected ValidationContext createValidationContext() {
+		return new SignatureValidationContext(getValidationTime());
 	}
 	
 	/**
@@ -1070,13 +1080,13 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @param skipValidationContextExecution if the context validation shall be skipped
 	 * @deprecated since DSS 6.1. Please use
-	 *             {@code #setValidationContextExecutor(SkipValidationContextExecutor.getInstance())} method instead
+	 *             {@code #setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE)} method instead
 	 */
 	@Deprecated
 	public void setSkipValidationContextExecution(boolean skipValidationContextExecution) {
 		if (skipValidationContextExecution) {
 			LOG.warn("Use of deprecated method #setSkipValidationContextExecution. SkipValidationContextExecutor is instantiated.");
-			this.validationContextExecutor = SkipValidationContextExecutor.getInstance();
+			this.validationContextExecutor = SkipValidationContextExecutor.INSTANCE;
 		}
 	}
 

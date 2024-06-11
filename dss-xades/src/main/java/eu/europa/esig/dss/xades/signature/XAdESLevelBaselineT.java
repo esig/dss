@@ -117,7 +117,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		documentValidator = new XMLDocumentValidator(dssDocument);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(params.getDetachedContents());
-		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
+		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 
 		documentDom = documentValidator.getRootElement();
 

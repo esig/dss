@@ -495,6 +495,36 @@ With DSS, it is possible to add a "Semantics" section at the end of the reports 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-semantics]
 ----
 
+==== Validation Context Executor
+
+Since version `6.1` DSS provides a functionality allowing configuration of the validation process on a step of validation data preparation, including certificate chain building, revocation data extraction, custom validation checks.
+
+The behavior may be configured with a `ValidationContextExecutor` provided to a `DocumentValidator`, as below:
+
+ * `DefaultValidationContextExecutor` - performs validation of the embedded tokens, including the certificate chain building, revocation data request, etc. This is a default executor used within `SignedDocumentValidator`.
+
+[source,java,indent=0]
+.DefaultValidationContextExecutor configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-default-validation-context-executor]
+----
+
+* `CompleteValidationContextExecutor` - performs validation of the embedded tokens, including the certificate chain building, revocation data request, as well as a processing of additional validation checks, such as the ones configured with custom alerts within a <<certificateVerifier>>.  When alerts are configured with exceptions, this executor allows a "fail fast" behavior on a signature validation (e.g. in case of a cryptographically invalid signature value).
+
+[source,java,indent=0]
+.CompleteValidationContextExecutor configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-complete-validation-context-executor]
+----
+
+* `SkipValidationContextExecutor` - skips validation of embedded tokens, including certificate chain building and revocation data request.
+
+[source,java,indent=0]
+.SkipValidationContextExecutor configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-skip-validation-context-executor]
+----
+
 [[EvidenceRecords]]
 === Evidence records
 

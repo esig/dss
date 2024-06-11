@@ -155,7 +155,7 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	protected PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {
 		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
-		pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
+		pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
 		pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
 		return pdfDocumentValidator;

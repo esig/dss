@@ -108,7 +108,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 		documentValidator = documentValidatorFactory.create(document);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(params.getDetachedContents());
-		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
+		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 
 		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
 		assertJWSJsonSerializationObjectValid(jwsJsonSerializationObject);

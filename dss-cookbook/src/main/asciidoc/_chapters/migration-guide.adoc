@@ -345,6 +345,23 @@ timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
 certificateVerifier.setTimestampTokenVerifier(timestampTokenVerifier);
 ----
 
+|Skip ValidationContext execution     a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.DocumentValidator;
+
+DocumentValidator documentValidator = ...
+documentValidator.setSkipValidationContextExecution(true);
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.executor.context.SkipValidationContextExecutor;
+
+DocumentValidator documentValidator = ...
+documentValidator.setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE);
+----
+
 |===
 
 [cols="2,5,5"]

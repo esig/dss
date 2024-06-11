@@ -13,7 +13,7 @@ public class XAdESLTAFailFastValidationTest extends XAdESLTATest {
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
         SignedDocumentValidator documentValidator = super.getValidator(signedDocument);
-        documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
+        documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
         return documentValidator;
     }
 

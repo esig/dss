@@ -10,25 +10,13 @@ import eu.europa.esig.dss.spi.validation.ValidationContextExecutor;
 public class SkipValidationContextExecutor implements ValidationContextExecutor {
 
     /** Singleton instance */
-    private static SkipValidationContextExecutor instance;
+    public static final SkipValidationContextExecutor INSTANCE = new SkipValidationContextExecutor();
 
     /**
      * Default constructor
      */
     private SkipValidationContextExecutor() {
         // empty
-    }
-
-    /**
-     * Gets the instance of {@code SkipValidationContextExecutor}
-     *
-     * @return {@link SkipValidationContextExecutor}
-     */
-    public static SkipValidationContextExecutor getInstance() {
-        if (instance == null) {
-            instance = new SkipValidationContextExecutor();
-        }
-        return instance;
     }
 
     @Override

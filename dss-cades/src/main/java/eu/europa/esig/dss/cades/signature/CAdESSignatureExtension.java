@@ -298,7 +298,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		CMSDocumentValidator documentValidator = new CMSDocumentValidator(signedData);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(parameters.getDetachedContents());
-		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
+		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 		return documentValidator;
 	}
 	

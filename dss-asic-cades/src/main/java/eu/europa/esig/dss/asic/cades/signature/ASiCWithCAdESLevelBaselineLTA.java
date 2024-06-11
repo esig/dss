@@ -133,7 +133,7 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
         if (lastTimestamp != null) {
             ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(asicContent);
             validator.setCertificateVerifier(certificateVerifier);
-            validator.setValidationContextExecutor(CompleteValidationContextExecutor.getInstance());
+            validator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 
             final List<AdvancedSignature> allSignatures = validator.getAllSignatures();
             final List<TimestampToken> detachedTimestamps = validator.getDetachedTimestamps();

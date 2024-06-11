@@ -91,7 +91,7 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		xmlDocumentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
 		xmlDocumentValidator.setEnableEtsiValidationReport(false); // Ignore ETSI VR
 		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
-		xmlDocumentValidator.setValidationContextExecutor(SkipValidationContextExecutor.getInstance()); // Only need to validate against the trusted certificate source
+		xmlDocumentValidator.setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE); // Only need to validate against the trusted certificate source
 		xmlDocumentValidator.setSignaturePolicyProvider(new SignaturePolicyProvider()); // ignore signature policy loading
 
 		// To increase the security: the default {@code XAdESPaths} is used.

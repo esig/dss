@@ -13,25 +13,13 @@ import java.util.Objects;
 public class DefaultValidationContextExecutor implements ValidationContextExecutor {
 
     /** Singleton instance */
-    private static DefaultValidationContextExecutor instance;
+    public static final DefaultValidationContextExecutor INSTANCE = new DefaultValidationContextExecutor();
 
     /**
      * Default constructor
      */
     private DefaultValidationContextExecutor() {
         // empty
-    }
-
-    /**
-     * Gets the instance of {@code DefaultValidationContextExecutor}
-     *
-     * @return {@link DefaultValidationContextExecutor}
-     */
-    public static DefaultValidationContextExecutor getInstance() {
-        if (instance == null) {
-            instance = new DefaultValidationContextExecutor();
-        }
-        return instance;
     }
 
     @Override
