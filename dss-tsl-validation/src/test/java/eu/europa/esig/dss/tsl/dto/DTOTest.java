@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.tsl.TrustService.TrustServiceBuilder;
 import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
-import eu.europa.esig.dss.model.tsl.builder.TrustServiceProviderBuilder;
+import eu.europa.esig.dss.tsl.sync.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.utils.Utils;

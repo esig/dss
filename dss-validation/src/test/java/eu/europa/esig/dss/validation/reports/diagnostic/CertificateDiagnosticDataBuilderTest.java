@@ -22,8 +22,7 @@ package eu.europa.esig.dss.validation.reports.diagnostic;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
@@ -31,9 +30,9 @@ import eu.europa.esig.dss.model.tsl.TrustProperties;
 import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.model.tsl.builder.TrustServiceProviderBuilder;
-import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -119,9 +118,8 @@ public class CertificateDiagnosticDataBuilderTest {
 		TLInfo tlInfo = new TLInfo(null, null, null, "bbb");
 		trustedCertSource.setSummary(new TLValidationJobSummary(Collections.singletonList(lotlInfo), Collections.singletonList(tlInfo)));
 
-		TrustServiceProviderBuilder tspBuilder = new TrustServiceProviderBuilder();
-		tspBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TSP Name")); }} );
-		TrustServiceProvider trustServiceProvider = new TrustServiceProvider(tspBuilder);
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
+		trustServiceProvider.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TSP Name")); }} );
 
 		TrustServiceStatusAndInformationExtensionsBuilder tsBuilder = new TrustServiceStatusAndInformationExtensionsBuilder();
 		tsBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TS Name")); }} );
@@ -181,9 +179,8 @@ public class CertificateDiagnosticDataBuilderTest {
 		TrustedListsCertificateSource trustedCertSourceOne = new TrustedListsCertificateSource();
 		trustedCertSourceOne.setSummary(new TLValidationJobSummary(Collections.singletonList(lotlInfo), Collections.singletonList(tlInfo)));
 
-		TrustServiceProviderBuilder tspBuilder = new TrustServiceProviderBuilder();
-		tspBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TSP Name")); }} );
-		TrustServiceProvider trustServiceProvider = new TrustServiceProvider(tspBuilder);
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
+		trustServiceProvider.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TSP Name")); }} );
 
 		TrustServiceStatusAndInformationExtensionsBuilder tsBuilder = new TrustServiceStatusAndInformationExtensionsBuilder();
 		tsBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("TS Name")); }} );

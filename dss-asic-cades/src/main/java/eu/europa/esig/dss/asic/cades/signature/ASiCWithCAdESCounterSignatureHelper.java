@@ -25,11 +25,11 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
-import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 
 import java.util.Collections;
 import java.util.List;
@@ -54,8 +54,8 @@ public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	}
 
 	@Override
-	protected DocumentValidator getDocumentValidator(DSSDocument signatureDocument) {
-		return new CMSDocumentValidator(signatureDocument);
+	protected DocumentAnalyzer getDocumentAnalyzer(DSSDocument signatureDocument) {
+		return new CMSDocumentAnalyzer(signatureDocument);
 	}
 
 	@Override

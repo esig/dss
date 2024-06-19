@@ -1,29 +1,29 @@
 package eu.europa.esig.dss.xades.evidencerecord;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.evidencerecord.AbstractSignatureEvidenceRecordDigestBuilder;
 import eu.europa.esig.dss.spi.validation.evidencerecord.ByteArrayComparator;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceElement;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.validation.XAdESAttribute;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xades.definition.xadesen.XAdESENElement;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
@@ -108,17 +108,17 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
 
     @Override
     public Digest build() {
-        final XMLDocumentValidator documentValidator = new XMLDocumentValidator(signatureDocument);
-        documentValidator.setDetachedContents(detachedContent);
+        final XMLDocumentAnalyzer documentAnalyzer = new XMLDocumentAnalyzer(signatureDocument);
+        documentAnalyzer.setDetachedContents(detachedContent);
 
-        final List<AdvancedSignature> signatures = documentValidator.getSignatures();
+        final List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
         AdvancedSignature signature;
         if (Utils.collectionSize(signatures) == 0) {
             throw new IllegalInputException("The provided document does not contain any signature! " +
                     "Unable to compute message-imprint for an integrated evidence-record.");
 
         } else if (Utils.isStringNotEmpty(signatureId)) {
-            signature = documentValidator.getSignatureById(signatureId);
+            signature = documentAnalyzer.getSignatureById(signatureId);
             if (signature == null) {
                 throw new IllegalArgumentException(
                         String.format("No signature with Id '%s' found in the document!", signatureId));
@@ -353,7 +353,7 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
         // Execute in reverse order in order to change only last evidence-record, when applicable
         for (int i = unsignedSignatureProperties.getLength() - 1; i >= 0; i--) {
             Node childNode = unsignedSignatureProperties.item(i);
-            if (XAdESENElement.SEALING_EVIDENCE_RECORDS.isSameTagName(childNode.getLocalName())) {
+            if (XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS.isSameTagName(childNode.getLocalName())) {
                 return childNode;
             }
         }

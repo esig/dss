@@ -24,9 +24,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.model.tsl.CertificatePivotStatus;
 import eu.europa.esig.dss.model.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
@@ -36,10 +34,11 @@ import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustService;
 import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
-import eu.europa.esig.dss.model.tsl.builder.TrustServiceProviderBuilder;
-import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
@@ -253,7 +252,7 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		List<TrustServiceProvider> czTrustServiceProviders = czTL.getParsingCacheInfo().getTrustServiceProviders();
-		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider(new TrustServiceProviderBuilder());
+		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider();
 		assertThrows(UnsupportedOperationException.class, () -> czTrustServiceProviders.add(emptyTrustServiceProvider));
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		
@@ -352,7 +351,7 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		List<TrustServiceProvider> czTrustServiceProviders = czTL.getParsingCacheInfo().getTrustServiceProviders();
-		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider(new TrustServiceProviderBuilder());
+		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider();
 		assertThrows(UnsupportedOperationException.class, () -> czTrustServiceProviders.add(emptyTrustServiceProvider));
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 

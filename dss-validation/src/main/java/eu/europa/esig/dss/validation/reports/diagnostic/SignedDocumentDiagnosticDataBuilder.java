@@ -68,7 +68,6 @@ import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
 import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
 import eu.europa.esig.dss.model.signature.SignatureDigestReference;
 import eu.europa.esig.dss.model.signature.SignaturePolicy;
-import eu.europa.esig.dss.model.signature.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
 import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -122,14 +121,14 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	/** The signed document */
 	protected DSSDocument signedDocument;
 
-	/** The list of signatures */
-	protected List<AdvancedSignature> signatures;
+	/** The collection of signatures */
+	protected Collection<AdvancedSignature> signatures;
 
-	/** The list of timestamp tokens */
-	protected Set<TimestampToken> usedTimestamps;
+	/** The collection of timestamp tokens */
+	protected Collection<TimestampToken> usedTimestamps;
 
-	/** The list of evidence records */
-	protected List<EvidenceRecord> evidenceRecords;
+	/** The collection of evidence records */
+	protected Collection<EvidenceRecord> evidenceRecords;
 
 	/** The list of all certificate sources extracted from a validating document (signature(s), timestamp(s)) */
 	protected ListCertificateSource documentCertificateSource = new ListCertificateSource();
@@ -206,7 +205,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @param signatures the found signatures
 	 * @return the builder
 	 */
-	public SignedDocumentDiagnosticDataBuilder foundSignatures(List<AdvancedSignature> signatures) {
+	public SignedDocumentDiagnosticDataBuilder foundSignatures(Collection<AdvancedSignature> signatures) {
 		this.signatures = signatures;
 		return this;
 	}
@@ -217,7 +216,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @param usedTimestamps a set of validated {@link TimestampToken}s
 	 * @return the builder
 	 */
-	public SignedDocumentDiagnosticDataBuilder usedTimestamps(Set<TimestampToken> usedTimestamps) {
+	public SignedDocumentDiagnosticDataBuilder usedTimestamps(Collection<TimestampToken> usedTimestamps) {
 		this.usedTimestamps = usedTimestamps;
 		return this;
 	}
@@ -228,7 +227,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 * @param evidenceRecords a set of found {@link EvidenceRecord}s
 	 * @return the builder
 	 */
-	public SignedDocumentDiagnosticDataBuilder foundEvidenceRecords(List<EvidenceRecord> evidenceRecords) {
+	public SignedDocumentDiagnosticDataBuilder foundEvidenceRecords(Collection<EvidenceRecord> evidenceRecords) {
 		this.evidenceRecords = evidenceRecords;
 		return this;
 	}
@@ -397,7 +396,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return xmlSignedData;
 	}
 
-	private Collection<XmlSignature> buildXmlSignatures(List<AdvancedSignature> signatures) {
+	private Collection<XmlSignature> buildXmlSignatures(Collection<AdvancedSignature> signatures) {
 		List<XmlSignature> builtSignatures = new ArrayList<>();
 		for (AdvancedSignature advancedSignature : signatures) {
 			String id = advancedSignature.getId();
@@ -410,7 +409,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return builtSignatures;
 	}
 
-	private void attachCounterSignatures(List<AdvancedSignature> signatures) {
+	private void attachCounterSignatures(Collection<AdvancedSignature> signatures) {
 		for (AdvancedSignature advancedSignature : signatures) {
 			if (advancedSignature.isCounterSignature()) {
 				XmlSignature currentSignature = xmlSignaturesMap.get(advancedSignature.getId());
@@ -903,7 +902,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return xmlSignatureScope;
 	}
 
-	private List<XmlEvidenceRecord> buildXmlEvidenceRecords(List<EvidenceRecord> evidenceRecords) {
+	private List<XmlEvidenceRecord> buildXmlEvidenceRecords(Collection<EvidenceRecord> evidenceRecords) {
 		List<XmlEvidenceRecord> xmlEvidenceRecords = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(evidenceRecords)) {
 			for (EvidenceRecord evidenceRecord : evidenceRecords) {
@@ -963,7 +962,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return getXmlDigestMatchers(evidenceRecord.getReferenceValidation(), Collections.emptyList());
 	}
 
-	private void linkSignaturesAndEvidenceRecords(List<AdvancedSignature> signatures) {
+	private void linkSignaturesAndEvidenceRecords(Collection<AdvancedSignature> signatures) {
 		for (AdvancedSignature signature : signatures) {
 			XmlSignature xmlSignature = xmlSignaturesMap.get(signature.getId());
 			xmlSignature.setFoundEvidenceRecords(getXmlSignatureEvidenceRecords(signature));
@@ -997,7 +996,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return foundEvidenceRecords;
 	}
 
-	private void linkEvidenceRecordsAndTimestamps(List<EvidenceRecord> evidenceRecords) {
+	private void linkEvidenceRecordsAndTimestamps(Collection<EvidenceRecord> evidenceRecords) {
 		for (EvidenceRecord evidenceRecord : evidenceRecords) {
 			XmlEvidenceRecord currentEvidenceRecord = xmlEvidenceRecordMap.get(evidenceRecord.getId());
 			// attach timestamps
@@ -1019,7 +1018,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return getXmlStructuralValidation(evidenceRecord.getStructureValidationResult());
 	}
 
-	private List<XmlTimestamp> buildXmlTimestamps(Set<TimestampToken> timestamps) {
+	private List<XmlTimestamp> buildXmlTimestamps(Collection<TimestampToken> timestamps) {
 		List<XmlTimestamp> xmlTimestampsList = new ArrayList<>();
 		if (Utils.isCollectionNotEmpty(timestamps)) {
 			List<TimestampToken> tokens = new ArrayList<>(timestamps);
@@ -1186,7 +1185,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return null;
 	}
 
-	private void linkSignaturesAndTimestamps(List<AdvancedSignature> signatures) {
+	private void linkSignaturesAndTimestamps(Collection<AdvancedSignature> signatures) {
 		for (AdvancedSignature advancedSignature : signatures) {
 			XmlSignature currentSignature = xmlSignaturesMap.get(advancedSignature.getId());
 			// attach timestamps
@@ -1204,14 +1203,14 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return foundTimestamps;
 	}
 
-	private void linkTimestampsAndTimestampsObjects(Set<TimestampToken> timestamps) {
+	private void linkTimestampsAndTimestampsObjects(Collection<TimestampToken> timestamps) {
 		for (TimestampToken timestampToken : timestamps) {
 			XmlTimestamp xmlTimestampToken = xmlTimestampsMap.get(timestampToken.getDSSIdAsString());
 			xmlTimestampToken.setTimestampedObjects(getXmlTimestampedObjects(timestampToken.getTimestampedReferences()));
 		}
 	}
 
-	private void linkEvidenceRecordsAndTimestampsObjects(List<EvidenceRecord> evidenceRecords) {
+	private void linkEvidenceRecordsAndTimestampsObjects(Collection<EvidenceRecord> evidenceRecords) {
 		for (EvidenceRecord evidenceRecord : evidenceRecords) {
 			XmlEvidenceRecord xmlEvidenceRecord = xmlEvidenceRecordMap.get(evidenceRecord.getId());
 			xmlEvidenceRecord.setTimestampedObjects(getXmlTimestampedObjects(evidenceRecord.getTimestampedReferences()));

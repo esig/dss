@@ -101,7 +101,7 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 				.setMaxCompressionRatio(20);
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(secureContainerHandler);
 
-		Exception exception = assertThrows(IllegalInputException.class, () -> new ASiCContainerWithXAdESValidator(doc));
+		Exception exception = assertThrows(IllegalInputException.class, () -> new ASiCContainerWithXAdESAnalyzer(doc));
 		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
 	}
 
@@ -115,7 +115,7 @@ public class ZipBombingTest extends AbstractASiCWithXAdESTestValidation {
 	@Test
 	public void zipBombingOneLevelAsics2() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/zip-bomb-package-zip-1gb.asics");
-		Exception exception = assertThrows(IllegalInputException.class, () -> new ASiCContainerWithXAdESValidator(doc));
+		Exception exception = assertThrows(IllegalInputException.class, () -> new ASiCContainerWithXAdESAnalyzer(doc));
 		assertEquals("Zip Bomb detected in the ZIP container. Validation is interrupted.", exception.getMessage());
 	}
 

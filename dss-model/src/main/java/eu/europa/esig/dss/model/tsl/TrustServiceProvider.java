@@ -20,12 +20,9 @@
  */
 package eu.europa.esig.dss.model.tsl;
 
-import eu.europa.esig.dss.model.tsl.builder.TrustServiceProviderBuilder;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * This class is a DTO representation for a trust service provider
@@ -67,18 +64,9 @@ public class TrustServiceProvider implements Serializable {
 	/**
 	 * Default constructor
 	 *
-	 * @param builder {@link TrustServiceProviderBuilder}
 	 */
-	public TrustServiceProvider(TrustServiceProviderBuilder builder) {
-		Objects.requireNonNull(builder, "TrustServiceProviderBuilder cannot be null!");
-		this.names = builder.getNames();
-		this.tradeNames = builder.getTradeNames();
-		this.registrationIdentifiers = builder.getRegistrationIdentifiers();
-		this.postalAddresses = builder.getPostalAddresses();
-		this.electronicAddresses = builder.getElectronicAddresses();
-		this.information = builder.getInformation();
-		this.services = builder.getServices();
-		this.territory = builder.getTerritory();
+	public TrustServiceProvider() {
+		// empty
 	}
 
 	/**
@@ -91,12 +79,30 @@ public class TrustServiceProvider implements Serializable {
 	}
 
 	/**
+	 * Sets a map of names
+	 *
+	 * @param names a map of names
+	 */
+	public void setNames(Map<String, List<String>> names) {
+		this.names = names;
+	}
+
+	/**
 	 * Gets a map of trade names
 	 *
 	 * @return a map of trade names
 	 */
 	public Map<String, List<String>> getTradeNames() {
 		return tradeNames;
+	}
+
+	/**
+	 * Sets a map of trade names
+	 *
+	 * @param tradeNames a map of trade names
+	 */
+	public void setTradeNames(Map<String, List<String>> tradeNames) {
+		this.tradeNames = tradeNames;
 	}
 
 	/**
@@ -109,12 +115,30 @@ public class TrustServiceProvider implements Serializable {
 	}
 
 	/**
+	 * Sets a list of registration identifiers
+	 *
+	 * @param registrationIdentifiers a list of registration identifiers
+	 */
+	public void setRegistrationIdentifiers(List<String> registrationIdentifiers) {
+		this.registrationIdentifiers = registrationIdentifiers;
+	}
+
+	/**
 	 * Gets a map of postal addresses
 	 *
 	 * @return a map of postal addresses
 	 */
 	public Map<String, String> getPostalAddresses() {
 		return postalAddresses;
+	}
+
+	/**
+	 * Sets a map of postal addresses
+	 *
+	 * @param postalAddresses a map of postal addresses
+	 */
+	public void setPostalAddresses(Map<String, String> postalAddresses) {
+		this.postalAddresses = postalAddresses;
 	}
 
 	/**
@@ -127,12 +151,30 @@ public class TrustServiceProvider implements Serializable {
 	}
 
 	/**
+	 * Sets a map of electronic addresses
+	 *
+	 * @param electronicAddresses a map of electronic addresses
+	 */
+	public void setElectronicAddresses(Map<String, List<String>> electronicAddresses) {
+		this.electronicAddresses = electronicAddresses;
+	}
+
+	/**
 	 * Gets a map of information
 	 *
 	 * @return a map of information
 	 */
 	public Map<String, String> getInformation() {
 		return information;
+	}
+
+	/**
+	 * Sets a map of information
+	 *
+	 * @param information a map of information
+	 */
+	public void setInformation(Map<String, String> information) {
+		this.information = information;
 	}
 
 	/**
@@ -145,12 +187,29 @@ public class TrustServiceProvider implements Serializable {
 	}
 
 	/**
+	 * Sets a list of trust services
+	 *
+	 * @param services a list of trust services
+	 */
+	public void setServices(List<TrustService> services) {
+		this.services = services;
+	}
+
+	/**
 	 * Gets territory (country)
 	 *
 	 * @return {@link String}
 	 */
 	public String getTerritory() {
 		return territory;
+	}
+
+	/**
+	 * Sets territory (country)
+	 * @param territory {@link String}
+	 */
+	public void setTerritory(String territory) {
+		this.territory = territory;
 	}
 
 }

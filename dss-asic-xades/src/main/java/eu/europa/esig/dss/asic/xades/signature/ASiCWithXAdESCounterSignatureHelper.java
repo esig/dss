@@ -24,8 +24,8 @@ import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 
 import java.util.List;
 
@@ -49,8 +49,8 @@ public class ASiCWithXAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	}
 
 	@Override
-	protected DocumentValidator getDocumentValidator(DSSDocument signatureDocument) {
-		return new XMLDocumentValidator(signatureDocument);
+	protected DocumentAnalyzer getDocumentAnalyzer(DSSDocument signatureDocument) {
+		return new XMLDocumentAnalyzer(signatureDocument);
 	}
 
 	@Override

@@ -57,7 +57,7 @@ public class XmlEvidenceRecord extends DefaultEvidenceRecord {
     }
     
     private static Element getEvidenceRecordElement(DSSDocument document) {
-        Element evidenceRecordElement = new XMLEvidenceRecordValidator(document).getEvidenceRecordElement();
+        Element evidenceRecordElement = new XMLEvidenceRecordAnalyzer(document).getEvidenceRecordElement();
         if (evidenceRecordElement == null) {
             throw new IllegalInputException("The provided document shall be an XML Evidence Record!");
         }

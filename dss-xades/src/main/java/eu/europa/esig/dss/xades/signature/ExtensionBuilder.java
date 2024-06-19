@@ -24,7 +24,7 @@ import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
@@ -68,9 +68,9 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	protected Element unsignedSignaturePropertiesDom;
 
 	/**
-	 * The used document validator
+	 * The used document analyzer
 	 */
-	protected XMLDocumentValidator documentValidator;
+	protected XMLDocumentAnalyzer documentAnalyzer;
 
 	/**
 	 * Empty constructor

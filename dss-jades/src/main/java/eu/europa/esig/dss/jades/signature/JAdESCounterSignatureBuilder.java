@@ -28,9 +28,9 @@ import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonObject;
-import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentAnalyzer;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
-import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.JWSDocumentAnalyzerFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -65,8 +65,8 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	 */
 	public DSSDocument getSignatureValueToBeSigned(DSSDocument signatureDocument, JAdESCounterSignatureParameters parameters) {
 
-		JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
-		AbstractJWSDocumentValidator documentValidator = documentValidatorFactory.create(signatureDocument);
+		JWSDocumentAnalyzerFactory documentValidatorFactory = new JWSDocumentAnalyzerFactory();
+		AbstractJWSDocumentAnalyzer documentValidator = documentValidatorFactory.create(signatureDocument);
 
 		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
 		assertJSONSerializationObjectMayBeExtended(jwsJsonSerializationObject);
@@ -88,8 +88,8 @@ public class JAdESCounterSignatureBuilder extends JAdESExtensionBuilder {
 	public DSSDocument buildEmbeddedCounterSignature(DSSDocument signatureDocument, DSSDocument counterSignature, 
 			JAdESCounterSignatureParameters parameters) {
 
-		JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
-		AbstractJWSDocumentValidator documentValidator = documentValidatorFactory.create(signatureDocument);
+		JWSDocumentAnalyzerFactory documentValidatorFactory = new JWSDocumentAnalyzerFactory();
+		AbstractJWSDocumentAnalyzer documentValidator = documentValidatorFactory.create(signatureDocument);
 
 		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
 		assertJSONSerializationObjectMayBeExtended(jwsJsonSerializationObject);

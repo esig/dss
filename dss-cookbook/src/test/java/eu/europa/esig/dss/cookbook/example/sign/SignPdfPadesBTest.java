@@ -165,7 +165,7 @@ public class SignPdfPadesBTest extends CookbookTools {
 			// Extract PDF/A validation result
 			// This report contains only validation of a document against PDF/A specification
 			// and no signature validation process result
-			PDFAValidationResult pdfaValidationResult = documentValidator.getPdfAValidationResult();
+			PDFAValidationResult pdfaValidationResult = documentValidator.getPdfaValidationResult();
 
 			// This variable contains the name of the identified PDF/A profile (or closest if validation failed)
 			String profileId = pdfaValidationResult.getProfileId();

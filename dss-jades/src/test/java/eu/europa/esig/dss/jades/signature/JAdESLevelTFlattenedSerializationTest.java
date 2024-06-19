@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -34,16 +32,17 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampAnalyzer;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -123,19 +122,18 @@ public class JAdESLevelTFlattenedSerializationTest extends AbstractJAdESTestSign
 			assertNotNull(sigTstValue);
 			assertTrue(Utils.isBase64Encoded(sigTstValue));
 
-			SignedDocumentValidator tstValidator = DetachedTimestampValidator.fromDocument(new InMemoryDocument(Utils.fromBase64(sigTstValue)));
-			tstValidator.setCertificateVerifier(getOfflineCertificateVerifier());
-			tstValidator.setDetachedContents(Arrays.asList(new InMemoryDocument(signatureValue.getBytes())));
-			Reports reports = tstValidator.validateDocument();
-			DiagnosticData diagnosticData = reports.getDiagnosticData();
+			DocumentAnalyzer tstAnalyzer = DetachedTimestampAnalyzer.fromDocument(new InMemoryDocument(Utils.fromBase64(sigTstValue)));
+			tstAnalyzer.setCertificateVerifier(getOfflineCertificateVerifier());
+			tstAnalyzer.setDetachedContents(Collections.singletonList(new InMemoryDocument(signatureValue.getBytes())));
+			ValidationContext validationContext = tstAnalyzer.validate();
 
-			assertEquals(0, diagnosticData.getSignatures().size());
-			assertEquals(1, diagnosticData.getTimestampList().size());
-			TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
-			assertTrue(timestampWrapper.isMessageImprintDataFound());
-			assertTrue(timestampWrapper.isMessageImprintDataIntact());
-			assertTrue(timestampWrapper.isSignatureIntact());
-			assertTrue(timestampWrapper.isSignatureValid());
+			assertEquals(0, validationContext.getProcessedSignatures().size());
+			assertEquals(1, validationContext.getProcessedTimestamps().size());
+			TimestampToken timestampToken = validationContext.getProcessedTimestamps().iterator().next();
+			assertTrue(timestampToken.isMessageImprintDataFound());
+			assertTrue(timestampToken.isMessageImprintDataIntact());
+			assertTrue(timestampToken.isSignatureIntact());
+			assertTrue(timestampToken.isValid());
 
 		} catch (JoseException e) {
 			fail("Unable to parse the signed file : " + e.getMessage());

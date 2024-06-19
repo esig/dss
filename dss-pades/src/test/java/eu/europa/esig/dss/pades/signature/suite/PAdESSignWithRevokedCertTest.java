@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
@@ -74,8 +74,8 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        PDFDocumentValidator validator = new PDFDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(doubleSigned);
+        assertEquals(2, pdfDocumentAnalyzer.getSignatures().size());
     }
 
     @Test
@@ -104,8 +104,8 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        PDFDocumentValidator validator = new PDFDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(doubleSigned);
+        assertEquals(2, pdfDocumentAnalyzer.getSignatures().size());
     }
 
     @Test

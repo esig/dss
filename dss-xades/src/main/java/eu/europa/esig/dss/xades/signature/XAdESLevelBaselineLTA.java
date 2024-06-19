@@ -74,7 +74,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 		// Perform signature validation
 		ValidationDataContainer validationDataContainer = null;
 		if (addTimestampValidationData) {
-			validationDataContainer = documentValidator.getValidationData(signatures);
+			validationDataContainer = documentAnalyzer.getValidationData(signatures);
 		}
 
 		// Append LTA-level (+ ValidationData)

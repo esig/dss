@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -96,7 +96,7 @@ public class CAdESLevelBCommitmentTypeQualifierTest extends AbstractCAdESTestSig
     protected void onDocumentSigned(byte[] byteArray) {
         super.onDocumentSigned(byteArray);
 
-        CMSDocumentValidator cmsDocumentValidator = new CMSDocumentValidator(new InMemoryDocument(byteArray));
+        CMSDocumentAnalyzer cmsDocumentValidator = new CMSDocumentAnalyzer(new InMemoryDocument(byteArray));
         List<AdvancedSignature> signatures = cmsDocumentValidator.getSignatures();
         assertEquals(1, signatures.size());
         assertTrue(signatures.get(0) instanceof CAdESSignature);

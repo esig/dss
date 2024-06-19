@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.cades.signature;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESArchiveManifestBuilder;
-import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
+import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzer;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -47,7 +47,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
-import eu.europa.esig.dss.validation.executor.context.CompleteValidationContextExecutor;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 import org.bouncycastle.cms.CMSSignedData;
 
 import java.util.List;
@@ -131,7 +131,7 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
         List<DSSDocument> timestampDocuments = asicContent.getTimestampDocuments();
         DSSDocument lastTimestamp = getLastTimestampDocument(lastManifestFile, timestampDocuments);
         if (lastTimestamp != null) {
-            ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(asicContent);
+            ASiCContainerWithCAdESAnalyzer validator = new ASiCContainerWithCAdESAnalyzer(asicContent);
             validator.setCertificateVerifier(certificateVerifier);
             validator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 

@@ -22,10 +22,6 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-spi</artifactId>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>eu.europa.ec.joinup.sd-dss</groupId>-->
-<!--			<artifactId>validation-policy</artifactId>-->
-<!--		</dependency>-->
 		
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

@@ -87,7 +87,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 		signatureRequirementsChecker.assertCertificateChainValidForXLLevel(signatures);
 
 		// Perform signature validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signatures);
+		ValidationDataContainer validationDataContainer = documentAnalyzer.getValidationData(signatures);
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);

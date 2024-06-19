@@ -1,23 +1,3 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.validation.timestamp;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -26,16 +6,11 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
@@ -44,11 +19,9 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -67,343 +40,259 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DetachedTimestampValidatorTest {
 
-	@Test
-	public void testWithAttached() throws Exception {
-		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
-		DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
-		DetachedTimestampValidator timestampValidator = new DetachedTimestampValidator(timestamp);
-		timestampValidator.setTimestampedData(timestampedContent);
-		timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
-
-		Reports reports = timestampValidator.validateDocument();
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		for (CertificateWrapper cert : diagnosticData.getUsedCertificates()) {
-			assertEquals(EncryptionAlgorithm.RSASSA_PSS, cert.getEncryptionAlgorithm());
-		}
-
-		assertEquals(1, diagnosticData.getTimestampList().size());
-		for (TimestampWrapper tst : diagnosticData.getTimestampList()) {
-			assertEquals(EncryptionAlgorithm.RSASSA_PSS, tst.getEncryptionAlgorithm());
-		}
-
-		validate(reports);
-	}
-
-	@Test
-	public void sdv1() throws Exception {
-		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
-		DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
-
-		DetachedTimestampValidator validator = (DetachedTimestampValidator) SignedDocumentValidator.fromDocument(timestamp);
-		validator.setTimestampedData(timestampedContent);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-
-		validate(validator.validateDocument());
-	}
-
-	@Test
-	public void sdv2() throws Exception {
-		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
-		DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestamp);
-		validator.setDetachedContents(Collections.singletonList(timestampedContent));
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-
-		validate(validator.validateDocument());
-	}
-
-	@Test
-	public void sdvNoFile() throws Exception {
-		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestamp);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
-		assertFalse(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
-		assertTrue(timestampWrapper.isSignatureIntact());
-		assertFalse(timestampWrapper.isSignatureValid());
-
-		validator = SignedDocumentValidator.fromDocument(timestamp);
-		validator.setDetachedContents(new ArrayList<>());
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		reports = validator.validateDocument();
-		diagnosticData = reports.getDiagnosticData();
-		timestampWrapper = diagnosticData.getTimestampList().get(0);
-		assertFalse(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
-		assertTrue(timestampWrapper.isSignatureIntact());
-		assertFalse(timestampWrapper.isSignatureValid());
-
-		validator = SignedDocumentValidator.fromDocument(timestamp);
-		validator.setDetachedContents(Collections.singletonList(new InMemoryDocument("Wrong data".getBytes(StandardCharsets.UTF_8))));
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		reports = validator.validateDocument();
-		diagnosticData = reports.getDiagnosticData();
-		timestampWrapper = diagnosticData.getTimestampList().get(0);
-		assertTrue(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
-		assertTrue(timestampWrapper.isSignatureIntact());
-		assertFalse(timestampWrapper.isSignatureValid());
-
-		assertEquals(0, timestampWrapper.getTimestampScopes().size());
-		assertEquals(0, timestampWrapper.getTimestampedSignedData().size());
-	}
-
-	@Test
-	public void detachedNoFile() throws Exception {
-		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
-
-		DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Reports reports = validator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
-		assertFalse(timestampWrapper.isMessageImprintDataFound());
-		assertFalse(timestampWrapper.isMessageImprintDataIntact());
-		assertTrue(timestampWrapper.isSignatureIntact());
-		assertFalse(timestampWrapper.isSignatureValid());
-	}
-
-	@Test
-	public void sdvTooMuchFiles() {
-		DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
-		DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(timestamp);
-		validator.setDetachedContents(Arrays.asList(timestampedContent, timestampedContent));
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		Exception exception = assertThrows(IllegalArgumentException.class, validator::validateDocument);
-		assertEquals("Only one detached document shall be provided for a timestamp validation!", exception.getMessage());
-	}
-
-	@Test
-	public void testWithDigestDocument() throws Exception {
-
-		FileDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
-		TimestampToken tst = new TimestampToken(DSSUtils.toByteArray(timestamp), TimestampType.CONTENT_TIMESTAMP);
-		DigestAlgorithm algorithm = tst.getMessageImprint().getAlgorithm();
-		assertNotNull(algorithm);
-
-		DigestDocument digestDocument = new DigestDocument(algorithm, Utils.toBase64(DSSUtils.digest(algorithm, "Test123".getBytes())));
-		DetachedTimestampValidator timestampValidator = new DetachedTimestampValidator(timestamp);
-
-		assertThrows(NullPointerException.class, () -> timestampValidator.setTimestampedData(null));
-
-		timestampValidator.setTimestampedData(digestDocument);
-		timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
-
-		validate(timestampValidator.validateDocument());
-	}
-
-	@Test
-	public void dss1929() throws Exception {
-		InMemoryDocument doc = new InMemoryDocument(Utils.fromBase64(
-				"MIIWPAYJKoZIhvcNAQcCoIIWLTCCFikCAQMxDzANBglghkgBZQMEAgEFADCCASMGCyqGSIb3DQEJEAEEoIIBEgSCAQ4wggEKAgEBBgkrBgEEAeJvAwIwMTANBglghkgBZQMEAgEFAAQgrNMlNiy5XThUc5LOI4+rEc8mou5Ks2wgMGM8AjaOQlUCEQCAK0E7AAABWihZ/dn7KzWbGBEyMDE3MDIxMDE0MDc1Mi41WjAGAgEAgAFkAhEAutEWB5uXXy/Vv4k+56lUJqBppGcwZTELMAkGA1UEBhMCREUxJTAjBgNVBAoMHGV4Y2VldCBTZWN1cmUgU29sdXRpb25zIEdtYkgxFzAVBgNVBGEMDk5UUkRFLUhSQjc4NzcwMRYwFAYDVQQDDA1leGNlZXQgVFNBIDA0oRswGQYIKwYBBQUHAQMEDTALMAkGBwQAgZdeAQGgggrxMIIFRzCCA3ugAwIBAgIBBjBBBgkqhkiG9w0BAQowNKAPMA0GCWCGSAFlAwQCAQUAoRwwGgYJKoZIhvcNAQEIMA0GCWCGSAFlAwQCAQUAogMCASAwVTELMAkGA1UEBhMCREUxJTAjBgNVBAoMHGV4Y2VldCBTZWN1cmUgU29sdXRpb25zIEdtYkgxHzAdBgNVBAMMFmV4Y2VldCB0cnVzdGNlbnRlciBDQTIwHhcNMTYxMDEzMDk0ODQ0WhcNMjExMDEyMDk0ODQzWjBlMQswCQYDVQQGEwJERTElMCMGA1UECgwcZXhjZWV0IFNlY3VyZSBTb2x1dGlvbnMgR21iSDEXMBUGA1UEYQwOTlRSREUtSFJCNzg3NzAxFjAUBgNVBAMMDWV4Y2VldCBUU0EgMDQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCBTsjBR68tKQQ6LPisgVvwaxID784nlmspjHc9Wl6vq7Smvk5a4jZ6GxccJL/rwCBLTs0z7zjeo9aEyzIe9YlcyeRyNp+QXfPqVeeXn4WAXM1hYaUt4LHrytkOqwj1sfwPx4TrES63Ot9h6pXBVFdkbYg8gsRD1YsryEXqwKCTnlLlDzbkjOy0a6W+ZzsEJiYtuOnfW64xDEKqgCutVmsPPT5NCnm+H7q8xqwXa6s0alEDeLnn0W5bjltQKqVTtYDfERN2Jovzzt+gWiX7XUBkGCvJU+MFErDzI522clrsqwhzQteqP4l+Haf7IPeBjzDT/x6o6qYBmRlupRYzQ0yZAgMBAAGjggEoMIIBJDAdBgNVHQ4EFgQUAF3jsWWyWkGeoGRYCMMr67aW7uIwfQYDVR0jBHYwdIAUo7AmghzxQnnQGqwp3XwFlw/e3ZGhWaRXMFUxCzAJBgNVBAYTAkRFMSUwIwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMR8wHQYDVQQDDBZleGNlZXQgdHJ1c3RjZW50ZXIgQ0EyggEBMDkGCCsGAQUFBwEBBC0wKzApBggrBgEFBQcwAYYdaHR0cDovL29jc3AuZXhjZWV0LmNsb3VkL29jc3AwDgYDVR0PAQH/BAQDAgbAMBMGA1UdIAQMMAowCAYGBACPegECMAwGA1UdEwEB/wQCMAAwFgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwQQYJKoZIhvcNAQEKMDSgDzANBglghkgBZQMEAgEFAKEcMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAKIDAgEgA4IBgQB6KlKklsZohZ4oH5gd6ZwL1K0ukFXsVaZvjSJGvrgNtdYQZhDpjsEWd5teWOP50DZKLE4gldlF2ZIAA5TNh09+60UXfUedRA9WAbYo7R3bXmAjEYTVMyuBHQSPApmXYNJfpQMq0E7wMwhhftJS3UESeAhljAuvlh+LHD+j+Rkf+FYNWwpBcscDIq7SYdRGU+xMqQZyeh246vycgvYyrYRw/4BEmS7erpqnkwTgWUZ9NQ7nxkUHEhTbNbuoyJ999O2m9nI0j5T2tJsWG7iRgcK5haJwugBBJ+nGSzoOPAdGLoHsKTDBZ5Jx2i5avpjfs6FVz6xJFI5ZqFzpd+T+TmSxKIHrvgwCMJDXY+dISoFqT6rGctGpyh4nMJqJLmtJssqLQfVaEjHL8t79DlJ/OPmkZSWJVdK5BfpCR264VkTrY3rJAfhbLWfWHCYL+wNWJknbAyw0yHYngto+DLEkrI9OrN7hlKjn3wUXHNKevgxVXYGOyQGdOsV5SuB/+0ErGaYwggWiMIID1qADAgECAgEBMEEGCSqGSIb3DQEBCjA0oA8wDQYJYIZIAWUDBAIBBQChHDAaBgkqhkiG9w0BAQgwDQYJYIZIAWUDBAIBBQCiAwIBIDBVMQswCQYDVQQGEwJERTElMCMGA1UECgwcZXhjZWV0IFNlY3VyZSBTb2x1dGlvbnMgR21iSDEfMB0GA1UEAwwWZXhjZWV0IHRydXN0Y2VudGVyIENBMjAeFw0xNjA4MDEwODQ1NDRaFw0zNjA3MjcwODQ1NDRaMFUxCzAJBgNVBAYTAkRFMSUwIwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMR8wHQYDVQQDDBZleGNlZXQgdHJ1c3RjZW50ZXIgQ0EyMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAv/XRNz6g0SX7/37L7WdtVeJkaJAlz0lv0lUXo9p0URSjOeZme2V55K6ENxmb+re8CH68P5QV/wFHQAJQ0UsxUDfyJ4Q94b9Nm7FCctuilMwJqqcv922/nrD31J3x0X7Rm/XnqLXcwPQps8Q6N7yn7WvLR5NvL8VR5ZXQhMEsVc0xpj7GrWhcmP7a9QM5DrLB+b9tQBJWS/5Vs6JYii9+Rf2wkl1rH0SfCsPW5vkg84cWTMxRo2mpUchhMvvTa+dHzkB+sjl88oGXzi2VbAHsr0izle+wWNuS5eQ1YEOvbTCKeZ5jDxQI3b3NoCNn/XXjHVOCYaFJixFPu1SUNUswDxeIUKlIabqftQfkQfUnugUXaET/bh+IQT/QKLA57wYMBH8px+o0Owv5IsSCxNLUle4uRLN7ZOOePQZLK79aD7FrfSl912RF7miKf5poOxhSeVHzh2N1pBKnKfmDWIbN9HGNxlu1gB284QqS5B9R9ELsyvhOVRcjr54U7O73sIfTAgMBAAGjggETMIIBDzAdBgNVHQ4EFgQUo7AmghzxQnnQGqwp3XwFlw/e3ZEwfQYDVR0jBHYwdIAUo7AmghzxQnnQGqwp3XwFlw/e3ZGhWaRXMFUxCzAJBgNVBAYTAkRFMSUwIwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMR8wHQYDVQQDDBZleGNlZXQgdHJ1c3RjZW50ZXIgQ0EyggEBMDkGCCsGAQUFBwEBBC0wKzApBggrBgEFBQcwAYYdaHR0cDovL29jc3AuZXhjZWV0LmNsb3VkL29jc3AwDgYDVR0PAQH/BAQDAgEGMBMGA1UdIAQMMAowCAYGBACPegECMA8GA1UdEwEB/wQFMAMBAf8wQQYJKoZIhvcNAQEKMDSgDzANBglghkgBZQMEAgEFAKEcMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAKIDAgEgA4IBgQBnGZFEhG4GyOEyKErfCVV8w1T5mwZoMRct0tlDWJTAcZsqBwMGcFBAZbkzISUwdxCkT1m5Yf4jlXO+Rgu9b92VuXOMnRavL5Hsjhz2rKepR822Fbe4NheTsHpmbfotbnoyQgcMpAItpIl1HqumNYNKar77siUDXyNI5DSjNK8WkcLpR2NcT78XemNK5Izs7FWfeoy5XN213fgg4tR5rYNOTRez7dHK8t9O7Z4l9LU3mM4SCBWMp+ndO1lXEU1OT5O2vutwy8IBhtYO0t16NG2tOurf51l1rwxX64gdv0y6CJMQyLAMU+Bc5Vz2zvtCAyFX7ikY7zuEsYHcnc1V2Bd5KSUwC0oHpRU3wffzkZPUpk/phJE6IKlQ9UWSIjAIGzySYLlj6l4/fFWzgzIL3V+5KdGBc9d87GDDOlt4OodNIzAQHDjmxSoHCGHUpTbnNaA3pQAoPTGZzhUon4K7hv+CvoGSGxlpPRxdb8x0UzSKqgVgQeHr31hBcMD15HAA06+hggdwoYIHbAYJKwYBBQUHMAEBMIIHXTCB86FZMFcxCzAJBgNVBAYTAkRFMSUwIwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMSEwHwYDVQQDDBhleGNlZXQgdHJ1c3RjZW50ZXIgT0NTUDIYDzIwMTcwMjEwMTQwNzUyWjCBhDCBgTA6MAkGBSsOAwIaBQAEFMJs9ZBfwKcY9zfk9vs0w9dIfhOoBBSjsCaCHPFCedAarCndfAWXD97dkQIBBoAAGA8yMDE3MDIxMDE0MDc1MlqhMDAuMCwGBSskCAMNBCMwITAJBgUrDgMCGgUABBQ+JrlVjH/TZz6eRTnGlk7hd0GRUTANBgkqhkiG9w0BAQsFAAOCAQEAGMsN94/xptoM7e6gDhkRYiTr1WBrsjpE6cJ8wqXLwcGx8fix5NA7kGtocde+vfQhKrC5XZ4pbF8xjCJRZWmzGgdq590CbDs6wuhGvILlk0fYatzoZalyJph1ctVeTwQ+Zg9wQHWeqd2eCpluHZJFEU+Mc2n31KJQ0odk9nMSj4B1fwLd8d+uxtKQnWE/q1dSAhg5t537qqMJeM3Bt8mm0KZ4kB4iTBISIJNX57zAuxuel3WUd4WSkL5wiy7J5RPeZTQFD3b6U1aGbufjvF0G3NQ7+Vh17rRyeJVjHx/ahjRM2DYMaJuYjetrgvScBkncdqCpaKbnmRRxgZq5RQnlNqCCBU8wggVLMIIFRzCCA3ugAwIBAgIBAzBBBgkqhkiG9w0BAQowNKAPMA0GCWCGSAFlAwQCAQUAoRwwGgYJKoZIhvcNAQEIMA0GCWCGSAFlAwQCAQUAogMCASAwVTELMAkGA1UEBhMCREUxJTAjBgNVBAoMHGV4Y2VldCBTZWN1cmUgU29sdXRpb25zIEdtYkgxHzAdBgNVBAMMFmV4Y2VldCB0cnVzdGNlbnRlciBDQTIwHhcNMTYwODAxMDg0NzIxWhcNMjEwNzMxMDg0NzIwWjBXMQswCQYDVQQGEwJERTElMCMGA1UECgwcZXhjZWV0IFNlY3VyZSBTb2x1dGlvbnMgR21iSDEhMB8GA1UEAwwYZXhjZWV0IHRydXN0Y2VudGVyIE9DU1AyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzpu5OOahFDTqJ+JxuP9Txfa2v/gmIET/TuOO0gR0POCp58/dewjoz1q0j6kONSnvWDnwyNE5Jt8eTgH1BFrsWerb6NqSl1TQDxHoghRbYlhfr6dIRJwaB3HVlqQZthz1GZUUuuZ8BjV6pfj7LOrnt7iNJ9qGApuMu5iIblRUFQWa+6ThgBFvBrefYkag0NHdUoW9IYawOZClxTtqlTNJSVj0KOf0ZMvxs9+F7mNxJI5WsgHFpN5jGjz3lbfSs5YOs4DHP+6hDQIfRMSW7L0UoRyqsTle+IqxI8TTAmisVXHwgz06qK2+zU5EUaw6WfDTCBuvqWmlkJd3O0M34pxdOwIDAQABo4IBNjCCATIwHQYDVR0OBBYEFCeBGHbe8HBYfLKomVl+ofgVAV69MH0GA1UdIwR2MHSAFKOwJoIc8UJ50BqsKd18BZcP3t2RoVmkVzBVMQswCQYDVQQGEwJERTElMCMGA1UECgwcZXhjZWV0IFNlY3VyZSBTb2x1dGlvbnMgR21iSDEfMB0GA1UEAwwWZXhjZWV0IHRydXN0Y2VudGVyIENBMoIBATA5BggrBgEFBQcBAQQtMCswKQYIKwYBBQUHMAGGHWh0dHA6Ly9vY3NwLmV4Y2VldC5jbG91ZC9vY3NwMA4GA1UdDwEB/wQEAwIGwDATBgNVHSAEDDAKMAgGBgQAj3oBAjAMBgNVHRMBAf8EAjAAMBMGA1UdJQQMMAoGCCsGAQUFBwMJMA8GCSsGAQUFBzABBQQCBQAwQQYJKoZIhvcNAQEKMDSgDzANBglghkgBZQMEAgEFAKEcMBoGCSqGSIb3DQEBCDANBglghkgBZQMEAgEFAKIDAgEgA4IBgQBq9qZSBMOakjTX09Fzf8PZg67CHxhHrKdW58wGTUFruFucE6a1WkphH1fw228nKmKMftYGrv9THXVS5JMdsqrpwlV6K8orGlagMXPwTUPljpkBLPS69LniGlK4nmDDnXbOenjn1zi4AL/HYPZJQhAiI+R4Wyjm0lDu8cIJ7pHa6C+uYb97lJ3JW1f8QdMhvmpWu+9TBSd76jpGQn8tJCkAuGzrtZbLwusChOWHFePApf/gSVd9ola/o0PTaLTiL2tZ6UyhqPMcVPcKzfABD8Keo4kLAVCP3BZ4ocMk0SbyUi6MgdIPMOn2kzBFGzWpNjfQShncwKxJi6FJcRlSIcXVHKRs8oMztBzkDrR6MWUZ9CXvgKBOKd6j7GKy8+si2F8rYY/MW3RCHy0RTCV/k3XerCj7XFWRVPyhiGztzV1sJCE6EkL6DNiqAMONf09AnnRiDqmkEZTK1btdTBukAO0GMCCkjq18DsW4xzB6PK1fovtlIslHGsbTsDdjtxD2M1AxggKBMIICfQIBATBaMFUxCzAJBgNVBAYTAkRFMSUwIwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMR8wHQYDVQQDDBZleGNlZXQgdHJ1c3RjZW50ZXIgQ0EyAgEGMA0GCWCGSAFlAwQCAQUAoIH5MBoGCSqGSIb3DQEJAzENBgsqhkiG9w0BCRABBDAcBgkqhkiG9w0BCQUxDxcNMTcwMjEwMTQwNzUyWjAvBgkqhkiG9w0BCQQxIgQgdaOD3WhTw4UMCFANVyL/iv/v3AqnWgXHUWUnRh1aN9EwgYsGCyqGSIb3DQEJEAIMMXwwejB4MHYEFD4muVWMf9NnPp5FOcaWTuF3QZFRMF4wWaRXMFUxCzAJBgNVBAYTAkRFMSUwIwYDVQQKDBxleGNlZXQgU2VjdXJlIFNvbHV0aW9ucyBHbWJIMR8wHQYDVQQDDBZleGNlZXQgdHJ1c3RjZW50ZXIgQ0EyAgEGMA0GCSqGSIb3DQEBCwUABIIBAFgzchL6/R8GFML5NHvV+dIQyFIAR3Q940vhvgu1/gAky0PZ7EgqWAHXGAyh26XXHllYTb92soQ1nGG4YRvHDTsYeqWl/lfp50JDviD8re6/cGJH2btTfHS29Yn6vFzSe5QtBPALbsl9e5zglNUrXtRPjK0qVqsXsiCTNCcusxDO4gj/ze8hP8g8GgvbVjIZ4jJK74uE5XyKaUL2LVCxbPfdqsP50vhs6RWkA4Zo7lR1vEvC35duXo/EGkv5xnz+dIDTyPN5WB5suJvo/j7oM53kc6pzECxbBKC5RcXy/jhD9WvOM7aKuZFwuCAPQRFiQJ9Z529/FPoE2H5DiqwCxME="));
-
-		TimestampToken tst = new TimestampToken(DSSUtils.toByteArray(doc), TimestampType.CONTENT_TIMESTAMP);
-		DigestAlgorithm algorithm = tst.getMessageImprint().getAlgorithm();
-		assertNotNull(algorithm);
-
-		DigestDocument digestDocument = new DigestDocument(algorithm, "rNMlNiy5XThUc5LOI4+rEc8mou5Ks2wgMGM8AjaOQlU=");
-
-		DetachedTimestampValidator timestampValidator = new DetachedTimestampValidator(doc);
-		timestampValidator.setTimestampedData(digestDocument);
-		timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/dss-1929/ts-policy.xml"));
-		assertNotNull(constraintsParameters);
-
-		Reports reports = timestampValidator.validateDocument(constraintsParameters);
-
-//		reports.print();
-
-		validate(reports);
-
-		// 3 = 2 in the TST + 1 in the OCSP Response
-		assertEquals(3, reports.getDiagnosticData().getUsedCertificates().size());
-		assertEquals(1, reports.getDiagnosticData().getAllRevocationData().size());
-
-		List<TimestampWrapper> timestampList = reports.getDiagnosticData().getTimestampList();
-		assertEquals(1, timestampList.size());
-		TimestampWrapper uniqueTimestamp = timestampList.get(0);
-		assertTrue(uniqueTimestamp.isMessageImprintDataFound());
-		assertTrue(uniqueTimestamp.isMessageImprintDataIntact());
-		assertTrue(uniqueTimestamp.isSignatureIntact());
-		assertTrue(uniqueTimestamp.isSignatureValid());
-
-		assertThrows(IllegalArgumentException.class, () -> timestampValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES));
-	}
-
-	@Test
-	public void dss1929SDV() throws Exception {
-		InMemoryDocument doc = new InMemoryDocument(Utils.fromBase64(
-				"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"));
-
-		TimestampToken tst = new TimestampToken(DSSUtils.toByteArray(doc), TimestampType.CONTENT_TIMESTAMP);
-		DigestAlgorithm algorithm = tst.getMessageImprint().getAlgorithm();
-		assertNotNull(algorithm);
-
-		DigestDocument digestDocument = new DigestDocument(algorithm, "rNMlNiy5XThUc5LOI4+rEc8mou5Ks2wgMGM8AjaOQlU=");
-
-		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
-		validator.setDetachedContents(Collections.singletonList(digestDocument));
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/dss-1929/ts-policy.xml"));
-		assertNotNull(constraintsParameters);
-
-		Reports reports = validator.validateDocument(constraintsParameters);
-
-//		reports.print();
-
-		validate(reports);
-
-		// 3 = 2 in the TST + 1 in the OCSP Response
-		assertEquals(3, reports.getDiagnosticData().getUsedCertificates().size());
-		assertEquals(1, reports.getDiagnosticData().getAllRevocationData().size());
-
-		List<TimestampWrapper> timestampList = reports.getDiagnosticData().getTimestampList();
-		assertEquals(1, timestampList.size());
-		TimestampWrapper uniqueTimestamp = timestampList.get(0);
-		assertTrue(uniqueTimestamp.isMessageImprintDataFound());
-		assertTrue(uniqueTimestamp.isMessageImprintDataIntact());
-		assertTrue(uniqueTimestamp.isSignatureIntact());
-		assertTrue(uniqueTimestamp.isSignatureValid());
-
-		assertThrows(IllegalArgumentException.class, () -> validator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES));
-	}
-
-	@Test
-	public void disig() throws Exception {
-		DSSDocument tst = new FileDocument("src/test/resources/disig.tst");
-
-		try (InputStream fis = tst.openStream()) {
-			byte[] byteArray = Utils.toByteArray(fis);
-			TimestampToken token = new TimestampToken(byteArray, TimestampType.ARCHIVE_TIMESTAMP);
-			TimestampCertificateSource certificateSource = token.getCertificateSource();
-			List<CertificateToken> certificates = certificateSource.getCertificates();
-			assertEquals(2, certificates.size());
-			assertNotEquals(certificates.get(0), certificates.get(1));
-			assertTrue(certificates.get(0).isEquivalent(certificates.get(1)));
-
-			List<CertificateRef> refs = certificateSource.getSigningCertificateRefs();
-			assertEquals(2, refs.size());
-			assertNotEquals(refs.get(0), refs.get(1));
-
-			Set<CertificateToken> sigCertValues = certificateSource.getSigningCertificates();
-			assertEquals(1, sigCertValues.size());
-
-			for (CertificateRef certificateRef : refs) {
-				for (CertificateToken sigCertValue : sigCertValues) {
-					assertArrayEquals(sigCertValue.getDigest(certificateRef.getCertDigest().getAlgorithm()), certificateRef.getCertDigest().getValue());
-				}
-			}
-			for (CertificateToken certificateToken : sigCertValues) {
-				assertTrue(token.isSignedBy(certificateToken));
-			}
-
-			// no Trust anchor
-			SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(tst);
-			CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-			validator.setCertificateVerifier(certificateVerifier);
-			Reports reports = validator.validateDocument();
-
-			List<TimestampWrapper> timestampList = reports.getDiagnosticData().getTimestampList();
-			assertEquals(1, timestampList.size());
-
-			TimestampWrapper timestampWrapper = timestampList.get(0);
-			assertTrue(timestampWrapper.isSignatureIntact());
-
-			String b1 = "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";
-			String b2 = "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";
-
-			// 1st TSU as Trust anchor
-			validator = SignedDocumentValidator.fromDocument(tst);
-			CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();
-			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b1));
-			certificateVerifier.setTrustedCertSources(trustedCertSource);
-
-			validator.setCertificateVerifier(certificateVerifier);
-			reports = validator.validateDocument();
-
-			timestampList = reports.getDiagnosticData().getTimestampList();
-			assertEquals(1, timestampList.size());
-
-			timestampWrapper = timestampList.get(0);
-			assertTrue(timestampWrapper.isSignatureIntact());
-
-			// 2nd TSU as Trust anchor
-			validator = SignedDocumentValidator.fromDocument(tst);
-			trustedCertSource = new CommonTrustedCertificateSource();
-			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b2));
-			certificateVerifier.setTrustedCertSources(trustedCertSource);
-
-			validator.setCertificateVerifier(certificateVerifier);
-			reports = validator.validateDocument();
-
-			timestampList = reports.getDiagnosticData().getTimestampList();
-			assertEquals(1, timestampList.size());
-
-			timestampWrapper = timestampList.get(0);
-			assertTrue(timestampWrapper.isSignatureIntact());
-
-			// both TSU as Trust anchor
-			validator = SignedDocumentValidator.fromDocument(tst);
-			trustedCertSource = new CommonTrustedCertificateSource();
-			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b1));
-			trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b2));
-			certificateVerifier.setTrustedCertSources(trustedCertSource);
-
-			validator.setCertificateVerifier(certificateVerifier);
-			reports = validator.validateDocument();
-
-			timestampList = reports.getDiagnosticData().getTimestampList();
-			assertEquals(1, timestampList.size());
-
-			timestampWrapper = timestampList.get(0);
-			assertTrue(timestampWrapper.isSignatureIntact());
-		}
-	}
-
-	private void validate(Reports reports) throws Exception {
-		assertNotNull(reports);
-		assertNotNull(reports.getDiagnosticDataJaxb());
-		assertNotNull(reports.getXmlDiagnosticData());
-		assertNotNull(reports.getDetailedReportJaxb());
-		assertNotNull(reports.getXmlDetailedReport());
-		assertNotNull(reports.getSimpleReportJaxb());
-		assertNotNull(reports.getXmlSimpleReport());
-
-		SimpleReportFacade simpleReportFacade = SimpleReportFacade.newFacade();
-		String marshalled = simpleReportFacade.marshall(reports.getSimpleReportJaxb(), true);
-		assertNotNull(marshalled);
-
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		assertEquals(1, timestampList.size());
-		TimestampWrapper timestampWrapper = timestampList.get(0);
-
-		assertTrue(timestampWrapper.isMessageImprintDataFound());
-		assertTrue(timestampWrapper.isMessageImprintDataIntact());
-
-		assertEquals(1, timestampWrapper.getTimestampScopes().size());
-		assertEquals(1, timestampWrapper.getTimestampedSignedData().size());
-
-		SimpleReport simpleReport = reports.getSimpleReport();
-		List<String> timestampIdList = simpleReport.getTimestampIdList();
-		assertEquals(1, timestampIdList.size());
-		assertNotNull(simpleReport.getFirstTimestampId());
-		assertNotNull(simpleReport.getIndication(simpleReport.getFirstTimestampId()));
-		assertNotNull(simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
-	}
-
-	private CertificateVerifier getOfflineCertificateVerifier() {
-		CertificateVerifier cv = new CommonCertificateVerifier();
-		cv.setAIASource(null);
-		return cv;
-	}
+    @Test
+    public void testWithAttached() throws Exception {
+        DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
+        DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
+
+        DetachedTimestampValidator timestampValidator = new DetachedTimestampValidator(timestamp);
+        timestampValidator.setTimestampedData(timestampedContent);
+        timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+        Reports reports = timestampValidator.validateDocument();
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+
+        for (CertificateWrapper cert : diagnosticData.getUsedCertificates()) {
+            assertEquals(EncryptionAlgorithm.RSASSA_PSS, cert.getSignatureAlgorithm().getEncryptionAlgorithm());
+        }
+
+        assertEquals(1, diagnosticData.getTimestampList().size());
+        for (TimestampWrapper tst : diagnosticData.getTimestampList()) {
+            assertEquals(EncryptionAlgorithm.RSASSA_PSS, tst.getSignatureAlgorithm().getEncryptionAlgorithm());
+        }
+
+        validate(reports);
+    }
+
+    @Test
+    public void sdv1() throws Exception {
+        DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
+        DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
+
+        DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
+        validator.setTimestampedData(timestampedContent);
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+        validate(validator.validateDocument());
+    }
+
+    @Test
+    public void sdv2() throws Exception {
+        DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
+        DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
+
+        DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
+        validator.setDetachedContents(Collections.singletonList(timestampedContent));
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+        validate(validator.validateDocument());
+    }
+
+    @Test
+    public void sdvNoFile() throws Exception {
+        DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
+
+        DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+        Reports reports = validator.validateDocument();
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().iterator().next();
+        assertFalse(timestampWrapper.isMessageImprintDataFound());
+        assertFalse(timestampWrapper.isMessageImprintDataIntact());
+        assertTrue(timestampWrapper.isSignatureIntact());
+        assertFalse(timestampWrapper.isSignatureValid());
+
+        validator = new DetachedTimestampValidator(timestamp);
+        validator.setDetachedContents(new ArrayList<>());
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+        reports = validator.validateDocument();
+        diagnosticData = reports.getDiagnosticData();
+        timestampWrapper = diagnosticData.getTimestampList().iterator().next();
+        assertFalse(timestampWrapper.isMessageImprintDataFound());
+        assertFalse(timestampWrapper.isMessageImprintDataIntact());
+        assertTrue(timestampWrapper.isSignatureIntact());
+        assertFalse(timestampWrapper.isSignatureValid());
+
+        validator = new DetachedTimestampValidator(timestamp);
+        validator.setDetachedContents(Collections.singletonList(new InMemoryDocument("Wrong data".getBytes(StandardCharsets.UTF_8))));
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+        reports = validator.validateDocument();
+        diagnosticData = reports.getDiagnosticData();
+        timestampWrapper = diagnosticData.getTimestampList().iterator().next();
+        assertTrue(timestampWrapper.isMessageImprintDataFound());
+        assertFalse(timestampWrapper.isMessageImprintDataIntact());
+        assertTrue(timestampWrapper.isSignatureIntact());
+        assertFalse(timestampWrapper.isSignatureValid());
+
+        assertEquals(0, timestampWrapper.getTimestampScopes().size());
+        assertEquals(0, timestampWrapper.getTimestampedObjects().size());
+    }
+
+    @Test
+    public void detachedNoFile() throws Exception {
+        DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
+
+        DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+        Reports reports = validator.validateDocument();
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().iterator().next();
+
+        assertFalse(timestampWrapper.isMessageImprintDataFound());
+        assertFalse(timestampWrapper.isMessageImprintDataIntact());
+        assertTrue(timestampWrapper.isSignatureIntact());
+        assertFalse(timestampWrapper.isSignatureValid());
+    }
+
+    @Test
+    public void sdvTooMuchFiles() {
+        DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
+        DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
+
+        DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
+        validator.setDetachedContents(Arrays.asList(timestampedContent, timestampedContent));
+        validator.setCertificateVerifier(getOfflineCertificateVerifier());
+        Exception exception = assertThrows(IllegalArgumentException.class, validator::validateDocument);
+        assertEquals("Only one detached document shall be provided for a timestamp validation!", exception.getMessage());
+    }
+
+    @Test
+    public void testWithDigestDocument() throws Exception {
+
+        FileDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
+        TimestampToken tst = new TimestampToken(DSSUtils.toByteArray(timestamp), TimestampType.CONTENT_TIMESTAMP);
+        DigestAlgorithm algorithm = tst.getMessageImprint().getAlgorithm();
+        assertNotNull(algorithm);
+
+        DigestDocument digestDocument = new DigestDocument(algorithm, Utils.toBase64(DSSUtils.digest(algorithm, "Test123".getBytes())));
+        DetachedTimestampValidator timestampValidator = new DetachedTimestampValidator(timestamp);
+
+        assertThrows(NullPointerException.class, () -> timestampValidator.setTimestampedData(null));
+
+        timestampValidator.setTimestampedData(digestDocument);
+        timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+        validate(timestampValidator.validateDocument());
+    }
+
+    @Test
+    public void disig() throws Exception {
+        DSSDocument tst = new FileDocument("src/test/resources/disig.tst");
+
+        try (InputStream fis = tst.openStream()) {
+            byte[] byteArray = Utils.toByteArray(fis);
+            TimestampToken token = new TimestampToken(byteArray, TimestampType.ARCHIVE_TIMESTAMP);
+            TimestampCertificateSource certificateSource = token.getCertificateSource();
+            List<CertificateToken> certificates = certificateSource.getCertificates();
+            assertEquals(2, certificates.size());
+            assertNotEquals(certificates.get(0), certificates.get(1));
+            assertTrue(certificates.get(0).isEquivalent(certificates.get(1)));
+
+            List<CertificateRef> refs = certificateSource.getSigningCertificateRefs();
+            assertEquals(2, refs.size());
+            assertNotEquals(refs.get(0), refs.get(1));
+
+            Set<CertificateToken> sigCertValues = certificateSource.getSigningCertificates();
+            assertEquals(1, sigCertValues.size());
+
+            for (CertificateRef certificateRef : refs) {
+                for (CertificateToken sigCertValue : sigCertValues) {
+                    assertArrayEquals(sigCertValue.getDigest(certificateRef.getCertDigest().getAlgorithm()), certificateRef.getCertDigest().getValue());
+                }
+            }
+            for (CertificateToken certificateToken : sigCertValues) {
+                assertTrue(token.isSignedBy(certificateToken));
+            }
+
+            // no Trust anchor
+            DetachedTimestampValidator validator = new DetachedTimestampValidator(tst);
+            CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+            validator.setCertificateVerifier(certificateVerifier);
+
+            Reports reports = validator.validateDocument();
+            DiagnosticData diagnosticData = reports.getDiagnosticData();
+            assertEquals(1, Utils.collectionSize(diagnosticData.getTimestampList()));
+
+            TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().iterator().next();
+            assertTrue(timestampWrapper.isSignatureIntact());
+
+            String b1 = "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";
+            String b2 = "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";
+
+            // 1st TSU as Trust anchor
+            validator = new DetachedTimestampValidator(tst);
+            CommonTrustedCertificateSource trustedCertSource = new CommonTrustedCertificateSource();
+            trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b1));
+            certificateVerifier.setTrustedCertSources(trustedCertSource);
+            validator.setCertificateVerifier(certificateVerifier);
+
+            reports = validator.validateDocument();
+            diagnosticData = reports.getDiagnosticData();
+            assertEquals(1, Utils.collectionSize(diagnosticData.getTimestampList()));
+
+            timestampWrapper = diagnosticData.getTimestampList().iterator().next();
+            assertTrue(timestampWrapper.isSignatureIntact());
+
+            // 2nd TSU as Trust anchor
+            validator = new DetachedTimestampValidator(tst);
+            trustedCertSource = new CommonTrustedCertificateSource();
+            trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b2));
+            certificateVerifier.setTrustedCertSources(trustedCertSource);
+
+            validator.setCertificateVerifier(certificateVerifier);
+
+            reports = validator.validateDocument();
+            diagnosticData = reports.getDiagnosticData();
+            assertEquals(1, Utils.collectionSize(diagnosticData.getTimestampList()));
+
+            timestampWrapper = diagnosticData.getTimestampList().iterator().next();
+            assertTrue(timestampWrapper.isSignatureIntact());
+            assertTrue(timestampWrapper.isSignatureIntact());
+
+            // both TSU as Trust anchor
+            validator = new DetachedTimestampValidator(tst);
+            trustedCertSource = new CommonTrustedCertificateSource();
+            trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b1));
+            trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(b2));
+            certificateVerifier.setTrustedCertSources(trustedCertSource);
+
+            validator.setCertificateVerifier(certificateVerifier);
+
+            reports = validator.validateDocument();
+            diagnosticData = reports.getDiagnosticData();
+            assertEquals(1, Utils.collectionSize(diagnosticData.getTimestampList()));
+
+            timestampWrapper = diagnosticData.getTimestampList().iterator().next();
+            assertTrue(timestampWrapper.isSignatureIntact());
+            assertTrue(timestampWrapper.isSignatureIntact());
+        }
+    }
+
+    private void validate(Reports reports) throws Exception {
+        assertNotNull(reports);
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+        assertEquals(1, timestampList.size());
+        TimestampWrapper timestampWrapper = timestampList.iterator().next();
+
+        assertTrue(timestampWrapper.isMessageImprintDataFound());
+        assertTrue(timestampWrapper.isMessageImprintDataIntact());
+
+        assertEquals(1, timestampWrapper.getTimestampScopes().size());
+        assertEquals(1, timestampWrapper.getTimestampedObjects().size());
+    }
+
+    private CertificateVerifier getOfflineCertificateVerifier() {
+        CertificateVerifier cv = new CommonCertificateVerifier();
+        cv.setAIASource(null);
+        return cv;
+    }
 
 }

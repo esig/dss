@@ -248,9 +248,9 @@ public class SignatureRequirementsChecker {
             return;
         }
 
-        final SignatureValidationContext validationContext = new SignatureValidationContext();
+        Date signingDate = signatureParameters.bLevel().getSigningDate();
+        final SignatureValidationContext validationContext = new SignatureValidationContext(signingDate);
         validationContext.initialize(certificateVerifier);
-        validationContext.setCurrentTime(signatureParameters.bLevel().getSigningDate());
 
         final List<CertificateToken> certificateChain = signatureParameters.getCertificateChain();
         if (Utils.isCollectionEmpty(certificateChain)) {
@@ -277,9 +277,9 @@ public class SignatureRequirementsChecker {
             return;
         }
 
-        final SignatureValidationContext validationContext = new SignatureValidationContext();
+        Date signingDate = signatureParameters.bLevel().getSigningDate();
+        final SignatureValidationContext validationContext = new SignatureValidationContext(signingDate);
         validationContext.initialize(certificateVerifier);
-        validationContext.setCurrentTime(signatureParameters.bLevel().getSigningDate());
         for (AdvancedSignature signature : signatures) {
             validationContext.addSignatureForVerification(signature);
         }

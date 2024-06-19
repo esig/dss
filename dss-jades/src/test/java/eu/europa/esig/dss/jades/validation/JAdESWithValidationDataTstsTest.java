@@ -40,16 +40,17 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampAnalyzer;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
@@ -57,7 +58,7 @@ import jakarta.xml.bind.JAXBElement;
 import org.jose4j.json.JsonUtil;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -315,20 +316,19 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 	}
 
 	private void validateTimestamp(DSSDocument timestamp, DSSDocument messageImprint) {
-		SignedDocumentValidator tstValidator = DetachedTimestampValidator.fromDocument(timestamp);
-		tstValidator.setCertificateVerifier(getOfflineCertificateVerifier());
-		tstValidator.setDetachedContents(Arrays.asList(messageImprint));
+		DocumentAnalyzer tstAnalyzer = DetachedTimestampAnalyzer.fromDocument(timestamp);
+		tstAnalyzer.setCertificateVerifier(getOfflineCertificateVerifier());
+		tstAnalyzer.setDetachedContents(Collections.singletonList(messageImprint));
 
-		Reports reports = tstValidator.validateDocument();
-		DiagnosticData diagnosticData = reports.getDiagnosticData();
-		assertEquals(0, diagnosticData.getSignatures().size());
-		assertEquals(1, diagnosticData.getTimestampList().size());
+		ValidationContext validationContext = tstAnalyzer.validate();
+		assertEquals(0, validationContext.getProcessedSignatures().size());
+		assertEquals(1, validationContext.getProcessedTimestamps().size());
 
-		TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
-		assertTrue(timestampWrapper.isMessageImprintDataFound());
-		assertTrue(timestampWrapper.isMessageImprintDataIntact());
-		assertTrue(timestampWrapper.isSignatureIntact());
-		assertTrue(timestampWrapper.isSignatureValid());
+		TimestampToken timestampToken = validationContext.getProcessedTimestamps().iterator().next();
+		assertTrue(timestampToken.isMessageImprintDataFound());
+		assertTrue(timestampToken.isMessageImprintDataIntact());
+		assertTrue(timestampToken.isSignatureIntact());
+		assertTrue(timestampToken.isValid());
 	}
 
 	@Override

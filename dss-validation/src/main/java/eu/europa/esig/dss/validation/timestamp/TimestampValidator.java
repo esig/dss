@@ -25,6 +25,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 /**
  * The interface to be used for timestamp validation
+ *
  */
 public interface TimestampValidator {
 

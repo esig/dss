@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;

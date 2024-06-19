@@ -54,7 +54,9 @@ public interface ValidationContext {
 	 *
 	 * @param currentTime
 	 *            the current {@code Date}
+	 * @deprecated since DSS 6.1. Please use constructor {@code new SignatureValidationContext(validationTime)} instead
 	 */
+	@Deprecated
 	void setCurrentTime(final Date currentTime);
 
 	/**
@@ -273,11 +275,18 @@ public interface ValidationContext {
 	boolean checkAllSignaturesNotExpired();
 
 	/**
+	 * Returns signatures added to the validation context
+	 *
+	 * @return a set of {@link AdvancedSignature}s
+	 */
+	Set<AdvancedSignature> getProcessedSignatures();
+
+	/**
 	 * Returns a read only list of all certificates used in the process of the validation of all signatures from the
 	 * given document. This list
 	 * includes the certificate to check, certification chain certificates, OCSP response certificate...
 	 *
-	 * @return The list of CertificateToken(s)
+	 * @return a set of {@link CertificateToken}s
 	 */
 	Set<CertificateToken> getProcessedCertificates();
 
@@ -285,7 +294,7 @@ public interface ValidationContext {
 	 * Returns a read only list of all revocations used in the process of the validation of all signatures from the
 	 * given document.
 	 *
-	 * @return The list of RevocationToken(s)
+	 * @return a set of {@link RevocationToken}s
 	 */
 	Set<RevocationToken<?>> getProcessedRevocations();
 
@@ -293,9 +302,16 @@ public interface ValidationContext {
 	 * Returns a read only list of all timestamps processed during the validation of all signatures from the given
 	 * document.
 	 *
-	 * @return The list of TimestampTokens(s)
+	 * @return a set of {@link TimestampToken}s
 	 */
 	Set<TimestampToken> getProcessedTimestamps();
+
+	/**
+	 * Returns evidence records added to the validation context
+	 *
+	 * @return a set of {@link EvidenceRecord}s
+	 */
+	Set<EvidenceRecord> getProcessedEvidenceRecords();
 
 	/**
 	 * Returns a list of all {@code CertificateSource}s used during the validation process.

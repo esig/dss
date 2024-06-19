@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -31,16 +30,17 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -73,9 +73,9 @@ public class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature 
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-        DocumentValidator validator = new XMLDocumentValidator(signedOJ);
-        AdvancedSignature signature = validator.getSignatures().iterator().next();
-        List<DSSDocument> originalDocuments = validator.getOriginalDocuments(signature);
+        DocumentAnalyzer reader = new XMLDocumentAnalyzer(signedOJ);
+        AdvancedSignature signature = reader.getSignatures().iterator().next();
+        List<DSSDocument> originalDocuments = reader.getOriginalDocuments(signature);
 
         originalOJManifest = originalDocuments.get(0);
 
@@ -151,8 +151,8 @@ public class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature 
         assertNotNull(oldSignatureDocumentElement);
 
         DSSDocument oldSignatureDocument = new InMemoryDocument(Utils.fromBase64(oldSignatureDocumentElement.getTextContent()));
-        DocumentValidator documentValidator = new XMLDocumentValidator(oldSignatureDocument);
-        assertEquals(1, documentValidator.getSignatures().size());
+        DocumentAnalyzer documentAnalyzer = new XMLDocumentAnalyzer(oldSignatureDocument);
+        assertEquals(1, documentAnalyzer.getSignatures().size());
     }
 
     @Override

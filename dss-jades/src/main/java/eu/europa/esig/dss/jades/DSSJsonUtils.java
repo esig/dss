@@ -22,12 +22,11 @@ package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.validation.EtsiUComponent;
-import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
+import eu.europa.esig.dss.jades.validation.JWSDocumentAnalyzerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -39,9 +38,10 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.jades.JAdESUtils;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.base64url.Base64Url;
@@ -697,9 +697,9 @@ public class DSSJsonUtils {
 		if (Utils.isStringNotEmpty(cSigValue)) {
 			InMemoryDocument cSigDocument = new InMemoryDocument(cSigValue.getBytes());
 			
-			JAdESDocumentValidatorFactory factory = new JAdESDocumentValidatorFactory();
+			JWSDocumentAnalyzerFactory factory = new JWSDocumentAnalyzerFactory();
 			if (factory.isSupported(cSigDocument)) {
-				SignedDocumentValidator validator = factory.create(cSigDocument);
+				DocumentAnalyzer validator = factory.create(cSigDocument);
 				List<AdvancedSignature> signatures = validator.getSignatures();
 
 				/*
@@ -711,7 +711,7 @@ public class DSSJsonUtils {
 					JAdESSignature signature = (JAdESSignature) signatures.iterator().next(); // only one is considered
 					signature.setMasterSignature(masterSignature);
 					signature.setMasterCSigComponent(cSigAttribute);
-					signature.setDetachedContents(Arrays.asList(new InMemoryDocument(masterSignature.getSignatureValue())));
+					signature.setDetachedContents(Collections.singletonList(new InMemoryDocument(masterSignature.getSignatureValue())));
 					if (LOG.isDebugEnabled()) {
 						LOG.debug("A JWS counter signature found with Id : '{}'", signature.getId());
 					}

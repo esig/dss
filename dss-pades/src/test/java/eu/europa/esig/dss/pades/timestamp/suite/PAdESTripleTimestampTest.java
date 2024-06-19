@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -73,8 +73,8 @@ public class PAdESTripleTimestampTest extends AbstractPAdESTestValidation {
         service.setTspSource(getSelfSignedTsa());
         timestampedDocument = service.timestamp(timestampedDocument, new PAdESTimestampParameters());
 
-        PDFDocumentValidator validator = new PDFDocumentValidator(timestampedDocument);
-        List<PdfDssDict> dssDictionaries = validator.getDssDictionaries();
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(timestampedDocument);
+        List<PdfDssDict> dssDictionaries = pdfDocumentAnalyzer.getDssDictionaries();
         assertEquals(2, dssDictionaries.size());
 
         PdfDssDict firstDSSDict = dssDictionaries.get(0);

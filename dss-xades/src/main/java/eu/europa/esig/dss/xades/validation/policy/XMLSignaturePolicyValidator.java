@@ -37,7 +37,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.signature.SignaturePolicy;
-import eu.europa.esig.dss.validation.policy.AbstractSignaturePolicyValidator;
+import eu.europa.esig.dss.spi.policy.AbstractSignaturePolicyValidator;
 
 import java.io.IOException;
 

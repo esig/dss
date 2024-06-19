@@ -23,7 +23,7 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -249,7 +249,7 @@ public class CAdESCounterSignatureBuilder {
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The Id of a signature to be counter signed shall be defined! "
 				+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 
-		CMSDocumentValidator validator = new CMSDocumentValidator(signatureDocument);
+		CMSDocumentAnalyzer validator = new CMSDocumentAnalyzer(signatureDocument);
 		validator.setDetachedContents(parameters.getDetachedContents());
 		validator.setManifestFile(manifestFile);
 		

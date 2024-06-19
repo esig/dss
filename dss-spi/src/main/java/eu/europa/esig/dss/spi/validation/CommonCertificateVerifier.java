@@ -534,12 +534,14 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	@Deprecated
 	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
 		Objects.requireNonNull(digestAlgorithm, "Default DigestAlgorithm cannot be nulL!");
 		this.defaultDigestAlgorithm = digestAlgorithm;
 	}
 	
 	@Override
+	@Deprecated
 	public DigestAlgorithm getDefaultDigestAlgorithm() {
 		return defaultDigestAlgorithm;
 	}

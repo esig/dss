@@ -89,7 +89,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signaturesToExtend);
 
 		// Perform signature validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signaturesToExtend);
+		ValidationDataContainer validationDataContainer = documentAnalyzer.getValidationData(signaturesToExtend);
 
 		// Append ValidationData
 		for (AdvancedSignature signature : signaturesToExtend) {

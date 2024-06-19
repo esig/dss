@@ -34,17 +34,17 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.validation.executor.SkipValidationContextExecutor;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;
-import eu.europa.esig.dss.validation.executor.context.SkipValidationContextExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
 import java.util.Date;
 import java.util.List;
@@ -83,10 +83,11 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 	}
 
 	private Reports validateTL() {
-		CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
+		final CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
 		certificateVerifier.setTrustedCertSources(buildTrustedCertificateSource(certificateSource));
 
-		XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
+		final XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
+
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
 		xmlDocumentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
 		xmlDocumentValidator.setEnableEtsiValidationReport(false); // Ignore ETSI VR

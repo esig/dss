@@ -106,7 +106,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		signatureRequirementsChecker.assertCertificateChainValidForCLevel(signaturesToExtend);
 
 		// Perform signature validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signaturesToExtend);
+		ValidationDataContainer validationDataContainer = documentAnalyzer.getValidationData(signaturesToExtend);
 
 		// Append ValidationData
 		for (AdvancedSignature signature : signaturesToExtend) {

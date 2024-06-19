@@ -29,14 +29,14 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.enums.TypeOfProof;
 import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
@@ -63,8 +63,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocumentTestValidation {
 
     @Override
-    protected EvidenceRecordValidator getValidator(DSSDocument evidenceRecordDocument) {
-        EvidenceRecordValidator validator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+    protected SignedDocumentValidator getValidator(DSSDocument evidenceRecordDocument) {
+        DefaultEvidenceRecordValidator validator = DefaultEvidenceRecordValidator.fromDocument(evidenceRecordDocument);
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
         validator.setTokenExtractionStrategy(getTokenExtractionStrategy());
         validator.setDetachedContents(getDetachedContents());

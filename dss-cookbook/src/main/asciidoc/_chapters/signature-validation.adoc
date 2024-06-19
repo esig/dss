@@ -853,3 +853,19 @@ eu.europa.esig.dss.pdfa.validation.PDFADocumentValidatorFactory
 ----
 
 It is also possible to enforce verification of a PDF/A profile and its validity during the signature validation process using the customized XML validation policy (see <<validationPolicy>>). See <<PdfaConstraints>> for more details.
+
+[[documentAnalyzer]]
+=== Document Analyzer
+Since version `6.1` DSS introduces a new interface `DocumentAnalyzer` with format specific implementations, providing a document reading, validation data (certificates and revocation data) handling and cryptographic validation of extracted tokens functionalities. This class allows execution of a signed document validation without running ETSI EN 319 102-1 (cf. <<R09>>) validation process and building reports, which implies no JAXB loading.
+
+NOTE: `DocumentAnalyzer` implementations are used in the background of `DocumentValidator` classes.
+
+The configuration of `DocumentAnalyzer` is similar to a <<signedDocumentValidator>>, with the exception to ETSI EN 319 102-1 validation standard specific parameters.
+
+[source,java,indent=0]
+.DocumentAnalyzer example
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/DefaultDocumentAnalyzerTest.java[tags=demo]
+----
+
+WARNING: Please note that the validation process with `DocumentAnalyzer` is not complete, and may lack certain ETSI EN 319 102-1 validation standard checks.

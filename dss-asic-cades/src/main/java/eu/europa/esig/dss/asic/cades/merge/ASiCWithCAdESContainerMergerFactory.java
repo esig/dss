@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
-import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
+import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzerFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.merge.ASiCContainerMerger;
 import eu.europa.esig.dss.asic.common.merge.ASiCContainerMergerFactory;
@@ -48,7 +48,7 @@ public class ASiCWithCAdESContainerMergerFactory implements ASiCContainerMergerF
         if (containers.length == 0) {
             throw new NullPointerException("At least one container shall be provided!");
         }
-        ASiCContainerWithCAdESValidatorFactory documentValidatorFactory = new ASiCContainerWithCAdESValidatorFactory();
+        ASiCContainerWithCAdESAnalyzerFactory documentValidatorFactory = new ASiCContainerWithCAdESAnalyzerFactory();
         for (DSSDocument container : containers) {
             if (container == null) {
                 throw new NullPointerException("A document cannot be null!");
@@ -104,7 +104,7 @@ public class ASiCWithCAdESContainerMergerFactory implements ASiCContainerMergerF
         if (asicContents.length == 0) {
             throw new NullPointerException("At least one ASiCContent shall be provided!");
         }
-        ASiCContainerWithCAdESValidatorFactory documentValidatorFactory = new ASiCContainerWithCAdESValidatorFactory();
+        ASiCContainerWithCAdESAnalyzerFactory documentValidatorFactory = new ASiCContainerWithCAdESAnalyzerFactory();
         for (ASiCContent asicContent : asicContents) {
             if (asicContent == null) {
                 throw new NullPointerException("An ASiCContent cannot be null!");

@@ -40,16 +40,15 @@ import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustProperties;
 import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.model.tsl.builder.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReportFacade;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.ExternalResourcesCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
@@ -426,11 +425,7 @@ public class CertificateValidatorTest {
 		exception = assertThrows(NullPointerException.class, () -> new TrustProperties(null, tlInfo, null, null));
 		assertEquals("trustServiceProvider cannot be null!", exception.getMessage());
 
-		exception = assertThrows(NullPointerException.class, () -> new TrustServiceProvider(null));
-		assertEquals("TrustServiceProviderBuilder cannot be null!", exception.getMessage());
-
-		TrustServiceProviderBuilder builder = new TrustServiceProviderBuilder();
-		TrustServiceProvider trustServiceProvider = builder.build();
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
 
 		exception = assertThrows(NullPointerException.class, () -> new TrustProperties(null, tlInfo, trustServiceProvider, null));
 		assertEquals("trustService cannot be null!", exception.getMessage());

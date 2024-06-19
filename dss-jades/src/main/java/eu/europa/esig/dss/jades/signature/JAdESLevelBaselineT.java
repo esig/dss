@@ -29,8 +29,8 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonObject;
-import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
-import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentAnalyzer;
+import eu.europa.esig.dss.jades.validation.JWSDocumentAnalyzerFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -42,7 +42,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.executor.context.CompleteValidationContextExecutor;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 	/**
 	 * The cached instance of a document validator
 	 */
-	protected AbstractJWSDocumentValidator documentValidator;
+	protected AbstractJWSDocumentAnalyzer documentValidator;
 
 	/**
 	 * Internal variable: defines the current signing procedure (used in signature creation/extension)
@@ -104,7 +104,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 
-		JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+		JWSDocumentAnalyzerFactory documentValidatorFactory = new JWSDocumentAnalyzerFactory();
 		documentValidator = documentValidatorFactory.create(document);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(params.getDetachedContents());

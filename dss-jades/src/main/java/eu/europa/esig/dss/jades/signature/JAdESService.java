@@ -34,8 +34,8 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
-import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentAnalyzer;
+import eu.europa.esig.dss.jades.validation.JWSDocumentAnalyzerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -251,9 +251,9 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	private JWSJsonSerializationObject getJWSJsonSerializationObjectToSign(List<DSSDocument> documentsToSign) {
 		if (Utils.isCollectionNotEmpty(documentsToSign) && documentsToSign.size() == 1) {
 			DSSDocument document = documentsToSign.get(0);
-			JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+			JWSDocumentAnalyzerFactory documentValidatorFactory = new JWSDocumentAnalyzerFactory();
 			if (documentValidatorFactory.isSupported(document)) {
-				AbstractJWSDocumentValidator documentValidator = documentValidatorFactory.create(document);
+				AbstractJWSDocumentAnalyzer documentValidator = documentValidatorFactory.create(document);
 				return documentValidator.getJwsJsonSerializationObject();
 			}
 		}

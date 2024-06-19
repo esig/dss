@@ -36,7 +36,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.signature.Reference;
 
@@ -210,7 +210,7 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         final List<String> result = new ArrayList<>();
         for (ASiCContent asicContent : asicContents) {
             for (DSSDocument signatureDocument : asicContent.getSignatureDocuments()) {
-                XMLDocumentValidator documentValidator = new XMLDocumentValidator(signatureDocument);
+                XMLDocumentAnalyzer documentValidator = new XMLDocumentAnalyzer(signatureDocument);
                 for (AdvancedSignature signature : documentValidator.getSignatures()) {
                     result.addAll(getCoveredDocumentNames((XAdESSignature) signature));
                 }

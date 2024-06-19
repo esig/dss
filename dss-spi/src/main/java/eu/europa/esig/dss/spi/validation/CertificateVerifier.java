@@ -236,14 +236,18 @@ public interface CertificateVerifier {
 	 * Default : {@code DigestAlgorithm.SHA256}
 	 *
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 * @deprecated since DSS 6.1. Use {@code DocumentValidator#setDefaultDigestAlgorithm} method instead
 	 */
+	@Deprecated
 	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
 	
 	/**
 	 * This method returns a default Digest Algorithm what will be used for digest calculation
 	 *
 	 * @return {@link DigestAlgorithm}
+	 * @deprecated since DSS 6.1
 	 */
+	@Deprecated
 	DigestAlgorithm getDefaultDigestAlgorithm();
 
 	/**

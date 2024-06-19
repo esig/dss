@@ -75,7 +75,7 @@ public class XAdESLevelA extends XAdESLevelXL {
 		// Perform signature validation
 		ValidationDataContainer validationDataContainer = null;
 		if (addTimestampValidationData) {
-			validationDataContainer = documentValidator.getValidationData(signatures);
+			validationDataContainer = documentAnalyzer.getValidationData(signatures);
 		}
 
 		// Append LTA-level (+ ValidationData)

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -27,9 +28,10 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.validation.ValidationContextExecutor;
+import eu.europa.esig.dss.spi.validation.executor.ValidationContextExecutor;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
@@ -89,6 +91,14 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @param validationContextExecutor {@link ValidationContextExecutor}
 	 */
 	void setValidationContextExecutor(ValidationContextExecutor validationContextExecutor);
+
+	/**
+	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
+	 * Default : {@code DigestAlgorithm.SHA256}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 */
+	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
 
 	/**
 	 * This method allows to set the token extraction strategy to follow in the
@@ -280,14 +290,6 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @return list of {@link DSSDocument}s
 	 */
 	List<DSSDocument> getOriginalDocuments(final AdvancedSignature advancedSignature);
-	
-	/**
-	 * This method process the signature validation on the given {@code allSignatureList}
-	 * 
-	 * @param <T> {@link AdvancedSignature} implementation
-	 * @param allSignatureList a collection of {@link AdvancedSignature}s to be validated
-	 */
-	<T extends AdvancedSignature> void processSignaturesValidation(Collection<T> allSignatureList);
 
 	/**
 	 * Extracts a validation data for provided collection of signatures

@@ -770,6 +770,9 @@ public abstract class DiagnosticDataBuilder {
 					}
 					processedTokens.add(issuerToken);
 					issuerToken = getIssuerCertificate(issuerToken, certificateSource);
+				} else {
+					// not validated -> break
+					break;
 				}
 			}
 

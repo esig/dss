@@ -20,24 +20,24 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESSignaturePolicy;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -71,7 +71,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 		Objects.requireNonNull(signatureDocument, "Signature document must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		final XMLDocumentValidator documentValidator = initDocumentValidator(signatureDocument);
+		final XMLDocumentAnalyzer documentValidator = initDocumentValidator(signatureDocument);
 
 		boolean signaturePolicyStoreAdded = false;
 		for (AdvancedSignature signature : documentValidator.getSignatures()) {
@@ -99,7 +99,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 		Objects.requireNonNull(signatureDocument, "Signature document must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		final XMLDocumentValidator documentValidator = initDocumentValidator(signatureDocument);
+		final XMLDocumentAnalyzer documentValidator = initDocumentValidator(signatureDocument);
 		AdvancedSignature signature = documentValidator.getSignatureById(signatureId);
 		if (signature == null) {
 			throw new IllegalInputException(String.format("Unable to find a signature with Id : %s!", signatureId));
@@ -113,13 +113,13 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 		return createXmlDocument();
 	}
 
-	private XMLDocumentValidator initDocumentValidator(DSSDocument document) {
+	private XMLDocumentAnalyzer initDocumentValidator(DSSDocument document) {
 		params = new XAdESSignatureParameters();
 
-		documentValidator = new XMLDocumentValidator(document);
-		documentDom = documentValidator.getRootElement();
+		documentAnalyzer = new XMLDocumentAnalyzer(document);
+		documentDom = documentAnalyzer.getRootElement();
 
-		return documentValidator;
+		return documentAnalyzer;
 	}
 
 	/**
@@ -200,7 +200,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 
 		Digest computedDigest;
 		try {
-			SignaturePolicyValidator validator = documentValidator.getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
+			SignaturePolicyValidator validator = documentAnalyzer.getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
 			if (validator instanceof XMLSignaturePolicyValidator) {
 				XMLSignaturePolicyValidator xmlSignaturePolicyValidator = (XMLSignaturePolicyValidator) validator;
 				computedDigest = xmlSignaturePolicyValidator.getDigestAfterTransforms(signaturePolicyContent,

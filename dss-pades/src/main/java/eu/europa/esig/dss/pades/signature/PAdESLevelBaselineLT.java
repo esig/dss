@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pades.signature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
@@ -53,15 +53,15 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 	}
 
 	@Override
-	protected DSSDocument extendSignatures(DSSDocument document, PDFDocumentValidator documentValidator,
+	protected DSSDocument extendSignatures(DSSDocument document, PDFDocumentAnalyzer pdfDocumentAnalyzer,
 										   PAdESSignatureParameters parameters) {
-		final DSSDocument extendedDocument = super.extendSignatures(document, documentValidator, parameters);
+		final DSSDocument extendedDocument = super.extendSignatures(document, pdfDocumentAnalyzer, parameters);
 		boolean tLevelAdded = extendedDocument != document;
 		if (tLevelAdded) { // check if T-level has been added
-			documentValidator = getPDFDocumentValidator(extendedDocument, parameters);
+			pdfDocumentAnalyzer = getPDFDocumentValidator(extendedDocument, parameters);
 		}
 
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		List<AdvancedSignature> signatures = pdfDocumentAnalyzer.getSignatures();
 
 		final SignatureRequirementsChecker signatureRequirementsChecker =
 				new PAdESSignatureRequirementsChecker(certificateVerifier, parameters);
@@ -71,8 +71,8 @@ class PAdESLevelBaselineLT extends PAdESLevelBaselineT {
 		signatureRequirementsChecker.assertSignaturesValid(signatures);
 		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signatures);
 
-		List<TimestampToken> detachedTimestamps = documentValidator.getDetachedTimestamps();
-		PdfValidationDataContainer validationData = documentValidator.getValidationData(signatures, detachedTimestamps);
+		List<TimestampToken> detachedTimestamps = pdfDocumentAnalyzer.getDetachedTimestamps();
+		PdfValidationDataContainer validationData = pdfDocumentAnalyzer.getValidationData(signatures, detachedTimestamps);
 
 		final PDFSignatureService signatureService = getPAdESSignatureService();
 		return signatureService.addDssDictionary(extendedDocument, validationData, parameters.getPasswordProtection(), parameters.isIncludeVRIDictionary());

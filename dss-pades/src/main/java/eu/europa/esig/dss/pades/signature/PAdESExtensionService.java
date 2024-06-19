@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pades.signature;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
@@ -30,7 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.validation.executor.context.CompleteValidationContextExecutor;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,10 +116,10 @@ public class PAdESExtensionService {
     public DSSDocument incorporateValidationData(DSSDocument document, char[] passwordProtection, boolean includeVRIDict) {
         Objects.requireNonNull(document, "The document to be extended shall be provided!");
 
-        final PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, passwordProtection);
+        final PDFDocumentAnalyzer pdfDocumentAnalyzer = getPDFDocumentAnalyzer(document, passwordProtection);
 
-        final List<AdvancedSignature> signatures = pdfDocumentValidator.getSignatures();
-        final List<TimestampToken> detachedTimestamps = pdfDocumentValidator.getDetachedTimestamps();
+        final List<AdvancedSignature> signatures = pdfDocumentAnalyzer.getSignatures();
+        final List<TimestampToken> detachedTimestamps = pdfDocumentAnalyzer.getDetachedTimestamps();
         if (Utils.isCollectionNotEmpty(signatures)) {
             List<TimestampToken> signatureTimestamps = getSignatureTimestamps(signatures);
             if (Utils.isCollectionEmpty(signatureTimestamps)) {
@@ -136,7 +136,7 @@ public class PAdESExtensionService {
             return document;
         }
 
-        PdfValidationDataContainer validationData = pdfDocumentValidator.getValidationData(signatures, detachedTimestamps);
+        PdfValidationDataContainer validationData = pdfDocumentAnalyzer.getValidationData(signatures, detachedTimestamps);
         if (validationData.isEmpty()) {
             LOG.warn("No validation data has been obtained for the document with name '{}'. " +
                     "Return original document.", document.getName());
@@ -158,13 +158,13 @@ public class PAdESExtensionService {
         return signatureTimestamps;
     }
 
-    private PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, char[] passwordProtection) {
-        PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
-        pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
-        pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
-        pdfDocumentValidator.setPasswordProtection(passwordProtection);
-        pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
-        return pdfDocumentValidator;
+    private PDFDocumentAnalyzer getPDFDocumentAnalyzer(DSSDocument document, char[] passwordProtection) {
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(document);
+        pdfDocumentAnalyzer.setCertificateVerifier(certificateVerifier);
+        pdfDocumentAnalyzer.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
+        pdfDocumentAnalyzer.setPasswordProtection(passwordProtection);
+        pdfDocumentAnalyzer.setPdfObjFactory(pdfObjectFactory);
+        return pdfDocumentAnalyzer;
     }
 
     private PDFSignatureService newPdfSignatureService() {

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecordValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
@@ -51,7 +52,7 @@ public class EvidenceRecordValidatorTest {
 
         // The method allows instantiation of a related evidence record validator for a provided document
         // independently on its format (the target evidence record validation module must be added as dependency)
-        EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+        EvidenceRecordValidator evidenceRecordValidator = DefaultEvidenceRecordValidator.fromDocument(evidenceRecordDocument);
 
         // Create a CertificateVerifies containing validation process configuration
         CertificateVerifier certificateVerifier = new CommonCertificateVerifier();

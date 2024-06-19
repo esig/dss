@@ -65,6 +65,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,22 +86,27 @@ public class SignatureValidationContext implements ValidationContext {
 	/**
 	 * A set of signatures to process
 	 */
-	private final Set<AdvancedSignature> processedSignatures = new HashSet<>();
+	private final Set<AdvancedSignature> processedSignatures = new LinkedHashSet<>();
 
 	/**
 	 * A set of certificates to process
 	 */
-	private final Set<CertificateToken> processedCertificates = new HashSet<>();
+	private final Set<CertificateToken> processedCertificates = new LinkedHashSet<>();
 
 	/**
 	 * A set of revocation data to process
 	 */
-	private final Set<RevocationToken<?>> processedRevocations = new HashSet<>();
+	private final Set<RevocationToken<?>> processedRevocations = new LinkedHashSet<>();
 
 	/**
 	 * A set of timestamps to process
 	 */
-	private final Set<TimestampToken> processedTimestamps = new HashSet<>();
+	private final Set<TimestampToken> processedTimestamps = new LinkedHashSet<>();
+
+	/**
+	 * A set of evidence records to process
+	 */
+	private final Set<EvidenceRecord> processedEvidenceRecords = new LinkedHashSet<>();
 
 	/**
 	 * The CertificateVerifier to use
@@ -288,9 +294,6 @@ public class SignatureValidationContext implements ValidationContext {
 
 		registerBestSignatureTime(signature); // to be done after timestamp POE extraction
 
-		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
-		prepareCounterSignatures(counterSignatures);
-
 		final boolean added = processedSignatures.add(signature);
 		if (LOG.isTraceEnabled()) {
 			if (added) {
@@ -299,6 +302,9 @@ public class SignatureValidationContext implements ValidationContext {
 				LOG.trace("AdvancedSignature already present processedSignatures: {} ", processedSignatures);
 			}
 		}
+
+		List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
+		prepareCounterSignatures(counterSignatures);
 	}
 
 	@Override
@@ -401,6 +407,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
+	@Deprecated
 	public void setCurrentTime(final Date currentTime) {
 		Objects.requireNonNull(currentTime);
 		this.currentTime = currentTime;
@@ -829,6 +836,15 @@ public class SignatureValidationContext implements ValidationContext {
 		addDocumentCRLSource(evidenceRecord.getCRLSource());
 		addDocumentOCSPSource(evidenceRecord.getOCSPSource());
 		prepareTimestamps(evidenceRecord.getTimestamps());
+
+		final boolean added = processedEvidenceRecords.add(evidenceRecord);
+		if (LOG.isTraceEnabled()) {
+			if (added) {
+				LOG.trace("EvidenceRecord added to processedEvidenceRecords: {} ", processedSignatures);
+			} else {
+				LOG.trace("EvidenceRecord already present processedEvidenceRecords: {} ", processedSignatures);
+			}
+		}
 	}
 
 	@Override
@@ -1496,6 +1512,11 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
+	public Set<AdvancedSignature> getProcessedSignatures() {
+		return Collections.unmodifiableSet(processedSignatures);
+	}
+
+	@Override
 	public Set<CertificateToken> getProcessedCertificates() {
 		return Collections.unmodifiableSet(processedCertificates);
 	}
@@ -1508,6 +1529,11 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public Set<TimestampToken> getProcessedTimestamps() {
 		return Collections.unmodifiableSet(processedTimestamps);
+	}
+
+	@Override
+	public Set<EvidenceRecord> getProcessedEvidenceRecords() {
+		return Collections.unmodifiableSet(processedEvidenceRecords);
 	}
 
 	private <T extends Token> boolean isTrusted(T token) {
