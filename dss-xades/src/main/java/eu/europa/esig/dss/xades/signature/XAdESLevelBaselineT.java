@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
@@ -34,31 +33,33 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESAttributeIdentifier;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xades.definition.xades111.XAdES111Attribute;
-import eu.europa.esig.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.xades.definition.xades122.XAdES122Attribute;
-import eu.europa.esig.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -113,13 +114,14 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			LOG.info("====> Extending: {}", (dssDocument.getName() == null ? "IN MEMORY DOCUMENT" : dssDocument.getName()));
 		}
 
-		documentValidator = new XMLDocumentValidator(dssDocument);
-		documentValidator.setCertificateVerifier(certificateVerifier);
-		documentValidator.setDetachedContents(params.getDetachedContents());
+		documentAnalyzer = new XMLDocumentAnalyzer(dssDocument);
+		documentAnalyzer.setCertificateVerifier(certificateVerifier);
+		documentAnalyzer.setDetachedContents(params.getDetachedContents());
+		documentAnalyzer.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 
-		documentDom = documentValidator.getRootElement();
+		documentDom = documentAnalyzer.getRootElement();
 
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
 		if (Utils.isCollectionEmpty(signatures)) {
 			throw new IllegalInputException("There is no signature to extend!");
 		}

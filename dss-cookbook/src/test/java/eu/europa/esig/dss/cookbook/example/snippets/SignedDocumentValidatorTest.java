@@ -25,23 +25,26 @@ import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
 import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
+import eu.europa.esig.dss.spi.validation.executor.DefaultValidationContextExecutor;
+import eu.europa.esig.dss.spi.validation.executor.SkipValidationContextExecutor;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
-import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import jakarta.xml.bind.JAXBContext;
 import org.junit.jupiter.api.Test;
 
-import jakarta.xml.bind.JAXBContext;
 import javax.xml.transform.Templates;
 import javax.xml.validation.Schema;
 import java.util.Arrays;
@@ -57,17 +60,18 @@ public class SignedDocumentValidatorTest {
 		// tag::demo[]
 		// import java.util.Arrays;
 		// import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+		// import eu.europa.esig.dss.enumerations.ValidationLevel;
 		// import eu.europa.esig.dss.model.DSSDocument;
 		// import eu.europa.esig.dss.model.FileDocument;
 		// import eu.europa.esig.dss.model.InMemoryDocument;
 		// import eu.europa.esig.dss.spi.DSSUtils;
 		// import eu.europa.esig.dss.spi.x509.CertificateSource;
 		// import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-		// import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.SignaturePolicyProvider;
 		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
-		// import eu.europa.esig.dss.validation.executor.ValidationLevel;
 		// import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+		// import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
 		// import eu.europa.esig.dss.validation.reports.Reports;
 		// import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
@@ -151,6 +155,18 @@ public class SignedDocumentValidatorTest {
 		// Extract base64-encoded revocation data on validation (to be incorporated within DiagnosticData)
 		documentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_REVOCATION_DATA_ONLY);
 		// end::demo-extract-revocation[]
+
+		// tag::demo-default-validation-context-executor[]
+		documentValidator.setValidationContextExecutor(DefaultValidationContextExecutor.INSTANCE);
+		// end::demo-default-validation-context-executor[]
+
+		// tag::demo-complete-validation-context-executor[]
+		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
+		// end::demo-complete-validation-context-executor[]
+
+		// tag::demo-skip-validation-context-executor[]
+		documentValidator.setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE);
+		// end::demo-skip-validation-context-executor[]
 		
 		assertNotNull(etsiValidationReport);
 

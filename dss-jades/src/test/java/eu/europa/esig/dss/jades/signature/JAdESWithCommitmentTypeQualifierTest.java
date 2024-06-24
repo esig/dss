@@ -28,7 +28,7 @@ import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
-import eu.europa.esig.dss.jades.validation.JWSCompactDocumentValidator;
+import eu.europa.esig.dss.jades.validation.JWSCompactDocumentAnalyzer;
 import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.jose4j.jwx.Headers;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -89,8 +89,8 @@ public class JAdESWithCommitmentTypeQualifierTest extends AbstractJAdESTestSigna
     protected void onDocumentSigned(byte[] byteArray) {
         super.onDocumentSigned(byteArray);
 
-        JWSCompactDocumentValidator validator = new JWSCompactDocumentValidator(new InMemoryDocument(byteArray));
-        List<AdvancedSignature> signatures = validator.getSignatures();
+        JWSCompactDocumentAnalyzer analyzer = new JWSCompactDocumentAnalyzer(new InMemoryDocument(byteArray));
+        List<AdvancedSignature> signatures = analyzer.getSignatures();
         assertEquals(1, signatures.size());
 
         JAdESSignature signature = (JAdESSignature) signatures.get(0);

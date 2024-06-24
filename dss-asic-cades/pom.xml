@@ -23,6 +23,11 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-cades</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation</artifactId>
+			<optional>true</optional>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -34,6 +39,11 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-asic-common</artifactId>
 			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>specs-asic-manifest</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -23,10 +23,10 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
@@ -35,9 +35,10 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -158,7 +159,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 
 		List<String> signatureIdsToExtend = new ArrayList<>();
 
-		CMSDocumentValidator validator = getDocumentValidator(cmsSignedData, parameters);
+		CMSDocumentAnalyzer validator = getDocumentValidator(cmsSignedData, parameters);
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			CAdESSignature cadesSignature = (CAdESSignature) signature;
@@ -209,7 +210,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 											   List<DSSDocument> detachedContents) {
 		final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 		cadesSignature.setDetachedContents(detachedContents);
-		cadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
+		cadesSignature.initBaselineRequirementsChecker(certificateVerifier);
 		return cadesSignature;
 	}
 
@@ -291,12 +292,13 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 *
 	 * @param signedData {@link CMSSignedData} to get validation for
 	 * @param parameters {@link CAdESSignatureParameters}
-	 * @return {@link CMSDocumentValidator}
+	 * @return {@link CMSDocumentAnalyzer}
 	 */
-	protected CMSDocumentValidator getDocumentValidator(CMSSignedData signedData, CAdESSignatureParameters parameters) {
-		CMSDocumentValidator documentValidator = new CMSDocumentValidator(signedData);
+	protected CMSDocumentAnalyzer getDocumentValidator(CMSSignedData signedData, CAdESSignatureParameters parameters) {
+		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(signedData);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(parameters.getDetachedContents());
+		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 		return documentValidator;
 	}
 	

@@ -23,11 +23,11 @@ package eu.europa.esig.dss.asic.common.validation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.ContainerInfo;
+import eu.europa.esig.dss.model.ContainerInfo;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
-import eu.europa.esig.dss.validation.SignedDocumentDiagnosticDataBuilder;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.reports.diagnostic.SignedDocumentDiagnosticDataBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;

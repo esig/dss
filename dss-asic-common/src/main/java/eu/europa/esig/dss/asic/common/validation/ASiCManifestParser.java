@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.asic.common.validation;
 
-import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestPath;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestAttribute;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestNamespace;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestPath;
 import eu.europa.esig.dss.enumerations.ASiCManifestTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -35,9 +35,9 @@ import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

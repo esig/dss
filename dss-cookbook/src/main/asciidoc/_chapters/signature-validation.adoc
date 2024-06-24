@@ -495,6 +495,36 @@ With DSS, it is possible to add a "Semantics" section at the end of the reports 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-semantics]
 ----
 
+==== Validation Context Executor
+
+Since version `6.1` DSS provides a functionality allowing configuration of the validation process on a step of validation data preparation, including certificate chain building, revocation data extraction, custom validation checks.
+
+The behavior may be configured with a `ValidationContextExecutor` provided to a `DocumentValidator`, as below:
+
+ * `DefaultValidationContextExecutor` - performs validation of the embedded tokens, including the certificate chain building, revocation data request, etc. This is a default executor used within `SignedDocumentValidator`.
+
+[source,java,indent=0]
+.DefaultValidationContextExecutor configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-default-validation-context-executor]
+----
+
+* `CompleteValidationContextExecutor` - performs validation of the embedded tokens, including the certificate chain building, revocation data request, as well as a processing of additional validation checks, such as the ones configured with custom alerts within a <<certificateVerifier>>.  When alerts are configured with exceptions, this executor allows a "fail fast" behavior on a signature validation (e.g. in case of a cryptographically invalid signature value).
+
+[source,java,indent=0]
+.CompleteValidationContextExecutor configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-complete-validation-context-executor]
+----
+
+* `SkipValidationContextExecutor` - skips validation of embedded tokens, including certificate chain building and revocation data request.
+
+[source,java,indent=0]
+.SkipValidationContextExecutor configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-skip-validation-context-executor]
+----
+
 [[EvidenceRecords]]
 === Evidence records
 
@@ -694,7 +724,7 @@ The signature policy document can be retrieved from the signature itself when a 
 
 The interface `SignaturePolicyValidator` is used to validate a signature policy reference extracted from a signature. The choice of the implementation is format-specific. The following implementations are provided:
 
-* `BasicASNSignaturePolicyValidator`: validates ASN.1 signature policies;
+* `BasicASN1SignaturePolicyValidator`: validates ASN.1 signature policies;
 * `XMLSignaturePolicyValidator`: validates XML signature policies supporting transformations;
 * `NonASN1SignaturePolicyValidator`: validates a policy by digest computed on an original file's content;
 * `ZeroHashSignaturePolicyValidator`: validates a policy if "zero hash" value is defined in a signature (see <<R02>>);
@@ -823,3 +853,19 @@ eu.europa.esig.dss.pdfa.validation.PDFADocumentValidatorFactory
 ----
 
 It is also possible to enforce verification of a PDF/A profile and its validity during the signature validation process using the customized XML validation policy (see <<validationPolicy>>). See <<PdfaConstraints>> for more details.
+
+[[documentAnalyzer]]
+=== Document Analyzer
+Since version `6.1` DSS introduces a new interface `DocumentAnalyzer` with format specific implementations, providing a document reading, validation data (certificates and revocation data) handling and cryptographic validation of extracted tokens functionalities. This class allows execution of a signed document validation without running ETSI EN 319 102-1 (cf. <<R09>>) validation process and building reports, which implies no JAXB loading.
+
+NOTE: `DocumentAnalyzer` implementations are used in the background of `DocumentValidator` classes.
+
+The configuration of `DocumentAnalyzer` is similar to a <<signedDocumentValidator>>, with the exception to ETSI EN 319 102-1 validation standard specific parameters.
+
+[source,java,indent=0]
+.DocumentAnalyzer example
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/DefaultDocumentAnalyzerTest.java[tags=demo]
+----
+
+WARNING: Please note that the validation process with `DocumentAnalyzer` is not complete, and may lack certain ETSI EN 319 102-1 validation standard checks.

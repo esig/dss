@@ -20,24 +20,22 @@
  */
 package eu.europa.esig.dss.pades;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.ByteRange;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pades.validation.PdfByteRangeDocument;
 import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.reports.Reports;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.jupiter.api.Test;
 
@@ -62,16 +60,14 @@ public abstract class PAdESUtilsTest {
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)), new InMemoryResourcesHandlerBuilder());
         assertTrue(signedDocument instanceof InMemoryDocument);
 
-        PDFDocumentValidator validator = new PDFDocumentValidator(signedDocument);
-        validator.setCertificateVerifier(new CommonCertificateVerifier());
+        PDFDocumentAnalyzer analyzer = new PDFDocumentAnalyzer(signedDocument);
+        analyzer.setCertificateVerifier(new CommonCertificateVerifier());
 
-        Reports reports = validator.validateDocument();
-        DiagnosticData diagnosticData = reports.getDiagnosticData();
-        assertEquals(1, diagnosticData.getSignatures().size());
+        assertEquals(1, analyzer.getSignatures().size());
 
-        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        assertTrue(signature.isSignatureIntact());
-        assertTrue(signature.isSignatureValid());
+        AdvancedSignature signature = analyzer.getSignatures().get(0);
+        assertTrue(signature.getSignatureCryptographicVerification().isSignatureIntact());
+        assertTrue(signature.getSignatureCryptographicVerification().isSignatureValid());
     }
 
     @Test
@@ -86,16 +82,17 @@ public abstract class PAdESUtilsTest {
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)),tempFileResourcesHandlerBuilder);
         assertTrue(signedDocument instanceof FileDocument);
 
-        PDFDocumentValidator validator = new PDFDocumentValidator(signedDocument);
+        PDFDocumentAnalyzer validator = new PDFDocumentAnalyzer(signedDocument);
         validator.setCertificateVerifier(new CommonCertificateVerifier());
 
-        Reports reports = validator.validateDocument();
-        DiagnosticData diagnosticData = reports.getDiagnosticData();
-        assertEquals(1, diagnosticData.getSignatures().size());
+        PDFDocumentAnalyzer analyzer = new PDFDocumentAnalyzer(signedDocument);
+        analyzer.setCertificateVerifier(new CommonCertificateVerifier());
 
-        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        assertTrue(signature.isSignatureIntact());
-        assertTrue(signature.isSignatureValid());
+        assertEquals(1, analyzer.getSignatures().size());
+
+        AdvancedSignature signature = analyzer.getSignatures().get(0);
+        assertTrue(signature.getSignatureCryptographicVerification().isSignatureIntact());
+        assertTrue(signature.getSignatureCryptographicVerification().isSignatureValid());
     }
 
     @Test
@@ -135,16 +132,17 @@ public abstract class PAdESUtilsTest {
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)), null);
         assertTrue(signedDocument instanceof InMemoryDocument);
 
-        PDFDocumentValidator validator = new PDFDocumentValidator(signedDocument);
+        PDFDocumentAnalyzer validator = new PDFDocumentAnalyzer(signedDocument);
         validator.setCertificateVerifier(new CommonCertificateVerifier());
 
-        Reports reports = validator.validateDocument();
-        DiagnosticData diagnosticData = reports.getDiagnosticData();
-        assertEquals(1, diagnosticData.getSignatures().size());
+        PDFDocumentAnalyzer analyzer = new PDFDocumentAnalyzer(signedDocument);
+        analyzer.setCertificateVerifier(new CommonCertificateVerifier());
 
-        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        assertTrue(signature.isSignatureIntact());
-        assertTrue(signature.isSignatureValid());
+        assertEquals(1, analyzer.getSignatures().size());
+
+        AdvancedSignature signature = analyzer.getSignatures().get(0);
+        assertTrue(signature.getSignatureCryptographicVerification().isSignatureIntact());
+        assertTrue(signature.getSignatureCryptographicVerification().isSignatureValid());
     }
 
     @Test

@@ -28,13 +28,13 @@ import eu.europa.esig.dss.spi.x509.ResponderId;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
@@ -106,7 +106,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 		signatureRequirementsChecker.assertCertificateChainValidForCLevel(signaturesToExtend);
 
 		// Perform signature validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signaturesToExtend);
+		ValidationDataContainer validationDataContainer = documentAnalyzer.getValidationData(signaturesToExtend);
 
 		// Append ValidationData
 		for (AdvancedSignature signature : signaturesToExtend) {

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;

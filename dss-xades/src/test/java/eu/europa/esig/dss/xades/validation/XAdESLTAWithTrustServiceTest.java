@@ -29,17 +29,17 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.timedependent.MutableTimeDependentValues;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.TrustProperties;
+import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustProperties;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
-import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.Collections;
@@ -67,10 +67,10 @@ public class XAdESLTAWithTrustServiceTest extends AbstractXAdESTestValidation {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		TrustedListsCertificateSource trustedCertSource = new TrustedListsCertificateSource();
 		
-		TrustServiceProviderBuilder trustServiceProviderBuilder = new TrustServiceProviderBuilder();
-		trustServiceProviderBuilder.setTerritory("BE");
-		trustServiceProviderBuilder.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("CN=Belgium Root CA2, C=BE")); }} );
-		trustServiceProviderBuilder.setRegistrationIdentifiers(Collections.singletonList("VATDE-203462028"));
+		TrustServiceProvider trustServiceProvider = new TrustServiceProvider();
+		trustServiceProvider.setTerritory("BE");
+		trustServiceProvider.setNames(new HashMap<String, List<String>>() {{ put("EN", Collections.singletonList("CN=Belgium Root CA2, C=BE")); }} );
+		trustServiceProvider.setRegistrationIdentifiers(Collections.singletonList("VATDE-203462028"));
 		
 		TrustServiceStatusAndInformationExtensionsBuilder extensionsBuilder = new TrustServiceStatusAndInformationExtensions.
 				TrustServiceStatusAndInformationExtensionsBuilder();
@@ -89,7 +89,7 @@ public class XAdESLTAWithTrustServiceTest extends AbstractXAdESTestValidation {
 		statusHistoryList.addOldest(statusAndInformationExtensions);
 		
 		TLInfo tlInfo = new TLInfo(null, null, null, "BE.xml");
-		TrustProperties trustProperties = new TrustProperties(tlInfo, trustServiceProviderBuilder.build(), statusHistoryList);
+		TrustProperties trustProperties = new TrustProperties(tlInfo, trustServiceProvider, statusHistoryList);
 
 		Map<CertificateToken, List<TrustProperties>> trustPropertiesByCertMap = new HashMap<>();
 		trustPropertiesByCertMap.put(DSSUtils.loadCertificateFromBase64EncodedString(

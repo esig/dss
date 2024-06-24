@@ -46,6 +46,11 @@ The simplest way to include DSS to your project is to use https://central.sonaty
         <artifactId>dss-xades</artifactId>
         <version>6.0</version>
     </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-validation</artifactId>
+        <version>6.0</version>
+    </dependency>
     ...
 </dependencies>
 ----
@@ -104,6 +109,10 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-validation</artifactId>
     </dependency>
     ...
     <!-- add other required modules -->
@@ -322,10 +331,10 @@ dss-crl-parser:: API to validate CRLs and retrieve revocation data
 dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL.
 dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
 dss-spi:: Interfaces and util classes to process ASN.1 structure, compute digests, etc.
-dss-document:: Common module to sign and validate document.
 dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP).
 dss-token:: Token definitions and implementations for MS CAPI, MacOS Keychain, PKCS#11, PKCS#12.
-validation-policy:: Business of the signature's validation (ETSI EN 319 102 / TS 119 172-4).
+dss-document:: Common module to sign or extend a document.
+dss-validation:: Business logic for the signature and certificate validation (ETSI EN 319 102 / TS 119 615).
 dss-tsl-validation:: Module which allows loading / parsing / validating of LOTL and TSLs.
 
 ===== Signature format specific modules

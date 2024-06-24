@@ -33,7 +33,7 @@ import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
+import eu.europa.esig.dss.spi.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -257,7 +257,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			return timestampExtractor.getArchiveTimestampV3MessageImprint(
 					signerInformation, atsHashIndexAttribute, originalDocument, digestAlgorithm);
 		} else {
-			LOG.error("The original document is not found for TimestampToken with Id '{}'! "
+			LOG.warn("The original document is not found for TimestampToken with Id '{}'! "
 					+ "Unable to compute message imprint.", timestampToken.getDSSIdAsString());
 			return DSSMessageDigest.createEmptyDigest();
 		}
@@ -269,7 +269,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			final byte[] digest = originalDocument.getDigestValue(digestAlgorithm);
 			return new DSSMessageDigest(digestAlgorithm, digest);
 		} else {
-			LOG.error("The original document is not found for TimestampToken with Id '{}'! "
+			LOG.warn("The original document is not found for TimestampToken with Id '{}'! "
 					+ "Unable to compute message imprint.", timestampToken.getDSSIdAsString());
 			return DSSMessageDigest.createEmptyDigest();
 		}
@@ -331,7 +331,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
-			LOG.error("An error in computing of message-imprint for a TimestampToken with Id : {}. Reason : {}",
+			LOG.warn("An error in computing of message-imprint for a TimestampToken with Id : {}. Reason : {}",
 					timestampToken.getDSSIdAsString(), e.getMessage(), e);
 			return null;
 		}
@@ -506,7 +506,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		try {
 			return CMSUtils.getOriginalDocument(cmsSignedData, detachedDocuments);
 		} catch (DSSException e) {
-			LOG.error("Cannot extract original document! Reason : {}", e.getMessage());
+			LOG.warn("Cannot extract original document! Reason : {}", e.getMessage());
 			return null;
 		}
 	}

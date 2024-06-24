@@ -25,7 +25,7 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-document</artifactId>
+			<artifactId>dss-validation</artifactId>
 		</dependency>
 
 		<!-- No other dependencies than in scope test -->

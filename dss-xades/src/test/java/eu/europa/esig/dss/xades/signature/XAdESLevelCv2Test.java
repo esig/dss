@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

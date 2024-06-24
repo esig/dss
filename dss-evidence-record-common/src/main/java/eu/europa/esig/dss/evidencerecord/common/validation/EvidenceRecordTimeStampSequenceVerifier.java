@@ -34,7 +34,7 @@ import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.evidencerecord.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.ByteArrayComparator;
+import eu.europa.esig.dss.spi.validation.evidencerecord.ByteArrayComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

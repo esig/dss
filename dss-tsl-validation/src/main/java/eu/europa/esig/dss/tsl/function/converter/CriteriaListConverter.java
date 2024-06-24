@@ -22,7 +22,7 @@ package eu.europa.esig.dss.tsl.function.converter;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.model.tsl.Condition;
 import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.KeyUsageCondition;

@@ -32,8 +32,8 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.JKSSignatureToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -198,7 +198,7 @@ public class Snippets {
 
 		// tag::threeStepsSign[]
 		// import eu.europa.esig.dss.xades.signature.XAdESService;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.model.ToBeSigned;
 		// import eu.europa.esig.dss.model.SignatureValue;
 		// import eu.europa.esig.dss.model.DSSDocument;
@@ -227,7 +227,7 @@ public class Snippets {
 
 		// tag::fourStepsSign[]
 		// import eu.europa.esig.dss.xades.signature.XAdESService;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.model.ToBeSigned;
 		// import eu.europa.esig.dss.model.SignatureValue;
 		// import eu.europa.esig.dss.model.DSSDocument;

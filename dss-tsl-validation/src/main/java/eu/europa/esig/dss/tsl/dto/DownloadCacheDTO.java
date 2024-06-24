@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
-import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
+import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
 
 import java.util.ArrayList;
 import java.util.Date;

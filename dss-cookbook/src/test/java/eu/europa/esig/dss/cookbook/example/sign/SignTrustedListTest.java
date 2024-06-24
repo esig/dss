@@ -20,28 +20,28 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.trustedlist.TrustedListUtils;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -65,7 +65,7 @@ public class SignTrustedListTest extends CookbookTools {
             // import eu.europa.esig.dss.model.ToBeSigned;
             // import eu.europa.esig.dss.model.x509.CertificateToken;
             // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
-            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
             // import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
             // import eu.europa.esig.dss.xades.XAdESSignatureParameters;
             // import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -92,11 +92,11 @@ public class SignTrustedListTest extends CookbookTools {
 
             // tag::validate[]
             // import eu.europa.esig.dss.DomUtils;
+            // import eu.europa.esig.dss.enumerations.ValidationLevel;
             // import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-            // import eu.europa.esig.dss.validation.CertificateVerifier;
-            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+            // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
             // import eu.europa.esig.dss.validation.DocumentValidator;
-            // import eu.europa.esig.dss.validation.executor.ValidationLevel;
             // import eu.europa.esig.dss.validation.reports.Reports;
             // import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
             // import eu.europa.esig.trustedlist.TrustedListUtils;

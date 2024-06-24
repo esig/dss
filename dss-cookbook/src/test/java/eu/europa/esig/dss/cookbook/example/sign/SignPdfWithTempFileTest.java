@@ -33,7 +33,7 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -65,7 +65,7 @@ public class SignPdfWithTempFileTest extends CookbookTools {
             // import eu.europa.esig.dss.pdf.IPdfObjFactory;
             // import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
             // import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
-            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
             // Preparing parameters for the PAdES signature
             PAdESSignatureParameters parameters = new PAdESSignatureParameters();

@@ -23,12 +23,12 @@ package eu.europa.esig.dss.asic.common.signature;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,13 +131,13 @@ public abstract class ASiCCounterSignatureHelper {
 	 * Gets a Document Validator relative to the current implementation
 	 * 
 	 * @param signatureDocument {@link DSSDocument}
-	 * @return {@link DocumentValidator}
+	 * @return {@link DocumentAnalyzer}
 	 */
-	protected abstract DocumentValidator getDocumentValidator(DSSDocument signatureDocument);
+	protected abstract DocumentAnalyzer getDocumentAnalyzer(DSSDocument signatureDocument);
 	
 	private boolean containsSignatureToBeCounterSigned(DSSDocument signatureDocument, String signatureId) {
 		try {
-			DocumentValidator validator = getDocumentValidator(signatureDocument);
+			DocumentAnalyzer validator = getDocumentAnalyzer(signatureDocument);
 			validator.setDetachedContents(getDetachedDocuments(signatureDocument.getName()));
 			validator.setManifestFile(getManifestFile(signatureDocument.getName()));
 			

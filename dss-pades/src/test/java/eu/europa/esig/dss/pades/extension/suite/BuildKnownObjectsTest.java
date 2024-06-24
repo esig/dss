@@ -30,14 +30,14 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -65,7 +65,7 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 
 		DSSDocument dssDocument = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/dss-1696/Test.signed_Certipost-2048-SHA512.extended.pdf"));
-		PDFDocumentValidator validator = new PDFDocumentValidator(dssDocument);
+		PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(dssDocument);
 
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 
@@ -73,7 +73,7 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		// /Certs [20 0 R 26 0 R 30 0 R] -> 20 30
 		// /CRLs [21 0 R 22 0 R 27 0 R 28 0 R 29 0 R]>> -> 21 22 29
 
-		List<AdvancedSignature> signatures = validator.getSignatures();
+		List<AdvancedSignature> signatures = pdfDocumentAnalyzer.getSignatures();
 		assertEquals(1, signatures.size());
 
 		PAdESSignature padesSignature = (PAdESSignature) signatures.get(0);
@@ -103,10 +103,10 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		DSSDocument extendSignature = padesService.extendDocument(dssDocument, parameters);
 		
-		validator = new PDFDocumentValidator(extendSignature);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		pdfDocumentAnalyzer = new PDFDocumentAnalyzer(extendSignature);
+		pdfDocumentAnalyzer.setCertificateVerifier(getOfflineCertificateVerifier());
 
-		signatures = validator.getSignatures();
+		signatures = pdfDocumentAnalyzer.getSignatures();
 		assertEquals(1, signatures.size());
 
 		PAdESSignature pades = (PAdESSignature) signatures.get(0);

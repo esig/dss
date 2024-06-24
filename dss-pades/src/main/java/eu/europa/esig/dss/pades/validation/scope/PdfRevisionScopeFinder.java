@@ -24,7 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfCMSRevision;
-import eu.europa.esig.dss.validation.scope.AbstractSignatureScopeFinder;
+import eu.europa.esig.dss.spi.validation.scope.AbstractSignatureScopeFinder;
 
 /**
  * An abstract class to find a PdfRevision scope

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
-import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.model.tsl.Condition;
 
 import java.util.Objects;
 

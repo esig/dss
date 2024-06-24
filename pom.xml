@@ -118,12 +118,12 @@
 		<module>dss-crl-parser-x509crl</module>
 		<module>dss-crl-parser-stream</module>
 		<module>dss-spi</module>
-		<module>validation-policy</module>
-		<module>dss-document</module>
 		<module>dss-service</module>
 		<module>dss-token</module>
-		<module>dss-pki-factory-jaxb</module>
 		<module>dss-pki-factory</module>
+		<module>dss-pki-factory-jaxb</module>
+		<module>dss-document</module>
+		<module>dss-validation</module>
 		<module>dss-test</module>
 		<module>dss-xades</module>
 		<module>dss-cades</module>
@@ -863,7 +863,7 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>validation-policy</artifactId>
+				<artifactId>dss-validation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

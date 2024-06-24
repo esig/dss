@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AbstractSignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.identifier.AbstractSignatureIdentifierBuilder;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

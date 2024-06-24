@@ -4,7 +4,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.tsp.ArchiveTimeStamp;

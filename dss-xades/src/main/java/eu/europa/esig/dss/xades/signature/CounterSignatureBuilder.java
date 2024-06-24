@@ -21,24 +21,24 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -83,8 +83,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	public DSSDocument getCanonicalizedSignatureValue(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
 		params = parameters;
 
-		documentValidator = new XMLDocumentValidator(signatureDocument);
-		documentDom = documentValidator.getRootElement();
+		documentAnalyzer = new XMLDocumentAnalyzer(signatureDocument);
+		documentDom = documentAnalyzer.getRootElement();
 
 		xadesSignature = extractSignatureById(parameters);
 
@@ -107,8 +107,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	 * @return {@link DSSReference} for incorporation into a counter signature
 	 */
 	public DSSReference buildCounterSignatureDSSReference(DSSDocument signatureDocument, XAdESCounterSignatureParameters parameters) {
-		documentValidator = new XMLDocumentValidator(signatureDocument);
-		documentDom = documentValidator.getRootElement();
+		documentAnalyzer = new XMLDocumentAnalyzer(signatureDocument);
+		documentDom = documentAnalyzer.getRootElement();
 
 		xadesSignature = extractSignatureById(parameters);
 		initializeSignatureBuilder(xadesSignature);
@@ -151,8 +151,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			XAdESCounterSignatureParameters parameters) {
 		params = parameters;
 
-		documentValidator = new XMLDocumentValidator(signatureDocument);
-		documentDom = documentValidator.getRootElement();
+		documentAnalyzer = new XMLDocumentAnalyzer(signatureDocument);
+		documentDom = documentAnalyzer.getRootElement();
 
 		xadesSignature = extractSignatureById(parameters);
 		initializeSignatureBuilder(xadesSignature);
@@ -188,7 +188,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The Id of a signature to be counter signed shall be defined! "
 					+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			XAdESSignature signatureById = getSignatureOrItsCounterSignatureById((XAdESSignature) signature, parameters.getSignatureIdToCounterSign());
 			if (signatureById != null) {

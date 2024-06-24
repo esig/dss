@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -68,7 +68,7 @@ public class SignOneFileWithASiCSBTest extends CookbookTools {
 			// import eu.europa.esig.dss.model.DSSDocument;
 			// import eu.europa.esig.dss.model.SignatureValue;
 			// import eu.europa.esig.dss.model.ToBeSigned;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
 			// Preparing parameters for the AsicS signature
 			ASiCWithXAdESSignatureParameters parameters = new ASiCWithXAdESSignatureParameters();

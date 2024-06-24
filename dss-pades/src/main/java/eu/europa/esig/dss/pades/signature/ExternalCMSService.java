@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
@@ -38,7 +38,7 @@ import eu.europa.esig.dss.signature.SignatureValueChecker;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInfoGenerator;
 

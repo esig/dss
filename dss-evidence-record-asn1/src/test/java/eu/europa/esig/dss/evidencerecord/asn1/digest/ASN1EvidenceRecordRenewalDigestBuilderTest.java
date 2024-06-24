@@ -2,7 +2,7 @@ package eu.europa.esig.dss.evidencerecord.asn1.digest;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.asn1.validation.ASN1EvidenceRecord;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;

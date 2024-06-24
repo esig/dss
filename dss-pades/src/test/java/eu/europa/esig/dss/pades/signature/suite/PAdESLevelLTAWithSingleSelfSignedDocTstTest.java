@@ -34,14 +34,14 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -80,9 +80,9 @@ public class PAdESLevelLTAWithSingleSelfSignedDocTstTest extends AbstractPAdESTe
 
         PDFSignatureService pdfSignatureService = new ServiceLoaderPdfObjFactory().newPAdESSignatureService();
 
-        PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(signedDocument);
-        pdfDocumentValidator.setCertificateVerifier(getCompleteCertificateVerifier());
-        PdfValidationDataContainer validationData = pdfDocumentValidator.getValidationData(pdfDocumentValidator.getSignatures(), Collections.emptyList());
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(signedDocument);
+        pdfDocumentAnalyzer.setCertificateVerifier(getCompleteCertificateVerifier());
+        PdfValidationDataContainer validationData = pdfDocumentAnalyzer.getValidationData(pdfDocumentAnalyzer.getSignatures(), Collections.emptyList());
 
         signedDocument = pdfSignatureService.addDssDictionary(signedDocument, validationData);
         signedDocument = new PAdESTimestampService(getSelfSignedTsa()).timestampDocument(signedDocument, new PAdESTimestampParameters());

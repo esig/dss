@@ -24,16 +24,16 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERSet;
@@ -73,8 +73,8 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 												List<String> signatureIdsToExtend) {
 		cmsSignedData = super.extendCMSSignatures(cmsSignedData, parameters, signatureIdsToExtend);
 
-		CMSDocumentValidator documentValidator = getDocumentValidator(cmsSignedData, parameters);
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		CMSDocumentAnalyzer documentAnalyzer = getDocumentValidator(cmsSignedData, parameters);
+		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
 
 		final List<AdvancedSignature> signaturesToExtend = getExtendToLTLevelSignatures(signatures, signatureIdsToExtend);
 		if (Utils.isCollectionEmpty(signaturesToExtend)) {
@@ -90,7 +90,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signaturesToExtend);
 
 		// Perform signatures validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signaturesToExtend);
+		ValidationDataContainer validationDataContainer = documentAnalyzer.getValidationData(signaturesToExtend);
 
 		/*
 		 * ETSI EN 319 122-1 V1.1.1 (2016-04), chapter "5.5.3 The archive-time-stamp-v3 attribute":

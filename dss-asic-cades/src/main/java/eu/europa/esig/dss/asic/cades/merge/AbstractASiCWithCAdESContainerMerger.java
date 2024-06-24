@@ -23,14 +23,14 @@ package eu.europa.esig.dss.asic.cades.merge;
 import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
-import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
+import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzerFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
@@ -108,12 +108,12 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
 
     @Override
     protected boolean isSupported(DSSDocument container) {
-        return new ASiCContainerWithCAdESValidatorFactory().isSupported(container);
+        return new ASiCContainerWithCAdESAnalyzerFactory().isSupported(container);
     }
 
     @Override
     protected boolean isSupported(ASiCContent asicContent) {
-        return new ASiCContainerWithCAdESValidatorFactory().isSupported(asicContent);
+        return new ASiCContainerWithCAdESAnalyzerFactory().isSupported(asicContent);
     }
 
     @Override
@@ -156,7 +156,7 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
     private List<CMSSignedData> getCMSSignedDataList(List<DSSDocument> signatureDocuments) {
         List<CMSSignedData> signedDataList = new ArrayList<>();
         for (DSSDocument signatureDocument : signatureDocuments) {
-            CMSDocumentValidator documentValidator = new CMSDocumentValidator(signatureDocument);
+            CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(signatureDocument);
             signedDataList.add(documentValidator.getCmsSignedData());
         }
         return signedDataList;

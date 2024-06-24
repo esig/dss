@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.ProfileParameters;
+import eu.europa.esig.dss.signature.ProfileParameters;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 

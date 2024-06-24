@@ -34,7 +34,7 @@ import eu.europa.esig.dss.pades.signature.PAdESWithExternalCMSService;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;

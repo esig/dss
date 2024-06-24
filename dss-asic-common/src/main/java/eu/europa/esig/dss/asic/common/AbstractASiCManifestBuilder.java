@@ -20,22 +20,20 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestAttribute;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestElement;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestNamespace;
 import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilter;
 import eu.europa.esig.dss.asic.common.evidencerecord.ASiCEvidenceRecordDigestBuilder;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -46,8 +44,6 @@ import java.util.Objects;
  * The abstract class to build a Manifest for ASiC
  */
 public abstract class AbstractASiCManifestBuilder {
-
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractASiCManifestBuilder.class);
 
 	/** The container representation */
 	protected final ASiCContent asicContent;

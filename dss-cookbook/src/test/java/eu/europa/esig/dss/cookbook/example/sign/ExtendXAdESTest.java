@@ -31,7 +31,7 @@ import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ public class ExtendXAdESTest extends CookbookTools {
 		// tag::demoTExtend[]
 		// import eu.europa.esig.dss.enumerations.SignatureLevel;
 		// import eu.europa.esig.dss.model.DSSDocument;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 		// import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -92,7 +92,7 @@ public class ExtendXAdESTest extends CookbookTools {
 		// import eu.europa.esig.dss.model.DSSDocument;
 		// import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 		// import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 		// import eu.europa.esig.dss.xades.signature.XAdESService;
 
@@ -124,7 +124,7 @@ public class ExtendXAdESTest extends CookbookTools {
 		// import eu.europa.esig.dss.model.DSSDocument;
 		// import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 		// import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 		// import eu.europa.esig.dss.xades.signature.XAdESService;
 

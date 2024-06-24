@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -41,7 +41,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -134,8 +134,8 @@ public class CAdESLevelBTest extends AbstractCAdESTestSignature {
 		super.onDocumentSigned(byteArray);
 
 		try {
-			CMSDocumentValidator cmsDocumentValidator = new CMSDocumentValidator(new InMemoryDocument(byteArray));
-			List<AdvancedSignature> signatures = cmsDocumentValidator.getSignatures();
+			CMSDocumentAnalyzer cmsDocumentAnalyzer = new CMSDocumentAnalyzer(new InMemoryDocument(byteArray));
+			List<AdvancedSignature> signatures = cmsDocumentAnalyzer.getSignatures();
 			assertEquals(1, signatures.size());
 			assertTrue(signatures.get(0) instanceof CAdESSignature);
 			

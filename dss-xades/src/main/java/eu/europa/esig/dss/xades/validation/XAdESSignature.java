@@ -48,14 +48,15 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommitmentTypeIndication;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
+import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
+import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.EnforcedResolverFragment;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
@@ -65,15 +66,15 @@ import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xades.definition.XAdESPath;
-import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
@@ -153,20 +154,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		SantuarioInitializer.init();
 
 		DSSXMLUtils.registerXAdESNamespaces();
-
-		/**
-		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
-		 */
-		// final JCEMapper.Algorithm algorithm = new JCEMapper.Algorithm("",
-		// SignatureAlgorithm.ECDSA_RIPEMD160.getJCEId(), "Signature");
-		// final String xmlId = SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
-		// JCEMapper.register(xmlId, algorithm);
-		// try {
-		// org.apache.xml.security.algorithms.SignatureAlgorithm.register(xmlId,
-		// SignatureECDSARIPEMD160.class);
-		// } catch (Exception e) {
-		// LOG.error("ECDSA_RIPEMD160 algorithm initialisation failed.", e);
-		// }
 
 		//
 		// Set the default JCE algorithms
@@ -373,7 +360,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 		SignatureAlgorithm signatureAlgorithm =  SignatureAlgorithm.forXML(xmlName, null);
 		if (signatureAlgorithm == null) {
-			LOG.error("SignatureAlgorithm '{}' is not supported!", xmlName);
+			LOG.warn("SignatureAlgorithm '{}' is not supported!", xmlName);
 		}
 		return signatureAlgorithm;
 	}
@@ -531,7 +518,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return userNotice;
 
 		} catch (Exception e) {
-			LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
+			LOG.warn("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
 			return null;
 		}
 	}
@@ -909,8 +896,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected XAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
-		return new XAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
+	protected XAdESBaselineRequirementsChecker createBaselineRequirementsChecker(CertificateVerifier certificateVerifier) {
+		return new XAdESBaselineRequirementsChecker(this, certificateVerifier);
 	}
 
 	@Override
@@ -945,8 +932,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setSignatureIntact(certificateValidity != null);
 			
 		} catch (Exception e) {
-			LOG.error("checkSignatureIntegrity : {}", e.getMessage());
-			LOG.debug("checkSignatureIntegrity : {}", e.getMessage(), e);
+			String errorMessage = "checkSignatureIntegrity : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
 			int lineNumber = 0;

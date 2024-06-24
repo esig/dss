@@ -50,18 +50,18 @@ import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
-import eu.europa.esig.dss.validation.CommitmentTypeIndication;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
+import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
+import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
@@ -128,7 +128,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forJWA(jws.getAlgorithmHeaderValue(), null);
 		if (signatureAlgorithm == null) {
-			LOG.error("SignatureAlgorithm '{}' is not supported!", jws.getAlgorithmHeaderValue());
+			LOG.warn("SignatureAlgorithm '{}' is not supported!", jws.getAlgorithmHeaderValue());
 		} else if (EncryptionAlgorithm.EDDSA.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
 			signatureAlgorithm = DSSUtils.getEdDSASignatureAlgorithm(getSignatureValue());
 		}
@@ -749,7 +749,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			}
 			
 		} catch (Exception e) {
-			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage(), e);
+			LOG.warn("The validation of signed input failed! Reason : {}", e.getMessage(), e);
 		}
 		
 		return signatureValueReferenceValidation;
@@ -793,7 +793,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			String mechanismUri = DSSJsonUtils.getAsString(signatureDetached, JAdESHeaderParameterNames.M_ID);
 			SigDMechanism sigDMechanism = SigDMechanism.forUri(mechanismUri);
 			if (sigDMechanism == null) {
-				LOG.error("The sigDMechanism with uri '{}' is not supported!", mechanismUri);
+				LOG.warn("The sigDMechanism with uri '{}' is not supported!", mechanismUri);
 			}
 			return sigDMechanism;
 		}
@@ -1158,8 +1158,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected BaselineRequirementsChecker createBaselineRequirementsChecker() {
-		return new JAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
+	protected JAdESBaselineRequirementsChecker createBaselineRequirementsChecker(CertificateVerifier certificateVerifier) {
+		return new JAdESBaselineRequirementsChecker(this, certificateVerifier);
 	}
 	
 	@Override

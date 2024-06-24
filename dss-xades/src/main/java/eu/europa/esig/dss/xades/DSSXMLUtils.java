@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -40,15 +40,15 @@ import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xades.definition.XAdESPath;
-import eu.europa.esig.xades.definition.xades111.XAdES111Path;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
@@ -591,7 +591,7 @@ public final class DSSXMLUtils {
 			LOG.warn("Original data is not provided for the reference with id [{}]. Reason: [{}]", reference.getId(), e.getMessage());
 		} catch (IOException | CanonicalizationException e) {
 			// if exception occurs by another reason
-			LOG.error("Unable to retrieve the content of reference with id [{}].", reference.getId(), e);
+			LOG.warn("Unable to retrieve the content of reference with id [{}].", reference.getId(), e);
 		}
 		// in case of exceptions return null value
 		return null;
@@ -636,10 +636,10 @@ public final class DSSXMLUtils {
 	private static byte[] getDigestValue(String digestValueBase64) {
 		byte[] result = null;
 		if (Utils.isStringEmpty(digestValueBase64)) {
-			LOG.error("An empty DigestValue obtained!");
+			LOG.warn("An empty DigestValue obtained!");
 
 		} else if (!Utils.isBase64Encoded(digestValueBase64)) {
-			LOG.error("The DigestValue is not base64 encoded! Obtained string : {}", digestValueBase64);
+			LOG.warn("The DigestValue is not base64 encoded! Obtained string : {}", digestValueBase64);
 
 		} else {
 			result = Utils.fromBase64(digestValueBase64);

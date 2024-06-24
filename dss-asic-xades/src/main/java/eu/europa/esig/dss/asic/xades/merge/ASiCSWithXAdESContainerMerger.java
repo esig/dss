@@ -25,15 +25,15 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import org.apache.xml.security.signature.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -195,7 +195,7 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
     }
 
     private void mergeSignatureDocuments() {
-        List<XMLDocumentValidator> documentValidators = getAllDocumentValidators();
+        List<XMLDocumentAnalyzer> documentValidators = getAllDocumentValidators();
         List<AdvancedSignature> allSignatures = getAllSignatures(documentValidators);
         if (Utils.isCollectionEmpty(allSignatures)) {
             return;
@@ -218,19 +218,19 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         }
     }
 
-    private List<XMLDocumentValidator> getAllDocumentValidators() {
-        List<XMLDocumentValidator> validators = new ArrayList<>();
+    private List<XMLDocumentAnalyzer> getAllDocumentValidators() {
+        List<XMLDocumentAnalyzer> validators = new ArrayList<>();
         for (ASiCContent asicContent : asicContents) {
             for (DSSDocument signatureDocument : asicContent.getSignatureDocuments()) {
-                validators.add(new XMLDocumentValidator(signatureDocument));
+                validators.add(new XMLDocumentAnalyzer(signatureDocument));
             }
         }
         return validators;
     }
 
-    private List<AdvancedSignature> getAllSignatures(List<XMLDocumentValidator> validators) {
+    private List<AdvancedSignature> getAllSignatures(List<XMLDocumentAnalyzer> validators) {
         List<AdvancedSignature> signatures = new ArrayList<>();
-        for (XMLDocumentValidator validator : validators) {
+        for (XMLDocumentAnalyzer validator : validators) {
             signatures.addAll(validator.getSignatures());
         }
         return signatures;
@@ -295,9 +295,9 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         return false;
     }
 
-    private void assertSameRootElement(List<XMLDocumentValidator> documentValidators) {
+    private void assertSameRootElement(List<XMLDocumentAnalyzer> documentValidators) {
         Element rootElement = null;
-        for (XMLDocumentValidator documentValidator : documentValidators) {
+        for (XMLDocumentAnalyzer documentValidator : documentValidators) {
             Element currentRootElement = documentValidator.getRootElement().getDocumentElement();
             if (rootElement == null) {
                 rootElement = currentRootElement;
@@ -319,11 +319,11 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
 
     }
 
-    private DSSDocument getMergedSignaturesXml(List<XMLDocumentValidator> documentValidators) {
+    private DSSDocument getMergedSignaturesXml(List<XMLDocumentAnalyzer> documentValidators) {
         Document document = null;
         Element documentElement = null;
 
-        for (XMLDocumentValidator documentValidator : documentValidators) {
+        for (XMLDocumentAnalyzer documentValidator : documentValidators) {
             if (document == null) {
                 document = documentValidator.getRootElement();
                 documentElement = document.getDocumentElement();

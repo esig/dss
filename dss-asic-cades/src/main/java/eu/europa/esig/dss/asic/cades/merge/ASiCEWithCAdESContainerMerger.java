@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
-import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestPath;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestAttribute;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestPath;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
@@ -29,7 +29,7 @@ import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;

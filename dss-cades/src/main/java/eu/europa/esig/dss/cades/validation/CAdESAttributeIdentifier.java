@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.validation.SignatureAttributeIdentifier;
+import eu.europa.esig.dss.spi.validation.identifier.SignatureAttributeIdentifier;
 import org.bouncycastle.asn1.cms.Attribute;
 
 import java.io.ByteArrayOutputStream;

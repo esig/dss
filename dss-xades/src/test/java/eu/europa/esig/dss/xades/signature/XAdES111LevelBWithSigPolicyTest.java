@@ -32,7 +32,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.XAdES111Utils;
 import org.junit.jupiter.api.BeforeEach;
 

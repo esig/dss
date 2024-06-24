@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.alert.handler.AlertHandler;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
 
 /**
  * Warns on the LOTL Official Journal URL change

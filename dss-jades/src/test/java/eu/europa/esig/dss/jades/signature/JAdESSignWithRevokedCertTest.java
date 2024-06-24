@@ -26,14 +26,14 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
+import eu.europa.esig.dss.jades.validation.JWSSerializationAnalyzerValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -80,8 +80,8 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentValidator validator = new JWSSerializationDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        assertEquals(2, analyzer.getSignatures().size());
     }
 
     @Test
@@ -97,8 +97,8 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentValidator validator = new JWSSerializationDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        assertEquals(2, analyzer.getSignatures().size());
     }
 
     @Test
@@ -113,8 +113,8 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentValidator validator = new JWSSerializationDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        assertEquals(2, analyzer.getSignatures().size());
     }
 
     @Test

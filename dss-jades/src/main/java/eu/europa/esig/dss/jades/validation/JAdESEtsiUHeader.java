@@ -24,7 +24,7 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
 import org.jose4j.json.internal.json_simple.JSONArray;
 
 import java.util.ArrayList;

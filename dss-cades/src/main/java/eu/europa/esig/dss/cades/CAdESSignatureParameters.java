@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 
 /**

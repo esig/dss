@@ -20,21 +20,22 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +82,7 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 		Objects.requireNonNull(document, "DSSDocument cannot be null!");
 		Objects.requireNonNull(params, "SignatureParameters cannot be null!");
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
-		PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, params);
+		PDFDocumentAnalyzer pdfDocumentValidator = getPDFDocumentValidator(document, params);
 		return extendSignatures(document, pdfDocumentValidator, params);
 	}
 
@@ -89,13 +90,13 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 * This method performs a document extension
 	 *
 	 * @param document {@link DSSDocument}
-	 * @param documentValidator {@link PDFDocumentValidator}
+	 * @param pdfDocumentAnalyzer {@link PDFDocumentAnalyzer}
 	 * @param parameters {@link PAdESSignatureParameters}
 	 * @return {@link DSSDocument} extended document
 	 */
-	protected DSSDocument extendSignatures(final DSSDocument document, final PDFDocumentValidator documentValidator,
+	protected DSSDocument extendSignatures(final DSSDocument document, final PDFDocumentAnalyzer pdfDocumentAnalyzer,
 										   final PAdESSignatureParameters parameters) {
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		List<AdvancedSignature> signatures = pdfDocumentAnalyzer.getSignatures();
 		if (Utils.isCollectionEmpty(signatures)) {
 			throw new IllegalInputException("No signatures found to be extended!");
 		}
@@ -149,11 +150,12 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 *
 	 * @param document {@link DSSDocument} document to be validated
 	 * @param parameters {@link PAdESSignatureParameters} used to create/extend the signature(s)
-	 * @return {@link PDFDocumentValidator}
+	 * @return {@link PDFDocumentAnalyzer}
 	 */
-	protected PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {
-		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
+	protected PDFDocumentAnalyzer getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {
+		PDFDocumentAnalyzer pdfDocumentValidator = new PDFDocumentAnalyzer(document);
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+		pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
 		pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
 		return pdfDocumentValidator;

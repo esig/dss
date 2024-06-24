@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.SignatureValidationContext;
-import eu.europa.esig.dss.validation.status.SignatureStatus;
-import eu.europa.esig.dss.validation.status.TokenStatus;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.status.SignatureStatus;
+import eu.europa.esig.dss.spi.validation.status.TokenStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -249,9 +248,9 @@ public class SignatureRequirementsChecker {
             return;
         }
 
-        final SignatureValidationContext validationContext = new SignatureValidationContext();
+        Date signingDate = signatureParameters.bLevel().getSigningDate();
+        final SignatureValidationContext validationContext = new SignatureValidationContext(signingDate);
         validationContext.initialize(certificateVerifier);
-        validationContext.setCurrentTime(signatureParameters.bLevel().getSigningDate());
 
         final List<CertificateToken> certificateChain = signatureParameters.getCertificateChain();
         if (Utils.isCollectionEmpty(certificateChain)) {
@@ -278,18 +277,16 @@ public class SignatureRequirementsChecker {
             return;
         }
 
-        final SignatureValidationContext validationContext = new SignatureValidationContext();
+        Date signingDate = signatureParameters.bLevel().getSigningDate();
+        final SignatureValidationContext validationContext = new SignatureValidationContext(signingDate);
         validationContext.initialize(certificateVerifier);
-        validationContext.setCurrentTime(signatureParameters.bLevel().getSigningDate());
         for (AdvancedSignature signature : signatures) {
             validationContext.addSignatureForVerification(signature);
         }
         validationContext.validate();
 
         validationContext.checkAllRequiredRevocationDataPresent();
-        for (AdvancedSignature signature : signatures) {
-            validationContext.checkCertificatesNotRevoked(signature);
-        }
+        validationContext.checkAllSignatureCertificatesNotRevoked();
     }
 
     /**

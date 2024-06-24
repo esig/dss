@@ -48,7 +48,7 @@ import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -91,7 +91,7 @@ public class EuropeanLOTLSnippets {
 	// import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
 	// import eu.europa.esig.dss.tsl.source.LOTLSource;
 	// import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
-	// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+	// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 	// import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 	// import eu.europa.esig.dss.validation.SignedDocumentValidator;
 	// import java.io.File;

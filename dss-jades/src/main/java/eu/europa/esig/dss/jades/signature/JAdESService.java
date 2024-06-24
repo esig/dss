@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
@@ -29,13 +29,13 @@ import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
-import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentAnalyzer;
+import eu.europa.esig.dss.jades.validation.JWSDocumentAnalyzerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -51,8 +51,8 @@ import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DSSPKUtils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.DSSPKUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
@@ -251,9 +251,9 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	private JWSJsonSerializationObject getJWSJsonSerializationObjectToSign(List<DSSDocument> documentsToSign) {
 		if (Utils.isCollectionNotEmpty(documentsToSign) && documentsToSign.size() == 1) {
 			DSSDocument document = documentsToSign.get(0);
-			JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+			JWSDocumentAnalyzerFactory documentValidatorFactory = new JWSDocumentAnalyzerFactory();
 			if (documentValidatorFactory.isSupported(document)) {
-				AbstractJWSDocumentValidator documentValidator = documentValidatorFactory.create(document);
+				AbstractJWSDocumentAnalyzer documentValidator = documentValidatorFactory.create(document);
 				return documentValidator.getJwsJsonSerializationObject();
 			}
 		}
@@ -429,7 +429,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			assertSignatureValueValid(signatureValue.getAlgorithm(), signatureValue);
 			return true;
 		} catch (Exception e) {
-			LOG.error("Invalid signature value : {}", e.getMessage());
+			LOG.warn("Invalid signature value : {}", e.getMessage());
 			return false;
 		}
 	}

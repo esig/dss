@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
 

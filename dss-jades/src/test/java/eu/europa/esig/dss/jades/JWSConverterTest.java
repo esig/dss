@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.jades;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.validation.JWS;
-import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
+import eu.europa.esig.dss.jades.validation.JWSSerializationAnalyzerValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
@@ -50,7 +50,7 @@ public class JWSConverterTest {
 
 	@Test
 	public void test3Parts() {
-		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator();
+		JWSSerializationAnalyzerValidator validator = new JWSSerializationAnalyzerValidator();
 
 		DSSDocument jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA.2yUt5UtfsRK1pnN0KTTv7gzHTxwDqDz2OkFSqlbQ40A".getBytes());
 		DSSDocument converted = JWSConverter.fromJWSCompactToJSONFlattenedSerialization(jws);
@@ -68,7 +68,7 @@ public class JWSConverterTest {
 
 	@Test
 	public void test2Parts() {
-		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator();
+		JWSSerializationAnalyzerValidator validator = new JWSSerializationAnalyzerValidator();
 
 		DSSDocument jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA".getBytes());
 		DSSDocument converted = JWSConverter.fromJWSCompactToJSONFlattenedSerialization(jws);

@@ -26,7 +26,7 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
+import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzer;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
@@ -42,7 +42,7 @@ import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -50,8 +50,8 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -228,7 +228,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	 * @return TRUE if the LTA extension is possible, FALSE otherwise
 	 */
 	private boolean isLtaExtensionPossible(ASiCContent asicContent) {
-		ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator(asicContent);
+		ASiCContainerWithCAdESAnalyzer validator = new ASiCContainerWithCAdESAnalyzer(asicContent);
 		validator.setCertificateVerifier(certificateVerifier);
 
 		List<AdvancedSignature> signatures = validator.getSignatures();

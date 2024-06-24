@@ -20,26 +20,25 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonObject;
-import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
-import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentAnalyzer;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
+import eu.europa.esig.dss.jades.validation.JWSDocumentAnalyzerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,16 +80,16 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		Objects.requireNonNull(document, "Signature document must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		final AbstractJWSDocumentValidator documentValidator = getDocumentValidator(document);
-		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
+		final AbstractJWSDocumentAnalyzer documentAnalyzer = getDocumentValidator(document);
+		JWSJsonSerializationObject jwsJsonSerializationObject = documentAnalyzer.getJwsJsonSerializationObject();
 		assertJSONSerializationObjectMayBeExtended(jwsJsonSerializationObject);
 
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
 
 		boolean signaturePolicyStoreAdded = false;
 		for (AdvancedSignature signature : signatures) {
 			boolean added = addSignaturePolicyStoreIfDigestMatch((JAdESSignature) signature, signaturePolicyStore,
-					base64UrlInstance, documentValidator);
+					base64UrlInstance, documentAnalyzer);
 			signaturePolicyStoreAdded = signaturePolicyStoreAdded || added;
 		}
 		if (!signaturePolicyStoreAdded) {
@@ -120,7 +119,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		Objects.requireNonNull(document, "Signature document must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		final AbstractJWSDocumentValidator documentValidator = getDocumentValidator(document);
+		final AbstractJWSDocumentAnalyzer documentValidator = getDocumentValidator(document);
 		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
 		assertJSONSerializationObjectMayBeExtended(jwsJsonSerializationObject);
 
@@ -148,14 +147,14 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to be added
 	 * @param base64UrlInstance    defines whether {@code SignaturePolicyStore} shall be incorporated
 	 *                             as a base64url-encoded 'etsiU' component
-	 * @param documentValidator    {@link SignedDocumentValidator} used to extract the signature
+	 * @param documentAnalyzer    {@link AbstractJWSDocumentAnalyzer} used to extract the signature
 	 * @return TRUE if the signaturePolicyStore has been added for the particular signature, FALSE otherwise
 	 */
 	protected boolean addSignaturePolicyStoreIfDigestMatch(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore,
-								 boolean base64UrlInstance, SignedDocumentValidator documentValidator) {
+								 boolean base64UrlInstance, AbstractJWSDocumentAnalyzer documentAnalyzer) {
 		assertEtsiUComponentsConsistent(jadesSignature.getJws(), base64UrlInstance);
 
-		if (checkDigest(jadesSignature, signaturePolicyStore, documentValidator)) {
+		if (checkDigest(jadesSignature, signaturePolicyStore, documentAnalyzer)) {
 			Map<String, Object> sigPolicyStoreParams = new LinkedHashMap<>();
 
 			DSSDocument signaturePolicyContent = signaturePolicyStore.getSignaturePolicyContent();
@@ -190,12 +189,12 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 	 *
 	 * @param jadesSignature       {@link JAdESSignature} to check signature policy identifier
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to be incorporated
-	 * @param documentValidator    {@link eu.europa.esig.dss.validation.SignedDocumentValidator}
+	 * @param documentAnalyzer    {@link AbstractJWSDocumentAnalyzer}
 	 *                             JWS document validator used to extract the signature
 	 * @return TRUE if the digest match and {@link SignaturePolicyStore} can be embedded, FALSE otherwise
 	 */
 	protected boolean checkDigest(JAdESSignature jadesSignature, SignaturePolicyStore signaturePolicyStore,
-								  SignedDocumentValidator documentValidator) {
+								  AbstractJWSDocumentAnalyzer documentAnalyzer) {
 		final SignaturePolicy signaturePolicy = jadesSignature.getSignaturePolicy();
 		if (signaturePolicy == null) {
 			LOG.warn("No defined SignaturePolicyIdentifier for signature with Id : {}", jadesSignature.getId());
@@ -214,7 +213,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		}
 		signaturePolicy.setPolicyContent(signaturePolicyContent);
 
-		SignaturePolicyValidator validator = documentValidator.getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
+		SignaturePolicyValidator validator = documentAnalyzer.getSignaturePolicyValidatorLoader().loadValidator(signaturePolicy);
 		Digest computedDigest = validator.getComputedDigest(signaturePolicyContent, expectedDigest.getAlgorithm());
 
 		boolean digestMatch = expectedDigest.equals(computedDigest);
@@ -225,8 +224,8 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 		return digestMatch;
 	}
 
-	private AbstractJWSDocumentValidator getDocumentValidator(DSSDocument document) {
-		JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+	private AbstractJWSDocumentAnalyzer getDocumentValidator(DSSDocument document) {
+		JWSDocumentAnalyzerFactory documentValidatorFactory = new JWSDocumentAnalyzerFactory();
 		return documentValidatorFactory.create(document);
 	}
 
@@ -237,7 +236,7 @@ public class JAdESSignaturePolicyStoreBuilder extends JAdESExtensionBuilder {
 
 		boolean signaturePolicyContentPresent = signaturePolicyStore.getSignaturePolicyContent() != null;
 		boolean sigPolDocLocalURIPresent = signaturePolicyStore.getSigPolDocLocalURI() != null;
-		if (!(signaturePolicyContentPresent ^ sigPolDocLocalURIPresent)) {
+		if (signaturePolicyContentPresent == sigPolDocLocalURIPresent) {
 			throw new IllegalArgumentException("SignaturePolicyStore shall contain either " +
 					"SignaturePolicyContent document or sigPolDocLocalURI!");
 		}

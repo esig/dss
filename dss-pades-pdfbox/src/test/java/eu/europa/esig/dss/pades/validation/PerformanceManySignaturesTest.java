@@ -28,7 +28,7 @@ import eu.europa.esig.dss.pdf.PdfDocDssRevision;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.junit.jupiter.api.Test;
 
@@ -63,13 +63,13 @@ public class PerformanceManySignaturesTest {
 
         PDFDocumentValidator validator = new PDFDocumentValidator(inMemoryDocument);
 
-        assertTimeout(Duration.ofSeconds(3), () -> validator.getRevisions());
+        assertTimeout(Duration.ofSeconds(3), validator::getRevisions);
 
-        List<PdfRevision> revisions = assertTimeout(Duration.ofSeconds(1), () -> validator.getRevisions()); // cached
+        List<PdfRevision> revisions = assertTimeout(Duration.ofSeconds(1), validator::getRevisions); // cached
         assertNotNull(revisions);
         assertEquals(52, revisions.size());
 
-        List<AdvancedSignature> signatures = assertTimeout(Duration.ofSeconds(2), () -> validator.getSignatures());
+        List<AdvancedSignature> signatures = assertTimeout(Duration.ofSeconds(2), validator::getSignatures);
         assertNotNull(signatures);
         assertEquals(51, signatures.size());
 
@@ -88,11 +88,11 @@ public class PerformanceManySignaturesTest {
             }
         }
 
-        List<TimestampToken> detachedTimestamps = assertTimeout(Duration.ofSeconds(2), () -> validator.getDetachedTimestamps());
+        List<TimestampToken> detachedTimestamps = assertTimeout(Duration.ofSeconds(2), validator::getDetachedTimestamps);
         assertNotNull(detachedTimestamps);
         assertEquals(0, detachedTimestamps.size());
 
-        List<PdfDssDict> dssDictionaries = assertTimeout(Duration.ofSeconds(2), () -> validator.getDssDictionaries());
+        List<PdfDssDict> dssDictionaries = assertTimeout(Duration.ofSeconds(2), validator::getDssDictionaries);
         assertNotNull(dssDictionaries);
         assertEquals(1, dssDictionaries.size());
         PdfDssDict pdfDssDict = dssDictionaries.get(0);

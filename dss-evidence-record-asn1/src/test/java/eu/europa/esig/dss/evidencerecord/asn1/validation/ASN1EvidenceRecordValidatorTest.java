@@ -2,10 +2,10 @@ package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.evidencerecord.common.validation.AbstractTestEvidenceRecordValidator;
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecordValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public class ASN1EvidenceRecordValidatorTest extends AbstractTestEvidenceRecordV
 
     @Test
     public void isSupported() {
-        ASN1EvidenceRecordValidator validator = new ASN1EvidenceRecordValidator();
+        ASN1EvidenceRecordAnalyzer validator = new ASN1EvidenceRecordAnalyzer();
 
         byte[] wrongBytes = new byte[] { 1, 2 };
         assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes)));
@@ -44,12 +44,12 @@ public class ASN1EvidenceRecordValidatorTest extends AbstractTestEvidenceRecordV
     }
 
     @Override
-    protected EvidenceRecordValidator initEmptyValidator() {
+    protected DefaultEvidenceRecordValidator initEmptyValidator() {
         return new ASN1EvidenceRecordValidator();
     }
 
     @Override
-    protected EvidenceRecordValidator initValidator(DSSDocument document) {
+    protected DefaultEvidenceRecordValidator initValidator(DSSDocument document) {
         return new ASN1EvidenceRecordValidator(document);
     }
 

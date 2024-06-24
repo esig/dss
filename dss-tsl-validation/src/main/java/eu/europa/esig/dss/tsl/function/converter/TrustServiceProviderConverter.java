@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import eu.europa.esig.dss.spi.tsl.TrustService;
-import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
-import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
+import eu.europa.esig.dss.model.tsl.TrustService;
+import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.tsl.sync.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.tsl.function.OfficialRegistrationIdentifierPredicate;
 import eu.europa.esig.dss.tsl.function.TradeNamePredicate;
 import eu.europa.esig.dss.utils.Utils;

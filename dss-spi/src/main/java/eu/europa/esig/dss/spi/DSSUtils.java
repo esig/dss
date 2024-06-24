@@ -1366,7 +1366,7 @@ public final class DSSUtils {
 		} else if (signatureValue.length == 114) {
 			return SignatureAlgorithm.ED448;
 		} else {
-			LOG.error("Unable to identify EdDSA Signature Algorithm!");
+			LOG.warn("Unable to identify EdDSA Signature Algorithm!");
 			return null;
 		}
 	}

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.jwx.Headers;
 

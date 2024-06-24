@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.asic.cades.extract;
 
-import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidatorFactory;
+import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzerFactory;
 import eu.europa.esig.dss.asic.common.extract.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.extract.ASiCContainerExtractorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -25,7 +25,7 @@ public class ASiCWithCAdESContainerExtractorFactory implements ASiCContainerExtr
     public boolean isSupported(DSSDocument asicContainer) {
         Objects.requireNonNull(asicContainer, "ASiC container cannot be null!");
 
-        final ASiCContainerWithCAdESValidatorFactory documentValidatorFactory = new ASiCContainerWithCAdESValidatorFactory();
+        final ASiCContainerWithCAdESAnalyzerFactory documentValidatorFactory = new ASiCContainerWithCAdESAnalyzerFactory();
         return documentValidatorFactory.isSupported(asicContainer);
     }
 

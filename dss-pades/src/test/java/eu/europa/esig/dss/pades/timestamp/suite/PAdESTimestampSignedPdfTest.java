@@ -38,7 +38,7 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,13 +82,13 @@ public class PAdESTimestampSignedPdfTest extends AbstractPAdESTestSignature {
 
         service.setTspSource(getAlternateGoodTsa());
         DSSDocument timestampedDocument = service.timestamp(signedDocument, new PAdESTimestampParameters());
-        PDFDocumentValidator validator = new PDFDocumentValidator(timestampedDocument);
-        assertEquals(0, validator.getDssDictionaries().size());
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(timestampedDocument);
+        assertEquals(0, pdfDocumentAnalyzer.getDssDictionaries().size());
 
         service.setTspSource(getSelfSignedTsa());
         timestampedDocument = service.timestamp(timestampedDocument, new PAdESTimestampParameters());
-        validator = new PDFDocumentValidator(timestampedDocument);
-        assertEquals(1, validator.getDssDictionaries().size());
+        pdfDocumentAnalyzer = new PDFDocumentAnalyzer(timestampedDocument);
+        assertEquals(1, pdfDocumentAnalyzer.getDssDictionaries().size());
 
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 

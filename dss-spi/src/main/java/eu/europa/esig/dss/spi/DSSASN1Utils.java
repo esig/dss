@@ -685,8 +685,8 @@ public final class DSSASN1Utils {
 		if (firstX500Principal.equals(secondX500Principal)) {
 			return true;
 		}
-		final Map<String, String> firstStringStringHashMap = DSSASN1Utils.get(firstX500Principal);
-		final Map<String, String> secondStringStringHashMap = DSSASN1Utils.get(secondX500Principal);
+		final Map<String, String> firstStringStringHashMap = get(firstX500Principal);
+		final Map<String, String> secondStringStringHashMap = get(secondX500Principal);
 		return firstStringStringHashMap.equals(secondStringStringHashMap);
 	}
 

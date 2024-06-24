@@ -29,8 +29,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class JAdESWithHttpHeadersValidationTest extends AbstractJAdESTestValidat
 	
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
-		AbstractJWSDocumentValidator validator = (AbstractJWSDocumentValidator) super.getValidator(signedDocument);
+		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		
 		CertificateToken signingCert = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIIkzCCBnugAwIBAgIDAOqWMA0GCSqGSIb3DQEBCwUAMIGoMQswCQYDVQQGEwJJ" + 

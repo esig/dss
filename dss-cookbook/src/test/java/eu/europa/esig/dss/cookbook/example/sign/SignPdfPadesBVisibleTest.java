@@ -41,7 +41,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.awt.Color;
@@ -88,7 +88,7 @@ public class SignPdfPadesBVisibleTest extends CookbookTools {
 			// import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 			// import eu.europa.esig.dss.pades.signature.PAdESService;
 			// import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 			// import java.awt.Color;
 
 			// tag::parameters-configuration[]

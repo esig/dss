@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import org.jose4j.jws.JsonWebSignature;

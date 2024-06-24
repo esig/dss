@@ -411,7 +411,7 @@ public class CertificateExtensionsUtils {
             return authorityInformationAccess;
 
         } catch (Exception e) {
-            LOG.error("Unable to parse authorityInfoAccess", e);
+            LOG.warn("Unable to parse authorityInfoAccess", e);
             return null;
         }
     }
@@ -551,7 +551,7 @@ public class CertificateExtensionsUtils {
                 return crlDistributionPoints;
 
             } catch (Exception e) {
-                LOG.error("Unable to parse cRLDistributionPoints", e);
+                LOG.warn("Unable to parse cRLDistributionPoints", e);
             }
         }
         return null;

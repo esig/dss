@@ -23,11 +23,11 @@ package eu.europa.esig.dss.pades.extension.suite;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 import java.util.List;
 
@@ -56,7 +56,7 @@ public class PAdESExtensionLTWithVRIToLTATest extends PAdESExtensionLTToLTATest 
     protected void onDocumentSigned(DSSDocument signedDocument) {
         super.onDocumentSigned(signedDocument);
 
-        PDFDocumentValidator documentValidator = new PDFDocumentValidator(signedDocument);
+        PDFDocumentAnalyzer documentValidator = new PDFDocumentAnalyzer(signedDocument);
 
         List<AdvancedSignature> signatures = documentValidator.getSignatures();
         assertEquals(1, signatures.size());
@@ -82,7 +82,7 @@ public class PAdESExtensionLTWithVRIToLTATest extends PAdESExtensionLTToLTATest 
     protected void onDocumentExtended(DSSDocument extendedDocument) {
         super.onDocumentExtended(extendedDocument);
 
-        PDFDocumentValidator documentValidator = new PDFDocumentValidator(extendedDocument);
+        PDFDocumentAnalyzer documentValidator = new PDFDocumentAnalyzer(extendedDocument);
 
         List<AdvancedSignature> signatures = documentValidator.getSignatures();
         assertEquals(1, signatures.size());

@@ -30,8 +30,8 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.BasicASN1SignaturePolicyValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,8 +69,8 @@ public class XAdESWithASN1SignaturePolicyFailureTest extends AbstractXAdESTestSi
         signaturePolicy.setDocumentationReferences(SIGNATURE_POLICY_DOCUMENTATION);
         signaturePolicy.setSpuri(HTTP_SPURI_TEST);
 
-        BasicASNSignaturePolicyValidator asnSignaturePolicyValidator = new BasicASNSignaturePolicyValidator();
-        Digest digest = asnSignaturePolicyValidator.getComputedDigest(POLICY_CONTENT, DigestAlgorithm.SHA256);
+        BasicASN1SignaturePolicyValidator asn1SignaturePolicyValidator = new BasicASN1SignaturePolicyValidator();
+        Digest digest = asn1SignaturePolicyValidator.getComputedDigest(POLICY_CONTENT, DigestAlgorithm.SHA256);
         signaturePolicy.setDigestAlgorithm(digest.getAlgorithm());
         signaturePolicy.setDigestValue(digest.getValue());
 

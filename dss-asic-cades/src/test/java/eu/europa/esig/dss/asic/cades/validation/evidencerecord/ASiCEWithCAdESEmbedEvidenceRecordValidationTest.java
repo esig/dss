@@ -10,7 +10,6 @@ import eu.europa.esig.dss.asic.common.extract.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithAsn1EvidenceRecordTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -21,13 +20,18 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecordAnalyzer;
+import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzer;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,26 +72,28 @@ public class ASiCEWithCAdESEmbedEvidenceRecordValidationTest extends AbstractASi
         }
 
         DSSDocument erDocument = evidenceRecordDocuments.get(0);
-        EvidenceRecordValidator erValidator = EvidenceRecordValidator.fromDocument(erDocument);
-        erValidator.setCertificateVerifier(getOfflineCertificateVerifier());
-        erValidator.setDetachedContents(detachedContents);
+        EvidenceRecordAnalyzer evidenceRecordAnalyzer = DefaultEvidenceRecordAnalyzer.fromDocument(erDocument);
+        evidenceRecordAnalyzer.setCertificateVerifier(getOfflineCertificateVerifier());
+        evidenceRecordAnalyzer.setDetachedContents(detachedContents);
 
-        Reports reports = erValidator.validateDocument();
-        DiagnosticData diagnosticData = reports.getDiagnosticData();
-        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        ValidationContext validationContext = evidenceRecordAnalyzer.validate();
+        Set<EvidenceRecord> evidenceRecords = validationContext.getProcessedEvidenceRecords();
         assertEquals(1, evidenceRecords.size());
 
-        assertEquals(2, evidenceRecords.get(0).getDigestMatchers().size());
-        for (XmlDigestMatcher digestMatcher : evidenceRecords.get(0).getDigestMatchers()) {
-            assertTrue(digestMatcher.isDataFound());
-            assertTrue(digestMatcher.isDataIntact());
+        EvidenceRecord evidenceRecord = evidenceRecords.iterator().next();
+        assertEquals(2, evidenceRecord.getReferenceValidation().size());
+        for (ReferenceValidation referenceValidation : evidenceRecord.getReferenceValidation()) {
+            assertTrue(referenceValidation.isFound());
+            assertTrue(referenceValidation.isIntact());
         }
 
-        assertEquals(1, evidenceRecords.get(0).getTimestampList().size());
-        assertTrue(evidenceRecords.get(0).getTimestampList().get(0).isMessageImprintDataFound());
-        assertTrue(evidenceRecords.get(0).getTimestampList().get(0).isMessageImprintDataIntact());
-        assertTrue(evidenceRecords.get(0).getTimestampList().get(0).isSignatureIntact());
-        assertTrue(evidenceRecords.get(0).getTimestampList().get(0).isSignatureValid());
+        assertEquals(1, evidenceRecord.getTimestamps().size());
+
+        TimestampToken timestampToken = evidenceRecord.getTimestamps().iterator().next();
+        assertTrue(timestampToken.isMessageImprintDataFound());
+        assertTrue(timestampToken.isMessageImprintDataIntact());
+        assertTrue(timestampToken.isSignatureIntact());
+        assertTrue(timestampToken.isValid());
 
         // remove original ER
         asicContent.setEvidenceRecordDocuments(null);
