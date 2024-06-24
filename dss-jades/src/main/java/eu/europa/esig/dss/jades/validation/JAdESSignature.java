@@ -128,7 +128,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forJWA(jws.getAlgorithmHeaderValue(), null);
 		if (signatureAlgorithm == null) {
-			LOG.error("SignatureAlgorithm '{}' is not supported!", jws.getAlgorithmHeaderValue());
+			LOG.warn("SignatureAlgorithm '{}' is not supported!", jws.getAlgorithmHeaderValue());
 		} else if (EncryptionAlgorithm.EDDSA.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
 			signatureAlgorithm = DSSUtils.getEdDSASignatureAlgorithm(getSignatureValue());
 		}
@@ -737,7 +737,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			}
 			
 		} catch (Exception e) {
-			LOG.error("The validation of signed input failed! Reason : {}", e.getMessage(), e);
+			LOG.warn("The validation of signed input failed! Reason : {}", e.getMessage(), e);
 		}
 		
 		return signatureValueReferenceValidation;
@@ -781,7 +781,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			String mechanismUri = DSSJsonUtils.getAsString(signatureDetached, JAdESHeaderParameterNames.M_ID);
 			SigDMechanism sigDMechanism = SigDMechanism.forUri(mechanismUri);
 			if (sigDMechanism == null) {
-				LOG.error("The sigDMechanism with uri '{}' is not supported!", mechanismUri);
+				LOG.warn("The sigDMechanism with uri '{}' is not supported!", mechanismUri);
 			}
 			return sigDMechanism;
 		}

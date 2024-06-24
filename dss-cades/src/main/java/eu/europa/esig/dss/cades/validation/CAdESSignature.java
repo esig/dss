@@ -625,7 +625,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(oid);
 			return signatureAlgorithm.getEncryptionAlgorithm();
 		} catch (IllegalArgumentException e) {
-			LOG.error("Unable to identify encryption algorithm for OID '{}'. Reason : {}", oid, e.getMessage());
+			LOG.warn("Unable to identify encryption algorithm for OID '{}'. Reason : {}", oid, e.getMessage());
 		}
 
 		return null;
@@ -645,7 +645,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			try {
 				return DigestAlgorithm.forOID(digestAlgOID);
 			} catch (IllegalArgumentException e) {
-				LOG.error("Unable to identify DigestAlgorithm for OID '{}'. Reason : {}", digestAlgOID, e.getMessage());
+				LOG.warn("Unable to identify DigestAlgorithm for OID '{}'. Reason : {}", digestAlgOID, e.getMessage());
 				return null;
 			}
 		}
@@ -671,7 +671,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return DigestAlgorithm.forOID(pssHashAlgo.getAlgorithm().getId());
 			}
 		} catch (IOException e) {
-			LOG.error("Unable to analyze EncryptionAlgParams", e);
+			LOG.warn("Unable to analyze EncryptionAlgParams", e);
 		}
 		return null;
 	}
@@ -735,7 +735,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataIntact);
 			
 		} catch (CMSException | IOException e) {
-			LOG.error(e.getMessage(), e);
+			LOG.warn(e.getMessage(), e);
 			signatureCryptographicVerification.setErrorMessage(e.getMessage());
 		}
 		LOG.debug(" - RESULT: {}", signatureCryptographicVerification);

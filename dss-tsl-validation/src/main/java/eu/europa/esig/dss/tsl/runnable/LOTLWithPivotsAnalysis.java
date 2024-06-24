@@ -151,7 +151,7 @@ public class LOTLWithPivotsAnalysis extends LOTLAnalysis {
 				TLValidatorTask validationTask = new TLValidatorTask(document, certificateSource);
 				pivotCacheAccess.update(validationTask.get());
 			} catch (Exception e) {
-				LOG.error("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
+				LOG.warn("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
 				pivotCacheAccess.validationError(e);
 			}
 		}

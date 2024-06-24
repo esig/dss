@@ -429,7 +429,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 			assertSignatureValueValid(signatureValue.getAlgorithm(), signatureValue);
 			return true;
 		} catch (Exception e) {
-			LOG.error("Invalid signature value : {}", e.getMessage());
+			LOG.warn("Invalid signature value : {}", e.getMessage());
 			return false;
 		}
 	}

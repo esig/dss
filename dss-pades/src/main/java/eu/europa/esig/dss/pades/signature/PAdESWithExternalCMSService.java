@@ -275,20 +275,20 @@ public class PAdESWithExternalCMSService implements Serializable {
         try {
             cmsSignedData = DSSUtils.toCMSSignedData(cms);
         } catch (Exception e) {
-            LOG.error("Unable to decode the provided CMS document : {}", e.getMessage());
+            LOG.warn("Unable to decode the provided CMS document : {}", e.getMessage());
             return false;
         }
 
         SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
         if (signerInfos.size() != 1) {
-            LOG.error("CMSSignedData shall contain one and only one SignerInformation for signature signing process!");
+            LOG.warn("CMSSignedData shall contain one and only one SignerInformation for signature signing process!");
             return false;
         }
 
         final CAdESSignature cadesSignature = toCAdESSignature(cmsSignedData, messageDigest);
         SignatureCryptographicVerification scv = cadesSignature.getSignatureCryptographicVerification();
         if (!scv.isSignatureValid()) {
-            LOG.error("CMSSignedData signature is not valid!");
+            LOG.warn("CMSSignedData signature is not valid!");
             return false;
         }
         return true;
@@ -309,7 +309,7 @@ public class PAdESWithExternalCMSService implements Serializable {
         try {
             cmsSignedData = DSSUtils.toCMSSignedData(cms);
         } catch (Exception e) {
-            LOG.error("Unable to decode the provided CMS document : {}", e.getMessage());
+            LOG.warn("Unable to decode the provided CMS document : {}", e.getMessage());
             return false;
         }
 

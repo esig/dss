@@ -141,7 +141,7 @@ public final class DSSPKUtils {
 			int prefixSize = Utils.fromHex("3042300506032b656f033900").length;
 			return xdhPK.getEncoded().length - prefixSize;
 		} else {
-			LOG.error("Unknown public key infrastructure: {}", publicKey.getClass().getName());
+			LOG.warn("Unknown public key infrastructure: {}", publicKey.getClass().getName());
 		}
 		return publicKeySize;
 	}

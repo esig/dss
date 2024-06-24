@@ -591,7 +591,7 @@ public final class DSSXMLUtils {
 			LOG.warn("Original data is not provided for the reference with id [{}]. Reason: [{}]", reference.getId(), e.getMessage());
 		} catch (IOException | CanonicalizationException e) {
 			// if exception occurs by another reason
-			LOG.error("Unable to retrieve the content of reference with id [{}].", reference.getId(), e);
+			LOG.warn("Unable to retrieve the content of reference with id [{}].", reference.getId(), e);
 		}
 		// in case of exceptions return null value
 		return null;
@@ -636,10 +636,10 @@ public final class DSSXMLUtils {
 	private static byte[] getDigestValue(String digestValueBase64) {
 		byte[] result = null;
 		if (Utils.isStringEmpty(digestValueBase64)) {
-			LOG.error("An empty DigestValue obtained!");
+			LOG.warn("An empty DigestValue obtained!");
 
 		} else if (!Utils.isBase64Encoded(digestValueBase64)) {
-			LOG.error("The DigestValue is not base64 encoded! Obtained string : {}", digestValueBase64);
+			LOG.warn("The DigestValue is not base64 encoded! Obtained string : {}", digestValueBase64);
 
 		} else {
 			result = Utils.fromBase64(digestValueBase64);

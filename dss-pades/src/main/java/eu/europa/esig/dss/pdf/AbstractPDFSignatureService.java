@@ -613,9 +613,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				} catch (Exception e) {
 					String errorMessage = "Unable to parse signature {} . Reason : {}";
 					if (LOG.isDebugEnabled()) {
-						LOG.error(errorMessage, fieldNames, e.getMessage(), e);
+						LOG.warn(errorMessage, fieldNames, e.getMessage(), e);
 					} else {
-						LOG.error(errorMessage, fieldNames, e.getMessage());
+						LOG.warn(errorMessage, fieldNames, e.getMessage());
 					}
 
 				}

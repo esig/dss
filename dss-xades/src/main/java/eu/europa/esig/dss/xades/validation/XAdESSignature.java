@@ -155,20 +155,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		DSSXMLUtils.registerXAdESNamespaces();
 
-		/**
-		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
-		 */
-		// final JCEMapper.Algorithm algorithm = new JCEMapper.Algorithm("",
-		// SignatureAlgorithm.ECDSA_RIPEMD160.getJCEId(), "Signature");
-		// final String xmlId = SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
-		// JCEMapper.register(xmlId, algorithm);
-		// try {
-		// org.apache.xml.security.algorithms.SignatureAlgorithm.register(xmlId,
-		// SignatureECDSARIPEMD160.class);
-		// } catch (Exception e) {
-		// LOG.error("ECDSA_RIPEMD160 algorithm initialisation failed.", e);
-		// }
-
 		//
 		// Set the default JCE algorithms
 		//
@@ -374,7 +360,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 		SignatureAlgorithm signatureAlgorithm =  SignatureAlgorithm.forXML(xmlName, null);
 		if (signatureAlgorithm == null) {
-			LOG.error("SignatureAlgorithm '{}' is not supported!", xmlName);
+			LOG.warn("SignatureAlgorithm '{}' is not supported!", xmlName);
 		}
 		return signatureAlgorithm;
 	}
@@ -532,7 +518,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return userNotice;
 
 		} catch (Exception e) {
-			LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
+			LOG.warn("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
 			return null;
 		}
 	}
@@ -946,8 +932,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setSignatureIntact(certificateValidity != null);
 			
 		} catch (Exception e) {
-			LOG.error("checkSignatureIntegrity : {}", e.getMessage());
-			LOG.debug("checkSignatureIntegrity : {}", e.getMessage(), e);
+			String errorMessage = "checkSignatureIntegrity : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
 			int lineNumber = 0;
