@@ -26,6 +26,9 @@ import org.w3c.dom.Document;
 
 /**
  * Class for validation of an XML Evidence Record (RFC 6283)
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public class XMLEvidenceRecordValidator extends DefaultEvidenceRecordValidator {

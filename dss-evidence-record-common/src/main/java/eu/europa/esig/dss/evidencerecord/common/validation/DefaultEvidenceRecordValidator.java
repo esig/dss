@@ -13,6 +13,9 @@ import java.util.ServiceLoader;
 
 /**
  * This class is used to perform a validation of an evidence record document
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public abstract class DefaultEvidenceRecordValidator extends SignedDocumentValidator implements EvidenceRecordValidator {

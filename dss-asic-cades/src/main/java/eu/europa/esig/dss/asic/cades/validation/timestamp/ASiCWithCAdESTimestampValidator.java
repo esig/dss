@@ -30,6 +30,9 @@ import java.util.List;
 
 /**
  * The abstract validator for an ASiC with CAdES timestamp
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public class ASiCWithCAdESTimestampValidator extends DetachedTimestampValidator {

@@ -12,6 +12,9 @@ import java.util.List;
 
 /**
  * The abstract class for an ASiC container validation
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public abstract class AbstractASiCContainerValidator extends SignedDocumentValidator {

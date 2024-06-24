@@ -13,7 +13,7 @@ This chapter covers the most frequently asked questions and issues occurring in 
 |===
 |Version                    |Description                                   |Solution
 
-|v6.1                       |DocumentValidator or its implementation is not found         a|Since DSS `6.1` a new module `dss-validation` has been introduced. All validation related classes have been moved there. In order to be able to validate or extend a signature, the aforementioned module should be included to a `pom.xml` file of your project, as below:
+|v6.1                       |`DocumentValidator` or its implementation is not found         a|Since DSS `6.1` a new module `dss-validation` has been introduced. All validation related classes have been moved in the new module. In order to validate or extend a signature, the aforementioned module should be included within a `pom.xml` file of your project, as below:
 
 [source,xml]
 .pom.xml
@@ -27,6 +27,8 @@ This chapter covers the most frequently asked questions and issues occurring in 
     ...
 </dependencies>
 ----
+
+|v6.1                       |#validate method is not available in the implementation of `DocumentValidator`         a|Please add a `dss-validation` module within dependencies list of your project. See instructions above.
 
 |v5.13 and before           |DSS does not work with Spring-Boot 3         a|DSS version `5.x` and before uses an old `javax.\*` namespace naming provided by Java specification API, while Spring-Boot 3 and new versions of some other libraries use the updated `jakarta.*` namespaces. DSS has been upgraded to Jakarta EE 9 and to new `jakarta.\*` namespaces starting from version `6.0`, which makes it compatible with Spring-Boot 3 and other Jakarta-based libraries. If you have a problem with using `javax.*` namespaces, please upgrade to DSS `6.0`.
 

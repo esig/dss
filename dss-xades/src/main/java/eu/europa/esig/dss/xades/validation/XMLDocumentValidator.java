@@ -29,6 +29,9 @@ import java.util.List;
 
 /**
  * Validator of XML Signed document
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public class XMLDocumentValidator extends SignedDocumentValidator {

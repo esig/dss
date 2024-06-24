@@ -26,6 +26,9 @@ import eu.europa.esig.dss.validation.reports.diagnostic.SignedDocumentDiagnostic
 
 /**
  * The abstract class for a JWS signature validation
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidator {

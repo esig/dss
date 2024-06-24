@@ -17,7 +17,7 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 .Code changes from version 6.0 to 6.1
 |===
 |Title                               |v6.0                            |v6.1
-|`dss-validation` module introduction           a|
+|Include `dss-validation` module to perform validation           a|
 [source,xml]
 .pom.xml
 ----
@@ -31,7 +31,7 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 </dependencies>
 ----
                                                                      a|
-`dss-validation` module is required to perform signature augmentation or validation
+`dss-validation` module is required to perform validation for every signature format
 [source,xml]
 .pom.xml
 ----

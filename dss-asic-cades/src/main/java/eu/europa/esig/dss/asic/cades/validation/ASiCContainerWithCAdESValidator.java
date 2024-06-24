@@ -27,6 +27,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 
 /**
  * This class is an implementation to validate ASiC containers with CAdES signature(s)
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public class ASiCContainerWithCAdESValidator extends AbstractASiCContainerValidator {

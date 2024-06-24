@@ -4,7 +4,10 @@ import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**
- * Class for validation of an ANS.1 Evidence Record (RFC 4998)
+ * Class for validation of an ANS.1 Evidence Record (RFC 4998).
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public class ASN1EvidenceRecordValidator extends DefaultEvidenceRecordValidator {

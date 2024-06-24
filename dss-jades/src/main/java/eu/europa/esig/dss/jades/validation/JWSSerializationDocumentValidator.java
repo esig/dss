@@ -24,6 +24,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 
 //@formatter:off
 /**
+ * This class performs validation of a JWS Serialization or Flattened signature format.
+ *
  * {
  *
  * "payload":"payload contents",
@@ -43,6 +45,10 @@ import eu.europa.esig.dss.model.DSSDocument;
  * ]
  *
  * }
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
+ *
  */
 //@formatter:on
 public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValidator {

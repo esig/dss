@@ -27,6 +27,9 @@ import eu.europa.esig.dss.pdfa.PDFAValidationResult;
 
 /**
  * Validator used for PDF/A document validation
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public class PDFADocumentValidator extends PDFDocumentValidator {

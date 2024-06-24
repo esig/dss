@@ -6,6 +6,9 @@ import org.bouncycastle.cms.CMSSignedData;
 
 /**
  * Validation of CMS document
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public class CMSDocumentValidator extends SignedDocumentValidator {

@@ -132,7 +132,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 *
 	 * @param documentAnalyzer {@link eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer}
 	 */
-	protected SignedDocumentValidator(final eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer documentAnalyzer) {
+	protected SignedDocumentValidator(final DocumentAnalyzer documentAnalyzer) {
+		Objects.requireNonNull(documentAnalyzer, "DocumentAnalyzer cannot be null!");
 		this.documentAnalyzer = documentAnalyzer;
 	}
 

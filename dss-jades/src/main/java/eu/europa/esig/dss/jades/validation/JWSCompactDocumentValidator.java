@@ -24,6 +24,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 
 /**
  * Validates a JWS Compact signature
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
  *
  */
 public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {

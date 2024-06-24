@@ -29,6 +29,10 @@ import java.util.List;
 
 /**
  * Validation of PDF document.
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
+ *
  */
 public class PDFDocumentValidator extends SignedDocumentValidator {
 
