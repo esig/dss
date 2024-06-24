@@ -176,6 +176,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Certificat
 ----
 See <<certificateVerifier>> for more details about configuration.
 
+|all versions              a|I receive an error "java.security.SignatureException: Keyset does not exist" on signing      a|Please ensure the chosen DigestAlgorithm is supported by the signing key. Since DSS `6.1` a `DigestAlgorotihm.SHA512` is used by default. For older smartcards, a `DigestAlgorithm.SHA256` or another may be required.
+
 |all versions              a|I have a question not covered above      a|Feel free to reach us using https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[JIRA issues tracker].
 
 |===
