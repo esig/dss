@@ -514,7 +514,8 @@ Unsigned attributes are not obligatory and can be added after the signature crea
 |===
   2+|                                                          |DSS classes and methods                                 |XAdES                                |CAdES                                    |PAdES                                                      |JAdES
 .6+|B-Level     .6+|Signed attributes                          |_class BLevelParameters_ +
-                                                                *#setSigningDate*                                       |SigningTime                          |signing-time                             |/M                                                         |sigT
+                                                                *#setSigningDate*                                       |SigningTime                          |signing-time                             |/M                                                         |iat +
+                                                                                                                                                                                                                                                                     sigT
                                                                |_class BLevelParameters_ +
                                                                 *#setClaimedSignerRole*                                 |SignerRoleV2                         |signer-attributes-v2                     |signer-attributes-v2                                       |srAts
                                                                |_class BLevelParameters_ +

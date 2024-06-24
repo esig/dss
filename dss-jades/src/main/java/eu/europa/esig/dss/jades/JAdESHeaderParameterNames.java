@@ -469,4 +469,13 @@ public final class JAdESHeaderParameterNames {
 	 */
 	public static final String SIG_POL_LOCAL_URI = "sigPolLocalURI";
 
+	/**
+	 * RFC 7519 "JSON Web Token (JWT)", 4.1.6. "iat" (Issued At) Claim
+	 * The "iat" (issued at) claim identifies the time at which the JWT was
+	 * issued. This claim can be used to determine the age of the JWT. Its
+	 * value MUST be a number containing a NumericDate value. Use of this
+	 * claim is OPTIONAL.
+	 */
+	public static final String IAT = "iat";
+
 }

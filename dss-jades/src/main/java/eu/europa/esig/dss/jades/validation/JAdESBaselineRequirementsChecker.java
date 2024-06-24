@@ -22,6 +22,7 @@ package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
 import eu.europa.esig.dss.validation.CertificateVerifier;
@@ -29,6 +30,9 @@ import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +47,9 @@ import java.util.stream.Collectors;
 public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecker<JAdESSignature> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JAdESBaselineRequirementsChecker.class);
+
+    /** 2025-05-15T00:00:00Z date, see TS 119 182-1 */
+    private static final Date SIG_T_OBSOLESCENCE_DATE = DSSUtils.getUtcDate(2025, Calendar.MAY, 15);
 
     /**
      * Default constructor
@@ -68,20 +75,13 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("cty header shall not be present for a JAdES-BASELINE-B counter signature!");
             return false;
         }
-        // crit (conditional presence, but shall be included for other mandatory headers, therefore it is mandatory)
-        Object crit = jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.CRITICAL);
-        if (crit == null) {
-            LOG.warn("crit header shall be present for a JAdES-BASELINE-B signature!");
-            return false;
-        }
         // verify 'crit' as of RFC 7515 and ETSI TS 119 182-1
-        if (!critRequirements(jws, crit)) {
+        if (!critRequirements(jws)) {
             // validation errors returned inside
             return false;
         }
         // sigT (Cardinality == 1)
-        if (Utils.isStringEmpty(jws.getProtectedHeaderValueAsString(JAdESHeaderParameterNames.SIG_T))) {
-            LOG.warn("sigT header shall be present for JAdES-BASELINE-B signature (cardinality == 1)!");
+        if (!signingTimeRequirement(jws)) {
             return false;
         }
         // x5t#256 / x5t#o / sigX5ts (Cardinality == 1)
@@ -108,24 +108,31 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    private boolean critRequirements(JWS jws, Object crit) {
-        // crit shall be an array (List)
-        if (!(crit instanceof List<?>)) {
-            LOG.warn("crit header shall be an instance of json array type for a JAdES-BASELINE-B signature!");
-            return false;
+    private boolean critRequirements(JWS jws) {
+        List<?> critList = new ArrayList<>();
+
+        // crit (conditional presence, required only for some elements)
+        Object crit = jws.getHeaders().getObjectHeaderValue(HeaderParameterNames.CRITICAL);
+        if (crit != null) {
+            // crit shall be an array (List)
+            if (!(crit instanceof List<?>)) {
+                LOG.warn("crit header shall be an instance of json array type for a JAdES-BASELINE-B signature!");
+                return false;
+            }
+            // crit cannot be empty
+            critList = (List<?>) crit;
+            if (Utils.isCollectionEmpty(critList)) {
+                LOG.warn("crit header shall not be empty for a JAdES-BASELINE-B signature (see RFC 7515)!");
+                return false;
+            }
+            Set<Object> uniqueEntries = new HashSet<>();
+            Set<Object> duplicates = critList.stream().filter(e -> !uniqueEntries.add(e)).collect(Collectors.toSet());
+            if (Utils.isCollectionNotEmpty(duplicates)) {
+                LOG.warn("crit header shall not contain duplicates for a JAdES-BASELINE-B signature (see RFC 7515)! Found duplicates : '{}'", duplicates);
+                return false;
+            }
         }
-        // crit cannot be empty
-        List<?> critList = (List<?>) crit;
-        if (Utils.isCollectionEmpty(critList)) {
-            LOG.warn("crit header shall not be empty for a JAdES-BASELINE-B signature (see RFC 7515)!");
-            return false;
-        }
-        Set<Object> uniqueEntries = new HashSet<>();
-        Set<Object> duplicates = critList.stream().filter(e -> !uniqueEntries.add(e)).collect(Collectors.toSet());
-        if (Utils.isCollectionNotEmpty(duplicates)) {
-            LOG.warn("crit header shall not contain duplicates for a JAdES-BASELINE-B signature (see RFC 7515)! Found duplicates : '{}'", duplicates);
-            return false;
-        }
+
         Set<String> keySet = DSSJsonUtils.extractJOSEHeaderMembersSet(jws);
         for (String key : keySet) {
             // critical headers shall not be present within crit
@@ -135,12 +142,13 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                             "for a JAdES-BASELINE-B signature (see RFC 7515)! Found header : '{}'", key);
                     return false;
                 }
-                // The elements of the crit JSON array shall be the names of all the signed header parameters
-                // that are present in the JAdES signatures and specified in clause 5.2.
-            } else if (DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(key)) {
-                if (!critList.contains(key)) {
-                    LOG.warn("crit header shall contain all headers present in a signature and specified in clause 5.2 " +
-                            "of ETSI TS 119 182-1 or RFC 7797 ('b64') for a JAdES-BASELINE-B signature! Not present header : '{}'", key);
+
+            } else if (DSSJsonUtils.isRequiredCriticalHeader(key)) {
+                if (crit == null) {
+                    LOG.warn("crit header shall be present when '{}' header is present in a signature for a JAdES-BASELINE-B signature!", key);
+                    return false;
+                } else if (!critList.contains(key)) {
+                    LOG.warn("crit header shall contain '{}' header when present in a signature for a JAdES-BASELINE-B signature!", key);
                     return false;
                 }
             }
@@ -166,6 +174,45 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                 return false;
             }
         }
+        return true;
+    }
+
+    private boolean signingTimeRequirement(JWS jws) {
+        /*
+         * a) Requirements for iat and sigT. Before 2025-05-15T00:00:00Z the generator should include
+         *    the iat header parameter for indicating the claimed signing time in new JAdES signatures
+         *    and should not include the iat header parameter for indicating the claimed signing time
+         *    in new JAdES signatures. Starting at 2025-05-15T00:00:00Z the generator shall include the
+         *    iat header parameter for indicating the claimed signing time in new JAdES signatures.
+         */
+        Number iat = jws.getProtectedHeaderValueAsNumber(JAdESHeaderParameterNames.IAT);
+        String sigT = jws.getProtectedHeaderValueAsString(JAdESHeaderParameterNames.SIG_T);
+        Date signingTime = signature.getSigningTime();
+
+        // iat or sigT (Cardinality == 1)
+        if (iat == null && Utils.isStringEmpty(sigT)) {
+            LOG.warn("Either iat header or sigT header (for signatures before 2025-05-15T00:00:00Z) shall be present " +
+                    "for JAdES-BASELINE-B signature (cardinality == 1)!");
+            return false;
+
+        } else if (signingTime == null) {
+            LOG.warn("Invalid date format extracted from {} header parameter for JAdES-BASELINE-B signature (cardinality == 1)!",
+                    iat != null ? "iat" : "sigT");
+            return false;
+
+        } else if (iat == null) {
+            if (signingTime.before(SIG_T_OBSOLESCENCE_DATE)) {
+                LOG.debug("iat header should be present for JAdES-BASELINE-B signature produced before 2025-05-15T00:00:00Z (cardinality == 0 or 1)!");
+            } else {
+                LOG.warn("iat header shall be present for JAdES-BASELINE-B signature produced starting at 2025-05-15T00:00:00Z (cardinality == 1)!");
+                return false;
+            }
+
+        } else if (Utils.isStringNotEmpty(sigT)) {
+            LOG.warn("Both iat and sigT headers are not allowed for JAdES-BASELINE-B signature (cardinality == 1)!");
+            return false;
+        }
+
         return true;
     }
 

@@ -57,6 +57,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -93,13 +94,16 @@ public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterS
 				}
 				
 				Object crit = signedHeaders.get(HeaderParameterNames.CRITICAL);
-				assertTrue(crit instanceof List<?>);
-				
-				List<String> critArray = (List<String>) crit;
-				assertTrue(Utils.isCollectionNotEmpty(critArray));
-				for (String critItem : critArray) {
-					assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
-					assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
+				if (crit != null) {
+					assertInstanceOf(List.class, crit);
+
+					List<String> critArray = (List<String>) crit;
+					assertTrue(Utils.isCollectionNotEmpty(critArray));
+					for (String critItem : critArray) {
+						assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
+						assertTrue(DSSJsonUtils.isRequiredCriticalHeader(critItem));
+						assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
+					}
 				}
 				
 			} catch (JoseException e) {

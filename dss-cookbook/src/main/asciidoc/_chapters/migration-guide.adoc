@@ -215,6 +215,21 @@ signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 ...
 ----
 
+|JAdES claimed signing time header          a|
+Signature created with `sigT` (claimed signing time) header
+a|
+Signature created with `iat` by default (recommended).
+To return to the old behavior*, the code below can be used:
+[source,java]
+----
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+
+JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
+...
+signatureParameters.setJadesSigningTimeType(JAdESSigningTimeType.SIG_T);
+----
+{empty}* `sigT` is deprecated. The header shall not be used since `2025-05-15T00:00:00Z`.
+
 |===
 
 [cols="2,5,5"]
