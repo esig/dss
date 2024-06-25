@@ -9252,6 +9252,128 @@ public class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 
 	@Test
+	public void signCertRefWithSHA1WarnTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag-data/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		List<XmlRelatedCertificate> relatedCertificates = xmlSignature.getFoundCertificates().getRelatedCertificates();
+		for (XmlRelatedCertificate relatedCertificate : relatedCertificates) {
+			List<XmlCertificateRef> certificateRefs = relatedCertificate.getCertificateRefs();
+			for (XmlCertificateRef certificateRef : certificateRefs) {
+				if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(certificateRef.getOrigin())) {
+					certificateRef.getDigestAlgoAndValue().setDigestMethod(DigestAlgorithm.SHA1);
+				}
+			}
+		}
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		signedAttributes.setSigningCertificateDigestAlgorithm(levelConstraint);
+
+		CryptographicConstraint cryptographic = validationPolicy.getCryptographic();
+		AlgoExpirationDate algoExpirationDate = cryptographic.getAlgoExpirationDate();
+		algoExpirationDate.setLevel(Level.WARN);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA1.getName(), MessageTag.ACCM_POS_SIG_CERT_REF)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlSAV sav = signatureBBB.getSAV();
+		assertNotNull(sav);
+		assertEquals(Indication.PASSED, sav.getConclusion().getIndication());
+
+		boolean signRefDACheckFound = false;
+		for (XmlConstraint constraint : sav.getConstraint()) {
+			if (i18nProvider.getMessage(MessageTag.ACCM, MessageTag.ACCM_POS_SIG_CERT_REF).equals(constraint.getName().getValue())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ASCCM_AR_ANS_ANR.getId(), constraint.getWarning().getKey());
+				signRefDACheckFound = true;
+			}
+		}
+		assertTrue(signRefDACheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	public void signCertRefWarnWithSHA1Test() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag-data/valid-diag-data.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+		List<XmlRelatedCertificate> relatedCertificates = xmlSignature.getFoundCertificates().getRelatedCertificates();
+		for (XmlRelatedCertificate relatedCertificate : relatedCertificates) {
+			List<XmlCertificateRef> certificateRefs = relatedCertificate.getCertificateRefs();
+			for (XmlCertificateRef certificateRef : certificateRefs) {
+				if (CertificateRefOrigin.SIGNING_CERTIFICATE.equals(certificateRef.getOrigin())) {
+					certificateRef.getDigestAlgoAndValue().setDigestMethod(DigestAlgorithm.SHA1);
+				}
+			}
+		}
+
+		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
+		SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.WARN);
+		signedAttributes.setSigningCertificateDigestAlgorithm(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_ANR, DigestAlgorithm.SHA1.getName(), MessageTag.ACCM_POS_SIG_CERT_REF)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		assertEquals(Indication.PASSED, detailedReport.getBasicValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, detailedReport.getLongTermValidationIndication(detailedReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, detailedReport.getArchiveDataValidationIndication(detailedReport.getFirstSignatureId()));
+
+		XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		XmlSAV sav = signatureBBB.getSAV();
+		assertNotNull(sav);
+		assertEquals(Indication.PASSED, sav.getConclusion().getIndication());
+
+		boolean signRefDACheckFound = false;
+		for (XmlConstraint constraint : sav.getConstraint()) {
+			if (i18nProvider.getMessage(MessageTag.ACCM, MessageTag.ACCM_POS_SIG_CERT_REF).equals(constraint.getName().getValue())) {
+				assertEquals(XmlStatus.WARNING, constraint.getStatus());
+				assertEquals(MessageTag.ASCCM_AR_ANS_ANR.getId(), constraint.getWarning().getKey());
+				signRefDACheckFound = true;
+			}
+		}
+		assertTrue(signRefDACheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
 	public void signCertRefWithSHA1WithPOETest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag-data/universign.xml"));

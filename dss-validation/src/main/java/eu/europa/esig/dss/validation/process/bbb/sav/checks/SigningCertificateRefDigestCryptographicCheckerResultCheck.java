@@ -51,9 +51,6 @@ public class SigningCertificateRefDigestCryptographicCheckerResultCheck<T extend
     /** Defines the check level */
     private final LevelConstraint constraint;
 
-    /** The checker result message */
-    private final XmlMessage checkerResultMessage;
-
     /**
      * Default constructor
      *
@@ -70,15 +67,70 @@ public class SigningCertificateRefDigestCryptographicCheckerResultCheck<T extend
         super(i18nProvider, result, validationDate, MessageTag.ACCM_POS_SIG_CERT_REF, ccResult, constraint);
         this.certificateRefWrapper = certificateRefWrapper;
         this.constraint = constraint;
-        this.checkerResultMessage = extractXmlMessage(ccResult, constraint);
     }
 
-    private static XmlMessage extractXmlMessage(XmlCC ccResult, LevelConstraint constraint) {
+    @Override
+    protected String buildAdditionalInfo() {
+        String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
+        if (isValid(ccResult)) {
+            return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_SUCCESS_DM_WITH_ID,
+                    ccResult.getVerifiedAlgorithm().getName(), dateTime, position, certificateRefWrapper.getCertificateId());
+        } else {
+            return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID,
+                    getErrorMessage(), dateTime, position, certificateRefWrapper.getCertificateId());
+        }
+    }
+
+    @Override
+    protected Level getLevel() {
+        if (constraint != null) {
+            Level currentConstraintLevel = constraint.getLevel();
+            Level subProcessLevel = getSubProcessLevel();
+            return getLowestLevel(currentConstraintLevel, subProcessLevel);
+        }
+        return null;
+    }
+
+    private Level getSubProcessLevel() {
         XmlConclusion conclusion = ccResult.getConclusion();
-        if (conclusion != null && constraint != null && constraint.getLevel() != null) {
+        if (conclusion != null) {
+            if (Utils.isCollectionNotEmpty(conclusion.getErrors())) {
+                return Level.FAIL;
+            } else if (Utils.isCollectionNotEmpty(conclusion.getWarnings())) {
+                return Level.WARN;
+            } else if (Utils.isCollectionNotEmpty(conclusion.getInfos())) {
+                return Level.INFORM;
+            }
+        }
+        return null;
+    }
+
+    private Level getLowestLevel(Level currentLevel, Level subProcessLevel) {
+        if (currentLevel == null) {
+            return subProcessLevel;
+        } else if (subProcessLevel == null) {
+            return currentLevel;
+        } else if (Level.INFORM == currentLevel || Level.INFORM == subProcessLevel) {
+            return Level.INFORM;
+        } else if (Level.WARN == currentLevel || Level.WARN == subProcessLevel) {
+            return Level.WARN;
+        } else if (Level.FAIL == currentLevel || Level.FAIL == subProcessLevel) {
+            return Level.FAIL;
+        }
+        return currentLevel;
+    }
+
+    @Override
+    protected XmlMessage buildErrorMessage() {
+        return extractXmlMessage();
+    }
+
+    private XmlMessage extractXmlMessage() {
+        XmlConclusion conclusion = ccResult.getConclusion();
+        if (conclusion != null) {
             // Collects messages from higher levels only
             List<XmlMessage> messages = new ArrayList<>();
-            switch (constraint.getLevel()) {
+            switch (getLevel()) {
                 case INFORM:
                     messages.addAll(conclusion.getInfos());
                     messages.addAll(conclusion.getWarnings());
@@ -99,31 +151,6 @@ public class SigningCertificateRefDigestCryptographicCheckerResultCheck<T extend
             }
         }
         return null;
-    }
-
-    @Override
-    protected String buildAdditionalInfo() {
-        String dateTime = ValidationProcessUtils.getFormattedDate(validationDate);
-        if (isValid(ccResult)) {
-            return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_SUCCESS_DM_WITH_ID,
-                    ccResult.getVerifiedAlgorithm().getName(), dateTime, position, certificateRefWrapper.getCertificateId());
-        } else {
-            return i18nProvider.getMessage(MessageTag.CRYPTOGRAPHIC_CHECK_FAILURE_WITH_ID,
-                    getErrorMessage(), dateTime, position, certificateRefWrapper.getCertificateId());
-        }
-    }
-
-    @Override
-    protected Level getLevel() {
-        if (constraint != null) {
-            return constraint.getLevel();
-        }
-        return null;
-    }
-
-    @Override
-    protected XmlMessage buildErrorMessage() {
-        return checkerResultMessage;
     }
 
 }
