@@ -1270,4 +1270,25 @@ public final class DSSXMLUtils {
 		return digestAlgorithm;
 	}
 
+	/**
+     * This method produces a copy of the document and returns an element by the defined {@code xpathString}.
+     * This method can be used as a workaround for canonicalization, as namespaces are not added to canonicalizer
+     * for new created elements.
+     * The issue was reported on: <a href="https://issues.apache.org/jira/browse/SANTUARIO-139">SANTUARIO-139</a>
+     *
+     * @param document {@link Document}
+     * @param elementId {@link String} optional element Id to start XPath expression from
+     * @param xpathString {@link String} corresponding to an XPath of element to be returned
+     * @return {@link Element}
+     */
+	public static Element ensureNamespacesDefined(Document document, String elementId, String xpathString) {
+		final byte[] serializedDoc = DomUtils.serializeNode(document);
+		Document recreatedDocument = DomUtils.buildDOM(serializedDoc);
+		Element element = recreatedDocument.getDocumentElement();
+		if (Utils.isStringNotEmpty(elementId)) {
+			element = DomUtils.getElementById(recreatedDocument, elementId);
+		}
+		return DomUtils.getElement(element, xpathString);
+	}
+
 }

@@ -25,27 +25,26 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
+import eu.europa.esig.dss.spi.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.validation.XAdESAttribute;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -607,16 +606,8 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	}
 	
 	private Element getUnsignedSignaturePropertiesCanonicalizationCopy() {
-		/*
-         * This is a workaround. The issue was reported on:
-         * https://issues.apache.org/jira/browse/SANTUARIO-139.
-         * Namespaces are not added to canonicalizer for new created elements.
-         * The binaries need to be parsed at a new instance of Document
-         */
-        final byte[] serializedDoc = DomUtils.serializeNode(signature.getOwnerDocument());
-        Document recreatedDocument = DomUtils.buildDOM(serializedDoc);
-        Element recreatedSignature = DomUtils.getElementById(recreatedDocument, DSSXMLUtils.getIDIdentifier(signature));
-        return DomUtils.getElement(recreatedSignature, xadesPaths.getUnsignedSignaturePropertiesPath());
+		String signatureId = DSSXMLUtils.getIDIdentifier(signature);
+		return DSSXMLUtils.ensureNamespacesDefined(signature.getOwnerDocument(), signatureId, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 	
 	private void writeTimestampedUnsignedProperties(DSSMessageDigestCalculator digestCalculator,

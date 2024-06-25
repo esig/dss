@@ -101,6 +101,10 @@ public final class XAdESSignatureUtils {
 		try {
 			byte[] referencedBytes = reference.getReferencedBytes();
 			if (referencedBytes != null) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Retrieved reference bytes: ");
+					LOG.debug(new String(referencedBytes));
+				}
 				return new InMemoryDocument(referencedBytes, reference.getURI());
 			}
 			LOG.warn("Reference bytes returned null value : {}", reference.getId());

@@ -742,6 +742,11 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		final DigestAlgorithm digestAlgorithm = DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(params);
 		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
 
+		// This is a workaround to ensure the canonicalization is performed successfully when same namespace prefix is used within the element
+		if (getXmldsigNamespace().getPrefix() != null && getXmldsigNamespace().getPrefix().equals(getXadesNamespace().getPrefix())) {
+			signedPropertiesDom = DSSXMLUtils.ensureNamespacesDefined(documentDom, deterministicId, xadesPath.getSignedPropertiesPath());
+		}
+
 		final byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(signedPropertiesCanonicalizationMethod).canonicalize(getNodeToCanonicalize(signedPropertiesDom));
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
