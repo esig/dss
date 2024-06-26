@@ -23,7 +23,6 @@ package eu.europa.esig.dss.pades;
 import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
-import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.pdf.visible.DPIUtils;

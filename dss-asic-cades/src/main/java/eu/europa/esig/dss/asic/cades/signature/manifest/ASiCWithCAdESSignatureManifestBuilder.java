@@ -23,7 +23,6 @@ package eu.europa.esig.dss.asic.cades.signature.manifest;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilter;
-import eu.europa.esig.dss.asic.common.evidencerecord.ASiCEvidenceRecordManifestBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;

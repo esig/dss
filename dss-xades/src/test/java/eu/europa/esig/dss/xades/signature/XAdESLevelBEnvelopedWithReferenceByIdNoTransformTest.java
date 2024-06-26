@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.signature;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;

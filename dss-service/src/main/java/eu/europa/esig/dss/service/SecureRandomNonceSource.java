@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.service;
 
-import java.math.BigInteger;
 import java.security.SecureRandom;
 
 /**

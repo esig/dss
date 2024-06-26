@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.service;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 /**
  * Interface which allows to produce Nonce value.
