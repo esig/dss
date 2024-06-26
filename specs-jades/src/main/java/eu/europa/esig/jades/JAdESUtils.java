@@ -123,6 +123,7 @@ public final class JAdESUtils extends AbstractJWSUtils {
 	public Map<URI, String> getJAdESDefinitions() {
 		if (definitions == null) {
 			definitions = new HashMap<>();
+			definitions.putAll(getJSONSchemaDefinitions());
 			definitions.put(URI.create(JAdES_SCHEMA_DEFINITIONS_URI), JAdES_SCHEMA_DEFINITIONS_LOCATION);
 			definitions.put(URI.create(JAdES_PROTECTED_HEADER_SCHEMA_URI), JAdES_PROTECTED_HEADER_SCHEMA_LOCATION);
 			definitions.put(URI.create(JAdES_UNPROTECTED_HEADER_SCHEMA_URI), JAdES_UNPROTECTED_HEADER_SCHEMA_LOCATION);

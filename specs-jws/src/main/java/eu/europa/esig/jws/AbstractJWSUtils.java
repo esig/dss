@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +48,12 @@ import java.util.stream.Collectors;
  * Abstract class for JWS signature validation against JSON schemas
  */
 public abstract class AbstractJWSUtils {
+
+	/** The JSON Draft 07 schema of definitions */
+	private static final String JSON_DRAFT_07_SCHEMA_LOCATION = "/schema/json-schema-draft-07.json";
+
+	/** The JSON Draft 07 schema name URI */
+	private static final String JSON_DRAFT_07_SCHEMA_URI = "http://json-schema.org/draft-07/schema#";
 	
 	/**
 	 * JSON Schema for a root JWS element validation
@@ -62,6 +69,9 @@ public abstract class AbstractJWSUtils {
 	 * JSON Schema for a JWS Unprotected Header validation
 	 */
 	private Schema jwsUnprotectedHeaderSchema;
+
+	/** Map of used definition schemas */
+	private Map<URI, String> definitions;
 
 	/**
 	 * Default constructor instantiating the object with null values
@@ -265,6 +275,19 @@ public abstract class AbstractJWSUtils {
 			return causes.stream().map(v -> new ValidationMessage(v).getMessage()).collect(Collectors.toList());
 		}
 		return Collections.emptyList();
+	}
+
+	/**
+	 * Returns a list of RFC 7515 and RFC 7517 definitions
+	 *
+	 * @return a map of definitions
+	 */
+	public Map<URI, String> getJSONSchemaDefinitions() {
+		if (definitions == null) {
+			definitions = new HashMap<>();
+			definitions.put(URI.create(JSON_DRAFT_07_SCHEMA_URI), JSON_DRAFT_07_SCHEMA_LOCATION);
+		}
+		return definitions;
 	}
 
 	/**

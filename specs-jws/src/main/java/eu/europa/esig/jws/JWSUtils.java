@@ -118,6 +118,7 @@ public final class JWSUtils extends AbstractJWSUtils {
 	public Map<URI, String> getRFCDefinitions() {
 		if (definitions == null) {
 			definitions = new HashMap<>();
+			definitions.putAll(getJSONSchemaDefinitions());
 			definitions.put(URI.create(RFC7515_SCHEMA_URI), RFC7515_SCHEMA_LOCATION);
 			definitions.put(URI.create(RFC7517_SCHEMA_URI), RFC7517_SCHEMA_LOCATION);
 			definitions.put(URI.create(JWS_SCHEMA_URI), JWS_SCHEMA_LOCATION);
