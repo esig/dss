@@ -91,12 +91,6 @@ public class CertificateVerifierSnippet {
         // cache,...)
         cv.setCrlSource(crlSource);
 
-        // Sets the default digest algorithm that will be used for digest calculation
-        // of tokens used during the validation process.
-        // The values will be used in validation reports.
-        // Default : DigestAlgorithm.SHA256
-        cv.setDefaultDigestAlgorithm(DigestAlgorithm.SHA512);
-
         // Define the behavior to be followed by DSS in case of revocation checking for
         // certificates issued from an unsure source (DSS v5.4+)
         // Default : revocation check is disabled for unsure sources (security reasons)

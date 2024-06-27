@@ -599,8 +599,8 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return this (for fluent addAuthentication)
 	 */
 	public CommonsDataLoader addAuthentication(HostConnection hostConnection, UserCredentials userCredentials) {
-		Map<HostConnection, UserCredentials> authenticationMap = getAuthenticationMap();
-		authenticationMap.put(hostConnection, userCredentials);
+		final Map<HostConnection, UserCredentials> currentAuthenticationMap = getAuthenticationMap();
+		currentAuthenticationMap.put(hostConnection, userCredentials);
 		return this;
 	}
 
@@ -1028,7 +1028,6 @@ public class CommonsDataLoader implements DataLoader {
 			SSLContextBuilder sslContextBuilder = SSLContextBuilder.create();
 			sslContextBuilder.setProtocol(sslProtocol);
 
-			final TrustStrategy trustStrategy = getTrustStrategy();
 			if (trustStrategy != null) {
 				LOG.debug("Set the TrustStrategy");
 				sslContextBuilder.loadTrustMaterial(null, trustStrategy);
@@ -1040,13 +1039,13 @@ public class CommonsDataLoader implements DataLoader {
 				sslContextBuilder.loadTrustMaterial(sslTrustStore, trustStrategy);
 			}
 
-			final KeyStore sslKeystore = getSSLKeyStore();
-			if (sslKeystore != null) {
+			final KeyStore sslKeyStore = getSSLKeyStore();
+			if (sslKeyStore != null) {
 				LOG.debug("Set the SSL keystore as key materials");
-				sslContextBuilder.loadKeyMaterial(sslKeystore, sslKeystorePassword);
+				sslContextBuilder.loadKeyMaterial(sslKeyStore, sslKeystorePassword);
 				if (loadKeyStoreAsTrustMaterial) {
 					LOG.debug("Set the SSL keystore as trust materials");
-					sslContextBuilder.loadTrustMaterial(sslKeystore, trustStrategy);
+					sslContextBuilder.loadTrustMaterial(sslKeyStore, trustStrategy);
 				}
 			}
 

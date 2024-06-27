@@ -93,11 +93,19 @@ public class RevocationDataVerifierFactoryTest {
         AlgoExpirationDate algoExpirationDate = cryptographic.getAlgoExpirationDate();
         algoExpirationDate.setFormat("yyyy");
 
-        Algo algo = new Algo();
-        algo.setValue("SHA1");
-        algo.setDate("2009");
-        acceptableDigestAlgo.getAlgos().add(algo);
-        algoExpirationDate.getAlgos().add(algo);
+        Algo digestAlgo = new Algo();
+        digestAlgo.setValue("SHA1");
+        digestAlgo.setDate("2009");
+        acceptableDigestAlgo.getAlgos().add(digestAlgo);
+
+        algoExpirationDate.getAlgos().clear();
+        algoExpirationDate.getAlgos().add(digestAlgo);
+
+        Algo encryptionAlgo = new Algo();
+        encryptionAlgo.setValue("RSA");
+        encryptionAlgo.setDate("2030");
+        encryptionAlgo.setSize(1900);
+        algoExpirationDate.getAlgos().add(encryptionAlgo);
 
         revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
         assertFalse(revocationDataVerifier.isAcceptable(ocspToken));

@@ -13,7 +13,7 @@ This chapter covers the most frequently asked questions and issues occurring in 
 |===
 |Version                    |Description                                   |Solution
 
-|v6.1                       |`DocumentValidator` or its implementation is not found         a|Since DSS `6.1` a new module `dss-validation` has been introduced. All validation related classes have been moved in the new module. In order to validate or extend a signature, the aforementioned module should be included within a `pom.xml` file of your project, as below:
+|v6.1                      a|`DocumentValidator` or its implementation is not found         a|Since DSS `6.1` a new module `dss-validation` has been introduced. All validation related classes have been moved in the new module. In order to validate or extend a signature, the aforementioned module should be included within a `pom.xml` file of your project, as below:
 
 [source,xml]
 .pom.xml
@@ -28,9 +28,9 @@ This chapter covers the most frequently asked questions and issues occurring in 
 </dependencies>
 ----
 
-|v6.1                       |#validate method is not available in the implementation of `DocumentValidator`         a|Please add a `dss-validation` module within dependencies list of your project. See instructions above.
+|v6.1                      a|#validate method is not available in the implementation of `DocumentValidator`         a|Please add a `dss-validation` module within dependencies list of your project. See instructions above.
 
-|v5.13 and before           |DSS does not work with Spring-Boot 3         a|DSS version `5.x` and before uses an old `javax.\*` namespace naming provided by Java specification API, while Spring-Boot 3 and new versions of some other libraries use the updated `jakarta.*` namespaces. DSS has been upgraded to Jakarta EE 9 and to new `jakarta.\*` namespaces starting from version `6.0`, which makes it compatible with Spring-Boot 3 and other Jakarta-based libraries. If you have a problem with using `javax.*` namespaces, please upgrade to DSS `6.0`.
+|v5.13 and before          a|DSS does not work with Spring-Boot 3         a|DSS version `5.x` and before uses an old `javax.\*` namespace naming provided by Java specification API, while Spring-Boot 3 and new versions of some other libraries use the updated `jakarta.*` namespaces. DSS has been upgraded to Jakarta EE 9 and to new `jakarta.\*` namespaces starting from version `6.0`, which makes it compatible with Spring-Boot 3 and other Jakarta-based libraries. If you have a problem with using `javax.*` namespaces, please upgrade to DSS `6.0`.
 
 |v5.12                      |Performance downgrade on TLValidationJob/certificates loading       a|Starting from version 1.71 cryptographic library BouncyCastle enforces a secure validation of imported RSA keys. In order to get back to the original behavior (secure validation skipped), the following system property should be added before executing methods requiring certificate creation (such as TLValidationJob):
 
@@ -41,7 +41,7 @@ System.setProperty("org.bouncycastle.rsa.max_mr_tests", "0");
 
 The property is available since BouncyCastle 1.73.
 
-|v5.12                      |HttpClient5 class not found       a|HttpClient5 dependency has been upgraded to the version 5.2.1, that introduced a number of new classes. When using an application based on the old version of HttpClient5, the execution may fail at runtime as some classes of HttpClient5 used in DSS may not be avaiable in the main application. To resolve the issue, please enforce the new version of HttpClient5 within `pom.xml` file of your application and update the code if needed.
+|v5.12                    a|HttpClient5 class not found       a|HttpClient5 dependency has been upgraded to the version 5.2.1, that introduced a number of new classes. When using an application based on the old version of HttpClient5, the execution may fail at runtime as some classes of HttpClient5 used in DSS may not be avaiable in the main application. To resolve the issue, please enforce the new version of HttpClient5 within `pom.xml` file of your application and update the code if needed.
 
 [source,xml,indent=0]
 ----
@@ -57,7 +57,7 @@ The property is available since BouncyCastle 1.73.
 </dependency>
 ----
 
-|v5.11                      |XMLConstraints exception on CertificateVerifier loading (Wildfly, JBOSS, Xalan, Xerces, Android, etc.)       a|The library you use has a conflict with the <<xmlSecurities>> imposed by DSS. See question "XAdES : performance downgrade" for additional information on the issue. If you want to continue usage of the library in question, please configure the following:
+|v5.11                     a|XMLConstraints exception on CertificateVerifier loading (Wildfly, JBOSS, Xalan, Xerces, Android, etc.)       a|The library you use has a conflict with the <<xmlSecurities>> imposed by DSS. See question "XAdES : performance downgrade" for additional information on the issue. If you want to continue usage of the library in question, please configure the following:
 
 [source,java,indent=0]
 ----
@@ -68,12 +68,12 @@ XmlDefinerUtils.getInstance().setSchemaFactoryBuilder(
 );
 ----
 
-|v5.9 and higher            |Returned signature level is *_NOT_ETSI       a|*DSS 5.9* enforces validation of AdES BASELINE signature profiles as per ETSI standards. *The signature is not BASELINE* if you receive _*_NOT_ETSI_ output. +
+|v5.9 and higher           a|Returned signature level is *_NOT_ETSI       a|*DSS 5.9* enforces validation of AdES BASELINE signature profiles as per ETSI standards. *The signature is not BASELINE* if you receive _*_NOT_ETSI_ output. +
 *Since DSS 5.10 a support of AdES extended signature profiles* for (XAdES and CAdES) has been added as per ETSI standards.
 
-|v5.8 and higher            |PAdES : performance downgrade                a|DSS has introduced additional PDF validation functionality aiming to detect malisious modifications occurred after signature creation. These validation operations are expensive and may impact the total execution time. In case the recognition of such attacks is not required, it may be disabled by configuring the relevant objects (see <<DisablingPdfComparison>> for an example). For more information about the modification detection classes please see <<ShadowAttackDetection>> and <<ObjectModificationDetection>>.
+|v5.8 and higher           a|PAdES : performance downgrade                a|DSS has introduced additional PDF validation functionality aiming to detect malisious modifications occurred after signature creation. These validation operations are expensive and may impact the total execution time. In case the recognition of such attacks is not required, it may be disabled by configuring the relevant objects (see <<DisablingPdfComparison>> for an example). For more information about the modification detection classes please see <<ShadowAttackDetection>> and <<ObjectModificationDetection>>.
 
-|v5.7 and higher            |How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use <<LotlTlPredicates>>.
+|v5.7 and higher           a|How to filter certain Trusted Lists (for example countries)                a|To filter LOTLs or TLs you can use <<LotlTlPredicates>>.
 
 [source,java,indent=0]
 .Example to filter Germany and Romania Trusted Lists
@@ -89,7 +89,7 @@ Starting from DSS `5.11` you may use a `TLPredicateFactory` class to facilitate 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=predicate-country-5.11]
 ----
 
-|v5.2 and higher            |XAdES : performance downgrade                a|Xalan dependency has been removed as http://www.odi.ch/weblog/posting.php?posting=689[deprecated]. +
+|v5.2 and higher           a|XAdES : performance downgrade                a|Xalan dependency has been removed as http://www.odi.ch/weblog/posting.php?posting=689[deprecated]. +
 We do not recommend to use Xalan in production.
 To use Xalan, you will need to remove security attributes:
 [source,java]
@@ -100,7 +100,7 @@ TransformerFactoryBuilder.getSecureTransformerBuilder()
 .removeAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET));
 ----
 
-|v5.2 and higher            |Error: "SECURITY : unable to set attribute ..."             a|The error is more likely caused by a use of deprecated Xalan or Xerces dependency. Please see the previous answer for resolution.
+|v5.2 and higher           a|Error: "SECURITY : unable to set attribute ..."             a|The error is more likely caused by a use of deprecated Xalan or Xerces dependency. Please see the previous answer for resolution.
 
 |all versions              a|Maven build fails       a| Please verify whether you need to build DSS. See <<HowToStart>> for more details about DSS integration. If you need to build DSS, please use one of the quick profiles (see <<MavenBuildProfiles>> for more information).
 
@@ -195,7 +195,7 @@ See <<certificateVerifier>> for more details about configuration.
 
 |all versions              a|I receive an error "java.security.SignatureException: Keyset does not exist" on signing      a|Please ensure the chosen DigestAlgorithm is supported by the signing key. Since DSS `6.1` a `DigestAlgorotihm.SHA512` is used by default. For older smartcards, a `DigestAlgorithm.SHA256` or another may be required.
 
-|all versions               |I receive an error "Unable to initialize Santuario XMLSignature. Reason : ** references are contained in the Manifest, maximum 30 are allowed with secure validation"       a|Apache Santuario used in the background for validation of XML and XAdES signatures imposes a limitation of the maximum number of XML Manifest references to be allowed during the validation process, with a default number of 30. In order to increase the number of allowed references, one may specify the following system property with a desired limit (e.g. for 200 references):
+|all versions              a|I receive an error "Unable to initialize Santuario XMLSignature. Reason : ** references are contained in the Manifest, maximum 30 are allowed with secure validation"       a|Apache Santuario used in the background for validation of XML and XAdES signatures imposes a limitation of the maximum number of XML Manifest references to be allowed during the validation process, with a default number of 30. In order to increase the number of allowed references, one may specify the following system property with a desired limit (e.g. for 200 references):
 
 [source,java,indent=0]
 ----

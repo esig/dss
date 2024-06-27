@@ -125,9 +125,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 			for (PostalAddressType postalAddress : postalAddressList.getPostalAddress()) {
 				String lang = postalAddress.getLang();
 				// Collect 1st / lang
-				if (result.get(lang) == null) {
-					result.put(lang, getPostalAddress(postalAddress));
-				}
+				result.computeIfAbsent(lang, k -> getPostalAddress(postalAddress));
 			}
 		}
 		return result;

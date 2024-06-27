@@ -195,7 +195,8 @@ public class CAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
                 for (Attribute attribute : attributes) {
                     if (isERAttribute(attribute)) {
                         Date attributeProductionTime = getERAttributeProductionTime(attribute);
-                        if (latestERProductionDate == null || attributeProductionTime.after(latestERProductionDate)) {
+                        if (latestERProductionDate == null ||
+                                (attributeProductionTime != null && attributeProductionTime.after(latestERProductionDate))) {
                             latestERAttribute = attribute;
                             latestERProductionDate = attributeProductionTime;
                         }

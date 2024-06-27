@@ -85,7 +85,7 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
      * @param context {@link Context}
      * @param policy {@link ValidationPolicy}
      */
-    public AbstractFormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData,
+    protected AbstractFormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData,
                                   S token, Context context, ValidationPolicy policy) {
         super(i18nProvider, new XmlFC());
         this.diagnosticData = diagnosticData;

@@ -69,7 +69,7 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 
 	private boolean isSHA2ContentMatch(XmlDownloadResult cachedResult, XmlDownloadResult downloadedResult) {
 		return (Utils.isCollectionEmpty(cachedResult.getSha2ErrorMessages()) && Utils.isCollectionEmpty(downloadedResult.getSha2ErrorMessages())) ||
-				((Utils.isCollectionEmpty(cachedResult.getSha2ErrorMessages()) && cachedResult.getSha2ErrorMessages().equals(downloadedResult.getSha2ErrorMessages())));
+				(Utils.isCollectionEmpty(cachedResult.getSha2ErrorMessages()) && cachedResult.getSha2ErrorMessages().equals(downloadedResult.getSha2ErrorMessages()));
 
 	}
 

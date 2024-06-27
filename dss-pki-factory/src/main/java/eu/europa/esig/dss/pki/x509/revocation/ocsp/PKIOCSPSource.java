@@ -348,20 +348,20 @@ public class PKIOCSPSource implements OCSPSource {
      */
     protected OCSPResp buildOCSPResponse(CertificateToken certificateToken, CertificateToken issuerCertificateToken, OCSPReq ocspReq) {
         try {
-            final CertEntity ocspResponder = getOcspResponder(certificateToken, issuerCertificateToken);
-            final BasicOCSPRespBuilder builder = initBuilder(ocspResponder.getCertificateToken());
+            final CertEntity ocspResponderEntity = getOcspResponder(certificateToken, issuerCertificateToken);
+            final BasicOCSPRespBuilder builder = initBuilder(ocspResponderEntity.getCertificateToken());
 
             CertEntityRevocation certRevocation = getCertificateTokenRevocation(certificateToken, ocspReq);
             addRevocationStatusToOCSPResponse(builder, ocspReq, certRevocation);
 
-            SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(ocspResponder);
-            PrivateKey ocspPrivateKey = ocspResponder.getPrivateKey();
+            SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(ocspResponderEntity);
+            PrivateKey ocspPrivateKey = ocspResponderEntity.getPrivateKey();
             ContentSigner signer = new JcaContentSignerBuilder(signatureAlgorithm.getJCEId()).build(ocspPrivateKey);
 
-            X509CertificateHolder[] x509CertificateHolders = ocspResponder.getCertificateChain().stream()
+            X509CertificateHolder[] x509CertificateHolders = ocspResponderEntity.getCertificateChain().stream()
                     .map(DSSASN1Utils::getX509CertificateHolder).toArray(X509CertificateHolder[]::new);
-            Date producedAt = getProducedAtTime();
-            BasicOCSPResp basicOCSPResp = builder.build(signer, x509CertificateHolders, producedAt);
+            Date producedAtTime = getProducedAtTime();
+            BasicOCSPResp basicOCSPResp = builder.build(signer, x509CertificateHolders, producedAtTime);
 
             final OCSPRespBuilder respBuilder = new OCSPRespBuilder();
             return respBuilder.build(OCSPRespBuilder.SUCCESSFUL, basicOCSPResp);
@@ -418,17 +418,17 @@ public class PKIOCSPSource implements OCSPSource {
      * @return {@link SignatureAlgorithm}
      */
     protected SignatureAlgorithm getSignatureAlgorithm(CertEntity ocspResponder) {
-        EncryptionAlgorithm encryptionAlgorithm = this.encryptionAlgorithm;
-        if (encryptionAlgorithm != null) {
-            if (!encryptionAlgorithm.isEquivalent(ocspResponder.getEncryptionAlgorithm())) {
+        EncryptionAlgorithm currentEncryptionAlgorithm = this.encryptionAlgorithm;
+        if (currentEncryptionAlgorithm != null) {
+            if (!currentEncryptionAlgorithm.isEquivalent(ocspResponder.getEncryptionAlgorithm())) {
                 throw new IllegalArgumentException(String.format(
-                        "Defined EncryptionAlgorithm '%s' is not equivalent to the one returned by OCSP Issuer '%s'", encryptionAlgorithm, ocspResponder.getEncryptionAlgorithm()));
+                        "Defined EncryptionAlgorithm '%s' is not equivalent to the one returned by OCSP Issuer '%s'", currentEncryptionAlgorithm, ocspResponder.getEncryptionAlgorithm()));
 
             }
         } else {
-            encryptionAlgorithm = ocspResponder.getEncryptionAlgorithm();
+            currentEncryptionAlgorithm = ocspResponder.getEncryptionAlgorithm();
         }
-        return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+        return SignatureAlgorithm.getAlgorithm(currentEncryptionAlgorithm, digestAlgorithm);
     }
 
     /**

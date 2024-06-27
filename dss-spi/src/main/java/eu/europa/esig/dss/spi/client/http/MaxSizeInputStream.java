@@ -79,10 +79,8 @@ public class MaxSizeInputStream extends FilterInputStream {
 	}
 
 	private void checkSize() throws IOException {
-		if (maxSize != 0) {
-			if (count > maxSize) {
-				throw new IOException("Cannot fetch data limit=" + maxSize + ", url=" + url);
-			}
+		if (maxSize != 0 && count > maxSize) {
+			throw new IOException("Cannot fetch data limit=" + maxSize + ", url=" + url);
 		}
 	}
 

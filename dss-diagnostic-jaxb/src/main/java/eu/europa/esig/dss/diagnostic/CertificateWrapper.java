@@ -1091,6 +1091,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return "?";
 	}
 
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}

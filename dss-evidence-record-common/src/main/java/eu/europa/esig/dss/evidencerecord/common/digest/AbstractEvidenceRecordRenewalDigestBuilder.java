@@ -26,8 +26,6 @@ import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObjec
 import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,8 +36,6 @@ import java.util.Objects;
  *
  */
 public abstract class AbstractEvidenceRecordRenewalDigestBuilder implements EvidenceRecordRenewalDigestBuilder {
-
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractEvidenceRecordRenewalDigestBuilder.class);
 
     /**
      * Evidence record to compute digest for

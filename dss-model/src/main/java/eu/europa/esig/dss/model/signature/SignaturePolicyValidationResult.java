@@ -167,8 +167,8 @@ public class SignaturePolicyValidationResult {
      * @param errorMessage {@link String} the error message
      */
     public void addError(String errorKey, String errorMessage) {
-        Map<String, String> errors = getErrors();
-        errors.put(errorKey, errorMessage);
+        Map<String, String> currentErrors = getErrors();
+        currentErrors.put(errorKey, errorMessage);
     }
 
     /**
@@ -178,10 +178,10 @@ public class SignaturePolicyValidationResult {
      */
     public String getProcessingErrors() {
         StringBuilder stringBuilder = new StringBuilder();
-        Map<String, String> errors = getErrors();
-        if (!errors.isEmpty()) {
+        Map<String, String> currentErrors = getErrors();
+        if (!currentErrors.isEmpty()) {
             stringBuilder.append("The errors found on signature policy validation are:");
-            for (Map.Entry<String, String> entry : errors.entrySet()) {
+            for (Map.Entry<String, String> entry : currentErrors.entrySet()) {
                 stringBuilder.append(" at ").append(entry.getKey()).append(": ").append(entry.getValue()).append(",");
             }
             stringBuilder.setLength(stringBuilder.length() - 1);

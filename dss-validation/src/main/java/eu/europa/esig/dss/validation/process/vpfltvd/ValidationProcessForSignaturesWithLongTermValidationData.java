@@ -321,7 +321,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			if (currentSignature.getSigningCertificate() != null) {
 
 				item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(
-						bestSignatureTime.getTime(), bsConclusion.getIndication(), bsConclusion.getSubIndication()));
+						bestSignatureTime.getTime()));
 
 				if (!Indication.PASSED.equals(bsConclusion.getIndication())) {
 
@@ -584,11 +584,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return item;
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime,
-			Indication currentIndication, SubIndication currentSubIndication) {
+	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(i18nProvider, result,
-				bestSignatureTime, signingCertificate, currentIndication, currentSubIndication, getFailLevelConstraint());
+				bestSignatureTime, signingCertificate, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevoked(XmlConclusion conclusion) {
@@ -596,12 +595,6 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		CertificateRevocationWrapper revocationWrapper = certificateRevocationMap.get(signingCertificate);
 		return new CertificateKnownToBeNotRevokedCheck<>(i18nProvider, result, signingCertificate, revocationWrapper,
 				currentDate, conclusion, getFailLevelConstraint());
-	}
-
-	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime) {
-		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
-		return new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(i18nProvider, result,
-				bestSignatureTime, signingCertificate, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeBeforeCertificateExpiration(Date bestSignatureTime) {

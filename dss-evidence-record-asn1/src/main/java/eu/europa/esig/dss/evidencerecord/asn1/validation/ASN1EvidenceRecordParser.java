@@ -84,7 +84,7 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
     }
     
     private ASN1ArchiveTimeStampChainObject getASN1ArchiveTimeStampChainObject(ArchiveTimeStampChain archiveTimeStampChain, int order) {
-    	ASN1ArchiveTimeStampChainObject archiveTimeStampChainObject = new ASN1ArchiveTimeStampChainObject(archiveTimeStampChain);
+    	ASN1ArchiveTimeStampChainObject archiveTimeStampChainObject = new ASN1ArchiveTimeStampChainObject();
         archiveTimeStampChainObject.setDigestAlgorithm(getDigestAlgorithm(archiveTimeStampChain));
         archiveTimeStampChainObject.setOrder(order);
         archiveTimeStampChainObject.setArchiveTimeStamps(getASN1ArchiveTimeStamps(archiveTimeStampChain));
@@ -119,7 +119,7 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
     }
     
     private ASN1ArchiveTimeStampObject getASN1ArchiveTimeStampObject(ArchiveTimeStamp archiveTimeStamp, int order) {
-    	ASN1ArchiveTimeStampObject archiveTimeStampObject = new ASN1ArchiveTimeStampObject(archiveTimeStamp);
+    	ASN1ArchiveTimeStampObject archiveTimeStampObject = new ASN1ArchiveTimeStampObject();
         archiveTimeStampObject.setHashTree(getHashTree(archiveTimeStamp));
         archiveTimeStampObject.setDigestAlgorithm(getDigestAlgorithm(archiveTimeStamp));
         archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStamp));
@@ -169,7 +169,7 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private ASN1SequenceObject getDigestValueGroup(PartialHashtree partialHashtree, int order) {
-    	ASN1SequenceObject digestValueGroup = new ASN1SequenceObject(partialHashtree);
+    	ASN1SequenceObject digestValueGroup = new ASN1SequenceObject();
         digestValueGroup.setDigestValues(getDigestValues(partialHashtree));
         digestValueGroup.setOrder(order);
         return digestValueGroup;

@@ -124,17 +124,17 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			if (parameters != null) {
 				baos.write(parameters.getContentSize());
-				DigestAlgorithm digestAlgorithm = parameters.getDigestAlgorithm();
-				if (digestAlgorithm != null) {
-					baos.write(digestAlgorithm.getName().getBytes());
+				DigestAlgorithm parametersDigestAlgorithm = parameters.getDigestAlgorithm();
+				if (parametersDigestAlgorithm != null) {
+					baos.write(parametersDigestAlgorithm.getName().getBytes());
 				}
 				String filter = parameters.getFilter();
 				if (filter != null) {
 					baos.write(filter.getBytes());
 				}
-				SignatureImageParameters imageParameters = parameters.getImageParameters();
-				if (imageParameters != null) {
-					baos.write(imageParameters.toString().getBytes());
+				SignatureImageParameters parametersImageParameters = parameters.getImageParameters();
+				if (parametersImageParameters != null) {
+					baos.write(parametersImageParameters.toString().getBytes());
 				}
 				Date signingDate = parameters.getSigningDate();
 				if (signingDate != null) {

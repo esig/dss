@@ -251,9 +251,9 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
     private XmlProofOfExistence getLowestPOE() {
         POE lowestPOE = poe.getLowestPOE(timestamp.getId());
-        XmlProofOfExistence poe = new XmlProofOfExistence();
-        poe.setTime(lowestPOE.getTime());
-        return poe;
+        XmlProofOfExistence xmlProofOfExistence = new XmlProofOfExistence();
+        xmlProofOfExistence.setTime(lowestPOE.getTime());
+        return xmlProofOfExistence;
     }
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampBasicSignatureValidationAcceptable(

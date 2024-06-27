@@ -50,15 +50,9 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlCon
 	/** The signing certificate */
 	private final CertificateWrapper signingCertificate;
 
-	/** Current Indication */
-	private final Indication currentIndication;
-
-	/** Current SubIndication */
-	private final SubIndication currentSubIndication;
-
 	/**
 	 * The default constructor
-	 * 
+	 *
 	 * @param i18nProvider       the il8n provider
 	 * @param result             the result
 	 * @param bestSignatureTime  the best signature time
@@ -67,28 +61,10 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlCon
 	 */
 	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, T result, Date bestSignatureTime,
 			CertificateWrapper signingCertificate, LevelConstraint constraint) {
-		this(i18nProvider, result, bestSignatureTime, signingCertificate, null, null, constraint);
-	}
-
-	/**
-	 * The default constructor allowing setting of returned Indication/subIndication on success result
-	 *
-	 * @param i18nProvider       the il8n provider
-	 * @param result             the result
-	 * @param bestSignatureTime  the best signature time
-	 * @param signingCertificate the signing certificate
-	 * @param currentIndication  {@link Indication}
-	 * @param currentSubIndication {@link SubIndication}
-	 * @param constraint         the constraint
-	 */
-	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, T result, Date bestSignatureTime,
-			CertificateWrapper signingCertificate, Indication currentIndication, SubIndication currentSubIndication, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.bestSignatureTime = bestSignatureTime;
 		this.signingCertificate = signingCertificate;
-		this.currentIndication = currentIndication;
-		this.currentSubIndication = currentSubIndication;
 	}
 
 	@Override

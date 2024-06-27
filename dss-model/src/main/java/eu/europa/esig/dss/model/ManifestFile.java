@@ -22,8 +22,6 @@ package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.ASiCManifestTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,8 +34,6 @@ import java.util.List;
 public class ManifestFile implements Serializable {
 
 	private static final long serialVersionUID = -5971045309587760817L;
-
-	private static final Logger LOG = LoggerFactory.getLogger(ManifestFile.class);
 
 	/** The DSSDocument represented by the ManifestFile */
 	private DSSDocument document;

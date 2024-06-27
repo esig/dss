@@ -25,16 +25,12 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESManifestBuilder;
 import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCWithCAdESSignatureManifestBuilder;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Builds a {@code GetDataToSignASiCWithCAdESHelper} for a signature creation
  *
  */
 public class ASiCWithCAdESSignatureDataToSignHelperBuilder extends ASiCWithCAdESDataToSignHelperBuilder {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESSignatureDataToSignHelperBuilder.class);
 
     /**
      * Default constructor

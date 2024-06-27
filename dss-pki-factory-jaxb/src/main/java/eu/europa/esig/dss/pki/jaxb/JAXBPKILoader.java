@@ -162,12 +162,7 @@ public class JAXBPKILoader {
         for (XmlCertificateType certificate : certificateTypeList) {
             EntityId entityId = getEntityId(certificate, certificateTypeList, entities, identifierMap);
 
-            JAXBCertEntity certEntity = entities.get(entityId);
-            if (certEntity == null) {
-                certEntity = instantiateCertEntity(certificate);
-                entities.put(entityId, certEntity);
-            }
-
+            entities.computeIfAbsent(entityId, k -> instantiateCertEntity(certificate));
             certificateTypeMap.put(entityId, certificate);
 
             buildKeyPair(certificate, entityId, keyPairs);
@@ -210,12 +205,7 @@ public class JAXBPKILoader {
             }
             EntityId entityId = getEntityId(issuerCandidate, certificateTypeList, entities, identifierMap);
             if (issuerId.equals(entityId)) {
-                JAXBCertEntity issuerCertEntity = entities.get(entityId);
-                if (issuerCertEntity == null) {
-                    issuerCertEntity = instantiateCertEntity(issuerCandidate);
-                    entities.put(entityId, issuerCertEntity);
-                }
-                return issuerCertEntity;
+                return entities.computeIfAbsent(entityId, k -> instantiateCertEntity(issuerCandidate));
             }
         }
         return null;

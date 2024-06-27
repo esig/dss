@@ -215,7 +215,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
                                                         final CertificateToken issuerCertificateToken, boolean forceRefresh) {
         if (certificateToken == null || issuerCertificateToken == null) {
             LOG.warn("Certificate token or issuer's certificate token is null. Cannot get a revocation token!");
-            return null;
+            return Collections.emptyList();
         }
 
         Collection<String> keys = initRevocationTokenKeys(certificateToken);

@@ -35,6 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -273,7 +275,19 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("Deleting the file corresponding to URL '{}'...", url);
 			}
-			return file.delete();
+			try {
+				Files.delete(file.toPath());
+				return true;
+
+			} catch (IOException e) {
+				String errorMessage = "Unable to remove the cached file with URL '%s'. Reason : %s";
+				if (LOG.isDebugEnabled()) {
+					LOG.warn(String.format(errorMessage, url, e.getMessage()), e);
+				} else {
+					LOG.warn(String.format(errorMessage, url, e.getMessage()));
+				}
+				return false;
+			}
 		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Unable to remove the file corresponding to URL '{}'! The file does not exist.", url);

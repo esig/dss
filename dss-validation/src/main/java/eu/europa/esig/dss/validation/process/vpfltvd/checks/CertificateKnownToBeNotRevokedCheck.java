@@ -99,16 +99,14 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
 
     @Override
     protected String buildAdditionalInfo() {
-        if (revocationData != null) {
-            if (!revocationData.isRevoked() && revocationData.getSigningCertificate() != null
+        if (revocationData != null && !revocationData.isRevoked() && revocationData.getSigningCertificate() != null
                     && !isRevocationIssuerValid(revocationData.getSigningCertificate())) {
-                CertificateWrapper revocationIssuer = revocationData.getSigningCertificate();
-                String notBeforeStr = revocationIssuer.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(revocationIssuer.getNotBefore());
-                String notAfterStr = revocationIssuer.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(revocationIssuer.getNotAfter());
-                String validationTime = ValidationProcessUtils.getFormattedDate(currentTime);
-                return i18nProvider.getMessage(MessageTag.REVOCATION_CERT_VALIDITY,
-                        revocationIssuer.getId(), revocationData.getId(), notBeforeStr, notAfterStr, validationTime);
-            }
+            CertificateWrapper revocationIssuer = revocationData.getSigningCertificate();
+            String notBeforeStr = revocationIssuer.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(revocationIssuer.getNotBefore());
+            String notAfterStr = revocationIssuer.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(revocationIssuer.getNotAfter());
+            String validationTime = ValidationProcessUtils.getFormattedDate(currentTime);
+            return i18nProvider.getMessage(MessageTag.REVOCATION_CERT_VALIDITY,
+                    revocationIssuer.getId(), revocationData.getId(), notBeforeStr, notAfterStr, validationTime);
         }
         return i18nProvider.getMessage(MessageTag.TOKEN_ID, certificate.getId());
     }

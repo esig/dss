@@ -391,12 +391,12 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      */
     protected void makeTimestampTokensFromSignedAttributes() {
 
-        SignatureProperties<SA> signedSignatureProperties = getSignedSignatureProperties();
-        if (signedSignatureProperties == null || !signedSignatureProperties.isExist()) {
+        SignatureProperties<SA> extractedSignedSignatureProperties = getSignedSignatureProperties();
+        if (extractedSignedSignatureProperties == null || !extractedSignedSignatureProperties.isExist()) {
             return;
         }
 
-        for (SA signedAttribute : signedSignatureProperties.getAttributes()) {
+        for (SA signedAttribute : extractedSignedSignatureProperties.getAttributes()) {
 
             List<TimestampToken> timestampTokens;
 
@@ -428,14 +428,14 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      */
     protected void makeTimestampTokensFromUnsignedAttributes() {
 
-        final SignatureProperties<SA> unsignedSignatureProperties = getUnsignedSignatureProperties();
-        if (unsignedSignatureProperties == null || !unsignedSignatureProperties.isExist()) {
+        final SignatureProperties<SA> extractedUnsignedSignatureProperties = getUnsignedSignatureProperties();
+        if (extractedUnsignedSignatureProperties == null || !extractedUnsignedSignatureProperties.isExist()) {
             return;
         }
 
         final List<TimestampToken> allTimestamps = new ArrayList<>();
 
-        for (SA unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
+        for (SA unsignedAttribute : extractedUnsignedSignatureProperties.getAttributes()) {
             List<TimestampToken> timestampTokens;
 
             if (isSignatureTimestamp(unsignedAttribute)) {

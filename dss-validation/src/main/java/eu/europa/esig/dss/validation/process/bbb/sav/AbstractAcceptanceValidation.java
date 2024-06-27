@@ -252,12 +252,12 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	}
 
 	private XmlCryptographicValidation getCryptographicValidation(XmlCC ccResult) {
-		XmlCryptographicValidation cryptographicValidation = new XmlCryptographicValidation();
-		cryptographicValidation.setAlgorithm(ccResult.getVerifiedAlgorithm());
-		cryptographicValidation.setNotAfter(ccResult.getNotAfter());
-		cryptographicValidation.setSecure(isValid(ccResult));
-		cryptographicValidation.setValidationTime(currentTime);
-		return cryptographicValidation;
+		XmlCryptographicValidation xmlCryptographicValidation = new XmlCryptographicValidation();
+		xmlCryptographicValidation.setAlgorithm(ccResult.getVerifiedAlgorithm());
+		xmlCryptographicValidation.setNotAfter(ccResult.getNotAfter());
+		xmlCryptographicValidation.setSecure(isValid(ccResult));
+		xmlCryptographicValidation.setValidationTime(currentTime);
+		return xmlCryptographicValidation;
 	}
 
 	private String getConcernedMaterialDescription(List<String> referenceNames, MessageTag position) {

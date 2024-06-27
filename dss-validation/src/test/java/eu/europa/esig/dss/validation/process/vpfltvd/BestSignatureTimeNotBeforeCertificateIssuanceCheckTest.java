@@ -81,12 +81,9 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends Abst
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		
-		Indication currentIndication = Indication.INDETERMINATE;
-		SubIndication currentSubIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
-		
 		XmlPSV result = new XmlPSV();
 		BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlPSV> bstnbcic = new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(
-				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), currentIndication, currentSubIndication, constraint);
+				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), constraint);
 		bstnbcic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -109,12 +106,9 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends Abst
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		
-		Indication currentIndication = Indication.INDETERMINATE;
-		SubIndication currentSubIndication = SubIndication.OUT_OF_BOUNDS_NOT_REVOKED;
-		
 		XmlPSV result = new XmlPSV();
 		BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlPSV> bstnbcic = new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(
-				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), currentIndication, currentSubIndication, constraint);
+				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), constraint);
 		bstnbcic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

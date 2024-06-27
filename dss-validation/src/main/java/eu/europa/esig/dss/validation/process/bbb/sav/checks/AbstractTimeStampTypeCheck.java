@@ -47,7 +47,7 @@ public abstract class AbstractTimeStampTypeCheck extends ChainItem<XmlSAV> {
      * @param signature {@link SignatureWrapper}
      * @param constraint {@link LevelConstraint}
      */
-    public AbstractTimeStampTypeCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
+    protected AbstractTimeStampTypeCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
                                       LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.signature = signature;

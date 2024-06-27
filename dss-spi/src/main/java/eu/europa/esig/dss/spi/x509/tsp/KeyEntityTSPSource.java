@@ -411,8 +411,8 @@ public class KeyEntityTSPSource implements TSPSource {
 
     private Set<ASN1ObjectIdentifier> getAcceptedDigestAlgorithmIdentifiers() {
         Set<ASN1ObjectIdentifier> result = new HashSet<>();
-        for (DigestAlgorithm digestAlgorithm : acceptedDigestAlgorithms) {
-            result.add(getASN1ObjectIdentifier(digestAlgorithm));
+        for (DigestAlgorithm acceptedDigestAlgorithm : acceptedDigestAlgorithms) {
+            result.add(getASN1ObjectIdentifier(acceptedDigestAlgorithm));
         }
         return result;
     }
@@ -485,7 +485,7 @@ public class KeyEntityTSPSource implements TSPSource {
         } catch (CertificateEncodingException | OperatorCreationException | TSPException e) {
             throw new DSSException(String.format("Unable to generate a timestamp. Reason : %s", e.getMessage()), e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DSSException(String.format("An error occurred on timestamp response generation: %s", e.getMessage()), e);
         }
     }
 

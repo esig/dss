@@ -80,7 +80,7 @@ public class CompositeRevocationSource<T extends Revocation> implements Revocati
                 LOG.debug("Unable to retrieve the revocation token with Source '{}' : {}", sourceKey, e.getMessage());
             }
         }
-        LOG.debug("Unable to retrieve the ocsp token (" + compositeRevocationSources.size() + " tries)");
+        LOG.debug("Unable to retrieve the ocsp token ({} tries)", compositeRevocationSources.size());
         return null;
     }
 

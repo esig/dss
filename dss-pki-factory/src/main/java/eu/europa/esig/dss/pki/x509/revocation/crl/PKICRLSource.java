@@ -295,12 +295,12 @@ public class PKICRLSource implements CRLSource {
 
         SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(crlIssuer);
 
-        Date thisUpdate = getThisUpdate();
-        X509v2CRLBuilder builder = new X509v2CRLBuilder(caCert.getSubject(), thisUpdate);
+        Date thisUpdateTime = getThisUpdate();
+        X509v2CRLBuilder builder = new X509v2CRLBuilder(caCert.getSubject(), thisUpdateTime);
 
-        Date nextUpdate = getNextUpdate();
-        if (nextUpdate != null) {
-            builder.setNextUpdate(nextUpdate);
+        Date nextUpdateTime = getNextUpdate();
+        if (nextUpdateTime != null) {
+            builder.setNextUpdate(nextUpdateTime);
         }
 
         addRevocationsToCRL(builder, revocationList);
@@ -319,17 +319,17 @@ public class PKICRLSource implements CRLSource {
      * @return {@link SignatureAlgorithm}
      */
     protected SignatureAlgorithm getSignatureAlgorithm(CertEntity crlIssuer) {
-        EncryptionAlgorithm encryptionAlgorithm = this.encryptionAlgorithm;
-        if (encryptionAlgorithm != null) {
-            if (!encryptionAlgorithm.isEquivalent(crlIssuer.getEncryptionAlgorithm())) {
+        EncryptionAlgorithm signatureEncryptionAlgorithm = this.encryptionAlgorithm;
+        if (signatureEncryptionAlgorithm != null) {
+            if (!signatureEncryptionAlgorithm.isEquivalent(crlIssuer.getEncryptionAlgorithm())) {
                 throw new IllegalArgumentException(String.format(
-                        "Defined EncryptionAlgorithm '%s' is not equivalent to the one returned by CRL Issuer '%s'", encryptionAlgorithm, crlIssuer.getEncryptionAlgorithm()));
+                        "Defined EncryptionAlgorithm '%s' is not equivalent to the one returned by CRL Issuer '%s'", signatureEncryptionAlgorithm, crlIssuer.getEncryptionAlgorithm()));
 
             }
         } else {
-            encryptionAlgorithm = crlIssuer.getEncryptionAlgorithm();
+            signatureEncryptionAlgorithm = crlIssuer.getEncryptionAlgorithm();
         }
-        return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+        return SignatureAlgorithm.getAlgorithm(signatureEncryptionAlgorithm, digestAlgorithm);
     }
 
     /**

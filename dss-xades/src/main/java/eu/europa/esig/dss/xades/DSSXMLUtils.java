@@ -1019,11 +1019,9 @@ public final class DSSXMLUtils {
 				DSSTransform transform = iterator.next();
 				output = transform.performTransform(output);
 				bytes = output.getBytes();
-				if (iterator.hasNext()) {
-					if (Utils.isArrayEmpty(bytes)) {
-						throw new IllegalInputException(String.format(
-								"Unable to perform the next transform. The %s produced an empty output!", transform));
-					}
+				if (iterator.hasNext() && Utils.isArrayEmpty(bytes)) {
+					throw new IllegalInputException(String.format(
+							"Unable to perform the next transform. The %s produced an empty output!", transform));
 				}
 			}
 

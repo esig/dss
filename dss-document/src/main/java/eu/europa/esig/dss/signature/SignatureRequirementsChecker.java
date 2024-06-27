@@ -604,8 +604,8 @@ public class SignatureRequirementsChecker {
             final SignatureCryptographicVerification signatureCryptographicVerification = signature.getSignatureCryptographicVerification();
             if (!signatureCryptographicVerification.isSignatureIntact()) {
                 final String errorMessage = signatureCryptographicVerification.getErrorMessage();
-                status.addRelatedTokenAndErrorMessage(signature, String.format(
-                        "Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage))));
+                status.addRelatedTokenAndErrorMessage(signature, "Cryptographic signature verification has failed"
+                        + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
             }
         }
         if (!status.isEmpty()) {

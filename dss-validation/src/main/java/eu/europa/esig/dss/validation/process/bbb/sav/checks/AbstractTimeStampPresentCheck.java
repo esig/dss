@@ -56,7 +56,7 @@ public abstract class AbstractTimeStampPresentCheck extends ChainItem<XmlValidat
      * @param xmlTimestamps a collection of {@link XmlTimestamp}s
      * @param constraint {@link LevelConstraint}
      */
-    public AbstractTimeStampPresentCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+    protected AbstractTimeStampPresentCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
                                          Map<String, XmlBasicBuildingBlocks> bbbs, Collection<XmlTimestamp> xmlTimestamps,
                                          LevelConstraint constraint) {
         super(i18nProvider, result, constraint);

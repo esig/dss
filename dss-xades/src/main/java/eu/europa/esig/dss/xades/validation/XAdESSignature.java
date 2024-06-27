@@ -1241,10 +1241,10 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {
 		Element signedInfo = getSignedInfo();
 		if (signedInfo != null) {
-			XMLSignature santuarioSignature = getSantuarioSignature();
+			XMLSignature xmlSignature = getSantuarioSignature();
 			List<DigestAlgorithm> usedReferenceDigestAlgos = DSSXMLUtils.getReferenceDigestAlgos(signedInfo);
 			for (DigestAlgorithm digestAlgorithm : usedReferenceDigestAlgos) {
-				santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
+				xmlSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
 			}
 		}
 	}
@@ -1255,14 +1255,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private void initCounterSignatureResolver(List<DSSDocument> detachedContents) {
 		Element signedInfo = getSignedInfo();
 		if (signedInfo != null) {
-			XMLSignature santuarioSignature = getSantuarioSignature();
+			XMLSignature xmlSignature = getSantuarioSignature();
 			List<String> types = DSSXMLUtils.getReferenceTypes(signedInfo);
 			for (String type : types) {
 				if (xadesPath.getCounterSignatureUri().equals(type)) {
 					for (DSSDocument document : detachedContents) {
 						// only one SignatureValue document shall be provided
 						if (isDetachedSignatureValueDocument(document)) {
-							santuarioSignature.addResourceResolver(new CounterSignatureResolver(document));
+							xmlSignature.addResourceResolver(new CounterSignatureResolver(document));
 							break;
 						}
 					}
@@ -1545,8 +1545,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public List<Reference> getReferences() {
 		if (references == null) {
-			XMLSignature santuarioSignature = getSantuarioSignature();
-			SignedInfo signedInfo = santuarioSignature.getSignedInfo();
+			XMLSignature xmlSignature = getSantuarioSignature();
+			SignedInfo signedInfo = xmlSignature.getSignedInfo();
             references = DSSXMLUtils.extractReferences(signedInfo);
 		}
 		return references;
@@ -1559,7 +1559,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public List<Element> getSignatureObjects() {
 		final NodeList list = DomUtils.getNodeList(signatureElement, XMLDSigPath.OBJECT_PATH);
-		final List<Element> references = new ArrayList<>(list.getLength());
+		final List<Element> objectElements = new ArrayList<>(list.getLength());
 		for (int ii = 0; ii < list.getLength(); ii++) {
 			final Node node = list.item(ii);
 			final Element element = (Element) node;
@@ -1567,9 +1567,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				// ignore signed properties
 				continue;
 			}
-			references.add(element);
+			objectElements.add(element);
 		}
-		return references;
+		return objectElements;
 	}
 
 	/**

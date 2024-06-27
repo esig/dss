@@ -187,9 +187,14 @@ public class CryptographicConstraintWrapper {
 		AlgoExpirationDate algoExpirationDates = getAlgoExpirationDates();
 		if (algoExpirationDates != null && digestAlgorithm != null) {
 			List<Algo> matchingAlgos = getMatchingAlgos(algoExpirationDates, digestAlgorithm);
-			SimpleDateFormat dateFormat = getUsedDateFormat(algoExpirationDates);
-			for (Algo algo : matchingAlgos) {
-				return getDate(algo, dateFormat);
+			if (Utils.collectionSize(matchingAlgos) == 0) {
+				return null;
+			} else if (Utils.collectionSize(matchingAlgos) == 1) {
+				SimpleDateFormat dateFormat = getUsedDateFormat(algoExpirationDates);
+				return getDate(matchingAlgos.iterator().next(), dateFormat);
+			} else {
+				throw new IllegalArgumentException(String.format(
+						"Multiple expiration constraints are provided for the same digest algorithm '%s'!", digestAlgorithm.getName()));
 			}
 		}
 		return null;
@@ -249,7 +254,8 @@ public class CryptographicConstraintWrapper {
 						if (reliableDigestAlgorithmNames.contains(algo.getValue())) {
 							try {
 								final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(algo.getValue());
-								if (digestAlgorithm != null && !getExpirationDate(digestAlgorithm).before(validationTime)) {
+								Date expirationDate = getExpirationDate(digestAlgorithm);
+								if (digestAlgorithm != null && (expirationDate == null || !getExpirationDate(digestAlgorithm).before(validationTime))) {
 									reliableDigestAlgorithms.add(digestAlgorithm);
 								}
 							} catch (IllegalArgumentException e) {

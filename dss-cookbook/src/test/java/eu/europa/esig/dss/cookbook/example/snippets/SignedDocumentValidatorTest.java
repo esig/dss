@@ -24,6 +24,7 @@ import eu.europa.esig.dss.detailedreport.DetailedReportFacade;
 import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
 import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -117,6 +118,12 @@ public class SignedDocumentValidatorTest {
 		// If true, it will become accessible through the method below
 		// Default : true
 		documentValidator.setEnableEtsiValidationReport(true);
+
+		// Sets the default digest algorithm that will be used for digest calculation
+		// of tokens used during the validation process.
+		// The values will be used in validation reports.
+		// Default : DigestAlgorithm.SHA256
+		documentValidator.setDefaultDigestAlgorithm(DigestAlgorithm.SHA512);
 		
 		// tag::demo-identifier-provider[]
 		// Sets provider for token identifiers.

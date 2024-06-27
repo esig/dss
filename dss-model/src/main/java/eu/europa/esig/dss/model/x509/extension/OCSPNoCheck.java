@@ -39,7 +39,7 @@ public class OCSPNoCheck extends CertificateExtension {
     private static final long serialVersionUID = 8531078272781544641L;
 
     /** Defines if the ocsp-nocheck extension is present and set to true */
-    private boolean ocspNoCheck;
+    private boolean ocspNoCheckValue;
 
     /**
      * Default constructor
@@ -54,16 +54,16 @@ public class OCSPNoCheck extends CertificateExtension {
      * @return the ocsp-nocheck extension value, FALSE is not present
      */
     public boolean isOcspNoCheck() {
-        return ocspNoCheck;
+        return ocspNoCheckValue;
     }
 
     /**
      * Sets the ocsp-nocheck extension value
      *
-     * @param ocspNoCheck ocsp-nocheck extension value
+     * @param ocspNoCheckValue ocsp-nocheck extension value
      */
-    public void setOcspNoCheck(boolean ocspNoCheck) {
-        this.ocspNoCheck = ocspNoCheck;
+    public void setOcspNoCheck(boolean ocspNoCheckValue) {
+        this.ocspNoCheckValue = ocspNoCheckValue;
     }
 
 }

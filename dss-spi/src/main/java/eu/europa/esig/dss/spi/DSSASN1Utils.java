@@ -122,7 +122,11 @@ public final class DSSASN1Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
-	/** Contains a list of all CAdES timestamp OIDs */
+	/**
+	 * Contains a list of all CAdES timestamp OIDs
+	 *
+	 * @deprecated since DSS 6.1. Please see {@code CMSUtils#timestampOids} instead
+	 */
 	@Deprecated
 	private static List<ASN1ObjectIdentifier> timestampOids; // TODO : to be removed from DSSASN1Utils in 6.2
 

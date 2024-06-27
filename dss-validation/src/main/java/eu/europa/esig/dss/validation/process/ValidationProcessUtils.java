@@ -446,6 +446,7 @@ public class ValidationProcessUtils {
 		} else if (Utils.collectionSize(digestMatchers) == 1) {
 			return getDigestMatcherCryptoPosition(digestMatchers.iterator().next());
 		} else {
+			// if more than 1 digest matcher
 			DigestMatcherType digestMatcherType = getDigestMatcherType(digestMatchers);
 			switch (digestMatcherType) {
 				case OBJECT:
@@ -480,10 +481,7 @@ public class ValidationProcessUtils {
 	}
 
 	private static DigestMatcherType getDigestMatcherType(Collection<XmlDigestMatcher> digestMatchers) {
-		if (Utils.isCollectionNotEmpty(digestMatchers)) {
-			return digestMatchers.iterator().next().getType(); // same position shall be provided
-		}
-		return null;
+		return digestMatchers.iterator().next().getType(); // same position shall be provided
 	}
 
 	/**

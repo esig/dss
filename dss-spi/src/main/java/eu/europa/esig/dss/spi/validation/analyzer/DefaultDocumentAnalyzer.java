@@ -307,13 +307,13 @@ public abstract class DefaultDocumentAnalyzer implements DocumentAnalyzer {
         Objects.requireNonNull(document, "Document is not provided to the validator");
 
         List<AdvancedSignature> allSignatures = getAllSignatures();
-        List<TimestampToken> detachedTimestamps = getDetachedTimestamps();
-        List<EvidenceRecord> detachedEvidenceRecords = getDetachedEvidenceRecords();
+        List<TimestampToken> allDetachedTimestamps = getDetachedTimestamps();
+        List<EvidenceRecord> allDetachedEvidenceRecords = getDetachedEvidenceRecords();
 
         final CertificateVerifier certificateVerifierForValidation =
                 new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopyForValidation();
         final ValidationContext validationContext = prepareValidationContext(
-                allSignatures, detachedTimestamps, detachedEvidenceRecords, certificateVerifierForValidation);
+                allSignatures, allDetachedTimestamps, allDetachedEvidenceRecords, certificateVerifierForValidation);
         validateContext(validationContext);
         return validationContext;
     }
@@ -668,16 +668,14 @@ public abstract class DefaultDocumentAnalyzer implements DocumentAnalyzer {
      */
     protected EvidenceRecord buildEvidenceRecord(DSSDocument evidenceRecordDocument) {
         try {
-            try {
-                EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
-                evidenceRecordAnalyzer.setDetachedContents(getSignatureEvidenceRecordDetachedContents());
-                evidenceRecordAnalyzer.setCertificateVerifier(certificateVerifier);
-                return getEvidenceRecord(evidenceRecordAnalyzer);
+            EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
+            evidenceRecordAnalyzer.setDetachedContents(getSignatureEvidenceRecordDetachedContents());
+            evidenceRecordAnalyzer.setCertificateVerifier(certificateVerifier);
+            return getEvidenceRecord(evidenceRecordAnalyzer);
 
-            } catch (UnsupportedOperationException e) {
-                LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}. " +
-                        "Please ensure the corresponding module is loaded.", evidenceRecordDocument.getName(), e.getMessage());
-            }
+        } catch (UnsupportedOperationException e) {
+            LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}. " +
+                    "Please ensure the corresponding module is loaded.", evidenceRecordDocument.getName(), e.getMessage());
         } catch (Exception e) {
             LOG.warn("An error occurred on attempt to read an evidence record document with name '{}' : {}",
                     evidenceRecordDocument.getName(), e.getMessage(), e);

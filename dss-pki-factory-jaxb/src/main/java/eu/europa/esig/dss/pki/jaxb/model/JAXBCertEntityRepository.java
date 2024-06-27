@@ -113,8 +113,8 @@ public class JAXBCertEntityRepository implements CertEntityRepository<JAXBCertEn
      */
     public JAXBCertEntity getCertEntityBySubject(String subjectName) {
         List<JAXBCertEntity> certEntity = this.getBySubject(subjectName);
-        if (certEntity == null || certEntity.size() == 0) {
-            LOG.warn("Certificate '" + subjectName + "' not found");
+        if (certEntity == null || certEntity.isEmpty()) {
+            LOG.warn("Certificate '{}' not found", subjectName);
             return null;
         }
         if (certEntity.size() > 1) {

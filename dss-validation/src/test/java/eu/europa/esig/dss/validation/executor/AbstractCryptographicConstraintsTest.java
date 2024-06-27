@@ -229,7 +229,7 @@ public abstract class AbstractCryptographicConstraintsTest extends AbstractTestV
 	protected void setAlgorithmSize(List<Algo> algorithms, String algorithm, Integer size) {
 		for (Algo algo : algorithms) {
 			if (algo.getValue().equals(algorithm)) {
-				algo.setSize(4096);
+				algo.setSize(size);
 				return;
 			}
 		}

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
@@ -31,13 +30,12 @@ import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 import java.util.Objects;
@@ -49,8 +47,6 @@ import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_T;
  *
  */
 class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineT.class);
 
 	/** The TSPSource to obtain a timestamp */
 	private final TSPSource tspSource;

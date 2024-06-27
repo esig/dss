@@ -67,9 +67,7 @@ public class UniqueServiceFilter implements TrustServiceFilter {
 			for (TrustServiceWrapper trustService : trustServices) {
 				CertificateQualificationCalculator calculator = new CertificateQualificationCalculator(endEntityCert, trustService);
 				CertificateQualification certQualification = calculator.getQualification();
-				if (!qualificationResults.containsKey(certQualification)) {
-					qualificationResults.put(certQualification, trustService.getServiceNames());
-				}
+				qualificationResults.putIfAbsent(certQualification, trustService.getServiceNames()); // use putIfAbsent as trustService.getServiceNames() may return null
 			}
 
 			if (qualificationResults.size() > 1) {

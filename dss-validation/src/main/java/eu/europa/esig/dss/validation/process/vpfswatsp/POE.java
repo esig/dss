@@ -22,6 +22,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -72,7 +73,7 @@ public class POE {
 	 * @return a list of {@link XmlTimestampedObject}s
 	 */
 	public List<XmlTimestampedObject> getPOEObjects() {
-		return null;
+		return Collections.emptyList();
 	}
 	
 	/**

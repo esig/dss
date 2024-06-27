@@ -29,11 +29,11 @@ import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.trust.ServiceTypeIdentifier;
 import eu.europa.esig.dss.validation.process.qualification.trust.TrustServiceStatus;
+import jakarta.xml.bind.DatatypeConverter;
 import org.junit.jupiter.api.Test;
 
-import jakarta.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class UniqueServiceFilterTest {
 		List<TrustServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustServiceWrapper ts0 = new TrustServiceWrapper();
-		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setServiceNames(Collections.singletonList("Test"));
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
@@ -102,7 +102,7 @@ public class UniqueServiceFilterTest {
 		List<TrustServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustServiceWrapper ts0 = new TrustServiceWrapper();
-		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setServiceNames(Collections.singletonList("Test"));
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(BEFORE_EIDAS_DATE);
@@ -131,7 +131,7 @@ public class UniqueServiceFilterTest {
 		List<TrustServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustServiceWrapper ts0 = new TrustServiceWrapper();
-		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setServiceNames(Collections.singletonList("Test"));
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
@@ -140,7 +140,7 @@ public class UniqueServiceFilterTest {
 		trustServices.add(ts0);
 
 		TrustServiceWrapper ts1 = new TrustServiceWrapper();
-		ts1.setServiceNames(Arrays.asList("Test"));
+		ts1.setServiceNames(Collections.singletonList("Test"));
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
@@ -161,7 +161,7 @@ public class UniqueServiceFilterTest {
 		List<TrustServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustServiceWrapper ts0 = new TrustServiceWrapper();
-		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setServiceNames(Collections.singletonList("Test"));
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
@@ -170,7 +170,7 @@ public class UniqueServiceFilterTest {
 		trustServices.add(ts0);
 
 		TrustServiceWrapper ts1 = new TrustServiceWrapper();
-		ts1.setServiceNames(Arrays.asList("Test"));
+		ts1.setServiceNames(Collections.singletonList("Test"));
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.WITHDRAWN.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
@@ -191,7 +191,7 @@ public class UniqueServiceFilterTest {
 		List<TrustServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustServiceWrapper ts0 = new TrustServiceWrapper();
-		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setServiceNames(Collections.singletonList("Test"));
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
@@ -200,7 +200,7 @@ public class UniqueServiceFilterTest {
 		trustServices.add(ts0);
 
 		TrustServiceWrapper ts1 = new TrustServiceWrapper();
-		ts1.setServiceNames(Arrays.asList("Test"));
+		ts1.setServiceNames(Collections.singletonList("Test"));
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);
@@ -221,7 +221,7 @@ public class UniqueServiceFilterTest {
 		List<TrustServiceWrapper> trustServices = new ArrayList<>();
 
 		TrustServiceWrapper ts0 = new TrustServiceWrapper();
-		ts0.setServiceNames(Arrays.asList("Test"));
+		ts0.setServiceNames(Collections.singletonList("Test"));
 		ts0.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts0.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts0.setStartDate(AFTER_EIDAS_DATE);
@@ -230,7 +230,7 @@ public class UniqueServiceFilterTest {
 		trustServices.add(ts0);
 
 		TrustServiceWrapper ts1 = new TrustServiceWrapper();
-		ts1.setServiceNames(Arrays.asList("Test"));
+		ts1.setServiceNames(Collections.singletonList("Test"));
 		ts1.setType(ServiceTypeIdentifier.CA_QC.getUri());
 		ts1.setStatus(TrustServiceStatus.GRANTED.getUri());
 		ts1.setStartDate(AFTER_EIDAS_DATE);

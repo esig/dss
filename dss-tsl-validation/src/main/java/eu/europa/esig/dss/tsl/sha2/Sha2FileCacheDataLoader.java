@@ -56,6 +56,9 @@ public class Sha2FileCacheDataLoader implements DSSCacheFileLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(Sha2FileCacheDataLoader.class);
 
+    /** Defines a one day constraint in milliseconds */
+    private static final long ONE_DAY_MILLIS = 24 * 60 * 60 * 1000L; // 24 hours
+
     /**
      * File cache data loader used to load the document
      */
@@ -114,7 +117,7 @@ public class Sha2FileCacheDataLoader implements DSSCacheFileLoader {
         Sha2FileCacheDataLoader sha2DataLoader = new Sha2FileCacheDataLoader(dataLoader);
 
         DefaultTrustedListWithSha2Predicate sha2Predicate = new DefaultTrustedListWithSha2Predicate();
-        sha2Predicate.setCacheExpirationTime(24 * 60 * 60 * 1000); // 24 hours
+        sha2Predicate.setCacheExpirationTime(ONE_DAY_MILLIS);
         sha2DataLoader.setPredicate(sha2Predicate);
 
         return sha2DataLoader;

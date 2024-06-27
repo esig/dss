@@ -52,7 +52,7 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
 	 *
 	 * @return true if signature with an expired certificate is allowed
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getSignatureAlertOnExpiredCertificate} method instead
+	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getAlertOnExpiredCertificate} method instead
 	 */
 	@Deprecated
 	boolean isSignWithExpiredCertificate();
@@ -61,7 +61,7 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * Indicates if it is possible to sign with a not yet valid certificate. The default value is false.
 	 *
 	 * @return true if signature with a not yet valid certificate is allowed
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getSignatureAlertOnNotYetValidCertificate} method instead
+	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getAlertOnNotYetValidCertificate} method instead
 	 */
 	@Deprecated
 	boolean isSignWithNotYetValidCertificate();
@@ -76,6 +76,7 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * Default value : false (no revocation check is performed on signature creation or T-level extension)
 	 *
 	 * @return if signature with a revoked certificate is allowed
+	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getAlertOnRevokedCertificate} method instead
 	 */
 	@Deprecated
 	boolean isCheckCertificateRevocation();

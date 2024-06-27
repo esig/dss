@@ -129,7 +129,6 @@ public abstract class CommonDocument implements DSSDocument {
 	@Override
 	public String toString() {
 		final String mimeTypeString = (mimeType == null) ? "" : mimeType.getMimeTypeString();
-		final String name = getName();
 		return "Name: " + name + " / MimeType: " + mimeTypeString;
 	}
 
