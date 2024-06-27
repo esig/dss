@@ -195,6 +195,21 @@ See <<certificateVerifier>> for more details about configuration.
 
 |all versions              a|I receive an error "java.security.SignatureException: Keyset does not exist" on signing      a|Please ensure the chosen DigestAlgorithm is supported by the signing key. Since DSS `6.1` a `DigestAlgorotihm.SHA512` is used by default. For older smartcards, a `DigestAlgorithm.SHA256` or another may be required.
 
+|all versions               |I receive an error "Unable to initialize Santuario XMLSignature. Reason : ** references are contained in the Manifest, maximum 30 are allowed with secure validation"       a|Apache Santuario used in the background for validation of XML and XAdES signatures imposes a limitation of the maximum number of XML Manifest references to be allowed during the validation process, with a default number of 30. In order to increase the number of allowed references, one may specify the following system property with a desired limit (e.g. for 200 references):
+
+[source,java,indent=0]
+----
+System.setProperty("org.apache.xml.security.maxReferences", "200");
+----
+
+Alternatively, starting from DSS `6.1`, it is possible to define the argument in the `dss-custom.properties` file of the <<DSSWebApp>>:
+
+[source,indent=0]
+----
+# Defines a maximum number of references within an XML Manifest to be handled (default is 30)
+xmlsec.manifest.max.references = 200
+----
+
 |all versions              a|I have a question not covered above      a|Feel free to reach us using https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[JIRA issues tracker].
 
 |===
