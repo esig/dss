@@ -332,10 +332,14 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
      * @return TRUE if the given collection of certificate contains teh signing certificate, FALSE otherwise
      */
     protected boolean containsSigningCertificate(Collection<CertificateToken> certificateTokens) {
-        CertificateToken signingCertificate = signature.getSigningCertificateToken();
-        for (CertificateToken certificate : certificateTokens) {
-            if (certificate.equals(signingCertificate)) {
-                return true;
+        CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
+        CertificateValidity certificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
+        if (certificateValidity != null && certificateValidity.getCertificateToken() != null) {
+            CertificateToken signingCertificate = certificateValidity.getCertificateToken();
+            for (CertificateToken certificate : certificateTokens) {
+                if (certificate.equals(signingCertificate)) {
+                    return true;
+                }
             }
         }
         return false;
