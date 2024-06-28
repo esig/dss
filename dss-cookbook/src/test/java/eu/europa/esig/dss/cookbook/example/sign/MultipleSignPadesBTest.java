@@ -40,12 +40,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MultipleSignPadesBTest extends CookbookTools {
+class MultipleSignPadesBTest extends CookbookTools {
 
     private String signingAlias;
 
     @Test
-    public void signPAdESBaselineB() throws Exception {
+    void signPAdESBaselineB() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

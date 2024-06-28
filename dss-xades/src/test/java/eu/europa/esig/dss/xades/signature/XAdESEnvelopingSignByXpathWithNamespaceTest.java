@@ -44,14 +44,14 @@ import java.util.Date;
 import java.util.List;
 
 // See DSS-3321
-public class XAdESEnvelopingSignByXpathWithNamespaceTest extends AbstractXAdESTestSignature {
+class XAdESEnvelopingSignByXpathWithNamespaceTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DomUtils.registerNamespace(new DSSNamespace("urn:czech-ba:instant-payments:v1:instantPayment", "czip"));
 
         documentToSign = new FileDocument("src/test/resources/ns-prefixes-sample.xml");

@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class XAdESExtensionCToXLDifferentTSATest extends XAdESExtensionCToXLTest {
+class XAdESExtensionCToXLDifferentTSATest extends XAdESExtensionCToXLTest {
 
     @Override
     protected TSPSource getUsedTSPSourceAtSignatureTime() {

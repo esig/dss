@@ -37,18 +37,18 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ITextSignatureFieldTest extends PKIFactoryAccess {
+class ITextSignatureFieldTest extends PKIFactoryAccess {
 
     private PAdESService padesService = new PAdESService(new CommonCertificateVerifier());
 
     @Test
-    public void testGetSignatureFields() {
+    void testGetSignatureFields() {
         assertTrue(Utils.isCollectionNotEmpty(padesService.getAvailableSignatureFields(
                 new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf")))));
     }
 
     @Test
-    public void testAddSignatureField() throws IOException {
+    void testAddSignatureField() throws IOException {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 
@@ -79,7 +79,7 @@ public class ITextSignatureFieldTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void testAddSignatureFieldPageNotFound() throws IOException {
+    void testAddSignatureFieldPageNotFound() throws IOException {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 
@@ -97,7 +97,7 @@ public class ITextSignatureFieldTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void addSignatureFieldToEncryptedPdfTest() {
+    void addSignatureFieldToEncryptedPdfTest() {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/pdf-with-annotations.pdf"));
         List<String> availableSignatureFields = padesService.getAvailableSignatureFields(document);
         assertFalse(Utils.isCollectionNotEmpty(availableSignatureFields));
@@ -112,7 +112,7 @@ public class ITextSignatureFieldTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void signNonSignatureFieldTest() {
+    void signNonSignatureFieldTest() {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
         PAdESSignatureParameters padesSignatureParameters = new PAdESSignatureParameters();

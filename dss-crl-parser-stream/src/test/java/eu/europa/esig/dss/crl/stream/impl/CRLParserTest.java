@@ -39,12 +39,12 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.utils.Utils;
 
-public class CRLParserTest {
+class CRLParserTest {
 
 	private CRLParser parser = new CRLParser();
 
 	@Test
-	public void illegalArgumenException() throws IOException {
+	void illegalArgumenException() throws IOException {
 		try (InputStream fis = new FileInputStream("pom.xml")) {
 			Exception exception = assertThrows(IllegalArgumentException.class, () -> parser.retrieveInfo(fis));
 			assertEquals("The InputStream MUST support mark/reset methods !", exception.getMessage());
@@ -52,7 +52,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void testBelgium2() throws IOException {
+	void testBelgium2() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/belgium2.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = parser.retrieveInfo(is);
 
@@ -71,7 +71,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void testBelgium4() throws IOException {
+	void testBelgium4() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/belgium4.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = parser.retrieveInfo(is);
 
@@ -88,7 +88,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void testEidc201631() throws IOException {
+	void testEidc201631() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/eidc201631.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = parser.retrieveInfo(is);
 
@@ -105,7 +105,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void testPtCRL() throws IOException {
+	void testPtCRL() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/pt_crl_with_critical_extension.crl");
 				BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = parser.retrieveInfo(is);
@@ -124,7 +124,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void testLTGRCA() throws IOException {
+	void testLTGRCA() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/LTGRCA.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = parser.retrieveInfo(is);
 
@@ -142,7 +142,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void testExtension() throws IOException {
+	void testExtension() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/crl_with_expiredCertsOnCRL_extension.crl");
 				BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = parser.retrieveInfo(is);
@@ -168,7 +168,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void retrieveRevocationInfo() throws IOException {
+	void retrieveRevocationInfo() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/LTGRCA.crl"); BufferedInputStream is = new BufferedInputStream(fis)) {
 			BigInteger serialNumber = new BigInteger("5203");
 			X509CRLEntry entry = parser.retrieveRevocationInfo(fis, serialNumber);
@@ -181,7 +181,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void retrieveRevocationInfoNull() throws IOException {
+	void retrieveRevocationInfoNull() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/LTGRCA.crl")) {
 			BigInteger serialNumber = new BigInteger("52030000000");
 			assertNull(parser.retrieveRevocationInfo(fis, serialNumber));
@@ -189,7 +189,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void retrieveRevocationInfoMedium() throws IOException {
+	void retrieveRevocationInfoMedium() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/http___crl.globalsign.com_gs_gspersonalsign2sha2g2.crl")) {
 
 			BigInteger serialNumber = new BigInteger("288350169419475868349393253038503091234");
@@ -203,7 +203,7 @@ public class CRLParserTest {
 	}
 
 	@Test
-	public void retrieveRevocationInfoMediumLastEntry() throws IOException {
+	void retrieveRevocationInfoMediumLastEntry() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/http___crl.globalsign.com_gs_gspersonalsign2sha2g2.crl")) {
 
 			BigInteger serialNumber = new BigInteger("288350169419475868349393264025423631520");
@@ -217,7 +217,7 @@ public class CRLParserTest {
 	}
 	
 	@Test
-	public void parseCRLWithoutRevokedCertificates() throws IOException {
+	void parseCRLWithoutRevokedCertificates() throws IOException {
 		try (InputStream fis = CRLParserTest.class.getResourceAsStream("/DS_NA2_CA-B1.crl");
 				BufferedInputStream is = new BufferedInputStream(fis)) {
 			CRLInfo handler = parser.retrieveInfo(is);

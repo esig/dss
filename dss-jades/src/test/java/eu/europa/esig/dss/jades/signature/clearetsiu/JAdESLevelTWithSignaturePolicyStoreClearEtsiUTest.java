@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJAdESTestSignature {
+class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJAdESTestSignature {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -76,7 +76,7 @@ public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJ
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

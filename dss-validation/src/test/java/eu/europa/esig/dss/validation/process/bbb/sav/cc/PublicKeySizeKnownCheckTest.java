@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PublicKeySizeKnownCheckTest extends AbstractTestCheck {
+class PublicKeySizeKnownCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -54,7 +54,7 @@ public class PublicKeySizeKnownCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -69,7 +69,7 @@ public class PublicKeySizeKnownCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void overwrittenLevelTest() {
+    void overwrittenLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -88,7 +88,7 @@ public class PublicKeySizeKnownCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noGlobalLevelTest() {
+    void noGlobalLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         ListAlgo listAlgo = new ListAlgo();
@@ -106,7 +106,7 @@ public class PublicKeySizeKnownCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noLevelTest() {
+    void noLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         ListAlgo listAlgo = new ListAlgo();

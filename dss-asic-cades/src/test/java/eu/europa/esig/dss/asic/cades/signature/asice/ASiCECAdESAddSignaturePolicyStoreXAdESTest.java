@@ -35,13 +35,13 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 
-public class ASiCECAdESAddSignaturePolicyStoreXAdESTest extends PKIFactoryAccess {
+class ASiCECAdESAddSignaturePolicyStoreXAdESTest extends PKIFactoryAccess {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final DSSDocument POLICY_CONTENT = new FileDocument("src/test/resources/signature-policy.der");
 
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument documentToSign = new FileDocument("src/test/resources/signable/asic_xades.zip");
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();

@@ -39,13 +39,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class UniqueServiceFilterTest {
+class UniqueServiceFilterTest {
 
 	private final static Date BEFORE_EIDAS_DATE = DatatypeConverter.parseDateTime("2014-07-01T00:00:00-00:00").getTime();
 	private final static Date AFTER_EIDAS_DATE = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
 
 	@Test
-	public void testCanConcludeOneTrustService() {
+	void testCanConcludeOneTrustService() {
 
 		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
@@ -65,7 +65,7 @@ public class UniqueServiceFilterTest {
 	}
 
 	@Test
-	public void testCanConclude() {
+	void testCanConclude() {
 
 		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
@@ -94,7 +94,7 @@ public class UniqueServiceFilterTest {
 	}
 
 	@Test
-	public void testCannotConcludeServiceDateConflict() {
+	void testCannotConcludeServiceDateConflict() {
 
 		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
@@ -123,7 +123,7 @@ public class UniqueServiceFilterTest {
 	}
 
 	@Test
-	public void testCannotConcludeTypeConflict() {
+	void testCannotConcludeTypeConflict() {
 
 		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
@@ -153,7 +153,7 @@ public class UniqueServiceFilterTest {
 	}
 	
 	@Test
-	public void testCannotConcludeConflictWithdrawn() {
+	void testCannotConcludeConflictWithdrawn() {
 
 		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
@@ -183,7 +183,7 @@ public class UniqueServiceFilterTest {
 	}
 
 	@Test
-	public void testCannotConcludeConflictQSCD() {
+	void testCannotConcludeConflictQSCD() {
 
 		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 
@@ -213,7 +213,7 @@ public class UniqueServiceFilterTest {
 	}
 
 	@Test
-	public void testCannotConcludeConflictQualified() {
+	void testCannotConcludeConflictQualified() {
 
 		CertificateWrapper emptyCert = getCertificate(AFTER_EIDAS_DATE);
 

@@ -37,13 +37,13 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestExtension {
+class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestExtension {
 
     private CertificateVerifier certificateVerifier;
     private XAdESService service;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
         service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());

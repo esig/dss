@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class OpenDocumentWithFalseZipCommentTest extends AbstractOpenDocumentTestValidation {
+class OpenDocumentWithFalseZipCommentTest extends AbstractOpenDocumentTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

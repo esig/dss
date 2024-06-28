@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SignedFilesPresentCheckTest extends AbstractTestCheck {
+class SignedFilesPresentCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void asicsValidTest() {
+	void asicsValidTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
 		xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
@@ -58,7 +58,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicsNoFileTest() {
+	void asicsNoFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
 
@@ -75,7 +75,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicsMultipleFilesTest() {
+	void asicsMultipleFilesTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
 		xmlContainerInfo.setContentFiles(Arrays.asList("hello.xml", "world.xml"));
@@ -93,7 +93,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicsNotRootFileTest() {
+	void asicsNotRootFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
 		xmlContainerInfo.setContentFiles(Collections.singletonList("hello/world.xml"));
@@ -111,7 +111,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicsMultipleFilesOneNotRootLevelTest() {
+	void asicsMultipleFilesOneNotRootLevelTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
 		xmlContainerInfo.setContentFiles(Arrays.asList("hello.xml", "hello/world.xml"));
@@ -129,7 +129,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicsMultipleFilesBothNotRootLevelTest() {
+	void asicsMultipleFilesBothNotRootLevelTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
 		xmlContainerInfo.setContentFiles(Arrays.asList("world/hello.xml", "hello/world.xml"));
@@ -147,7 +147,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asiceValidTest() {
+	void asiceValidTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
 		xmlContainerInfo.setContentFiles(Arrays.asList("hello.xml", "world.xml"));
@@ -165,7 +165,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asiceOneFileTest() {
+	void asiceOneFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
 		xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
@@ -183,7 +183,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asiceNoFileTest() {
+	void asiceNoFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
 
@@ -200,7 +200,7 @@ public class SignedFilesPresentCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asiceNotRootFileTest() {
+	void asiceNotRootFileTest() {
 		XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
 		xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
 		xmlContainerInfo.setContentFiles(Collections.singletonList("hello/world.xml"));

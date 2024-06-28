@@ -38,13 +38,13 @@ import java.util.Collections;
 import java.util.List;
 
 // See DSS-2742
-public class XAdESLevelBDetachedWithCommitmentTypePerDocumentTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class XAdESLevelBDetachedWithCommitmentTypePerDocumentTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
     private XAdESSignatureParameters signatureParameters;
     private List<DSSDocument> documentToSigns;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DSSDocument doc = new FileDocument("src/test/resources/sample.xml");
         DSSDocument declaration = new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml");
 

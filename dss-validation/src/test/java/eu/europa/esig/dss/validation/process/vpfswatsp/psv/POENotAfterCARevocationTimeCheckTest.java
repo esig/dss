@@ -44,13 +44,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
+class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
 
     private static final String REVOC_ONE_ID = "R-1";
     private static final String REVOC_TWO_ID = "R-2";
 
     @Test
-    public void validCheck() throws Exception {
+    void validCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -96,7 +96,7 @@ public class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void onlyOneRevocPOECheck() throws Exception {
+    void onlyOneRevocPOECheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -137,7 +137,7 @@ public class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void anotherRevocPoeCheck() throws Exception {
+    void anotherRevocPoeCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -178,7 +178,7 @@ public class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidTstTimeCheck() throws Exception {
+    void invalidTstTimeCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

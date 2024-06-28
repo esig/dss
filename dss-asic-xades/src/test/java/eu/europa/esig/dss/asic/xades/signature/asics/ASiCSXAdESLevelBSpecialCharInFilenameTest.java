@@ -33,14 +33,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class ASiCSXAdESLevelBSpecialCharInFilenameTest extends AbstractASiCSXAdESTestSignature {
+class ASiCSXAdESLevelBSpecialCharInFilenameTest extends AbstractASiCSXAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "012éù*34ä5µ£6789~#%&()+=`@{[]}'.txt");
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();

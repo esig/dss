@@ -48,7 +48,7 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
+class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 
 	private static final String POLICY_ID = "1.2.3.4.5.6";
 	private static final String HELLO_WORLD = "Hello World";
@@ -61,7 +61,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	private Policy signaturePolicy;
 
 	@BeforeEach
-	public void init(){
+	void init(){
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 		
 		signaturePolicy = new Policy();
@@ -80,7 +80,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void zeroPolicyWithZeroTest() throws Exception {
+	void zeroPolicyWithZeroTest() throws Exception {
 		signaturePolicy.setDigestValue("0".getBytes());		
 		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
 		signer();
@@ -88,7 +88,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void zeroPolicyWithEmptyFieldTest() throws Exception {
+	void zeroPolicyWithEmptyFieldTest() throws Exception {
 		signaturePolicy.setDigestValue("".getBytes());		
 		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
 		signer();
@@ -96,7 +96,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void zeroPolicyWithByteZeroTest() throws Exception {
+	void zeroPolicyWithByteZeroTest() throws Exception {
 		signaturePolicy.setDigestValue(new byte[]{0x00});		
 		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
 		signer();
@@ -104,7 +104,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void zeroPolicyWithOtherValuesTest() throws Exception {
+	void zeroPolicyWithOtherValuesTest() throws Exception {
 		signaturePolicy.setDigestValue("00".getBytes());		
 		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
 		signer();
@@ -112,7 +112,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void zeroPolicyWithHashedZeroTest() throws Exception {
+	void zeroPolicyWithHashedZeroTest() throws Exception {
 	    byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, new byte[] {'0'});
 		signaturePolicy.setDigestValue(digest);		
 		signatureParameters.bLevel().setSignaturePolicy(signaturePolicy);
@@ -121,7 +121,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void zeroPolicyWithHashedArrayOfZerosTest() throws Exception {
+	void zeroPolicyWithHashedArrayOfZerosTest() throws Exception {
 		signaturePolicy.setDigestValue(new byte[] {
 				'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 
 				'0', '0', '0', '0', '0', '0', '0', '0', '0', '0',
@@ -133,14 +133,14 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 		testSignatureFalseZeroPolicy();
 	}
 	
-	public void signer() {
+	void signer() {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 		signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 	
-	public void testSignatureTrueZeroPolicy() {
+	void testSignatureTrueZeroPolicy() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		
@@ -156,7 +156,7 @@ public class CAdESLevelBWithZeroPolicyTest extends PKIFactoryAccess {
 		assertTrue(signature.isPolicyZeroHash());
 	}
 	
-	public void testSignatureFalseZeroPolicy() {
+	void testSignatureFalseZeroPolicy() {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		

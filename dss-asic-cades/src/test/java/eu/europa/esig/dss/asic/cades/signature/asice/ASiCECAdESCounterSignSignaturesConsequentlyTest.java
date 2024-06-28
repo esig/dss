@@ -42,7 +42,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCECAdESCounterSignSignaturesConsequentlyTest extends AbstractASiCCAdESCounterSignatureTest {
+class ASiCECAdESCounterSignSignaturesConsequentlyTest extends AbstractASiCCAdESCounterSignatureTest {
 
     private final DSSDocument ORIGINAL_DOCUMENT = new FileDocument("src/test/resources/signable/test.txt");
 
@@ -56,7 +56,7 @@ public class ASiCECAdESCounterSignSignaturesConsequentlyTest extends AbstractASi
     private CAdESCounterSignatureParameters counterSignatureParameters;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = ORIGINAL_DOCUMENT;

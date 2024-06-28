@@ -42,14 +42,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 // See DSS-2920
-public class XAdESLevelBEnvelopedSignUnexistingElementByIdTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedSignUnexistingElementByIdTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample-xml-stylesheet-with-id.xml");
 
         signatureParameters = new XAdESSignatureParameters();

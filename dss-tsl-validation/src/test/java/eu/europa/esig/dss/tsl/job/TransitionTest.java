@@ -53,7 +53,7 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.source.TLSource;
 
-public class TransitionTest {
+class TransitionTest {
 
 	@TempDir
 	File cacheDirectory;
@@ -67,7 +67,7 @@ public class TransitionTest {
 	private DSSDocument CZ_NOT_COMPLIANT = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
 
 	@Test
-	public void nullDoc() {
+	void nullDoc() {
 
 		String url = "null-doc";
 
@@ -100,7 +100,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void nullDocNullCertSource() {
+	void nullDocNullCertSource() {
 
 		String url = "null-doc";
 
@@ -120,7 +120,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void nullToValidDoc() {
+	void nullToValidDoc() {
 
 		String url = "null-to-valid-doc";
 
@@ -155,7 +155,7 @@ public class TransitionTest {
 	}
 	
 	@Test
-	public void lastDownloadAttempTest() {
+	void lastDownloadAttempTest() {
 		String url = "null-to-valid-doc";
 
 		TLValidationJob job = new TLValidationJob();
@@ -199,7 +199,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void validToNulldDoc() {
+	void validToNulldDoc() {
 
 		String url = "valid-to-null-doc";
 
@@ -222,7 +222,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void validToNonCompliantDoc() {
+	void validToNonCompliantDoc() {
 
 		String url = "valid-to-null-doc";
 
@@ -244,7 +244,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void validToNotConform() {
+	void validToNotConform() {
 
 		String url = "valid-to-null-doc";
 
@@ -267,7 +267,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void nullToNonCompliantAndThenValidDoc() {
+	void nullToNonCompliantAndThenValidDoc() {
 
 		String url = "null-to-valid-doc";
 
@@ -289,7 +289,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void noXml() {
+	void noXml() {
 
 		String url = "no-xml";
 
@@ -303,7 +303,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void notConform() {
+	void notConform() {
 
 		String url = "no-conform";
 
@@ -317,7 +317,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void notCompliant() {
+	void notCompliant() {
 
 		String url = "no-compliant";
 
@@ -331,7 +331,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void validDoc() {
+	void validDoc() {
 
 		String url = "valid-doc";
 
@@ -345,7 +345,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void noSig() {
+	void noSig() {
 
 		String url = "no-sig";
 
@@ -359,7 +359,7 @@ public class TransitionTest {
 	}
 
 	@Test
-	public void brokenSig() {
+	void brokenSig() {
 
 		String url = "broken-sig";
 

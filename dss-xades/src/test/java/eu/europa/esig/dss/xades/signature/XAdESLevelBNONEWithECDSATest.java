@@ -49,7 +49,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 @Tag("slow")
-public class XAdESLevelBNONEWithECDSATest extends AbstractXAdESTestSignature {
+class XAdESLevelBNONEWithECDSATest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -70,7 +70,7 @@ public class XAdESLevelBNONEWithECDSATest extends AbstractXAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} of NONEwithECDSA with digest algorithm {0}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo) {
+	void init(DigestAlgorithm digestAlgo) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

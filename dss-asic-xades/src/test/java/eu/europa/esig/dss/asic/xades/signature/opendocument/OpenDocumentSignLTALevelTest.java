@@ -39,7 +39,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureTest {
+class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureTest {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {

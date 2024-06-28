@@ -38,10 +38,10 @@ import org.junit.jupiter.api.Test;
 /**
  * How to sign with JAdES-BASELINE-B enveloping signature.
  */
-public class SignXmlJadesBTest extends CookbookTools {
+class SignXmlJadesBTest extends CookbookTools {
 
     @Test
-    public void signJAdESBaselineB() throws Exception {
+    void signJAdESBaselineB() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

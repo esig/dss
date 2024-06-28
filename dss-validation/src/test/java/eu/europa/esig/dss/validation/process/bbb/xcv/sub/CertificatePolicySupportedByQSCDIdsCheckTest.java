@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
+class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void certificateSupportedByQSCDCheck() throws Exception {
+	void certificateSupportedByQSCDCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -66,7 +66,7 @@ public class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCh
 	}
 
 	@Test
-	public void failedCertificateSupportedByQSCDCheck() throws Exception {
+	void failedCertificateSupportedByQSCDCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -90,7 +90,7 @@ public class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCh
 	}
 
 	@Test
-	public void certificateWithQcSSCDCheck() throws Exception {
+	void certificateWithQcSSCDCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

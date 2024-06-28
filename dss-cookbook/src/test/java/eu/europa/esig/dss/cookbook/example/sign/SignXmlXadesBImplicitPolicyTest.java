@@ -40,10 +40,10 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 /**
  * How to set implicit policy.
  */
-public class SignXmlXadesBImplicitPolicyTest extends CookbookTools {
+class SignXmlXadesBImplicitPolicyTest extends CookbookTools {
 
 	@Test
-	public void testWithImplicitPolicy() throws Exception {
+	void testWithImplicitPolicy() throws Exception {
 
 		prepareXmlDoc();
 

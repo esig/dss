@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class JAdESLevelBWithECDSATest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithECDSATest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private JAdESSignatureParameters signatureParameters;
@@ -82,7 +82,7 @@ public class JAdESLevelBWithECDSATest extends AbstractJAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} if type {0} and ECDSA with digest algorithm {1} and signer {2}")
 	@MethodSource("data")
-	public void init(JWSSerializationType jwsSerializationType, DigestAlgorithm digestAlgo, String signingAlias) {
+	void init(JWSSerializationType jwsSerializationType, DigestAlgorithm digestAlgo, String signingAlias) {
 		this.signingAlias = signingAlias;
 
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

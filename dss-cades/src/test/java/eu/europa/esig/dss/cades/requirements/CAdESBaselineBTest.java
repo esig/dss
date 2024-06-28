@@ -30,7 +30,7 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.OID;
 
-public class CAdESBaselineBTest extends AbstractCAdESRequirementChecks {
+class CAdESBaselineBTest extends AbstractCAdESRequirementChecks {
 
 	@Override
 	protected CAdESSignatureParameters getSignatureParameters() {

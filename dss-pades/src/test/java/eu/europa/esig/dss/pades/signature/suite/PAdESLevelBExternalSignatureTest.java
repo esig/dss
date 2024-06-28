@@ -62,7 +62,7 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(PAdESLevelBExternalSignatureTest.class.getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();

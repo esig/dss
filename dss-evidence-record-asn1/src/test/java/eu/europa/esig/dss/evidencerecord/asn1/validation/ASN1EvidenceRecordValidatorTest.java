@@ -34,10 +34,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASN1EvidenceRecordValidatorTest extends AbstractTestEvidenceRecordValidator {
+class ASN1EvidenceRecordValidatorTest extends AbstractTestEvidenceRecordValidator {
 
     @Test
-    public void isSupported() {
+    void isSupported() {
         ASN1EvidenceRecordAnalyzer validator = new ASN1EvidenceRecordAnalyzer();
 
         byte[] wrongBytes = new byte[] { 1, 2 };

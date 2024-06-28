@@ -32,5 +32,5 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({ PDFTimestampServiceTest.class, PAdESTimestampTest.class, PAdESTripleTimestampTest.class,
         PAdESTimestampSignedPdfTest.class, PAdESTimestampWithAppNameTest.class, PAdESServiceTimestampingTest.class })
-public class ITextPAdESTimestampSuiteTest {
+class ITextPAdESTimestampSuiteTest {
 }

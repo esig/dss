@@ -30,7 +30,7 @@ import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XAdESWithSigPolicyDocSpecificationTest extends AbstractXAdESTestValidation {
+class XAdESWithSigPolicyDocSpecificationTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class TwoPAdESSignaturesMustHaveDifferentIdTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();

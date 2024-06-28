@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class DSS1770NullUriWithDetachedNullNameTest extends AbstractXAdESTestValidation {
+class DSS1770NullUriWithDetachedNullNameTest extends AbstractXAdESTestValidation {
 			
 	@Override
 	protected DSSDocument getSignedDocument() {

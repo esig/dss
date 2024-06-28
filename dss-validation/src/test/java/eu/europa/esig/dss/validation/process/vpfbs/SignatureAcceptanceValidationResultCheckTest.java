@@ -39,10 +39,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SignatureAcceptanceValidationResultCheckTest extends AbstractTestCheck {
+class SignatureAcceptanceValidationResultCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlSAV xmlSAV = new XmlSAV();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.PASSED);
@@ -62,7 +62,7 @@ public class SignatureAcceptanceValidationResultCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlSAV xmlSAV = new XmlSAV();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.INDETERMINATE);

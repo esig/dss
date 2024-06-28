@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateIssuerNameCheckTest extends AbstractTestCheck {
+class CertificateIssuerNameCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlCertificate signingCertificate = new XmlCertificate();
         XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
         xmlDistinguishedName.setFormat("RFC2253");
@@ -76,7 +76,7 @@ public class CertificateIssuerNameCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlCertificate signingCertificate = new XmlCertificate();
         XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
         xmlDistinguishedName.setFormat("RFC2253");
@@ -112,7 +112,7 @@ public class CertificateIssuerNameCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void diffOrder() {
+    void diffOrder() {
         XmlCertificate signingCertificate = new XmlCertificate();
         XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
         xmlDistinguishedName.setFormat("RFC2253");
@@ -148,7 +148,7 @@ public class CertificateIssuerNameCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void missedAttr() {
+    void missedAttr() {
         XmlCertificate signingCertificate = new XmlCertificate();
         XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
         xmlDistinguishedName.setFormat("RFC2253");
@@ -184,7 +184,7 @@ public class CertificateIssuerNameCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void selfSignedValid() {
+    void selfSignedValid() {
         XmlCertificate signingCertificate = new XmlCertificate();
         XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
         xmlDistinguishedName.setFormat("RFC2253");
@@ -212,7 +212,7 @@ public class CertificateIssuerNameCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void selfSignedInvalid() {
+    void selfSignedInvalid() {
         XmlCertificate signingCertificate = new XmlCertificate();
         XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
         xmlDistinguishedName.setFormat("RFC2253");
@@ -240,7 +240,7 @@ public class CertificateIssuerNameCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void sameDNNotSelfSignedValid() {
+    void sameDNNotSelfSignedValid() {
         XmlCertificate signingCertificate = new XmlCertificate();
         XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
         xmlDistinguishedName.setFormat("RFC2253");
@@ -276,7 +276,7 @@ public class CertificateIssuerNameCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void sameDNNotSelfSignedInvalid() {
+    void sameDNNotSelfSignedInvalid() {
         XmlCertificate signingCertificate = new XmlCertificate();
         XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
         xmlDistinguishedName.setFormat("RFC2253");

@@ -62,10 +62,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
+class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
 	
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		DSSDocument documentToSign = new FileDocument("src/test/resources/sample.json");
 
         JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();

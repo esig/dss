@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTWithSHA1OcspResponseTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTWithSHA1OcspResponseTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -59,7 +59,7 @@ public class XAdESLevelLTWithSHA1OcspResponseTest extends AbstractXAdESTestSigna
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

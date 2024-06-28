@@ -51,12 +51,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
+class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraintsTest {
 	
 	private static I18nProvider i18nProvider;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		i18nProvider = new I18nProvider(Locale.getDefault());
 	}
 
@@ -65,7 +65,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	 * Validation date is set on 2018-02-06T09:39:33
 	 */
 	@Test
-	public void defaultOnlyCryptographicConstraintTest() throws Exception {
+	void defaultOnlyCryptographicConstraintTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml");
@@ -148,7 +148,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void overrideDefaultCryptographicConstraintTest() throws Exception {
+	void overrideDefaultCryptographicConstraintTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
@@ -249,7 +249,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void cryptographicSuiteUpdateDateTest() throws Exception {
+	void cryptographicSuiteUpdateDateTest() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml");
 
@@ -551,7 +551,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	@Test
-	public void noCryptoPolicyTest() throws Exception {
+	void noCryptoPolicyTest() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/no-crypto-constraint-policy.xml");
 		
@@ -563,7 +563,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void pastSignatureValidationTest() throws Exception {
+	void pastSignatureValidationTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/diag-data/diag_data_pastSigValidation.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
@@ -621,7 +621,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	@Test
-	public void invalidIntermediateGreaterValue() throws Exception {
+	void invalidIntermediateGreaterValue() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/diag_data_intermediate_algo_valid.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
 		
@@ -639,7 +639,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	@Test
-	public void invalidIntermediateLowerValue() throws Exception {
+	void invalidIntermediateLowerValue() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/diag_data_intermediate_algo_invalid.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
 		
@@ -657,7 +657,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	@Test
-	public void algorithmHighestThanTheGreatestOne() throws Exception {
+	void algorithmHighestThanTheGreatestOne() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/diag_data_inexisting_algo_date.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
 		
@@ -675,7 +675,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 	
 	@Test
-	public void signatureWithContentTimestampTest() throws Exception {
+	void signatureWithContentTimestampTest() throws Exception {
 		XmlDiagnosticData diagnosticData = initializeExecutor("src/test/resources/diag-data/diag_data_pastSigValidation.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
 		
@@ -700,7 +700,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void signatureWithContentTstsNoExpirationDateTest() throws Exception {
+	void signatureWithContentTstsNoExpirationDateTest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = initializeExecutor("src/test/resources/diag-data/diag_data_pastSigValidation.xml");
 		XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
 		xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA1);
@@ -710,21 +710,21 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void noAlgoExpirationDateTest() throws Exception {
+	void noAlgoExpirationDateTest() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
 		assertEquals(Indication.TOTAL_PASSED, signatureConstraintAlgorithmExpirationDateIsNotDefined("SHA256", 0));
 	}
 
 	@Test
-	public void noEncryptionAlgoExpirationDateTest() throws Exception {
+	void noEncryptionAlgoExpirationDateTest() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
 		assertEquals(Indication.TOTAL_PASSED, signatureConstraintAlgorithmExpirationDateIsNotDefined("RSA", 0));
 	}
 
 	@Test
-	public void encryptionAlgoExpirationDateTest() throws Exception {
+	void encryptionAlgoExpirationDateTest() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml");
 
@@ -759,7 +759,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void largeKeySizeTest() throws Exception {
+	void largeKeySizeTest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml");
 
@@ -809,7 +809,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void dsaEncryptionAlgoTest() throws Exception {
+	void dsaEncryptionAlgoTest() throws Exception {
 		XmlDiagnosticData xmlDiagnosticData = initializeExecutor("src/test/resources/diag-data/diag_data_dsa_signature.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml");
 
@@ -885,7 +885,7 @@ public class CustomCryptographicConstraintsTest extends AbstractCryptographicCon
 	}
 
 	@Test
-	public void rsaPssTest() throws Exception {
+	void rsaPssTest() throws Exception {
 		initializeExecutor("src/test/resources/diag-data/universign-pss.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml");
 

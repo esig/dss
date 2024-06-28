@@ -66,7 +66,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation {
+class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation {
 
 	private static final DSSDocument signedDocument = new FileDocument("src/test/resources/validation/jades-with-sigAndRefsTst-with-dot.json");
 
@@ -210,7 +210,7 @@ public class JAdESWithValidationDataTstsTest extends AbstractJAdESTestValidation
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void validateStructure() throws Exception {
+	void validateStructure() throws Exception {
 
 		assertTrue(DSSJsonUtils.isJsonDocument(signedDocument));
 

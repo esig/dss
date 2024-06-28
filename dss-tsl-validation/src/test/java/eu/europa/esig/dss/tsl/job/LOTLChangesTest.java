@@ -49,7 +49,7 @@ import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 
-public class LOTLChangesTest {
+class LOTLChangesTest {
 
 	// Diff LOTL 248 / 250
 	// URL change for SI
@@ -59,7 +59,7 @@ public class LOTLChangesTest {
 	File cacheDirectory;
 
 	@Test
-	public void test() {
+	void test() {
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(originalFiles());
 
 		TLValidationJob job = new TLValidationJob();

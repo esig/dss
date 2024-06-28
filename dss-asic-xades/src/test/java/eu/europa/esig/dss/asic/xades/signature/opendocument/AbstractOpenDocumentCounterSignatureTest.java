@@ -65,7 +65,7 @@ public abstract class AbstractOpenDocumentCounterSignatureTest extends AbstractA
 	
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void test(DSSDocument fileToTest) {
+	void test(DSSDocument fileToTest) {
 		this.fileToTest = fileToTest;
 
 		super.signAndVerify();
@@ -126,7 +126,7 @@ public abstract class AbstractOpenDocumentCounterSignatureTest extends AbstractA
 		return fileDigests;
 	}
 	
-	public void verifySignatureFileName(List<DSSDocument> signatureFiles) {
+	void verifySignatureFileName(List<DSSDocument> signatureFiles) {
 		assertEquals(1, signatureFiles.size());
 		DSSDocument signature = signatureFiles.get(0);
 		assertEquals("META-INF/documentsignatures.xml", signature.getName());

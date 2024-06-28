@@ -41,10 +41,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck {
+class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
@@ -99,7 +99,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTes
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
@@ -153,7 +153,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTes
     }
 
     @Test
-    public void validMoreData() {
+    void validMoreData() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
@@ -207,7 +207,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTes
     }
 
     @Test
-    public void validNoData() {
+    void validNoData() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
@@ -234,7 +234,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTes
     }
 
     @Test
-    public void invalidDiffData() {
+    void invalidDiffData() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
@@ -289,7 +289,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTes
     }
 
     @Test
-    public void validNoName() {
+    void validNoName() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
@@ -340,7 +340,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTes
     }
 
     @Test
-    public void invalidNoName() {
+    void invalidNoName() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
@@ -385,7 +385,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTes
     }
 
     @Test
-    public void identifiedButNotIntact() {
+    void identifiedButNotIntact() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();

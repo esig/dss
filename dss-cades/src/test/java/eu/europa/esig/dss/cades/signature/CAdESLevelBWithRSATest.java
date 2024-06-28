@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class CAdESLevelBWithRSATest extends AbstractCAdESTestSignature {
+class CAdESLevelBWithRSATest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -87,7 +87,7 @@ public class CAdESLevelBWithRSATest extends AbstractCAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1} + encryption algorithm {2}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm messageDigestAlgo, DigestAlgorithm digestAlgo, EncryptionAlgorithm encryptionAlgorithm) {
+	void init(DigestAlgorithm messageDigestAlgo, DigestAlgorithm digestAlgo, EncryptionAlgorithm encryptionAlgorithm) {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes(),
 				"BC-CAdES-BpB-att-" + messageDigestAlgo.name() + "-" + digestAlgo.name() + "withRSA" +
 						(EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm ? "MGF1" : "" ) + ".p7m");

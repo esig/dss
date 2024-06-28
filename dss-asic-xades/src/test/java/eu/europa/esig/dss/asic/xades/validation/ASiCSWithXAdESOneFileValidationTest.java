@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ASiCSWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCSWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTestValidation {
 
 	private static final DSSDocument EXPECTED_ONEFILE = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 

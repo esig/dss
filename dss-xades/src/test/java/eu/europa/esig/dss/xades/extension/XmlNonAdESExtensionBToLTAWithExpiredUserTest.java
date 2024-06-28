@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlNonAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
+class XmlNonAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
 
     private final DSSNamespace xmldsigNamespace = XMLDSigNamespace.NS;
 
@@ -62,7 +62,7 @@ public class XmlNonAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdEST
     private XAdESService service;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
         service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());

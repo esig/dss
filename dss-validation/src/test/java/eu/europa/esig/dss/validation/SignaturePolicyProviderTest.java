@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class SignaturePolicyProviderTest {
+class SignaturePolicyProviderTest {
 
 	private static final String POLICY_ID = "1.2.3";
 	private static final String POLICY_URL = "http://localhost/my-policy.pdf";
@@ -44,7 +44,7 @@ public class SignaturePolicyProviderTest {
 	private static final DSSDocument POLICY_DOC = new InMemoryDocument(new byte[] { 1, 2, 3 });
 
 	@Test
-	public void noPolicies() {
+	void noPolicies() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
 		assertNull(spp.getSignaturePolicy(POLICY_ID, POLICY_URL));
 		assertNull(spp.getSignaturePolicyByUrl(POLICY_URL));
@@ -52,7 +52,7 @@ public class SignaturePolicyProviderTest {
 	}
 
 	@Test
-	public void policyById() {
+	void policyById() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesById = new HashMap<>();
 		signaturePoliciesById.put(POLICY_ID, POLICY_DOC);
@@ -63,7 +63,7 @@ public class SignaturePolicyProviderTest {
 	}
 
 	@Test
-	public void policyByUrl() {
+	void policyByUrl() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
 		Map<String, DSSDocument> signaturePoliciesByUrl = new HashMap<>();
 		signaturePoliciesByUrl.put(POLICY_URL, POLICY_DOC);
@@ -74,7 +74,7 @@ public class SignaturePolicyProviderTest {
 	}
 
 	@Test
-	public void policyByDataLoader() {
+	void policyByDataLoader() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put(POLICY_URL, new byte[] { 1, 2, 3 });
@@ -86,7 +86,7 @@ public class SignaturePolicyProviderTest {
 	}
 
 	@Test
-	public void policyUpdateTest() {
+	void policyUpdateTest() {
 		SignaturePolicyProvider spp = new SignaturePolicyProvider();
 
 		Map<String, byte[]> dataMap = new HashMap<>();

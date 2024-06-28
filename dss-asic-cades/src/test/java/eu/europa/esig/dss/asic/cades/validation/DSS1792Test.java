@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
+class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 	
 	private static final DSSDocument document = new FileDocument("src/test/resources/validation/dss1792.asice");
 
@@ -91,7 +91,7 @@ public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 	}
 	
 	@Test
-	public void manifestExtractorTest() {
+	void manifestExtractorTest() {
 		
         DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
         ASiCContent result = extractor.extract();

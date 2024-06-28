@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck {
+class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -69,7 +69,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void multipleValuesTest() throws Exception {
+    void multipleValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -98,7 +98,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void nameTest() throws Exception {
+    void nameTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -126,7 +126,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -154,7 +154,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void qcPS2DNotPresentTest() throws Exception {
+    void qcPS2DNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -176,7 +176,7 @@ public class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() throws Exception {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("0.4.0.194121.1.4");

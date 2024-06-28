@@ -50,7 +50,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelBExternalSignatureTest extends AbstractCAdESTestSignature {
+class CAdESLevelBExternalSignatureTest extends AbstractCAdESTestSignature {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESLevelBExternalSignatureTest.class);
 	
@@ -62,7 +62,7 @@ public class CAdESLevelBExternalSignatureTest extends AbstractCAdESTestSignature
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();

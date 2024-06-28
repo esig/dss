@@ -49,12 +49,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CertificateConflictTest {
+class CertificateConflictTest {
 
 	private final PasswordProtection passwordProtection = new PasswordProtection("1qaz@WSX".toCharArray());
 
 	@Test
-	public void testXadesCaDuplicate() throws IOException {
+	void testXadesCaDuplicate() throws IOException {
 		DSSDocument signedDocument = xadesSign(new FileDocument("src/test/resources/sample.xml"));
 		assertEquals(MimeTypeEnum.XML, signedDocument.getMimeType());
 		xadesVerifyPreviousKeystore(signedDocument);

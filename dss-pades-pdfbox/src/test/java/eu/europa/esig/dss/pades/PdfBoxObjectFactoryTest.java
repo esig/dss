@@ -35,12 +35,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class PdfBoxObjectFactoryTest {
+class PdfBoxObjectFactoryTest {
 
 	private static final String PDFBOX_SIGNATURE_SERVICE = "PdfBoxSignatureService";
 
 	@Test
-	public void testSystemProperty() {
+	void testSystemProperty() {
 		IPdfObjFactory ipof = new ServiceLoaderPdfObjFactory();
 
 		PDFSignatureService signatureService = ipof.newPAdESSignatureService();
@@ -52,7 +52,7 @@ public class PdfBoxObjectFactoryTest {
 	}
 
 	@Test
-	public void testRuntimeChange() {
+	void testRuntimeChange() {
 		IPdfObjFactory ipof = new EmptyPdfObjectFactory();
 
 		PDFSignatureService signatureService = ipof.newPAdESSignatureService();

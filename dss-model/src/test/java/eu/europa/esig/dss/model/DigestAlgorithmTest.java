@@ -26,45 +26,45 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DigestAlgorithmTest {
+class DigestAlgorithmTest {
 
 	@Test
-	public void forOid() {
+	void forOid() {
 		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forOID(DigestAlgorithm.SHA256.getOid()));
 	}
 
 	@Test
-	public void forOidException() {
+	void forOidException() {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> DigestAlgorithm.forOID("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test
-	public void forXML() {
+	void forXML() {
 		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forXML(DigestAlgorithm.SHA256.getUri()));
 	}
 
 	@Test
-	public void forXMLException() {
+	void forXMLException() {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> DigestAlgorithm.forXML("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test
-	public void forName() {
+	void forName() {
 		for (DigestAlgorithm digestAlgo : DigestAlgorithm.values()) {
 			assertEquals(digestAlgo, DigestAlgorithm.forName(digestAlgo.getName()));
 		}
 	}
 
 	@Test
-	public void forNameException() {
+	void forNameException() {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> DigestAlgorithm.forName("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test
-	public void forNameSubstitution() {
+	void forNameSubstitution() {
 		assertEquals(DigestAlgorithm.SHA256, DigestAlgorithm.forName("aaa", DigestAlgorithm.SHA256));
 	}
 

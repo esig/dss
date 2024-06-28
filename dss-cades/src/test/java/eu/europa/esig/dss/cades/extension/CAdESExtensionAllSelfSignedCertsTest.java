@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExtension {
+class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExtension {
 
 	private SignatureLevel originalSignatureLevel;
 	private SignatureLevel finalSignatureLevel;
@@ -47,7 +47,7 @@ public class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExten
 	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello World!".getBytes());
 
 		certificateVerifier = getCompleteCertificateVerifier();
@@ -56,7 +56,7 @@ public class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExten
 	}
 
 	@Test
-	public void bToTTest() throws Exception {
+	void bToTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -68,7 +68,7 @@ public class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExten
 	}
 
 	@Test
-	public void bToLTTest() throws Exception {
+	void bToLTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -88,7 +88,7 @@ public class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExten
 	}
 
 	@Test
-	public void tToLTTest() throws Exception {
+	void tToLTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -108,7 +108,7 @@ public class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExten
 	}
 
 	@Test
-	public void bToLTATest() throws Exception {
+	void bToLTATest() throws Exception {
 		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -128,7 +128,7 @@ public class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExten
 	}
 
 	@Test
-	public void tToLTATest() throws Exception {
+	void tToLTATest() throws Exception {
 		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 

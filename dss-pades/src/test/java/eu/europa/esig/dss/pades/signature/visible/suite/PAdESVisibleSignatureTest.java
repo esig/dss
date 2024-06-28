@@ -62,7 +62,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -75,7 +75,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextOnly() throws IOException {
+	void testGeneratedTextOnly() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -87,7 +87,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedImageOnly() throws IOException {
+	void testGeneratedImageOnly() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getSmallRedJPG());
 
@@ -102,7 +102,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedImageOnlyPNG() throws IOException {
+	void testGeneratedImageOnlyPNG() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 
@@ -122,7 +122,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedImageOnlyPNGWithSize() throws IOException {
+	void testGeneratedImageOnlyPNGWithSize() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getSmallRedJPG());
 
@@ -139,7 +139,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedImageOnlyPngAndZoom() throws IOException {
+	void testGeneratedImageOnlyPngAndZoom() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 
@@ -155,7 +155,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testCMYKPicture() throws IOException {
+	void testCMYKPicture() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getCMYKPicture());
 
@@ -170,7 +170,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void dss2090Test() throws IOException {
+	void dss2090Test() throws IOException {
 		String signature = "Some long signature text with\nmultiple\nnewlines in them\nfor testing";
 
 		SignatureImageParameters imageParams = new SignatureImageParameters();
@@ -202,7 +202,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void dss2227Test() throws IOException {
+	void dss2227Test() throws IOException {
 		String signature = "Signature 1\nSignature 12345";
 
 		SignatureImageParameters imageParams = new SignatureImageParameters();
@@ -223,7 +223,7 @@ public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void textOnBottomTest() throws IOException {
+	void textOnBottomTest() throws IOException {
 		String signature = "Signature 1\nSignature 12345";
 
 		SignatureImageParameters imageParams = new SignatureImageParameters();

@@ -44,10 +44,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CounterSignXadesBTest extends CookbookTools {
+class CounterSignXadesBTest extends CookbookTools {
 
     @Test
-    public void signXAdESBaselineB() throws Exception {
+    void signXAdESBaselineB() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

@@ -55,7 +55,7 @@ public class PAdESDoubleSignatureLTWithVRIAndLTTest extends AbstractPAdESTestSig
     private Date signingTime;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new PAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

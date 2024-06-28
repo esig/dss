@@ -47,7 +47,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class CAdESLTALevelExtendedExpiredTest extends AbstractCAdESTestValidation {
+class CAdESLTALevelExtendedExpiredTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

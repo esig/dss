@@ -40,7 +40,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESParallelSignatureWithCompactTest extends AbstractJAdESTestSignature {
+class JAdESParallelSignatureWithCompactTest extends AbstractJAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -49,7 +49,7 @@ public class JAdESParallelSignatureWithCompactTest extends AbstractJAdESTestSign
     private JAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         service = new JAdESService(getCompleteCertificateVerifier());
 
         originalDocument = new FileDocument(new File("src/test/resources/sample.json"));
@@ -64,7 +64,7 @@ public class JAdESParallelSignatureWithCompactTest extends AbstractJAdESTestSign
     }
 
     @Test
-    public void test() {
+    void test() {
         documentToSign = originalDocument;
         DSSDocument signedDocument = super.sign();
         assertEquals(1, getSignatures(signedDocument).size());

@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
 
     @Test
-    public void test() {
+    void test() {
         ExternalCMSService service = new ExternalCMSService(getOfflineCertificateVerifier());
 
         DSSDocument toSignDocument = new InMemoryDocument("Hello World!".getBytes());

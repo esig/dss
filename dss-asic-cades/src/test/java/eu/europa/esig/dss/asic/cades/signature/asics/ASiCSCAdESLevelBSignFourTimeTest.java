@@ -38,7 +38,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCSCAdESLevelBSignFourTimeTest extends AbstractASiCSCAdESTestSignature {
+class ASiCSCAdESLevelBSignFourTimeTest extends AbstractASiCSCAdESTestSignature {
 
 	private DSSDocument originalDocument;
 
@@ -47,7 +47,7 @@ public class ASiCSCAdESLevelBSignFourTimeTest extends AbstractASiCSCAdESTestSign
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();

@@ -43,12 +43,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
+class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
 
     private static final String CERT_ID = "C-1";
 
     @Test
-    public void validCheck() throws Exception {
+    void validCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -85,7 +85,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void porAtControlTimeCheck() throws Exception {
+    void porAtControlTimeCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -122,7 +122,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void poeAfterCheck() throws Exception {
+    void poeAfterCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -159,7 +159,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noPoeCheck() throws Exception {
+    void noPoeCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -196,7 +196,7 @@ public class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidTstCheck() throws Exception {
+    void invalidTstCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

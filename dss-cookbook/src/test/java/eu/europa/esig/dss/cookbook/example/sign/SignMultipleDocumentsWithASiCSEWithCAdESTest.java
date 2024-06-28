@@ -38,10 +38,10 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools {
+class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools {
 
 	@Test
-	public void signASiCEBaselineB() throws Exception {
+	void signASiCEBaselineB() throws Exception {
 
 		// Get a token connection based on a pkcs12 file commonly used to store
 		// private

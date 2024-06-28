@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelTWithDuplicatedSigTstSameElementTest extends AbstractXAdESTestValidation {
+class XAdESLevelTWithDuplicatedSigTstSameElementTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

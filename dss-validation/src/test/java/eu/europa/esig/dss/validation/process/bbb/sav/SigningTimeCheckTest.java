@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
 
-public class SigningTimeCheckTest extends AbstractTestCheck {
+class SigningTimeCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signingTimeCheckTest() throws Exception {
+	void signingTimeCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setClaimedSigningTime(new Date());
 
@@ -57,7 +57,7 @@ public class SigningTimeCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedSigningTimeCheckTest() throws Exception {
+	void failedSigningTimeCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 
 		LevelConstraint constraint = new LevelConstraint();

@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 
-public class RefsOnlyTimestampTest extends AbstractXAdESTestValidation {
+class RefsOnlyTimestampTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

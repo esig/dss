@@ -36,12 +36,12 @@ import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEnumsTest {
+class ASiCEnumsTest {
 
-	public static final DSSNamespace XSD_NS = new DSSNamespace("http://www.w3.org/2001/XMLSchema", "xsd");
+	static final DSSNamespace XSD_NS = new DSSNamespace("http://www.w3.org/2001/XMLSchema", "xsd");
 
 	@Test
-	public void getAllElements() throws Exception {
+	void getAllElements() throws Exception {
 		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(ASiCManifestUtils.ASIC_MANIFEST)) {
@@ -52,7 +52,7 @@ public class ASiCEnumsTest {
 	}
 
 	@Test
-	public void getAllAttributes() throws Exception {
+	void getAllAttributes() throws Exception {
 		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(ASiCManifestUtils.ASIC_MANIFEST)) {

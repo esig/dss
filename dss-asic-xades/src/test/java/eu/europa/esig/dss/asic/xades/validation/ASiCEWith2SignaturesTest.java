@@ -42,7 +42,7 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class ASiCEWith2SignaturesTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWith2SignaturesTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

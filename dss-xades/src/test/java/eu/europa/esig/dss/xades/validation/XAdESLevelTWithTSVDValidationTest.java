@@ -32,7 +32,7 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESLevelTWithTSVDValidationTest extends AbstractXAdESTestValidation {
+class XAdESLevelTWithTSVDValidationTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

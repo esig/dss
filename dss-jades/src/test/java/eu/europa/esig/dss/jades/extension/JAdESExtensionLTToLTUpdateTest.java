@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESExtensionLTToLTUpdateTest extends AbstractJAdESTestExtension {
+class JAdESExtensionLTToLTUpdateTest extends AbstractJAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

@@ -50,10 +50,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCEXAdESLevelBMultiArchivesParallelTest extends PKIFactoryAccess {
+class ASiCEXAdESLevelBMultiArchivesParallelTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		List<DSSDocument> documentToSigns = new ArrayList<>();
 		documentToSigns.add(new FileDocument("src/test/resources/signable/open-document.odt"));
 		documentToSigns.add(new FileDocument("src/test/resources/signable/test.txt"));

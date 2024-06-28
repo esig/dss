@@ -29,52 +29,52 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PathsTest {
+class PathsTest {
 	
 	@Test
-	public void objectPath() {
+	void objectPath() {
 		assertEquals("./ds:Object", XMLDSigPath.OBJECT_PATH);
 	}
 
 	@Test
-	public void objectWithId() {
+	void objectWithId() {
 		String objectById = XMLDSigPath.OBJECT_PATH + DomUtils.getXPathByIdAttribute("bla");
 		assertEquals("./ds:Object[@*[local-name()='Id']='bla' or @*[local-name()='id']='bla' or @*[local-name()='ID']='bla']", objectById);
 	}
 
 	@Test
-	public void manifestPath() {
+	void manifestPath() {
 		assertEquals("./ds:Object/ds:Manifest", XMLDSigPath.MANIFEST_PATH);
 	}
 
 	@Test
-	public void getSignedDataObjectPropertiesPath() {
+	void getSignedDataObjectPropertiesPath() {
 		XAdESPath paths = new XAdES132Path();
 		assertEquals("./ds:Object/xades132:QualifyingProperties/xades132:SignedProperties/xades132:SignedDataObjectProperties",
 				paths.getSignedDataObjectPropertiesPath());
 	}
 
 	@Test
-	public void allTimestamps() {
+	void allTimestamps() {
 		XAdESPath paths = new XAdES132Path();
 		String path = paths.getCurrentEncapsulatedTimestamp();
 		assertEquals("./xades132:EncapsulatedTimeStamp", path);
 	}
 
 	@Test
-	public void fromCurrentPosition() {
+	void fromCurrentPosition() {
 		XAdESPath paths = new XAdES132Path();
 		String path = paths.getCurrentOCSPRefsChildren();
 		assertEquals("./xades132:OCSPRefs/xades132:OCSPRef", path);
 	}
 
 	@Test
-	public void notParentOf() {
+	void notParentOf() {
 		assertEquals("//ds:Signature[not(parent::xades132:CounterSignature)]", XAdES132Path.ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH);
 	}
 
 	@Test
-	public void allFromCurrentPosition() {
+	void allFromCurrentPosition() {
 		assertEquals(".//xades132:UnsignedProperties", AbstractPath.allFromCurrentPosition(XAdES132Element.UNSIGNED_PROPERTIES));
 	}
 

@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlEvidenceRecordChainRenewalInvalidValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordChainRenewalInvalidValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

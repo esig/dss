@@ -39,10 +39,10 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class DSS922Test {
+class DSS922Test {
 
 	@Test
-	public void dss922Test() throws Exception {
+	void dss922Test() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/DSS-922-diag-data.xml"));
 		assertNotNull(diagnosticData);
 
@@ -59,7 +59,7 @@ public class DSS922Test {
 	}
 	
 	@Test
-	public void testIgnoreRevocationFreshness() throws Exception {
+	void testIgnoreRevocationFreshness() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/DSS-922-diag-data.xml"));
 		assertNotNull(diagnosticData);
 

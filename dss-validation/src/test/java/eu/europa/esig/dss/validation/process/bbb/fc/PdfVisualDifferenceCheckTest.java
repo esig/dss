@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PdfVisualDifferenceCheckTest extends AbstractTestCheck {
+class PdfVisualDifferenceCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void valid() {
+	void valid() {
 		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
 		LevelConstraint constraint = new LevelConstraint();
@@ -57,7 +57,7 @@ public class PdfVisualDifferenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void fail() {
+	void fail() {
 		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getVisualDifference().add(getXmlModification(1));
@@ -76,7 +76,7 @@ public class PdfVisualDifferenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void annotationOverlap() {
+	void annotationOverlap() {
 		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(1));
@@ -95,7 +95,7 @@ public class PdfVisualDifferenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void multipleFailure() throws Exception {
+	void multipleFailure() throws Exception {
 		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(1));

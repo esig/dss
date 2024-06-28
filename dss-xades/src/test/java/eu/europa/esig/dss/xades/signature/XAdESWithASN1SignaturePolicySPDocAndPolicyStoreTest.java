@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESWithASN1SignaturePolicySPDocAndPolicyStoreTest extends AbstractXAdESTestSignature {
+class XAdESWithASN1SignaturePolicySPDocAndPolicyStoreTest extends AbstractXAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -60,7 +60,7 @@ public class XAdESWithASN1SignaturePolicySPDocAndPolicyStoreTest extends Abstrac
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         XmlPolicyWithTransforms signaturePolicy = new XmlPolicyWithTransforms();

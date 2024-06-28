@@ -38,13 +38,13 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
-public class IsValidSignatureValueTest extends PKIFactoryAccess {
+class IsValidSignatureValueTest extends PKIFactoryAccess {
 
 	private MockService service = new MockService(getEmptyCertificateVerifier());
 	private String signingAlias = null;
 
 	@Test
-	public void isValidSignatureValue() {
+	void isValidSignatureValue() {
 		ToBeSigned correct = new ToBeSigned("Hello".getBytes());
 		ToBeSigned wrong = new ToBeSigned("Bye".getBytes());
 		ToBeSigned empty = new ToBeSigned(new byte[] {});

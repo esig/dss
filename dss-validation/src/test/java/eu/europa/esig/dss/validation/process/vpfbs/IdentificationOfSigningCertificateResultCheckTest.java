@@ -39,10 +39,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class IdentificationOfSigningCertificateResultCheckTest extends AbstractTestCheck {
+class IdentificationOfSigningCertificateResultCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlISC xmlISC = new XmlISC();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.PASSED);
@@ -62,7 +62,7 @@ public class IdentificationOfSigningCertificateResultCheckTest extends AbstractT
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlISC xmlISC = new XmlISC();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.INDETERMINATE);

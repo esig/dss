@@ -44,12 +44,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignEd25519Test {
+class SignEd25519Test {
 
     private static final Logger LOG = LoggerFactory.getLogger(SignEd25519Test.class);
 
     @Test
-    public void test() throws IOException {
+    void test() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/Ed25519-good-user.p12",
                 new PasswordProtection("ks-password".toCharArray()))) {
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
@@ -72,7 +72,7 @@ public class SignEd25519Test {
     }
 
     @Test
-    public void testSignatureAlgorithm() throws IOException {
+    void testSignatureAlgorithm() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/Ed25519-good-user.p12",
                 new PasswordProtection("ks-password".toCharArray()))) {
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
@@ -95,7 +95,7 @@ public class SignEd25519Test {
     }
 
     @Test
-    public void testSignWithWrongSignatureAlgorithm() throws IOException {
+    void testSignWithWrongSignatureAlgorithm() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/Ed25519-good-user.p12",
                 new PasswordProtection("ks-password".toCharArray()))) {
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
@@ -111,7 +111,7 @@ public class SignEd25519Test {
     }
 
     @Test
-    public void testDigestSign() throws IOException {
+    void testDigestSign() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/Ed25519-good-user.p12",
                 new PasswordProtection("ks-password".toCharArray()))) {
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();

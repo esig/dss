@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		

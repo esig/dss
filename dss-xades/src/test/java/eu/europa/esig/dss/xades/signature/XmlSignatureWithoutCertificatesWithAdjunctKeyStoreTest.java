@@ -42,7 +42,7 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XmlSignatureWithoutCertificatesWithAdjunctKeyStoreTest extends AbstractXAdESTestSignature {
+class XmlSignatureWithoutCertificatesWithAdjunctKeyStoreTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -51,7 +51,7 @@ public class XmlSignatureWithoutCertificatesWithAdjunctKeyStoreTest extends Abst
     private KeyStoreCertificateSource keyStoreCertificateSource;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

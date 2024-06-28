@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck {
+class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -68,7 +68,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
     }
 
     @Test
-    public void sameNumberTest() throws Exception {
+    void sameNumberTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -95,7 +95,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -122,7 +122,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
     }
 
     @Test
-    public void qcLimitValueNotPresentTest() throws Exception {
+    void qcLimitValueNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -144,7 +144,7 @@ public class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck
     }
 
     @Test
-    public void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() throws Exception {
         IntValueConstraint constraint = new IntValueConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.setValue(500000);

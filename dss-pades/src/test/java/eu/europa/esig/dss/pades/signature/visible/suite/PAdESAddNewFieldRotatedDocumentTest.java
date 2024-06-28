@@ -53,7 +53,7 @@ public class PAdESAddNewFieldRotatedDocumentTest extends AbstractPAdESTestValida
     private DSSDocument docWithEmptyField;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         fieldParameters = new SignatureFieldParameters();
         fieldParameters.setFieldId("signature1");
         fieldParameters.setOriginX(100);
@@ -85,7 +85,7 @@ public class PAdESAddNewFieldRotatedDocumentTest extends AbstractPAdESTestValida
 
     @ParameterizedTest(name = "Text visual signature for document and rotation {index} : {0} : {1}")
     @MethodSource("data")
-    public void test(DSSDocument document, VisualSignatureRotation rotation) throws IOException {
+    void test(DSSDocument document, VisualSignatureRotation rotation) throws IOException {
         this.fieldParameters.setRotation(rotation);
 
         this.docWithEmptyField = service.addNewSignatureField(document, fieldParameters);

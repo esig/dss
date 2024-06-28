@@ -30,10 +30,10 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCContentDocumentFilterTest {
+class ASiCContentDocumentFilterTest {
 
     @Test
-    public void test() {
+    void test() {
         DSSDocument documentOne = new InMemoryDocument("Hello World".getBytes(), "hello.txt");
         DSSDocument documentTwo = new InMemoryDocument("Bye World".getBytes(), "bye.txt");
 

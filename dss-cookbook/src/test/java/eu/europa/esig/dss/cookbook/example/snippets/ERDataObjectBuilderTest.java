@@ -37,10 +37,10 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ERDataObjectBuilderTest {
+class ERDataObjectBuilderTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
 
         // tag::xml-er[]
         // import eu.europa.esig.dss.enumerations.DigestAlgorithm;

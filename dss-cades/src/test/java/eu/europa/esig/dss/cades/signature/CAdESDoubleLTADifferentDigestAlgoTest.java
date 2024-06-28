@@ -38,7 +38,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSignature {
+class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSignature {
 
     private static final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World".getBytes());
 
@@ -47,7 +47,7 @@ public class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSign
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signatureParameters = new CAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());

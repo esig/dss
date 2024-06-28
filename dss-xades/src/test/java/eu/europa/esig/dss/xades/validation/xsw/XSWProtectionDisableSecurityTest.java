@@ -33,7 +33,7 @@ import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XSWProtectionDisableSecurityTest extends AbstractXAdESTestValidation {
+class XSWProtectionDisableSecurityTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

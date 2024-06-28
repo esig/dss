@@ -77,19 +77,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
+class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateProcessExecutorTest.class);
 
 	private static I18nProvider i18nProvider;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		i18nProvider = new I18nProvider(Locale.getDefault());
 	}
 
 	@Test
-	public void deRevoked() throws Exception {
+	void deRevoked() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/de_revoked.xml"));
 		assertNotNull(diagnosticData);
 
@@ -151,7 +151,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void beTSA() throws Exception {
+	void beTSA() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/be_tsa.xml"));
 		assertNotNull(diagnosticData);
 
@@ -192,7 +192,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void dkNoChain() throws Exception {
+	void dkNoChain() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/dk_no_chain.xml"));
 		assertNotNull(diagnosticData);
 
@@ -228,7 +228,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void inconsistentTrustService() throws Exception {
+	void inconsistentTrustService() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/inconsistent-state.xml"));
 		assertNotNull(diagnosticData);
 
@@ -256,7 +256,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void invalidTLWithWarnLevel() throws Exception {
+	void invalidTLWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/invalid-tl.xml"));
 		assertNotNull(diagnosticData);
 
@@ -284,7 +284,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void invalidTLWithFailLevel() throws Exception {
+	void invalidTLWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/invalid-tl.xml"));
 		assertNotNull(diagnosticData);
 
@@ -319,7 +319,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void expiredTL() throws Exception {
+	void expiredTL() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/expired-tl.xml"));
 		assertNotNull(diagnosticData);
 
@@ -341,7 +341,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void wsaQC() throws Exception {
+	void wsaQC() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_WSAQC.xml"));
 		assertNotNull(diagnosticData);
 
@@ -382,7 +382,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void overruleNotQualified() throws Exception {
+	void overruleNotQualified() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/overrule-NotQualified-tl.xml"));
 		assertNotNull(diagnosticData);
 
@@ -403,7 +403,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void overruleNoQSCD() throws Exception {
+	void overruleNoQSCD() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/overrule-NoQSCD-tl.xml"));
 		assertNotNull(diagnosticData);
 
@@ -424,7 +424,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void overruleQSCD() throws Exception {
+	void overruleQSCD() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/overrule-QSCD-tl.xml"));
 		assertNotNull(diagnosticData);
 
@@ -446,7 +446,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void overruleQualified() throws Exception {
+	void overruleQualified() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/overrule-Qualified-tl.xml"));
 		assertNotNull(diagnosticData);
 
@@ -468,7 +468,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void multipleSDI() throws Exception {
+	void multipleSDI() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/multiple-sdi.xml"));
 		assertNotNull(diagnosticData);
 
@@ -489,7 +489,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void multipleSDIMultipleASi() throws Exception {
+	void multipleSDIMultipleASi() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/multiple-sdi-different-asi.xml"));
 		assertNotNull(diagnosticData);
 
@@ -517,7 +517,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void withdrawn() throws Exception {
+	void withdrawn() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/withdrawn.xml"));
 		assertNotNull(diagnosticData);
 
@@ -538,7 +538,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void twoSDIdiffentResults() throws Exception {
+	void twoSDIdiffentResults() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/2-sdi-different-results.xml"));
 		assertNotNull(diagnosticData);
 
@@ -562,7 +562,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void trustAnchor() throws Exception {
+	void trustAnchor() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/cert-validation/trust-anchor.xml"));
 		assertNotNull(diagnosticData);
 
@@ -583,7 +583,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 	
 	@Test
-	public void certificateIdIsMissingTest() throws Exception {
+	void certificateIdIsMissingTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/trust-anchor.xml"));
 		assertNotNull(diagnosticData);
@@ -602,7 +602,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void keyUsageCertTest() throws Exception {
+	void keyUsageCertTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_with_qcCClegislation.xml"));
 		assertNotNull(diagnosticData);
@@ -659,7 +659,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void extendedKeyUsageCertTest() throws Exception {
+	void extendedKeyUsageCertTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_with_qcCClegislation.xml"));
 		assertNotNull(diagnosticData);
@@ -722,7 +722,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void certificateWithQcCClegislationTest() throws Exception {
+	void certificateWithQcCClegislationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_with_qcCClegislation.xml"));
 		assertNotNull(diagnosticData);
@@ -755,7 +755,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void certificateWithQcCClegislationFailPolicyTest() throws Exception {
+	void certificateWithQcCClegislationFailPolicyTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_with_qcCClegislation.xml"));
 		assertNotNull(diagnosticData);
@@ -805,7 +805,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void certificateWithQcCClegislationCustomPolicyTest() throws Exception {
+	void certificateWithQcCClegislationCustomPolicyTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_with_qcCClegislation.xml"));
 		assertNotNull(diagnosticData);
@@ -837,7 +837,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void certificateWithQcCClegislationCustomPolicyFailTest() throws Exception {
+	void certificateWithQcCClegislationCustomPolicyFailTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_with_qcCClegislation.xml"));
 		assertNotNull(diagnosticData);
@@ -888,7 +888,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void qcComplianceOverruleTest() throws Exception {
+	void qcComplianceOverruleTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/qcCompliance-tl-overrule.xml"));
 		assertNotNull(diagnosticData);
@@ -946,7 +946,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void untrustedChainOkTest() throws Exception {
+	void untrustedChainOkTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/qcCompliance-tl-overrule.xml"));
 		assertNotNull(diagnosticData);
@@ -979,7 +979,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void untrustedChainKeyUsageFailureTest() throws Exception {
+	void untrustedChainKeyUsageFailureTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/untrusted-chain-failure.xml"));
 		assertNotNull(diagnosticData);
@@ -1013,7 +1013,7 @@ public class CertificateProcessExecutorTest extends AbstractTestValidationExecut
 	}
 
 	@Test
-	public void certForESigQcForLegalPersonTest() throws Exception {
+	void certForESigQcForLegalPersonTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/cert-validation/cert_forESig_qcForLegalPerson.xml"));
 		assertNotNull(diagnosticData);

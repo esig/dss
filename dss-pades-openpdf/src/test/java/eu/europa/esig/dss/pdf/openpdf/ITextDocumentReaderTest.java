@@ -36,10 +36,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ITextDocumentReaderTest extends PKIFactoryAccess {
+class ITextDocumentReaderTest extends PKIFactoryAccess {
 
     @Test
-    public void permissionsSimpleDocument() throws IOException {
+    void permissionsSimpleDocument() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument)) {
             assertFalse(documentReader.isEncrypted());
@@ -50,7 +50,7 @@ public class ITextDocumentReaderTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void permissionsProtectedDocument() throws IOException {
+    void permissionsProtectedDocument() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"));
         try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[]{ ' ' })) {
             assertTrue(documentReader.isEncrypted());
@@ -61,7 +61,7 @@ public class ITextDocumentReaderTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void permissionsEditionProtectedDocument() throws IOException {
+    void permissionsEditionProtectedDocument() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_none.pdf"));
         try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[]{ ' ' })) {
             assertTrue(documentReader.isEncrypted());
@@ -72,7 +72,7 @@ public class ITextDocumentReaderTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void permissionsEditionNoFieldsProtectedDocument() throws IOException {
+    void permissionsEditionNoFieldsProtectedDocument() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_no_field.pdf"));
         try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[]{ ' ' })) {
             assertTrue(documentReader.isEncrypted());
@@ -83,7 +83,7 @@ public class ITextDocumentReaderTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void generateDocumentIdTest() throws IOException {
+    void generateDocumentIdTest() throws IOException {
         DSSDocument firstDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         DSSDocument secondDocument = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
@@ -142,7 +142,7 @@ public class ITextDocumentReaderTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void fileHeaderVersionTest() throws IOException {
+    void fileHeaderVersionTest() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         assertEquals(1.4f, new ITextDocumentReader(dssDocument).getPdfHeaderVersion());
         dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
@@ -154,7 +154,7 @@ public class ITextDocumentReaderTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void versionTest() throws IOException {
+    void versionTest() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         assertEquals(1.4f, new ITextDocumentReader(dssDocument).getVersion());
         dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
@@ -166,7 +166,7 @@ public class ITextDocumentReaderTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void setVersionTest() throws IOException {
+    void setVersionTest() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
         ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument);

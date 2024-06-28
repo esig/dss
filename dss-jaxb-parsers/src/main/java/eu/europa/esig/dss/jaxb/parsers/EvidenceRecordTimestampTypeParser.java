@@ -28,6 +28,9 @@ import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
  */
 public class EvidenceRecordTimestampTypeParser {
 
+    /**
+     * Default constructor
+     */
     private EvidenceRecordTimestampTypeParser() {
         // empty
     }

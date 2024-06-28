@@ -43,12 +43,12 @@ import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class MultiThreadsCertificateValidatorTest {
+class MultiThreadsCertificateValidatorTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MultiThreadsCertificateValidatorTest.class);
 
 	@Test
-	public void test() {
+	void test() {
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 

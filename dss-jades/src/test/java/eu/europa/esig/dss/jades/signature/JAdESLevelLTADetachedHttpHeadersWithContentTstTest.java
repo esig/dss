@@ -50,7 +50,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelLTADetachedHttpHeadersWithContentTstTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelLTADetachedHttpHeadersWithContentTstTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument originalDocument;
@@ -58,7 +58,7 @@ public class JAdESLevelLTADetachedHttpHeadersWithContentTstTest extends Abstract
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		JAdESService jadesService = new JAdESService(getCompleteCertificateVerifier());
 		jadesService.setTspSource(getGoodTsa());
 		service = jadesService;

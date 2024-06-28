@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESDoubleSignatureLTAAndLTTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESDoubleSignatureLTAAndLTTest extends AbstractASiCEXAdESTestSignature {
 
     private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
@@ -51,7 +51,7 @@ public class ASiCEXAdESDoubleSignatureLTAAndLTTest extends AbstractASiCEXAdESTes
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
         service = new ASiCWithXAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());

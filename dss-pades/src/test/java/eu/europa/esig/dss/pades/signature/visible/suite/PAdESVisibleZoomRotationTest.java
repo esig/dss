@@ -56,7 +56,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -69,7 +69,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	}
 	
 	@Test
-	public void testNoTransformations() throws Exception {
+	void testNoTransformations() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(RED_CROSS_IMAGE);
 		
@@ -86,7 +86,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	}
 	
 	@Test
-	public void testZoomOnly() throws Exception {
+	void testZoomOnly() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(RED_CROSS_IMAGE);
 		
@@ -104,7 +104,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	}
 	
 	@Test
-	public void testRotationOnly() throws Exception {
+	void testRotationOnly() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(PNG_IMAGE);
 
@@ -123,7 +123,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 	}
 	
 	@Test
-	public void testZoomAndRotation() throws Exception {
+	void testZoomAndRotation() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(PNG_IMAGE);
 

@@ -35,10 +35,10 @@ import org.xml.sax.SAXException;
 
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class ValidationReportFacadeTest {
+class ValidationReportFacadeTest {
 
 	@Test
-	public void unmarshallAndMarshall() throws IOException, JAXBException, XMLStreamException, SAXException {
+	void unmarshallAndMarshall() throws IOException, JAXBException, XMLStreamException, SAXException {
 		ValidationReportFacade facade = ValidationReportFacade.newFacade();
 		ValidationReportType validationReportType = facade.unmarshall(new File("src/test/resources/vr.xml"));
 

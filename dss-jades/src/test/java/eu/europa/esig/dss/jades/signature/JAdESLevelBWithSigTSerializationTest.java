@@ -51,14 +51,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESLevelBWithSigTSerializationTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithSigTSerializationTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private DSSDocument documentToSign;
     private JAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());

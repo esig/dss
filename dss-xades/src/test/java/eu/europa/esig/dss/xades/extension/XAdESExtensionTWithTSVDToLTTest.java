@@ -36,7 +36,7 @@ import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESExtensionTWithTSVDToLTTest extends XAdESExtensionTToLTTest {
+class XAdESExtensionTWithTSVDToLTTest extends XAdESExtensionTToLTTest {
 
     @Override
     protected DSSDocument getSignedDocument(DSSDocument doc) {

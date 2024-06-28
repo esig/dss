@@ -41,10 +41,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
+class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlRevocation xmlRevocation = new XmlRevocation();
         xmlRevocation.setFoundCertificates(new XmlFoundCertificates());
 
@@ -70,7 +70,7 @@ public class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlRevocation xmlRevocation = new XmlRevocation();
         xmlRevocation.setFoundCertificates(new XmlFoundCertificates());
 
@@ -96,7 +96,7 @@ public class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void respIdNotPresent() {
+    void respIdNotPresent() {
         XmlRevocation xmlRevocation = new XmlRevocation();
         xmlRevocation.setFoundCertificates(new XmlFoundCertificates());
 
@@ -118,7 +118,7 @@ public class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void signCertNotPresent() {
+    void signCertNotPresent() {
         XmlRevocation xmlRevocation = new XmlRevocation();
         xmlRevocation.setFoundCertificates(new XmlFoundCertificates());
 

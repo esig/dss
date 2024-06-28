@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BasicConstraintsCACheckTest extends AbstractTestCheck {
+class BasicConstraintsCACheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
         basicConstraints.setCA(true);
@@ -62,7 +62,7 @@ public class BasicConstraintsCACheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
         basicConstraints.setCA(false);
@@ -84,7 +84,7 @@ public class BasicConstraintsCACheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void notPresentTest() {
+    void notPresentTest() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

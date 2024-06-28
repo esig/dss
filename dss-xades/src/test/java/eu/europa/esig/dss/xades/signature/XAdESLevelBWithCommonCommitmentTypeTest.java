@@ -46,7 +46,7 @@ public class XAdESLevelBWithCommonCommitmentTypeTest extends AbstractXAdESTestSi
 	private List<CommitmentType> commitmentTypeIndications;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

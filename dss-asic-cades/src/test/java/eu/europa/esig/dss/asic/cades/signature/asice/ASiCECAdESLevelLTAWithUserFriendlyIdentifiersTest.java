@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCECAdESLevelLTAWithUserFriendlyIdentifiersTest extends ASiCECAdESLevelLTATest {
+class ASiCECAdESLevelLTAWithUserFriendlyIdentifiersTest extends ASiCECAdESLevelLTATest {
 
     @Override
     protected TokenIdentifierProvider getTokenIdentifierProvider() {

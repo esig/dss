@@ -30,7 +30,7 @@ import eu.europa.esig.trustedlist.enums.Assert;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceWrongKeyUsageSetTest extends AbstractMRALOTLTest {
+class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceWrongKeyUsageSetTest extends AbstractMRALOTLTest {
 
     @Override
     protected Assert getCertificateContentDeclarationPointedPartyQcComplianceAssertStatus() {

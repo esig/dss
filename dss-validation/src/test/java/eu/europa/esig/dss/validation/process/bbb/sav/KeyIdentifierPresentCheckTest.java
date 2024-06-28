@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class KeyIdentifierPresentCheckTest extends AbstractTestCheck {
+class KeyIdentifierPresentCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
         xmlCertificateRef.setOrigin(CertificateRefOrigin.KEY_IDENTIFIER);
 
@@ -71,7 +71,7 @@ public class KeyIdentifierPresentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
         xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 

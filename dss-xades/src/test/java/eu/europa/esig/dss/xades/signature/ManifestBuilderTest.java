@@ -40,12 +40,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ManifestBuilderTest {
+class ManifestBuilderTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManifestBuilderTest.class);
 
 	@Test
-	public void testBuildManifest() throws IOException {
+	void testBuildManifest() throws IOException {
 		List<DSSDocument> documents = new ArrayList<>();
 		FileDocument file1 = new FileDocument("src/test/resources/sample.png");
 		documents.add(file1);

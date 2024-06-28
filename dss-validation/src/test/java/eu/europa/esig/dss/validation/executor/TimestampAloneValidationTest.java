@@ -57,17 +57,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
+class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 
 	private static I18nProvider i18nProvider;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		i18nProvider = new I18nProvider(Locale.getDefault());
 	}
 
 	@Test
-	public void qtsa() throws Exception {
+	void qtsa() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/qtsa.xml"));
 		assertNotNull(diagnosticData);
 
@@ -88,7 +88,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void tsa() throws Exception {
+	void tsa() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/tsa.xml"));
 		assertNotNull(diagnosticData);
 
@@ -109,7 +109,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void expiredTsa() throws Exception {
+	void expiredTsa() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/expired-tsa.xml"));
 		assertNotNull(diagnosticData);
 
@@ -129,7 +129,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void expiredTsaAndHashFailure() throws Exception {
+	void expiredTsaAndHashFailure() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
 				.unmarshall(new File("src/test/resources/diag-data/timestamp-validation/expired-tsa-and-hash-failure.xml"));
 		assertNotNull(diagnosticData);
@@ -150,7 +150,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void na() throws Exception {
+	void na() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/na.xml"));
 		assertNotNull(diagnosticData);
 
@@ -171,7 +171,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void sigAndTst() throws Exception {
+	void sigAndTst() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/sig-and-tst.xml"));
 		assertNotNull(diagnosticData);
 
@@ -194,7 +194,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void sigAndTst2() throws Exception {
+	void sigAndTst2() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/timestamp-validation/sig-and-tst2.xml"));
 		assertNotNull(diagnosticData);
 
@@ -216,7 +216,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void diffResultQualAtGenTimeTest() throws Exception {
+	void diffResultQualAtGenTimeTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag-data/timestamp-validation/tsa-diff-qual-at-gen-time.xml"));
 		assertNotNull(diagnosticData);
@@ -299,7 +299,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void diffResultQualAtPoeTimeTest() throws Exception {
+	void diffResultQualAtPoeTimeTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag-data/timestamp-validation/tsa-diff-qual-at-poe-time.xml"));
 		assertNotNull(diagnosticData);
@@ -383,7 +383,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void twoTstPastValidationTest() throws Exception {
+	void twoTstPastValidationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag-data/timestamp-validation/two-tst-past-val.xml"));
 		assertNotNull(diagnosticData);
@@ -490,7 +490,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void twoTstTimestampOnlyValidationTest() throws Exception {
+	void twoTstTimestampOnlyValidationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag-data/timestamp-validation/two-tst-past-val.xml"));
 		assertNotNull(diagnosticData);
@@ -563,7 +563,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void twoTstsBasicValidationTest() throws Exception {
+	void twoTstsBasicValidationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag-data/timestamp-validation/two-tst-past-val.xml"));
 		assertNotNull(diagnosticData);
@@ -589,7 +589,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void tstWithErValidationTest() throws Exception {
+	void tstWithErValidationTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag-data/timestamp-validation/tst-and-er.xml"));
 		assertNotNull(diagnosticData);
@@ -666,7 +666,7 @@ public class TimestampAloneValidationTest extends AbstractTestValidationExecutor
 	}
 
 	@Test
-	public void tstWithErValidationInvalidTest() throws Exception {
+	void tstWithErValidationInvalidTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
 				new File("src/test/resources/diag-data/timestamp-validation/tst-and-er.xml"));
 		assertNotNull(diagnosticData);

@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class DKCertificateTest {
+class DKCertificateTest {
 
 	private static final DSSDocument DOC = new FileDocument(new File("src/test/resources/dk_tl-sn21.xml"));
 
@@ -48,7 +48,7 @@ public class DKCertificateTest {
 			"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");
 
 	@Test
-	public void dkPreviousSigCert() throws Exception {
+	void dkPreviousSigCert() throws Exception {
 		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
 		certificateSource.addCertificate(PREVIOUS_SIG_CERT);
 		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource);
@@ -65,7 +65,7 @@ public class DKCertificateTest {
 	}
 
 	@Test
-	public void dkTestOther() throws Exception {
+	void dkTestOther() throws Exception {
 		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
 		certificateSource.addCertificate(WRONG);
 		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource);
@@ -82,7 +82,7 @@ public class DKCertificateTest {
 	}
 
 	@Test
-	public void dkTestExpected() throws Exception {
+	void dkTestExpected() throws Exception {
 		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
 		certificateSource.addCertificate(EXPECTED_SIG_CERT);
 		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource);
@@ -99,7 +99,7 @@ public class DKCertificateTest {
 	}
 
 	@Test
-	public void dkTestNone() throws Exception {
+	void dkTestNone() throws Exception {
 		CommonTrustedCertificateSource certificateSource = new CommonTrustedCertificateSource();
 		TLValidatorTask task = new TLValidatorTask(DOC, certificateSource);
 

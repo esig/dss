@@ -31,7 +31,7 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class EnsureXmlSamplesSynchronizedTest {
+class EnsureXmlSamplesSynchronizedTest {
 
     @Test
     void constraint() throws Exception {

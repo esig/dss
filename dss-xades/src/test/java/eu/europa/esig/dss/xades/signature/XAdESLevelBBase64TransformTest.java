@@ -58,12 +58,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
+class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	
 	private static final DSSDocument document = new FileDocument("src/test/resources/sample.xml");
 	
 	@Test
-	public void test() {
+	void test() {
 		
 		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
@@ -84,7 +84,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void imageSignTest() {
+	void imageSignTest() {
 		
 		String imageFileName = "sample.png";
 		DSSDocument image = new FileDocument("src/test/resources/" + imageFileName);
@@ -129,7 +129,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void embedXmlWithBase64Test() {
+	void embedXmlWithBase64Test() {
 		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
@@ -149,7 +149,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void envelopedBase64TransformTest() {
+	void envelopedBase64TransformTest() {
 		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
@@ -168,7 +168,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void base64WithOtherReferencesTest() {
+	void base64WithOtherReferencesTest() {
 		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
@@ -190,7 +190,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void doubleBase64TransformTest() {
+	void doubleBase64TransformTest() {
 		List<DSSTransform> transforms = new ArrayList<>();
 		Base64Transform dssTransform = new Base64Transform();
 		transforms.add(dssTransform);
@@ -211,7 +211,7 @@ public class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void manifestWithBase64Test() {
+	void manifestWithBase64Test() {
 		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new FileDocument("src/test/resources/sample.png"));
 		documents.add(new FileDocument("src/test/resources/sample.txt"));

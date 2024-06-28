@@ -37,7 +37,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class BaselineBCertificateSelectorTest {
+class BaselineBCertificateSelectorTest {
 
 	// Signer
 	private CertificateToken c1;
@@ -55,7 +55,7 @@ public class BaselineBCertificateSelectorTest {
 	private CertificateToken c4;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		c1 = DSSUtils.loadCertificateFromBase64EncodedString(
 				"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");
 
@@ -74,7 +74,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testNormalNoTrust() {
+	void testNormalNoTrust() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Collections.singleton(c2));
 		List<CertificateToken> certificates = selector.getCertificates();
 		assertEquals(2, certificates.size());
@@ -83,7 +83,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testNormalTrust() {
+	void testNormalTrust() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Collections.singleton(c2));
 
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
@@ -96,7 +96,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testSkipTrustAndUpper() {
+	void testSkipTrustAndUpper() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c2, c3));
 
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
@@ -113,7 +113,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testNormalTrust2() {
+	void testNormalTrust2() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c2, c3));
 
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
@@ -127,7 +127,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testNormalTrustOtherRoot() {
+	void testNormalTrustOtherRoot() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c2, c3));
 
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
@@ -141,7 +141,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testNormalTrustTooMuch() {
+	void testNormalTrustTooMuch() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c2, c3, c4));
 
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
@@ -155,7 +155,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testNormalIncludeTrust() {
+	void testNormalIncludeTrust() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Collections.singleton(c2));
 
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
@@ -171,7 +171,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testNormalIncludeTrustFixChainOrder() {
+	void testNormalIncludeTrustFixChainOrder() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c3, c2));
 
 		CertificateSource trustCertSource = new CommonTrustedCertificateSource();
@@ -188,7 +188,7 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testDuplicateSigningCert() {
+	void testDuplicateSigningCert() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(c1, Arrays.asList(c1, c2));
 
 		List<CertificateToken> certificates = selector.getCertificates();
@@ -198,21 +198,21 @@ public class BaselineBCertificateSelectorTest {
 	}
 
 	@Test
-	public void testMissingIntermediateCerts() {
+	void testMissingIntermediateCerts() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(null, Arrays.asList(c1, c4));
 		Exception exception = assertThrows(DSSException.class, () -> selector.getCertificates());
 		assertEquals("Unable to determine a signing certificate : No pertinent input parameters", exception.getMessage());
 	}
 	
 	@Test
-	public void testEmptyCertChain() {
+	void testEmptyCertChain() {
 		BaselineBCertificateSelector selector = new BaselineBCertificateSelector(null, Collections.emptyList());
 		Exception exception = assertThrows(DSSException.class, () -> selector.getCertificates());
 		assertEquals("No signing certificate found", exception.getMessage());
 	}
 	
 	@Test
-	public void testBridgeCertificates() {
+	void testBridgeCertificates() {
 		CertificateToken cert1 = DSSUtils.loadCertificateFromBase64EncodedString("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");
 		CertificateToken cert2 = DSSUtils.loadCertificateFromBase64EncodedString("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");
 

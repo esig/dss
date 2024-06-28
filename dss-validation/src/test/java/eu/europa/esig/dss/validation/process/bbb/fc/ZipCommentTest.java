@@ -36,10 +36,10 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AcceptableZipCommentCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ZipCommentPresentCheck;
 
-public class ZipCommentTest extends AbstractTestCheck {
+class ZipCommentTest extends AbstractTestCheck {
 
 	@Test
-	public void zipCommentFail() throws Exception {
+	void zipCommentFail() throws Exception {
 
 		String zipComment = "";
 
@@ -81,7 +81,7 @@ public class ZipCommentTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void zipCommentOk() throws Exception {
+	void zipCommentOk() throws Exception {
 		String zipComment = "ok";
 
 		LevelConstraint constraint = new LevelConstraint();

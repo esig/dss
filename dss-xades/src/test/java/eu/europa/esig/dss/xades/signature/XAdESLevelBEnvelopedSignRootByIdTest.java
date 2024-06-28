@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2919
-public class XAdESLevelBEnvelopedSignRootByIdTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedSignRootByIdTest extends AbstractXAdESTestSignature {
 
     private static final String ID_ELEMENT_TO_SIGN = "Element_0_ID";
 
@@ -65,7 +65,7 @@ public class XAdESLevelBEnvelopedSignRootByIdTest extends AbstractXAdESTestSigna
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample-xml-stylesheet-with-id.xml");
 
         signatureParameters = new XAdESSignatureParameters();

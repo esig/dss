@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
 
-public class GivenNameCheckTest extends AbstractTestCheck {
+class GivenNameCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void givenNameCheck() throws Exception {
+	void givenNameCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Valid_Name");
@@ -57,7 +57,7 @@ public class GivenNameCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedGivenNameCheck() throws Exception {
+	void failedGivenNameCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Invalid_Name");

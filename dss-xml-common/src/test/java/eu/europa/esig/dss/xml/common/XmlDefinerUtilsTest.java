@@ -33,25 +33,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XmlDefinerUtilsTest {
+class XmlDefinerUtilsTest {
 
 	@Test
-	public void getSecureSchemaFactory() throws SAXException {
+	void getSecureSchemaFactory() throws SAXException {
 		assertNotNull(XmlDefinerUtils.getInstance().getSecureSchemaFactory());
 	}
 
 	@Test
-	public void getSecureTransformerFactory() throws TransformerConfigurationException {
+	void getSecureTransformerFactory() throws TransformerConfigurationException {
 		assertNotNull(XmlDefinerUtils.getInstance().getSecureTransformerFactory());
 	}
 
 	@Test
-	public void getSecureDocumentBuilderFactory() {
+	void getSecureDocumentBuilderFactory() {
 		assertNotNull(XmlDefinerUtils.getInstance().getSecureDocumentBuilderFactory());
 	}
 
 	@Test
-	public void mockSecureSchemaFactoryBuilderTest() throws SAXException {
+	void mockSecureSchemaFactoryBuilderTest() throws SAXException {
 		MockSchemaFactoryBuilder schemaFactoryBuilder = new MockSchemaFactoryBuilder();
 
 		SchemaFactory secureSchemaFactory = XmlDefinerUtils.getInstance().getSecureSchemaFactory();
@@ -79,7 +79,7 @@ public class XmlDefinerUtilsTest {
 	}
 
 	@Test
-	public void mockTransformerFactoryBuilderTest() {
+	void mockTransformerFactoryBuilderTest() {
 		MockTransformerFactoryBuilder transformerFactoryBuilder = new MockTransformerFactoryBuilder();
 
 		TransformerFactory transformerFactory = XmlDefinerUtils.getInstance().getSecureTransformerFactory();
@@ -107,7 +107,7 @@ public class XmlDefinerUtilsTest {
 	}
 
 	@Test
-	public void mockDocumentBuilderFactoryBuilderTest() {
+	void mockDocumentBuilderFactoryBuilderTest() {
 		MockDocumentBuilderFactoryBuilder documentBuilderFactoryBuilder = new MockDocumentBuilderFactoryBuilder();
 
 		DocumentBuilderFactory documentBuilderFactory = XmlDefinerUtils.getInstance().getSecureDocumentBuilderFactory();

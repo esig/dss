@@ -39,7 +39,7 @@ import java.io.IOException;
 import java.util.Date;
 
 @Tag("slow")
-public class PAdESVisibleDocRotationTest extends AbstractTestVisualComparator {
+class PAdESVisibleDocRotationTest extends AbstractTestVisualComparator {
 
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
@@ -48,7 +48,7 @@ public class PAdESVisibleDocRotationTest extends AbstractTestVisualComparator {
 	private String testName;
 
 	@BeforeEach
-	public void init(TestInfo testInfo) {
+	void init(TestInfo testInfo) {
 		testName = testInfo.getTestMethod().get().getName();
 		
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/rotate90-rotated.pdf"));
@@ -63,7 +63,7 @@ public class PAdESVisibleDocRotationTest extends AbstractTestVisualComparator {
 	}
 	
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 		imageParameters.setZoom(50);
@@ -79,7 +79,7 @@ public class PAdESVisibleDocRotationTest extends AbstractTestVisualComparator {
 	}
 	
 	@Test
-	public void testHorizontalAlignment() throws IOException {
+	void testHorizontalAlignment() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 		imageParameters.setZoom(50);
@@ -90,7 +90,7 @@ public class PAdESVisibleDocRotationTest extends AbstractTestVisualComparator {
 	}
 	
 	@Test
-	public void testVerticalAlignment() throws IOException {
+	void testVerticalAlignment() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 		imageParameters.setZoom(50);

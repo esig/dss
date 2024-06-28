@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import java.util.Collections;
 import java.util.List;
 
-public class Asn1EvidenceRecordValidationTest extends AbstractAsn1EvidenceRecordTestValidation {
+class Asn1EvidenceRecordValidationTest extends AbstractAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

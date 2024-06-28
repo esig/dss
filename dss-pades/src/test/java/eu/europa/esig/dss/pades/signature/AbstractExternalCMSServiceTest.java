@@ -45,7 +45,7 @@ public abstract class AbstractExternalCMSServiceTest extends AbstractPAdESTestSi
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signingTime = new Date();
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
     }
@@ -134,7 +134,7 @@ public abstract class AbstractExternalCMSServiceTest extends AbstractPAdESTestSi
             return this.cmsSignedData;
         }
 
-        public void setCmsSignedData(final byte[] cmsSignedData) {
+        void setCmsSignedData(final byte[] cmsSignedData) {
             this.cmsSignedData = cmsSignedData;
         }
 

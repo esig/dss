@@ -43,13 +43,13 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotRevokedCheck;
 
-public class CertificateRevokedCheckTest extends AbstractTestCheck {
+class CertificateRevokedCheckTest extends AbstractTestCheck {
 
 	private static final Calendar CAL1 = DatatypeConverter.parseDate("2017-01-01");
 	private static final Calendar CAL2 = DatatypeConverter.parseDate("2018-01-01");
 
 	@Test
-	public void certificateRevokedCheck() throws Exception {
+	void certificateRevokedCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -70,7 +70,7 @@ public class CertificateRevokedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedCertificateRevokedCheck() throws Exception {
+	void failedCertificateRevokedCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

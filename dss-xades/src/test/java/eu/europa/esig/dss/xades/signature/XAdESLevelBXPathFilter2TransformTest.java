@@ -42,14 +42,14 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPath2FilterTransform;
 
-public class XAdESLevelBXPathFilter2TransformTest extends AbstractXAdESTestSignature {
+class XAdESLevelBXPathFilter2TransformTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample-with-different-id.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

@@ -35,10 +35,10 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class EvidenceRecordValidatorTest {
+class EvidenceRecordValidatorTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         // tag::evidence-record-alone[]
         // import eu.europa.esig.dss.model.DSSDocument;
         // import eu.europa.esig.dss.model.FileDocument;

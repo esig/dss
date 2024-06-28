@@ -31,7 +31,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class OpenDocumentExtensionBToTWithFailTimestampTest extends AbstractTestOpenDocumentExtension {
+class OpenDocumentExtensionBToTWithFailTimestampTest extends AbstractTestOpenDocumentExtension {
 	
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {

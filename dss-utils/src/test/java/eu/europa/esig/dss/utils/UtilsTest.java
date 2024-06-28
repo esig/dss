@@ -25,10 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-public class UtilsTest {
+class UtilsTest {
 
 	@Test
-	public void testNoImplementationException() {
+	void testNoImplementationException() {
 		ExceptionInInitializerError exception = assertThrows(ExceptionInInitializerError.class, () -> Utils.isStringBlank("test"));
 		assertEquals("No implementation found for IUtils in classpath, please choose between dss-utils-apache-commons or dss-utils-google-guava", exception.getMessage());
 	}

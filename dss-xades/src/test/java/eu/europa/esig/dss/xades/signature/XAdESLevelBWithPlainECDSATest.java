@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("slow")
-public class XAdESLevelBWithPlainECDSATest extends AbstractXAdESTestSignature {
+class XAdESLevelBWithPlainECDSATest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -66,7 +66,7 @@ public class XAdESLevelBWithPlainECDSATest extends AbstractXAdESTestSignature {
 
     @ParameterizedTest(name = "Combination {index} of PLAIN-ECDSA with digest algorithm {0}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    void init(DigestAlgorithm digestAlgo) {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck {
+class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -77,7 +77,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void invalidDate() {
+    void invalidDate() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -111,7 +111,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void invalidAlgo() {
+    void invalidAlgo() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -145,7 +145,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void notDefinedAlgoTest() {
+    void notDefinedAlgoTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -174,7 +174,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void overwrittenLevelTest() {
+    void overwrittenLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -209,7 +209,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void noGlobalLevelTest() {
+    void noGlobalLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         AlgoExpirationDate algoExpirationDate = new AlgoExpirationDate();
@@ -243,7 +243,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void noLevelTest() {
+    void noLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         AlgoExpirationDate algoExpirationDate = new AlgoExpirationDate();
@@ -275,7 +275,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void afterUpdateDateTest() {
+    void afterUpdateDateTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -311,7 +311,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void noUpdateDateTest() {
+    void noUpdateDateTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -346,7 +346,7 @@ public class DigestAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    public void noLevelAfterUpdateTest() {
+    void noLevelAfterUpdateTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 

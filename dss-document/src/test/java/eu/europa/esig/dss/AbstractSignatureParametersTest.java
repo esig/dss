@@ -33,12 +33,12 @@ import eu.europa.esig.dss.utils.Utils;
 /**
  * Unit test to fix https://esig-dss.atlassian.net/browse/DSS-672
  */
-public class AbstractSignatureParametersTest {
+class AbstractSignatureParametersTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(AbstractSignatureParametersTest.class);
 
 	@Test
-	public void testToString() {
+	void testToString() {
 		CommonSignatureParamaters commonSignatureParamaters = new CommonSignatureParamaters();
 		String parametersString = commonSignatureParamaters.toString();
 		logger.info(parametersString);

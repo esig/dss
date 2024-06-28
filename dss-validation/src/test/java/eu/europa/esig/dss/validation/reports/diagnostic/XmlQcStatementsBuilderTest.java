@@ -37,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 
-public class XmlQcStatementsBuilderTest {
+class XmlQcStatementsBuilderTest {
 
     @Test
-    public void copyTest() {
+    void copyTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         xmlQcStatements.setDescription(CertificateExtensionEnum.QC_STATEMENTS.getDescription());

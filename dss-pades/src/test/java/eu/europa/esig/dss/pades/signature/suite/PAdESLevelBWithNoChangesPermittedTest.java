@@ -50,7 +50,7 @@ public class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSign
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new InMemoryDocument(PAdESDoubleSignatureTest.class.getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();

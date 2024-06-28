@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2329
-public class XAdESEnvelopedManifestTest extends AbstractXAdESTestValidation {
+class XAdESEnvelopedManifestTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class OpenDocumentSignConsequentlyTest extends AbstractOpenDocumentTestSignature {
+class OpenDocumentSignConsequentlyTest extends AbstractOpenDocumentTestSignature {
 
     private static ASiCWithXAdESSignatureParameters signatureParameters;
     private static DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
@@ -56,7 +56,7 @@ public class OpenDocumentSignConsequentlyTest extends AbstractOpenDocumentTestSi
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new ASiCWithXAdESService(certificateVerifier);
 
@@ -90,7 +90,7 @@ public class OpenDocumentSignConsequentlyTest extends AbstractOpenDocumentTestSi
 
     @ParameterizedTest(name = "Sign XAdES {index} : {0} - {1} - {2}")
     @MethodSource("dataContainer")
-    public void init(SignatureLevel level, String signer, DSSDocument document) {
+    void init(SignatureLevel level, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

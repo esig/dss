@@ -25,7 +25,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCEWithXAdESAsn1EvidenceRecordValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
+class ASiCEWithXAdESAsn1EvidenceRecordValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

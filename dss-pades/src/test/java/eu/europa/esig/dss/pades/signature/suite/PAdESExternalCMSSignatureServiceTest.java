@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
 
     @Test
-    public void test() {
+    void test() {
         PAdESWithExternalCMSService service = new PAdESWithExternalCMSService();
 
         Exception exception = assertThrows(NullPointerException.class, () ->

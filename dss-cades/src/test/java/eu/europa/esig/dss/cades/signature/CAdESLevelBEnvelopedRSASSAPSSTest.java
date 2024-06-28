@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelBEnvelopedRSASSAPSSTest extends AbstractCAdESTestSignature {
+class CAdESLevelBEnvelopedRSASSAPSSTest extends AbstractCAdESTestSignature {
 
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
     private CAdESSignatureParameters signatureParameters;
@@ -65,7 +65,7 @@ public class CAdESLevelBEnvelopedRSASSAPSSTest extends AbstractCAdESTestSignatur
 
     @ParameterizedTest(name = "Combination {index} of RSASSA-PSS with digest algorithm {0}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    void init(DigestAlgorithm digestAlgo) {
         documentToSign = new InMemoryDocument("Hello World".getBytes());
 
         signatureParameters = new CAdESSignatureParameters();

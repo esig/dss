@@ -36,10 +36,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESEvidenceRecordDigestBuilderTest {
+class XAdESEvidenceRecordDigestBuilderTest {
 
     @Test
-    public void xadesNoErTest() {
+    void xadesNoErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-B-B-basic.xml");
 
         assertEquals("E69F1ED3CE0AB6F8A72D9773CD9E862ED56E5C558DD79C2E695993810BC5B0E1",
@@ -59,7 +59,7 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void xadesWithErTest() {
+    void xadesWithErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-basic.xml");
 
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
@@ -79,7 +79,7 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void xadesLtWithErTest() {
+    void xadesLtWithErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-LT.xml");
 
         Exception exception = assertThrows(IllegalInputException.class, () ->
@@ -98,7 +98,7 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void xadesLtDetachedWithErTest() {
+    void xadesLtDetachedWithErTest() {
         DSSDocument signatureDoc = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-DETACHED-LT.xml");
         DSSDocument detachedDoc = new FileDocument("src/test/resources/sample.xml");
 
@@ -118,7 +118,7 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void xadesManifestWithErTest() {
+    void xadesManifestWithErTest() {
         DSSDocument signatureDoc = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-MANIFEST.xml");
 
         List<DSSDocument> detachedDocuments = new ArrayList<>();
@@ -138,7 +138,7 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void twoSigsLtWithErTest() {
+    void twoSigsLtWithErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/Double-sig-X-E-ERS-LT.xml");
 
         Exception exception = assertThrows(IllegalInputException.class, () ->
@@ -166,7 +166,7 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void xadesLtWithTwoErsTest() {
+    void xadesLtWithTwoErsTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-two-ers.xml");
 
         assertEquals("461D84AEDC1FE1D957FFA4F00E12463C49C8752C3EB242CC7A16EAEC94F6D6AC",
@@ -178,7 +178,7 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void xadesLtWithTwoParallelErsTest() {
+    void xadesLtWithTwoParallelErsTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-two-parallel-ers.xml");
 
         assertEquals("DDC64E2A03C392C1C7C11932461FB4757CBB0E932111722ECEB16CF8147E8C09",
@@ -190,7 +190,7 @@ public class XAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void xadesWithAsn1ErTest() {
+    void xadesWithAsn1ErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-basic-asn1.xml");
 
         assertEquals("071839D59D47CB24483DC87752DD3B235F2CB50C2CB537ED88DFC7D491A15B8C",

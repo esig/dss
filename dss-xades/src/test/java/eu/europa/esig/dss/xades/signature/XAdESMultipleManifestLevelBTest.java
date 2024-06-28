@@ -41,7 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESMultipleManifestLevelBTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class XAdESMultipleManifestLevelBTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -50,7 +50,7 @@ public class XAdESMultipleManifestLevelBTest extends AbstractXAdESMultipleDocume
 	private List<DSSDocument> detachedContents;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 
 		detachedContents = new ArrayList<>();
 		detachedContents.add(new FileDocument("src/test/resources/sample.png"));

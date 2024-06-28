@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.extension.AbstractXAdESConsecutiveExtension;
 
-public class XAdESConsecutiveExtensionPrettyPrintTest extends AbstractXAdESConsecutiveExtension<XAdESSignatureParameters> {
+class XAdESConsecutiveExtensionPrettyPrintTest extends AbstractXAdESConsecutiveExtension<XAdESSignatureParameters> {
 
 	@Override
 	protected DSSDocument getOriginalDocument() {

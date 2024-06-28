@@ -40,9 +40,9 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
-public class ExecuteDifferentPoliciesTest {
+class ExecuteDifferentPoliciesTest {
 
-	public static Stream<Arguments> data() throws Exception {
+	static Stream<Arguments> data() throws Exception {
 		File folderPolicy = new File("src/test/resources/diag-data/policy");
 		File[] policyFiles = folderPolicy.listFiles();
 		File folderDiagnosticData = new File("src/test/resources/diag-data");
@@ -69,7 +69,7 @@ public class ExecuteDifferentPoliciesTest {
 
 	@ParameterizedTest(name = "Execution {index} : {0} + {1}")
 	@MethodSource("data")
-	public void noError(XmlDiagnosticData diagnoticData, ValidationPolicy policy) throws Exception {
+	void noError(XmlDiagnosticData diagnoticData, ValidationPolicy policy) throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnoticData);
 		executor.setValidationPolicy(policy);

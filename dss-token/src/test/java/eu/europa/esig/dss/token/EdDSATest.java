@@ -34,14 +34,14 @@ import java.security.Security;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class EdDSATest {
+class EdDSATest {
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 	}
 
 	@Test
-	public void ed25519() throws GeneralSecurityException {
+	void ed25519() throws GeneralSecurityException {
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("Ed25519", DSSSecurityProvider.getSecurityProviderName());
 		KeyPair kp = kpg.generateKeyPair();
 		assertNotNull(kp);
@@ -57,7 +57,7 @@ public class EdDSATest {
 	}
 
 	@Test
-	public void ed448() throws GeneralSecurityException {
+	void ed448() throws GeneralSecurityException {
 		KeyPairGenerator kpg = KeyPairGenerator.getInstance("Ed448", DSSSecurityProvider.getSecurityProviderName());
 		KeyPair kp = kpg.generateKeyPair();
 		assertNotNull(kp);

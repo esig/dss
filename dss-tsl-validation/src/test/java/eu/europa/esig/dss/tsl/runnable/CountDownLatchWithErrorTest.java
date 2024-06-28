@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CountDownLatchWithErrorTest extends AbstractTestRunnable {
+class CountDownLatchWithErrorTest extends AbstractTestRunnable {
 
     @Test
     void test() {

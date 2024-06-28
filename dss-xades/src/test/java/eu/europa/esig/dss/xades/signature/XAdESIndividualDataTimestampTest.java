@@ -66,13 +66,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
+class XAdESIndividualDataTimestampTest extends PKIFactoryAccess {
 
 	private static final String FILE1 = "src/test/resources/sample.xml";
 	private static final String FILE2 = "src/test/resources/sampleISO.xml";
 
 	@Test
-	public void multiDocsEnveloping() throws Exception {
+	void multiDocsEnveloping() throws Exception {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature.prettyprint;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESDoubleAv2Test;
 
-public class XAdESDoubleAPrettyPrintTest extends XAdESDoubleAv2Test {
+class XAdESDoubleAPrettyPrintTest extends XAdESDoubleAv2Test {
 
     @Override
     protected XAdESSignatureParameters getSignatureParameters() {

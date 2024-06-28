@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-3105
 @Tag("slow")
-public class XAdESLevelBEnvelopingSignDocWithCommentsTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopingSignDocWithCommentsTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -79,7 +79,7 @@ public class XAdESLevelBEnvelopingSignDocWithCommentsTest extends AbstractXAdEST
 
     @ParameterizedTest(name = "Sign Enveloping XAdES {index} : {0} - {1}")
     @MethodSource("data")
-    public void test(String refUri, String canonicalization) {
+    void test(String refUri, String canonicalization) {
         documentToSign = new FileDocument(new File("src/test/resources/sample-with-comments.xml"));
         service = new XAdESService(getOfflineCertificateVerifier());
 

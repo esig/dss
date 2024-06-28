@@ -50,10 +50,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustServiceConverterTest {
+class TrustServiceConverterTest {
 
     @Test
-    public void extractQualifiersTest() throws Exception {
+    void extractQualifiersTest() throws Exception {
         TSPServiceType tspServiceType = new TSPServiceType();
 
         TSPServiceInformationType serviceInformation = new TSPServiceInformationType();

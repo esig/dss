@@ -64,10 +64,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation {
+class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation {
 
     @Test
-    public void isSupportedTest() {
+    void isSupportedTest() {
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger();
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/validation/onefile-ok.asics")));
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asics")));
@@ -82,7 +82,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void createAndMergeTest() {
+    void createAndMergeTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
@@ -121,7 +121,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeAsicWithZipTest() {
+    void mergeAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
@@ -168,7 +168,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeTwoNotSignedZipTest() {
+    void mergeTwoNotSignedZipTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
         DSSDocument secondContainer = new FileDocument("src/test/resources/signable/document.odt");
 
@@ -223,7 +223,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeTimestampedAsicWithZipTest() {
+    void mergeTimestampedAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESTimestampService timestampService = new ASiCWithCAdESTimestampService(getGoodTsa());
 
@@ -277,7 +277,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeTimestampedMultipleDocsAsicWithZipTest() {
+    void mergeTimestampedMultipleDocsAsicWithZipTest() {
         List<DSSDocument> toSignDocuments = Arrays.asList(
                 new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT),
                 new FileDocument("src/test/resources/signable/test.txt"));
@@ -342,7 +342,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeInvalidSigNameTest() {
+    void mergeInvalidSigNameTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -358,7 +358,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeContainerWithSignatureAndTimestampTest() {
+    void mergeContainerWithSignatureAndTimestampTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -376,7 +376,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeSignatureWithTimestampsTest() {
+    void mergeSignatureWithTimestampsTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -392,7 +392,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeWithMultipleSignerDocsTest() {
+    void mergeWithMultipleSignerDocsTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -413,7 +413,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeWithSignedDataDifferentNamesTest() {
+    void mergeWithSignedDataDifferentNamesTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -433,7 +433,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeMultipleContainersTest() {
+    void mergeMultipleContainersTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithCAdESService service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
@@ -480,7 +480,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeZeroFilesTest() {
+    void mergeZeroFilesTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCSWithCAdESContainerMerger(new DSSDocument[]{}));
         assertEquals("At least one document shall be provided!", exception.getMessage());
@@ -495,7 +495,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeNullFileTest() {
+    void mergeNullFileTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCSWithCAdESContainerMerger(new DSSDocument[]{ null }));
         assertEquals("DSSDocument cannot be null!", exception.getMessage());
@@ -514,7 +514,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeOneFileTest() {
+    void mergeOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asics");
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(document);
@@ -551,7 +551,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeWithEvidenceRecordContainerTest() {
+    void mergeWithEvidenceRecordContainerTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/validation/onefile-ok.asics");
         DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
 
@@ -562,7 +562,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeTimestampWithEvidenceRecordContainerTest() {
+    void mergeTimestampWithEvidenceRecordContainerTest() {
         ASiCContent tstAsic = new ASiCContent();
         tstAsic.setTimestampDocuments(Collections.singletonList(
                 new InMemoryDocument("timestamp".getBytes(), "META-INF/timestamp.tst", MimeTypeEnum.TST)));
@@ -577,7 +577,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeWithEvidenceRecordContainerWithNonASiCTest() {
+    void mergeWithEvidenceRecordContainerWithNonASiCTest() {
         DSSDocument erContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
         ASiCContent erASiC = ASiCWithCAdESContainerExtractor.fromDocument(erContainer).extract();
 
@@ -600,7 +600,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeEvidenceRecordContainerWithSignerDataContainerTest() {
+    void mergeEvidenceRecordContainerWithSignerDataContainerTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
         DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
 
@@ -611,7 +611,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeMultipleEvidenceRecordContainersTest() {
+    void mergeMultipleEvidenceRecordContainersTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.asics");
         DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
 
@@ -634,7 +634,7 @@ public class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeWithDifferentZipCommentTest() {
+    void mergeWithDifferentZipCommentTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 

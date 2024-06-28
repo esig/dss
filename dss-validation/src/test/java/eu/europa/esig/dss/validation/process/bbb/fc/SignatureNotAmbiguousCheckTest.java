@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 
-public class SignatureNotAmbiguousCheckTest extends AbstractTestCheck {
+class SignatureNotAmbiguousCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void valid() throws Exception {
+	void valid() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setDuplicated(false);
 
@@ -57,7 +57,7 @@ public class SignatureNotAmbiguousCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void fail() throws Exception {
+	void fail() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setDuplicated(true);
 

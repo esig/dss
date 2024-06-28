@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PdfSignatureDictionaryCheckTest extends AbstractTestCheck {
+class PdfSignatureDictionaryCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() throws Exception {
+    void valid() throws Exception {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -59,7 +59,7 @@ public class PdfSignatureDictionaryCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() throws Exception {
+    void invalid() throws Exception {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();

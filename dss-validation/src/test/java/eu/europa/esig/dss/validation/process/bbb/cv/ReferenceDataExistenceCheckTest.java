@@ -35,10 +35,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
+class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void referenceDataExistenceCheck() throws Exception {
+	void referenceDataExistenceCheck() throws Exception {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setDataFound(true);
 		digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);
@@ -57,7 +57,7 @@ public class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void referenceDataNotExistenceCheck() throws Exception {
+	void referenceDataNotExistenceCheck() throws Exception {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setDataFound(false);
 		digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);

@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
-public class JAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractJAdESTestExtension {
+class JAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractJAdESTestExtension {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";

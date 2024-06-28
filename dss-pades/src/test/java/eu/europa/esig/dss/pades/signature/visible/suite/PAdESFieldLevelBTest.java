@@ -40,7 +40,7 @@ public class PAdESFieldLevelBTest extends AbstractPAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"), "doc.pdf", MimeTypeEnum.PDF);
 
 		signatureParameters = new PAdESSignatureParameters();

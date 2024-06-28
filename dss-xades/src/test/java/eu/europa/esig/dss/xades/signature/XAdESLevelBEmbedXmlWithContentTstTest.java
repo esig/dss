@@ -42,14 +42,14 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 // DSS-2055
-public class XAdESLevelBEmbedXmlWithContentTstTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEmbedXmlWithContentTstTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 

@@ -43,12 +43,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTestCheck {
+class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTestCheck {
 
     private static final String CERT_ID = "C-1";
 
     @Test
-    public void validCheck() throws Exception {
+    void validCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -87,7 +87,7 @@ public class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTe
     }
 
     @Test
-    public void invalidTstCheck() throws Exception {
+    void invalidTstCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -126,7 +126,7 @@ public class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTe
     }
 
     @Test
-    public void invalidRangeCheck() throws Exception {
+    void invalidRangeCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

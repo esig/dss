@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlEvidenceRecordNoHashNoDataProvidedTreeValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordNoHashNoDataProvidedTreeValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

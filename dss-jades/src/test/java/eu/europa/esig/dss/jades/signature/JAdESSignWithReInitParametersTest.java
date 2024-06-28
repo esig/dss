@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignature {
+class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignature {
 
     private static JAdESSignatureParameters signatureParameters;
     private static JAdESService service;
@@ -56,7 +56,7 @@ public class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignatur
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new JAdESService(certificateVerifier);
 
@@ -97,7 +97,7 @@ public class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignatur
 
     @ParameterizedTest(name = "Sign JAdES {index} : {0} - {1} - {2} - {3} - {4}")
     @MethodSource("data")
-    public void init(SignatureLevel level, SignaturePackaging packaging, SigDMechanism sigDMechanism,
+    void init(SignatureLevel level, SignaturePackaging packaging, SigDMechanism sigDMechanism,
                      String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;

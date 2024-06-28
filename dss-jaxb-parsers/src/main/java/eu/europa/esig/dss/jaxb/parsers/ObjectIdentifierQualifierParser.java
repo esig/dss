@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
  */
 public class ObjectIdentifierQualifierParser {
 
+	/**
+	 * Default constructor
+	 */
 	private ObjectIdentifierQualifierParser() {
+		// empty
 	}
 
 	/**

@@ -37,10 +37,10 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TimestampWithContainerTest extends CookbookTools {
+class TimestampWithContainerTest extends CookbookTools {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
 
         // tag::creation[]
         // import eu.europa.esig.dss.model.DSSDocument;

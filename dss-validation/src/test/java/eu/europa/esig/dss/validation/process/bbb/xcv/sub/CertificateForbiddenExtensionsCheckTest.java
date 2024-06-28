@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
+class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();
@@ -66,7 +66,7 @@ public class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();
@@ -92,7 +92,7 @@ public class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void emptyExtensionsTest() {
+    void emptyExtensionsTest() {
         XmlCertificate xc = new XmlCertificate();
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -110,7 +110,7 @@ public class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void emptyConstraintTest() {
+    void emptyConstraintTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();

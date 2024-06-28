@@ -39,10 +39,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateIssuedToNaturalPersonCheckTest extends AbstractTestCheck {
+class CertificateIssuedToNaturalPersonCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void certificateIssuedToNaturalPersonWithPolicyIdentifierCheck() throws Exception {
+	void certificateIssuedToNaturalPersonWithPolicyIdentifierCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

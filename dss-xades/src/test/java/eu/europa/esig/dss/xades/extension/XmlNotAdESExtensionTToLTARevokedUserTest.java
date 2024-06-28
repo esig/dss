@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class XmlNotAdESExtensionTToLTARevokedUserTest extends AbstractXAdESTestExtension {
+class XmlNotAdESExtensionTToLTARevokedUserTest extends AbstractXAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

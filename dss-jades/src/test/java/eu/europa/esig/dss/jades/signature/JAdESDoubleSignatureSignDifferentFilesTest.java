@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESDoubleSignatureSignDifferentFilesTest extends AbstractJAdESTestValidation {
+class JAdESDoubleSignatureSignDifferentFilesTest extends AbstractJAdESTestValidation {
 	
 	private JAdESService service;
 	private JAdESSignatureParameters signatureParameters;
@@ -57,7 +57,7 @@ public class JAdESDoubleSignatureSignDifferentFilesTest extends AbstractJAdESTes
 	private DSSDocument documentThree = new InMemoryDocument("Hello World!".getBytes(), "helloWorld");
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

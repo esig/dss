@@ -48,7 +48,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS874Test extends AbstractXAdESTestValidation {
+class DSS874Test extends AbstractXAdESTestValidation {
 	
     private static final File policyDocument = new File("src/test/resources/validation/dss874/policy.pdf");
 
@@ -107,7 +107,7 @@ public class DSS874Test extends AbstractXAdESTestValidation {
 	}
 
 	@Test
-	public void policyTest() throws IOException {
+	void policyTest() throws IOException {
 		byte[] byteArray = Utils.toByteArray(new FileInputStream(policyDocument));
 
 		byte[] asn1SignaturePolicyDigest = DSSUtils.digest(DigestAlgorithm.SHA1, byteArray);

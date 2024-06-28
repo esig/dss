@@ -65,10 +65,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * See DSS-1806
  */
-public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
+class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
 
     @RepeatedTest(10)
-    public void test() throws Exception {
+    void test() throws Exception {
 
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 

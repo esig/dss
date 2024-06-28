@@ -40,7 +40,7 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class EmptyOpenDocumentValidationTest {
+class EmptyOpenDocumentValidationTest {
 	
 	private static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/opendocument");
@@ -57,7 +57,7 @@ public class EmptyOpenDocumentValidationTest {
 	
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void validate(DSSDocument fileToTest) {
+	void validate(DSSDocument fileToTest) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(fileToTest);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		Reports reports = validator.validateDocument();

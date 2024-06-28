@@ -44,12 +44,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCeExtensionWithXAdESBToLTAWithExpiredUserTest extends AbstractASiCWithXAdESTestExtension {
+class ASiCeExtensionWithXAdESBToLTAWithExpiredUserTest extends AbstractASiCWithXAdESTestExtension {
 
     private ASiCWithXAdESService service;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
     }

@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension {
+class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension {
 
     private SignatureLevel originalSignatureLevel;
     private SignatureLevel finalSignatureLevel;
@@ -43,13 +43,13 @@ public class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension 
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
     }
 
     @Test
-    public void tLevelExtensionTest() throws Exception {
+    void tLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.JAdES_BASELINE_T;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -68,7 +68,7 @@ public class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension 
     }
 
     @Test
-    public void ltLevelExtensionTest() throws Exception {
+    void ltLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.JAdES_BASELINE_LT;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -100,7 +100,7 @@ public class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension 
     }
 
     @Test
-    public void ltaLevelExtensionTest() throws Exception {
+    void ltaLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.JAdES_BASELINE_LTA;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);

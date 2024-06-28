@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TypeByCertificatePostEIDASTest {
+class TypeByCertificatePostEIDASTest {
 
 	@Test
-	public void esig() {
+	void esig() {
 		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESIGN);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
@@ -48,7 +48,7 @@ public class TypeByCertificatePostEIDASTest {
 	}
 
 	@Test
-	public void esigDefaultWithQcCompliance() {
+	void esigDefaultWithQcCompliance() {
 		CertificateWrapper cert = getCertificate(QCStatement.QC_COMPLIANCE);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
@@ -56,7 +56,7 @@ public class TypeByCertificatePostEIDASTest {
 	}
 
 	@Test
-	public void esigDefaultNoQcCompliance() {
+	void esigDefaultNoQcCompliance() {
 		CertificateWrapper cert = getCertificate();
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
@@ -64,7 +64,7 @@ public class TypeByCertificatePostEIDASTest {
 	}
 
 	@Test
-	public void eseal() {
+	void eseal() {
 		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
@@ -72,7 +72,7 @@ public class TypeByCertificatePostEIDASTest {
 	}
 
 	@Test
-	public void wsa() {
+	void wsa() {
 		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_WEB);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 
@@ -81,7 +81,7 @@ public class TypeByCertificatePostEIDASTest {
 
 	// MUST be overruled
 	@Test
-	public void multiple() {
+	void multiple() {
 		CertificateWrapper cert = getCertificate(QCTypeEnum.QCT_ESIGN, QCTypeEnum.QCT_ESEAL);
 		TypeByCertificatePostEIDAS strategy = new TypeByCertificatePostEIDAS(cert);
 

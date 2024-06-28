@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ContentTimeStampCheckTest extends AbstractTestCheck {
+class ContentTimeStampCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlSignature sig = new XmlSignature();
         XmlFoundTimestamp xmlFoundTimestamp = new XmlFoundTimestamp();
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
@@ -64,7 +64,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlSignature sig = new XmlSignature();
         XmlFoundTimestamp xmlFoundTimestamp = new XmlFoundTimestamp();
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
@@ -85,7 +85,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void individualDataObjectsType() {
+    void individualDataObjectsType() {
         XmlSignature sig = new XmlSignature();
         XmlFoundTimestamp xmlFoundTimestamp = new XmlFoundTimestamp();
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
@@ -106,7 +106,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allDataObjectsType() {
+    void allDataObjectsType() {
         XmlSignature sig = new XmlSignature();
         XmlFoundTimestamp xmlFoundTimestamp = new XmlFoundTimestamp();
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
@@ -127,7 +127,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multipleEntries() {
+    void multipleEntries() {
         XmlSignature sig = new XmlSignature();
 
         XmlFoundTimestamp xmlFoundTimestampOne = new XmlFoundTimestamp();
@@ -155,7 +155,7 @@ public class ContentTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void empty() {
+    void empty() {
         XmlSignature sig = new XmlSignature();
 
         ValueConstraint constraint = new ValueConstraint();

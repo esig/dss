@@ -46,7 +46,7 @@ public class PAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
     private final DSSDocument ORIGINAL_DOCUMENT = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new DigestDocument(DigestAlgorithm.SHA256, ORIGINAL_DOCUMENT.getDigestValue(DigestAlgorithm.SHA256));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -59,7 +59,7 @@ public class PAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void test() {
+    void test() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> service.getDataToSign(documentToSign, signatureParameters));
         assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());

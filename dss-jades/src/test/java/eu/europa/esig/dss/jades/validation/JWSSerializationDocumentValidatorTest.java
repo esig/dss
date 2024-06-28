@@ -33,10 +33,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JWSSerializationDocumentValidatorTest extends AbstractTestDocumentValidator {
+class JWSSerializationDocumentValidatorTest extends AbstractTestDocumentValidator {
 
 	@Test
-	public void test() {
+	void test() {
 		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator();
 		assertFalse(validator.isSupported(new InMemoryDocument(new byte[] {})));
 		assertFalse(validator.isSupported(InMemoryDocument.createEmptyDocument()));

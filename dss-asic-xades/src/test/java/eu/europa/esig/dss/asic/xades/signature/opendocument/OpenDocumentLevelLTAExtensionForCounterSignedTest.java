@@ -64,7 +64,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXAdESTestValidation {
+class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXAdESTestValidation {
 
 	private DSSDocument documentToSign;
 	private ASiCWithXAdESService service;
@@ -87,7 +87,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 	}
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		
@@ -111,7 +111,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 	
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void test(DSSDocument fileToTest) {
+	void test(DSSDocument fileToTest) {
 		documentToSign = fileToTest;
 		
 		signingAlias = SELF_SIGNED_USER;
@@ -256,7 +256,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 		assertTrue(arcTstFound);
 	}
 	
-	public void verifySignatureFileName(List<DSSDocument> signatureFiles) {
+	void verifySignatureFileName(List<DSSDocument> signatureFiles) {
 		assertEquals(1, signatureFiles.size());
 		DSSDocument signature = signatureFiles.get(0);
 		assertEquals("META-INF/documentsignatures.xml", signature.getName());

@@ -29,7 +29,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.extension.AbstractXAdESTestExtension;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESPrettyPrintedSignatureAndOneLineTimestampTest extends AbstractXAdESTestExtension {
+class XAdESPrettyPrintedSignatureAndOneLineTimestampTest extends AbstractXAdESTestExtension {
 
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {

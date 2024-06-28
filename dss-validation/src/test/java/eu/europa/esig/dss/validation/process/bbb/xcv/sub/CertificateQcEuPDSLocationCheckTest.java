@@ -39,10 +39,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
+class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -72,7 +72,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -102,7 +102,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void qcPDSNotPresentTest() throws Exception {
+    void qcPDSNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -124,7 +124,7 @@ public class CertificateQcEuPDSLocationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() throws Exception {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("https://repository.eid.belgium.be");

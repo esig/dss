@@ -54,7 +54,7 @@ public class PAdESTripleTimestampTest extends AbstractPAdESTestValidation {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new PAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

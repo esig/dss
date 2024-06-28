@@ -38,14 +38,14 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESFlattenedWithExtraElementSignatureTest extends AbstractJAdESTestSignature {
+class JAdESFlattenedWithExtraElementSignatureTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/validation/flattened-extra-element.json"));
 		
 		service = new JAdESService(getCompleteCertificateVerifier());

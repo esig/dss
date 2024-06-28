@@ -54,10 +54,10 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESTripleLTATest extends AbstractJAdESTestValidation {
+class JAdESTripleLTATest extends AbstractJAdESTestValidation {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.json");
 
         JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();

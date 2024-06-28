@@ -63,12 +63,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdESTestValidation {
 	
 	private static List<DSSDocument> documentsToSign;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentsToSign = new ArrayList<>();
 		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));
 		documentsToSign.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT));

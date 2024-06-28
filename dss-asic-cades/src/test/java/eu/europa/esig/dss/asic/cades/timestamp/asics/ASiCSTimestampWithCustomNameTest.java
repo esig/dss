@@ -42,10 +42,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSTimestampWithCustomNameTest extends PKIFactoryAccess {
+class ASiCSTimestampWithCustomNameTest extends PKIFactoryAccess {
 
     @Test
-    public void test() throws IOException {
+    void test() throws IOException {
         ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

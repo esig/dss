@@ -30,7 +30,7 @@ import java.util.concurrent.Future;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CallableWithErrorTest extends AbstractTestRunnable {
+class CallableWithErrorTest extends AbstractTestRunnable {
 
     @Test
     void test() {

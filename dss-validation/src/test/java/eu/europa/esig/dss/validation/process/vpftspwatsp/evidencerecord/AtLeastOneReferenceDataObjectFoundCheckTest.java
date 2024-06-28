@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestCheck {
+class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestCheck {
 
     @Test
-    public void oneRefCheck() {
+    void oneRefCheck() {
         XmlDigestMatcher oneDigestMatcher = new XmlDigestMatcher();
         oneDigestMatcher.setDataFound(true);
 
@@ -64,7 +64,7 @@ public class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestChe
     }
 
     @Test
-    public void multipleRefsCheck() {
+    void multipleRefsCheck() {
         XmlDigestMatcher oneDigestMatcher = new XmlDigestMatcher();
         oneDigestMatcher.setDataFound(true);
 
@@ -89,7 +89,7 @@ public class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestChe
     }
 
     @Test
-    public void noneRefsCheck() {
+    void noneRefsCheck() {
         XmlDigestMatcher oneDigestMatcher = new XmlDigestMatcher();
         oneDigestMatcher.setDataFound(false);
 
@@ -114,7 +114,7 @@ public class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestChe
     }
 
     @Test
-    public void emptyListCheck() {
+    void emptyListCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

@@ -32,13 +32,13 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESExtensionBToLTWithRevokedCertTest extends AbstractJAdESTestExtension {
+class JAdESExtensionBToLTWithRevokedCertTest extends AbstractJAdESTestExtension {
 
     private JAdESSignatureParameters signatureParameters;
     private JAdESSignatureParameters extensionParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         signatureParameters = super.getSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(false);
 

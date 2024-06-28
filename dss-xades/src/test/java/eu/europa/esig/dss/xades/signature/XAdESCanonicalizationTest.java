@@ -63,7 +63,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("slow")
-public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
+class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 	
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -94,7 +94,7 @@ public class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 
 	@ParameterizedTest(name = "Canonicalization {index} : {0} - {1} - {2} - {3}")
 	@MethodSource("data")
-	public void init(String canonicalizationKeyInfo, String canonicalizationSignedProperties, String canonicalizationSignedInfo, SignaturePackaging packaging) {
+	void init(String canonicalizationKeyInfo, String canonicalizationSignedProperties, String canonicalizationSignedInfo, SignaturePackaging packaging) {
 		this.canonicalizationKeyInfo = canonicalizationKeyInfo;
 		this.canonicalizationSignedProperties = canonicalizationSignedProperties;
 		this.canonicalizationSignedInfo = canonicalizationSignedInfo;

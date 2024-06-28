@@ -138,6 +138,6 @@ import org.junit.platform.suite.api.Suite;
 		PAdESTwoSigWithCopiedTstTest.class, PAdESTimestampedExistingFieldsTest.class, DSS3226Test.class, DSS3226StrictNumberComparisonTest.class,
 		PAdESLevelBWithAsn1EvidenceRecordValidationTest.class, PAdESWithDetachedTstWithAsn1EvidenceRecordValidationTest.class, DSS3239Test.class,
 		PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest.class, DSS3298Test.class })
-public class ITextPAdESValidationSuiteTest {
+class ITextPAdESValidationSuiteTest {
 
 }

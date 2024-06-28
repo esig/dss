@@ -27,32 +27,32 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustServiceQCStatementConsistencyTest extends AbstractTrustServiceConsistencyTest {
+class TrustServiceQCStatementConsistencyTest extends AbstractTrustServiceConsistencyTest {
 
 	private TrustServiceCondition condition = new TrustServiceQCStatementConsistency();
 
 	@Test
-	public void testEmpty() {
+	void testEmpty() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testQCStatementOnly() {
+	void testQCStatementOnly() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_STATEMENT.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testNoQualifiedOnly() {
+	void testNoQualifiedOnly() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.NOT_QUALIFIED.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testConflict() {
+	void testConflict() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.NOT_QUALIFIED.getUri(), ServiceQualification.QC_STATEMENT.getUri()));
 		assertFalse(condition.isConsistent(service));

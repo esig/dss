@@ -42,10 +42,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 
-public class DSSRevocationUtilsTest {
+class DSSRevocationUtilsTest {
 
 	@Test
-	public void testRevocationOCSP() throws IOException {
+	void testRevocationOCSP() throws IOException {
 		BasicOCSPResp basicOCSPResp = DSSRevocationUtils.loadOCSPBase64Encoded(
 				"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");
 		assertNotNull(basicOCSPResp);
@@ -60,7 +60,7 @@ public class DSSRevocationUtilsTest {
 	}
 
 	@Test
-	public void testGetOCSPCertificateIDAndMatch() throws IOException {
+	void testGetOCSPCertificateIDAndMatch() throws IOException {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
 		CertificateToken issuer = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
 		assertTrue(certificate.isSignedBy(issuer));
@@ -77,12 +77,12 @@ public class DSSRevocationUtilsTest {
 	}
 
 	@Test
-	public void testWrongOCSP() throws IOException {
+	void testWrongOCSP() throws IOException {
 		assertThrows(IOException.class, () ->DSSRevocationUtils.loadOCSPBase64Encoded("MIIHOgoBAK"));
 	}
 	
 	@Test
-	public void getCrlRevocationTokenKeys() {
+	void getCrlRevocationTokenKeys() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		List<String> revocationKeys = DSSRevocationUtils.getCRLRevocationTokenKeys(certificate);
 		assertNotNull(revocationKeys);
@@ -91,7 +91,7 @@ public class DSSRevocationUtilsTest {
 	}
 	
 	@Test
-	public void getOcspRevocationTokenKeys() {
+	void getOcspRevocationTokenKeys() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		List<String> revocationKeys = DSSRevocationUtils.getOcspRevocationTokenKeys(certificate);
 		assertNotNull(revocationKeys);
@@ -100,7 +100,7 @@ public class DSSRevocationUtilsTest {
 	}
 	
 	@Test
-	public void getEmptyCrlRevocationTokenKeys() {
+	void getEmptyCrlRevocationTokenKeys() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/good-user.crt"));
 		List<String> revocationKeys = DSSRevocationUtils.getCRLRevocationTokenKeys(certificate);
 		assertNotNull(revocationKeys);
@@ -108,7 +108,7 @@ public class DSSRevocationUtilsTest {
 	}
 	
 	@Test
-	public void getEmptyOcspRevocationTokenKeys() {
+	void getEmptyOcspRevocationTokenKeys() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
 		List<String> revocationKeys = DSSRevocationUtils.getOcspRevocationTokenKeys(certificate);
 		assertNotNull(revocationKeys);
@@ -116,7 +116,7 @@ public class DSSRevocationUtilsTest {
 	}
 
 	@Test
-	public void getSHA1DigestCalculator() {
+	void getSHA1DigestCalculator() {
 		DigestCalculator digestCalculator = DSSRevocationUtils.getDigestCalculator(DigestAlgorithm.SHA1);
 		assertNotNull(digestCalculator);
 	}

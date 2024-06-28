@@ -51,10 +51,10 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class CAdESLevelLTATS101733Test extends PKIFactoryAccess {
+class CAdESLevelLTATS101733Test extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();

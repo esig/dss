@@ -32,14 +32,14 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.File;
 import java.util.Date;
 
-public class XAdESLevelLTASelfSignedTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTASelfSignedTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

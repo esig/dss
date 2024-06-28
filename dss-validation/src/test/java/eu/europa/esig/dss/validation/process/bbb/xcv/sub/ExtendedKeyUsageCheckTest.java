@@ -41,10 +41,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
+class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
         xmlExtendedKeyUsages.setOID(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
         XmlOID xmlOID = new XmlOID();
@@ -69,7 +69,7 @@ public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
         xmlExtendedKeyUsages.setOID(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
         XmlOID xmlOID = new XmlOID();
@@ -94,7 +94,7 @@ public class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multiValuesCheck() {
+    void multiValuesCheck() {
         XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
         xmlExtendedKeyUsages.setOID(CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid());
 

@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignature {
+class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -66,7 +66,7 @@ public class CAdESLevelBNONEWithRSAandMGF1Test extends AbstractCAdESTestSignatur
 
 	@ParameterizedTest(name = "Combination {index} with signature algorithm {0}")
 	@MethodSource("data")
-	public void init(SignatureAlgorithm signatureAlgorithm) {
+	void init(SignatureAlgorithm signatureAlgorithm) {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();

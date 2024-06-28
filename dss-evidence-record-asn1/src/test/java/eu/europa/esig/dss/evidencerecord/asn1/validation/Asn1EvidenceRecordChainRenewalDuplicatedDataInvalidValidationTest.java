@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Asn1EvidenceRecordChainRenewalDuplicatedDataInvalidValidationTest extends AbstractAsn1EvidenceRecordTestValidation {
+class Asn1EvidenceRecordChainRenewalDuplicatedDataInvalidValidationTest extends AbstractAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

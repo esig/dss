@@ -41,10 +41,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileArchiveEntryTest {
+class FileArchiveEntryTest {
 
     @Test
-    public void test() throws IOException {
+    void test() throws IOException {
         DSSDocument document = new InMemoryDocument("Hello World!".getBytes(), "doc");
         DSSDocument zipArchive = ZipUtils.getInstance().
                 createZipArchive(Collections.singletonList(document), new Date(), null);

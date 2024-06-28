@@ -40,7 +40,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESLevelBInternallyDetachedDoubleSignTest extends AbstractXAdESTestSignature {
+class XAdESLevelBInternallyDetachedDoubleSignTest extends AbstractXAdESTestSignature {
 
     private static final DSSDocument DOC = new FileDocument(new File("src/test/resources/sample-with-id.xml"));
 
@@ -49,7 +49,7 @@ public class XAdESLevelBInternallyDetachedDoubleSignTest extends AbstractXAdESTe
     private XAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = DOC;
         service = new XAdESService(getOfflineCertificateVerifier());
         signatureParameters = initSignatureParameters();

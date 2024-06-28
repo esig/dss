@@ -53,14 +53,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentMultipleArchivesLevelLTTest extends AbstractASiCEWithXAdESMultipleDocumentsTestSignature {
+class OpenDocumentMultipleArchivesLevelLTTest extends AbstractASiCEWithXAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign = new ArrayList<>();
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.odt")));
 		documentsToSign.add(new FileDocument(new File("src/test/resources/opendocument/open-document.ods")));
 

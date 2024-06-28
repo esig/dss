@@ -31,7 +31,7 @@ import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESWithManifestObjectReferenceTest extends AbstractXAdESTestValidation {
+class XAdESWithManifestObjectReferenceTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

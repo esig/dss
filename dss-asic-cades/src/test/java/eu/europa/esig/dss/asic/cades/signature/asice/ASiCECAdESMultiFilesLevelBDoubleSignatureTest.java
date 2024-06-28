@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
+class ASiCECAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
 
     private final List<DSSDocument> ORIGINAL_DOCS = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class ASiCECAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCE
     private List<DSSDocument> documentToSigns = new ArrayList<>();
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
         ORIGINAL_DOCS.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));

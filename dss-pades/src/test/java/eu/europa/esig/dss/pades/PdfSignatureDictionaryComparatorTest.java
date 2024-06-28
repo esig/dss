@@ -38,7 +38,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PdfSignatureDictionaryComparatorTest {
+class PdfSignatureDictionaryComparatorTest {
 	
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -51,7 +51,7 @@ public class PdfSignatureDictionaryComparatorTest {
 	private MockPdfSignatureDictionary strange2;
 
 	@BeforeEach
-	public void init() throws ParseException {
+	void init() throws ParseException {
 
 		/*
 		 * [0, 91747, 124517, 723]
@@ -71,7 +71,7 @@ public class PdfSignatureDictionaryComparatorTest {
 	}
 
 	@Test
-	public void test1() {
+	void test1() {
 		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
 
 		listToSort.add(mock0);
@@ -87,7 +87,7 @@ public class PdfSignatureDictionaryComparatorTest {
 	}
 
 	@Test
-	public void test2() {
+	void test2() {
 		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
 
 		listToSort.add(mock2);
@@ -102,7 +102,7 @@ public class PdfSignatureDictionaryComparatorTest {
 	}
 
 	@Test
-	public void test3() {
+	void test3() {
 		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
 
 		listToSort.add(mock1);
@@ -117,7 +117,7 @@ public class PdfSignatureDictionaryComparatorTest {
 	}
 
 	@Test
-	public void test4() {
+	void test4() {
 		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
 		
 		listToSort.add(mock0bis);
@@ -130,7 +130,7 @@ public class PdfSignatureDictionaryComparatorTest {
 	}
 
 	@Test
-	public void testNotZero() {
+	void testNotZero() {
 		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
 
 		listToSort.add(nonZero);
@@ -143,7 +143,7 @@ public class PdfSignatureDictionaryComparatorTest {
 	}
 
 	@Test
-	public void testDSS1690() {
+	void testDSS1690() {
 		PdfSignatureDictionary sig = new MockPdfSignatureDictionary(new int[] { 0, 6418, 17102, 332 });
 		PdfSignatureDictionary archivalTST1 = new MockPdfSignatureDictionary(new int[] { 0, 185123, 191125, 343 });
 		PdfSignatureDictionary archivalTST2 = new MockPdfSignatureDictionary(new int[] { 0, 200002, 237892, 637 });
@@ -157,7 +157,7 @@ public class PdfSignatureDictionaryComparatorTest {
 	}
 
 	@Test
-	public void testStrange() {
+	void testStrange() {
 		List<PdfSignatureDictionary> listToSort = new ArrayList<>();
 
 		listToSort.add(strange1);

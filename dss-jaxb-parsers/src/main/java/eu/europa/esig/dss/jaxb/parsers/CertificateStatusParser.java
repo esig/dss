@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.CertificateStatus;
  */
 public class CertificateStatusParser {
 
+	/**
+	 * Default constructor
+	 */
 	private CertificateStatusParser() {
+		// empty
 	}
 
 	/**

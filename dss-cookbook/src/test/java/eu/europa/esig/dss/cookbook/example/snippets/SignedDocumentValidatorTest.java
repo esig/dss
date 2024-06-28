@@ -53,10 +53,10 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SignedDocumentValidatorTest {
+class SignedDocumentValidatorTest {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		// tag::demo[]
 		// import java.util.Arrays;

@@ -43,10 +43,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.IssuerSerialMatchCheck;
 
-public class IssuerSerialMatchCheckTest extends AbstractTestCheck {
+class IssuerSerialMatchCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void issuerSerialMatchCheckTest() throws Exception {
+	void issuerSerialMatchCheckTest() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
@@ -84,7 +84,7 @@ public class IssuerSerialMatchCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void issuerSerialNotMatchCheckTest() throws Exception {
+	void issuerSerialNotMatchCheckTest() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 

@@ -41,10 +41,10 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DSS798Test extends PKIFactoryAccess {
+class DSS798Test extends PKIFactoryAccess {
 
 	@Test
-	public void testExtendDetachedWithoutFile() throws Exception {
+	void testExtendDetachedWithoutFile() throws Exception {
 		DSSDocument documentToSign = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8), "bin.bin");
 
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
@@ -71,7 +71,7 @@ public class DSS798Test extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testExtendDetachedWithFile() throws Exception {
+	void testExtendDetachedWithFile() throws Exception {
 
 		DSSDocument documentToSign = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8), "bin.bin");
 

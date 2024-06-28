@@ -43,10 +43,10 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
+class XAdESExtensionWithContentTimestampTest extends PKIFactoryAccess {
 	
 	@RepeatedTest(10)
-	public void test() {
+	void test() {
 		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		
 		Date oneDayBefore = getDateWithHoursDifference(-24);

@@ -48,10 +48,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation {
+class ASiCEXAdESSignLTALevelTest extends AbstractPkiFactoryTestValidation {
 	
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		
 		List<DSSDocument> documentsToSign = new ArrayList<>();
 		documentsToSign.add(new FileDocument("src/test/resources/signable/open-document.odt"));

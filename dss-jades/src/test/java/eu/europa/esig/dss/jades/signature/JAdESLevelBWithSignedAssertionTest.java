@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class JAdESLevelBWithSignedAssertionTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithSignedAssertionTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private JAdESSignatureParameters signatureParameters;
@@ -47,7 +47,7 @@ public class JAdESLevelBWithSignedAssertionTest extends AbstractJAdESTestSignatu
 	private final String signedAssertionString = "<saml2:Assertion xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">test</saml2:Assertion>"; // format does not matter here
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		signatureParameters = new JAdESSignatureParameters();

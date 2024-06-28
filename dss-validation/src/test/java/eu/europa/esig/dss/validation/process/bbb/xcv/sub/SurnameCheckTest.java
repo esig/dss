@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SurnameCheck;
 
-public class SurnameCheckTest extends AbstractTestCheck {
+class SurnameCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void surnameCheck() throws Exception {
+	void surnameCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Valid_Surname");
@@ -57,7 +57,7 @@ public class SurnameCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedSurnameCheck() throws Exception {
+	void failedSurnameCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Invalid_Surname");

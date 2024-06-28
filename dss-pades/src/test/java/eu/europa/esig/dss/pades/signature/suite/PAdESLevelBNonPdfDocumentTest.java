@@ -45,7 +45,7 @@ public class PAdESLevelBNonPdfDocumentTest extends PKIFactoryAccess {
     private final DSSDocument ORIGINAL_DOCUMENT = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = ORIGINAL_DOCUMENT;
 
         signatureParameters = new PAdESSignatureParameters();
@@ -58,7 +58,7 @@ public class PAdESLevelBNonPdfDocumentTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void test() {
+    void test() {
         Exception exception = assertThrows(IllegalInputException.class,
                 () -> service.getDataToSign(documentToSign, signatureParameters));
         assertEquals("The document with name 'test.text' is not a PDF. PDF document is expected!", exception.getMessage());

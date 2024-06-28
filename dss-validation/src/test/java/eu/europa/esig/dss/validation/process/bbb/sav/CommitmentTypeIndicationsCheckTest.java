@@ -38,10 +38,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
 
-public class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
+class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void commitmentTypeIndicationsCheck() throws Exception {
+	void commitmentTypeIndicationsCheck() throws Exception {
 		List<XmlCommitmentTypeIndication> commitmentTypeIndications = new ArrayList<>();
 		XmlCommitmentTypeIndication commitmentTypeIndication1 = new XmlCommitmentTypeIndication();
 		commitmentTypeIndication1.setIdentifier("1");
@@ -70,7 +70,7 @@ public class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedCommitmentTypeIndicationsCheck() throws Exception {
+	void failedCommitmentTypeIndicationsCheck() throws Exception {
 		List<XmlCommitmentTypeIndication> commitmentTypeIndications = new ArrayList<>();
 		XmlCommitmentTypeIndication commitmentTypeIndication1 = new XmlCommitmentTypeIndication();
 		commitmentTypeIndication1.setIdentifier("1");
@@ -99,7 +99,7 @@ public class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void emptyListCommitmentTypeIndicationsCheck() throws Exception {
+	void emptyListCommitmentTypeIndicationsCheck() throws Exception {
 		XmlSignature sig = new XmlSignature();
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();

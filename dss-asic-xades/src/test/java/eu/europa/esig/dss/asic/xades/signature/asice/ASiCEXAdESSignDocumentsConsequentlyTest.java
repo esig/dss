@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class ASiCEXAdESSignDocumentsConsequentlyTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESSignDocumentsConsequentlyTest extends AbstractASiCEXAdESTestSignature {
 
     private static ASiCWithXAdESSignatureParameters signatureParameters;
     private static DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
@@ -52,7 +52,7 @@ public class ASiCEXAdESSignDocumentsConsequentlyTest extends AbstractASiCEXAdEST
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new ASiCWithXAdESService(certificateVerifier);
 
@@ -84,7 +84,7 @@ public class ASiCEXAdESSignDocumentsConsequentlyTest extends AbstractASiCEXAdEST
 
     @ParameterizedTest(name = "Sign XAdES {index} : {0} - {1} - {2}")
     @MethodSource("data")
-    public void init(SignatureLevel level, String signer, DSSDocument document) {
+    void init(SignatureLevel level, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

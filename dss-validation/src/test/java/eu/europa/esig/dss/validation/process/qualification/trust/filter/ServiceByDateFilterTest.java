@@ -33,20 +33,20 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
 
-public class ServiceByDateFilterTest {
+class ServiceByDateFilterTest {
 
 	private final static Date DATE1 = DatatypeConverter.parseDateTime("2015-07-01T00:00:00-00:00").getTime();
 	private final static Date DATE2 = DatatypeConverter.parseDateTime("2016-07-01T00:00:00-00:00").getTime();
 	private final static Date DATE3 = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
 
 	@Test
-	public void noCAQC() {
+	void noCAQC() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 		assertTrue(Utils.isCollectionEmpty(filter.filter(new ArrayList<>())));
 	}
 
 	@Test
-	public void testInRange() {
+	void testInRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
 		TrustServiceWrapper service = new TrustServiceWrapper();
@@ -57,7 +57,7 @@ public class ServiceByDateFilterTest {
 	}
 
 	@Test
-	public void testNoEndRange() {
+	void testNoEndRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
 		TrustServiceWrapper service = new TrustServiceWrapper();
@@ -67,7 +67,7 @@ public class ServiceByDateFilterTest {
 	}
 
 	@Test
-	public void testNoDateRange() {
+	void testNoDateRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
 		TrustServiceWrapper service = new TrustServiceWrapper();
@@ -76,7 +76,7 @@ public class ServiceByDateFilterTest {
 	}
 
 	@Test
-	public void testNotInRange() {
+	void testNotInRange() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE3);
 
 		TrustServiceWrapper service = new TrustServiceWrapper();
@@ -87,7 +87,7 @@ public class ServiceByDateFilterTest {
 	}
 
 	@Test
-	public void testInRangeSameStartDate() {
+	void testInRangeSameStartDate() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE1);
 
 		TrustServiceWrapper service = new TrustServiceWrapper();
@@ -98,7 +98,7 @@ public class ServiceByDateFilterTest {
 	}
 
 	@Test
-	public void testInRangeSameEndDate() {
+	void testInRangeSameEndDate() {
 		ServiceByDateFilter filter = new ServiceByDateFilter(DATE3);
 
 		TrustServiceWrapper service = new TrustServiceWrapper();

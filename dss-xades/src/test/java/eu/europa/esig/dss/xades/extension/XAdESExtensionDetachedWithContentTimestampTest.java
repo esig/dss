@@ -45,7 +45,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESExtensionDetachedWithContentTimestampTest extends PKIFactoryAccess {
+class XAdESExtensionDetachedWithContentTimestampTest extends PKIFactoryAccess {
 
 	@Test
 	protected void extend() {

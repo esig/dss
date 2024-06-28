@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
  */
 public class SignatureFormatParser {
 
+	/**
+	 * Default constructor
+	 */
 	private SignatureFormatParser() {
+		// empty
 	}
 
 	/**

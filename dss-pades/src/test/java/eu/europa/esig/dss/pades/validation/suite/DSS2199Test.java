@@ -39,7 +39,7 @@ public class DSS2199Test extends AbstractPAdESTestValidation {
 	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setCrlSource(getCompositeCRLSource());
 		

@@ -38,10 +38,10 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 /**
  * How to sign with CAdES-BASELINE-B enveloping signature.
  */
-public class SignXmlCadesBTest extends CookbookTools {
+class SignXmlCadesBTest extends CookbookTools {
 
 	@Test
-	public void signCAdESBaselineB() throws Exception {
+	void signCAdESBaselineB() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

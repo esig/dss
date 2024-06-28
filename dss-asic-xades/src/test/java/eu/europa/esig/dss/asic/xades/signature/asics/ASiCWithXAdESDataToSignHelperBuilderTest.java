@@ -43,12 +43,12 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ASiCWithXAdESDataToSignHelperBuilderTest {
+class ASiCWithXAdESDataToSignHelperBuilderTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(ASiCWithXAdESDataToSignHelperBuilderTest.class);
 
     @Test
-    public void asicsFromFilesTest() {
+    void asicsFromFilesTest() {
         List<DSSDocument> filesToBeSigned = new ArrayList<>();
         filesToBeSigned.add(new InMemoryDocument("Hello".getBytes(), "test.xml"));
         filesToBeSigned.add(new InMemoryDocument("Bye".getBytes(), "test2.xml"));

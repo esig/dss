@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
-public class CAdESCertificateWrapperTest extends AbstractCAdESTestValidation {
+class CAdESCertificateWrapperTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

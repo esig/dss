@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESEnvelopingLevelBWithCustomRefsManifestTest extends AbstractXAdESTestSignature {
+class XAdESEnvelopingLevelBWithCustomRefsManifestTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -60,7 +60,7 @@ public class XAdESEnvelopingLevelBWithCustomRefsManifestTest extends AbstractXAd
     private List<DSSDocument> detachedContents;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.setSigningCertificate(getSigningCert());

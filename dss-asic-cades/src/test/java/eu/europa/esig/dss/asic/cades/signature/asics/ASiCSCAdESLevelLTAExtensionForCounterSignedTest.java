@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCSCAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithCAdESTestValidation {
 	
 	private ASiCWithCAdESService service;
 	private DSSDocument documentToSign;
@@ -68,7 +68,7 @@ public class ASiCSCAdESLevelLTAExtensionForCounterSignedTest extends AbstractASi
 	private String signingAlias;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 		
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
@@ -93,7 +93,7 @@ public class ASiCSCAdESLevelLTAExtensionForCounterSignedTest extends AbstractASi
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		signingAlias = SELF_SIGNED_USER;
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);

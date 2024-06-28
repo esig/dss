@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DomUtilsTest {
+class DomUtilsTest {
 
 	private static final String XML_HEADER = "<?xml version='1.0' encoding='UTF-8'?>";
 	private static final String XML_TEXT = "<hello><world></world></hello>";
@@ -51,7 +51,7 @@ public class DomUtilsTest {
 	private static final String XML_WITH_COMMENTS = "<!-- Comment 1 --><!-- Comment 2 --><hello><!-- Comment 3 --><world></world></hello><!-- Comment 4 -->";
 
 	@Test
-	public void registerNamespaceTest() {
+	void registerNamespaceTest() {
 		Document document = DomUtils.buildDOM(XML_WITH_NAMESPACE);
 
 		final String xPathExpression = "./m:file-entry";
@@ -79,7 +79,7 @@ public class DomUtilsTest {
 	}
 
 	@Test
-	public void testNoHeader() {
+	void testNoHeader() {
 		InputStream is = new ByteArrayInputStream(XML_TEXT.getBytes());
 		assertNotNull(DomUtils.buildDOM(is));
 		assertNotNull(DomUtils.buildDOM(XML_TEXT));
@@ -87,13 +87,13 @@ public class DomUtilsTest {
 	}
 
 	@Test
-	public void testNoHeaderError() {
+	void testNoHeaderError() {
 		Exception exception = assertThrows(DSSException.class, () -> DomUtils.buildDOM(INCORRECT_XML_TEXT));
 		assertTrue(exception.getMessage().contains("Unable to parse content (XML expected)"));
 	}
 
 	@Test
-	public void testHeader() {
+	void testHeader() {
 		InputStream is = new ByteArrayInputStream((XML_HEADER + XML_TEXT).getBytes());
 		assertNotNull(DomUtils.buildDOM(is));
 		assertNotNull(DomUtils.buildDOM(XML_HEADER + XML_TEXT));
@@ -101,13 +101,13 @@ public class DomUtilsTest {
 	}
 
 	@Test
-	public void testHeaderError() {
+	void testHeaderError() {
 		Exception exception = assertThrows(DSSException.class, () -> DomUtils.buildDOM(XML_HEADER + INCORRECT_XML_TEXT));
 		assertTrue(exception.getMessage().contains("Unable to parse content (XML expected)"));
 	}
 
 	@Test
-	public void testExpansionXml() throws IOException {
+	void testExpansionXml() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/xml_expansion.xml")) {
 			Exception exception = assertThrows(DSSException.class, () -> DomUtils.buildDOM(fis));
 			assertTrue(exception.getMessage().contains("Unable to parse content (XML expected)"));
@@ -115,7 +115,7 @@ public class DomUtilsTest {
 	}
 
 	@Test
-	public void testEntityXml() throws IOException {
+	void testEntityXml() throws IOException {
 		// Should ignore the URL embedded in the DTD
 		try (FileInputStream fis = new FileInputStream("src/test/resources/xml_entity.xml")) {
 			Exception exception = assertThrows(DSSException.class, () -> DomUtils.buildDOM(fis));
@@ -124,18 +124,18 @@ public class DomUtilsTest {
 	}
 
 	@Test
-	public void getSecureTransformer() {
+	void getSecureTransformer() {
 		assertNotNull(DomUtils.getSecureTransformer());
 	}
 
 	@Test
-	public void getDate() {
+	void getDate() {
 		assertNull(DomUtils.getDate("2020-02-16:T18:32:24Z"));
 		assertNotNull(DomUtils.getDate("2020-02-16T18:32:24Z"));
 	}
 
 	@Test
-	public void isDomTest() {
+	void isDomTest() {
 		assertTrue(DomUtils.isDOM(XML_TEXT.getBytes()));
 		assertTrue(DomUtils.isDOM((XML_HEADER + XML_TEXT).getBytes()));
 		assertTrue(DomUtils.isDOM(XML_WITH_NAMESPACE.getBytes()));
@@ -149,7 +149,7 @@ public class DomUtilsTest {
 		assertFalse(DomUtils.isDOM(new InMemoryDocument(INCORRECT_XML_TEXT.getBytes())));
 	}
 
-	public void excludeCommentsTest() {
+	void excludeCommentsTest() {
 		Document document = DomUtils.buildDOM(XML_WITH_COMMENTS);
 		Node noCommentsNode = DomUtils.excludeComments(document);
 		assertNoCommentsRecursively(noCommentsNode);
@@ -167,7 +167,7 @@ public class DomUtilsTest {
 	}
 
 	@Test
-	public void getIdTest() {
+	void getIdTest() {
 		assertEquals("Id", DomUtils.getId("Id"));
 		assertEquals("Id", DomUtils.getId("#Id"));
 		assertEquals("Id", DomUtils.getId("#xpointer(id('Id'))"));
@@ -185,7 +185,7 @@ public class DomUtilsTest {
 	}
 
 	@Test
-	public void getElementByIdTest() {
+	void getElementByIdTest() {
 		assertNotNull(DomUtils.getElementById(
 				DomUtils.buildDOM("<el id=\"signedData\">Text</el>"), "signedData"));
 		assertNotNull(DomUtils.getElementById(

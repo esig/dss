@@ -33,10 +33,10 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SimpleASiCWithCAdESFilenameFactoryTest {
+class SimpleASiCWithCAdESFilenameFactoryTest {
 
     @Test
-    public void getASiCSSignatureFilenameTest() {
+    void getASiCSSignatureFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -83,7 +83,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCESignatureFilenameTest() {
+    void getASiCESignatureFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -139,7 +139,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSTimestampFilenameTest() {
+    void getASiCSTimestampFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -186,7 +186,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCETimestampFilenameTest() {
+    void getASiCETimestampFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -236,7 +236,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEManifestFilenameTest() {
+    void getASiCEManifestFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -292,7 +292,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEArchiveManifestFilenameTest() {
+    void getASiCEArchiveManifestFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -354,7 +354,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSDataPackageFilenameTest() {
+    void getASiCSDataPackageFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -382,7 +382,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSEvidenceRecordFilenameTest() {
+    void getASiCSEvidenceRecordFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -421,7 +421,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEEvidenceRecordFilenameTest() {
+    void getASiCEEvidenceRecordFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -489,7 +489,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSEvidenceRecordManifestFilenameTest() {
+    void getASiCSEvidenceRecordManifestFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -521,7 +521,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEEvidenceRecordManifestFilenameTest() {
+    void getASiCEEvidenceRecordManifestFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();

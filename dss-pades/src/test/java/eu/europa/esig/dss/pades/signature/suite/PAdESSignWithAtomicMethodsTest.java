@@ -56,7 +56,7 @@ public class PAdESSignWithAtomicMethodsTest extends AbstractPAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new PAdESService(certificateVerifier);
     }
@@ -87,7 +87,7 @@ public class PAdESSignWithAtomicMethodsTest extends AbstractPAdESTestSignature {
 
     @ParameterizedTest(name = "Sign PAdES {index} : {0} - {1} - {2} - {3}")
     @MethodSource("data")
-    public void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
+    void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

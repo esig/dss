@@ -44,10 +44,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ByteRangeCollisionCheckTest extends AbstractTestCheck {
+class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignatureOne = new XmlSignature();
@@ -101,7 +101,7 @@ public class ByteRangeCollisionCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignatureOne = new XmlSignature();
@@ -155,7 +155,7 @@ public class ByteRangeCollisionCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void validWithTimestamp() {
+    void validWithTimestamp() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignature = new XmlSignature();
@@ -209,7 +209,7 @@ public class ByteRangeCollisionCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidWithTimestamp() {
+    void invalidWithTimestamp() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignature = new XmlSignature();

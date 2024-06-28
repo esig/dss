@@ -39,14 +39,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCSTimestampMultipleSignedFilesTest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
+class ASiCSTimestampMultipleSignedFilesTest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
 
     private ASiCWithCAdESService service;
     private ASiCWithCAdESSignatureParameters signatureParameters;
     private List<DSSDocument> documentsToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getAlternateGoodTsa());
 
@@ -62,7 +62,7 @@ public class ASiCSTimestampMultipleSignedFilesTest extends AbstractASiCSWithCAdE
     }
 
     @Test
-    public void test() {
+    void test() {
         DSSDocument signedDocument = super.sign();
 
         ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();

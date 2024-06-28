@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
  */
 public class ASiCContainerTypeParser {
 
+	/**
+	 * Default constructor
+	 */
 	private ASiCContainerTypeParser() {
+		// empty
 	}
 
 	/**

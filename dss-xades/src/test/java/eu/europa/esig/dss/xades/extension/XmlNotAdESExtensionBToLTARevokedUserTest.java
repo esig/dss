@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlNotAdESExtensionBToLTARevokedUserTest extends AbstractXAdESTestExtension {
+class XmlNotAdESExtensionBToLTARevokedUserTest extends AbstractXAdESTestExtension {
 
     private XAdESService extensionService;
 

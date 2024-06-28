@@ -37,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class DTOConverterTest {
+class DTOConverterTest {
 	
 	@Test
-	public void toToBeSignedTest() {
+	void toToBeSignedTest() {
 		ToBeSignedDTO toBeSignedDTO = new ToBeSignedDTO(new byte[] {'1','2','3'});
 		ToBeSigned toBeSigned = DTOConverter.toToBeSigned(toBeSignedDTO);
         assertArrayEquals(toBeSignedDTO.getBytes(), toBeSigned.getBytes());
@@ -48,7 +48,7 @@ public class DTOConverterTest {
 	}
 	
 	@Test
-	public void toToBeSignedNullByteArrayTest() {
+	void toToBeSignedNullByteArrayTest() {
 		ToBeSignedDTO toBeSignedDTO = new ToBeSignedDTO(null);
 		ToBeSigned toBeSigned = DTOConverter.toToBeSigned(toBeSignedDTO);
 		assertArrayEquals(toBeSignedDTO.getBytes(), toBeSigned.getBytes());
@@ -56,13 +56,13 @@ public class DTOConverterTest {
 	}
 	
 	@Test
-	public void toToBeSignedNullTest() {
+	void toToBeSignedNullTest() {
 		ToBeSigned toBeSigned = DTOConverter.toToBeSigned(null);
 		assertNull(toBeSigned);
 	}
 	
 	@Test
-	public void toToBeSignedDTOTest() {
+	void toToBeSignedDTOTest() {
 		ToBeSigned toBeSigned = new ToBeSigned(new byte[] {'1','2','3'});
 		ToBeSignedDTO toBeSignedDTO = DTOConverter.toToBeSignedDTO(toBeSigned);
 		assertArrayEquals(toBeSignedDTO.getBytes(), toBeSigned.getBytes());
@@ -70,7 +70,7 @@ public class DTOConverterTest {
 	}
 	
 	@Test
-	public void toSignatureValueTest() {
+	void toSignatureValueTest() {
 		SignatureValueDTO signatureValueDTO = new SignatureValueDTO(SignatureAlgorithm.RSA_SHA256,
 				Utils.fromBase64("7b907e3ef6f8a4342ba42f9c66518bf32f0ec242e8784284c1d8cd816cd77bf2"));
 		SignatureValue signatureValue = DTOConverter.toSignatureValue(signatureValueDTO);
@@ -80,7 +80,7 @@ public class DTOConverterTest {
 	}
 	
 	@Test
-	public void toSignatureValueDTOTest() {
+	void toSignatureValueDTOTest() {
 		SignatureValue signatureValue = new SignatureValue(SignatureAlgorithm.DSA_SHA224, 
 				Utils.fromBase64("7b907e3ef6f8a4342ba42f9c66518bf32f0ec242e8784284c1d8cd816cd77bf2"));
 		SignatureValueDTO signatureValueDTO = DTOConverter.toSignatureValueDTO(signatureValue);
@@ -90,7 +90,7 @@ public class DTOConverterTest {
 	}
 	
 	@Test
-	public void toSignatureValueNullArrayTest() {
+	void toSignatureValueNullArrayTest() {
 		SignatureValueDTO signatureValueDTO = new SignatureValueDTO(SignatureAlgorithm.RSA_SHA256, null);
 		SignatureValue signatureValue = DTOConverter.toSignatureValue(signatureValueDTO);
 		assertEquals(signatureValueDTO.getAlgorithm(), signatureValue.getAlgorithm());
@@ -99,13 +99,13 @@ public class DTOConverterTest {
 	}
 	
 	@Test
-	public void toSignatureValueNullTest() {
+	void toSignatureValueNullTest() {
 		SignatureValue signatureValue = DTOConverter.toSignatureValue(null);
 		assertNull(signatureValue);
 	}
 	
 	@Test
-	public void toDigestTest() {
+	void toDigestTest() {
 		DigestDTO digestDTO = new DigestDTO(DigestAlgorithm.SHA1, Utils.fromHex("22BDD97143DF6B39A65AFAD2AF6BD8BF20CD4F7B"));
 		Digest digest = DTOConverter.toDigest(digestDTO);
 		assertNotNull(digest);
@@ -114,7 +114,7 @@ public class DTOConverterTest {
 	}
 	
 	@Test
-	public void toDigestDTOTest() {
+	void toDigestDTOTest() {
 		Digest digest = new Digest(DigestAlgorithm.SHA1, Utils.fromHex("22BDD97143DF6B39A65AFAD2AF6BD8BF20CD4F7B"));
 		DigestDTO digestDTO = DTOConverter.toDigestDTO(digest);
 		assertNotNull(digestDTO);

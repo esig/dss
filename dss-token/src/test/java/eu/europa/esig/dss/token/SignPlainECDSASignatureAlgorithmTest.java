@@ -45,7 +45,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignPlainECDSASignatureAlgorithmTest {
+class SignPlainECDSASignatureAlgorithmTest {
 
     static {
         Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -66,7 +66,7 @@ public class SignPlainECDSASignatureAlgorithmTest {
 
     @ParameterizedTest(name = "SignatureAlgorithm {index} : {0}")
     @MethodSource("data")
-    public void testPkcs12(SignatureAlgorithm signatureAlgorithm) throws IOException {
+    void testPkcs12(SignatureAlgorithm signatureAlgorithm) throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/good-ecdsa-user.p12",
                 new PasswordProtection("ks-password".toCharArray()))) {
 

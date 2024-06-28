@@ -28,7 +28,7 @@ import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.trustedlist.enums.Assert;
 
-public class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceWrongCertPolicyTest extends AbstractMRALOTLTest {
+class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceWrongCertPolicyTest extends AbstractMRALOTLTest {
 
     @Override
     protected Assert getCertificateContentDeclarationPointedPartyQcComplianceAssertStatus() {

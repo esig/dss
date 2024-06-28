@@ -40,14 +40,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class JAdESSerializationLevelBDetachedWithHttpHeadersTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESSerializationLevelBDetachedWithHttpHeadersTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private List<DSSDocument> documentsToSign;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		JAdESService jadesService = new JAdESService(getCompleteCertificateVerifier());
 		jadesService.setTspSource(getGoodTsa());
 		service = jadesService;

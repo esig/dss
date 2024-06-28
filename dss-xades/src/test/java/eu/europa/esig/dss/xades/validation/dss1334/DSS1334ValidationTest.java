@@ -36,12 +36,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class DSS1334ValidationTest extends AbstractXAdESTestValidation {
+class DSS1334ValidationTest extends AbstractXAdESTestValidation {
 
 	private static final DSSDocument ORIGINAL_FILE = new FileDocument("src/test/resources/validation/dss1334/simple-test.xml");
 	
 	@Test
-	public void encodingTest() {
+	void encodingTest() {
 		// be careful about carriage returns windows/linux
 		DSSDocument doc = new FileDocument("src/test/resources/validation/dss1334/simple-test.xml");
 		assertEquals("tl08+/KLCeJN8RRCEDzF8aJ12Ew=", Utils.toBase64(doc.getDigestValue(DigestAlgorithm.SHA1)));

@@ -46,7 +46,7 @@ import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
 
 @Tag("slow")
-public class XAdESReferenceCanonicalizationTest extends AbstractXAdESTestSignature {
+class XAdESReferenceCanonicalizationTest extends AbstractXAdESTestSignature {
 	
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -72,7 +72,7 @@ public class XAdESReferenceCanonicalizationTest extends AbstractXAdESTestSignatu
 
 	@ParameterizedTest(name = "Canonicalization {index} : {0} - {1}")
 	@MethodSource("data")
-	public void test(String canonicalization, SignaturePackaging packaging) {
+	void test(String canonicalization, SignaturePackaging packaging) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample-c14n.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

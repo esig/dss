@@ -31,10 +31,10 @@ import java.security.KeyStore;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MixedPredicateTest {
+class MixedPredicateTest {
 
     @Test
-    public void rsaTest() throws IOException {
+    void rsaTest() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
                 new KeyStore.PasswordProtection("password".toCharArray()))) {
 
@@ -65,7 +65,7 @@ public class MixedPredicateTest {
     }
 
     @Test
-    public void combinedTest() throws IOException {
+    void combinedTest() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/combined.p12",
                 new KeyStore.PasswordProtection("password".toCharArray()))) {
 

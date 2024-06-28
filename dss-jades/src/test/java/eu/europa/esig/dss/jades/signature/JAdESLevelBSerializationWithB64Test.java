@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class JAdESLevelBSerializationWithB64Test extends AbstractJAdESTestSignature {
+class JAdESLevelBSerializationWithB64Test extends AbstractJAdESTestSignature {
 	
 	private static final String ORIGINAL_STRING = "Hello\nWorld!";
 
@@ -47,7 +47,7 @@ public class JAdESLevelBSerializationWithB64Test extends AbstractJAdESTestSignat
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		documentToSign = new InMemoryDocument(ORIGINAL_STRING.getBytes());
 		signatureParameters = new JAdESSignatureParameters();

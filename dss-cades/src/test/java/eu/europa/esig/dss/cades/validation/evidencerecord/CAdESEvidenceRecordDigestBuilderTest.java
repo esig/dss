@@ -50,10 +50,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CAdESEvidenceRecordDigestBuilderTest {
+class CAdESEvidenceRecordDigestBuilderTest {
 
     @Test
-    public void cadesNoErTest() {
+    void cadesNoErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/C-B-B-basic-der.p7m");
 
         assertEquals("5C0298EC96A31CAF0248164B7B6899EE17455ABAE48C6C456FF1DF1E4D23ECAE",
@@ -74,7 +74,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void cadesWithErTest() {
+    void cadesWithErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/C-E-ERS-basic-der.p7m");
 
         assertEquals("6F29495CC39F94044E13B94DC913EAF001C50A8710DEE14D1589BE5098ECE6E7C722AFA31EF0D6EB7FF21A9521DB0EF0153D657DECC60CDFD9B9A31A92F68535",
@@ -88,7 +88,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void cadesLtWithErTest() {
+    void cadesLtWithErTest() {
         DSSDocument signature = new FileDocument("src/test/resources/validation/evidence-record/Signature-C-LT-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.p7m");
         DSSDocument er = new FileDocument("src/test/resources/validation/evidence-record/evidence-record-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.ers");
 
@@ -112,7 +112,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void cadesDetachedTest() {
+    void cadesDetachedTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/C-B-B-basic.p7m");
         DSSDocument detachedDoc = new InMemoryDocument("test 123".getBytes());
 
@@ -128,7 +128,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void cadesDetachedWithErTest() {
+    void cadesDetachedWithErTest() {
         DSSDocument signature = new FileDocument("src/test/resources/validation/evidence-record/C-B-B-detached.p7s");
         DSSDocument er = new FileDocument("src/test/resources/validation/evidence-record/evidence-record-C-B-B-detached.ers");
         DSSDocument originalDoc = new FileDocument("src/test/resources/validation/evidence-record/sample.zip");
@@ -161,7 +161,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void cadesDoubleSigWithErTest() {
+    void cadesDoubleSigWithErTest() {
         DSSDocument signature = new FileDocument("src/test/resources/validation/evidence-record/Double-C-B-B-basic.p7m");
         DSSDocument er = new FileDocument("src/test/resources/validation/evidence-record/evidence-record-Double-C-B-B-basic.ers");
 
@@ -205,7 +205,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void cadesDoubleSigWithTwoErsTest() {
+    void cadesDoubleSigWithTwoErsTest() {
         DSSDocument signature = new FileDocument("src/test/resources/validation/evidence-record/Double-C-B-B-basic.p7m");
         DSSDocument er = new FileDocument("src/test/resources/validation/evidence-record/evidence-record-Double-C-B-B-basic.ers");
 
@@ -236,7 +236,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void cadesWithTwoErAttrsTest() {
+    void cadesWithTwoErAttrsTest() {
         DSSDocument signature = new FileDocument("src/test/resources/validation/evidence-record/Double-C-E-ERS-basic.p7m");
         DSSDocument er = new FileDocument("src/test/resources/validation/evidence-record/evidence-record-Double-C-E-ERS-basic.ers");
 
@@ -287,7 +287,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void nullTest() {
+    void nullTest() {
         Exception exception = assertThrows(NullPointerException.class,
                 () -> new CAdESEvidenceRecordDigestBuilder(null));
         assertEquals("Signature document cannot be null!", exception.getMessage());
@@ -299,7 +299,7 @@ public class CAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void notCmsTest() {
+    void notCmsTest() {
         DSSDocument document = new InMemoryDocument("test 123".getBytes());
         Exception exception = assertThrows(DSSException.class,
                 () -> new CAdESEvidenceRecordDigestBuilder(document).build());

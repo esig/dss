@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCeExtendTimestampedDocumentTest extends PKIFactoryAccess {
+class ASiCeExtendTimestampedDocumentTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument doc = new FileDocument("src/test/resources/signable/no-signature-container.sce");
 
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());

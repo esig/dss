@@ -43,12 +43,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESMultipleNestedCounterSignaturesTest extends AbstractJAdESTestValidation {
+class JAdESMultipleNestedCounterSignaturesTest extends AbstractJAdESTestValidation {
 
 	private String signingAlias;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument doc = new FileDocument(new File("src/test/resources/sample.json"));
 
 		JAdESService service = new JAdESService(getCompleteCertificateVerifier());

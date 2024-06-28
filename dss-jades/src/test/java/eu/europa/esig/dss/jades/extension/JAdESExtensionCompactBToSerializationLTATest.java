@@ -32,7 +32,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JAdESExtensionCompactBToSerializationLTATest extends AbstractJAdESTestExtension {
+class JAdESExtensionCompactBToSerializationLTATest extends AbstractJAdESTestExtension {
 
     @Override
     protected JAdESSignatureParameters getSignatureParameters() {

@@ -37,7 +37,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 
-public class JWSSimpleDetachedWithWrongAlgoValidationTest extends AbstractJAdESTestValidation {
+class JWSSimpleDetachedWithWrongAlgoValidationTest extends AbstractJAdESTestValidation {
 	
 	@Override
 	protected DSSDocument getSignedDocument() {

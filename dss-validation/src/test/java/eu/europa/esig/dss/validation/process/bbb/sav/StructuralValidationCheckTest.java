@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
 
-public class StructuralValidationCheckTest extends AbstractTestCheck {
+class StructuralValidationCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void structuralValidationCheck() throws Exception {
+	void structuralValidationCheck() throws Exception {
 		XmlStructuralValidation xsv = new XmlStructuralValidation();
 		xsv.setValid(true);
 
@@ -60,7 +60,7 @@ public class StructuralValidationCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedStructuralValidationCheck() throws Exception {
+	void failedStructuralValidationCheck() throws Exception {
 		XmlStructuralValidation xsv = new XmlStructuralValidation();
 		xsv.setValid(false);
 
@@ -80,7 +80,7 @@ public class StructuralValidationCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void emptyStructuralValidationCheck() throws Exception {
+	void emptyStructuralValidationCheck() throws Exception {
 		XmlSignature sig = new XmlSignature();
 
 		LevelConstraint constraint = new LevelConstraint();

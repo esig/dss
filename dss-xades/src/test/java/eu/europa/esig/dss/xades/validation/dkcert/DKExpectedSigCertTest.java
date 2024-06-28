@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class DKExpectedSigCertTest extends AbstractDKTestCertificate {
+class DKExpectedSigCertTest extends AbstractDKTestCertificate {
 	
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
@@ -76,7 +76,7 @@ public class DKExpectedSigCertTest extends AbstractDKTestCertificate {
 	}
 
 	@Test
-	public void certs() {
+	void certs() {
 		// System.out.println(PREVIOUS_SIG_CERT);
 		// System.out.println(EXPECTED_SIG_CERT);
 

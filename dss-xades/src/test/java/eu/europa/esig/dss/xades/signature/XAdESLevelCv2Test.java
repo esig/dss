@@ -34,7 +34,7 @@ public class XAdESLevelCv2Test extends XAdESLevelCTest {
 
     @Override
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         super.init();
         signatureParameters.setEn319132(true);
     }

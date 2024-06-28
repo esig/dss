@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RevocationFreshnessStatusTest {
+class RevocationFreshnessStatusTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RevocationFreshnessStatusTest.class);
 
@@ -48,7 +48,7 @@ public class RevocationFreshnessStatusTest {
     private final String CERT_THREE_MESSAGE = "No new revocation data found!";
 
     @Test
-    public void test() {
+    void test() {
         RevocationFreshnessStatus status = new RevocationFreshnessStatus();
 
         status.addTokenAndRevocationNextUpdateTime(SIGNING_CERTIFICATE, DSSUtils.getUtcDate(2022, 0, 1));

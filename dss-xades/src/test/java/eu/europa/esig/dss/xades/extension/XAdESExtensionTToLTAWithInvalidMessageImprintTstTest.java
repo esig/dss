@@ -43,13 +43,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends AbstractXAdESTestExtension {
+class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends AbstractXAdESTestExtension {
 
     private CertificateVerifier certificateVerifier;
     private XAdESService service;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
 

@@ -53,66 +53,66 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2049Test extends AbstractTestValidationExecutor {
+class DSS2049Test extends AbstractTestValidationExecutor {
 	
 	@Test
-	public void dss2049() throws Exception {
+	void dss2049() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.NONE, false);
 	}
 	
 	@Test
-	public void lotlFailWithWarnLevel() throws Exception {
+	void lotlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(false, true, true);
 		Reports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN, false);
 	}
 	
 	@Test
-	public void lotlFailWithFailLevel() throws Exception {
+	void lotlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(false, true, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.NA, TimestampQualification.NA, false, false, false, MessageType.ERROR, false);
 	}
 	
 	@Test
-	public void sigTlFailWithWarnLevel() throws Exception {
+	void sigTlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, true);
 		Reports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN, false);
 	}
 	
 	@Test
-	public void sigTlFailWithFailLevel() throws Exception {
+	void sigTlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.NA, TimestampQualification.QTSA, true, false, true, MessageType.ERROR, false);
 	}
 	
 	@Test
-	public void tstTlFailWithWarnLevel() throws Exception {
+	void tstTlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, false);
 		Reports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN, true);
 	}
 	
 	@Test
-	public void tstTlFailWithFailLevel() throws Exception {
+	void tstTlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, false);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.NA, true, true, false, MessageType.ERROR, true);
 	}
 	
 	@Test
-	public void bothTlFailWithWarnLevel() throws Exception {
+	void bothTlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, false);
 		Reports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, SignatureQualification.QESIG, TimestampQualification.QTSA, true, true, true, MessageType.WARN, false);
 	}
 	
 	@Test
-	public void bothTlFailWithFailLevel() throws Exception {
+	void bothTlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, false);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.NA, TimestampQualification.NA, true, false, false, MessageType.ERROR, false);

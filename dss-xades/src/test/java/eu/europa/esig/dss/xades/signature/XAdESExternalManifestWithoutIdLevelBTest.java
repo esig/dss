@@ -36,14 +36,14 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESExternalManifestWithoutIdLevelBTest extends AbstractXAdESTestSignature {
+class XAdESExternalManifestWithoutIdLevelBTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/manifest-no-id.xml");
 
         signatureParameters = new XAdESSignatureParameters();

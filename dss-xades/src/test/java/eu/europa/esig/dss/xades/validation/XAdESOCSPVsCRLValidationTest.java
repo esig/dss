@@ -48,10 +48,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESOCSPVsCRLValidationTest extends PKIFactoryAccess {
+class XAdESOCSPVsCRLValidationTest extends PKIFactoryAccess {
 
     @Test
-    public void test() {
+    void test() {
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();

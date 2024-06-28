@@ -50,13 +50,13 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 
-public class LOTLAndTLRefreshTest {
+class LOTLAndTLRefreshTest {
 
 	@TempDir
 	File cacheDirectory;
 
 	@Test
-	public void test() {
+	void test() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 

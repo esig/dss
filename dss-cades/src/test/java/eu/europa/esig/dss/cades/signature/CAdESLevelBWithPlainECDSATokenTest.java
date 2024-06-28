@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // see DSS-2450
 @Tag("slow")
-public class CAdESLevelBWithPlainECDSATokenTest extends AbstractCAdESTestSignature {
+class CAdESLevelBWithPlainECDSATokenTest extends AbstractCAdESTestSignature {
 
     private static final String HELLO_WORLD = "Hello World";
 
@@ -69,7 +69,7 @@ public class CAdESLevelBWithPlainECDSATokenTest extends AbstractCAdESTestSignatu
 
     @ParameterizedTest(name = "Combination {index} of ECDSA with {0}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    void init(DigestAlgorithm digestAlgo) {
         documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
         signatureParameters = new CAdESSignatureParameters();

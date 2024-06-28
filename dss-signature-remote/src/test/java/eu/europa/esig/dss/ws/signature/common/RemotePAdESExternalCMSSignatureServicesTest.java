@@ -47,13 +47,13 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteSignatureServiceTest {
+class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteSignatureServiceTest {
 
     private RemotePAdESWithExternalCMSServiceImpl padesWithExternalCMSService;
     private RemoteExternalCMSServiceImpl externalCMSService;
 
     @BeforeEach
-    public void init() {
+    void init() {
         padesWithExternalCMSService = new RemotePAdESWithExternalCMSServiceImpl();
         padesWithExternalCMSService.setService(getPAdESWithExternalCMSService());
 
@@ -75,7 +75,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
     }
 
     @Test
-    public void testBLevelSign() throws Exception {
+    void testBLevelSign() throws Exception {
         RemoteSignatureParameters padesParameters = new RemoteSignatureParameters();
         padesParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
@@ -102,7 +102,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
     }
 
     @Test
-    public void testTLevelSign() throws Exception {
+    void testTLevelSign() throws Exception {
         RemoteSignatureParameters padesParameters = new RemoteSignatureParameters();
         padesParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 
@@ -129,7 +129,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
     }
 
     @Test
-    public void testCMSTLevelSign() throws Exception {
+    void testCMSTLevelSign() throws Exception {
         RemoteSignatureParameters padesParameters = new RemoteSignatureParameters();
         padesParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
@@ -156,7 +156,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
     }
 
     @Test
-    public void testCMSLTALevelSign() throws Exception {
+    void testCMSLTALevelSign() throws Exception {
         RemoteSignatureParameters padesParameters = new RemoteSignatureParameters();
         padesParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 
@@ -183,7 +183,7 @@ public class RemotePAdESExternalCMSSignatureServicesTest extends AbstractRemoteS
     }
 
     @Test
-    public void testBLevelWithVisualSignature() throws Exception {
+    void testBLevelWithVisualSignature() throws Exception {
         RemoteSignatureParameters padesParameters = new RemoteSignatureParameters();
         padesParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 

@@ -38,10 +38,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
 
-public class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
+class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signingCertificateRecognitionCheck() throws Exception {
+	void signingCertificateRecognitionCheck() throws Exception {
 		XmlSigningCertificate xsc = new XmlSigningCertificate();
 		XmlCertificate xCert = new XmlCertificate();
 		xCert.setId("C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC");
@@ -66,7 +66,7 @@ public class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void signingCertificateNotRecognizedCheck() throws Exception {
+	void signingCertificateNotRecognizedCheck() throws Exception {
 		XmlSignature sig = new XmlSignature();
 
 		LevelConstraint constraint = new LevelConstraint();
@@ -85,7 +85,7 @@ public class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void publicKeyCheck() throws Exception {
+	void publicKeyCheck() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		
 		XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();

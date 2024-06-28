@@ -35,10 +35,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class StateCheckTest extends AbstractTestCheck {
+class StateCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validCheck() {
+    void validCheck() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("Valid_State");
@@ -56,7 +56,7 @@ public class StateCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidCheck() {
+    void invalidCheck() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("Valid_State");

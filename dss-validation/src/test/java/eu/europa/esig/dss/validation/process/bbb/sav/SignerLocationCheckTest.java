@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignerLocationCheck;
 
-public class SignerLocationCheckTest extends AbstractTestCheck {
+class SignerLocationCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signerLocationCheckTest() throws Exception {
+	void signerLocationCheckTest() throws Exception {
 		XmlSignatureProductionPlace xspp = new XmlSignatureProductionPlace();
 
 		XmlSignature sig = new XmlSignature();
@@ -59,7 +59,7 @@ public class SignerLocationCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedSignerLocationCheckTest() throws Exception {
+	void failedSignerLocationCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 
 		LevelConstraint constraint = new LevelConstraint();

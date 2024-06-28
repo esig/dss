@@ -48,7 +48,7 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 	private static DSSDocument document;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		document = new InMemoryDocument(PAdESTimestampWithOrphanRefsTest.class
 				.getResourceAsStream("/validation/dss-1959/pades-tst-with-orphan-refs.pdf"));
 	}

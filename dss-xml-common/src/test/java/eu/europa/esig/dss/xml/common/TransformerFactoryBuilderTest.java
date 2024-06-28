@@ -34,17 +34,17 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TransformerFactoryBuilderTest {
+class TransformerFactoryBuilderTest {
 	
 	@Test
-	public void buildTest() {
+	void buildTest() {
 		TransformerFactoryBuilder secureTransformerBuilder = TransformerFactoryBuilder.getSecureTransformerBuilder();
 		TransformerFactory transformerFactory = secureTransformerBuilder.build();
 		assertNotNull(transformerFactory);
 	}
 	
 	@Test
-	public void infoLogExceptionTest() {
+	void infoLogExceptionTest() {
 		TransformerFactoryBuilder secureTransformerBuilder = TransformerFactoryBuilder.getSecureTransformerBuilder();
 		secureTransformerBuilder.enableFeature("CUSTOM_FEATURE");
 		
@@ -60,7 +60,7 @@ public class TransformerFactoryBuilderTest {
 	}
 	
 	@Test
-	public void errorLogExceptionTest() {
+	void errorLogExceptionTest() {
 		TransformerFactoryBuilder secureTransformerBuilder = TransformerFactoryBuilder.getSecureTransformerBuilder();
 		secureTransformerBuilder.setAttribute("CUSTOM_ATTRIBUTE", "CUSTOM_VALUE");
 		

@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 
-public class FormatCheckTest extends AbstractTestCheck {
+class FormatCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void validFormat() throws Exception {
+	void validFormat() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 
@@ -58,7 +58,7 @@ public class FormatCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void unknownFormat() throws Exception {
+	void unknownFormat() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.UNKNOWN);
 

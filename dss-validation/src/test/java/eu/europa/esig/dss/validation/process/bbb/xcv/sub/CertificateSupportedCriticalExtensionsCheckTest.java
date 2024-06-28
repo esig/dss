@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateSupportedCriticalExtensionsCheckTest extends AbstractTestCheck {
+class CertificateSupportedCriticalExtensionsCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();
@@ -69,7 +69,7 @@ public class CertificateSupportedCriticalExtensionsCheckTest extends AbstractTes
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();
@@ -97,7 +97,7 @@ public class CertificateSupportedCriticalExtensionsCheckTest extends AbstractTes
     }
 
     @Test
-    public void notCriticalTest() {
+    void notCriticalTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();
@@ -131,7 +131,7 @@ public class CertificateSupportedCriticalExtensionsCheckTest extends AbstractTes
     }
 
     @Test
-    public void notCriticalExtensionsTest() {
+    void notCriticalExtensionsTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();
@@ -164,7 +164,7 @@ public class CertificateSupportedCriticalExtensionsCheckTest extends AbstractTes
     }
 
     @Test
-    public void notExtensionsTest() {
+    void notExtensionsTest() {
         XmlCertificate xc = new XmlCertificate();
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -182,7 +182,7 @@ public class CertificateSupportedCriticalExtensionsCheckTest extends AbstractTes
     }
 
     @Test
-    public void noConstraintsDefinedTest() {
+    void noConstraintsDefinedTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();
@@ -209,7 +209,7 @@ public class CertificateSupportedCriticalExtensionsCheckTest extends AbstractTes
     }
 
     @Test
-    public void noConstraintsDefinedNoCriticalTest() {
+    void noConstraintsDefinedNoCriticalTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension certificateExtensionOne = new XmlCertificateExtension();

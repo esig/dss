@@ -36,12 +36,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
+class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
 
     private static final String TSA_POLICY = "1.2.3.4";
 
     @Test
-    public void testSuccess() {
+    void testSuccess() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
         tspSource.setTsaPolicy(TSA_POLICY);
@@ -54,7 +54,7 @@ public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testTimestampUnsupportedDigestAlgo() {
+    void testTimestampUnsupportedDigestAlgo() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
         tspSource.setTsaPolicy(TSA_POLICY);
@@ -72,7 +72,7 @@ public class JaxbPKITSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testTimestampSha3DigestAlgo() {
+    void testTimestampSha3DigestAlgo() {
         CertEntity certEntity = repository.getCertEntityBySubject("good-tsa");
         PKITSPSource tspSource = new PKITSPSource(certEntity);
         tspSource.setTsaPolicy(TSA_POLICY);

@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
 
-public class CountryCheckTest extends AbstractTestCheck {
+class CountryCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void countryCheck() throws Exception {
+	void countryCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("BE");
@@ -57,7 +57,7 @@ public class CountryCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedCountryCheck() throws Exception {
+	void failedCountryCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("BE");

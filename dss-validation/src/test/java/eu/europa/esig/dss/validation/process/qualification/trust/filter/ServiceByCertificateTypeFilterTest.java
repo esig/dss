@@ -43,10 +43,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ServiceByCertificateTypeFilterTest {
+class ServiceByCertificateTypeFilterTest {
 
     @Test
-    public void certForESigTest() {
+    void certForESigTest() {
         CertificateWrapper certificateWrapper = createCertificate(false, Collections.singletonList(QCTypeEnum.QCT_ESIGN));
 
         ServiceByCertificateTypeFilter filter = new ServiceByCertificateTypeFilter(certificateWrapper);
@@ -75,7 +75,7 @@ public class ServiceByCertificateTypeFilterTest {
     }
 
     @Test
-    public void certForESigTLOverruleTest() {
+    void certForESigTLOverruleTest() {
         CertificateWrapper certificateWrapper = createCertificate(false, Collections.singletonList(QCTypeEnum.QCT_ESIGN));
 
         ServiceByCertificateTypeFilter filter = new ServiceByCertificateTypeFilter(certificateWrapper);
@@ -110,7 +110,7 @@ public class ServiceByCertificateTypeFilterTest {
     }
 
     @Test
-    public void certForESealTLOverruleTest() {
+    void certForESealTLOverruleTest() {
         CertificateWrapper certificateWrapper = createCertificate(false, Collections.singletonList(QCTypeEnum.QCT_ESEAL));
 
         ServiceByCertificateTypeFilter filter = new ServiceByCertificateTypeFilter(certificateWrapper);
@@ -145,7 +145,7 @@ public class ServiceByCertificateTypeFilterTest {
     }
 
     @Test
-    public void certForESigPreEIDASTest() {
+    void certForESigPreEIDASTest() {
         CertificateWrapper certificateWrapper = createCertificate(false, Collections.singletonList(QCTypeEnum.QCT_ESIGN), false);
 
         ServiceByCertificateTypeFilter filter = new ServiceByCertificateTypeFilter(certificateWrapper);

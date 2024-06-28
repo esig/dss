@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1334SignatureTest extends AbstractXAdESTestSignature {
+class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 
 	private static final DSSDocument ORIGINAL_FILE = new FileDocument("src/test/resources/validation/dss1334/simple-test.xml");
 
@@ -61,7 +61,7 @@ public class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = ORIGINAL_FILE;
 		documentToSign.setName(null);
 
@@ -77,7 +77,7 @@ public class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 	}
 
 	@Test
-	public void extendValidFile() {
+	void extendValidFile() {
 		DSSDocument doc = new FileDocument(
 				"src/test/resources/validation/dss1334/simple-test-signed-xades-baseline-b.xml");
 
@@ -96,7 +96,7 @@ public class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 	}
 
 	@Test
-	public void extendInvalidFile() {
+	void extendInvalidFile() {
 		DSSDocument doc = new FileDocument(
 				"src/test/resources/validation/dss1334/document-signed-xades-baseline-b--null-for-filename.xml");
 

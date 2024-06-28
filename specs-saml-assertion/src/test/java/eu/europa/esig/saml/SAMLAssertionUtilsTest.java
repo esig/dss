@@ -35,18 +35,18 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SAMLAssertionUtilsTest {
+class SAMLAssertionUtilsTest {
 
 	private static SAMLAssertionUtils samlAssertionUtils;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		samlAssertionUtils = SAMLAssertionUtils.getInstance();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void test() throws JAXBException, SAXException {
+	void test() throws JAXBException, SAXException {
 		JAXBContext jc = samlAssertionUtils.getJAXBContext();
 		assertNotNull(jc);
 

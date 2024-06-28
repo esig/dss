@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PDFTimestampingTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		

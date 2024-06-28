@@ -43,12 +43,12 @@ import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class UntrustedConfigTest extends PKIFactoryAccess {
+class UntrustedConfigTest extends PKIFactoryAccess {
 
 	private DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 	@Test
-	public void untrustedCert() {
+	void untrustedCert() {
 		CAdESSignatureParameters params = new CAdESSignatureParameters();
 		params.setSigningCertificate(getSigningCert());
 		params.setCertificateChain(getCertificateChain());
@@ -70,7 +70,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void untrustedCertLT() {
+	void untrustedCertLT() {
 		CAdESSignatureParameters params = new CAdESSignatureParameters();
 		params.setSigningCertificate(getSigningCert());
 		params.setCertificateChain(getCertificateChain());
@@ -90,7 +90,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void untrustedCertLT2() {
+	void untrustedCertLT2() {
 		CAdESSignatureParameters params = new CAdESSignatureParameters();
 		params.setSigningCertificate(getSigningCert());
 		params.setCertificateChain(getCertificateChain());
@@ -110,7 +110,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void untrustedCertLTNotRecommendedConfig() {
+	void untrustedCertLTNotRecommendedConfig() {
 		CAdESSignatureParameters params = new CAdESSignatureParameters();
 		params.setSigningCertificate(getSigningCert());
 		params.setCertificateChain(getCertificateChain());
@@ -138,7 +138,7 @@ public class UntrustedConfigTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void untrustedCertLTForce() {
+	void untrustedCertLTForce() {
 		CAdESSignatureParameters params = new CAdESSignatureParameters();
 		params.setSigningCertificate(getSigningCert());
 		params.setCertificateChain(getCertificateChain());

@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Unit test added to fix issue : https://esig-dss.atlassian.net/browse/DSS-678
  */
-public class DTDInjectionTest extends AbstractXAdESTestValidation {
+class DTDInjectionTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -70,7 +70,7 @@ public class DTDInjectionTest extends AbstractXAdESTestValidation {
 	}
 
 	@Test
-	public void test() {
+	void test() {
 		FileDocument fileDocument = new FileDocument(
 				new File("src/test/resources/validation/xades-with-dtd-injection.xml"));
 		Exception exception = assertThrows(IllegalInputException.class,

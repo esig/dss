@@ -48,7 +48,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -61,7 +61,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void testOverflow() throws Exception {
+    void testOverflow() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
         SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
@@ -85,7 +85,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void testFillBox() throws Exception {
+    void testFillBox() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
         SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
@@ -109,7 +109,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void testFillBoxAndLinebreak() throws Exception {
+    void testFillBoxAndLinebreak() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
         SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
@@ -133,7 +133,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void loremIpsumLinebreakTest() throws IOException {
+    void loremIpsumLinebreakTest() throws IOException {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
         SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
@@ -164,7 +164,7 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void noSignatureFieldBoxTest() throws Exception {
+    void noSignatureFieldBoxTest() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
 
         SignatureImageTextParameters textParameters = new SignatureImageTextParameters();

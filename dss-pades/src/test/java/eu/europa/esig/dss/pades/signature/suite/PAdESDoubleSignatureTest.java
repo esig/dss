@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PAdESDoubleSignatureTest extends PKIFactoryAccess {
 
 	@RepeatedTest(10)
-	public void testDoubleSignature() throws Exception {
+	void testDoubleSignature() throws Exception {
 
 		DSSDocument toBeSigned = new InMemoryDocument(PAdESDoubleSignatureTest.class.getResourceAsStream("/sample.pdf"));
 

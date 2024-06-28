@@ -40,10 +40,10 @@ import org.junit.jupiter.api.Test;
  * How to extend with XAdES-BASELINE signature
  *
  */
-public class ExtendXAdESTest extends CookbookTools {
+class ExtendXAdESTest extends CookbookTools {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		prepareXmlDoc();
 
 		DSSDocument signedDocument = null;

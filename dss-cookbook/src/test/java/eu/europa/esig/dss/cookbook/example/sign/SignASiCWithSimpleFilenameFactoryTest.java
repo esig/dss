@@ -42,10 +42,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SignASiCWithSimpleFilenameFactoryTest extends CookbookTools {
+class SignASiCWithSimpleFilenameFactoryTest extends CookbookTools {
 
     @Test
-    public void signAndMergeContainersTest() throws Exception {
+    void signAndMergeContainersTest() throws Exception {
 
         // Prepare documents to be signed
         List<DSSDocument> documentsToBeSigned = Arrays.asList(

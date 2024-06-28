@@ -50,14 +50,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
+class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 
     private RemoteTrustedListSignatureServiceImpl tlSigningService;
 
     private Date signingTime;
 
     @BeforeEach
-    public void init() {
+    void init() {
         tlSigningService = new RemoteTrustedListSignatureServiceImpl();
         tlSigningService.setXadesService(getXAdESService());
 
@@ -65,7 +65,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
     }
 
     @Test
-    public void test() {
+    void test() {
         DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
         RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
 
@@ -87,7 +87,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
     }
 
     @Test
-    public void testWithCustomParams() {
+    void testWithCustomParams() {
         DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
         RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
 
@@ -129,7 +129,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
     }
 
     @Test
-    public void testWithCustomSignatureAlgorithmParams() {
+    void testWithCustomSignatureAlgorithmParams() {
         DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
         RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
 

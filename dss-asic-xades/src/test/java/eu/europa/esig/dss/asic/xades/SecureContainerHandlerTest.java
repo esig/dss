@@ -60,24 +60,24 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SecureContainerHandlerTest {
+class SecureContainerHandlerTest {
 
 	private static DSSDocument smallerDocument;
 	private static DSSDocument biggerDocument;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		smallerDocument = new FileDocument("src/test/resources/validation/dss-2245-2400.asice");
 		biggerDocument = new FileDocument("src/test/resources/validation/dss-2245-2500.asice");
 	}
 
 	@AfterEach
-	public void reset() {
+	void reset() {
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(new SecureContainerHandlerBuilder());
 	}
 
 	@Test
-	public void testDefault() {
+	void testDefault() {
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(new SecureContainerHandlerBuilder());
 
 		DocumentValidator validator = getValidator(smallerDocument);
@@ -90,7 +90,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void testSmallerRatio() {
+	void testSmallerRatio() {
 		SecureContainerHandlerBuilder containerHandlerBuilder = new SecureContainerHandlerBuilder()
 				.setMaxCompressionRatio(50);
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(containerHandlerBuilder);
@@ -104,7 +104,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void testBiggerThreshold() {
+	void testBiggerThreshold() {
 		SecureContainerHandlerBuilder containerHandlerBuilder = new SecureContainerHandlerBuilder()
 				.setMaxCompressionRatio(50);
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(containerHandlerBuilder);
@@ -123,7 +123,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void testDifferentDocumentsAmount() {
+	void testDifferentDocumentsAmount() {
 		SecureContainerHandlerBuilder containerHandlerBuilder = new SecureContainerHandlerBuilder()
 				.setMaxAllowedFilesAmount(1);
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(containerHandlerBuilder);
@@ -139,7 +139,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void extractContainerContentTest() {
+	void extractContainerContentTest() {
 		DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asice");
 
 		SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
@@ -162,7 +162,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void extractContainerContentInMemoryDocumentTest() {
+	void extractContainerContentInMemoryDocumentTest() {
 		DSSDocument document = new InMemoryDocument(
 				DSSUtils.toByteArray(new File("src/test/resources/validation/multifiles-ok.asice")));
 
@@ -186,7 +186,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void createZipArchiveTest() throws IOException {
+	void createZipArchiveTest() throws IOException {
 		Date creationTime = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(creationTime);
@@ -273,7 +273,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void extractCommentsTest() throws IOException {
+	void extractCommentsTest() throws IOException {
 		String comment = "Comment shall be preserved!";
 
 		DSSZipEntry zipEntry = new DSSZipEntry("doc.txt");

@@ -40,13 +40,13 @@ public class PAdESServiceTimestampingTest extends AbstractPkiFactoryTestValidati
     private static PAdESService service;
 
     @BeforeEach
-    public void init() {
+    void init() {
         service = new PAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());
     }
 
     @Test
-    public void nullTest() {
+    void nullTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> service.timestamp(null, null));
         assertEquals("Document to be timestamped is not defined!", exception.getMessage());
 
@@ -55,7 +55,7 @@ public class PAdESServiceTimestampingTest extends AbstractPkiFactoryTestValidati
     }
 
     @Test
-    public void digestDocumentTest() {
+    void digestDocumentTest() {
         DSSDocument originalDocument = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
         DSSDocument documentToTimestamp = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
 
@@ -65,7 +65,7 @@ public class PAdESServiceTimestampingTest extends AbstractPkiFactoryTestValidati
     }
 
     @Test
-    public void nonPdfTest() {
+    void nonPdfTest() {
         DSSDocument documentToTimestamp = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/signature-image.png"));
 
         Exception exception = assertThrows(IllegalInputException.class, () ->

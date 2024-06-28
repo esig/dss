@@ -20,6 +20,6 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-public class PdfBoxPDFDocumentAnalyzerTest extends AbstractPDFDocumentValidatorTest {
+class PdfBoxPDFDocumentAnalyzerTest extends AbstractPDFDocumentValidatorTest {
 
 }

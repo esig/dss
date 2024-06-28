@@ -39,10 +39,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignProtectedPdfPadesBLevelTest extends CookbookTools {
+class SignProtectedPdfPadesBLevelTest extends CookbookTools {
 
     @Test
-    public void signProtectedPdf() throws Exception {
+    void signProtectedPdf() throws Exception {
 
         // GET document to be signed -
         DSSDocument protectedDocument = new FileDocument("src/test/resources/snippets/open_protected.pdf");

@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
 
-public class BestSignatureTimeBeforeCertificateExpirationCheckTest extends AbstractTestCheck {
+class BestSignatureTimeBeforeCertificateExpirationCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void validTest() throws Exception {
+	void validTest() throws Exception {
 		
 		Date bestSignatureTime = new Date();
 		
@@ -63,7 +63,7 @@ public class BestSignatureTimeBeforeCertificateExpirationCheckTest extends Abstr
 	}
 
 	@Test
-	public void invalidTest() throws Exception {
+	void invalidTest() throws Exception {
 		
 		Date bestSignatureTime = new Date();
 		

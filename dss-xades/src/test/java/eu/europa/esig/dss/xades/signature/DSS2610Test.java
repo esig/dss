@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /*
  * In this unit test no revocation data shall be requested on validation
  */
-public class DSS2610Test extends AbstractXAdESTestSignature {
+class DSS2610Test extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -57,7 +57,7 @@ public class DSS2610Test extends AbstractXAdESTestSignature {
     private MockOnlineCRLSource mockOnlineCRLSource;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         Calendar calendar = Calendar.getInstance();

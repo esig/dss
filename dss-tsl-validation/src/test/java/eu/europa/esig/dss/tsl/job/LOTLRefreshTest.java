@@ -48,13 +48,13 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
-public class LOTLRefreshTest {
+class LOTLRefreshTest {
 
 	@TempDir
 	File cacheDirectory;
 
 	@Test
-	public void test() {
+	void test() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -75,7 +75,7 @@ public class LOTLRefreshTest {
 	}
 
 	@Test
-	public void testMissingCert() {
+	void testMissingCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -96,7 +96,7 @@ public class LOTLRefreshTest {
 	}
 
 	@Test
-	public void testWrongCert() {
+	void testWrongCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -120,7 +120,7 @@ public class LOTLRefreshTest {
 	}
 
 	@Test
-	public void testNullCertSource() {
+	void testNullCertSource() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 

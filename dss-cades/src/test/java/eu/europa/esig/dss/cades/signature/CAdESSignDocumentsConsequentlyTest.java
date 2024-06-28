@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class CAdESSignDocumentsConsequentlyTest extends AbstractCAdESTestSignature {
+class CAdESSignDocumentsConsequentlyTest extends AbstractCAdESTestSignature {
 
     private static CAdESSignatureParameters signatureParameters;
     private static DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
@@ -52,7 +52,7 @@ public class CAdESSignDocumentsConsequentlyTest extends AbstractCAdESTestSignatu
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new CAdESService(certificateVerifier);
 
@@ -86,7 +86,7 @@ public class CAdESSignDocumentsConsequentlyTest extends AbstractCAdESTestSignatu
 
     @ParameterizedTest(name = "Sign CAdES {index} : {0} - {1} - {2} - {3}")
     @MethodSource("data")
-    public void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
+    void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

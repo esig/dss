@@ -24,7 +24,7 @@ import eu.europa.esig.dss.asic.xades.extension.AbstractTestOpenDocumentExtension
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class OpenDocumentExtensionTToLTTest extends AbstractTestOpenDocumentExtension {
+class OpenDocumentExtensionTToLTTest extends AbstractTestOpenDocumentExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

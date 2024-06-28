@@ -38,14 +38,14 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESSerializationWithExtraElementSignatureTest extends AbstractJAdESTestSignature {
+class JAdESSerializationWithExtraElementSignatureTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/validation/serialization-extra-element.json"));
 		
 		service = new JAdESService(getCompleteCertificateVerifier());

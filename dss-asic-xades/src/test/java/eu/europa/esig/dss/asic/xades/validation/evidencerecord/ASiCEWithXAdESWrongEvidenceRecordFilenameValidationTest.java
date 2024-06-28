@@ -39,7 +39,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCEWithXAdESWrongEvidenceRecordFilenameValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
+class ASiCEWithXAdESWrongEvidenceRecordFilenameValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

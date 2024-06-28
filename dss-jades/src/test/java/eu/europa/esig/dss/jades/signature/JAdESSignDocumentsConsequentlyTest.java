@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class JAdESSignDocumentsConsequentlyTest extends AbstractJAdESTestSignature {
+class JAdESSignDocumentsConsequentlyTest extends AbstractJAdESTestSignature {
 
     private static JAdESSignatureParameters signatureParameters;
     private static DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
@@ -55,7 +55,7 @@ public class JAdESSignDocumentsConsequentlyTest extends AbstractJAdESTestSignatu
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new JAdESService(certificateVerifier);
 
@@ -96,7 +96,7 @@ public class JAdESSignDocumentsConsequentlyTest extends AbstractJAdESTestSignatu
 
     @ParameterizedTest(name = "Sign JAdES {index} : {0} - {1} - {2} - {3} - {4}")
     @MethodSource("data")
-    public void init(SignatureLevel level, SignaturePackaging packaging, SigDMechanism sigDMechanism,
+    void init(SignatureLevel level, SignaturePackaging packaging, SigDMechanism sigDMechanism,
                      String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;

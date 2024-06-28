@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelLTACounterSignatureTest extends AbstractCAdESCounterSignatureTest {
+class CAdESLevelLTACounterSignatureTest extends AbstractCAdESCounterSignatureTest {
 
 	private CAdESService service;
 	private DSSDocument documentToSign;
@@ -53,7 +53,7 @@ public class CAdESLevelLTACounterSignatureTest extends AbstractCAdESCounterSigna
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
@@ -148,7 +148,7 @@ public class CAdESLevelLTACounterSignatureTest extends AbstractCAdESCounterSigna
 	}
 	
 	@Test
-	public void ltaLevelCounterSignatureTest() {
+	void ltaLevelCounterSignatureTest() {
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> signAndVerify());
 		assertEquals("A counter signature with a level 'CAdES-BASELINE-LTA' is not supported! "

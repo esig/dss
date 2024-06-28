@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithCAdESAsn1EvidenceRecordChainRenewalValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
+class ASiCEWithCAdESAsn1EvidenceRecordChainRenewalValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

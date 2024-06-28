@@ -43,10 +43,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
 
-public class DigestValueMatchCheckTest extends AbstractTestCheck {
+class DigestValueMatchCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void digestValueMatchCheckTest() throws Exception {
+	void digestValueMatchCheckTest() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
@@ -84,7 +84,7 @@ public class DigestValueMatchCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void digestValueNotMatchCheckTest() throws Exception {
+	void digestValueNotMatchCheckTest() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		

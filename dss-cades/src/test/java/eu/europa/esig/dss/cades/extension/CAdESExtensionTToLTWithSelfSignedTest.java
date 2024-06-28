@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
-public class CAdESExtensionTToLTWithSelfSignedTest extends CAdESExtensionTToLTTest {
+class CAdESExtensionTToLTWithSelfSignedTest extends CAdESExtensionTToLTTest {
 
 	@Override
 	protected String getSigningAlias() {

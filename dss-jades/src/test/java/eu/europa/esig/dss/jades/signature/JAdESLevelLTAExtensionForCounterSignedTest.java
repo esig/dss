@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValidation {
+class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValidation {
 	
 	private JAdESService service;
 	private DSSDocument documentToSign;
@@ -68,7 +68,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 	private String signingAlias;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		
 		service = new JAdESService(getCompleteCertificateVerifier());
@@ -95,7 +95,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		signingAlias = SELF_SIGNED_USER;
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);

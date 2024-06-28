@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 
-public class EncryptionAlgorithmParserTest {
+class EncryptionAlgorithmParserTest {
 
 	@Test
-	public void testEnum() {
+	void testEnum() {
 		for (EncryptionAlgorithm ea : EncryptionAlgorithm.values()) {
 			String string = EncryptionAlgorithmParser.print(ea);
 			assertNotNull(string);
@@ -41,7 +41,7 @@ public class EncryptionAlgorithmParserTest {
 	}
 
 	@Test
-	public void parseAlgos() {
+	void parseAlgos() {
 		assertNotNull(EncryptionAlgorithmParser.parse("RSA"));
 		assertNotNull(EncryptionAlgorithmParser.parse("DSA"));
 		assertNotNull(EncryptionAlgorithmParser.parse("EC"));
@@ -53,7 +53,7 @@ public class EncryptionAlgorithmParserTest {
 	}
 	
 	@Test
-	public void unsupportedAlgorithmTest() {
+	void unsupportedAlgorithmTest() {
 		assertThrows(IllegalArgumentException.class, () -> EncryptionAlgorithmParser.parse("bla"));
 	}
 

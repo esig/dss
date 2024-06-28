@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 
-public class ReferenceDataIntactCheckTest extends AbstractTestCheck {
+class ReferenceDataIntactCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void referenceDataIntactCheck() throws Exception {
+	void referenceDataIntactCheck() throws Exception {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setDataIntact(true);
 		digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);
@@ -57,7 +57,7 @@ public class ReferenceDataIntactCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void referenceDataNotIntactCheck() throws Exception {
+	void referenceDataNotIntactCheck() throws Exception {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setDataIntact(false);
 		digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);

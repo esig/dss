@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
+class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
 
     private static CertificateToken goodUser;
     private static CertificateToken goodCa;
@@ -62,7 +62,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     private static CertificateToken revokedUser;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         goodUser = repository.getCertEntityBySubject("good-user").getCertificateToken();
         goodCa = repository.getCertEntityBySubject("good-ca").getCertificateToken();
         ocspResponder = repository.getCertEntityBySubject("ocsp-responder").getCertificateToken();
@@ -75,7 +75,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSP() {
+    void testOCSP() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
@@ -86,7 +86,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPSha256() {
+    void testOCSPSha256() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
@@ -98,7 +98,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPWithProducedAtTime() {
+    void testOCSPWithProducedAtTime() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
 
         Date producedAt = DSSUtils.getUtcDate(2023, 6, 6);
@@ -119,7 +119,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPWithThisUpdate() {
+    void testOCSPWithThisUpdate() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
 
         Date thisUpdate = DSSUtils.getUtcDate(2023, 6, 6);
@@ -142,7 +142,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPWithThisUpdateAndProducedAtTime() {
+    void testOCSPWithThisUpdateAndProducedAtTime() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
 
         Date thisUpdate = DSSUtils.getUtcDate(2023, 6, 1);
@@ -157,7 +157,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPWithNextUpdate() {
+    void testOCSPWithNextUpdate() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
 
         Calendar calendar = Calendar.getInstance();
@@ -178,7 +178,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPWithPss() {
+    void testOCSPWithPss() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         ocspSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, rootToken);
@@ -187,7 +187,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPRevoked() {
+    void testOCSPRevoked() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         OCSPToken ocspToken = ocspSource.getRevocationToken(revokedUser, revokedCa);
         assertNotNull(ocspToken);
@@ -196,7 +196,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPEd25519() {
+    void testOCSPEd25519() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA512);
         OCSPToken ocspToken = ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa);
@@ -206,7 +206,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPWithDelegatedIssuer() {
+    void testOCSPWithDelegatedIssuer() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository, repository.getByCertificateToken(ocspResponder));
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
         assertNotNull(ocspToken);
@@ -215,7 +215,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPWithResponderIdByKey() {
+    void testOCSPWithResponderIdByKey() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         ocspSource.setResponderIdByKey(true);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
@@ -233,7 +233,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testOCSPWithResponderIdByName() throws IOException {
+    void testOCSPWithResponderIdByName() throws IOException {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         ocspSource.setResponderIdByKey(false);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
@@ -252,7 +252,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void customCertIDDigestAlgorithmTest() {
+    void customCertIDDigestAlgorithmTest() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         ocspSource.setDigestAlgorithm(DigestAlgorithm.SHA1);
         OCSPToken ocspToken = ocspSource.getRevocationToken(goodUserOCSPWithReqCertId, goodCa);
@@ -277,7 +277,7 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void testWrongIssuer() {
+    void testWrongIssuer() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
 
         CertificateToken caToken = DSSUtils.loadCertificateFromBase64EncodedString("MIIDjjCCAnagAwIBAgIIKv++n6Lw6YcwDQYJKoZIhvcNAQEFBQAwKDELMAkGA1UEBhMCQkUxGTAXBgNVBAMTEEJlbGdpdW0gUm9vdCBDQTIwHhcNMDcxMDA0MTAwMDAwWhcNMjExMjE1MDgwMDAwWjAoMQswCQYDVQQGEwJCRTEZMBcGA1UEAxMQQmVsZ2l1bSBSb290IENBMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMZzQh6S/3UPi790hqc/7bIYLS2X+an7mEoj39WN4IzGMhwWLQdC1i22bi+n9fzGhYJdld61IgDMqFNAn68KNaJ6x+HK92AQZw6nUHMXU5WfIp8MXW+2QbyM69odRr2nlL/zGsvU+40OHjPIltfsjFPekx40HopQcSZYtF3CiInaYNKJIT/e1wEYNm7hLHADBGXvmAYrXR5i3FVr/mZkIV/4L+HXmymvb82fqgxG0YjFnaKVn6w/Fa7yYd/vw2uaItgscf1YHewApDgglVrH1Tdjuk+bqv5WRi5j2Qsj1Yr6tSPwiRuhFA0m2kHwOI8w7QUmecFLTqG4flVSOmlGhHUCAwEAAaOBuzCBuDAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zBCBgNVHSAEOzA5MDcGBWA4CQEBMC4wLAYIKwYBBQUHAgEWIGh0dHA6Ly9yZXBvc2l0b3J5LmVpZC5iZWxnaXVtLmJlMB0GA1UdDgQWBBSFiuv0xbu+DlkDlN7WgAEV4xCcOTARBglghkgBhvhCAQEEBAMCAAcwHwYDVR0jBBgwFoAUhYrr9MW7vg5ZA5Te1oABFeMQnDkwDQYJKoZIhvcNAQEFBQADggEBAFHYhd27V2/MoGy1oyCcUwnzSgEMdL8rs5qauhjyC4isHLMzr87lEwEnkoRYmhC598wUkmt0FoqW6FHvv/pKJaeJtmMrXZRY0c8RcrYeuTlBFk0pvDVTC9rejg7NqZV3JcqUWumyaa7YwBO+mPyWnIR/VRPmPIfjvCCkpDZoa01gZhz5v6yAlGYuuUGK02XThIAC71AdXkbc98m6tTR8KvPG2F9fVJ3bTc0R5/0UAoNmXsimABKgX77OFP67H6dh96tK8QYUn8pJQsKpvO2FsauBQeYNxUJpU4c5nUwfAA4+Bw11V0SoU7Q2dmSZ3G7rPUZuFF1eR1ONeE3gJ7uOhXY=");
@@ -289,20 +289,20 @@ public class JaxbPKIOCSPSourceTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void setNullRepositoryTest() {
+    void setNullRepositoryTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> new PKIOCSPSource(null));
         assertEquals("Certificate repository shall be provided!", exception.getMessage());
     }
 
     @Test
-    public void setNullCertificateTokenTest() {
+    void setNullCertificateTokenTest() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         Exception exception = assertThrows(NullPointerException.class, () -> ocspSource.getRevocationToken(null, goodCa));
         assertEquals("Certificate cannot be null!", exception.getMessage());
     }
 
     @Test
-    public void setNullIssuerCertificateTokenTest() {
+    void setNullIssuerCertificateTokenTest() {
         PKIOCSPSource ocspSource = new PKIOCSPSource(repository);
         Exception exception = assertThrows(NullPointerException.class, () -> ocspSource.getRevocationToken(goodUser, null));
         assertEquals("The issuer of the certificate to be verified cannot be null!", exception.getMessage());

@@ -43,10 +43,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
+class RevocationDataRequiredCheckTest extends AbstractTestCheck {
 
     @Test
-    public void trustedCertTest() {
+    void trustedCertTest() {
         XmlCertificate xc = new XmlCertificate();
         xc.setTrusted(true);
 
@@ -63,7 +63,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void selfSignedCertTest() {
+    void selfSignedCertTest() {
         XmlCertificate xc = new XmlCertificate();
         xc.setSelfSigned(true);
 
@@ -80,7 +80,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void ocspNoCheckValidTest() {
+    void ocspNoCheckValidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlIdPkixOcspNoCheck extension = new XmlIdPkixOcspNoCheck();
@@ -103,7 +103,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void shortTermValidityAssuredValidTest() {
+    void shortTermValidityAssuredValidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlValAssuredShortTermCertificate extension = new XmlValAssuredShortTermCertificate();
@@ -126,7 +126,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void customExtensionValidTest() {
+    void customExtensionValidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension extension = new XmlCertificateExtension();
@@ -149,7 +149,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void customExtensionAcceptAllValidTest() {
+    void customExtensionAcceptAllValidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension extension = new XmlCertificateExtension();
@@ -172,7 +172,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void certPolicyValidTest() {
+    void certPolicyValidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificatePolicies extension = new XmlCertificatePolicies();
@@ -200,7 +200,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void certPolicyAcceptAllValidTest() {
+    void certPolicyAcceptAllValidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificatePolicies extension = new XmlCertificatePolicies();
@@ -228,7 +228,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsAllMatchTest() {
+    void allConstraintsAllMatchTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlIdPkixOcspNoCheck extensionOne = new XmlIdPkixOcspNoCheck();
@@ -267,7 +267,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsWithShortTermCertTest() {
+    void allConstraintsWithShortTermCertTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlValAssuredShortTermCertificate extension = new XmlValAssuredShortTermCertificate();
@@ -295,7 +295,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsWithPolicyTest() {
+    void allConstraintsWithPolicyTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificatePolicies extension = new XmlCertificatePolicies();
@@ -327,7 +327,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsWithShortTermCertAndInvalidPolicyTest() {
+    void allConstraintsWithShortTermCertAndInvalidPolicyTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlValAssuredShortTermCertificate extensionOne = new XmlValAssuredShortTermCertificate();
@@ -363,7 +363,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsWithShortTermCertAndInvalidCertExtensionTest() {
+    void allConstraintsWithShortTermCertAndInvalidCertExtensionTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension extensionOne = new XmlCertificateExtension();
@@ -399,7 +399,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsAllInvalidTrustedTest() {
+    void allConstraintsAllInvalidTrustedTest() {
         XmlCertificate xc = new XmlCertificate();
         xc.setTrusted(true);
 
@@ -436,7 +436,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsAllInvalidSelfSignedTest() {
+    void allConstraintsAllInvalidSelfSignedTest() {
         XmlCertificate xc = new XmlCertificate();
         xc.setSelfSigned(true);
 
@@ -473,7 +473,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void nothingInvalidTest() {
+    void nothingInvalidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         CertificateValuesConstraint constraint = new CertificateValuesConstraint();
@@ -489,7 +489,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void ocspNoCheckInvalidTest() {
+    void ocspNoCheckInvalidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlIdPkixOcspNoCheck extension = new XmlIdPkixOcspNoCheck();
@@ -509,7 +509,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void customExtensionInvalidTest() {
+    void customExtensionInvalidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension extension = new XmlCertificateExtension();
@@ -532,7 +532,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noExtensionAcceptAllInvalidTest() {
+    void noExtensionAcceptAllInvalidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         CertificateValuesConstraint constraint = new CertificateValuesConstraint();
@@ -551,7 +551,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void certPolicyInvalidTest() {
+    void certPolicyInvalidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificatePolicies extension = new XmlCertificatePolicies();
@@ -579,7 +579,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noCertPolicyAcceptAllValidTest() {
+    void noCertPolicyAcceptAllValidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         CertificateValuesConstraint constraint = new CertificateValuesConstraint();
@@ -598,7 +598,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsPolicyInvalidTest() {
+    void allConstraintsPolicyInvalidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificatePolicies extension = new XmlCertificatePolicies();
@@ -630,7 +630,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsExtensionInvalidTest() {
+    void allConstraintsExtensionInvalidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension extension = new XmlCertificateExtension();
@@ -658,7 +658,7 @@ public class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allConstraintsAllInvalidTest() {
+    void allConstraintsAllInvalidTest() {
         XmlCertificate xc = new XmlCertificate();
 
         XmlCertificateExtension extensionOne = new XmlCertificateExtension();

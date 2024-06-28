@@ -37,17 +37,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESUtilsTest {
+class JAdESUtilsTest {
 	
 	private static JAdESUtils jadesUtils;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		jadesUtils = JAdESUtils.getInstance();
 	}
 	
 	@Test
-	public void jsonFlattenedTest() {
+	void jsonFlattenedTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta.json");
 		JsonObject jws = jadesUtils.parseJson(is);
 		
@@ -58,7 +58,7 @@ public class JAdESUtilsTest {
 	}
 
 	@Test
-	public void jsonFlattenedInvalidTest() {
+	void jsonFlattenedInvalidTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta-invalid.json");
 		JsonObject jws = jadesUtils.parseJson(is);
 		
@@ -85,7 +85,7 @@ public class JAdESUtilsTest {
 	}
 
 	@Test
-	public void jsonSerializationTest() {
+	void jsonSerializationTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-with-sigPSt.json");
 		JsonObject jws = jadesUtils.parseJson(is);
 
@@ -100,7 +100,7 @@ public class JAdESUtilsTest {
 	}
 
 	@Test
-	public void jsonSerializationInvalidTest() {
+	void jsonSerializationInvalidTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-with-sigPSt-invalid.json");
 		JsonObject jws = jadesUtils.parseJson(is);
 

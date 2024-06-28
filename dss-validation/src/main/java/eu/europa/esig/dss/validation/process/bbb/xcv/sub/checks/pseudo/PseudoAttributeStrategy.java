@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
  * Extracts pseudo String defined in X500 Attributes for the certificate
  *
  */
-public class PseudoAttributeStrategy implements PseudoStrategy {
+class PseudoAttributeStrategy implements PseudoStrategy {
 
 	/**
 	 * Default constructor

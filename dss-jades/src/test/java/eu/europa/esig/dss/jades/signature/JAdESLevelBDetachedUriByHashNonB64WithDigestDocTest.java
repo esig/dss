@@ -36,14 +36,14 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Date;
 
-public class JAdESLevelBDetachedUriByHashNonB64WithDigestDocTest extends AbstractJAdESTestSignature {
+class JAdESLevelBDetachedUriByHashNonB64WithDigestDocTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

@@ -59,14 +59,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2257
-public class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestValidation {
+class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestValidation {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 
 		signatureParameters = new XAdESSignatureParameters();

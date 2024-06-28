@@ -30,12 +30,12 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.Calendar;
 import java.util.Date;
 
-public class JAdESLevelBWithSigTAfterObsolescenceSerializationTest extends JAdESLevelBWithSigTSerializationTest {
+class JAdESLevelBWithSigTAfterObsolescenceSerializationTest extends JAdESLevelBWithSigTSerializationTest {
 
     private Date signingTime;
 
     @BeforeEach
-    public void initTime() {
+    void initTime() {
         signingTime = DSSUtils.getUtcDate(2025, Calendar.MAY, 15);
     }
 

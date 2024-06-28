@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.CertificateQualification;
  */
 public final class CertificateQualificationParser {
 
+	/**
+	 * Default constructor
+	 */
 	private CertificateQualificationParser() {
+		// empty
 	}
 
 	/**

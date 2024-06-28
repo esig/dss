@@ -35,7 +35,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CAdESDoubleSignBAndExtendToLTATest extends AbstractCAdESTestSignature {
+class CAdESDoubleSignBAndExtendToLTATest extends AbstractCAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -44,7 +44,7 @@ public class CAdESDoubleSignBAndExtendToLTATest extends AbstractCAdESTestSignatu
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new CAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

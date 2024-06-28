@@ -41,10 +41,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
+class CertificateQcComplianceCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -69,7 +69,7 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -94,7 +94,7 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void certificateQualifiedCheckWithCertificate() throws Exception {
+    void certificateQualifiedCheckWithCertificate() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -117,7 +117,7 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void qcComplianceNotPresentTest() throws Exception {
+    void qcComplianceNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -138,7 +138,7 @@ public class CertificateQcComplianceCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

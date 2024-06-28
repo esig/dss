@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SerializationTest {
+class SerializationTest {
 
 	@Test
-	public void testSerializationSignatureLevel() throws Exception {
+	void testSerializationSignatureLevel() throws Exception {
 		SignatureLevel asicEBaselineB = SignatureLevel.XAdES_BASELINE_B;
 		byte[] serialized = serialize(asicEBaselineB);
 		SignatureLevel unserialized = unserialize(serialized, SignatureLevel.class);
@@ -51,7 +51,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationSignaturePackaging() throws Exception {
+	void testSerializationSignaturePackaging() throws Exception {
 		SignaturePackaging detached = SignaturePackaging.DETACHED;
 		byte[] serialized = serialize(detached);
 		SignaturePackaging unserialized = unserialize(serialized, SignaturePackaging.class);
@@ -59,7 +59,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationDigestAlgorithm() throws Exception {
+	void testSerializationDigestAlgorithm() throws Exception {
 		DigestAlgorithm sha1 = DigestAlgorithm.SHA1;
 		byte[] serialized = serialize(sha1);
 		DigestAlgorithm unserialized = unserialize(serialized, DigestAlgorithm.class);
@@ -67,7 +67,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationEncryptionAlgorithm() throws Exception {
+	void testSerializationEncryptionAlgorithm() throws Exception {
 		EncryptionAlgorithm dsa = EncryptionAlgorithm.DSA;
 		byte[] serialized = serialize(dsa);
 		EncryptionAlgorithm unserialized = unserialize(serialized, EncryptionAlgorithm.class);
@@ -75,7 +75,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationSignatureAlgorithm() throws Exception {
+	void testSerializationSignatureAlgorithm() throws Exception {
 		SignatureAlgorithm dsa_sha1 = SignatureAlgorithm.DSA_SHA1;
 		byte[] serialized = serialize(dsa_sha1);
 		SignatureAlgorithm unserialized = unserialize(serialized, SignatureAlgorithm.class);
@@ -83,7 +83,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationTimestampParameters() throws Exception {
+	void testSerializationTimestampParameters() throws Exception {
 		TimestampParameters timestampParams = new MockTimestampParameters();
 		byte[] serialized = serialize(timestampParams);
 		TimestampParameters unserialized = unserialize(serialized, TimestampParameters.class);
@@ -91,7 +91,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationToBeSigned() throws Exception {
+	void testSerializationToBeSigned() throws Exception {
 		ToBeSigned toBeSigned = new ToBeSigned();
 		toBeSigned.setBytes(new byte[] { 1, 2, 3, 4 });
 		byte[] serialized = serialize(toBeSigned);
@@ -100,7 +100,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationSignatureValue() throws Exception {
+	void testSerializationSignatureValue() throws Exception {
 		SignatureValue signatureValue = new SignatureValue();
 		signatureValue.setAlgorithm(SignatureAlgorithm.DSA_SHA256);
 		signatureValue.setValue(new byte[] { 1, 2, 3, 4 });
@@ -110,7 +110,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationPolicy() throws Exception {
+	void testSerializationPolicy() throws Exception {
 		Policy signaturePolicy = new Policy();
 		signaturePolicy.setDescription("description");
 		signaturePolicy.setDigestAlgorithm(DigestAlgorithm.MD5);
@@ -124,7 +124,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationBLevel() throws Exception {
+	void testSerializationBLevel() throws Exception {
 		BLevelParameters blevel = new BLevelParameters();
 		blevel.setSigningDate(new Date());
 		List<CommitmentType> commitmentTypeIndications = new ArrayList<>();
@@ -137,7 +137,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerializationSignerLocation() throws Exception {
+	void testSerializationSignerLocation() throws Exception {
 		SignerLocation signerLocation = new SignerLocation();
 		signerLocation.setCountry("country");
 		signerLocation.setLocality("locality");
@@ -153,7 +153,7 @@ public class SerializationTest {
 	}
 
 	@Test
-	public void testSerialization2() throws Exception {
+	void testSerialization2() throws Exception {
 		MockSignatureParameters testObj = new MockSignatureParameters();
 		testObj.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		testObj.setSignaturePackaging(SignaturePackaging.DETACHED);

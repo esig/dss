@@ -32,10 +32,10 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SimpleASiCWithXAdESFilenameFactoryTest {
+class SimpleASiCWithXAdESFilenameFactoryTest {
 
     @Test
-    public void getASiCSSignatureFilenameTest() {
+    void getASiCSSignatureFilenameTest() {
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -82,7 +82,7 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCESignatureFilenameTest() {
+    void getASiCESignatureFilenameTest() {
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -135,7 +135,7 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEManifestFilenameTest() {
+    void getASiCEManifestFilenameTest() {
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -182,7 +182,7 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSDataPackageFilenameTest() {
+    void getASiCSDataPackageFilenameTest() {
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -210,7 +210,7 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSEvidenceRecordFilenameTest() {
+    void getASiCSEvidenceRecordFilenameTest() {
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -224,7 +224,7 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEEvidenceRecordFilenameTest() {
+    void getASiCEEvidenceRecordFilenameTest() {
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -238,7 +238,7 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSEvidenceRecordManifestFilenameTest() {
+    void getASiCSEvidenceRecordManifestFilenameTest() {
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -269,7 +269,7 @@ public class SimpleASiCWithXAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEEvidenceRecordManifestFilenameTest() {
+    void getASiCEEvidenceRecordManifestFilenameTest() {
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();

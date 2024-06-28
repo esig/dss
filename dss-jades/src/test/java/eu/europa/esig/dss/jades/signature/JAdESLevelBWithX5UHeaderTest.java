@@ -47,7 +47,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JAdESLevelBWithX5UHeaderTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithX5UHeaderTest extends AbstractJAdESTestSignature {
 
     private static final String X509_URL = "http://nowina.lu/cert-uri";
 
@@ -56,7 +56,7 @@ public class JAdESLevelBWithX5UHeaderTest extends AbstractJAdESTestSignature {
     private JAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         service = new JAdESService(getCompleteCertificateVerifier());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
         signatureParameters = new JAdESSignatureParameters();

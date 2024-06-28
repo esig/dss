@@ -49,10 +49,10 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
-public class DSS2149WithXAdESTest extends PKIFactoryAccess {
+class DSS2149WithXAdESTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 
 		DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 

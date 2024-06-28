@@ -36,10 +36,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class RemoteDocumentConverterTest {
+class RemoteDocumentConverterTest {
 	
 	@Test
-	public void toDSSDocumentTest() {
+	void toDSSDocumentTest() {
 		RemoteDocument remoteDocument = new RemoteDocument(new byte[] {'1','2','3'}, "remoteDocument");
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, remoteDocument.getBytes()), dssDocument.getDigestValue(DigestAlgorithm.SHA256));
@@ -47,7 +47,7 @@ public class RemoteDocumentConverterTest {
 	}
 	
 	@Test
-	public void toDSSDigestDocumentTest() {
+	void toDSSDigestDocumentTest() {
 		RemoteDocument remoteDocument = new RemoteDocument(new byte[] {'1','2','3'}, DigestAlgorithm.SHA256, "remoteDocument");
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		assertArrayEquals(remoteDocument.getBytes(), dssDocument.getDigestValue(remoteDocument.getDigestAlgorithm()));
@@ -55,7 +55,7 @@ public class RemoteDocumentConverterTest {
 	}
 	
 	@Test
-	public void toDSSDocumentsTest() {
+	void toDSSDocumentsTest() {
 		List<RemoteDocument> remoteDocuments = new ArrayList<>();
 		remoteDocuments.add(new RemoteDocument(new byte[] {'1','2','3'}, "remoteDocument"));
 		remoteDocuments.add(new RemoteDocument(new byte[] {'4','5','6'}, "remoteDocument2"));
@@ -68,7 +68,7 @@ public class RemoteDocumentConverterTest {
 	}
 	
 	@Test
-	public void toRemoteDocumentTest() {
+	void toRemoteDocumentTest() {
 		DSSDocument dssDocument = new InMemoryDocument(new byte[] {'1','2','3'}, "dssDocument");
 		RemoteDocument remoteDocument = RemoteDocumentConverter.toRemoteDocument(dssDocument);
 		assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, remoteDocument.getBytes()), dssDocument.getDigestValue(DigestAlgorithm.SHA256));
@@ -76,7 +76,7 @@ public class RemoteDocumentConverterTest {
 	}
 	
 	@Test
-	public void digestDocumentToRemoteDocumentTest() {
+	void digestDocumentToRemoteDocumentTest() {
 		DSSDocument dssDocument = new DigestDocument(DigestAlgorithm.SHA256, "332b7ce3b5e8f8c6132f0e09264db9da6d1c9fd6e37b73a35e68f78f4e590f90");
 		RemoteDocument remoteDocument = RemoteDocumentConverter.toRemoteDocument(dssDocument);
 		assertArrayEquals(remoteDocument.getBytes(), dssDocument.getDigestValue(remoteDocument.getDigestAlgorithm()));
@@ -84,14 +84,14 @@ public class RemoteDocumentConverterTest {
 	}
 	
 	@Test
-	public void emptyDigestDocumentToRemoteDocumentTest() {
+	void emptyDigestDocumentToRemoteDocumentTest() {
 		DSSDocument dssDocument = new DigestDocument();
 		Exception exception = assertThrows(IllegalStateException.class, () -> RemoteDocumentConverter.toRemoteDocument(dssDocument));
 		assertEquals("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.", exception.getMessage());
 	}
 	
 	@Test
-	public void toRemoteDocumentsTest() {
+	void toRemoteDocumentsTest() {
 		List<DSSDocument> dssDocuments = new ArrayList<>();
 		dssDocuments.add(new InMemoryDocument(new byte[] {'1','2','3'}, "inMemoryDocument", MimeTypeEnum.BINARY));
 		dssDocuments.add(new InMemoryDocument(new byte[] {'1','2','3'}, "inMemoryDocument2"));

@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESEnvelopedXSWTest extends AbstractXAdESTestValidation {
+class XAdESEnvelopedXSWTest extends AbstractXAdESTestValidation {
 	
 	private static DSSDocument document = new FileDocument(new File("src/test/resources/validation/xsw/original.xml"));
 

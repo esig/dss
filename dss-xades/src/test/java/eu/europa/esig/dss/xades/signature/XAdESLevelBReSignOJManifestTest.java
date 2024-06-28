@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature {
+class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -63,7 +63,7 @@ public class XAdESLevelBReSignOJManifestTest extends AbstractXAdESTestSignature 
     private DSSDocument originalOJManifest;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signedOJ = new FileDocument("src/test/resources/validation/OJ_L_2016_294_FULL.xml");
 
         signatureParameters = new XAdESSignatureParameters();

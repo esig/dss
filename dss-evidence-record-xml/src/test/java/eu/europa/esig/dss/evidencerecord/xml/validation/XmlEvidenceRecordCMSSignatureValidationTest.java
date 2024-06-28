@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 
 // TODO : validate signature
-public class XmlEvidenceRecordCMSSignatureValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordCMSSignatureValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

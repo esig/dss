@@ -22,6 +22,6 @@ package eu.europa.esig.dss.utils.apache.impl;
 
 import eu.europa.esig.dss.utils.AbstractUtilsTest;
 
-public class ApacheCommonsUtilsTest extends AbstractUtilsTest {
+class ApacheCommonsUtilsTest extends AbstractUtilsTest {
 
 }

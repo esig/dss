@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
  */
 public final class DigestMatcherTypeParser {
 
+	/**
+	 * Default constructor
+	 */
 	private DigestMatcherTypeParser() {
+		// empty
 	}
 
 	/**

@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2369
-public class XAdESLevelLTSignWithExpiredSignCertTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTSignWithExpiredSignCertTest extends AbstractXAdESTestSignature {
 
     private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
@@ -55,7 +55,7 @@ public class XAdESLevelLTSignWithExpiredSignCertTest extends AbstractXAdESTestSi
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         signatureParameters = new XAdESSignatureParameters();

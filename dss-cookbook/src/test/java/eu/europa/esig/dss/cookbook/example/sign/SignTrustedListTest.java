@@ -51,10 +51,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SignTrustedListTest extends CookbookTools {
+class SignTrustedListTest extends CookbookTools {
 
     @Test
-    public void sign() throws Exception {
+    void sign() throws Exception {
 
         try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 

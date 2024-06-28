@@ -34,7 +34,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Asn1EvidenceRecordGroupOneDocumentValidationTest extends AbstractAsn1EvidenceRecordTestValidation {
+class Asn1EvidenceRecordGroupOneDocumentValidationTest extends AbstractAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

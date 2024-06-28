@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CommonCertificateVerifierTest {
+class CommonCertificateVerifierTest {
 	
 	@Test
-	public void testTrustedCertSources() {
+	void testTrustedCertSources() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
 		ccv.setTrustedCertSources(new CommonTrustedCertificateSource());
 		assertEquals(1, ccv.getTrustedCertSources().getNumberOfSources());
@@ -44,7 +44,7 @@ public class CommonCertificateVerifierTest {
 	}
 
 	@Test
-	public void testNotTrustedCertificateSource() {
+	void testNotTrustedCertificateSource() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
 		CommonCertificateSource commonCertificateSource = new CommonCertificateSource();
 
@@ -61,7 +61,7 @@ public class CommonCertificateVerifierTest {
 	}
 	
 	@Test
-	public void testAdjunctCertSources() {
+	void testAdjunctCertSources() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
 		ccv.setAdjunctCertSources(new CommonCertificateSource());
 		assertEquals(1, ccv.getAdjunctCertSources().getNumberOfSources());
@@ -74,7 +74,7 @@ public class CommonCertificateVerifierTest {
 	}
 
 	@Test
-	public void testNotAdjunctCertificateSource() {
+	void testNotAdjunctCertificateSource() {
 		CommonCertificateVerifier ccv = new CommonCertificateVerifier();
 		ccv.setAdjunctCertSources(new CommonTrustedCertificateSource());
 		assertEquals(1, ccv.getAdjunctCertSources().getNumberOfSources());

@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck {
+class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -79,7 +79,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -115,7 +115,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void dateNotDefinedTest() {
+    void dateNotDefinedTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -150,7 +150,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void notDefinedKeySizeTest() {
+    void notDefinedKeySizeTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -180,7 +180,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void dateNotDefinedInvalidTest() {
+    void dateNotDefinedInvalidTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -215,7 +215,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void algoNotDefinedTest() {
+    void algoNotDefinedTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -250,7 +250,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void overwrittenLevelTest() {
+    void overwrittenLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -287,7 +287,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void noGlobalLevelTest() {
+    void noGlobalLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         AlgoExpirationDate algoExpirationDate = new AlgoExpirationDate();
@@ -323,7 +323,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void noLevelTest() {
+    void noLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         AlgoExpirationDate algoExpirationDate = new AlgoExpirationDate();
@@ -357,7 +357,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void afterUpdateDateTest() {
+    void afterUpdateDateTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -395,7 +395,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void noUpdateDateTest() {
+    void noUpdateDateTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -432,7 +432,7 @@ public class EncryptionAlgorithmAtValidationTimeCheckTest extends AbstractTestCh
     }
 
     @Test
-    public void noLevelAfterUpdateTest() {
+    void noLevelAfterUpdateTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 

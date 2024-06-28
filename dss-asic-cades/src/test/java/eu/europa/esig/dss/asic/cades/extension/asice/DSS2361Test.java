@@ -39,12 +39,12 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
+class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
 
     private static CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.addTrustedCertSources(getTrustedCertSource());
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());

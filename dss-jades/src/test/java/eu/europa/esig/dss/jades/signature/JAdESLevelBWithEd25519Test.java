@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
-public class JAdESLevelBWithEd25519Test extends AbstractJAdESTestSignature {
+class JAdESLevelBWithEd25519Test extends AbstractJAdESTestSignature {
 
     private static final String HELLO_WORLD = "Hello World";
 
@@ -39,7 +39,7 @@ public class JAdESLevelBWithEd25519Test extends AbstractJAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
         signatureParameters = new JAdESSignatureParameters();

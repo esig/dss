@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class JAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractJAdESTestSignature {
+class JAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
@@ -63,7 +63,7 @@ public class JAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractJAdESTest
 
     @ParameterizedTest(name = "Combination {index} of RSASSA-PSS and digest algorithm {0}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    void init(DigestAlgorithm digestAlgo) {
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
         signatureParameters = new JAdESSignatureParameters();

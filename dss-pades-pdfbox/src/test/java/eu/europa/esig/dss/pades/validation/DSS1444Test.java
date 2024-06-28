@@ -48,10 +48,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class DSS1444Test {
+class DSS1444Test {
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
 			Exception exception = assertThrows(IOException.class, () -> PDDocument.load(is));
 			assertEquals("Page tree root must be a dictionary", exception.getMessage());
@@ -59,7 +59,7 @@ public class DSS1444Test {
 	}
 
 	@Test
-	public void testValidation() throws IOException {
+	void testValidation() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
 			PDFDocumentAnalyzer analyzer = new PDFDocumentAnalyzer(new InMemoryDocument(is));
 			Exception exception = assertThrows(DSSException.class, () -> analyzer.getSignatures());
@@ -68,7 +68,7 @@ public class DSS1444Test {
 	}
 
 	@Test
-	public void test2() throws IOException {
+	void test2() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
 			Exception exception = assertThrows(IOException.class, () -> PDDocument.load(is));
 			assertEquals("Page tree root must be a dictionary", exception.getMessage());
@@ -76,7 +76,7 @@ public class DSS1444Test {
 	}
 
 	@Test
-	public void test2Validation() throws IOException {
+	void test2Validation() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
 			PDFDocumentAnalyzer analyzer = new PDFDocumentAnalyzer(new InMemoryDocument(is));
 			Exception exception = assertThrows(DSSException.class, () -> analyzer.getSignatures());
@@ -85,7 +85,7 @@ public class DSS1444Test {
 	}
 
 	@Test
-	public void test3() throws IOException {
+	void test3() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
 			Exception exception = assertThrows(IOException.class, () -> PDDocument.load(is));
 			assertTrue(exception.getMessage().contains("Error: End-of-File, expected line"));
@@ -93,7 +93,7 @@ public class DSS1444Test {
 	}
 
 	@Test
-	public void test4() throws IOException {
+	void test4() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/sample.pdf")) {
 			PDDocument document = PDDocument.load(is);
 			assertNotNull(document);
@@ -104,7 +104,7 @@ public class DSS1444Test {
 	 * Positive test with default policy with PLAIN-ECDSA constrains.
 	 */
 	@Test
-	public void test5() throws IOException {
+	void test5() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass()
 				.getResourceAsStream("/validation/dss-PLAIN-ECDSA/TeleSec_PKS_eIDAS_QES_CA_1-baseline-b.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
@@ -124,7 +124,7 @@ public class DSS1444Test {
 	 * Negative test with policy without PLAIN-ECDSA constrains.
 	 */
 	@Test
-	public void test6() throws IOException {
+	void test6() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass()
 				.getResourceAsStream("/validation/dss-PLAIN-ECDSA/TeleSec_PKS_eIDAS_QES_CA_1-baseline-b.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);

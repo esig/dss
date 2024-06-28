@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 
-public class CommonNameCheckTest extends AbstractTestCheck {
+class CommonNameCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void commonNameCheck() throws Exception {
+	void commonNameCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Valid_Name");
@@ -57,7 +57,7 @@ public class CommonNameCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedCommonNameCheck() throws Exception {
+	void failedCommonNameCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Invalid_Name");

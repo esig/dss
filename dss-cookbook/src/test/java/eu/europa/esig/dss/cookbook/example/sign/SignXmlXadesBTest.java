@@ -38,10 +38,10 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 /**
  * How to sign with XAdES-BASELINE-B
  */
-public class SignXmlXadesBTest extends CookbookTools {
+class SignXmlXadesBTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineB() throws Exception {
+	void signXAdESBaselineB() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

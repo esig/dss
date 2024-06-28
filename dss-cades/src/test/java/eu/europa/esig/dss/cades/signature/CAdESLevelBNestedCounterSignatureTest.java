@@ -41,7 +41,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class CAdESLevelBNestedCounterSignatureTest extends AbstractCAdESTestValidation {
+class CAdESLevelBNestedCounterSignatureTest extends AbstractCAdESTestValidation {
 	
 	private CAdESService service;
 	private DSSDocument documentToSign;
@@ -49,7 +49,7 @@ public class CAdESLevelBNestedCounterSignatureTest extends AbstractCAdESTestVali
 	private CAdESCounterSignatureParameters counterSignatureParameters;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 		
 		service = new CAdESService(getCompleteCertificateVerifier());
@@ -69,7 +69,7 @@ public class CAdESLevelBNestedCounterSignatureTest extends AbstractCAdESTestVali
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);

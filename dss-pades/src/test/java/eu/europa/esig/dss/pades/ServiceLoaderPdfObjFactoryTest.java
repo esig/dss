@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 
-public class ServiceLoaderPdfObjFactoryTest {
+class ServiceLoaderPdfObjFactoryTest {
 
 	@Test
-	public void testFallback() {
+	void testFallback() {
 		IPdfObjFactory factory = new ServiceLoaderPdfObjFactory();
 
 		assertThrows(ExceptionInInitializerError.class, () -> factory.newPAdESSignatureService());

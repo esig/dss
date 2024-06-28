@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
 
-public class RevocationFreshnessCheckerResultTest extends AbstractTestCheck {
+class RevocationFreshnessCheckerResultTest extends AbstractTestCheck {
 
 	@Test
-	public void revocationFreshnessCheckerResult() throws Exception {
+	void revocationFreshnessCheckerResult() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -60,7 +60,7 @@ public class RevocationFreshnessCheckerResultTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedRevocationFreshnessCheckerResult() throws Exception {
+	void failedRevocationFreshnessCheckerResult() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

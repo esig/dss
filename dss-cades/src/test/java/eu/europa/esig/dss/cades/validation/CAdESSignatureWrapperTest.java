@@ -49,7 +49,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureReferenceType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class CAdESSignatureWrapperTest extends AbstractCAdESTestValidation {
+class CAdESSignatureWrapperTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

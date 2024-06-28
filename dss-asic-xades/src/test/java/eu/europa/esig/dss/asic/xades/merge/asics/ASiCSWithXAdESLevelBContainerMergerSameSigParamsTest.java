@@ -40,7 +40,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCSWithXAdESLevelBContainerMergerSameSigParamsTest extends AbstractWithXAdESTestMerge {
+class ASiCSWithXAdESLevelBContainerMergerSameSigParamsTest extends AbstractWithXAdESTestMerge {
 
     private DSSDocument documentToSign;
 
@@ -50,7 +50,7 @@ public class ASiCSWithXAdESLevelBContainerMergerSameSigParamsTest extends Abstra
     private ASiCWithXAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument("src/test/resources/signable/test.txt");
 
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());

@@ -39,10 +39,10 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class KeyEntityTSPSourceTest {
+class KeyEntityTSPSourceTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         String keyStoreFileName = "src/test/resources/self-signed-tsa.p12";
         char[] keyStorePassword = "ks-password".toCharArray();
 

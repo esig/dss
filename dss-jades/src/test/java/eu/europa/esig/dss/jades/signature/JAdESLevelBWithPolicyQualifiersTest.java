@@ -45,7 +45,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JAdESLevelBWithPolicyQualifiersTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithPolicyQualifiersTest extends AbstractJAdESTestSignature {
 
     private static final DSSDocument SIGNATURE_POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
 
@@ -62,7 +62,7 @@ public class JAdESLevelBWithPolicyQualifiersTest extends AbstractJAdESTestSignat
     private JAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         service = new JAdESService(getCompleteCertificateVerifier());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
         signatureParameters = new JAdESSignatureParameters();

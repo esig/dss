@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LOTLParsingTaskTest {
+class LOTLParsingTaskTest {
 
 	private static DSSDocument LOTL;
 	private static DSSDocument LOTL_NO_SIG;
@@ -54,7 +54,7 @@ public class LOTLParsingTaskTest {
 	private static DSSDocument TL;
 
 	@BeforeAll
-	public static void init() throws IOException {
+	static void init() throws IOException {
 		LOTL = new FileDocument("src/test/resources/eu-lotl.xml");
 		LOTL_NO_SIG = new FileDocument("src/test/resources/eu-lotl-no-sig.xml");
 		LOTL_NOT_PARSEABLE = new FileDocument("src/test/resources/eu-lotl-not-parseable.xml");
@@ -66,7 +66,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parseLOTLDefault() {
+	void parseLOTLDefault() {
 		LOTLParsingTask task = new LOTLParsingTask(LOTL, new LOTLSource());
 		LOTLParsingResult result = task.get();
 		assertNotNull(result);
@@ -104,7 +104,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parseLOTLNoSig() {
+	void parseLOTLNoSig() {
 		LOTLParsingTask task = new LOTLParsingTask(LOTL_NO_SIG, new LOTLSource());
 		LOTLParsingResult result = task.get();
 		assertNotNull(result);
@@ -145,7 +145,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parseLOTLPivotSupport() {
+	void parseLOTLPivotSupport() {
 
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setPivotSupport(true);
@@ -168,7 +168,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parseLOTLPivotSupportAndSigningCertAnnouncement() {
+	void parseLOTLPivotSupportAndSigningCertAnnouncement() {
 
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setPivotSupport(true);
@@ -193,7 +193,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parseLOTLOnlyBEandPTPointers() {
+	void parseLOTLOnlyBEandPTPointers() {
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("BE", "PT"));
 
@@ -219,7 +219,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parsePivotLOTLDefault() {
+	void parsePivotLOTLDefault() {
 		// not pivot support
 		LOTLParsingTask task = new LOTLParsingTask(LOTL_PIVOT, new LOTLSource());
 		LOTLParsingResult result = task.get();
@@ -240,7 +240,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parseLOTLMRA() {
+	void parseLOTLMRA() {
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setMraSupport(true);
 		lotlSource.setTlPredicate(new XMLOtherTSLPointer());
@@ -256,7 +256,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parseTL() {
+	void parseTL() {
 		// Should not fail
 		LOTLParsingTask task = new LOTLParsingTask(TL, new LOTLSource());
 		LOTLParsingResult result = task.get();
@@ -292,7 +292,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void parsePivotLOTLWithPivotSupport() {
+	void parsePivotLOTLWithPivotSupport() {
 
 		LOTLSource lotlSource = new LOTLSource();
 		lotlSource.setPivotSupport(true);
@@ -323,7 +323,7 @@ public class LOTLParsingTaskTest {
 	}
 
 	@Test
-	public void notParseable() {
+	void notParseable() {
 		LOTLParsingTask task = new LOTLParsingTask(LOTL_NOT_PARSEABLE, new LOTLSource());
 		DSSException exception = assertThrows(DSSException.class, task::get);
 		assertTrue(exception.getMessage().contains("Unable to parse binaries"));

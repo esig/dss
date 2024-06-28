@@ -40,17 +40,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ZipContentEvidenceRecordDigestBuilderTest {
+class ZipContentEvidenceRecordDigestBuilderTest {
 
     private static DSSDocument zipContainer;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         zipContainer = new FileDocument("src/test/resources/multifiles-ok.asice");
     }
 
     @Test
-    public void testXMLERS() {
+    void testXMLERS() {
         ZipContentEvidenceRecordDigestBuilder zipContentEvidenceRecordDigestBuilder = new ZipContentEvidenceRecordDigestBuilder(zipContainer);
         Exception exception = assertThrows(NullPointerException.class, zipContentEvidenceRecordDigestBuilder::buildDigestGroup);
         assertEquals("DataObjectDigestBuilderFactory shall be set to continue! Please choose the corresponding " +
@@ -108,7 +108,7 @@ public class ZipContentEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void testERS() {
+    void testERS() {
         ZipContentEvidenceRecordDigestBuilder zipContentEvidenceRecordDigestBuilder = new ZipContentEvidenceRecordDigestBuilder(zipContainer);
 
         ASN1EvidenceRecordDataObjectDigestBuilderFactory asn1EvidenceRecordDataObjectDigestBuilderFactory = new ASN1EvidenceRecordDataObjectDigestBuilderFactory();

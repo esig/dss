@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelLTWithXmlEvidenceRecordWrongDigestAlgoValidationTest extends AbstractCAdESWithEvidenceRecordTestValidation {
+class CAdESLevelLTWithXmlEvidenceRecordWrongDigestAlgoValidationTest extends AbstractCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -47,69 +47,69 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class DSS2049DoubleTLTest extends AbstractTestValidationExecutor {
+class DSS2049DoubleTLTest extends AbstractTestValidationExecutor {
 	
 	private static final String czId = "TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F";
 	private static final String skId = "TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC";
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.QESIG, true, true, true);
 	}
 	
 	@Test
-	public void lotlFailWithWarnLevel() throws Exception {
+	void lotlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(false, true, true);
 		Reports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, SignatureQualification.QESIG, true, true, true);
 	}
 	
 	@Test
-	public void lotlFailWithFailLevel() throws Exception {
+	void lotlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(false, true, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.NA, false, false, false);
 	}
 	
 	@Test
-	public void czFailWithWarnLevel() throws Exception {
+	void czFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, true);
 		Reports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, SignatureQualification.QESIG, true, true, true);
 	}
 	
 	@Test
-	public void czFailWithFailLevel() throws Exception {
+	void czFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, true);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.QESIG, true, false, true);
 	}
 	
 	@Test
-	public void skFailWithWarnLevel() throws Exception {
+	void skFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, false);
 		Reports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, SignatureQualification.QESIG, true, true, true);
 	}
 	
 	@Test
-	public void skFailWithFailLevel() throws Exception {
+	void skFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true, false);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.QESIG, true, true, false);
 	}
 	
 	@Test
-	public void bothFailWithWarnLevel() throws Exception {
+	void bothFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, false);
 		Reports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, SignatureQualification.QESIG, true, true, true);
 	}
 	
 	@Test
-	public void bothFailWithFailLevel() throws Exception {
+	void bothFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false, false);
 		Reports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, SignatureQualification.NA, true, false, false);

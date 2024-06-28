@@ -42,14 +42,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESManifestFromDigestDocumentsLevelBTest extends AbstractXAdESTestSignature {
+class XAdESManifestFromDigestDocumentsLevelBTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 
 		List<DSSDocument> documents = Arrays.asList(new FileDocument("src/test/resources/sample.png"),
 				new FileDocument("src/test/resources/sample.txt"), new FileDocument("src/test/resources/sample.xml"));

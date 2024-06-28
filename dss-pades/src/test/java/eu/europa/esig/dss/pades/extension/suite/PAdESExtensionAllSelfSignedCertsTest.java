@@ -47,7 +47,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends AbstractPAdESTestExten
 	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument(PAdESExtensionAllSelfSignedCertsTest.class.getResourceAsStream("/sample.pdf"));
 
 		certificateVerifier = getCompleteCertificateVerifier();
@@ -56,7 +56,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends AbstractPAdESTestExten
 	}
 
 	@Test
-	public void bToTTest() throws Exception {
+	void bToTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.PAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -66,7 +66,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends AbstractPAdESTestExten
 	}
 
 	@Test
-	public void bToLTTest() throws Exception {
+	void bToLTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.PAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -86,7 +86,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends AbstractPAdESTestExten
 	}
 
 	@Test
-	public void tToLTTest() throws Exception {
+	void tToLTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.PAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -106,7 +106,7 @@ public class PAdESExtensionAllSelfSignedCertsTest extends AbstractPAdESTestExten
 	}
 
 	@Test
-	public void tToLTATest() throws Exception {
+	void tToLTATest() throws Exception {
 		originalSignatureLevel = SignatureLevel.PAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 

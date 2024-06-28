@@ -35,10 +35,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionNoDetachedFileBToLTATest extends PKIFactoryAccess {
+class XAdESExtensionNoDetachedFileBToLTATest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 
 		DSSDocument detachedFile = new FileDocument("src/test/resources/sample.xml");
 

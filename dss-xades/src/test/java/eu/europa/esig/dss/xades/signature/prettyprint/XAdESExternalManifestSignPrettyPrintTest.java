@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESExternalManifestLevelBTest;
 
-public class XAdESExternalManifestSignPrettyPrintTest extends XAdESExternalManifestLevelBTest {
+class XAdESExternalManifestSignPrettyPrintTest extends XAdESExternalManifestLevelBTest {
 
 	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {

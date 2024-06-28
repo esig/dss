@@ -45,7 +45,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
  *
  * @author bnazare
  */
-public class PdfBoxTextFitterTest {
+class PdfBoxTextFitterTest {
 
 	private static final DSSFileFont DEFAULT_SIG_FONT = DSSFileFont.initializeDefault();
 
@@ -85,7 +85,7 @@ public class PdfBoxTextFitterTest {
 
 	@ParameterizedTest
 	@MethodSource
-	public void testFitSignatureText(float width, float height, String expectedWrappedText) throws Exception {
+	void testFitSignatureText(float width, float height, String expectedWrappedText) throws Exception {
 		AnnotationBox textDimensions = new AnnotationBox(0, 0, width, height);
 		TextFitter.Result fitResult;
 		try (PDDocument doc = new PDDocument()) {

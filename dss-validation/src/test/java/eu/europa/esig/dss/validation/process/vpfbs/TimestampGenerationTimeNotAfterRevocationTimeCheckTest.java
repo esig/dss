@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends AbstractTestCheck {
+class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() {
+    void validTest() {
         Date revocationTime = new Date();
 
         Calendar calendar = Calendar.getInstance();
@@ -65,7 +65,7 @@ public class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends Abst
     }
 
     @Test
-    public void invalidTest() {
+    void invalidTest() {
         Date revocationTime = new Date();
 
         Calendar calendar = Calendar.getInstance();
@@ -89,7 +89,7 @@ public class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends Abst
     }
 
     @Test
-    public void sameTimeTest() {
+    void sameTimeTest() {
         Date datetime = new Date();
 
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
@@ -109,7 +109,7 @@ public class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends Abst
     }
 
     @Test
-    public void contentTstMillisecondAfterTest() {
+    void contentTstMillisecondAfterTest() {
         Date revocationTime = new Date();
 
         Calendar calendar = Calendar.getInstance();

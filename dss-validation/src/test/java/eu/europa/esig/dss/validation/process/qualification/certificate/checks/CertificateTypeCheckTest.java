@@ -34,10 +34,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateTypeCheckTest extends AbstractTestCheck {
+class CertificateTypeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void eSignTest() throws Exception {
+    void eSignTest() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -52,7 +52,7 @@ public class CertificateTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void eSealTest() throws Exception {
+    void eSealTest() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -67,7 +67,7 @@ public class CertificateTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void wsaTest() throws Exception {
+    void wsaTest() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -82,7 +82,7 @@ public class CertificateTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void unknownTypeTest() throws Exception {
+    void unknownTypeTest() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

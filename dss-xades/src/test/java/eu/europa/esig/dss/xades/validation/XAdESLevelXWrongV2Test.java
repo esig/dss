@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelXWrongV2Test extends AbstractXAdESTestValidation {
+class XAdESLevelXWrongV2Test extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

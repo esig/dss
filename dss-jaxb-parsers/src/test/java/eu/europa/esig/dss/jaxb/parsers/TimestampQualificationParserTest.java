@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 
-public class TimestampQualificationParserTest {
+class TimestampQualificationParserTest {
 
 	@Test
-	public void test() {
+	void test() {
 		for (TimestampQualification timestampQualification : TimestampQualification.values()) {
 			String print = TimestampQualificationParser.print(timestampQualification);
 			assertEquals(timestampQualification, TimestampQualificationParser.parse(print));
@@ -38,7 +38,7 @@ public class TimestampQualificationParserTest {
 	}
 
 	@Test
-	public void testNull() {
+	void testNull() {
 		assertNull(TimestampQualificationParser.print(null));
 		assertNull(TimestampQualificationParser.parse(null));
 	}

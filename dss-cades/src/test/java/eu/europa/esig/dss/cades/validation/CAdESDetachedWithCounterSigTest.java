@@ -40,7 +40,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
-public class CAdESDetachedWithCounterSigTest extends AbstractCAdESTestValidation {
+class CAdESDetachedWithCounterSigTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

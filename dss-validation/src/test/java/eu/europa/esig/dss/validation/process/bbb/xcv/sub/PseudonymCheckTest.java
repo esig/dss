@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
 
-public class PseudonymCheckTest extends AbstractTestCheck {
+class PseudonymCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void pseudonymCheck() throws Exception {
+	void pseudonymCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Valid_Pseudonym");
@@ -57,7 +57,7 @@ public class PseudonymCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedPseudonymCheck() throws Exception {
+	void failedPseudonymCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Invalid_Pseudonym");

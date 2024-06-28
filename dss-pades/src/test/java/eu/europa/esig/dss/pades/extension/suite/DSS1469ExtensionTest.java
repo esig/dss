@@ -61,7 +61,7 @@ public class DSS1469ExtensionTest extends AbstractPAdESTestValidation {
 	private CertificateVerifier certificateVerifier;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSources(getTrustedCertSource());
 		certificateVerifier.setRevocationFallback(true);

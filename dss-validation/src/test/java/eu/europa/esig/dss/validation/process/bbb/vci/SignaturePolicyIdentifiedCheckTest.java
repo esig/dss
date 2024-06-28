@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifiedCheck;
 
-public class SignaturePolicyIdentifiedCheckTest extends AbstractTestCheck {
+class SignaturePolicyIdentifiedCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signaturePolicyIdentifiedCheck() throws Exception {
+	void signaturePolicyIdentifiedCheck() throws Exception {
 		XmlPolicy xmlPolicy = new XmlPolicy();
 		xmlPolicy.setIdentified(true);
 
@@ -61,7 +61,7 @@ public class SignaturePolicyIdentifiedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void signaturePolicyNotIdentifiedCheck() throws Exception {
+	void signaturePolicyNotIdentifiedCheck() throws Exception {
 		XmlPolicy xmlPolicy = new XmlPolicy();
 		xmlPolicy.setIdentified(false);
 

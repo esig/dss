@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDocumentSetTestSignature {
+class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDocumentSetTestSignature {
 
 	private DSSDocument documentToSign;
 	private ASiCWithXAdESService service;
@@ -56,7 +56,7 @@ public class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDo
 	private XAdESCounterSignatureParameters counterSignatureParameters;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		
 		signatureParameters = new ASiCWithXAdESSignatureParameters();

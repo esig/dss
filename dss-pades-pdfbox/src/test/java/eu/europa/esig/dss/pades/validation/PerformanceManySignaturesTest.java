@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PerformanceManySignaturesTest {
+class PerformanceManySignaturesTest {
 
     @Test
     void extractSigDictionaries() throws IOException {

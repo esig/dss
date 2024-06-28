@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESDoubleSignatureBAndLTATest extends AbstractASiCSCAdESTestSignature {
+class ASiCSCAdESDoubleSignatureBAndLTATest extends AbstractASiCSCAdESTestSignature {
 
     private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
@@ -51,7 +51,7 @@ public class ASiCSCAdESDoubleSignatureBAndLTATest extends AbstractASiCSCAdESTest
     private String firstSignatureId;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

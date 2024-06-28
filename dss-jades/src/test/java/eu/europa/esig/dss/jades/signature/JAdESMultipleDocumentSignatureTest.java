@@ -37,13 +37,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESMultipleDocumentSignatureTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESMultipleDocumentSignatureTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private JAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.json"),
 				new FileDocument("src/test/resources/sample.png"),
 				new InMemoryDocument("Hello World!".getBytes(), "helloWorld"));
@@ -56,7 +56,7 @@ public class JAdESMultipleDocumentSignatureTest extends AbstractJAdESMultipleDoc
 	}
 	
 	@Test
-	public void test() {
+	void test() {
 		MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service = getService();
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(documentToSigns, signatureParameters));
 		assertEquals("Not supported operation (only DETACHED are allowed for multiple document signing)!", exception.getMessage());

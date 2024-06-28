@@ -33,10 +33,10 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ValidationTimePresentCheckTest extends AbstractTestValidationExecutor {
+class ValidationTimePresentCheckTest extends AbstractTestValidationExecutor {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/universign.xml"));
 		assertNotNull(diagnosticData);
 		

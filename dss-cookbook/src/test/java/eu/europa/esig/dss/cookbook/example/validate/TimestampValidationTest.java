@@ -53,10 +53,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TimestampValidationTest extends CookbookTools {
+class TimestampValidationTest extends CookbookTools {
 
     @Test
-    public void test() {
+    void test() {
 
         TSPSource goodTsa = getGoodTsa();
         TimestampBinary timestampBinary = goodTsa.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "Hello World!".getBytes()));

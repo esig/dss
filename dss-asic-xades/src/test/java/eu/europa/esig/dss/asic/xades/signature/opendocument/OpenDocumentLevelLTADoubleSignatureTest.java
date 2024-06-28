@@ -35,7 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class OpenDocumentLevelLTADoubleSignatureTest extends AbstractOpenDocumentSetTestSignature {
+class OpenDocumentLevelLTADoubleSignatureTest extends AbstractOpenDocumentSetTestSignature {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -44,7 +44,7 @@ public class OpenDocumentLevelLTADoubleSignatureTest extends AbstractOpenDocumen
     private String signingAlias;
 
     @BeforeEach
-    public void init() {
+    void init() {
         signatureParameters = new ASiCWithXAdESSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);

@@ -61,7 +61,7 @@ public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCoun
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));

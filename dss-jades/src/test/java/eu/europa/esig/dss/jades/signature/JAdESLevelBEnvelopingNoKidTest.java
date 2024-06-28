@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBEnvelopingNoKidTest extends AbstractJAdESTestSignature {
+class JAdESLevelBEnvelopingNoKidTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private DSSDocument documentToSign;
@@ -51,7 +51,7 @@ public class JAdESLevelBEnvelopingNoKidTest extends AbstractJAdESTestSignature {
     private Date signingDate;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getOfflineCertificateVerifier());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
         signingDate = new Date();

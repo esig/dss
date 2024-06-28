@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import java.util.Arrays;
 import java.util.List;
 
-public class CAdESExtensionBToLTADetachedTest extends AbstractCAdESTestExtension {
+class CAdESExtensionBToLTADetachedTest extends AbstractCAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

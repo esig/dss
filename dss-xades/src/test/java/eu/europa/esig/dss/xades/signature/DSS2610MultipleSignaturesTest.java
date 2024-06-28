@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /*
  * In this unit test a revocation data shall be requested for the second signature on validation
  */
-public class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
+class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
 
     private static final DSSDocument ORIGINAL_DOC = new FileDocument("src/test/resources/sample.xml");
 
@@ -59,7 +59,7 @@ public class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
     private MockOnlineCRLSource mockOnlineCRLSource;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.MONTH, -1);

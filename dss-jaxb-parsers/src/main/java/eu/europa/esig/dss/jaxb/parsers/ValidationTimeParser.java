@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.ValidationTime;
  */
 public final class ValidationTimeParser {
 
+	/**
+	 * Default constructor
+	 */
 	private ValidationTimeParser() {
+		// empty
 	}
 
 	/**

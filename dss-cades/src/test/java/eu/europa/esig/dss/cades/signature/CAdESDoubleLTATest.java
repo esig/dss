@@ -49,14 +49,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
+class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
 	
 	private DSSDocument documentToSign;
 	private CAdESSignatureParameters parameters;
 	private CAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8));
 		
 		parameters = new CAdESSignatureParameters();
@@ -80,7 +80,7 @@ public class CAdESDoubleLTATest extends AbstractCAdESTestSignature {
 	}
 
 	@Test
-	public void doubleLTA() throws DSSException, CMSException {
+	void doubleLTA() throws DSSException, CMSException {
 		DSSDocument signed = sign();
 		Reports reports = verify(signed);
 

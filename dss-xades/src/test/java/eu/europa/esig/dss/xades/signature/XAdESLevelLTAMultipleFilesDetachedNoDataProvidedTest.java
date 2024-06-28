@@ -49,14 +49,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTAMultipleFilesDetachedNoDataProvidedTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class XAdESLevelLTAMultipleFilesDetachedNoDataProvidedTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
     private XAdESService service;
     private XAdESSignatureParameters signatureParameters;
     private List<DSSDocument> documentsToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

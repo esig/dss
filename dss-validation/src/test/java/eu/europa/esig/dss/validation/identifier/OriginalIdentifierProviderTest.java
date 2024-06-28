@@ -30,17 +30,17 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class OriginalIdentifierProviderTest {
+class OriginalIdentifierProviderTest {
 
     private static CertificateToken certificate;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         certificate = DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer"));
     }
 
     @Test
-    public void originalIdentifierProviderTest() {
+    void originalIdentifierProviderTest() {
         OriginalIdentifierProvider originalIdentifierProvider = new OriginalIdentifierProvider();
         assertEquals(certificate.getDSSIdAsString(), originalIdentifierProvider.getIdAsString(certificate));
     }

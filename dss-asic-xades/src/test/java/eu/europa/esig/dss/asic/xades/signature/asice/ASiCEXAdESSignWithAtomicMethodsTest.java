@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestSignature {
 
     private static ASiCWithXAdESSignatureParameters signatureParameters;
     private static ASiCWithXAdESService service;
@@ -55,7 +55,7 @@ public class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestS
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new ASiCWithXAdESService(certificateVerifier);
     }
@@ -83,7 +83,7 @@ public class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestS
 
     @ParameterizedTest(name = "Sign XAdES {index} : {0} - {1} - {2}")
     @MethodSource("data")
-    public void init(SignatureLevel level, String signer, DSSDocument document) {
+    void init(SignatureLevel level, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

@@ -57,14 +57,14 @@ import static org.junit.jupiter.api.Assertions.fail;
  * Test DSS with multi threads
  * 
  */
-public class ConcurrentValidationTest extends PKIFactoryAccess {
+class ConcurrentValidationTest extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConcurrentValidationTest.class);
 
 	private String signingAlias;
 
 	@Test
-	public void test() {
+	void test() {
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 
@@ -109,7 +109,7 @@ public class ConcurrentValidationTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void onlineValidationTest() {
+	void onlineValidationTest() {
 		final DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 		final XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());

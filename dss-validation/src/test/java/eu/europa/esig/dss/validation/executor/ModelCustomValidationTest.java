@@ -55,10 +55,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author akoepe
  * @version 1.0
  */
-public class ModelCustomValidationTest extends ModelAbstractValidation {
+class ModelCustomValidationTest extends ModelAbstractValidation {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-	public static final Stream<Arguments> data() throws Exception {
+	static final Stream<Arguments> data() throws Exception {
 		final List<Arguments> data = new ArrayList<>();
 		
 		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) ) );
@@ -100,7 +100,7 @@ public class ModelCustomValidationTest extends ModelAbstractValidation {
 
 	@ParameterizedTest(name = "{index}")
 	@MethodSource("data")
-	public void testModelBasedSignedDocument(TestCase testCase) throws Exception {
+	void testModelBasedSignedDocument(TestCase testCase) throws Exception {
 		
 		ConstraintsParameters policyJaxB = ValidationPolicyFacade.newFacade().unmarshall(new File(testCase.getTestData().getPolicy()));
 

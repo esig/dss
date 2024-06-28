@@ -37,7 +37,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
-public class ASiCEWithXAdESNoSignCertFoundForRevocationTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithXAdESNoSignCertFoundForRevocationTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

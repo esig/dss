@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
-public class CAdESRevocationSourceCBpTest extends AbstractCAdESTestValidation {
+class CAdESRevocationSourceCBpTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

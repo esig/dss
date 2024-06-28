@@ -54,10 +54,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
+class CAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		DSSDocument doc = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8));
 		

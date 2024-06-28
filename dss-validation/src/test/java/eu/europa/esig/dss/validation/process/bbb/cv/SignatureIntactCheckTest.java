@@ -38,10 +38,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 
-public class SignatureIntactCheckTest extends AbstractTestCheck {
+class SignatureIntactCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signatureIntactCheck() throws Exception {
+	void signatureIntactCheck() throws Exception {
 		XmlBasicSignature basicsig = new XmlBasicSignature();
 		basicsig.setSignatureIntact(true);
 
@@ -61,7 +61,7 @@ public class SignatureIntactCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void signatureNotIntactCheck() throws Exception {
+	void signatureNotIntactCheck() throws Exception {
 		XmlBasicSignature basicsig = new XmlBasicSignature();
 		basicsig.setSignatureIntact(false);
 

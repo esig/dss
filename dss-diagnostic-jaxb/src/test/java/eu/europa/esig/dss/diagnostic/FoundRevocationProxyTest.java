@@ -39,10 +39,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 
-public class FoundRevocationProxyTest {
+class FoundRevocationProxyTest {
 	
 	@Test
-	public void getRelatedRevocationByRefOriginTest() {
+	void getRelatedRevocationByRefOriginTest() {
 		XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 		XmlSignature xmlSignature = new XmlSignature();
 		XmlFoundRevocations xmlFoundRevocations = new XmlFoundRevocations();
@@ -79,7 +79,7 @@ public class FoundRevocationProxyTest {
 	}
 	
 	@Test
-	public void getOrphanCertificatesByRefOriginTest() {
+	void getOrphanCertificatesByRefOriginTest() {
 		XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 		XmlSignature xmlSignature = new XmlSignature();
 		XmlFoundRevocations xmlFoundRevocations = new XmlFoundRevocations();

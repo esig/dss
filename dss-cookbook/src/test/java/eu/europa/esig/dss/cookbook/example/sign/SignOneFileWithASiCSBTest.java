@@ -39,10 +39,10 @@ import org.junit.jupiter.api.Test;
 /**
  * How to sign with ASiC_S_BASELINE_B
  */
-public class SignOneFileWithASiCSBTest extends CookbookTools {
+class SignOneFileWithASiCSBTest extends CookbookTools {
 
 	@Test
-	public void signASiCSBaselineB() throws Exception {
+	void signASiCSBaselineB() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

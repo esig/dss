@@ -33,7 +33,7 @@ import java.util.TimeZone;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class JAdESBaselineBCompactSigTTest extends JAdESBaselineBCompactTest {
+class JAdESBaselineBCompactSigTTest extends JAdESBaselineBCompactTest {
 
     @Override
     protected JAdESSignatureParameters getSignatureParameters() {

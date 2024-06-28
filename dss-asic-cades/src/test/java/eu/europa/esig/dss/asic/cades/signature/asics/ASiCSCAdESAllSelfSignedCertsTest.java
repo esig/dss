@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESAllSelfSignedCertsTest extends AbstractASiCSCAdESTestSignature {
+class ASiCSCAdESAllSelfSignedCertsTest extends AbstractASiCSCAdESTestSignature {
 
 	private DSSDocument documentToSign;
 	private ASiCWithCAdESSignatureParameters parameters;
@@ -47,7 +47,7 @@ public class ASiCSCAdESAllSelfSignedCertsTest extends AbstractASiCSCAdESTestSign
 	private CertificateVerifier certificateVerifier;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello World!".getBytes());
 
 		parameters = new ASiCWithCAdESSignatureParameters();
@@ -63,21 +63,21 @@ public class ASiCSCAdESAllSelfSignedCertsTest extends AbstractASiCSCAdESTestSign
 	}
 
 	@Test
-	public void bLevelTest() {
+	void bLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		DSSDocument signedDocument = sign();
 		assertNotNull(signedDocument);
 	}
 
 	@Test
-	public void tLevelTest() {
+	void tLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
 		DSSDocument signedDocument = sign();
 		assertNotNull(signedDocument);
 	}
 
 	@Test
-	public void ltLevelTest() {
+	void ltLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
@@ -92,7 +92,7 @@ public class ASiCSCAdESAllSelfSignedCertsTest extends AbstractASiCSCAdESTestSign
 	}
 
 	@Test
-	public void ltaLevelTest() {
+	void ltaLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);

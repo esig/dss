@@ -36,7 +36,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESLevelBEnvelopedWithInvalidXPathPlacementTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedWithInvalidXPathPlacementTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -44,7 +44,7 @@ public class XAdESLevelBEnvelopedWithInvalidXPathPlacementTest extends AbstractX
     private final String XPATH = "//*[local-name() = 'ElementNotExists']";
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

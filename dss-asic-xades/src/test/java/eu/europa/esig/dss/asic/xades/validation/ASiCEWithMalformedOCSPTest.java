@@ -35,7 +35,7 @@ import eu.europa.esig.dss.utils.Utils;
 /**
  * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-663
  */
-public class ASiCEWithMalformedOCSPTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithMalformedOCSPTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

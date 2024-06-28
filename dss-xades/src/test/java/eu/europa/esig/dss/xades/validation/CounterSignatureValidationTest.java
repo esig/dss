@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CounterSignatureValidationTest extends AbstractXAdESTestValidation {
+class CounterSignatureValidationTest extends AbstractXAdESTestValidation {
 	
 	private String ddCounterSignatureId = null;
 

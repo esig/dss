@@ -47,10 +47,10 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignDetachedDocumentTest extends CookbookTools {
+class SignDetachedDocumentTest extends CookbookTools {
 
     @Test
-    public void signWithDetachedDocTest() throws Exception {
+    void signWithDetachedDocTest() throws Exception {
 
         try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 

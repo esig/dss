@@ -23,7 +23,7 @@ package eu.europa.esig.dss.tsl.job.mra;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 
-public class MRAWithCustomTrustServiceTSLTypeListPointingPartyTrustServiceTSLStatusValidEquivalenceTest extends AbstractMRALOTLTest {
+class MRAWithCustomTrustServiceTSLTypeListPointingPartyTrustServiceTSLStatusValidEquivalenceTest extends AbstractMRALOTLTest {
 
     @Override
     protected String getTrustServiceTSLTypeListPointingPartyTrustServiceTSLStatusValidEquivalence() {

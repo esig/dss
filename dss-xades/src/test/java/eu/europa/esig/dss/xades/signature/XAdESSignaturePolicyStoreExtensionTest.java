@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESSignaturePolicyStoreExtensionTest extends AbstractXAdESTestValidation {
+class XAdESSignaturePolicyStoreExtensionTest extends AbstractXAdESTestValidation {
 
 	private static final String SIGNATURE_POLICY_ID = "urn:sbr:signature-policy:xml:2.0";
 	private static final DSSDocument POLICY_CONTENT = new FileDocument("src/test/resources/validation/dss2095/SBR-signature-policy-v2.0.xml");
@@ -50,7 +50,7 @@ public class XAdESSignaturePolicyStoreExtensionTest extends AbstractXAdESTestVal
 	private DSSDocument signedDocument;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		signedDocument = new FileDocument("src/test/resources/validation/dss2095/sigPolicyWithTransforms.xml");
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}

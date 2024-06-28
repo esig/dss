@@ -34,10 +34,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfBoxArrayTest {
+class PdfBoxArrayTest {
 
     @Test
-    public void getLongValueTest() throws IOException {
+    void getLongValueTest() throws IOException {
         COSArray cosArray = new COSArray();
         cosArray.add(COSInteger.get(123456789));
 
@@ -54,7 +54,7 @@ public class PdfBoxArrayTest {
     }
 
     @Test
-    public void getFloatValueTest() throws IOException {
+    void getFloatValueTest() throws IOException {
         COSArray cosArray = new COSArray();
         cosArray.add(COSFloat.get("1.23456789e8"));
 

@@ -35,7 +35,7 @@ public class PAdESExtensionBToTWithRevokedCertTest extends AbstractPAdESTestExte
     private PAdESSignatureParameters extensionParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         signatureParameters = super.getSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(false);
 

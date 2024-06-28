@@ -33,12 +33,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RemoteCertificateConverterTest {
+class RemoteCertificateConverterTest {
 	
 	private static byte[] encodedCertificate;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		String base64Certificate = "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBA"
 				+ "MMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNN"
 				+ "DcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIw"
@@ -56,21 +56,21 @@ public class RemoteCertificateConverterTest {
 	}
 	
 	@Test
-	public void toCertificateTokenTest() {
+	void toCertificateTokenTest() {
 		RemoteCertificate remoteCertificate = new RemoteCertificate(encodedCertificate);
 		CertificateToken certificateToken = RemoteCertificateConverter.toCertificateToken(remoteCertificate);
         assertArrayEquals(remoteCertificate.getEncodedCertificate(), certificateToken.getEncoded());
 	}
 	
 	@Test
-	public void toRemoteCertificateTest() {
+	void toRemoteCertificateTest() {
 		CertificateToken certificateToken = DSSUtils.loadCertificate(encodedCertificate);
 		RemoteCertificate remoteCertificate = RemoteCertificateConverter.toRemoteCertificate(certificateToken);
 		assertArrayEquals(remoteCertificate.getEncodedCertificate(), certificateToken.getEncoded());
 	}
 	
 	@Test
-	public void toCertificateTokens() {
+	void toCertificateTokens() {
 		List<RemoteCertificate> remoteCertificates = new ArrayList<>();
 		remoteCertificates.add(new RemoteCertificate(encodedCertificate));
 		remoteCertificates.add(new RemoteCertificate(null));

@@ -42,12 +42,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
+class XAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
 
     private XAdESService service;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
     }

@@ -60,14 +60,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESServiceTest extends PKIFactoryAccess {
+class JAdESServiceTest extends PKIFactoryAccess {
 
     private static DSSDocument documentToSign;
     private static CertificateVerifier certificateVerifier;
     private static JAdESService service;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument("src/test/resources/sample.json");
         certificateVerifier = getCompleteCertificateVerifier();
         service = new JAdESService(certificateVerifier);
@@ -75,7 +75,7 @@ public class JAdESServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void signatureTest() throws Exception {
+    void signatureTest() throws Exception {
         JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
 
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate((DSSDocument) null, signatureParameters));
@@ -170,7 +170,7 @@ public class JAdESServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void multipleDocumentsSignatureTest() throws Exception {
+    void multipleDocumentsSignatureTest() throws Exception {
         DSSDocument documentToSign1 = new InMemoryDocument("Hello World!".getBytes());
         DSSDocument documentToSign2 = new InMemoryDocument("Bye World.".getBytes());
 
@@ -235,7 +235,7 @@ public class JAdESServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void extensionTest() {
+    void extensionTest() {
         JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -275,7 +275,7 @@ public class JAdESServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void addSignaturePolicyStoreTest() {
+    void addSignaturePolicyStoreTest() {
         JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

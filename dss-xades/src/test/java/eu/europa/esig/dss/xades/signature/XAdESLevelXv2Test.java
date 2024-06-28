@@ -30,7 +30,7 @@ import org.w3c.dom.NodeList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESLevelXv2Test extends XAdESLevelXTest {
+class XAdESLevelXv2Test extends XAdESLevelXTest {
 
     @Override
     protected XAdESSignatureParameters getSignatureParameters() {

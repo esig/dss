@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESAllSelfSignedCertsTest extends AbstractJAdESTestSignature {
+class JAdESAllSelfSignedCertsTest extends AbstractJAdESTestSignature {
 
     private DSSDocument documentToSign;
     private JAdESSignatureParameters parameters;
@@ -48,7 +48,7 @@ public class JAdESAllSelfSignedCertsTest extends AbstractJAdESTestSignature {
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument("src/test/resources/sample.json");
 
         parameters = new JAdESSignatureParameters();
@@ -64,21 +64,21 @@ public class JAdESAllSelfSignedCertsTest extends AbstractJAdESTestSignature {
     }
 
     @Test
-    public void bLevelTest() {
+    void bLevelTest() {
         parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
         DSSDocument signedDocument = sign();
         assertNotNull(signedDocument);
     }
 
     @Test
-    public void tLevelTest() {
+    void tLevelTest() {
         parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
         DSSDocument signedDocument = sign();
         assertNotNull(signedDocument);
     }
 
     @Test
-    public void ltLevelTest() {
+    void ltLevelTest() {
         certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
         parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
@@ -93,7 +93,7 @@ public class JAdESAllSelfSignedCertsTest extends AbstractJAdESTestSignature {
     }
 
     @Test
-    public void ltaLevelTest() {
+    void ltaLevelTest() {
         certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
         parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);

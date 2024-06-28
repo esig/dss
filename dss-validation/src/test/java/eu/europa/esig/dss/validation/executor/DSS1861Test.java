@@ -49,12 +49,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1861Test extends AbstractTestValidationExecutor {
+class DSS1861Test extends AbstractTestValidationExecutor {
 	
 	private EtsiValidationPolicy etsiValidationPolicy;
 	
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		File validationPolicyFile = new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml");
 		ConstraintsParameters constraintsParameters = getConstraintsParameters(validationPolicyFile);
 		
@@ -67,7 +67,7 @@ public class DSS1861Test extends AbstractTestValidationExecutor {
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/DSS-1861/pades-timestamp-order-check.xml"));
 		assertNotNull(diagnosticData);
 
@@ -99,7 +99,7 @@ public class DSS1861Test extends AbstractTestValidationExecutor {
 	}
 	
 	@Test
-	public void wrongTimestampOrderTest() throws Exception {
+	void wrongTimestampOrderTest() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/DSS-1861/pades-wrong-timestamp-order.xml"));
 		assertNotNull(diagnosticData);
 

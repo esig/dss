@@ -54,14 +54,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
+class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
     private static CertificateVerifier certificateVerifier;
 	private static ASiCWithCAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello world!".getBytes());
         certificateVerifier = getCompleteCertificateVerifier();
         service = new ASiCWithCAdESService(certificateVerifier);
@@ -69,7 +69,7 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void signatureTest() throws Exception {
+	void signatureTest() throws Exception {
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
@@ -171,7 +171,7 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extensionTest() throws IOException {
+	void extensionTest() throws IOException {
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);

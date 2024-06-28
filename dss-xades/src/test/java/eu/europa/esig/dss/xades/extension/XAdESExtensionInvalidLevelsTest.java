@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
+class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
 
     private SignatureLevel originalSignatureLevel;
     private SignatureLevel finalSignatureLevel;
@@ -44,13 +44,13 @@ public class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension 
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
     }
 
     @Test
-    public void tLevelExtensionTest() throws Exception {
+    void tLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -69,7 +69,7 @@ public class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension 
     }
 
     @Test
-    public void ltLevelExtensionTest() throws Exception {
+    void ltLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_BASELINE_LT;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -101,7 +101,7 @@ public class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension 
     }
 
     @Test
-    public void ltaLevelExtensionTest() throws Exception {
+    void ltaLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_BASELINE_LTA;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -146,7 +146,7 @@ public class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension 
     }
 
     @Test
-    public void cLevelExtensionTest() throws Exception {
+    void cLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_C;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -178,7 +178,7 @@ public class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension 
     }
 
     @Test
-    public void xLevelExtensionTest() throws Exception {
+    void xLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_X;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -223,7 +223,7 @@ public class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension 
     }
 
     @Test
-    public void xlLevelExtensionTest() throws Exception {
+    void xlLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_XL;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -281,7 +281,7 @@ public class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension 
     }
 
     @Test
-    public void aLevelExtensionTest() throws Exception {
+    void aLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_A;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);

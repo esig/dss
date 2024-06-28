@@ -40,7 +40,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESTripleSignatureWithUserFriendlyIdentifierTest extends AbstractXAdESTestSignature {
+class XAdESTripleSignatureWithUserFriendlyIdentifierTest extends AbstractXAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -51,7 +51,7 @@ public class XAdESTripleSignatureWithUserFriendlyIdentifierTest extends Abstract
     private Date signingTime = new Date();
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new FileDocument(new File("src/test/resources/sample.xml"));
         service = new XAdESService(getOfflineCertificateVerifier());
 

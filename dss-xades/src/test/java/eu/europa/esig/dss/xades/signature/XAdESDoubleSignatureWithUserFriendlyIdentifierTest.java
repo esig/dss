@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends AbstractXAdESTestSignature {
+class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends AbstractXAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -60,7 +60,7 @@ public class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends Abstract
     private Date signingTime = new Date();
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new FileDocument(new File("src/test/resources/sample.xml"));
         service = new XAdESService(getOfflineCertificateVerifier());
 

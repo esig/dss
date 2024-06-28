@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2369
-public class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTestExtension {
+class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTestExtension {
 
     private DSSDocument document;
     private CAdESService service;
@@ -48,7 +48,7 @@ public class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTest
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         document = new FileDocument("src/test/resources/validation/Signature-C-CZ_SIX-1.p7m");
 
         certificateVerifier = getOfflineCertificateVerifier();

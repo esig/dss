@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
+class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
 
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
     private CAdESSignatureParameters signatureParameters;
@@ -49,7 +49,7 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello World".getBytes());
         service = new CAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -65,7 +65,7 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
 
 
     @Test
-    public void signBRevokedAndSignBGoodUserTest() {
+    void signBRevokedAndSignBGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -81,7 +81,7 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
     }
 
     @Test
-    public void signBRevokedAndSignLTGoodUserTest() {
+    void signBRevokedAndSignLTGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -98,7 +98,7 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
     }
 
     @Test
-    public void signBGoodUserAndSignBRevokedTest() {
+    void signBGoodUserAndSignBRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -114,7 +114,7 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
     }
 
     @Test
-    public void signBGoodUserAndSignLTRevokedTest() {
+    void signBGoodUserAndSignLTRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -128,7 +128,7 @@ public class CAdESSignWithRevokedCertTest extends AbstractCAdESTestSignature {
     }
 
     @Test
-    public void signBWithRevocationCheckEnabledTest() {
+    void signBWithRevocationCheckEnabledTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);

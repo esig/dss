@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
-public class XAdESLevelXValidationTest extends AbstractXAdESTestValidation {
+class XAdESLevelXValidationTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

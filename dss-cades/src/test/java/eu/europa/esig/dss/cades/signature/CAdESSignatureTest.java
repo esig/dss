@@ -28,15 +28,15 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 
-public class CAdESSignatureTest {
+class CAdESSignatureTest {
 
 	@Test
-	public void initNull() throws CMSException {
+	void initNull() throws CMSException {
 		assertThrows(NullPointerException.class, () -> new CAdESSignature(null, null));
 	}
 
 	@Test
-	public void initEmptyByteArray() throws CMSException {
+	void initEmptyByteArray() throws CMSException {
 		assertThrows(CMSException.class, () -> new CAdESSignature(new CMSSignedData(new byte[] {}), null));
 	}
 

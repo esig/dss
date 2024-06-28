@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ITextPdfDictTest {
+class ITextPdfDictTest {
 
     @Test
-    public void getLongValueTest() {
+    void getLongValueTest() {
         PdfDictionary pdfDictionary = new PdfDictionary();
         pdfDictionary.put(new PdfName("Integer"), new PdfNumber(123456789));
 
@@ -45,7 +45,7 @@ public class ITextPdfDictTest {
     }
 
     @Test
-    public void getFloatValueTest() {
+    void getFloatValueTest() {
         PdfDictionary pdfDictionary = new PdfDictionary();
         pdfDictionary.put(new PdfName("Float"), new PdfNumber("1.23456789e8"));
 

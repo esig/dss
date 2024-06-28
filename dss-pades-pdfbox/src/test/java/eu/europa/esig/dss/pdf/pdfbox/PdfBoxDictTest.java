@@ -35,10 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfBoxDictTest {
+class PdfBoxDictTest {
 
     @Test
-    public void getLongValueTest() throws IOException {
+    void getLongValueTest() throws IOException {
         COSDictionary cosDictionary = new COSDictionary();
         cosDictionary.setItem(COSName.getPDFName("Integer"), COSInteger.get(123456789));
 
@@ -55,7 +55,7 @@ public class PdfBoxDictTest {
     }
 
     @Test
-    public void getFloatValueTest() throws IOException {
+    void getFloatValueTest() throws IOException {
         COSDictionary cosDictionary = new COSDictionary();
         cosDictionary.setItem(COSName.getPDFName("Float"), COSFloat.get("1.23456789e8"));
 

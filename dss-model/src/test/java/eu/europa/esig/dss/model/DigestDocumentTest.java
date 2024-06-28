@@ -34,34 +34,34 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DigestDocumentTest {
+class DigestDocumentTest {
 
 	@Test
-	public void testByteArray() {
+	void testByteArray() {
 		byte[] digest = "aaa".getBytes();
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, digest);
 		assertArrayEquals(digest, doc.getDigestValue(DigestAlgorithm.SHA1));
 	}
 
 	@Test
-	public void testString() {
+	void testString() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		assertArrayEquals(Base64.getDecoder().decode(base64EncodeDigest), doc.getDigestValue(DigestAlgorithm.SHA1));
 	}
 
 	@Test
-	public void testNullDigestAlgo() {
+	void testNullDigestAlgo() {
 		assertThrows(NullPointerException.class, () -> new DigestDocument(null, "aaaa".getBytes()));
 	}
 
 	@Test
-	public void testNullDigestAlgoValue() {
+	void testNullDigestAlgoValue() {
 		assertThrows(NullPointerException.class, () -> new DigestDocument(DigestAlgorithm.SHA1, (byte[]) null));
 	}
 
 	@Test
-	public void testUnknownDigest() {
+	void testUnknownDigest() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> doc.getDigestValue(DigestAlgorithm.SHA256));
@@ -69,7 +69,7 @@ public class DigestDocumentTest {
 	}
 
 	@Test
-	public void testOpenStream() {
+	void testOpenStream() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		Exception exception = assertThrows(UnsupportedOperationException.class, doc::openStream);
@@ -77,7 +77,7 @@ public class DigestDocumentTest {
 	}
 
 	@Test
-	public void testSave() throws IOException {
+	void testSave() throws IOException {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> doc.save("target/test"));
@@ -85,7 +85,7 @@ public class DigestDocumentTest {
 	}
 
 	@Test
-	public void defaultConstructorTest() throws IOException, NoSuchAlgorithmException {
+	void defaultConstructorTest() throws IOException, NoSuchAlgorithmException {
 		Security.addProvider(new BouncyCastleProvider());
 		byte[] stringToEncode = "aaa".getBytes();
 		DigestDocument doc = new DigestDocument();

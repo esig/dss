@@ -27,51 +27,51 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ByteRangeTest {
+class ByteRangeTest {
 
 	@Test
-	public void validateByteRangeTest() {
+	void validateByteRangeTest() {
 		ByteRange byteRangeOk = new ByteRange(new int[] { 0, 1280, 2400, 480 });
 		byteRangeOk.validate();
 	}
 
 	@Test
-	public void startNotCover() {
+	void startNotCover() {
 		ByteRange byteRange = new ByteRange(new int[] { 1, 1280, 2400, 480 });
 		Exception exception = assertThrows(IllegalInputException.class, () -> byteRange.validate());
 		assertEquals("The ByteRange must cover start of file", exception.getMessage());
 	}
 
 	@Test
-	public void emptyFirstPart() {
+	void emptyFirstPart() {
 		ByteRange byteRange = new ByteRange(new int[] { 0, -1, 240, 480 });
 		Exception exception = assertThrows(IllegalInputException.class, () -> byteRange.validate());
 		assertEquals("The first hash part doesn't cover anything", exception.getMessage());
 	}
 
 	@Test
-	public void secondAfterFirst() {
+	void secondAfterFirst() {
 		ByteRange byteRange = new ByteRange(new int[] { 0, 1280, 240, 480 });
 		Exception exception = assertThrows(IllegalInputException.class, () -> byteRange.validate());
 		assertEquals("The second hash part must start after the first hash part", exception.getMessage());
 	}
 
 	@Test
-	public void emptySecondPart() {
+	void emptySecondPart() {
 		ByteRange byteRange = new ByteRange(new int[] { 0, 1280, 2400, -1 });
 		Exception exception = assertThrows(IllegalInputException.class, () -> byteRange.validate());
 		assertEquals("The second hash part doesn't cover anything", exception.getMessage());
 	}
 
 	@Test
-	public void wrongSize() {
+	void wrongSize() {
 		ByteRange byteRange = new ByteRange(new int[] { 0 });
 		Exception exception = assertThrows(IllegalInputException.class, () -> byteRange.validate());
 		assertEquals("Incorrect ByteRange size", exception.getMessage());
 	}
 
 	@Test
-	public void wrongSize2() {
+	void wrongSize2() {
 		ByteRange byteRange = new ByteRange(new int[0]);
 		Exception exception = assertThrows(IllegalInputException.class, () -> byteRange.validate());
 		assertEquals("Incorrect ByteRange size", exception.getMessage());

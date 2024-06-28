@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JsonNotAdESLevelLTWithoutCertificatesTest extends AbstractJAdESTestSignature {
+class JsonNotAdESLevelLTWithoutCertificatesTest extends AbstractJAdESTestSignature {
 
     private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
@@ -53,7 +53,7 @@ public class JsonNotAdESLevelLTWithoutCertificatesTest extends AbstractJAdESTest
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
         signatureParameters = new JAdESSignatureParameters();

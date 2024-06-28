@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import java.util.Collections;
 import java.util.List;
 
-public class XmlEvidenceRecordTwoLevelsValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordTwoLevelsValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

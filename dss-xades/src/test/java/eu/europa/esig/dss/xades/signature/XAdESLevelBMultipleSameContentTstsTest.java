@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class XAdESLevelBMultipleSameContentTstsTest extends AbstractXAdESTestSignature {
+class XAdESLevelBMultipleSameContentTstsTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private DSSDocument documentToSign;
@@ -57,7 +57,7 @@ public class XAdESLevelBMultipleSameContentTstsTest extends AbstractXAdESTestSig
     private TimestampToken contentTimestamp;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new XAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

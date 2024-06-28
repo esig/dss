@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author axel.abinet
  *
  */
-public class ASiCEXAdESLevelBSignFourTimeTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESLevelBSignFourTimeTest extends AbstractASiCEXAdESTestSignature {
 
 	private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
@@ -51,7 +51,7 @@ public class ASiCEXAdESLevelBSignFourTimeTest extends AbstractASiCEXAdESTestSign
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 	}
 

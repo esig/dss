@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // see DSS-1805
-public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTestExtension {
+class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTestExtension {
 
     private static Date currentDate = new Date();
 

@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 
-public class DSS2116WithCAdESTest extends AbstractCAdESTestValidation {
+class DSS2116WithCAdESTest extends AbstractCAdESTestValidation {
 
 	private static final DigestAlgorithm ORIGINAL_DA = DigestAlgorithm.SHA256;
 	private static final String ORIGINAL_DTBSR = "57szsa0s+bS18oGNThOO90aaF5fgNR2L8L2bCrLIaqY=";

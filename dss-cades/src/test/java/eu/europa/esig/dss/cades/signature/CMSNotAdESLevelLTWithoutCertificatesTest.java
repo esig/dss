@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CMSNotAdESLevelLTWithoutCertificatesTest extends AbstractCAdESTestSignature {
+class CMSNotAdESLevelLTWithoutCertificatesTest extends AbstractCAdESTestSignature {
 
     private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
@@ -49,7 +49,7 @@ public class CMSNotAdESLevelLTWithoutCertificatesTest extends AbstractCAdESTestS
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello world!".getBytes());
 
         signatureParameters = new CAdESSignatureParameters();

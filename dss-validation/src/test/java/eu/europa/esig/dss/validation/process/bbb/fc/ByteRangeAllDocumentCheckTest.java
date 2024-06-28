@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
+class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignatureOne = new XmlSignature();
@@ -85,7 +85,7 @@ public class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignatureOne = new XmlSignature();
@@ -127,7 +127,7 @@ public class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void validWithTimestamp() {
+    void validWithTimestamp() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignatureOne = new XmlSignature();
@@ -169,7 +169,7 @@ public class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidWithTimestamp() {
+    void invalidWithTimestamp() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignatureOne = new XmlSignature();
@@ -211,7 +211,7 @@ public class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void validWithSignatureTimestamp() {
+    void validWithSignatureTimestamp() {
         XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 
         XmlSignature xmlSignatureOne = new XmlSignature();

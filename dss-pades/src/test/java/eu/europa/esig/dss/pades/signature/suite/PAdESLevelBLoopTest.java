@@ -64,7 +64,7 @@ public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 
 	@ParameterizedTest(name = "Document {index} : {0}")
 	@MethodSource("data")
-	public void init(DSSDocument document) {
+	void init(DSSDocument document) {
 		this.documentToSign = document;
 
 		signatureParameters = new PAdESSignatureParameters();

@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
+class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
 	
 	private DSSDocument documentToSign;
 	
@@ -54,7 +54,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSi
 	private ASiCWithXAdESService service;
 	private CertificateVerifier certificateVerifier;
 	
-	public static Collection<Object[]> data() {
+	static Collection<Object[]> data() {
 		File folder = new File("src/test/resources/opendocument");
 		Collection<File> listFiles = Utils.listFiles(folder,
 				new String[] { "odt", "ods", "odp", "odg" }, true);
@@ -66,7 +66,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSi
 	}
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		parameters = new ASiCWithXAdESSignatureParameters();
 		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		parameters.setSigningCertificate(getSigningCert());
@@ -81,7 +81,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSi
 
 	@ParameterizedTest
 	@MethodSource("data")
-	public void bLevelTest(File file) {
+	void bLevelTest(File file) {
 		documentToSign = new FileDocument(file);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         DSSDocument signedDocument = sign();
@@ -90,7 +90,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSi
 
 	@ParameterizedTest
 	@MethodSource("data")
-	public void tLevelTest(File file) {
+	void tLevelTest(File file) {
 		documentToSign = new FileDocument(file);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
         DSSDocument signedDocument = sign();
@@ -99,7 +99,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSi
 
 	@ParameterizedTest
 	@MethodSource("data")
-	public void ltLevelTest(File file) {
+	void ltLevelTest(File file) {
 		documentToSign = new FileDocument(file);
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
@@ -116,7 +116,7 @@ public class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSi
 
 	@ParameterizedTest
 	@MethodSource("data")
-	public void ltaLevelTest(File file) {
+	void ltaLevelTest(File file) {
 		documentToSign = new FileDocument(file);
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 

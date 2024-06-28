@@ -31,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SSLCertificateLoaderTest {
+class SSLCertificateLoaderTest {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		String url = "https://wikipedia.org";
 
 		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();
@@ -43,7 +43,7 @@ public class SSLCertificateLoaderTest {
 	}
 	
 	@Test
-	public void wrongUrl() throws Exception {
+	void wrongUrl() throws Exception {
 		String url = "https://wrong.url";
 
 		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();
@@ -52,7 +52,7 @@ public class SSLCertificateLoaderTest {
 	}
 	
 	@Test
-	public void urlWithSpaces() throws Exception {
+	void urlWithSpaces() throws Exception {
 		String url = " https://wikipedia.org  ";
 
 		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();
@@ -61,7 +61,7 @@ public class SSLCertificateLoaderTest {
 	}
 	
 	@Test
-	public void ldapUrl() throws Exception {
+	void ldapUrl() throws Exception {
 		String url = "ldap://crl-source.hn/o=Hello";
 
 		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();
@@ -70,7 +70,7 @@ public class SSLCertificateLoaderTest {
 	}
 	
 	@Test
-	public void emptyUrl() throws Exception {
+	void emptyUrl() throws Exception {
 		String url = " ";
 
 		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();

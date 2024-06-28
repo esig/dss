@@ -60,7 +60,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	protected DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -77,7 +77,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	protected abstract void setCustomFactory();
 
 	@Test
-	public void testGeneratedTextOnly() throws IOException {
+	void testGeneratedTextOnly() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -91,7 +91,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextWithOnlyAlpha() throws IOException {
+	void testGeneratedTextWithOnlyAlpha() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -105,7 +105,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedImageOnly() throws IOException {
+	void testGeneratedImageOnly() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -122,7 +122,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedImageOnlyPNG() throws IOException {
+	void testGeneratedImageOnlyPNG() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -146,7 +146,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextToDocWithoutColorSpaceWithColor() throws IOException {
+	void testGeneratedTextToDocWithoutColorSpaceWithColor() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -161,7 +161,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextToDocWithoutColorSpaceWithoutColor() throws IOException {
+	void testGeneratedTextToDocWithoutColorSpaceWithoutColor() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -176,7 +176,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextToRGBDocWithColor() throws IOException {
+	void testGeneratedTextToRGBDocWithColor() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -191,7 +191,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextToGrayDocWithColor() throws IOException {
+	void testGeneratedTextToGrayDocWithColor() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2u-gray.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -206,7 +206,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextToGrayDocWithoutColor() throws IOException {
+	void testGeneratedTextToGrayDocWithoutColor() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2u-gray.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -222,7 +222,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextToGrayDocWithGrayColor() throws IOException {
+	void testGeneratedTextToGrayDocWithGrayColor() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2u-gray.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -236,7 +236,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testGeneratedTextToGrayDocWithGrayColorAutomaticRotation() throws IOException {
+	void testGeneratedTextToGrayDocWithGrayColorAutomaticRotation() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-gray.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -252,7 +252,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testAddGrayscaleImageToRGBDoc() throws IOException {
+	void testAddGrayscaleImageToRGBDoc() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -269,7 +269,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testAddGrayscaleImageToNonProfileDoc() throws IOException {
+	void testAddGrayscaleImageToNonProfileDoc() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -286,7 +286,7 @@ public abstract class PDFAVisibleSignatureTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testAddGrayscaleImageToGrayColorSpaceDoc() throws IOException {
+	void testAddGrayscaleImageToGrayColorSpaceDoc() throws IOException {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-gray.pdf"));
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();

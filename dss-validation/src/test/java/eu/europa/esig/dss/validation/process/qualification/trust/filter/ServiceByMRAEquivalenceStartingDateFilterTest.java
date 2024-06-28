@@ -31,20 +31,20 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ServiceByMRAEquivalenceStartingDateFilterTest {
+class ServiceByMRAEquivalenceStartingDateFilterTest {
 
     private final static Date DATE1 = DatatypeConverter.parseDateTime("2015-07-01T00:00:00-00:00").getTime();
     private final static Date DATE2 = DatatypeConverter.parseDateTime("2016-07-01T00:00:00-00:00").getTime();
     private final static Date DATE3 = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
 
     @Test
-    public void noTSTest() {
+    void noTSTest() {
         ServiceByMRAEquivalenceStartingDateFilter filter = new ServiceByMRAEquivalenceStartingDateFilter(DATE2);
         assertTrue(Utils.isCollectionEmpty(filter.filter(new ArrayList<>())));
     }
 
     @Test
-    public void testValid() {
+    void testValid() {
         ServiceByMRAEquivalenceStartingDateFilter filter = new ServiceByMRAEquivalenceStartingDateFilter(DATE2);
 
         TrustServiceWrapper service = new TrustServiceWrapper();
@@ -54,7 +54,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     }
 
     @Test
-    public void testInvalid() {
+    void testInvalid() {
         ServiceByMRAEquivalenceStartingDateFilter filter = new ServiceByMRAEquivalenceStartingDateFilter(DATE2);
 
         TrustServiceWrapper service = new TrustServiceWrapper();
@@ -64,7 +64,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     }
 
     @Test
-    public void testSameTime() {
+    void testSameTime() {
         ServiceByMRAEquivalenceStartingDateFilter filter = new ServiceByMRAEquivalenceStartingDateFilter(DATE1);
 
         TrustServiceWrapper service = new TrustServiceWrapper();
@@ -74,7 +74,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     }
 
     @Test
-    public void testNoDate() {
+    void testNoDate() {
         ServiceByDateFilter filter = new ServiceByDateFilter(null);
 
         TrustServiceWrapper service = new TrustServiceWrapper();
@@ -84,7 +84,7 @@ public class ServiceByMRAEquivalenceStartingDateFilterTest {
     }
 
     @Test
-    public void testNoStartingDate() {
+    void testNoStartingDate() {
         ServiceByDateFilter filter = new ServiceByDateFilter(DATE2);
 
         TrustServiceWrapper service = new TrustServiceWrapper();

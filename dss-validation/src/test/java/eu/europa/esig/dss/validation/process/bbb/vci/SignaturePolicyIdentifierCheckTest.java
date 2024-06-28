@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyIdentifierCheck;
 
-public class SignaturePolicyIdentifierCheckTest extends AbstractTestCheck {
+class SignaturePolicyIdentifierCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signaturePolicyIdentifiedCheck() throws Exception {
+	void signaturePolicyIdentifiedCheck() throws Exception {
 		XmlPolicy xmlPolicy = new XmlPolicy();
 		xmlPolicy.setId("IMPLICIT_POLICY");
 
@@ -62,7 +62,7 @@ public class SignaturePolicyIdentifierCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void signaturePolicyNotIdentifierCheck() throws Exception {
+	void signaturePolicyNotIdentifierCheck() throws Exception {
 		XmlPolicy xmlPolicy = new XmlPolicy();
 		xmlPolicy.setId("INVALID_POLICY");
 

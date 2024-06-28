@@ -42,10 +42,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AllFilesSignedCheckTest extends AbstractTestCheck {
+class AllFilesSignedCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void asicSValid() throws Exception {
+	void asicSValid() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 		
@@ -66,7 +66,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicSNoFiles() throws Exception {
+	void asicSNoFiles() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 		
@@ -86,7 +86,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicSMultipleFiles() throws Exception {
+	void asicSMultipleFiles() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 		
@@ -107,7 +107,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithCAdESValid() throws Exception {
+	void asicEWithCAdESValid() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");
@@ -134,7 +134,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithCAdESAnotherManifest() throws Exception {
+	void asicEWithCAdESAnotherManifest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");
@@ -161,7 +161,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithCAdESNotMatchingContent() throws Exception {
+	void asicEWithCAdESNotMatchingContent() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");
@@ -188,7 +188,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithXAdESValid() throws Exception {
+	void asicEWithXAdESValid() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");
@@ -229,7 +229,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithXAdESInvalid() throws Exception {
+	void asicEWithXAdESInvalid() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");
@@ -270,7 +270,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithXAdESSignedMimetype() throws Exception {
+	void asicEWithXAdESSignedMimetype() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");
@@ -308,7 +308,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithXAdESSignedManifest() throws Exception {
+	void asicEWithXAdESSignedManifest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");
@@ -347,7 +347,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithXAdESNoManifest() throws Exception {
+	void asicEWithXAdESNoManifest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");
@@ -380,7 +380,7 @@ public class AllFilesSignedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void asicEWithXAdESNoManifestNotAllFilesCovered() throws Exception {
+	void asicEWithXAdESNoManifestNotAllFilesCovered() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.XAdES_BASELINE_B);
 		sig.setSignatureFilename("signature1");

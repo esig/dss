@@ -48,7 +48,7 @@ public class PAdESTimestampWithAppNameTest extends AbstractPkiFactoryTestValidat
     private static final String DSS_APP_NAME = "DSS";
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         DSSDocument documentToTimestamp = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
 
         PAdESService service = new PAdESService(getOfflineCertificateVerifier());

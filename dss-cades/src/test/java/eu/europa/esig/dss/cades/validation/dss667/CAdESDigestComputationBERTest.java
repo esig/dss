@@ -24,7 +24,7 @@ import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class CAdESDigestComputationBERTest extends AbstractCAdESTestValidation {
+class CAdESDigestComputationBERTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

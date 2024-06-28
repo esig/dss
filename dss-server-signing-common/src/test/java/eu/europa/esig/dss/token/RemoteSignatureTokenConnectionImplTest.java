@@ -43,10 +43,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RemoteSignatureTokenConnectionImplTest {
+class RemoteSignatureTokenConnectionImplTest {
 
 	@Test
-	public void testRemoteSigning() throws IOException {
+	void testRemoteSigning() throws IOException {
 
 		Pkcs12SignatureToken serverToken = new Pkcs12SignatureToken("src/test/resources/good-user.p12",
 				new PasswordProtection("ks-password".toCharArray()));
@@ -87,7 +87,7 @@ public class RemoteSignatureTokenConnectionImplTest {
 	}
 
 	@Test
-	public void testRemoteSigningWithSignatureAlgorithm() throws IOException {
+	void testRemoteSigningWithSignatureAlgorithm() throws IOException {
 
 		Pkcs12SignatureToken serverToken = new Pkcs12SignatureToken("src/test/resources/good-user.p12",
 				new PasswordProtection("ks-password".toCharArray()));
@@ -128,7 +128,7 @@ public class RemoteSignatureTokenConnectionImplTest {
 	}
 
 	@Test
-	public void testRemoteSignDigest() throws IOException {
+	void testRemoteSignDigest() throws IOException {
 
 		Pkcs12SignatureToken serverToken = new Pkcs12SignatureToken("src/test/resources/good-user.p12",
 				new PasswordProtection("ks-password".toCharArray()));
@@ -172,7 +172,7 @@ public class RemoteSignatureTokenConnectionImplTest {
 	}
 
 	@Test
-	public void testRemoteSignDigestWithSignatureAlgorithm() throws IOException {
+	void testRemoteSignDigestWithSignatureAlgorithm() throws IOException {
 
 		Pkcs12SignatureToken serverToken = new Pkcs12SignatureToken("src/test/resources/good-user.p12",
 				new PasswordProtection("ks-password".toCharArray()));

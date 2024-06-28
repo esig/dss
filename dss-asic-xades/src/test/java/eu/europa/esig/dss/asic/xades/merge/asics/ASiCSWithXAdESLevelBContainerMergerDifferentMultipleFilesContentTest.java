@@ -41,7 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCSWithXAdESLevelBContainerMergerDifferentMultipleFilesContentTest extends AbstractWithXAdESTestMerge {
+class ASiCSWithXAdESLevelBContainerMergerDifferentMultipleFilesContentTest extends AbstractWithXAdESTestMerge {
 
     private List<DSSDocument> documentsToSignOne;
     private List<DSSDocument> documentsToSignTwo;
@@ -52,7 +52,7 @@ public class ASiCSWithXAdESLevelBContainerMergerDifferentMultipleFilesContentTes
     private ASiCWithXAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentsToSignOne = Arrays.asList(new FileDocument("src/test/resources/signable/test.txt"),
                 new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT));
 

@@ -55,12 +55,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
+class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	
 	private static final DSSDocument document = new FileDocument("src/test/resources/sample-c14n.xml");
 	
 	@Test
-	public void canonicalizationTest() throws Exception {
+	void canonicalizationTest() throws Exception {
 		List<DSSReference> references = buildReferences(document, new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE));
 		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
@@ -76,7 +76,7 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void xPathTest() throws Exception {
+	void xPathTest() throws Exception {
 		List<DSSReference> references = buildReferences(document, new XPathTransform("ancestor-or-self::*[@Id='dss1']"));
 		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
@@ -92,7 +92,7 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void base64Test() throws Exception {
+	void base64Test() throws Exception {
 		List<DSSReference> references = buildReferences(document, new Base64Transform());
 		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		

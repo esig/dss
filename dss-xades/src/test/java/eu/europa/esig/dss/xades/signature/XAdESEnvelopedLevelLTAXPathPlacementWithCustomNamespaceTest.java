@@ -43,14 +43,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class XAdESEnvelopedLevelLTAXPathPlacementWithCustomNamespaceTest extends AbstractXAdESTestSignature {
+class XAdESEnvelopedLevelLTAXPathPlacementWithCustomNamespaceTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/ORIGINALXML.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExtension {
+class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExtension {
 
 	private SignatureLevel originalSignatureLevel;
 	private SignatureLevel finalSignatureLevel;
@@ -47,7 +47,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 
 		certificateVerifier = getCompleteCertificateVerifier();
@@ -56,7 +56,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void bToTTest() throws Exception {
+	void bToTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -68,7 +68,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void bToLTTest() throws Exception {
+	void bToLTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -88,7 +88,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void tToLTTest() throws Exception {
+	void tToLTTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -108,7 +108,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void bToLTATest() throws Exception {
+	void bToLTATest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -128,7 +128,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void tToLTATest() throws Exception {
+	void tToLTATest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -148,7 +148,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void bToCTest() throws Exception {
+	void bToCTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -168,7 +168,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void tToCTest() throws Exception {
+	void tToCTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -188,7 +188,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void bToXTest() throws Exception {
+	void bToXTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -208,7 +208,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void tToXTest() throws Exception {
+	void tToXTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -228,7 +228,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void bToXLTest() throws Exception {
+	void bToXLTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -248,7 +248,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void tToXLTest() throws Exception {
+	void tToXLTest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -268,7 +268,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void bToATest() throws Exception {
+	void bToATest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
@@ -288,7 +288,7 @@ public class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExten
 	}
 
 	@Test
-	public void tToATest() throws Exception {
+	void tToATest() throws Exception {
 		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
 		DSSDocument signedDocument = getSignedDocument(documentToSign);
 

@@ -36,24 +36,24 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileDocumentTest {
+class FileDocumentTest {
 
 	@TempDir
 	static Path temporaryFolder;
 
 	@Test
-	public void testNull() {
+	void testNull() {
 		assertThrows(NullPointerException.class, () -> new FileDocument((String) null));
 	}
 
 	@Test
-	public void testNull2() {
+	void testNull2() {
 		Exception exception = assertThrows(NullPointerException.class, () -> new FileDocument((File) null));
 		assertEquals("File cannot be null", exception.getMessage());
 	}
 
 	@Test
-	public void testFile() throws IOException {
+	void testFile() throws IOException {
 		FileDocument doc = new FileDocument("src/test/resources/AdobeCA.p7c");
 		assertNotNull(doc);
 		assertTrue(doc.exists());

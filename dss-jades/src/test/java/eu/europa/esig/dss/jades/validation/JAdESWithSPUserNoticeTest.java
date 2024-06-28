@@ -31,7 +31,7 @@ import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JAdESWithSPUserNoticeTest extends AbstractJAdESTestValidation {
+class JAdESWithSPUserNoticeTest extends AbstractJAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

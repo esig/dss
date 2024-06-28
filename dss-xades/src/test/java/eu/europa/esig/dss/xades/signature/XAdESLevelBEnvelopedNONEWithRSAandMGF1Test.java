@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -63,7 +63,7 @@ public class XAdESLevelBEnvelopedNONEWithRSAandMGF1Test extends AbstractXAdESTes
 
 	@ParameterizedTest(name = "Combination {index} of RSA with PSS and digest algorithm {0}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo) {
+	void init(DigestAlgorithm digestAlgo) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

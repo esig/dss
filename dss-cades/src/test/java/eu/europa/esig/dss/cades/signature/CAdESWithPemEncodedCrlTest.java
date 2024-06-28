@@ -48,7 +48,7 @@ import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 @Tag("slow")
-public class CAdESWithPemEncodedCrlTest extends AbstractCAdESTestSignature {
+class CAdESWithPemEncodedCrlTest extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
@@ -66,7 +66,7 @@ public class CAdESWithPemEncodedCrlTest extends AbstractCAdESTestSignature {
 	}
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World!".getBytes());
 		
 		signatureParameters = new CAdESSignatureParameters();
@@ -80,7 +80,7 @@ public class CAdESWithPemEncodedCrlTest extends AbstractCAdESTestSignature {
 
 	@ParameterizedTest(name = "SignatureLevel {index} : {0}")
 	@MethodSource("data")
-	public void test(SignatureLevel level) {
+	void test(SignatureLevel level) {
 		signatureParameters.setSignatureLevel(level);
 		super.signAndVerify();
 	}

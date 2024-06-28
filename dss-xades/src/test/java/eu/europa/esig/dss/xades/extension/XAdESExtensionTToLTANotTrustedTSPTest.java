@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionTToLTANotTrustedTSPTest extends AbstractXAdESTestExtension {
+class XAdESExtensionTToLTANotTrustedTSPTest extends AbstractXAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

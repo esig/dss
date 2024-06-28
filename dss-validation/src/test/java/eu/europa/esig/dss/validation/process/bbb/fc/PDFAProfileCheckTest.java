@@ -33,10 +33,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PDFAProfileCheckTest extends AbstractTestCheck {
+class PDFAProfileCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validFormat() {
+    void validFormat() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("PDF/A-2U");
@@ -51,7 +51,7 @@ public class PDFAProfileCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void unknownFormat() {
+    void unknownFormat() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("PDF/A-2U");

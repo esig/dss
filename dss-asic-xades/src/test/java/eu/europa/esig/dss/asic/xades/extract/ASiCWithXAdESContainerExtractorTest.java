@@ -30,10 +30,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ASiCWithXAdESContainerExtractorTest {
+class ASiCWithXAdESContainerExtractorTest {
 
     @Test
-    public void asicsWithOneFileTest() {
+    void asicsWithOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asics");
 
         ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
@@ -68,7 +68,7 @@ public class ASiCWithXAdESContainerExtractorTest {
     }
 
     @Test
-    public void asiceWithOneFileTest() {
+    void asiceWithOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asice");
 
         ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
@@ -103,7 +103,7 @@ public class ASiCWithXAdESContainerExtractorTest {
     }
 
     @Test
-    public void asicsWithMultiFilesTest() {
+    void asicsWithMultiFilesTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asics");
 
         ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
@@ -138,7 +138,7 @@ public class ASiCWithXAdESContainerExtractorTest {
     }
 
     @Test
-    public void asiceWithMultiFilesTest() {
+    void asiceWithMultiFilesTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asice");
 
         ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
@@ -173,7 +173,7 @@ public class ASiCWithXAdESContainerExtractorTest {
     }
 
     @Test
-    public void openDocumentTest() {
+    void openDocumentTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/open-document-signed.odt");
 
         ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
@@ -208,7 +208,7 @@ public class ASiCWithXAdESContainerExtractorTest {
     }
 
     @Test
-    public void asicWithErTest() {
+    void asicWithErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidencerecord/xades-lt-with-er.sce");
 
         ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);

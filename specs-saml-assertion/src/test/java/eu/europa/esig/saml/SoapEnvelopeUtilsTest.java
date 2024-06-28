@@ -30,17 +30,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-public class SoapEnvelopeUtilsTest {
+class SoapEnvelopeUtilsTest {
 
 	private static SoapEnvelopeUtils soapEnvelopeUtils;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		soapEnvelopeUtils = SoapEnvelopeUtils.getInstance();
 	}
 
 	@Test
-	public void test() throws JAXBException, SAXException {
+	void test() throws JAXBException, SAXException {
 		JAXBContext jaxbContext = soapEnvelopeUtils.getJAXBContext();
 		assertNotNull(jaxbContext);
 

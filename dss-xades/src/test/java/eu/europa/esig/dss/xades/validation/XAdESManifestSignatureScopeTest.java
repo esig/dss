@@ -56,7 +56,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureReferenceType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 
-public class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation {
+class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

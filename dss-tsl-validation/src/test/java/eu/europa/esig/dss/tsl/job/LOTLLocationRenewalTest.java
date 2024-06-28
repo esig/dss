@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class LOTLLocationRenewalTest {
+class LOTLLocationRenewalTest {
 
     private static final String KS_TYPE = "PKCS12";
     private static final char[] KS_PASSWORD = "password".toCharArray();
@@ -83,7 +83,7 @@ public class LOTLLocationRenewalTest {
     private static CacheCleaner cacheCleaner;
 
     @BeforeAll
-    public static void initBeforeAll() throws IOException {
+    static void initBeforeAll() throws IOException {
         lotlLocations = new LinkedHashMap<>();
         pivotMap = new LinkedHashMap<>();
         keyStoreMap = new LinkedHashMap<>();
@@ -202,7 +202,7 @@ public class LOTLLocationRenewalTest {
 
     @ParameterizedTest(name = "OJ test {index} : {0} - {1} - {2}")
     @MethodSource("data")
-    public void test(String location, String pivotlUrl, String ojUrl, CertificateSource ojKeystore) {
+    void test(String location, String pivotlUrl, String ojUrl, CertificateSource ojKeystore) {
         HashMap<String, DSSDocument> cacheMap = getCacheMap();
         cacheMap.put(lotlLocationPath + location, pivotMap.get(pivotlUrl));
         fileLoader.setDataLoader(new MockDataLoader(cacheMap));

@@ -50,10 +50,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESSignLTALevelTest extends PKIFactoryAccess {
+class ASiCSCAdESSignLTALevelTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		
 		List<DSSDocument> documentsToSign = new ArrayList<>();
 		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));

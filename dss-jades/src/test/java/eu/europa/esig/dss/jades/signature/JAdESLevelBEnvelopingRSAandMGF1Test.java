@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class JAdESLevelBEnvelopingRSAandMGF1Test extends AbstractJAdESTestSignature {
+class JAdESLevelBEnvelopingRSAandMGF1Test extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private JAdESSignatureParameters signatureParameters;
@@ -63,7 +63,7 @@ public class JAdESLevelBEnvelopingRSAandMGF1Test extends AbstractJAdESTestSignat
 
 	@ParameterizedTest(name = "Combination {index} of RSA and PSS with digest algorithm {0}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo) {
+	void init(DigestAlgorithm digestAlgo) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
 		signatureParameters = new JAdESSignatureParameters();

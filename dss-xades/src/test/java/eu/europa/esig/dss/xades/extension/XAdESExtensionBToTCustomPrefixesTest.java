@@ -31,7 +31,7 @@ import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 
-public class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExtension {
+class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExtension {
 	
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {

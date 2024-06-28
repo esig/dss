@@ -35,10 +35,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EmailCheckTest extends AbstractTestCheck {
+class EmailCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validCheck() {
+    void validCheck() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("valid@email.com");
@@ -56,7 +56,7 @@ public class EmailCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidCheck() {
+    void invalidCheck() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("valid@email.com");

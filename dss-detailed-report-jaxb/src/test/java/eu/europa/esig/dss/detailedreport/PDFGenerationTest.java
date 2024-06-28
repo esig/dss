@@ -38,13 +38,13 @@ import java.io.FileOutputStream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PDFGenerationTest {
+class PDFGenerationTest {
 
 	private static FopFactory fopFactory;
 	private static FOUserAgent foUserAgent;
 
 	@BeforeAll
-	public static void init() throws Exception {
+	static void init() throws Exception {
 		FopFactoryBuilder builder = new FopFactoryBuilder(new File(".").toURI());
 		builder.setAccessibility(true);
 
@@ -56,37 +56,37 @@ public class PDFGenerationTest {
 	}
 
 	@Test
-	public void generateDetailedReport() throws Exception {
+	void generateDetailedReport() throws Exception {
 		createAndValidate("dr1.xml");
 	}
 
 	@Test
-	public void generateDetailedReport2() throws Exception {
+	void generateDetailedReport2() throws Exception {
 		createAndValidate("dr2.xml");
 	}
 
 	@Test
-	public void generateTstDetailedReport() throws Exception {
+	void generateTstDetailedReport() throws Exception {
 		createAndValidate("dr-tst.xml");
 	}
 
 	@Test
-	public void generateCertificateDetailedReport() throws Exception {
+	void generateCertificateDetailedReport() throws Exception {
 		createAndValidate("dr-cert.xml");
 	}
 
 	@Test
-	public void generateSigAndTstDetailedReport() throws Exception {
+	void generateSigAndTstDetailedReport() throws Exception {
 		createAndValidate("dr-sig-and-tst.xml");
 	}
 
 	@Test
-	public void generateSigAndErDetailedReport() throws Exception {
+	void generateSigAndErDetailedReport() throws Exception {
 		createAndValidate("dr-sig-lt-and-er.xml");
 	}
 
 	@Test
-	public void generateErDetailedReport() throws Exception {
+	void generateErDetailedReport() throws Exception {
 		createAndValidate("dr-er.xml");
 	}
 	

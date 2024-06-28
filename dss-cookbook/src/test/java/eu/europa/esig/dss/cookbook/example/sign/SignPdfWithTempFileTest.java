@@ -41,10 +41,10 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignPdfWithTempFileTest extends CookbookTools {
+class SignPdfWithTempFileTest extends CookbookTools {
 
     @Test
-    public void signPAdESWithTempFile() throws Exception {
+    void signPAdESWithTempFile() throws Exception {
 
         String signedFileDestination = "target/signed.pdf";
 

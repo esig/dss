@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Sha2FileCacheDataLoaderTest {
+class Sha2FileCacheDataLoaderTest {
 
     private static Map<String, DSSDocument> urlMap;
 
@@ -61,7 +61,7 @@ public class Sha2FileCacheDataLoaderTest {
     private static File cacheDirectory;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         urlMap = new HashMap<>();
 
         urlMap.put("tl_ok.xml",
@@ -107,12 +107,12 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @AfterEach
-    public void reset() throws IOException {
+    void reset() throws IOException {
         Utils.cleanDirectory(cacheDirectory);
     }
 
     @Test
-    public void goodDocTest() {
+    void goodDocTest() {
         Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
         sha2FileCacheDataLoader.setPredicate(predicate);
 
@@ -143,7 +143,7 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
-    public void wrongDigestDocTest() {
+    void wrongDigestDocTest() {
         Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
         sha2FileCacheDataLoader.setPredicate(predicate);
 
@@ -161,7 +161,7 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
-    public void noSha2DocTest() {
+    void noSha2DocTest() {
         Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
         sha2FileCacheDataLoader.setPredicate(predicate);
 
@@ -179,7 +179,7 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
-    public void badExtensionDocTest() {
+    void badExtensionDocTest() {
         Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
         sha2FileCacheDataLoader.setPredicate(predicate);
 
@@ -197,7 +197,7 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
-    public void extensionNoDotDocTest() {
+    void extensionNoDotDocTest() {
         Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
         sha2FileCacheDataLoader.setPredicate(predicate);
 
@@ -215,7 +215,7 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
-    public void refreshTest() {
+    void refreshTest() {
         Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
         sha2FileCacheDataLoader.setPredicate(predicate);
 
@@ -247,7 +247,7 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
-    public void noRefreshTest() {
+    void noRefreshTest() {
         Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
         sha2FileCacheDataLoader.setPredicate(predicate);
 
@@ -278,7 +278,7 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
-    public void errorOnDownloadTest() {
+    void errorOnDownloadTest() {
         final HashMap<String, DSSDocument> urlMap = new HashMap<>();
         urlMap.put("tl_ok.xml",
                 new FileDocument("src/test/resources/sk-tl.xml"));
@@ -311,7 +311,7 @@ public class Sha2FileCacheDataLoaderTest {
     }
 
     @Test
-    public void nullTest() {
+    void nullTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> new Sha2FileCacheDataLoader().getDocument(null));
         assertEquals("DSSCacheFileLoader shall be provided!", exception.getMessage());
 

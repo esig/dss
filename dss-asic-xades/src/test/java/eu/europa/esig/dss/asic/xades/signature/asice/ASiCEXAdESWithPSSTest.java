@@ -45,14 +45,14 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
         signatureParameters = new ASiCWithXAdESSignatureParameters();

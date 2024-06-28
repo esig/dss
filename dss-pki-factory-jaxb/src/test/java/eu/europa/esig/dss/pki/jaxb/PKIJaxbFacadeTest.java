@@ -38,9 +38,9 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PKIJaxbFacadeTest extends AbstractTestJaxbPKI {
+class PKIJaxbFacadeTest extends AbstractTestJaxbPKI {
 
-    public static Stream<Arguments> data() {
+    static Stream<Arguments> data() {
         List<Arguments> dataToRun = new ArrayList<>();
         Collection<File> pkiFiles = Utils.listFiles(new File(XML_FOLDER), new String[]{"xml"}, false);
         for (File file : pkiFiles) {
@@ -51,7 +51,7 @@ public class PKIJaxbFacadeTest extends AbstractTestJaxbPKI {
 
     @ParameterizedTest(name = "PKI {index} : {0}")
     @MethodSource("data")
-    public void testUnmarshall(File pkiFile) throws XMLStreamException, JAXBException, IOException, SAXException {
+    void testUnmarshall(File pkiFile) throws XMLStreamException, JAXBException, IOException, SAXException {
         XmlPki xmlPki = PKIJaxbFacade.newFacade().unmarshall(pkiFile);
         assertNotNull(xmlPki);
         assertTrue(xmlPki.getCertificate().size() > 0);

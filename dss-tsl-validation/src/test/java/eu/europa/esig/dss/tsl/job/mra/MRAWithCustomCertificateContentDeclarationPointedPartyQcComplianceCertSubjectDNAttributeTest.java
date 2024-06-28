@@ -29,7 +29,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 
 import java.util.Arrays;
 
-public class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceCertSubjectDNAttributeTest extends AbstractMRALOTLTest {
+class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceCertSubjectDNAttributeTest extends AbstractMRALOTLTest {
 
     @Override
     protected Assert getCertificateContentDeclarationPointedPartyQcComplianceAssertStatus() {

@@ -41,15 +41,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class TrustedListFacadeTest {
+class TrustedListFacadeTest {
 
 	@Test
-	public void testTL() throws JAXBException, XMLStreamException, IOException, SAXException {
+	void testTL() throws JAXBException, XMLStreamException, IOException, SAXException {
 		marshallUnmarshall(new File("src/test/resources/tl.xml"));
 	}
 
 	@Test
-	public void testLOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
+	void testLOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
 		marshallUnmarshall(new File("src/test/resources/lotl.xml"));
 	}
 
@@ -65,7 +65,7 @@ public class TrustedListFacadeTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testMRA_LOTL_extract_withTrustedListFacade() throws JAXBException, XMLStreamException, IOException, SAXException {
+	void testMRA_LOTL_extract_withTrustedListFacade() throws JAXBException, XMLStreamException, IOException, SAXException {
 		TrustedListFacade facade = TrustedListFacade.newFacade();
 
 		TrustStatusListType trustStatusListType = facade

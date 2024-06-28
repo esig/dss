@@ -27,32 +27,32 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustServiceUsageConsistencyTest extends AbstractTrustServiceConsistencyTest {
+class TrustServiceUsageConsistencyTest extends AbstractTrustServiceConsistencyTest {
 
 	private TrustServiceCondition condition = new TrustServiceUsageConsistency();
 
 	@Test
-	public void testNoUsage() {
+	void testNoUsage() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testForEsigUsage() {
+	void testForEsigUsage() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_FOR_ESIG.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testForEsigAndEsealsUsage() {
+	void testForEsigAndEsealsUsage() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri()));
 		assertFalse(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testForEsigAndEsealsAndWsaUsage() {
+	void testForEsigAndEsealsAndWsaUsage() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(
 				ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_ESEAL.getUri(), ServiceQualification.QC_FOR_WSA.getUri()));

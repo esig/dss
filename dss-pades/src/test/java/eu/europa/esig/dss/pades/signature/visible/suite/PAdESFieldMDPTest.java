@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PAdESFieldMDPTest extends PKIFactoryAccess {
 
-    public static Stream<String> getParams() {
+    static Stream<String> getParams() {
 
         PAdESService service = new PAdESService(new CommonCertificateVerifier());
         DSSDocument documentToSign = new InMemoryDocument(PAdESFieldMDPTest.class.getResourceAsStream("/validation/dss-2554/fieldmdp-exclude.pdf"));

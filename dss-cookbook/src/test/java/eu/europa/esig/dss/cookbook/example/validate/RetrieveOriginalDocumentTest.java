@@ -36,13 +36,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RetrieveOriginalDocumentTest {
+class RetrieveOriginalDocumentTest {
 
 	@TempDir
 	static Path targetFolder;
 
 	@Test
-	public void getOriginalDocument() throws IOException {
+	void getOriginalDocument() throws IOException {
 
 		Path path = targetFolder.resolve("original.xml");
 		String targetPath = path.toString();

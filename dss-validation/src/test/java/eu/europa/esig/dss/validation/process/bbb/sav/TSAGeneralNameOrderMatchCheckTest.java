@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TSAGeneralNameOrderMatchCheckTest extends AbstractTestCheck {
+class TSAGeneralNameOrderMatchCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() throws Exception {
+    void valid() throws Exception {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();
@@ -62,7 +62,7 @@ public class TSAGeneralNameOrderMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void orderDoNotMatch() throws Exception {
+    void orderDoNotMatch() throws Exception {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();
@@ -85,7 +85,7 @@ public class TSAGeneralNameOrderMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() throws Exception {
+    void invalid() throws Exception {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();

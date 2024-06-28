@@ -50,13 +50,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class LOTLWithPivotsRefreshTest {
+class LOTLWithPivotsRefreshTest {
 
 	@TempDir
 	File cacheDirectory;
 
 	@Test
-	public void test() {
+	void test() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -74,7 +74,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
-	public void testMissingPivots() {
+	void testMissingPivots() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(missingUrlMap());
 
@@ -97,7 +97,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
-	public void testMissingCert() {
+	void testMissingCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -117,7 +117,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
-	public void testNoCertSource() {
+	void testNoCertSource() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -145,7 +145,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
-	public void testWrongCert() {
+	void testWrongCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 

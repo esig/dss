@@ -37,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class POEComparatorTest {
+class POEComparatorTest {
 	
 	@Test
-	public void test() {
+	void test() {
 		POEComparator comparator = new POEComparator();
 		
 		Calendar calendar = Calendar.getInstance();
@@ -89,7 +89,7 @@ public class POEComparatorTest {
 	}
 	
 	@Test
-	public void nullPointerTest() {
+	void nullPointerTest() {
 		Exception exception = assertThrows(NullPointerException.class, () -> new POE(null));
 		assertEquals("The controlTime must be defined!", exception.getMessage());
 		exception = assertThrows(NullPointerException.class, () -> new TimestampPOE(null));

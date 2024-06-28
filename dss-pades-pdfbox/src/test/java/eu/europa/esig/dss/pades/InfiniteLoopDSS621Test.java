@@ -78,14 +78,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class InfiniteLoopDSS621Test {
+class InfiniteLoopDSS621Test {
 
 	private static final Logger logger = LoggerFactory.getLogger(InfiniteLoopDSS621Test.class);
 
 	private static final String FILE_PATH = "/validation/pades-5-signatures-and-1-document-timestamp.pdf";
 
 	@Test
-	public void testReadTimestamp1() throws Exception {
+	void testReadTimestamp1() throws Exception {
         assertTimeout(ofMillis(6000), () -> {
         	DSSDocument signDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE_PATH));
     		final CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
@@ -140,7 +140,7 @@ public class InfiniteLoopDSS621Test {
 	 * These signatures are invalid because of non-ordered signed attributes
 	 */
 	@Test
-	public void manualTest() throws Exception {
+	void manualTest() throws Exception {
 
 		PDDocument document = PDDocument.load(getClass().getResourceAsStream(FILE_PATH));
 		try (InputStream is = getClass().getResourceAsStream(FILE_PATH)) {

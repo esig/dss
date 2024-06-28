@@ -23,7 +23,7 @@ package eu.europa.esig.dss.cades.extension;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class CAdESExtensionBToTWithCompositeTSATest extends AbstractCAdESTestExtension {
+class CAdESExtensionBToTWithCompositeTSATest extends AbstractCAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {

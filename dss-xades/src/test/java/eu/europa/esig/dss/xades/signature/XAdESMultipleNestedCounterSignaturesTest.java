@@ -39,12 +39,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XAdESMultipleNestedCounterSignaturesTest extends AbstractPkiFactoryTestValidation {
+class XAdESMultipleNestedCounterSignaturesTest extends AbstractPkiFactoryTestValidation {
 
 	private String signingAlias;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument doc = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());

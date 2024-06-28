@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESExtensionCompactBToTTest extends AbstractJAdESTestExtension {
+class JAdESExtensionCompactBToTTest extends AbstractJAdESTestExtension {
 
     @Override
     protected JAdESSignatureParameters getSignatureParameters() {

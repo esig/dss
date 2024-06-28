@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.NextUpdateCheck;
 
-public class NextUpdateCheckTest extends AbstractTestCheck {
+class NextUpdateCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void nextUpdateCheck() throws Exception {
+	void nextUpdateCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -56,7 +56,7 @@ public class NextUpdateCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedNextUpdateCheck() throws Exception {
+	void failedNextUpdateCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

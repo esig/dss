@@ -67,7 +67,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelCTest extends AbstractXAdESTestSignature {
+class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
 	protected CertificateVerifier certificateVerifier;
 	protected XAdESSignatureParameters signatureParameters;
@@ -75,7 +75,7 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

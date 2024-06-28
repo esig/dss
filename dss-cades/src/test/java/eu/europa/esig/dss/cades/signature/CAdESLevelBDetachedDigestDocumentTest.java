@@ -53,13 +53,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
+class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 	private static final String DOCUMENT_NAME = "test.text";
 	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA512;
 
 	@Test
-	public void testWithCompleteDocument() {
+	void testWithCompleteDocument() {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument completeDocument = getCompleteDocument();
@@ -81,7 +81,7 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testWithDigestDocument() {
+	void testWithDigestDocument() {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument digestDocument = getDigestDocument();
@@ -104,7 +104,7 @@ public class CAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testContentTstWithDigestDocument() {
+	void testContentTstWithDigestDocument() {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument digestDocument = getDigestDocument();

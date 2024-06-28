@@ -44,7 +44,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESLevelBInternallyDetachedWithInvalidXPathPlacementTest extends AbstractXAdESTestSignature {
+class XAdESLevelBInternallyDetachedWithInvalidXPathPlacementTest extends AbstractXAdESTestSignature {
 
     private static final DSSDocument DOC = new FileDocument(new File("src/test/resources/sample-with-id.xml"));
 
@@ -57,7 +57,7 @@ public class XAdESLevelBInternallyDetachedWithInvalidXPathPlacementTest extends 
     private XAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = DOC;
         service = new XAdESService(getOfflineCertificateVerifier());
         signatureParameters = initSignatureParameters();

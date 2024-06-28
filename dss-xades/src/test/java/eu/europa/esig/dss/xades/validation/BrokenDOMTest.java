@@ -29,10 +29,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BrokenDOMTest {
+class BrokenDOMTest {
 
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/broken-dom.xml");
 		Exception exception = assertThrows(IllegalInputException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertTrue(exception.getMessage().contains("An XML file is expected : Unable to parse content (XML expected)"));

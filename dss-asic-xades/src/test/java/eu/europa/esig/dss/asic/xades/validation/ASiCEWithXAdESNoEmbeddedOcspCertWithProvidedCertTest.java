@@ -40,7 +40,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class ASiCEWithXAdESNoEmbeddedOcspCertWithProvidedCertTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithXAdESNoEmbeddedOcspCertWithProvidedCertTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

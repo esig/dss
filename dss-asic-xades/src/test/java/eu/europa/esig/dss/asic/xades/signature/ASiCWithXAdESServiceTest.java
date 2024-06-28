@@ -52,14 +52,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
+class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
     private static CertificateVerifier certificateVerifier;
 	private static ASiCWithXAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello world!".getBytes());
         certificateVerifier = getCompleteCertificateVerifier();
         service = new ASiCWithXAdESService(certificateVerifier);
@@ -67,7 +67,7 @@ public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void signatureTest() throws Exception {
+	void signatureTest() throws Exception {
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
@@ -158,7 +158,7 @@ public class ASiCWithXAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extensionTest() throws IOException {
+	void extensionTest() throws IOException {
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);

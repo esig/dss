@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RevocationIssuedBeforeControlTimeCheckTest extends AbstractTestCheck {
+class RevocationIssuedBeforeControlTimeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validCheck() throws Exception {
+    void validCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -59,7 +59,7 @@ public class RevocationIssuedBeforeControlTimeCheckTest extends AbstractTestChec
     }
 
     @Test
-    public void invalidCheck() throws Exception {
+    void invalidCheck() throws Exception {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

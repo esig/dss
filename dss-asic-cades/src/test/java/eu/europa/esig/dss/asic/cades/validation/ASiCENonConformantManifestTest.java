@@ -34,7 +34,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class ASiCENonConformantManifestTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCENonConformantManifestTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

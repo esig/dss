@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SigningCertificateAttributePresentCheckTest extends AbstractTestCheck {
+class SigningCertificateAttributePresentCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signingCertificateAttributePresentCheck() throws Exception {
+	void signingCertificateAttributePresentCheck() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
@@ -71,7 +71,7 @@ public class SigningCertificateAttributePresentCheckTest extends AbstractTestChe
 	}
 
 	@Test
-	public void signingCertificateAttributeNotPresentCheck() throws Exception {
+	void signingCertificateAttributeNotPresentCheck() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 		

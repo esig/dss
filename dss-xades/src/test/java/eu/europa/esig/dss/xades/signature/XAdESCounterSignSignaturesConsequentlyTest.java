@@ -40,7 +40,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESCounterSignSignaturesConsequentlyTest extends AbstractXAdESCounterSignatureTest {
+class XAdESCounterSignSignaturesConsequentlyTest extends AbstractXAdESCounterSignatureTest {
 
     private final DSSDocument ORIGINAL_DOCUMENT = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -54,7 +54,7 @@ public class XAdESCounterSignSignaturesConsequentlyTest extends AbstractXAdESCou
     private XAdESCounterSignatureParameters counterSignatureParameters;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = ORIGINAL_DOCUMENT;

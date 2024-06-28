@@ -27,37 +27,37 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 
-public class EncryptionAlgorithmTest {
+class EncryptionAlgorithmTest {
 
 	@Test
-	public void forName() {
+	void forName() {
 		assertEquals(EncryptionAlgorithm.RSA, EncryptionAlgorithm.forName(EncryptionAlgorithm.RSA.getName()));
 	}
 
 	@Test
-	public void forNameException() {
+	void forNameException() {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> EncryptionAlgorithm.forName("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}
 
 	@Test
-	public void forNameSubstitution() {
+	void forNameSubstitution() {
 		assertEquals(EncryptionAlgorithm.RSA, EncryptionAlgorithm.forName("aaa", EncryptionAlgorithm.RSA));
 	}
 
 	@Test
-	public void forNameECDSA() {
+	void forNameECDSA() {
 		assertEquals(EncryptionAlgorithm.ECDSA, EncryptionAlgorithm.forName("EC"));
 		assertEquals(EncryptionAlgorithm.ECDSA, EncryptionAlgorithm.forName("ECC"));
 	}
 
 	@Test
-	public void forOID() {
+	void forOID() {
 		assertEquals(EncryptionAlgorithm.RSA, EncryptionAlgorithm.forOID(EncryptionAlgorithm.RSA.getOid()));
 	}
 
 	@Test
-	public void forOIDException() {
+	void forOIDException() {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> EncryptionAlgorithm.forOID("aaa"));
 		assertEquals("Unsupported algorithm: aaa", exception.getMessage());
 	}

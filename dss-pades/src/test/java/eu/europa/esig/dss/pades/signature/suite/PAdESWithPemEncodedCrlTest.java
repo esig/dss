@@ -67,7 +67,7 @@ public class PAdESWithPemEncodedCrlTest extends AbstractPAdESTestSignature {
 	}
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(PAdESTwoSignersLTALevelTest.class.getResourceAsStream("/sample.pdf"));
 		
 		signatureParameters = new PAdESSignatureParameters();
@@ -80,7 +80,7 @@ public class PAdESWithPemEncodedCrlTest extends AbstractPAdESTestSignature {
 
 	@ParameterizedTest(name = "SignatureLevel {index} : {0}")
 	@MethodSource("data")
-	public void test(SignatureLevel level) {
+	void test(SignatureLevel level) {
 		signatureParameters.setSignatureLevel(level);
 		super.signAndVerify();
 	}

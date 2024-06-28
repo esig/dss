@@ -43,10 +43,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignPdfWithExternalCmsTest extends CookbookTools {
+class SignPdfWithExternalCmsTest extends CookbookTools {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         preparePdfDoc();
 
         // tag::demo-pdf-sign[]

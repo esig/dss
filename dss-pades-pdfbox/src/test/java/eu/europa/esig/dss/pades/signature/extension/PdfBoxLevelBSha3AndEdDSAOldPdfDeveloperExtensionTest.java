@@ -26,7 +26,7 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 
 import java.io.IOException;
 
-public class PdfBoxLevelBSha3AndEdDSAOldPdfDeveloperExtensionTest extends PAdESLevelBSha3AndEdDSAOldPdfDeveloperExtensionTest {
+class PdfBoxLevelBSha3AndEdDSAOldPdfDeveloperExtensionTest extends PAdESLevelBSha3AndEdDSAOldPdfDeveloperExtensionTest {
 
     @Override
     protected PdfDocumentReader getDocumentReader(DSSDocument document) throws IOException {

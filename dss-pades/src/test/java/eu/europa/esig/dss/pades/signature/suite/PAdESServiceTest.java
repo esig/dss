@@ -68,7 +68,7 @@ public class PAdESServiceTest extends PKIFactoryAccess {
 	private static PAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
         certificateVerifier = getCompleteCertificateVerifier();
         service = new PAdESService(certificateVerifier);
@@ -76,7 +76,7 @@ public class PAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void testSignature() throws Exception {
+	void testSignature() throws Exception {
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
@@ -248,7 +248,7 @@ public class PAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void testExtension() throws IOException {
+	void testExtension() throws IOException {
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

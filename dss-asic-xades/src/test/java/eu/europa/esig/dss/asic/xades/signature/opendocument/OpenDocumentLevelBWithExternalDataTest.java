@@ -43,7 +43,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocumentTestSignature {
+class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocumentTestSignature {
 
 	private DSSDocument fileToTest;
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
@@ -57,7 +57,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 	}
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		fileToTest = new FileDocument(new File("src/test/resources/signable/open-document-external-data.odt"));
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -73,7 +73,7 @@ public class OpenDocumentLevelBWithExternalDataTest extends AbstractOpenDocument
 
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void test(DSSDocument fileToTest) {
+	void test(DSSDocument fileToTest) {
 		this.fileToTest = fileToTest;
 
 		super.signAndVerify();

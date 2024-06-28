@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEXAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiCWithXAdESTestValidation {
 
 	private static final String SIGNATURE_POLICY_ID = "urn:sbr:signature-policy";
 	private static final DSSDocument POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
@@ -57,7 +57,7 @@ public class ASiCEXAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 	private String signingAlias = GOOD_USER;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

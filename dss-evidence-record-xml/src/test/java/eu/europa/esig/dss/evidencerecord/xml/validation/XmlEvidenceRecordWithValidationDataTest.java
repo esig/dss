@@ -39,7 +39,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XmlEvidenceRecordWithValidationDataTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordWithValidationDataTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

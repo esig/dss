@@ -27,12 +27,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServiceConsistencyTest {
+class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServiceConsistencyTest {
 
     private TrustServiceCondition condition = new TrustServiceQSCDPostEIDASConsistency();
 
     @Test
-    public void postEidasQscdTest() {
+    void postEidasQscdTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_WITH_QSCD.getUri()));
@@ -40,7 +40,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void postEidasNoQscdTest() {
+    void postEidasNoQscdTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_NO_QSCD.getUri()));
@@ -48,7 +48,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void postEidasSscdTest() {
+    void postEidasSscdTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_WITH_SSCD.getUri()));
@@ -56,7 +56,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void postEidasNoSscdTest() {
+    void postEidasNoSscdTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_NO_SSCD.getUri()));
@@ -64,7 +64,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void postEidasQscdCombinationTest() {
+    void postEidasQscdCombinationTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_WITH_SSCD.getUri(), ServiceQualification.QC_WITH_QSCD.getUri()));
@@ -72,7 +72,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void postEidasNoQscdCombinationTest() {
+    void postEidasNoQscdCombinationTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_NO_SSCD.getUri(), ServiceQualification.QC_NO_QSCD.getUri()));
@@ -80,7 +80,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void preEidasQscdTest() {
+    void preEidasQscdTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_WITH_QSCD.getUri()));
@@ -88,7 +88,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void preEidasNoQscdTest() {
+    void preEidasNoQscdTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_NO_QSCD.getUri()));
@@ -96,7 +96,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void preEidasSscdTest() {
+    void preEidasSscdTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_WITH_SSCD.getUri()));
@@ -104,7 +104,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void preEidasNoSscdTest() {
+    void preEidasNoSscdTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_NO_SSCD.getUri()));
@@ -112,7 +112,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void preEidasQscdCombinationTest() {
+    void preEidasQscdCombinationTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_WITH_SSCD.getUri(), ServiceQualification.QC_WITH_QSCD.getUri()));
@@ -120,7 +120,7 @@ public class TrustServiceQSCDPostEIDASConsistencyTest extends AbstractTrustServi
     }
 
     @Test
-    public void preEidasNoQscdCombinationTest() {
+    void preEidasNoQscdCombinationTest() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_NO_SSCD.getUri(), ServiceQualification.QC_NO_QSCD.getUri()));

@@ -58,14 +58,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class DSS2058Test extends AbstractXAdESTestValidation {
+class DSS2058Test extends AbstractXAdESTestValidation {
 
     private DSSDocument extendedDocument;
 
     private CommonCertificateSource adjunctCertSource;
 
     @BeforeEach
-    public void init() {
+    void init() {
         DSSDocument dssDocument = new FileDocument("src/test/resources/validation/OJ_C_2017_173_FULL.xml");
 
         CertificateVerifier completeCertificateVerifier = getCompositeCertificateVerifier();

@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelCAllSelfSignedTest extends XAdESLevelCTest {
+class XAdESLevelCAllSelfSignedTest extends XAdESLevelCTest {
 
     @Test
     @Override

@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AnnotationChangesCheckTest extends AbstractTestCheck {
+class AnnotationChangesCheckTest extends AbstractTestCheck {
 
     @Test
-    public void noChangesTest() {
+    void noChangesTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         LevelConstraint constraint = new LevelConstraint();
@@ -57,7 +57,7 @@ public class AnnotationChangesCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void identifiedChangesTest() {
+    void identifiedChangesTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlModificationDetection modificationDetection = new XmlModificationDetection();
@@ -81,7 +81,7 @@ public class AnnotationChangesCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void annotationChangesTest() {
+    void annotationChangesTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlModificationDetection modificationDetection = new XmlModificationDetection();

@@ -28,7 +28,7 @@ import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS2517DataObjectFormatNoMimeTypeTest extends AbstractXAdESTestValidation {
+class DSS2517DataObjectFormatNoMimeTypeTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -55,14 +55,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESServiceTest extends PKIFactoryAccess {
+class CAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
     private static CertificateVerifier certificateVerifier;
 	private static CAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello world!".getBytes());
         certificateVerifier = getCompleteCertificateVerifier();
         service = new CAdESService(certificateVerifier);
@@ -70,7 +70,7 @@ public class CAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void signatureTest() throws Exception {
+	void signatureTest() throws Exception {
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
@@ -172,7 +172,7 @@ public class CAdESServiceTest extends PKIFactoryAccess {
     }
 
 	@Test
-	public void extensionTest() {
+	void extensionTest() {
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -203,7 +203,7 @@ public class CAdESServiceTest extends PKIFactoryAccess {
 	}
 
     @Test
-    public void addSignaturePolicyStoreTest() {
+    void addSignaturePolicyStoreTest() {
         CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

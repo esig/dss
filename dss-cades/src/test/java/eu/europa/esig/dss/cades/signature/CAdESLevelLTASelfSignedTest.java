@@ -30,14 +30,14 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
 
-public class CAdESLevelLTASelfSignedTest extends AbstractCAdESTestSignature {
+class CAdESLevelLTASelfSignedTest extends AbstractCAdESTestSignature {
 
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
     private CAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello World".getBytes());
 
         signatureParameters = new CAdESSignatureParameters();

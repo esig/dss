@@ -36,13 +36,13 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 
-public class ASiCSXAdESAddSignaturePolicyStoreCAdESTest extends PKIFactoryAccess {
+class ASiCSXAdESAddSignaturePolicyStoreCAdESTest extends PKIFactoryAccess {
 
 	private static final String SIGNATURE_POLICY_ID = "urn:sbr:signature-policy";
 	private static final DSSDocument POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
 
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument documentToSign = new FileDocument("src/test/resources/signable/asic_cades.zip");
 
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();

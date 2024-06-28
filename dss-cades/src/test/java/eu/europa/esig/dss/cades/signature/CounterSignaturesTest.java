@@ -47,12 +47,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation {
+class CounterSignaturesTest extends AbstractPkiFactoryTestValidation {
 
 	private String signingAlias;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument doc = new InMemoryDocument("Hello".getBytes());
 
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());

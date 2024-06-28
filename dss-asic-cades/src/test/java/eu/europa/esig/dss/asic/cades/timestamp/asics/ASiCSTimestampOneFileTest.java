@@ -54,10 +54,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
+class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

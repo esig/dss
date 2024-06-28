@@ -35,7 +35,7 @@ import java.util.zip.ZipFile;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCEXAdESSignatureFilenameTest extends ASiCEXAdESLevelBTest {
+class ASiCEXAdESSignatureFilenameTest extends ASiCEXAdESLevelBTest {
 
 	private DSSDocument documentToSign;
 
@@ -43,7 +43,7 @@ public class ASiCEXAdESSignatureFilenameTest extends ASiCEXAdESLevelBTest {
 	static Path temporaryFolder;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 	}
 

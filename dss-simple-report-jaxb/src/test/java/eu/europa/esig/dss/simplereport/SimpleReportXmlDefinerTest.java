@@ -32,22 +32,22 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 
-public class SimpleReportXmlDefinerTest {
+class SimpleReportXmlDefinerTest {
 
 	@Test
-	public void getJAXBContext() throws SAXException, JAXBException {
+	void getJAXBContext() throws SAXException, JAXBException {
 		assertNotNull(SimpleReportXmlDefiner.getJAXBContext());
 		assertNotNull(SimpleReportXmlDefiner.getJAXBContext());
 	}
 
 	@Test
-	public void getSchema() throws SAXException, IOException {
+	void getSchema() throws SAXException, IOException {
 		assertNotNull(SimpleReportXmlDefiner.getSchema());
 		assertNotNull(SimpleReportXmlDefiner.getSchema());
 	}
 
 	@Test
-	public void getHtmlBootstrap4Templates() throws IOException, TransformerConfigurationException {
+	void getHtmlBootstrap4Templates() throws IOException, TransformerConfigurationException {
 		Templates htmlTemplates = SimpleReportXmlDefiner.getHtmlBootstrap4Templates();
 		assertNotNull(htmlTemplates);
 		assertNotNull(htmlTemplates.newTransformer());
@@ -56,7 +56,7 @@ public class SimpleReportXmlDefinerTest {
 	}
 
 	@Test
-	public void getPdfTemplates() throws IOException, TransformerConfigurationException {
+	void getPdfTemplates() throws IOException, TransformerConfigurationException {
 		Templates htmlTemplates = SimpleReportXmlDefiner.getPdfTemplates();
 		assertNotNull(htmlTemplates);
 		assertNotNull(htmlTemplates.newTransformer());

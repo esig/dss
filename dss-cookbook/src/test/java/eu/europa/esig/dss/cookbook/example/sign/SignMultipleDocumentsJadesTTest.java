@@ -41,12 +41,12 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignMultipleDocumentsJadesTTest extends CookbookTools {
+class SignMultipleDocumentsJadesTTest extends CookbookTools {
 
     private List<DSSDocument> documentsToBeSigned;
 
     @Test
-    public void sign() throws Exception {
+    void sign() throws Exception {
 
         // Get a token connection based on a pkcs12 file commonly used to store
         // private

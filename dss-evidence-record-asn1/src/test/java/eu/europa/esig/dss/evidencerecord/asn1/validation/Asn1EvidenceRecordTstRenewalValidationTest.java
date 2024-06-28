@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import java.util.Arrays;
 import java.util.List;
 
-public class Asn1EvidenceRecordTstRenewalValidationTest extends AbstractAsn1EvidenceRecordTestValidation {
+class Asn1EvidenceRecordTstRenewalValidationTest extends AbstractAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

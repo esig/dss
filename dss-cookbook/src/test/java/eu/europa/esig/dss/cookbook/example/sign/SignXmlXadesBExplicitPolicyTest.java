@@ -43,10 +43,10 @@ import org.junit.jupiter.api.Test;
 /**
  * How to set explicit policy.
  */
-public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
+class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 
 	@Test
-	public void testWithExplicitPolicy() throws Exception {
+	void testWithExplicitPolicy() throws Exception {
 
 		prepareXmlDoc();
 

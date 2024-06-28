@@ -34,14 +34,14 @@ import org.junit.jupiter.api.BeforeEach;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.io.File;
 
-public class XAdESXPathPlacementWithEmptyNamespaceTest extends AbstractXAdESTestSignature {
+class XAdESXPathPlacementWithEmptyNamespaceTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample-oasis.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

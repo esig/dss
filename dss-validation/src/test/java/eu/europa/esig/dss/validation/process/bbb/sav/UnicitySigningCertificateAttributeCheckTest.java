@@ -42,10 +42,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class UnicitySigningCertificateAttributeCheckTest extends AbstractTestCheck {
+class UnicitySigningCertificateAttributeCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void singleSigningCertRefAttributePresentCheck() throws Exception {
+	void singleSigningCertRefAttributePresentCheck() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
@@ -73,7 +73,7 @@ public class UnicitySigningCertificateAttributeCheckTest extends AbstractTestChe
 	}
 
 	@Test
-	public void noSigningCertRefAttributePresentCheck() throws Exception {
+	void noSigningCertRefAttributePresentCheck() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS);
 		
@@ -101,7 +101,7 @@ public class UnicitySigningCertificateAttributeCheckTest extends AbstractTestChe
 	}
 	
 	@Test
-	public void multipleSigningCertRefAttributePresentCheck() throws Exception {
+	void multipleSigningCertRefAttributePresentCheck() throws Exception {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		

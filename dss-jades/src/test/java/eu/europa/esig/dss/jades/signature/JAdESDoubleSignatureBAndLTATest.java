@@ -41,7 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESDoubleSignatureBAndLTATest extends AbstractJAdESTestSignature {
+class JAdESDoubleSignatureBAndLTATest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private DSSDocument originalDocument;
@@ -52,7 +52,7 @@ public class JAdESDoubleSignatureBAndLTATest extends AbstractJAdESTestSignature 
     private String firstSignatureId;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

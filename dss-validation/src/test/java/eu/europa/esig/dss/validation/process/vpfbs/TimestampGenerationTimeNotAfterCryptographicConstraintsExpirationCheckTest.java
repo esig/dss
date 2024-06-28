@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheckTest extends AbstractTestCheck {
+class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         Date cryptoNotAfter = new Date();
 
         Calendar calendar = Calendar.getInstance();
@@ -69,7 +69,7 @@ public class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCh
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         Date cryptoNotAfter = new Date();
 
         Calendar calendar = Calendar.getInstance();
@@ -97,7 +97,7 @@ public class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCh
     }
 
     @Test
-    public void nullTest() {
+    void nullTest() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.MONTH, 1);

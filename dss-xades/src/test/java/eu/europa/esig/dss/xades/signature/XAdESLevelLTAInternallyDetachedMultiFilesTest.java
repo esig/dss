@@ -45,14 +45,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class XAdESLevelLTAInternallyDetachedMultiFilesTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class XAdESLevelLTAInternallyDetachedMultiFilesTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private XAdESService service;
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 
 // See DSS-2679
 @Tag("slow")
-public class XAdESSignDocumentsConsequentlyTest extends AbstractXAdESTestSignature {
+class XAdESSignDocumentsConsequentlyTest extends AbstractXAdESTestSignature {
 
     private static XAdESSignatureParameters signatureParameters;
     private static DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
@@ -55,7 +55,7 @@ public class XAdESSignDocumentsConsequentlyTest extends AbstractXAdESTestSignatu
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new XAdESService(certificateVerifier);
 
@@ -91,7 +91,7 @@ public class XAdESSignDocumentsConsequentlyTest extends AbstractXAdESTestSignatu
 
     @ParameterizedTest(name = "Sign XAdES {index} : {0} - {1} - {2} - {3}")
     @MethodSource("data")
-    public void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
+    void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

@@ -48,7 +48,7 @@ public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
 		
 		parameters = new PAdESSignatureParameters();
@@ -62,21 +62,21 @@ public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void bLevelTest() {
+	void bLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         DSSDocument signedDocument = sign();
         assertNotNull(signedDocument);
 	}
 
 	@Test
-	public void tLevelTest() {
+	void tLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
         DSSDocument signedDocument = sign();
         assertNotNull(signedDocument);
 	}
 
 	@Test
-	public void ltLevelTest() {
+	void ltLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
@@ -91,7 +91,7 @@ public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void ltaLevelTest() {
+	void ltaLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);

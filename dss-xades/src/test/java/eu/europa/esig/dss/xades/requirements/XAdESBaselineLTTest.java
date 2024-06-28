@@ -25,11 +25,11 @@ import org.junit.jupiter.api.BeforeEach;
 
 import javax.xml.xpath.XPathExpressionException;
 
-public class XAdESBaselineLTTest extends XAdESBaselineTTest {
+class XAdESBaselineLTTest extends XAdESBaselineTTest {
 
 	@BeforeEach
 	@Override
-	public void init() throws Exception {
+	void init() throws Exception {
 		super.init();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 	}
@@ -37,7 +37,7 @@ public class XAdESBaselineLTTest extends XAdESBaselineTTest {
 	/**
 	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
 	 */
-	public void checkUnsignedProperties() throws XPathExpressionException {
+	protected void checkUnsignedProperties() throws XPathExpressionException {
 		super.checkUnsignedProperties();
 
 		checkCertificateValuesPresent();

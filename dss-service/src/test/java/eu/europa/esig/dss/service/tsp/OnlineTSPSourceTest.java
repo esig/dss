@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OnlineTSPSourceTest extends OnlineSourceTest {
+class OnlineTSPSourceTest extends OnlineSourceTest {
 
 	private static final String TSA_URL = ONLINE_PKI_HOST + "/tsa/good-tsa";
 	private static final String ED25519_TSA_URL = ONLINE_PKI_HOST + "/tsa/Ed25519-good-tsa";
@@ -57,7 +57,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	private static final String CUSTOM_TIMEOUT_TSA_URL = ONLINE_PKI_HOST + "/tsa/timeout/%s/good-tsa";
 
 	@Test
-	public void testWithoutNonce() throws Exception {
+	void testWithoutNonce() throws Exception {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
@@ -72,7 +72,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void error500() {
+	void error500() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(ERROR_500_TSA_URL);
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
@@ -88,7 +88,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void invalidSignature() throws Exception {
+	void invalidSignature() throws Exception {
 		OnlineTSPSource tspSource = new OnlineTSPSource(INVALID_SIG_TSA_URL);
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
@@ -103,7 +103,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void timeout() throws Exception {
+	void timeout() throws Exception {
 		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
 		timestampDataLoader.setTimeoutResponse(1000); // 1 second
 		OnlineTSPSource tspSource = new OnlineTSPSource(TIMEOUT_TSA_URL, timestampDataLoader);
@@ -113,7 +113,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void timeoutCustom() throws Exception {
+	void timeoutCustom() throws Exception {
 		TimestampDataLoader timestampDataLoader = new TimestampDataLoader();
 		timestampDataLoader.setTimeoutResponse(1000); // 1 second
 
@@ -136,7 +136,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
     @Test
-    public void composite() {
+    void composite() {
         OnlineTSPSource errorTspSource = new OnlineTSPSource(ERROR_500_TSA_URL);
         OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 
@@ -152,7 +152,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
     }
 
 	@Test
-	public void testEd25519WithoutNonce() {
+	void testEd25519WithoutNonce() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(ED25519_TSA_URL, new TimestampDataLoader());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
@@ -162,7 +162,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Disabled("Content-type is required")
-	public void testWithCommonDataLoader() {
+	void testWithCommonDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL, new CommonsDataLoader());
 
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA1, "Hello world".getBytes());
@@ -172,7 +172,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testWithTimestampDataLoader() {
+	void testWithTimestampDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource("http://demo.sk.ee/tsa/");
 		tspSource.setPolicyOid("0.4.0.2023.1.1");
         TimestampDataLoader dataLoader = new TimestampDataLoader();
@@ -186,7 +186,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Disabled("Content-type is required")
-	public void testWithNativeHTTPDataLoader() {
+	void testWithNativeHTTPDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 		tspSource.setDataLoader(new NativeHTTPDataLoader());
 
@@ -197,7 +197,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testWithNonce() {
+	void testWithNonce() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 		tspSource.setNonceSource(new SecureRandomNonceSource());
 
@@ -208,7 +208,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testNotTSA() {
+	void testNotTSA() {
 		OnlineTSPSource tspSource = new OnlineTSPSource();
 		tspSource.setTspServer("http://www.google.com");
 
@@ -220,7 +220,7 @@ public class OnlineTSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testNullDataLoader() {
+	void testNullDataLoader() {
 		OnlineTSPSource tspSource = new OnlineTSPSource(TSA_URL);
 		tspSource.setDataLoader(null);
 

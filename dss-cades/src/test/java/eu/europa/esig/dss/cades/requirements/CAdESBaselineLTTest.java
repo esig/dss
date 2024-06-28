@@ -30,7 +30,7 @@ import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class CAdESBaselineLTTest extends AbstractCAdESRequirementChecks {
+class CAdESBaselineLTTest extends AbstractCAdESRequirementChecks {
 
 	@Override
 	protected CAdESSignatureParameters getSignatureParameters() {
@@ -46,44 +46,39 @@ public class CAdESBaselineLTTest extends AbstractCAdESRequirementChecks {
 	}
 
 	@Override
-	public void checkCertificateValue(SignerInfo signerInfo) {
+	protected void checkCertificateValue(SignerInfo signerInfo) {
 		assertFalse(isUnsignedAttributeFound(signerInfo, PKCSObjectIdentifiers.id_aa_ets_certValues));
 	}
 
 	@Override
-	public void checkCompleteCertificateReference(SignerInfo signerInfo) {
+	protected void checkCompleteCertificateReference(SignerInfo signerInfo) {
 		assertFalse(isUnsignedAttributeFound(signerInfo, PKCSObjectIdentifiers.id_aa_ets_certificateRefs));
 	}
 
 	@Override
-	public void checkRevocationValues(SignerInfo signerInfo) {
+	protected void checkRevocationValues(SignerInfo signerInfo) {
 		assertFalse(isUnsignedAttributeFound(signerInfo, PKCSObjectIdentifiers.id_aa_ets_revocationValues));
 	}
 
 	@Override
-	public void checkCompleteRevocationReferences(SignerInfo signerInfo) {
+	protected void checkCompleteRevocationReferences(SignerInfo signerInfo) {
 		assertFalse(isUnsignedAttributeFound(signerInfo, PKCSObjectIdentifiers.id_aa_ets_revocationRefs));
 	}
 
 	@Override
-	public void checkCAdESCTimestamp(SignerInfo signerInfo) {
+	protected void checkCAdESCTimestamp(SignerInfo signerInfo) {
 		assertFalse(isUnsignedAttributeFound(signerInfo, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp));
 	}
 
 	@Override
-	public void checkTimestampedCertsCrlsReferences(SignerInfo signerInfo) {
+	protected void checkTimestampedCertsCrlsReferences(SignerInfo signerInfo) {
 		assertFalse(isUnsignedAttributeFound(signerInfo, PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp));
 	}
 
 	@Override
-	public void checkArchiveTimeStampV3(SignerInfo signerInfo) {
+	protected void checkArchiveTimeStampV3(SignerInfo signerInfo) {
 		int counter = countUnsignedAttribute(signerInfo, OID.id_aa_ets_archiveTimestampV3);
 		assertEquals(0, counter);
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
 	}
 
 }

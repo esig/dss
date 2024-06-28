@@ -41,7 +41,7 @@ public class PAdESLevelBEncryptedDocumentTest extends AbstractPAdESTestSignature
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/protected/restricted_fields.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();

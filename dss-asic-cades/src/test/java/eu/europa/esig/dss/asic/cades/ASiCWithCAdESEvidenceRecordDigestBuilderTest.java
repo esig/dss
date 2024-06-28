@@ -41,10 +41,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
+class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
 
     @Test
-    public void asicsWithXMLERSOneFileTest() {
+    void asicsWithXMLERSOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asics");
         ASiCEvidenceRecordDigestBuilder asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document);
 
@@ -85,7 +85,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void asicsWithERSOneFileTest() {
+    void asicsWithERSOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asics");
         ASiCEvidenceRecordDigestBuilder asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new ASN1EvidenceRecordDataObjectDigestBuilderFactory());
@@ -117,7 +117,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void asiceWithXMLERSOneFileTest() {
+    void asiceWithXMLERSOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asice");
         ASiCEvidenceRecordDigestBuilder asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new XMLEvidenceRecordDataObjectDigestBuilderFactory());
@@ -135,7 +135,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void asiceWithERSOneFileTest() {
+    void asiceWithERSOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asice");
         ASiCEvidenceRecordDigestBuilder asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new ASN1EvidenceRecordDataObjectDigestBuilderFactory());
@@ -153,7 +153,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void asicsWithXMLERSMultiFilesTest() {
+    void asicsWithXMLERSMultiFilesTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asics");
         ASiCEvidenceRecordDigestBuilder asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new XMLEvidenceRecordDataObjectDigestBuilderFactory());
@@ -171,7 +171,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void asicsWithERSMultiFilesTest() {
+    void asicsWithERSMultiFilesTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asics");
         ASiCEvidenceRecordDigestBuilder asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new ASN1EvidenceRecordDataObjectDigestBuilderFactory());
@@ -189,7 +189,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void asiceWithXMLERSMultiFilesTest() {
+    void asiceWithXMLERSMultiFilesTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asice");
         ASiCEvidenceRecordDigestBuilder asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new XMLEvidenceRecordDataObjectDigestBuilderFactory());
@@ -209,7 +209,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void asiceWithERSMultiFilesTest() {
+    void asiceWithERSMultiFilesTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asice");
         ASiCEvidenceRecordDigestBuilder asicEvidenceRecordDigestBuilder = new ASiCEvidenceRecordDigestBuilder(document);
         asicEvidenceRecordDigestBuilder.setDataObjectDigestBuilderFactory(new ASN1EvidenceRecordDataObjectDigestBuilderFactory());
@@ -229,7 +229,7 @@ public class ASiCWithCAdESEvidenceRecordDigestBuilderTest {
     }
 
     @Test
-    public void asicWithOpenDocumentTest() {
+    void asicWithOpenDocumentTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/open-document-signed.odt");
         Exception exception = assertThrows(IllegalInputException.class, () -> new ASiCEvidenceRecordDigestBuilder(document));
         assertEquals("Unsupported ASiC or document type! Returned error : Document format not recognized/handled",

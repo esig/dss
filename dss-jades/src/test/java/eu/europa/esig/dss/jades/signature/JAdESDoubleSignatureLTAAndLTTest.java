@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESDoubleSignatureLTAAndLTTest extends AbstractJAdESTestSignature {
+class JAdESDoubleSignatureLTAAndLTTest extends AbstractJAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -54,7 +54,7 @@ public class JAdESDoubleSignatureLTAAndLTTest extends AbstractJAdESTestSignature
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
         service = new JAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());

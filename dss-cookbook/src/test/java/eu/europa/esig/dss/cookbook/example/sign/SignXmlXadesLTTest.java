@@ -49,10 +49,10 @@ import java.io.File;
 /**
  * How to sign with XAdES-BASELINE-LT
  */
-public class SignXmlXadesLTTest extends CookbookTools {
+class SignXmlXadesLTTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineLT() throws Exception {
+	void signXAdESBaselineLT() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

@@ -31,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCWithCAdESContainerExtractorTest {
+class ASiCWithCAdESContainerExtractorTest {
 
     @Test
-    public void asicsWithOneFileTest() {
+    void asicsWithOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asics");
 
         ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
@@ -69,7 +69,7 @@ public class ASiCWithCAdESContainerExtractorTest {
     }
 
     @Test
-    public void asiceWithOneFileTest() {
+    void asiceWithOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asice");
 
         ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
@@ -104,7 +104,7 @@ public class ASiCWithCAdESContainerExtractorTest {
     }
 
     @Test
-    public void asicsWithMultiFilesTest() {
+    void asicsWithMultiFilesTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asics");
 
         ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
@@ -139,7 +139,7 @@ public class ASiCWithCAdESContainerExtractorTest {
     }
 
     @Test
-    public void asiceWithMultiFilesTest() {
+    void asiceWithMultiFilesTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asice");
 
         ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
@@ -174,7 +174,7 @@ public class ASiCWithCAdESContainerExtractorTest {
     }
 
     @Test
-    public void openDocumentTest() {
+    void openDocumentTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/open-document-signed.odt");
 
         ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
@@ -197,7 +197,7 @@ public class ASiCWithCAdESContainerExtractorTest {
     }
 
     @Test
-    public void asiceLtaTest() {
+    void asiceLtaTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/ASiC-E-CAdES-BpLTA.sce");
 
         ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
@@ -232,7 +232,7 @@ public class ASiCWithCAdESContainerExtractorTest {
     }
 
     @Test
-    public void asicWithErTest() {
+    void asicWithErTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidencerecord/cades-lt-with-er.sce");
 
         ASiCWithCAdESContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);

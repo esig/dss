@@ -138,6 +138,6 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class, PAdESLevelLTWithVRIDictTest.class,
 		PAdESDoubleSignatureLTWithVRIAndLTTest.class, PAdESDoubleSignatureLTAndLTWithVRITest.class, PAdESLevelBNonPdfDocumentTest.class,
 		PAdESWithMGF1Test.class, PAdESLevelBEnvelopedRSASSAPSSTest.class, PAdESLevelBEnvelopedNONEWithRSASSAPSSTest.class })
-public class ITextPAdESSignatureSuiteTest {
+class ITextPAdESSignatureSuiteTest {
 
 }

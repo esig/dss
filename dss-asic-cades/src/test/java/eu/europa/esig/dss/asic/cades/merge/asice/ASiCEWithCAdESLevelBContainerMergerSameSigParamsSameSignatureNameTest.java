@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class ASiCEWithCAdESLevelBContainerMergerSameSigParamsSameSignatureNameTest extends AbstractWithCAdESTestMerge {
+class ASiCEWithCAdESLevelBContainerMergerSameSigParamsSameSignatureNameTest extends AbstractWithCAdESTestMerge {
 
     private DSSDocument documentToSign;
 
@@ -45,7 +45,7 @@ public class ASiCEWithCAdESLevelBContainerMergerSameSigParamsSameSignatureNameTe
     private ASiCWithCAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument("src/test/resources/signable/test.txt");
 
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());

@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBWithCommonCommitmentTypeOidAsUriTest extends AbstractXAdESTestSignature {
+class XAdESLevelBWithCommonCommitmentTypeOidAsUriTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -47,7 +47,7 @@ public class XAdESLevelBWithCommonCommitmentTypeOidAsUriTest extends AbstractXAd
     private CommonCommitmentType commitmentType;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new XAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

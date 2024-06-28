@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESSignDetachedCompactSignatureTest extends AbstractJAdESTestSignature {
+class JAdESSignDetachedCompactSignatureTest extends AbstractJAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -53,7 +53,7 @@ public class JAdESSignDetachedCompactSignatureTest extends AbstractJAdESTestSign
     private JAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         service = new JAdESService(getCompleteCertificateVerifier());
 
         originalDocument = new FileDocument(new File("src/test/resources/sample.json"));

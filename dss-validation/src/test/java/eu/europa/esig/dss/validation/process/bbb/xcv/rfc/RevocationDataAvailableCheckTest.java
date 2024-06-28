@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 
-public class RevocationDataAvailableCheckTest extends AbstractTestCheck {
+class RevocationDataAvailableCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void revocationDataAvailableCheck() throws Exception {
+	void revocationDataAvailableCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		
@@ -58,7 +58,7 @@ public class RevocationDataAvailableCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedRevocationDataAvailableCheck() throws Exception {
+	void failedRevocationDataAvailableCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		

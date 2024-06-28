@@ -35,10 +35,10 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XMLEvidenceRecordDataObjectDigestBuilderTest {
+class XMLEvidenceRecordDataObjectDigestBuilderTest {
 
     @Test
-    public void testBinaryData() {
+    void testBinaryData() {
         byte[] data = "Hello world!".getBytes(StandardCharsets.UTF_8);
 
         assertEquals("C0535E4BE2B79FFD93291305436BF889314E4A3FAEC05ECFFCBB7DF31AD9E51A",
@@ -66,7 +66,7 @@ public class XMLEvidenceRecordDataObjectDigestBuilderTest {
     }
 
     @Test
-    public void testXmlDocument() {
+    void testXmlDocument() {
         DSSDocument document = new FileDocument("src/test/resources/sample-c14n.xml");
 
         assertEquals("/TiBXkCOtm0bSdOukpXHtqSu6G5EPRfwyYH9DJ9YtCE=",
@@ -92,7 +92,7 @@ public class XMLEvidenceRecordDataObjectDigestBuilderTest {
     }
 
     @Test
-    public void nullTest() {
+    void nullTest() {
         Exception exception = assertThrows(NullPointerException.class,
                 () -> new XMLEvidenceRecordDataObjectDigestBuilder((byte[]) null));
         assertEquals("Bytes cannot be null", exception.getMessage());

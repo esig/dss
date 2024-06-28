@@ -45,12 +45,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAccess {
+class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAccess {
 		
 	private static final DigestAlgorithm digestAlgo = DigestAlgorithm.SHA512;
 
 	@Test
-	public void testSignWithCompleteDocumentExtendWithCompleteDocument() {
+	void testSignWithCompleteDocumentExtendWithCompleteDocument() {
 		CAdESService service = getService();
 		CAdESSignatureParameters parameters = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -77,7 +77,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 	
 	@Test
-	public void testSignWithCompleteDocumentExtendWithDigest() {
+	void testSignWithCompleteDocumentExtendWithDigest() {
 		CAdESService service = getService();
 		CAdESSignatureParameters parameters = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -104,7 +104,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 	
 	@Test
-	public void testSignWithCompleteDocumentExtendWithCompleteDocumentNoName() {
+	void testSignWithCompleteDocumentExtendWithCompleteDocumentNoName() {
 		CAdESService service = getService();
 		CAdESSignatureParameters parameters = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -131,7 +131,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 
 	@Test
-	public void testSignWithDigestExtendWithCompleteDocument() {
+	void testSignWithDigestExtendWithCompleteDocument() {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -158,7 +158,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 	
 	@Test
-	public void testSignWithDigestExtendWithCompleteDocumentNoName() {
+	void testSignWithDigestExtendWithCompleteDocumentNoName() {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -185,7 +185,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 	
 	@Test
-	public void testSignWithDigestExtendWithDigest() {
+	void testSignWithDigestExtendWithDigest() {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -213,7 +213,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 	
 	@Test
-	public void testSignWithCompleteDocumentNoNameExtendWithCompleteDocumentNoName() throws IOException {
+	void testSignWithCompleteDocumentNoNameExtendWithCompleteDocumentNoName() throws IOException {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -240,7 +240,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 	
 	@Test
-	public void testSignWithCompleteDocumentNoNameExtendWithCompleteDocument() throws IOException {
+	void testSignWithCompleteDocumentNoNameExtendWithCompleteDocument() throws IOException {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -267,7 +267,7 @@ public class CAdESExtensionToLTADetachedDigestDocumentTest extends PKIFactoryAcc
 	}
 	
 	@Test
-	public void testSignWithCompleteDocumentNoNameExtendWithDigest() throws IOException {
+	void testSignWithCompleteDocumentNoNameExtendWithDigest() throws IOException {
 		CAdESService service = getService();
 		CAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();

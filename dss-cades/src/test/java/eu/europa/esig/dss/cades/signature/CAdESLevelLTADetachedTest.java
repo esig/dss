@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class CAdESLevelLTADetachedTest extends AbstractCAdESTestSignature {
+class CAdESLevelLTADetachedTest extends AbstractCAdESTestSignature {
 
     private static final String HELLO_WORLD = "Hello World";
 
@@ -42,7 +42,7 @@ public class CAdESLevelLTADetachedTest extends AbstractCAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
         signatureParameters = new CAdESSignatureParameters();

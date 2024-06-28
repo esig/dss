@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DuplicatedStatusInTLValidationJobTest {
+class DuplicatedStatusInTLValidationJobTest {
 
 	private static final String URL = "URL_TO_DL";
 
@@ -65,7 +65,7 @@ public class DuplicatedStatusInTLValidationJobTest {
 	File tempDir;
 
 	@Test
-	public void test() {
+	void test() {
 		TrustedListsCertificateSource trustedListCertificateSource = getSynchronizedTLSource();
 
 		assertNotEquals(C1, C2);
@@ -97,7 +97,7 @@ public class DuplicatedStatusInTLValidationJobTest {
 	}
 
 	@Test
-	public void certVal() {
+	void certVal() {
 		CertificateValidator certificateValidator = CertificateValidator.fromCertificate(C1);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSources(getSynchronizedTLSource());

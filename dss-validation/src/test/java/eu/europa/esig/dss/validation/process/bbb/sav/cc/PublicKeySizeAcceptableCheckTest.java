@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
+class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -65,7 +65,7 @@ public class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -89,7 +89,7 @@ public class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidAlgo() {
+    void invalidAlgo() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -113,7 +113,7 @@ public class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void overwrittenLevelTest() {
+    void overwrittenLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -138,7 +138,7 @@ public class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noGlobalLevelTest() {
+    void noGlobalLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         ListAlgo listAlgo = new ListAlgo();
@@ -162,7 +162,7 @@ public class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noLevelTest() {
+    void noLevelTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         ListAlgo listAlgo = new ListAlgo();

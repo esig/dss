@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.model.tsl.Condition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 
-public class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceTest extends AbstractMRALOTLTest {
+class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceTest extends AbstractMRALOTLTest {
 
     @Override
     protected Condition getCertificateContentDeclarationPointedPartyQcCompliance() {

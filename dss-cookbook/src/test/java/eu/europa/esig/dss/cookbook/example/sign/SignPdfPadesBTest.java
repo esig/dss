@@ -50,10 +50,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * How to sign PDF Document with PAdES-BASELINE-B
  */
-public class SignPdfPadesBTest extends CookbookTools {
+class SignPdfPadesBTest extends CookbookTools {
 
 	@Test
-	public void signPAdESBaselineB() throws Exception {
+	void signPAdESBaselineB() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

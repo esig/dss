@@ -74,12 +74,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
+class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 	
 	private RemoteDocumentSignatureServiceImpl signatureService;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		signatureService = new RemoteDocumentSignatureServiceImpl();
 		signatureService.setXadesService(getXAdESService());
 		signatureService.setCadesService(getCAdESService());
@@ -88,7 +88,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testSigningAndExtension() throws Exception {
+	void testSigningAndExtension() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
@@ -118,7 +118,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testSigningAndExtensionDigestDocument() throws Exception {
+	void testSigningAndExtensionDigestDocument() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
@@ -150,7 +150,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testCAdESSigningAndExtensionDigestDocument() throws Exception {
+	void testCAdESSigningAndExtensionDigestDocument() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
@@ -188,7 +188,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testCAdESSigningAndExtensionDigestDocumentRSASSA_PSS() throws Exception {
+	void testCAdESSigningAndExtensionDigestDocumentRSASSA_PSS() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
@@ -227,7 +227,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 	
 	@Test
-	public void testPAdESVisible() throws IOException {
+	void testPAdESVisible() throws IOException {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
@@ -278,7 +278,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testWithSignatureFieldId() throws Exception {
+	void testWithSignatureFieldId() throws Exception {
 		RemoteSignatureImageParameters imageParameters = new RemoteSignatureImageParameters();
 		RemoteSignatureFieldParameters fieldParameters = new RemoteSignatureFieldParameters();
 		imageParameters.setFieldParameters(fieldParameters);
@@ -331,7 +331,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testSignJAdES() throws Exception {
+	void testSignJAdES() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
@@ -354,7 +354,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testSignDetachedJAdES() throws Exception {
+	void testSignDetachedJAdES() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
@@ -378,7 +378,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testTimestamping() throws Exception {
+	void testTimestamping() throws Exception {
 		RemoteTimestampParameters remoteTimestampParameters = new RemoteTimestampParameters();
 		remoteTimestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		remoteTimestampParameters.setTimestampContainerForm(TimestampContainerForm.PDF);
@@ -396,7 +396,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testCounterSignature() throws Exception {
+	void testCounterSignature() throws Exception {
 		DSSDocument fileToCounterSign = new FileDocument(new File("src/test/resources/xades-signed.xml"));
 		RemoteDocument signatureDocument = new RemoteDocument(Utils.toByteArray(fileToCounterSign.openStream()),
 				fileToCounterSign.getName());
@@ -434,7 +434,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testSignAndCounterSignDetached() throws Exception {
+	void testSignAndCounterSignDetached() throws Exception {
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.digest(DigestAlgorithm.SHA256, fileToSign),
 				DigestAlgorithm.SHA256, fileToSign.getName());
@@ -483,7 +483,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testPAdESCounterSign() throws Exception {
+	void testPAdESCounterSign() throws Exception {
 		FileDocument fileToSign = new FileDocument(new File("src/test/resources/sample.pdf"));
 		RemoteDocument toCounterSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()),
 				fileToSign.getName());
@@ -499,7 +499,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testXmlManifestSignature() throws Exception {
+	void testXmlManifestSignature() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
@@ -531,7 +531,7 @@ public class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureS
 	}
 
 	@Test
-	public void testEmbedXmlSignature() throws Exception {
+	void testEmbedXmlSignature() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));

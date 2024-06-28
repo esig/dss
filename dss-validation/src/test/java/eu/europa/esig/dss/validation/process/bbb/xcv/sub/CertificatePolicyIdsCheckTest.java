@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
+class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void certificatePolicyIdsCheck() throws Exception {
+	void certificatePolicyIdsCheck() throws Exception {
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
 		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
@@ -65,7 +65,7 @@ public class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedCertificatePolicyIdsCheck() throws Exception {
+	void failedCertificatePolicyIdsCheck() throws Exception {
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
 		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();

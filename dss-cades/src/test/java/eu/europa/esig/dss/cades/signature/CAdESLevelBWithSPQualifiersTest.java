@@ -42,7 +42,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CAdESLevelBWithSPQualifiersTest extends AbstractCAdESTestSignature {
+class CAdESLevelBWithSPQualifiersTest extends AbstractCAdESTestSignature {
 
     private static final String HELLO_WORLD = "Hello World";
 
@@ -57,7 +57,7 @@ public class CAdESLevelBWithSPQualifiersTest extends AbstractCAdESTestSignature 
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
         Policy signaturePolicy = new Policy();

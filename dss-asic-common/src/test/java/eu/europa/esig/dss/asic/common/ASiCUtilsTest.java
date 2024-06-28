@@ -38,10 +38,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCUtilsTest {
+class ASiCUtilsTest {
 
 	@Test
-	public void isZip() {
+	void isZip() {
 		assertFalse(ASiCUtils.isZip((DSSDocument) null));
 		assertFalse(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 0 })));
 		assertFalse(ASiCUtils.isZip(InMemoryDocument.createEmptyDocument()));
@@ -54,7 +54,7 @@ public class ASiCUtilsTest {
 	}
 
 	@Test
-	public void getASiCContainerType() {
+	void getASiCContainerType() {
 		assertEquals(ASiCContainerType.ASiC_S, ASiCUtils.getASiCContainerType(MimeTypeEnum.ASICS));
 		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeTypeEnum.ASICE));
 		assertEquals(ASiCContainerType.ASiC_E, ASiCUtils.getASiCContainerType(MimeTypeEnum.ODT));
@@ -70,7 +70,7 @@ public class ASiCUtilsTest {
 	}
 
 	@Test
-	public void ensureMimeTypeAndZipCommentTest() {
+	void ensureMimeTypeAndZipCommentTest() {
 		ASiCContent asicContent = new ASiCContent();
 		ASiCParameters asicParameters = new ASiCParameters();
 		asicParameters.setContainerType(ASiCContainerType.ASiC_S);
@@ -98,7 +98,7 @@ public class ASiCUtilsTest {
 	}
 
 	@Test
-	public void ensureMimeTypeAndZipCommentProvidedTest() {
+	void ensureMimeTypeAndZipCommentProvidedTest() {
 		ASiCContent asicContent = new ASiCContent();
 		asicContent.setMimeTypeDocument(new InMemoryDocument("mimetype".getBytes(), "mimetype"));
 		asicContent.setZipComment("zip-comment");
@@ -114,7 +114,7 @@ public class ASiCUtilsTest {
 	}
 
 	@Test
-	public void getContainerTypeTest() {
+	void getContainerTypeTest() {
 		Exception exception = assertThrows(NullPointerException.class, () -> ASiCUtils.getContainerType((ASiCContent) null));
 		assertEquals("ASiCContent shall be provided!", exception.getMessage());
 		exception = assertThrows(NullPointerException.class, () -> ASiCUtils.getContainerType((DSSDocument) null));

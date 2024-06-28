@@ -47,10 +47,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
+class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	
 	@Test
-	public void bLevelTest() {
+	void bLevelTest() {
 		
 		DSSDocument document = new FileDocument("src/test/resources/validation/dss2011/xades-detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
@@ -83,7 +83,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void ltaLevelTest() {
+	void ltaLevelTest() {
 
 		DSSDocument document = new FileDocument("src/test/resources/validation/dss2011/xades-lta-detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
@@ -138,7 +138,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void individualContentTstTest() {
+	void individualContentTstTest() {
 
 		DSSDocument document = new FileDocument("src/test/resources/validation/dss2011/xades-individual-content-tst-detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
@@ -187,7 +187,7 @@ public class XAdESNoDetachedFileProvidedTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void allDataContentTstTest() {
+	void allDataContentTstTest() {
 
 		DSSDocument document = new FileDocument("src/test/resources/validation/dss2011/xades-alldata-tst-detached.xml");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);

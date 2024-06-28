@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("slow")
-public class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignature {
+class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignature {
 	
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -76,7 +76,7 @@ public class XAdESTimestampCanonicalizationTest extends AbstractXAdESTestSignatu
 
 	@ParameterizedTest(name = "Canonicalization {index} : {0} - {1} - {2} - {3}")
 	@MethodSource("data")
-	public void test(String contentTstC14N, String otherTstC14N, SignaturePackaging packaging, SignatureLevel level) {
+	void test(String contentTstC14N, String otherTstC14N, SignaturePackaging packaging, SignatureLevel level) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample-c14n.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

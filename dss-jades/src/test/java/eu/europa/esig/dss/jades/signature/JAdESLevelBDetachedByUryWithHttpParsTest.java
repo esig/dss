@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESLevelBDetachedByUryWithHttpParsTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelBDetachedByUryWithHttpParsTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
     private static final String DOC_ONE_NAME = "https://nowina.lu/pub/JAdES/ObjectIdByURI-1.html";
     private static final String DOC_TWO_NAME = "https://nowina.lu/pub/JAdES/ObjectIdByURI-2.html";
@@ -58,7 +58,7 @@ public class JAdESLevelBDetachedByUryWithHttpParsTest extends AbstractJAdESMulti
     private JAdESService jadesService;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DSSDocument documentOne = new FileDocument("src/test/resources/ObjectIdByURI-1.html");
         documentOne.setName(DOC_ONE_NAME);
         DSSDocument documentTwo = new FileDocument("src/test/resources/ObjectIdByURI-2.html");

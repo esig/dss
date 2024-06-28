@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class LibreOfficeExtensionWithXAdESBToTTest extends AbstractASiCWithXAdESTestExtension {
+class LibreOfficeExtensionWithXAdESBToTTest extends AbstractASiCWithXAdESTestExtension {
 
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {

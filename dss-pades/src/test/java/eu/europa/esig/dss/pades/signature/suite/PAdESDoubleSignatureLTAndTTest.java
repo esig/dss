@@ -59,7 +59,7 @@ public class PAdESDoubleSignatureLTAndTTest extends AbstractPAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new PAdESService(getCompleteCertificateVerifier());
 
         Calendar firstTSATime = Calendar.getInstance();

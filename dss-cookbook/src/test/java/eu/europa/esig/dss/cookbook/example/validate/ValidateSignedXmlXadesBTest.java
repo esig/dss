@@ -45,10 +45,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * How to validate a XAdES-BASELINE-B signature.
  */
-public class ValidateSignedXmlXadesBTest {
+class ValidateSignedXmlXadesBTest {
 
 	@Test
-	public void validateXAdESBaselineB() throws Exception {
+	void validateXAdESBaselineB() throws Exception {
 
 		// See Trusted Lists loading
 		CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password".toCharArray());

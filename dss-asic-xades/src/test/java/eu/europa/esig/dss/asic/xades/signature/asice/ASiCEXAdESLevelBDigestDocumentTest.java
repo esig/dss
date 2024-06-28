@@ -39,7 +39,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCEXAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
+class ASiCEXAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -48,7 +48,7 @@ public class ASiCEXAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
     private final DSSDocument ORIGINAL_DOCUMENT = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new DigestDocument(DigestAlgorithm.SHA256, ORIGINAL_DOCUMENT.getDigestValue(DigestAlgorithm.SHA256));
 
         signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -62,7 +62,7 @@ public class ASiCEXAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void test() {
+    void test() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> service.getDataToSign(documentToSign, signatureParameters));
         assertEquals("ASiC container creation is not possible with DigestDocument!", exception.getMessage());

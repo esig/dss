@@ -38,10 +38,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASN1EvidenceRecordRenewalDigestBuilderTest {
+class ASN1EvidenceRecordRenewalDigestBuilderTest {
 
     @Test
-    public void timeStampRenewalTest() {
+    void timeStampRenewalTest() {
         DSSDocument evidenceRecordDocument = new FileDocument("src/test/resources/er-asn1-simple.ers");
 
         ASN1EvidenceRecordRenewalDigestBuilder ASN1EvidenceRecordRenewalDigestBuilder = new ASN1EvidenceRecordRenewalDigestBuilder(evidenceRecordDocument);
@@ -75,7 +75,7 @@ public class ASN1EvidenceRecordRenewalDigestBuilderTest {
     }
 
     @Test
-    public void hashTreeRenewalTest() {
+    void hashTreeRenewalTest() {
         DSSDocument evidenceRecordDocument = new FileDocument("src/test/resources/er-asn1-simple.ers");
 
         ASN1EvidenceRecordRenewalDigestBuilder ASN1EvidenceRecordRenewalDigestBuilder = new ASN1EvidenceRecordRenewalDigestBuilder(evidenceRecordDocument);
@@ -166,7 +166,7 @@ public class ASN1EvidenceRecordRenewalDigestBuilderTest {
     }
 
     @Test
-    public void nullTest() {
+    void nullTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> new ASN1EvidenceRecordRenewalDigestBuilder((DSSDocument) null));
         assertEquals("Document cannot be null!", exception.getMessage());
 
@@ -185,7 +185,7 @@ public class ASN1EvidenceRecordRenewalDigestBuilderTest {
     }
 
     @Test
-    public void invalidFormatTest() {
+    void invalidFormatTest() {
         Exception exception = assertThrows(IllegalInputException.class, () ->
                 new ASN1EvidenceRecordRenewalDigestBuilder(new FileDocument("src/test/resources/Signature-C-LT.p7m")));
         assertTrue(exception.getMessage().contains("An ASN.1 file is expected"));

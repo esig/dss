@@ -56,7 +56,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ThirdCountryLOTLTest {
+class ThirdCountryLOTLTest {
 
     private static final String ZZ_LOTL_URI = "https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/tl/mra_lotl.xml";
     private static final String ZZ_TL_URI = "https://esignature.ec.europa.eu/efda/intl-pilot/api/v1/intl-pilot/tl/mra_tl_zz.xml";
@@ -65,7 +65,7 @@ public class ThirdCountryLOTLTest {
     private static CommonTrustedCertificateSource commonTrustedCertificateSource;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         TLValidationJob tlValidationJob = new TLValidationJob();
 
         CommonTrustedCertificateSource lotlKeystore = new CommonTrustedCertificateSource();
@@ -128,7 +128,7 @@ public class ThirdCountryLOTLTest {
 
     @ParameterizedTest(name = "Signed document {index} : {0}, {1}")
     @MethodSource("data")
-    public void test(DSSDocument signedDocument, SignatureQualification targetQualification, String enactedMRAName) {
+    void test(DSSDocument signedDocument, SignatureQualification targetQualification, String enactedMRAName) {
         DocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
         validator.setValidationTime(DSSUtils.getUtcDate(2022, 6, 11));
 

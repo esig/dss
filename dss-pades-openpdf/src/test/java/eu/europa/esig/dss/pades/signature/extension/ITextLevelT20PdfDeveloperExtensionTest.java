@@ -26,7 +26,7 @@ import eu.europa.esig.dss.pdf.openpdf.ITextDocumentReader;
 
 import java.io.IOException;
 
-public class ITextLevelT20PdfDeveloperExtensionTest extends PAdESLevelT20PdfDeveloperExtensionTest {
+class ITextLevelT20PdfDeveloperExtensionTest extends PAdESLevelT20PdfDeveloperExtensionTest {
 
     @Override
     protected PdfDocumentReader getDocumentReader(DSSDocument document) throws IOException {

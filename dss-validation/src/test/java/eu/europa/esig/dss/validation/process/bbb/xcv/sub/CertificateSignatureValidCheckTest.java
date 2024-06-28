@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 
-public class CertificateSignatureValidCheckTest extends AbstractTestCheck {
+class CertificateSignatureValidCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void certificateSignatureValidCheck() throws Exception {
+	void certificateSignatureValidCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -60,7 +60,7 @@ public class CertificateSignatureValidCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedCertificateSignatureValidCheck() throws Exception {
+	void failedCertificateSignatureValidCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

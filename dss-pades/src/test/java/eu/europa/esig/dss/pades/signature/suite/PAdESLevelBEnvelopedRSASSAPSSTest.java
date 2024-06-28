@@ -67,7 +67,7 @@ public class PAdESLevelBEnvelopedRSASSAPSSTest extends AbstractPAdESTestSignatur
 
     @ParameterizedTest(name = "Combination {index} of RSASSA-PSS with digest algorithm {0}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    void init(DigestAlgorithm digestAlgo) {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();

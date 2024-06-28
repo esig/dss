@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithXAdESParallelSigsDuplicatedCntTstTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithXAdESParallelSigsDuplicatedCntTstTest extends AbstractASiCWithXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

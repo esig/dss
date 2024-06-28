@@ -61,7 +61,7 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 	 * @throws IOException
 	 */
 	@Test
-	public void buildKnownObjects() throws IOException {
+	void buildKnownObjects() throws IOException {
 
 		DSSDocument dssDocument = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/dss-1696/Test.signed_Certipost-2048-SHA512.extended.pdf"));

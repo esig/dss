@@ -30,7 +30,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
-public class XAdESLevelBWithEd25519Test extends AbstractXAdESTestSignature {
+class XAdESLevelBWithEd25519Test extends AbstractXAdESTestSignature {
 
     private static final String HELLO_WORLD = "Hello World";
 
@@ -39,7 +39,7 @@ public class XAdESLevelBWithEd25519Test extends AbstractXAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
         signatureParameters = new XAdESSignatureParameters();

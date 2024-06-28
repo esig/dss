@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
 
     private static DSSDocument originalDocument;
 
@@ -66,7 +66,7 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
         signingAlias = EE_GOOD_USER;
 

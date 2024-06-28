@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ByteRangeCheckTest extends AbstractTestCheck {
+class ByteRangeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -63,7 +63,7 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -86,7 +86,7 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void validityNotDefinedTest() {
+    void validityNotDefinedTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -108,7 +108,7 @@ public class ByteRangeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noByteRangeTest() {
+    void noByteRangeTest() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();

@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
+class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -75,7 +75,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void notDefinedCheck() {
+    void notDefinedCheck() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -106,7 +106,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void selfSignedTest() {
+    void selfSignedTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -139,7 +139,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -171,7 +171,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void longChainTest() {
+    void longChainTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -211,7 +211,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void longChainEnforcedTest() {
+    void longChainEnforcedTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -253,7 +253,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void longChainInvalidTest() {
+    void longChainInvalidTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -294,7 +294,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void decreasingDepthTest() {
+    void decreasingDepthTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -336,7 +336,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void decreasingDepthValidTest() {
+    void decreasingDepthValidTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -378,7 +378,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void increasingDepthTest() {
+    void increasingDepthTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -420,7 +420,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void oneCertTest() {
+    void oneCertTest() {
         XmlCertificate caCertificate = new XmlCertificate();
 
         LevelConstraint constraint = new LevelConstraint();
@@ -437,7 +437,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void oneCertCATest() {
+    void oneCertCATest() {
         XmlCertificate caCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());
@@ -459,7 +459,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void oneCertSelfSignedTest() {
+    void oneCertSelfSignedTest() {
         XmlCertificate caCertificate = new XmlCertificate();
         caCertificate.setSelfSigned(true);
 
@@ -477,7 +477,7 @@ public class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void oneCertSelfSignedCATest() {
+    void oneCertSelfSignedCATest() {
         XmlCertificate caCertificate = new XmlCertificate();
         XmlBasicConstraints basicConstraints = new XmlBasicConstraints();
         basicConstraints.setOID(CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid());

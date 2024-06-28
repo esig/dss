@@ -45,14 +45,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESTripleLTATest extends AbstractCAdESTestSignature {
+class CAdESTripleLTATest extends AbstractCAdESTestSignature {
 	
 	private DSSDocument documentToSign;
 	private CAdESSignatureParameters parameters;
 	private CAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello".getBytes(StandardCharsets.UTF_8));
 		
 		parameters = new CAdESSignatureParameters();
@@ -71,7 +71,7 @@ public class CAdESTripleLTATest extends AbstractCAdESTestSignature {
 	}
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument signed = sign();
 		// signed.save("target/signed.pksc7");
 		Reports reports = verify(signed);

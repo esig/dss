@@ -41,10 +41,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
+class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void certificateQualifiedCheckWithCertificate() throws Exception {
+	void certificateQualifiedCheckWithCertificate() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -67,7 +67,7 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void certificateQualifiedCheckWithSSCD() throws Exception {
+	void certificateQualifiedCheckWithSSCD() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -90,7 +90,7 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void certificateAnotherIdCheck() throws Exception {
+	void certificateAnotherIdCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -113,7 +113,7 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void certificateQualifiedCheckWithQCStatement() throws Exception {
+	void certificateQualifiedCheckWithQCStatement() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -137,7 +137,7 @@ public class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedCertificateQualifiedCheck() throws Exception {
+	void failedCertificateQualifiedCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

@@ -43,14 +43,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class XAdESLevelBXSLTTransformTest extends AbstractXAdESTestSignature {
+class XAdESLevelBXSLTTransformTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample-with-different-id.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

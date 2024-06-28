@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCeExtensionWithCAdESBToTWithFailTimestampTest extends AbstractASiCWithCAdESTestExtension {
+class ASiCeExtensionWithCAdESBToTWithFailTimestampTest extends AbstractASiCWithCAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {

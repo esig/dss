@@ -109,7 +109,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     private static String signer;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         DomUtils.registerNamespace(XMLDSigNamespace.NS);
         DomUtils.registerNamespace(XAdESNamespace.XADES_132);
         DomUtils.registerNamespace(TL_NAMESPACE);
@@ -603,7 +603,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         }
     }
 
-    public void removeAllChildren(Node node)
+    void removeAllChildren(Node node)
     {
         while (node.getFirstChild() != null) {
             node.removeChild(node.getFirstChild());
@@ -793,7 +793,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         TLValidationJob tlValidationJob = new TLValidationJob();
 
         LOTLSource lotlSource = new LOTLSource();

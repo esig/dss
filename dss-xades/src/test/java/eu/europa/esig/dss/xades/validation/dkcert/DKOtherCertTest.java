@@ -35,7 +35,7 @@ import java.text.ParseException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class DKOtherCertTest extends AbstractDKTestCertificate {
+class DKOtherCertTest extends AbstractDKTestCertificate {
 	
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {

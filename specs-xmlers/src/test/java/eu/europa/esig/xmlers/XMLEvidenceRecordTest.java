@@ -44,12 +44,12 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XMLEvidenceRecordTest {
+class XMLEvidenceRecordTest {
 
     private static XMLEvidenceRecordUtils xmlersUtils;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         xmlersUtils = XMLEvidenceRecordUtils.getInstance();
     }
 
@@ -77,7 +77,7 @@ public class XMLEvidenceRecordTest {
     @SuppressWarnings("unchecked")
     @ParameterizedTest(name = "Validation {index} : {0}")
     @MethodSource("data")
-    public void testMarshalling(File xmlersFile) throws JAXBException, SAXException {
+    void testMarshalling(File xmlersFile) throws JAXBException, SAXException {
         JAXBContext jc = xmlersUtils.getJAXBContext();
         assertNotNull(jc);
 
@@ -105,7 +105,7 @@ public class XMLEvidenceRecordTest {
     }
 
     @Test
-    public void getJAXBContext() throws JAXBException {
+    void getJAXBContext() throws JAXBException {
         assertNotNull(xmlersUtils.getJAXBContext());
         // cached
         assertNotNull(xmlersUtils.getJAXBContext());

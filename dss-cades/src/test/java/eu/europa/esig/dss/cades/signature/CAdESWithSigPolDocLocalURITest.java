@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CAdESWithSigPolDocLocalURITest extends AbstractCAdESTestSignature {
+class CAdESWithSigPolDocLocalURITest extends AbstractCAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -74,7 +74,7 @@ public class CAdESWithSigPolDocLocalURITest extends AbstractCAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello World!".getBytes());
 
         Policy signaturePolicy = new Policy();

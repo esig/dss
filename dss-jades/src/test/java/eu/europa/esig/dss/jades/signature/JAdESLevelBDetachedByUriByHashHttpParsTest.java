@@ -33,7 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.Arrays;
 import java.util.List;
 
-public class JAdESLevelBDetachedByUriByHashHttpParsTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelBDetachedByUriByHashHttpParsTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
     private static final String DOC_ONE_NAME = "https://nowina.lu/pub/JAdES/ObjectIdByURIHash-2.html";
     private static final String DOC_TWO_NAME = "https://nowina.lu/pub/JAdES/ObjectIdByURIHash-2.html";
@@ -43,7 +43,7 @@ public class JAdESLevelBDetachedByUriByHashHttpParsTest extends AbstractJAdESMul
     private JAdESService jadesService;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DSSDocument documentOne = new FileDocument("src/test/resources/ObjectIdByURIHash-1.html");
         documentOne.setName(DOC_ONE_NAME);
         DSSDocument documentTwo = new FileDocument("src/test/resources/ObjectIdByURIHash-2.html");

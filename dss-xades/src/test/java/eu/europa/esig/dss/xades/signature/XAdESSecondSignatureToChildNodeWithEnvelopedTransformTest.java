@@ -43,7 +43,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESSecondSignatureToChildNodeWithEnvelopedTransformTest extends AbstractXAdESTestSignature {
+class XAdESSecondSignatureToChildNodeWithEnvelopedTransformTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -52,7 +52,7 @@ public class XAdESSecondSignatureToChildNodeWithEnvelopedTransformTest extends A
     private DSSDocument originalDocument;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new FileDocument(new File("src/test/resources/sample-with-different-id.xml"));
         service = new XAdESService(getOfflineCertificateVerifier());
     }

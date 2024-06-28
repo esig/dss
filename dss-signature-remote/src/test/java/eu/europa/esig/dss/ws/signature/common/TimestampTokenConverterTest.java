@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TimestampTokenConverterTest {
+class TimestampTokenConverterTest {
 
 	private static final String timestampBinaries = "MIIGPAYJKoZIhvcNAQcCoIIGLTCCBikCAQMxCzAJBgUrDgMCGgUAM"
 			+ "GIGCyqGSIb3DQEJEAEEoFMEUTBPAgEBBgMqAwQwITAJBgUrDgMCGgUABBQivdlxQ99rOaZa+tKva9i/IM1PewIRAPEq"
@@ -68,7 +68,7 @@ public class TimestampTokenConverterTest {
 			+ "A4Yj+0cXn6FJBBw9t3ljpAwtR50YSaykrI0A9u///W40X/dcXx/Nj2T6EHmzBlN5/q9jv0zk1wzQz4g==";
 
 	@Test
-	public void toTimestampTokenTest() throws Exception {
+	void toTimestampTokenTest() throws Exception {
 		TimestampDTO timestampDTO = new TimestampDTO(Utils.fromBase64(timestampBinaries), TimestampType.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
 		timestampDTO.setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE);
 		timestampDTO.setIncludes(Arrays.asList(new TimestampIncludeDTO("reference-id-1", true)));
@@ -84,7 +84,7 @@ public class TimestampTokenConverterTest {
 	}
 
 	@Test
-	public void toTimestampTokenListTest() throws Exception {
+	void toTimestampTokenListTest() throws Exception {
 		List<TimestampDTO> timestampDTOs = new ArrayList<>();
 		timestampDTOs.add(null);
 		timestampDTOs.add(new TimestampDTO());
@@ -100,7 +100,7 @@ public class TimestampTokenConverterTest {
 	}
 
 	@Test
-	public void emptyTimestampTokenDTOTest() {
+	void emptyTimestampTokenDTOTest() {
 		Exception e = assertThrows(NullPointerException.class, () -> TimestampTokenConverter.toTimestampToken(null));
 		assertEquals("TimestampDTO cannot be null!", e.getMessage());
 
@@ -118,14 +118,14 @@ public class TimestampTokenConverterTest {
 	}
 
 	@Test
-	public void wrongBinaryTest() {
+	void wrongBinaryTest() {
 		TimestampDTO wrongBinary = new TimestampDTO(new byte[] { 1, 2, 3 }, TimestampType.CONTENT_TIMESTAMP);
 		Exception e = assertThrows(DSSException.class, () -> TimestampTokenConverter.toTimestampToken(wrongBinary));
 		assertTrue(e.getMessage().contains("Cannot convert a TimestampDTO to TimestampToken class"));
 	}
 
 	@Test
-	public void toTimestampDTOTest() throws Exception {
+	void toTimestampDTOTest() throws Exception {
 		TimestampToken timestampToken = new TimestampToken(Utils.fromBase64(timestampBinaries), TimestampType.CONTENT_TIMESTAMP);
 		assertNotNull(timestampToken);
 		timestampToken.setCanonicalizationMethod(CanonicalizationMethod.INCLUSIVE_WITH_COMMENTS);

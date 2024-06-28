@@ -50,10 +50,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESDoubleLTATest extends PKIFactoryAccess {
+class XAdESDoubleLTATest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();

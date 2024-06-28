@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESSignaturePolicyStoreCreationTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESSignaturePolicyStoreCreationTest extends AbstractASiCEXAdESTestSignature {
 
 	private static final String SIGNATURE_POLICY_ID = "urn:sbr:signature-policy";
 	private static final DSSDocument POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
@@ -53,7 +53,7 @@ public class ASiCEXAdESSignaturePolicyStoreCreationTest extends AbstractASiCEXAd
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();

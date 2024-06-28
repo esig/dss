@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ReferenceDataGroupCheckTest extends AbstractTestCheck {
+class ReferenceDataGroupCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validCheck() {
+    void validCheck() {
         XmlDigestMatcher oneDigestMatcher = new XmlDigestMatcher();
         oneDigestMatcher.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
 
@@ -63,7 +63,7 @@ public class ReferenceDataGroupCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void oneInvalidRefCheck() {
+    void oneInvalidRefCheck() {
         XmlDigestMatcher oneDigestMatcher = new XmlDigestMatcher();
         oneDigestMatcher.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
 
@@ -87,7 +87,7 @@ public class ReferenceDataGroupCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noneValidRefsCheck() {
+    void noneValidRefsCheck() {
         XmlDigestMatcher oneDigestMatcher = new XmlDigestMatcher();
         oneDigestMatcher.setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
 

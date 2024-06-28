@@ -27,7 +27,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class XAdESWithPolicyNewLinesAndWhitespaceTest extends AbstractXAdESTestValidation {
+class XAdESWithPolicyNewLinesAndWhitespaceTest extends AbstractXAdESTestValidation {
 
 	private static final String POLICY_ID = "1.3.6.1.4.1.10015.1000.3.2.1";
 	private static final String POLICY_URL = "http://spuri.test";

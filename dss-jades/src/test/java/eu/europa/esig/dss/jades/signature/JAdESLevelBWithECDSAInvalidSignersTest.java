@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("slow")
-public class JAdESLevelBWithECDSAInvalidSignersTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithECDSAInvalidSignersTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
@@ -89,7 +89,7 @@ public class JAdESLevelBWithECDSAInvalidSignersTest extends AbstractJAdESTestSig
 
     @ParameterizedTest(name = "Combination {index} if type {0} and ECDSA with digest algorithm {1} and signer {2}")
     @MethodSource("data")
-    public void init(JWSSerializationType jwsSerializationType, DigestAlgorithm digestAlgo, String signingAlias) {
+    void init(JWSSerializationType jwsSerializationType, DigestAlgorithm digestAlgo, String signingAlias) {
         this.signingAlias = signingAlias;
 
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

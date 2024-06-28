@@ -44,14 +44,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCECAdESLevelBMultiArchivesTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
+class ASiCECAdESLevelBMultiArchivesTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
 
 	private MultipleDocumentsSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns = new ArrayList<>();
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSigns.add(new FileDocument("src/test/resources/signable/document.odt"));
 		documentToSigns.add(new FileDocument("src/test/resources/signable/test.txt"));
 

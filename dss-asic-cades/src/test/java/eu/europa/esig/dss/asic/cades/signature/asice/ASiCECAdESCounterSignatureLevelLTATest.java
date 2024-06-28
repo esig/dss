@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCounterSignatureTest {
+class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCounterSignatureTest {
 
 	private ASiCWithCAdESService service;
 	private DSSDocument documentToSign;
@@ -57,7 +57,7 @@ public class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCou
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
@@ -138,7 +138,7 @@ public class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCou
 	}
 	
 	@Test
-	public void counterSignLtaLevelTest() {
+	void counterSignLtaLevelTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
 		Exception exception = assertThrows(IllegalInputException.class, () -> signAndVerify());
@@ -147,7 +147,7 @@ public class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCou
 	}
 	
 	@Test
-	public void tLevelCounterSignatureTest() {
+	void tLevelCounterSignatureTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> signAndVerify());

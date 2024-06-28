@@ -43,18 +43,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASiCEWithCAdESManifestBuilderTest {
+class ASiCEWithCAdESManifestBuilderTest {
 
 	private static Validator validator;
 
 	@BeforeEach
-	public void init() throws SAXException {
+	void init() throws SAXException {
 		Schema schema = ASiCManifestUtils.getInstance().getSchema();
 		validator = schema.newValidator();
 	}
 
 	@Test
-	public void testManifestAgainstXSD() throws SAXException, IOException {
+	void testManifestAgainstXSD() throws SAXException, IOException {
 		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.bin"));
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test", MimeTypeEnum.BINARY));
@@ -77,7 +77,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 	}
 
 	@Test
-	public void testArchiveManifestAgainstXSD() throws SAXException, IOException {
+	void testArchiveManifestAgainstXSD() throws SAXException, IOException {
 		List<DSSDocument> signatures = new ArrayList<>();
 		signatures.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.p7s", MimeTypeEnum.PKCS7));
 		List<DSSDocument> timestamps = new ArrayList<>();
@@ -102,7 +102,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 	}
 
 	@Test
-	public void testEvidenceRecordManifestAgainstXSD() throws SAXException, IOException {
+	void testEvidenceRecordManifestAgainstXSD() throws SAXException, IOException {
 		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.bin"));
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test", MimeTypeEnum.BINARY));

@@ -28,7 +28,7 @@ import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecu
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLTAFailFastValidationTest extends XAdESLTATest {
+class XAdESLTAFailFastValidationTest extends XAdESLTATest {
 
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {

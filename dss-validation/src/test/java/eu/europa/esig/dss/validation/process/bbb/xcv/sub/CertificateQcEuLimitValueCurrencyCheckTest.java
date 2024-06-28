@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestCheck {
+class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -67,7 +67,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -93,7 +93,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
     }
 
     @Test
-    public void qcLimitValueNotPresentTest() throws Exception {
+    void qcLimitValueNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -115,7 +115,7 @@ public class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestChec
     }
 
     @Test
-    public void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() throws Exception {
         ValueConstraint constraint = new ValueConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.setValue("EUR");

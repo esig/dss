@@ -32,7 +32,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XmlEvidenceRecordTimestampRenewalNoHashTreeValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordTimestampRenewalNoHashTreeValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

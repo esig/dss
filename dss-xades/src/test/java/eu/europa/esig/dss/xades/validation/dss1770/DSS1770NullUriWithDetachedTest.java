@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class DSS1770NullUriWithDetachedTest extends AbstractXAdESTestValidation {
+class DSS1770NullUriWithDetachedTest extends AbstractXAdESTestValidation {
 	
 	private static final DSSDocument detachedDocument = new FileDocument("src/test/resources/sample.png");
 			

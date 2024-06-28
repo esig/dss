@@ -33,10 +33,10 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASN1EvidenceRecordDataObjectDigestBuilderTest {
+class ASN1EvidenceRecordDataObjectDigestBuilderTest {
 
     @Test
-    public void testBinaryData() {
+    void testBinaryData() {
         byte[] data = "Hello world!".getBytes(StandardCharsets.UTF_8);
 
         assertEquals("C0535E4BE2B79FFD93291305436BF889314E4A3FAEC05ECFFCBB7DF31AD9E51A",
@@ -56,7 +56,7 @@ public class ASN1EvidenceRecordDataObjectDigestBuilderTest {
     }
 
     @Test
-    public void testDocument() {
+    void testDocument() {
         DSSDocument document = new FileDocument("src/test/resources/BIN-1.bin");
 
         assertEquals("A1D4E7B50D9693F9A31B2E9484EA6ADFA585837730FE2BA94D13A5D4C81C32DF",
@@ -75,7 +75,7 @@ public class ASN1EvidenceRecordDataObjectDigestBuilderTest {
     }
 
     @Test
-    public void nullTest() {
+    void nullTest() {
         Exception exception = assertThrows(NullPointerException.class,
                 () -> new ASN1EvidenceRecordDataObjectDigestBuilder((byte[]) null));
         assertEquals("Bytes cannot be null", exception.getMessage());

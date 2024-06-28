@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DSS1443Test extends PKIFactoryAccess {
 
 	@Test
-	public void testSigWithAttached() {
+	void testSigWithAttached() {
 
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/DSS-1443.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);

@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCsExtensionWithCAdESInvalidLevelsTest extends AbstractASiCWithCAdESTestExtension {
+class ASiCsExtensionWithCAdESInvalidLevelsTest extends AbstractASiCWithCAdESTestExtension {
 
     private SignatureLevel originalSignatureLevel;
     private SignatureLevel finalSignatureLevel;
@@ -46,13 +46,13 @@ public class ASiCsExtensionWithCAdESInvalidLevelsTest extends AbstractASiCWithCA
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
     }
 
     @Test
-    public void tLevelExtensionTest() throws Exception {
+    void tLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -71,7 +71,7 @@ public class ASiCsExtensionWithCAdESInvalidLevelsTest extends AbstractASiCWithCA
     }
 
     @Test
-    public void ltLevelExtensionTest() throws Exception {
+    void ltLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.CAdES_BASELINE_LT;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -103,7 +103,7 @@ public class ASiCsExtensionWithCAdESInvalidLevelsTest extends AbstractASiCWithCA
     }
 
     @Test
-    public void ltaLevelExtensionTest() throws Exception {
+    void ltaLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.CAdES_BASELINE_LTA;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);

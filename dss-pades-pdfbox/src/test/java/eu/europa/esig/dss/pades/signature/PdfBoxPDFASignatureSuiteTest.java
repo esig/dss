@@ -27,6 +27,6 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({ PDFAPAdESLevelBTest.class, PDFAWithFontSubsetTest.class })
-public class PdfBoxPDFASignatureSuiteTest {
+class PdfBoxPDFASignatureSuiteTest {
 
 }

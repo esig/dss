@@ -38,10 +38,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 
-public class CertifiedRolesCheckTest extends AbstractTestCheck {
+class CertifiedRolesCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void certifiedRolesCheck() throws Exception {
+	void certifiedRolesCheck() throws Exception {
 		XmlSignerRole xmlSignerRole = new XmlSignerRole();
 		xmlSignerRole.setRole("Valid_Role");
 		xmlSignerRole.setCategory(EndorsementType.CERTIFIED);
@@ -63,7 +63,7 @@ public class CertifiedRolesCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void notCertifiedRolesCheck() throws Exception {
+	void notCertifiedRolesCheck() throws Exception {
 		XmlSignerRole xmlSignerRole = new XmlSignerRole();
 		xmlSignerRole.setRole("Invalid_Role");
 		xmlSignerRole.setCategory(EndorsementType.CERTIFIED);

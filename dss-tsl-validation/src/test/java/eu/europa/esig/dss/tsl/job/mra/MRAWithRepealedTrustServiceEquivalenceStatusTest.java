@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MRAStatus;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 
-public class MRAWithRepealedTrustServiceEquivalenceStatusTest extends AbstractMRALOTLTest {
+class MRAWithRepealedTrustServiceEquivalenceStatusTest extends AbstractMRALOTLTest {
 
     @Override
     protected String getTrustServiceEquivalenceStatus() {

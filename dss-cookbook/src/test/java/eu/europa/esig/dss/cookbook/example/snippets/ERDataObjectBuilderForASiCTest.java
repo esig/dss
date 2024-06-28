@@ -41,10 +41,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ERDataObjectBuilderForASiCTest {
+class ERDataObjectBuilderForASiCTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         ASiCContent asicContent = new ASiCContent();
         asicContent.setSignedDocuments(Arrays.asList(
                 new InMemoryDocument("Hello".getBytes(), "hello.txt"),

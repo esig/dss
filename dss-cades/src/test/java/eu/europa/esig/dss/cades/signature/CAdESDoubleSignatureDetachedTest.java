@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature {
+class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature {
 	
 	private DSSDocument documentToSign;
 	private CAdESSignatureParameters parameters;
@@ -59,7 +59,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 	private static DSSDocument original = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = original;
 		
         user = GOOD_USER;
@@ -79,7 +79,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 	}
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument signedDocument = sign();
 		Reports reports = verify(signedDocument);
 		

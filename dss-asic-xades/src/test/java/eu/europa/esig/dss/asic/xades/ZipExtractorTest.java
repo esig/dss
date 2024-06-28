@@ -50,20 +50,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ZipExtractorTest extends PKIFactoryAccess {
+class ZipExtractorTest extends PKIFactoryAccess {
 	
 	private DSSDocument openDocument;
 	private DSSDocument zipArchive;
 	
 	
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		openDocument = new FileDocument(new File("src/test/resources/signable/open-document.odt"));
 		zipArchive = new FileDocument(new File("src/test/resources/signable/test.zip"));
 	}
 	
 	@Test
-	public void extractUnsignedOpenDocument() {
+	void extractUnsignedOpenDocument() {
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(openDocument);
 		ASiCContent extract = extractor.extract();
 		
@@ -82,7 +82,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extractUnsignedZip() {
+	void extractUnsignedZip() {
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(zipArchive);
 		ASiCContent extract = extractor.extract();
 		
@@ -102,7 +102,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extractSignedZip() {
+	void extractSignedZip() {
 		DSSDocument document = signDocument(zipArchive);
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
 		ASiCContent extract = extractor.extract();
@@ -129,7 +129,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extractSignedOpenDocument() {
+	void extractSignedOpenDocument() {
 		DSSDocument document = signDocument(openDocument);
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
 		ASiCContent extract = extractor.extract();

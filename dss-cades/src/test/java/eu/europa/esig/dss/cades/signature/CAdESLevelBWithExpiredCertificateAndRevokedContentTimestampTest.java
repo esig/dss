@@ -57,14 +57,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Cryptographic signature is valid with expired certificate
  *
  */
-public class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest extends AbstractCAdESTestSignature {
+class CAdESLevelBWithExpiredCertificateAndRevokedContentTimestampTest extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
 		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 

@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierCheck;
 
-public class ContentIdentifierCheckTest extends AbstractTestCheck {
+class ContentIdentifierCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void contentIdentifierCheck() throws Exception {
+	void contentIdentifierCheck() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setContentIdentifier("Valid_Value");
 
@@ -57,7 +57,7 @@ public class ContentIdentifierCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedContentIdentifierCheck() throws Exception {
+	void failedContentIdentifierCheck() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setContentIdentifier("Invalid_Value");
 

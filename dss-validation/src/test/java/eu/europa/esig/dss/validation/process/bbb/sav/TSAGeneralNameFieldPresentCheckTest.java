@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TSAGeneralNameFieldPresentCheckTest extends AbstractTestCheck {
+class TSAGeneralNameFieldPresentCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() throws Exception {
+    void valid() throws Exception {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();
@@ -60,7 +60,7 @@ public class TSAGeneralNameFieldPresentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() throws Exception {
+    void invalid() throws Exception {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         LevelConstraint constraint = new LevelConstraint();

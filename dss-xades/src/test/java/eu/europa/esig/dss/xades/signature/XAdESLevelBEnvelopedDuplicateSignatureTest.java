@@ -51,12 +51,12 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess {
+class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess {
 	
 	private static final I18nProvider i18nProvider = new I18nProvider();
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument document = new FileDocument("src/test/resources/sample.xml");
 		
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();

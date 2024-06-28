@@ -49,10 +49,10 @@ import java.awt.Color;
 /**
  * How to sign PDF Document with PAdES-BASELINE-B and include a visual representation
  */
-public class SignPdfPadesBVisibleTest extends CookbookTools {
+class SignPdfPadesBVisibleTest extends CookbookTools {
 
 	@Test
-	public void signPAdESBaselineBWithVisibleSignature() throws Exception {
+	void signPAdESBaselineBWithVisibleSignature() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

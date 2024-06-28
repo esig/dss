@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractJAdESTestSignature {
+class JAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractJAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -69,7 +69,7 @@ public class JAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractJAdES
     private static final DSSDocument ORIGINAL_DOCUMENT = new FileDocument(new File("src/test/resources/sample.json"));
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = ORIGINAL_DOCUMENT;
 
         Policy signaturePolicy = new Policy();

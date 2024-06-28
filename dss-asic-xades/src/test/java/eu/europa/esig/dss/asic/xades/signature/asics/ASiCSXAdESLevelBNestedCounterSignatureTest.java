@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSXAdESLevelBNestedCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCSXAdESLevelBNestedCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
 
 	private DSSDocument documentToSign;
 	private ASiCWithXAdESService service;
@@ -56,7 +56,7 @@ public class ASiCSXAdESLevelBNestedCounterSignatureTest extends AbstractASiCWith
 	private XAdESCounterSignatureParameters counterSignatureParameters;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 		
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
@@ -76,7 +76,7 @@ public class ASiCSXAdESLevelBNestedCounterSignatureTest extends AbstractASiCWith
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);

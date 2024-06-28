@@ -41,12 +41,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
+class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 
 	private static final String FILE = "/validation/doc-firmado-LT.pdf";
 
 	@Test
-	public void testPdfBoxUtils() throws Exception {
+	void testPdfBoxUtils() throws Exception {
 		try (PdfDocumentReader documentReader = new PdfBoxDocumentReader(new InMemoryDocument(getClass().getResourceAsStream(FILE)))) {
 			PdfDssDict dssDictionary = documentReader.getDSSDictionary();
 			assertNotNull(dssDictionary);
@@ -54,12 +54,12 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void testPdfBoxUtilsEmptyDocument() throws Exception {
+	void testPdfBoxUtilsEmptyDocument() throws Exception {
 		assertThrows(IOException.class, () -> new PdfBoxDocumentReader(InMemoryDocument.createEmptyDocument()));
 	}
 	
 	@Test
-	public void testPdfBoxUtilsNull() throws Exception {
+	void testPdfBoxUtilsNull() throws Exception {
 		Exception exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader((DSSDocument)null));
 		assertEquals("The document must be defined!", exception.getMessage());
 		exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader((byte[])null, null));
@@ -67,7 +67,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void permissionsReadOnlyDocument() throws IOException {
+	void permissionsReadOnlyDocument() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		try (PdfBoxDocumentReader pdfBoxDocumentReader = new PdfBoxDocumentReader(dssDocument)) {
 			PDDocument pdDocument = pdfBoxDocumentReader.getPDDocument();
@@ -85,7 +85,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void permissionsProtectedDocument() throws IOException {
+	void permissionsProtectedDocument() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"));
 		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
 			assertTrue(documentReader.isEncrypted());
@@ -96,7 +96,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void permissionsEditionProtectedDocument() throws IOException {
+	void permissionsEditionProtectedDocument() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_none.pdf"));
 		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
 			assertTrue(documentReader.isEncrypted());
@@ -107,7 +107,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void permissionsEditionNoFieldsProtectedDocument() throws IOException {
+	void permissionsEditionNoFieldsProtectedDocument() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_no_field.pdf"));
 		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
 			assertTrue(documentReader.isEncrypted());
@@ -119,7 +119,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 
 	// NOTE : Edition 6 is not supported in OpenPdf
 	@Test
-	public void permissionsEditionSixProtectedDocument() throws IOException {
+	void permissionsEditionSixProtectedDocument() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/restricted_fields.pdf"));
 		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument)) {
 			assertTrue(documentReader.isEncrypted());
@@ -130,7 +130,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void generateDocumentIdTest() throws IOException {
+	void generateDocumentIdTest() throws IOException {
 		DSSDocument firstDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		DSSDocument secondDocument = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
@@ -189,7 +189,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void fileHeaderVersionTest() throws IOException {
+	void fileHeaderVersionTest() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		assertEquals(1.4f, new PdfBoxDocumentReader(dssDocument).getPdfHeaderVersion());
 		dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
@@ -201,7 +201,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void versionTest() throws IOException {
+	void versionTest() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		assertEquals(1.4f, new PdfBoxDocumentReader(dssDocument).getVersion());
 		dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
@@ -213,7 +213,7 @@ public class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void setVersionTest() throws IOException {
+	void setVersionTest() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument);

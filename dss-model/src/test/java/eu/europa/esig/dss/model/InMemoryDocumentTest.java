@@ -32,10 +32,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class InMemoryDocumentTest {
+class InMemoryDocumentTest {
 
 	@Test
-	public void test() {
+	void test() {
 		InMemoryDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/AdobeCA.p7c"));
 		assertNotNull(doc);
 		assertNull(doc.getMimeType());
@@ -45,7 +45,7 @@ public class InMemoryDocumentTest {
 	}
 
 	@Test
-	public void testSetter() {
+	void testSetter() {
 		InMemoryDocument doc = new InMemoryDocument();
 		assertNotNull(doc);
 		assertNull(doc.getMimeType());
@@ -65,7 +65,7 @@ public class InMemoryDocumentTest {
 	}
 
 	@Test
-	public void testWithName() {
+	void testWithName() {
 		InMemoryDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/AdobeCA.p7c"), "AdobeCA.p7c");
 		assertNotNull(doc);
 		assertEquals(MimeTypeEnum.BINARY, doc.getMimeType());
@@ -75,7 +75,7 @@ public class InMemoryDocumentTest {
 	}
 
 	@Test
-	public void testBytes() {
+	void testBytes() {
 		byte[] bytes = new byte[] { 1, 2, 3 };
 
 		InMemoryDocument doc = new InMemoryDocument(bytes, "doc.txt");
@@ -87,7 +87,7 @@ public class InMemoryDocumentTest {
 	}
 
 	@Test
-	public void createEmptyDocTest() {
+	void createEmptyDocTest() {
 		InMemoryDocument emptyDocument = InMemoryDocument.createEmptyDocument();
 		assertNotNull(emptyDocument);
 		assertNotNull(emptyDocument.getBytes());
@@ -95,7 +95,7 @@ public class InMemoryDocumentTest {
 	}
 
 	@Test
-	public void testFileNotFound() throws IOException {
+	void testFileNotFound() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/AdobeCAAA.p7c")) {
 			NullPointerException exception = assertThrows(NullPointerException.class, () -> new InMemoryDocument(is));
 			assertEquals("The InputStream is null", exception.getMessage());
@@ -103,13 +103,13 @@ public class InMemoryDocumentTest {
 	}
 
 	@Test
-	public void testNullInputStream() {
+	void testNullInputStream() {
 		NullPointerException exception = assertThrows(NullPointerException.class, () -> new InMemoryDocument((InputStream) null));
 		assertEquals("The InputStream is null", exception.getMessage());
 	}
 
 	@Test
-	public void testNullBytes() {
+	void testNullBytes() {
 		NullPointerException exception = assertThrows(NullPointerException.class, () -> new InMemoryDocument((byte[]) null));
 		assertEquals("Bytes cannot be null", exception.getMessage());
 	}

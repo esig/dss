@@ -47,7 +47,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESMultipleCounterSignatureExtensionTest extends AbstractCAdESTestExtension {
+class CAdESMultipleCounterSignatureExtensionTest extends AbstractCAdESTestExtension {
 	
 	private CertificateVerifier certificateVerifier;
 	private CAdESService service;
@@ -55,7 +55,7 @@ public class CAdESMultipleCounterSignatureExtensionTest extends AbstractCAdESTes
 	private DSSDocument documentToExtend;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToExtend = new FileDocument("src/test/resources/validation/signedFile.pdf.p7s");
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(documentToExtend);

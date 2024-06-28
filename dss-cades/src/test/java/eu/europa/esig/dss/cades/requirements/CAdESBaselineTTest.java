@@ -20,17 +20,16 @@
  */
 package eu.europa.esig.dss.cades.requirements;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.bouncycastle.asn1.cms.SignerInfo;
-import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.OID;
+import org.bouncycastle.asn1.cms.SignerInfo;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 
-public class CAdESBaselineTTest extends AbstractCAdESRequirementChecks {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class CAdESBaselineTTest extends AbstractCAdESRequirementChecks {
 
 	@Override
 	protected CAdESSignatureParameters getSignatureParameters() {
@@ -40,50 +39,45 @@ public class CAdESBaselineTTest extends AbstractCAdESRequirementChecks {
 	}
 
 	@Override
-	public void checkCertificateValue(SignerInfo signerInfo) {
+	protected void checkCertificateValue(SignerInfo signerInfo) {
 		int counter = countUnsignedAttribute(signerInfo, PKCSObjectIdentifiers.id_aa_ets_certValues);
 		assertTrue((counter == 0) || (counter == 1));
 	}
 
 	@Override
-	public void checkCompleteCertificateReference(SignerInfo signerInfo) {
+	protected void checkCompleteCertificateReference(SignerInfo signerInfo) {
 		int counter = countUnsignedAttribute(signerInfo, PKCSObjectIdentifiers.id_aa_ets_certificateRefs);
 		assertTrue((counter == 0) || (counter == 1));
 	}
 
 	@Override
-	public void checkRevocationValues(SignerInfo signerInfo) {
+	protected void checkRevocationValues(SignerInfo signerInfo) {
 		int counter = countUnsignedAttribute(signerInfo, PKCSObjectIdentifiers.id_aa_ets_revocationValues);
 		assertTrue((counter == 0) || (counter == 1));
 	}
 
 	@Override
-	public void checkCompleteRevocationReferences(SignerInfo signerInfo) {
+	protected void checkCompleteRevocationReferences(SignerInfo signerInfo) {
 		int counter = countUnsignedAttribute(signerInfo, PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
 		assertTrue((counter == 0) || (counter == 1));
 	}
 
 	@Override
-	public void checkCAdESCTimestamp(SignerInfo signerInfo) {
+	protected void checkCAdESCTimestamp(SignerInfo signerInfo) {
 		int counter = countUnsignedAttribute(signerInfo, PKCSObjectIdentifiers.id_aa_ets_escTimeStamp);
 		assertTrue(counter >= 0);
 	}
 
 	@Override
-	public void checkTimestampedCertsCrlsReferences(SignerInfo signerInfo) {
+	protected void checkTimestampedCertsCrlsReferences(SignerInfo signerInfo) {
 		int counter = countUnsignedAttribute(signerInfo, PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp);
 		assertTrue(counter >= 0);
 	}
 
 	@Override
-	public void checkArchiveTimeStampV3(SignerInfo signerInfo) {
+	protected void checkArchiveTimeStampV3(SignerInfo signerInfo) {
 		int counter = countUnsignedAttribute(signerInfo, OID.id_aa_ets_archiveTimestampV3);
 		assertEquals(0, counter);
-	}
-
-	@Override
-	protected String getSigningAlias() {
-		return GOOD_USER;
 	}
 
 }

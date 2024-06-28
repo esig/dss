@@ -48,13 +48,13 @@ public class PDFSignatureServiceTest {
 	private AbstractPDFSignatureService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
 		service = (AbstractPDFSignatureService) pdfObjFactory.newPAdESSignatureService();
 	}
 	
 	@Test
-	public void alertOnSignatureFieldOverlapTest() {
+	void alertOnSignatureFieldOverlapTest() {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 		
 		SignatureFieldParameters parametersOne = new SignatureFieldParameters();
@@ -86,7 +86,7 @@ public class PDFSignatureServiceTest {
 	}
 
 	@Test
-	public void alertOnSignatureFieldOverlapWithRotationTest() {
+	void alertOnSignatureFieldOverlapWithRotationTest() {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
@@ -143,7 +143,7 @@ public class PDFSignatureServiceTest {
 	}
 
 	@Test
-	public void alertOnSignatureFieldOutsidePageDimensions() {
+	void alertOnSignatureFieldOutsidePageDimensions() {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 
 		PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
@@ -267,7 +267,7 @@ public class PDFSignatureServiceTest {
 	}
 
 	@Test
-	public void alertOnSignatureFieldOutsidePageDimensionsDocWithRotation() {
+	void alertOnSignatureFieldOutsidePageDimensionsDocWithRotation() {
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_90.pdf"));
 
 		PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
@@ -313,7 +313,7 @@ public class PDFSignatureServiceTest {
 	}
 
 	@Test
-	public void alertOnForbiddenSignatureCreationTest() {
+	void alertOnForbiddenSignatureCreationTest() {
 		DSSDocument documentToSign = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/dss-2554/certified-no-change-permitted.pdf"));
 

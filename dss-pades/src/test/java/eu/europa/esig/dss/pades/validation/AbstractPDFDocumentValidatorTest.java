@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class AbstractPDFDocumentValidatorTest extends AbstractTestDocumentValidator {
 
 	@Test
-	public void isSupported() {
+	void isSupported() {
 		PDFDocumentValidator validator = new PDFDocumentValidator();
 		
 		byte[] wrongBytes = new byte[] { 1, 2 };

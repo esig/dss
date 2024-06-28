@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ManifestFilePresentCheckTest extends AbstractTestCheck {
+class ManifestFilePresentCheckTest extends AbstractTestCheck {
 
     @Test
-    public void asicsWithManifestTest() {
+    void asicsWithManifestTest() {
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setManifestFiles(Collections.singletonList(new XmlManifestFile()));
@@ -58,7 +58,7 @@ public class ManifestFilePresentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void asicsNoManifestTest() {
+    void asicsNoManifestTest() {
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setManifestFiles(Collections.emptyList());
@@ -76,7 +76,7 @@ public class ManifestFilePresentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void asicsNoManifestNullTest() {
+    void asicsNoManifestNullTest() {
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setManifestFiles(null);
@@ -94,7 +94,7 @@ public class ManifestFilePresentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void asiceWithManifestTest() {
+    void asiceWithManifestTest() {
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setManifestFiles(Collections.singletonList(new XmlManifestFile()));
@@ -112,7 +112,7 @@ public class ManifestFilePresentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void asiceNoManifestTest() {
+    void asiceNoManifestTest() {
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setManifestFiles(Collections.emptyList());
@@ -130,7 +130,7 @@ public class ManifestFilePresentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void asiceNoManifestNullTest() {
+    void asiceNoManifestNullTest() {
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setManifestFiles(null);

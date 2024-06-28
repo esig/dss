@@ -48,10 +48,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SignatureQualificationTest {
+class SignatureQualificationTest {
 
     @Test
-    public void test() {
+    void test() {
 
         DSSDocument signedDocument = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 

@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 
-public class ObjectIdentifierQualifierParserTest {
+class ObjectIdentifierQualifierParserTest {
 
 	@Test
-	public void testEnum() {
+	void testEnum() {
 		for (ObjectIdentifierQualifier qualifier : ObjectIdentifierQualifier.values()) {
 			String string = ObjectIdentifierQualifierParser.print(qualifier);
 			assertNotNull(string);
@@ -41,7 +41,7 @@ public class ObjectIdentifierQualifierParserTest {
 	}
 
 	@Test
-	public void parseUnknown() {
+	void parseUnknown() {
 		assertNull(ObjectIdentifierQualifierParser.parse(null));
 		assertNull(ObjectIdentifierQualifierParser.parse("bla"));
 	}

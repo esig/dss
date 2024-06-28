@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class DSS2506Test extends AbstractXAdESTestValidation {
+class DSS2506Test extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

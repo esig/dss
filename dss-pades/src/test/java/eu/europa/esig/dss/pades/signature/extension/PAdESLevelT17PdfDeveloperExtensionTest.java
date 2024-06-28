@@ -51,7 +51,7 @@ public abstract class PAdESLevelT17PdfDeveloperExtensionTest extends AbstractPAd
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/testdoc.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();

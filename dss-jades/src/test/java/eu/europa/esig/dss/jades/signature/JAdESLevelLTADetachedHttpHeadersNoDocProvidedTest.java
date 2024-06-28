@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelLTADetachedHttpHeadersNoDocProvidedTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelLTADetachedHttpHeadersNoDocProvidedTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
     private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
@@ -71,7 +71,7 @@ public class JAdESLevelLTADetachedHttpHeadersNoDocProvidedTest extends AbstractJ
     List<DSSDocument> detachedContents;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         JAdESService jadesService = new JAdESService(getCompleteCertificateVerifier());
         jadesService.setTspSource(getGoodTsa());
         service = jadesService;

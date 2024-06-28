@@ -29,7 +29,7 @@ import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TrustedListSignatureParametersBuilderWithMGFAndSHA512Test extends TrustedListSignatureParametersBuilderTest {
+class TrustedListSignatureParametersBuilderWithMGFAndSHA512Test extends TrustedListSignatureParametersBuilderTest {
 
     @Override
     protected TrustedListSignatureParametersBuilder getSignatureParametersBuilder() {

@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithTstWithAsn1EvidenceRecordValidationTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCEWithTstWithAsn1EvidenceRecordValidationTest extends AbstractASiCWithCAdESTestValidation {
     @Override
     protected DSSDocument getSignedDocument() {
         return new FileDocument("src/test/resources/validation/evidencerecord/tst-with-asn1-er.sce");

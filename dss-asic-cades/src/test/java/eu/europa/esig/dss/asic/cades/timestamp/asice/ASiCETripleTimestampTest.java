@@ -49,10 +49,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCETripleTimestampTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCETripleTimestampTest extends AbstractASiCWithCAdESTestValidation {
 
     @Test
-    public void test() throws IOException {
+    void test() throws IOException {
         DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         DSSDocument documentToSign2 = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT);
         List<DSSDocument> docs = Arrays.asList(documentToSign, documentToSign2);

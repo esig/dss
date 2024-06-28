@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.extension;
 
 /* DSS-1765 */
-public class XAdESExtensionTToLTWithSelfSignedTest extends XAdESExtensionTToLTTest {
+class XAdESExtensionTToLTWithSelfSignedTest extends XAdESExtensionTToLTTest {
 
 	@Override
 	protected String getSigningAlias() {

@@ -44,13 +44,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentDoubleCounterSignTest extends AbstractOpenDocumentCounterSignatureTest {
+class OpenDocumentDoubleCounterSignTest extends AbstractOpenDocumentCounterSignatureTest {
 
 	private ASiCWithXAdESService service;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		signingDate = new Date();

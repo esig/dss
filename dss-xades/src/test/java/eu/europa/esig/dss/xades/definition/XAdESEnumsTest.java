@@ -50,12 +50,12 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESEnumsTest {
+class XAdESEnumsTest {
 	
-	public static final DSSNamespace XSD_NS = new DSSNamespace("http://www.w3.org/2001/XMLSchema", "xsd");
+	static final DSSNamespace XSD_NS = new DSSNamespace("http://www.w3.org/2001/XMLSchema", "xsd");
 
 	@Test
-	public void getAllEments() throws Exception {
+	void getAllEments() throws Exception {
 		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XmlDSigUtils.XMLDSIG_SCHEMA_LOCATION)) {
@@ -97,7 +97,7 @@ public class XAdESEnumsTest {
 	}
 
 	@Test
-	public void getAllAttributes() throws Exception {
+	void getAllAttributes() throws Exception {
 		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XmlDSigUtils.XMLDSIG_SCHEMA_LOCATION)) {

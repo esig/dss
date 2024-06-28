@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESDoubleSignatureLTAAndLTTest extends AbstractCAdESTestSignature {
+class CAdESDoubleSignatureLTAAndLTTest extends AbstractCAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -54,7 +54,7 @@ public class CAdESDoubleSignatureLTAAndLTTest extends AbstractCAdESTestSignature
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
         service = new CAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());

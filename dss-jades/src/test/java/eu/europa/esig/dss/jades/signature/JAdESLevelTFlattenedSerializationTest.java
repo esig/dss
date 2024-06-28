@@ -58,7 +58,7 @@ public class JAdESLevelTFlattenedSerializationTest extends AbstractJAdESTestSign
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

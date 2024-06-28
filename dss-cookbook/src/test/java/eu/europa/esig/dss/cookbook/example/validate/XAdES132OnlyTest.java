@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XAdES132OnlyTest {
+class XAdES132OnlyTest {
 
 	@Test
-	public void test() {
+	void test() {
 
 		CertificateVerifier cv = new CommonCertificateVerifier();
 		cv.setAIASource(null);

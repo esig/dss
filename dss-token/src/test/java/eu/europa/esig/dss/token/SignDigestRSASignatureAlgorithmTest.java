@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignDigestRSASignatureAlgorithmTest {
+class SignDigestRSASignatureAlgorithmTest {
 
     static {
         Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -70,7 +70,7 @@ public class SignDigestRSASignatureAlgorithmTest {
 
     @ParameterizedTest(name = "SignatureAlgorithm {index} : {0}")
     @MethodSource("data")
-    public void testPkcs12(SignatureAlgorithm signatureAlgorithm) throws IOException {
+    void testPkcs12(SignatureAlgorithm signatureAlgorithm) throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
                 new PasswordProtection("password".toCharArray()))) {
 

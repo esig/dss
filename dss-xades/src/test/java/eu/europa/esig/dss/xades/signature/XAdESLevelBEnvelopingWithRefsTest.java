@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -62,7 +62,7 @@ public class XAdESLevelBEnvelopingWithRefsTest extends AbstractXAdESTestSignatur
 	private static DSSDocument doc2 = new FileDocument("src/test/resources/sampleISO.xml");
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		
 		documentToSign = new FileDocument("src/test/resources/empty.xml");
 

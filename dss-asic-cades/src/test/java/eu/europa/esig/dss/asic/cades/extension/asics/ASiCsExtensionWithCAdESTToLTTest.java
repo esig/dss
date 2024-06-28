@@ -24,7 +24,7 @@ import eu.europa.esig.dss.asic.cades.extension.AbstractASiCWithCAdESTestExtensio
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class ASiCsExtensionWithCAdESTToLTTest extends AbstractASiCWithCAdESTestExtension {
+class ASiCsExtensionWithCAdESTToLTTest extends AbstractASiCWithCAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

@@ -24,7 +24,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AbstractCRLParserTestUtils {
+class AbstractCRLParserTestUtils {
 	
 	protected byte[] toByteArray(InputStream is) throws IOException {
 		try (ByteArrayOutputStream buffer = new ByteArrayOutputStream()) {

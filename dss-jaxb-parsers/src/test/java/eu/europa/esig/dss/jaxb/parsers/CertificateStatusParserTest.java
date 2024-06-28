@@ -27,17 +27,17 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 
-public class CertificateStatusParserTest {
+class CertificateStatusParserTest {
 
 	@Test
-	public void printAndParse() {
+	void printAndParse() {
 		for (CertificateStatus status : CertificateStatus.values()) {
 			assertEquals(status, CertificateStatusParser.parse(CertificateStatusParser.print(status)));
 		}
 	}
 
 	@Test
-	public void unknow() {
+	void unknow() {
 		assertThrows(IllegalArgumentException.class, () -> CertificateStatusParser.parse("bla"));
 		assertThrows(NullPointerException.class, () -> CertificateStatusParser.parse(null));
 	}

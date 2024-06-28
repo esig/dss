@@ -39,10 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XMLEvidenceRecordRenewalDigestBuilderTest {
+class XMLEvidenceRecordRenewalDigestBuilderTest {
 
     @Test
-    public void timeStampRenewalTest() {
+    void timeStampRenewalTest() {
         DSSDocument evidenceRecordDocument = new FileDocument("src/test/resources/er-tst.xml");
 
         XMLEvidenceRecordRenewalDigestBuilder xmlEvidenceRecordRenewalDigestBuilder = new XMLEvidenceRecordRenewalDigestBuilder(evidenceRecordDocument);
@@ -92,7 +92,7 @@ public class XMLEvidenceRecordRenewalDigestBuilderTest {
     }
 
     @Test
-    public void hashTreeRenewalTest() {
+    void hashTreeRenewalTest() {
         DSSDocument evidenceRecordDocument = new FileDocument("src/test/resources/er-chain-single.xml");
 
         XMLEvidenceRecordRenewalDigestBuilder xmlEvidenceRecordRenewalDigestBuilder = new XMLEvidenceRecordRenewalDigestBuilder(evidenceRecordDocument);
@@ -187,7 +187,7 @@ public class XMLEvidenceRecordRenewalDigestBuilderTest {
     }
 
     @Test
-    public void nullTest() {
+    void nullTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> new XMLEvidenceRecordRenewalDigestBuilder((DSSDocument) null));
         assertEquals("Document cannot be null!", exception.getMessage());
 
@@ -206,7 +206,7 @@ public class XMLEvidenceRecordRenewalDigestBuilderTest {
     }
 
     @Test
-    public void invalidFormatTest() {
+    void invalidFormatTest() {
         Exception exception = assertThrows(IllegalInputException.class, () ->
                 new XMLEvidenceRecordRenewalDigestBuilder(new FileDocument("src/test/resources/Signature-C-LT.p7m")));
         assertTrue(exception.getMessage().contains("An XML file is expected : Unable to parse content (XML expected)"));

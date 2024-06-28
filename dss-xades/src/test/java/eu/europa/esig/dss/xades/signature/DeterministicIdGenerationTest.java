@@ -30,7 +30,7 @@ import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class DeterministicIdGenerationTest extends PKIFactoryAccess {
+class DeterministicIdGenerationTest extends PKIFactoryAccess {
 
 	private CertificateToken signingCert;
 
@@ -38,12 +38,12 @@ public class DeterministicIdGenerationTest extends PKIFactoryAccess {
 	}
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 		signingCert = getSigningCert();
 	}
 
 	@RepeatedTest(10)
-	public void testDifferentDeterministicId() throws InterruptedException {
+	void testDifferentDeterministicId() throws InterruptedException {
 
 		Calendar calendar = Calendar.getInstance();
 

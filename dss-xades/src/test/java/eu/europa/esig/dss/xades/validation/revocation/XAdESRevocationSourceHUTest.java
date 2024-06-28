@@ -46,7 +46,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class XAdESRevocationSourceHUTest extends AbstractXAdESTestValidation {
+class XAdESRevocationSourceHUTest extends AbstractXAdESTestValidation {
 	
 	private static Set<String> revocationIds = new HashSet<>();
 

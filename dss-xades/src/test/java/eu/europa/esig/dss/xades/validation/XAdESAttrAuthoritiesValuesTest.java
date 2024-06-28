@@ -47,7 +47,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 /*
  * see DSS-2010
  */
-public class XAdESAttrAuthoritiesValuesTest extends AbstractXAdESTestValidation {
+class XAdESAttrAuthoritiesValuesTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

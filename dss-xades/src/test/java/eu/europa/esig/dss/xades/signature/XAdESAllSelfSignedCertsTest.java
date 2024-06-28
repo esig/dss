@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
+class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 	
 	private DSSDocument documentToSign;
 	private XAdESSignatureParameters parameters;
@@ -47,7 +47,7 @@ public class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 		
 		parameters = new XAdESSignatureParameters();
@@ -62,21 +62,21 @@ public class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 	}
 
 	@Test
-	public void bLevelTest() {
+	void bLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         DSSDocument signedDocument = sign();
         assertNotNull(signedDocument);
 	}
 
 	@Test
-	public void tLevelTest() {
+	void tLevelTest() {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
         DSSDocument signedDocument = sign();
         assertNotNull(signedDocument);
 	}
 
 	@Test
-	public void ltLevelTest() {
+	void ltLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
@@ -91,7 +91,7 @@ public class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 	}
 
 	@Test
-	public void ltaLevelTest() {
+	void ltaLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
@@ -106,7 +106,7 @@ public class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 	}
 
 	@Test
-	public void cLevelTest() {
+	void cLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_C);
@@ -121,7 +121,7 @@ public class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 	}
 
 	@Test
-	public void xLevelTest() {
+	void xLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_X);
@@ -136,7 +136,7 @@ public class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 	}
 
 	@Test
-	public void xlLevelTest() {
+	void xlLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_XL);
@@ -151,7 +151,7 @@ public class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 	}
 
 	@Test
-	public void aLevelTest() {
+	void aLevelTest() {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_A);

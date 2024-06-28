@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PastRevocationDataValidationConclusiveCheckTest extends AbstractTestCheck {
+class PastRevocationDataValidationConclusiveCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.PASSED);
 
@@ -57,7 +57,7 @@ public class PastRevocationDataValidationConclusiveCheckTest extends AbstractTes
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.INDETERMINATE);
         xmlConclusion.setSubIndication(SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE);

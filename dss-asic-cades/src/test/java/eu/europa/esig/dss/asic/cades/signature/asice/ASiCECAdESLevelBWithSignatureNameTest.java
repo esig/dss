@@ -39,7 +39,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESLevelBWithSignatureNameTest extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESLevelBWithSignatureNameTest extends AbstractASiCECAdESTestSignature {
 
     private static final String SIGNATURE_FILENAME = "signature-toto.p7s";
     private ASiCWithCAdESService service;
@@ -47,7 +47,7 @@ public class ASiCECAdESLevelBWithSignatureNameTest extends AbstractASiCECAdESTes
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
         signatureParameters = new ASiCWithCAdESSignatureParameters();

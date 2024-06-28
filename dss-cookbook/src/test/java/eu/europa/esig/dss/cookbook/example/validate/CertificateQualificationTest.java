@@ -50,10 +50,10 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CertificateQualificationTest {
+class CertificateQualificationTest {
 
     @Test
-    public void test() {
+    void test() {
 
         CertificateToken certificate = DSSUtils.loadCertificate(new File("src/main/resources/keystore/ec.europa.eu.1.cer"));
 

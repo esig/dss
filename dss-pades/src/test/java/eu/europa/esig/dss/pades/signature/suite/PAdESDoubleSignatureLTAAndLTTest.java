@@ -58,7 +58,7 @@ public class PAdESDoubleSignatureLTAAndLTTest extends AbstractPAdESTestSignature
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
         service = new PAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());

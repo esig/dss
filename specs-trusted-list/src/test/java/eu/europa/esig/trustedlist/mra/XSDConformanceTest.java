@@ -43,12 +43,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
-public class XSDConformanceTest {
+class XSDConformanceTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XSDConformanceTest.class);
 
 	@Test
-	public void test() {
+	void test() {
 		
 		try {
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

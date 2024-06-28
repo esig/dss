@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBWithNotTrimmedPolicyIdTest extends AbstractXAdESTestSignature {
+class XAdESLevelBWithNotTrimmedPolicyIdTest extends AbstractXAdESTestSignature {
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6 ";
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
@@ -49,7 +49,7 @@ public class XAdESLevelBWithNotTrimmedPolicyIdTest extends AbstractXAdESTestSign
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         Policy signaturePolicy = new Policy();

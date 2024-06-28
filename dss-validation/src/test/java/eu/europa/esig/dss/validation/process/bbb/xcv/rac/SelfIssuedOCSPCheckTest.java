@@ -39,12 +39,12 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCheck;
 
-public class SelfIssuedOCSPCheckTest extends AbstractTestCheck {
+class SelfIssuedOCSPCheckTest extends AbstractTestCheck {
 
 	private static final String CERT_ID = "C-1";
 
 	@Test
-	public void revocationCertHashPresenceCheck() throws Exception {
+	void revocationCertHashPresenceCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -70,7 +70,7 @@ public class SelfIssuedOCSPCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failRevocationCertHashPresenceCheck() throws Exception {
+	void failRevocationCertHashPresenceCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

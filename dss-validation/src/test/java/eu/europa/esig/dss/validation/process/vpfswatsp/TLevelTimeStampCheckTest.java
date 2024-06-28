@@ -49,12 +49,12 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TLevelTimeStampCheckTest extends AbstractTestCheck {
+class TLevelTimeStampCheckTest extends AbstractTestCheck {
 
     private static final String TST_ID = "TST-1";
 
     @Test
-    public void valid() {
+    void valid() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlTimestamp timestamp = new XmlTimestamp();
@@ -95,7 +95,7 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlTimestamp timestamp = new XmlTimestamp();
@@ -137,7 +137,7 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multipleTsts() {
+    void multipleTsts() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlTimestamp timestamp = new XmlTimestamp();
@@ -201,7 +201,7 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multipleTstsInvalid() {
+    void multipleTstsInvalid() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlTimestamp timestamp = new XmlTimestamp();
@@ -265,7 +265,7 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void psvTest() {
+    void psvTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlTimestamp timestamp = new XmlTimestamp();
@@ -313,7 +313,7 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void psvWithNotAllowedIndicationTest() {
+    void psvWithNotAllowedIndicationTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlTimestamp timestamp = new XmlTimestamp();
@@ -361,7 +361,7 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidType() {
+    void invalidType() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlTimestamp timestamp = new XmlTimestamp();
@@ -402,7 +402,7 @@ public class TLevelTimeStampCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void docTstType() {
+    void docTstType() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlTimestamp timestamp = new XmlTimestamp();

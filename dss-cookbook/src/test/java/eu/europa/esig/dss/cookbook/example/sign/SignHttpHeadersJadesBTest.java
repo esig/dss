@@ -44,10 +44,10 @@ import java.util.List;
 /**
  * How to sign HTTP request with JAdES-BASELINE-B detached signature.
  */
-public class SignHttpHeadersJadesBTest extends CookbookTools {
+class SignHttpHeadersJadesBTest extends CookbookTools {
 
     @Test
-    public void signHttpHeadersJadesBaselineB() throws Exception {
+    void signHttpHeadersJadesBaselineB() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

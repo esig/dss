@@ -56,6 +56,6 @@ import org.junit.platform.suite.api.Suite;
 		PAdESVisibleSigOutsidePageTest.class, PAdESWithNullTextColorTest.class, PAdESVisibleSignRotatedDocumentTest.class,
 		PAdESWithFontSubsetWithAtomicMethodsTest.class, PAdESExternalCMSSignatureBLevelVisibleTest.class,
 		PAdESAddNewFieldRotatedDocumentTest.class, PAdESFieldMDPTest.class })
-public class PdfBoxPAdESVisibleSignatureSuiteTest {
+class PdfBoxPAdESVisibleSignatureSuiteTest {
 
 }

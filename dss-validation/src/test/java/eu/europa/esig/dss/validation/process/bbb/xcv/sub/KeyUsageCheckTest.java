@@ -40,10 +40,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class KeyUsageCheckTest extends AbstractTestCheck {
+class KeyUsageCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void keyUsageCheck() {
+	void keyUsageCheck() {
 		XmlKeyUsages keyUsages = new XmlKeyUsages();
 		keyUsages.setOID(CertificateExtensionEnum.KEY_USAGE.getOid());
 		keyUsages.getKeyUsageBit().add(KeyUsageBit.CRL_SIGN);
@@ -65,7 +65,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedKeyUsageCheck() {
+	void failedKeyUsageCheck() {
 		XmlKeyUsages keyUsages = new XmlKeyUsages();
 		keyUsages.setOID(CertificateExtensionEnum.KEY_USAGE.getOid());
 		keyUsages.getKeyUsageBit().add(KeyUsageBit.CRL_SIGN);
@@ -87,7 +87,7 @@ public class KeyUsageCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void multiValuesCheck() {
+	void multiValuesCheck() {
 		XmlKeyUsages keyUsages = new XmlKeyUsages();
 		keyUsages.setOID(CertificateExtensionEnum.KEY_USAGE.getOid());
 		keyUsages.getKeyUsageBit().add(KeyUsageBit.DIGITAL_SIGNATURE);

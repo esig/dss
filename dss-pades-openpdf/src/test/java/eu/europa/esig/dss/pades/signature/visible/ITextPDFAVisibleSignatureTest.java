@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class ITextPDFAVisibleSignatureTest extends PDFAVisibleSignatureTest {
+class ITextPDFAVisibleSignatureTest extends PDFAVisibleSignatureTest {
 
     @Override
     protected void setCustomFactory() {
@@ -38,7 +38,7 @@ public class ITextPDFAVisibleSignatureTest extends PDFAVisibleSignatureTest {
     }
 
     @Test
-    public void testAddCMYKImageToRGBDoc() throws IOException {
+    void testAddCMYKImageToRGBDoc() throws IOException {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-rgb.pdf"));
 
         SignatureImageParameters imageParameters = new SignatureImageParameters();
@@ -55,7 +55,7 @@ public class ITextPDFAVisibleSignatureTest extends PDFAVisibleSignatureTest {
     }
 
     @Test
-    public void testAddGrayscalePNGImageToGrayColorSpaceDoc() throws IOException {
+    void testAddGrayscalePNGImageToGrayColorSpaceDoc() throws IOException {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/pdfa2a-gray.pdf"));
 
         SignatureImageParameters imageParameters = new SignatureImageParameters();

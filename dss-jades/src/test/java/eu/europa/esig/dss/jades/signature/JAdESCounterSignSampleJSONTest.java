@@ -37,7 +37,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESCounterSignSampleJSONTest extends AbstractJAdESCounterSignatureTest {
+class JAdESCounterSignSampleJSONTest extends AbstractJAdESCounterSignatureTest {
 
     private JAdESService service;
     private DSSDocument documentToSign;
@@ -45,7 +45,7 @@ public class JAdESCounterSignSampleJSONTest extends AbstractJAdESCounterSignatur
     private Date signingDate;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
@@ -68,7 +68,7 @@ public class JAdESCounterSignSampleJSONTest extends AbstractJAdESCounterSignatur
     }
 
     @Test
-    public void test() {
+    void test() {
         Exception exception = assertThrows(IllegalInputException.class, () -> counterSign(documentToSign, "Id-1"));
         assertEquals("There is no signature to extend!", exception.getMessage());
     }

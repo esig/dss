@@ -42,10 +42,10 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SignatureLevelValidationTest {
+class SignatureLevelValidationTest {
 
     @Test
-    public void validateXAdESBLevel() throws Exception {
+    void validateXAdESBLevel() throws Exception {
 
         // See Trusted Lists loading
         CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password".toCharArray());

@@ -24,10 +24,17 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 
 /**
  * Parses the {@code ArchiveTimestampType}
+ *
+ * @deprecated since DSS 6.1. To be removed.
  */
+@Deprecated
 public class MaskGenerationFunctionParser {
 
+	/**
+	 * Default constructor
+	 */
 	private MaskGenerationFunctionParser() {
+		// empty
 	}
 
 	/**

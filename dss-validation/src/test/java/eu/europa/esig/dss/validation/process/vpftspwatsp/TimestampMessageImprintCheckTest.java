@@ -39,10 +39,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TimestampMessageImprintCheckTest extends AbstractTestCheck {
+class TimestampMessageImprintCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setType(TimestampType.CONTENT_TIMESTAMP);
         xmlTimestamp.setProductionTime(new Date());
@@ -67,7 +67,7 @@ public class TimestampMessageImprintCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void failedTest() throws Exception {
+    void failedTest() throws Exception {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setType(TimestampType.CONTENT_TIMESTAMP);
         xmlTimestamp.setProductionTime(new Date());

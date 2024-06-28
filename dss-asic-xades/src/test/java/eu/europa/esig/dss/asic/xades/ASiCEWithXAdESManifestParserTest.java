@@ -36,10 +36,10 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
 
-public class ASiCEWithXAdESManifestParserTest {
+class ASiCEWithXAdESManifestParserTest {
 
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument signatureDoc = new InMemoryDocument("Hello".getBytes(), "test");
 		DSSDocument manifestDoc = new FileDocument(new File("src/test/resources/manifest-sample.xml"));
 		ASiCEWithXAdESManifestParser parser = new ASiCEWithXAdESManifestParser(signatureDoc, manifestDoc);

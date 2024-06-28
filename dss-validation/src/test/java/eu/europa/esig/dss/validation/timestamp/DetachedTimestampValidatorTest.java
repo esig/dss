@@ -58,10 +58,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DetachedTimestampValidatorTest {
+class DetachedTimestampValidatorTest {
 
     @Test
-    public void testWithAttached() throws Exception {
+    void testWithAttached() throws Exception {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
         DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
@@ -85,7 +85,7 @@ public class DetachedTimestampValidatorTest {
     }
 
     @Test
-    public void sdv1() throws Exception {
+    void sdv1() throws Exception {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
         DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
@@ -97,7 +97,7 @@ public class DetachedTimestampValidatorTest {
     }
 
     @Test
-    public void sdv2() throws Exception {
+    void sdv2() throws Exception {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
         DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
@@ -109,7 +109,7 @@ public class DetachedTimestampValidatorTest {
     }
 
     @Test
-    public void sdvNoFile() throws Exception {
+    void sdvNoFile() throws Exception {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
 
         DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
@@ -152,7 +152,7 @@ public class DetachedTimestampValidatorTest {
     }
 
     @Test
-    public void detachedNoFile() throws Exception {
+    void detachedNoFile() throws Exception {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
 
         DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
@@ -169,7 +169,7 @@ public class DetachedTimestampValidatorTest {
     }
 
     @Test
-    public void sdvTooMuchFiles() {
+    void sdvTooMuchFiles() {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
         DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
@@ -181,7 +181,7 @@ public class DetachedTimestampValidatorTest {
     }
 
     @Test
-    public void testWithDigestDocument() throws Exception {
+    void testWithDigestDocument() throws Exception {
 
         FileDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
         TimestampToken tst = new TimestampToken(DSSUtils.toByteArray(timestamp), TimestampType.CONTENT_TIMESTAMP);
@@ -200,7 +200,7 @@ public class DetachedTimestampValidatorTest {
     }
 
     @Test
-    public void disig() throws Exception {
+    void disig() throws Exception {
         DSSDocument tst = new FileDocument("src/test/resources/disig.tst");
 
         try (InputStream fis = tst.openStream()) {

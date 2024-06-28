@@ -30,16 +30,16 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ServiceByMRAEnactedFilterTest {
+class ServiceByMRAEnactedFilterTest {
 
     @Test
-    public void noTSTest() {
+    void noTSTest() {
         ServiceByMRAEnactedFilter filter = new ServiceByMRAEnactedFilter();
         assertTrue(Utils.isCollectionEmpty(filter.filter(new ArrayList<>())));
     }
 
     @Test
-    public void enactedTest() {
+    void enactedTest() {
         ServiceByMRAEnactedFilter filter = new ServiceByMRAEnactedFilter();
 
         TrustServiceWrapper service = new TrustServiceWrapper();
@@ -49,7 +49,7 @@ public class ServiceByMRAEnactedFilterTest {
     }
 
     @Test
-    public void notEnactedTest() {
+    void notEnactedTest() {
         ServiceByMRAEnactedFilter filter = new ServiceByMRAEnactedFilter();
 
         TrustServiceWrapper service = new TrustServiceWrapper();
@@ -59,7 +59,7 @@ public class ServiceByMRAEnactedFilterTest {
     }
 
     @Test
-    public void noEnactedTest() {
+    void noEnactedTest() {
         ServiceByMRAEnactedFilter filter = new ServiceByMRAEnactedFilter();
 
         TrustServiceWrapper service = new TrustServiceWrapper();

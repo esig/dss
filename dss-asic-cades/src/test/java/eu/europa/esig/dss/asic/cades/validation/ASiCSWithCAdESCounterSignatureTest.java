@@ -30,7 +30,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSWithCAdESCounterSignatureTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCSWithCAdESCounterSignatureTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -48,7 +48,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class QualifiedTest {
+class QualifiedTest {
 
 	private static final String UNKNOWN_OID = "0.0.0";
 
@@ -59,44 +59,44 @@ public class QualifiedTest {
 	// --------------------- PRE EIDAS
 
 	@Test
-	public void testPreNoQcStatementNoCertPolicy() {
+	void testPreNoQcStatementNoCertPolicy() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(), Collections.emptyList());
 		notQC(signingCertificate);
 	}
 
 	@Test
-	public void testPreQcCompliant() {
+	void testPreQcCompliant() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE), Collections.emptyList());
 		qc(signingCertificate);
 	}
 
 	@Test
-	public void testPreUnknownQcCompliant() {
+	void testPreUnknownQcCompliant() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Arrays.asList(QCStatement.QC_LIMIT_VALUE), Collections.emptyList());
 		notQC(signingCertificate);
 	}
 
 	@Test
-	public void testPreQCP() {
+	void testPreQCP() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(), Arrays.asList(CertificatePolicy.QCP_PUBLIC.getOid()));
 		qc(signingCertificate);
 	}
 
 	@Test
-	public void testPreQCPPlus() {
+	void testPreQCPPlus() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(),
 				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		qc(signingCertificate);
 	}
 
 	@Test
-	public void testPreUnknownCertPolicy() {
+	void testPreUnknownCertPolicy() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(), Arrays.asList(UNKNOWN_OID));
 		notQC(signingCertificate);
 	}
 
 	@Test
-	public void testPreQcTypeEsigOnly() {
+	void testPreQcTypeEsigOnly() {
 		CertificateWrapper signingCertificate = createPreEIDAS(Collections.emptyList(), Collections.emptyList(),
 				Arrays.asList(QCTypeEnum.QCT_ESIGN));
 		notQC(signingCertificate);
@@ -105,66 +105,66 @@ public class QualifiedTest {
 	// --------------------- POST EIDAS
 
 	@Test
-	public void testPostNoQcStatementNoCertPolicy() {
+	void testPostNoQcStatementNoCertPolicy() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.emptyList(), Collections.emptyList());
 		notQC(signingCertificate);
 	}
 
 	@Test
-	public void testPostQcCompliant() {
+	void testPostQcCompliant() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE), Collections.emptyList());
 		qc(signingCertificate);
 	}
 
 	@Test
-	public void testPostUnknownQcCompliant() {
+	void testPostUnknownQcCompliant() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_LIMIT_VALUE), Collections.emptyList());
 		notQC(signingCertificate);
 	}
 
 	@Test
-	public void testPostQCP() {
+	void testPostQCP() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.emptyList(), Arrays.asList(CertificatePolicy.QCP_PUBLIC.getOid()));
 		notQC(signingCertificate); // QcCompliant is missing
 	}
 
 	@Test
-	public void testPostQcCompliantQCP() {
+	void testPostQcCompliantQCP() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE),
 				Arrays.asList(CertificatePolicy.QCP_PUBLIC.getOid()));
 		qc(signingCertificate);
 	}
 
 	@Test
-	public void testPostQCPPlus() {
+	void testPostQCPPlus() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.emptyList(),
 				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		notQC(signingCertificate); // QcCompliant is missing
 	}
 
 	@Test
-	public void testPostQcCompliantQCPPlus() {
+	void testPostQcCompliantQCPPlus() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE),
 				Arrays.asList(CertificatePolicy.QCP_PUBLIC_WITH_SSCD.getOid()));
 		qc(signingCertificate);
 	}
 
 	@Test
-	public void testPostQcTypeEsigOnly() {
+	void testPostQcTypeEsigOnly() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Collections.emptyList(), Collections.emptyList(),
 				Arrays.asList(QCTypeEnum.QCT_ESIGN));
 		notQC(signingCertificate);
 	}
 
 	@Test
-	public void testPostQcCompliantQcTypeEsig() {
+	void testPostQcCompliantQcTypeEsig() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE), Collections.emptyList(),
 				Arrays.asList(QCTypeEnum.QCT_ESIGN));
 		qc(signingCertificate);
 	}
 
 	@Test
-	public void testPostQcCompliantQcTypeEseals() {
+	void testPostQcCompliantQcTypeEseals() {
 		CertificateWrapper signingCertificate = createPostEIDAS(Arrays.asList(QCStatement.QC_COMPLIANCE), Collections.emptyList(),
 				Arrays.asList(QCTypeEnum.QCT_ESEAL));
 		qc(signingCertificate);

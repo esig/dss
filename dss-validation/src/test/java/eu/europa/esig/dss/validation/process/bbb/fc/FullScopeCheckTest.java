@@ -37,10 +37,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FullScopeCheckTest extends AbstractTestCheck {
+class FullScopeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlSignatureScope xmlSignatureScopeOne = new XmlSignatureScope();
         xmlSignatureScopeOne.setScope(SignatureScopeType.FULL);
         XmlSignatureScope xmlSignatureScopeTwo = new XmlSignatureScope();
@@ -59,7 +59,7 @@ public class FullScopeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalid() {
+    void invalid() {
         XmlSignatureScope xmlSignatureScopeOne = new XmlSignatureScope();
         xmlSignatureScopeOne.setScope(SignatureScopeType.FULL);
         XmlSignatureScope xmlSignatureScopeTwo = new XmlSignatureScope();
@@ -78,7 +78,7 @@ public class FullScopeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void empty() {
+    void empty() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

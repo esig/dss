@@ -40,10 +40,10 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 /**
  * How to sign with XAdES-BASELINE-T
  */
-public class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
+class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineTWithOnlineTSP() throws Exception {
+	void signXAdESBaselineTWithOnlineTSP() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

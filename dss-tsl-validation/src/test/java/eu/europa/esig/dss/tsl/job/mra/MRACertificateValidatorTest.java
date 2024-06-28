@@ -42,11 +42,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MRACertificateValidatorTest extends AbstractMRALOTLTest {
+class MRACertificateValidatorTest extends AbstractMRALOTLTest {
 
     @Test
     @Override
-    public void test() {
+    void test() {
         TLValidationJob tlValidationJob = new TLValidationJob();
 
         LOTLSource lotlSource = new LOTLSource();

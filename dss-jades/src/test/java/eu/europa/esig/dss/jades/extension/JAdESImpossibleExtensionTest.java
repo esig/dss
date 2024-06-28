@@ -43,10 +43,10 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
+class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
 	@Test
-	public void notSigned() {
+	void notSigned() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.json");
 
 		JAdESService service = new JAdESService(getOfflineCertificateVerifier());
@@ -61,7 +61,7 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void digestDocumentWithLTALevelTest() {
+	void digestDocumentWithLTALevelTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.json");
 		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512,
 				Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA512, doc)), "sample");

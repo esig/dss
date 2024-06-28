@@ -60,10 +60,10 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JAXBPKICreationTest {
+class JAXBPKICreationTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         // tag::demo[]
         // import eu.europa.esig.dss.pki.jaxb.builder.JAXBCertEntityBuilder;
         // import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
@@ -208,7 +208,7 @@ public class JAXBPKICreationTest {
     }
 
     @Test
-    public void tstTest() throws Exception {
+    void tstTest() throws Exception {
         // Instantiate repository to contain the information about PKI
         JAXBCertEntityRepository repository = new JAXBCertEntityRepository();
 

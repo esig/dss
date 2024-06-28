@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlDSigUtilsTest {
+class XmlDSigUtilsTest {
 	
 	private static XmlDSigUtils xmlDSigUtils;
 	
@@ -58,7 +58,7 @@ public class XmlDSigUtilsTest {
 	private static StreamSource bobFile;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		xmlDSigUtils = XmlDSigUtils.getInstance();
 
 		aliceFile = new StreamSource(new File("src/test/resources/XmlAliceSig.xml"));
@@ -67,7 +67,7 @@ public class XmlDSigUtilsTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void test() throws JAXBException, SAXException {
+	void test() throws JAXBException, SAXException {
 
 		File xmldsigFile = new File("src/test/resources/XmlAliceSig.xml");
 
@@ -96,21 +96,21 @@ public class XmlDSigUtilsTest {
 	}
 
 	@Test
-	public void getJAXBContext() throws JAXBException {
+	void getJAXBContext() throws JAXBException {
 		assertNotNull(xmlDSigUtils.getJAXBContext());
 		// cached
 		assertNotNull(xmlDSigUtils.getJAXBContext());
 	}
 
 	@Test
-	public void getSchema() throws SAXException {
+	void getSchema() throws SAXException {
 		assertNotNull(xmlDSigUtils.getSchema());
 		// cached
 		assertNotNull(xmlDSigUtils.getSchema());
 	}
 
 	@Test
-	public void defaultConfigTest() throws IOException, SAXException {
+	void defaultConfigTest() throws IOException, SAXException {
 		xmlDSigUtils.validate(aliceFile, xmlDSigUtils.getSchema(), true);
 
 		XSDValidationException exception = assertThrows(XSDValidationException.class,
@@ -130,7 +130,7 @@ public class XmlDSigUtilsTest {
 	}
 
 	@Test
-	public void dssErrorHandlerPositionTest() {
+	void dssErrorHandlerPositionTest() {
 		DSSErrorHandlerAlert dssErrorHandlerAlert = new DSSErrorHandlerAlert();
 
 		ValidatorConfigurator validatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
@@ -177,7 +177,7 @@ public class XmlDSigUtilsTest {
 	}
 
 	@Test
-	public void customAlertWithRuntimeExceptionTest() {
+	void customAlertWithRuntimeExceptionTest() {
 		ValidatorConfigurator validatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
 		validatorConfigurator.setErrorHandlerAlert(errorHandler -> {
 			if (!errorHandler.isValid()) {
@@ -189,7 +189,7 @@ public class XmlDSigUtilsTest {
 	}
 
 	@Test
-	public void customAlertSilenceTest() throws IOException, SAXException {
+	void customAlertSilenceTest() throws IOException, SAXException {
 		ValidatorConfigurator validatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
 
 		validatorConfigurator.setErrorHandlerAlert(errorHandler -> {
@@ -201,7 +201,7 @@ public class XmlDSigUtilsTest {
 	}
 
 	@AfterEach
-	public void reset() {
+	void reset() {
 		ValidatorConfigurator secureValidatorConfigurator = ValidatorConfigurator.getSecureValidatorConfigurator();
 		XmlDefinerUtils.getInstance().setValidatorConfigurator(secureValidatorConfigurator);
 	}

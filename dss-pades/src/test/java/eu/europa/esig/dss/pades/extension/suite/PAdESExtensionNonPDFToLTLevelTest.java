@@ -42,7 +42,7 @@ public class PAdESExtensionNonPDFToLTLevelTest extends AbstractPAdESTestExtensio
     }
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         DSSDocument documentToExtend = new InMemoryDocument(
                 getClass().getResourceAsStream("/signature-image.png"), "toExtend");
         Exception exception = assertThrows(IllegalInputException.class, () -> extendSignature(documentToExtend));

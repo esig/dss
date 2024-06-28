@@ -47,10 +47,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class QWACValidationTest {
+class QWACValidationTest {
 
 	@Test
-	public void test() {
+	void test() {
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
 

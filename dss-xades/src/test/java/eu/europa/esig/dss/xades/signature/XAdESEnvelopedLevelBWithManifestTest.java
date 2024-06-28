@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESEnvelopedLevelBWithManifestTest extends AbstractXAdESTestSignature {
+class XAdESEnvelopedLevelBWithManifestTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -58,7 +58,7 @@ public class XAdESEnvelopedLevelBWithManifestTest extends AbstractXAdESTestSigna
     private DSSDocument manifest;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         signatureParameters = new XAdESSignatureParameters();

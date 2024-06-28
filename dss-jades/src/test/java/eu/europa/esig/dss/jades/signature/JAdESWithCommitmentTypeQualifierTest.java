@@ -50,14 +50,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithCommitmentTypeQualifierTest extends AbstractJAdESTestSignature {
+class JAdESWithCommitmentTypeQualifierTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getOfflineCertificateVerifier());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 

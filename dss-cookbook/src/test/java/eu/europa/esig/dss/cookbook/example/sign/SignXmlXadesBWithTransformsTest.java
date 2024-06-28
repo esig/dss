@@ -63,10 +63,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SignXmlXadesBWithTransformsTest extends CookbookTools {
+class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	
 	@Test
-	public void envelopedSignatureTest() throws IOException {
+	void envelopedSignatureTest() throws IOException {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -236,7 +236,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	}
 	
 	@Test
-	public void base64TransformTest() throws IOException {
+	void base64TransformTest() throws IOException {
 
 		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
@@ -303,7 +303,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	}
 	
 	@Test
-	public void envelopedSignatureXPathTest() throws IOException {
+	void envelopedSignatureXPathTest() throws IOException {
 
 		prepareXmlDoc();
 
@@ -370,7 +370,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	}
 	
 	@Test
-	public void envelopedSignatureXPath2FilterTest() throws IOException {
+	void envelopedSignatureXPath2FilterTest() throws IOException {
 
 		prepareXmlDoc();
 
@@ -437,7 +437,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	}
 
 	@Test
-	public void envelopedSignatureXSLTTransformTest() throws IOException {
+	void envelopedSignatureXSLTTransformTest() throws IOException {
 
 		prepareXmlDoc();
 

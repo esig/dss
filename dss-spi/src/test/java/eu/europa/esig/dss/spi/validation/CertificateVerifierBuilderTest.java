@@ -42,10 +42,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CertificateVerifierBuilderTest {
+class CertificateVerifierBuilderTest {
 
     @Test
-    public void buildCompleteCopyTest() {
+    void buildCompleteCopyTest() {
         CertificateVerifier certificateVerifier = initCertificateVerifier();
         CertificateVerifier copy = new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopy();
         assertEquals(certificateVerifier.getDefaultDigestAlgorithm(), copy.getDefaultDigestAlgorithm());
@@ -72,7 +72,7 @@ public class CertificateVerifierBuilderTest {
     }
 
     @Test
-    public void buildOfflineAndSilentCopyTest() {
+    void buildOfflineAndSilentCopyTest() {
         CertificateVerifier certificateVerifier = initCertificateVerifier();
         certificateVerifier.setAlertOnInvalidSignature(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnInvalidTimestamp(new ExceptionOnStatusAlert());
@@ -110,7 +110,7 @@ public class CertificateVerifierBuilderTest {
     }
 
     @Test
-    public void buildCompleteCopyForValidationTest() {
+    void buildCompleteCopyForValidationTest() {
         CertificateVerifier certificateVerifier = initCertificateVerifier();
         certificateVerifier.setRevocationFallback(false);
 

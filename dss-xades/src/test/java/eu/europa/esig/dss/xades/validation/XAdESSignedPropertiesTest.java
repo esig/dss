@@ -45,7 +45,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 
-public class XAdESSignedPropertiesTest extends AbstractXAdESTestValidation {
+class XAdESSignedPropertiesTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

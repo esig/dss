@@ -42,10 +42,10 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
+class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
 	@Test
-	public void xmldsig() {
+	void xmldsig() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/xmldsig-only.xml");
 
 		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
@@ -69,7 +69,7 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void notSigned() {
+	void notSigned() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.xml");
 
 		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
@@ -83,7 +83,7 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void digestDocumentWithLTALevelTest() {
+	void digestDocumentWithLTALevelTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.xml");
 		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA512, doc)));
 

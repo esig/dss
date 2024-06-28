@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * custom document MimeType after signing (see DSS-2586)
  *
  */
-public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECAdESTestSignature {
 
     private static DSSDocument originalDocument;
 
@@ -70,7 +70,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
         signatureParameters = new ASiCWithCAdESSignatureParameters();

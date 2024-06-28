@@ -32,22 +32,22 @@ import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
 
-public class SimpleCertificateReportXmlDefinerTest {
+class SimpleCertificateReportXmlDefinerTest {
 
 	@Test
-	public void getJAXBContext() throws SAXException, JAXBException {
+	void getJAXBContext() throws SAXException, JAXBException {
 		assertNotNull(SimpleCertificateReportXmlDefiner.getJAXBContext());
 		assertNotNull(SimpleCertificateReportXmlDefiner.getJAXBContext());
 	}
 
 	@Test
-	public void getSchema() throws SAXException, IOException {
+	void getSchema() throws SAXException, IOException {
 		assertNotNull(SimpleCertificateReportXmlDefiner.getSchema());
 		assertNotNull(SimpleCertificateReportXmlDefiner.getSchema());
 	}
 
 	@Test
-	public void getHtmlBootstrap4Templates() throws IOException, TransformerConfigurationException {
+	void getHtmlBootstrap4Templates() throws IOException, TransformerConfigurationException {
 		Templates htmlTemplates = SimpleCertificateReportXmlDefiner.getHtmlBootstrap4Templates();
 		assertNotNull(htmlTemplates);
 		assertNotNull(htmlTemplates.newTransformer());

@@ -42,10 +42,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SigFieldLockCheckTest extends AbstractTestCheck {
+class SigFieldLockCheckTest extends AbstractTestCheck {
 
     @Test
-    public void allFieldsLockedValid() {
+    void allFieldsLockedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -77,7 +77,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allFieldsLockedFail() {;
+    void allFieldsLockedFail() {;
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -110,7 +110,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void exclusiveFieldLockValid() {
+    void exclusiveFieldLockValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -145,7 +145,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void exclusiveFieldLockFail() {
+    void exclusiveFieldLockFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -184,7 +184,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void inclusiveFieldLockValid() {
+    void inclusiveFieldLockValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -219,7 +219,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void inclusiveFieldLockFail() {
+    void inclusiveFieldLockFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -258,7 +258,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noChangesAllowedValid() {
+    void noChangesAllowedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -291,7 +291,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noChangesAllowedFail(){
+    void noChangesAllowedFail(){
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -324,7 +324,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void minimalChangesAllowedValid() {
+    void minimalChangesAllowedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -358,7 +358,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void minimalChangesAllowedFail() {
+    void minimalChangesAllowedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -393,7 +393,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void changesAllowedValid() {
+    void changesAllowedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();
@@ -428,7 +428,7 @@ public class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void changesAllowedFail() {
+    void changesAllowedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();

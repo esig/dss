@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class CAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractCAdESTestSignature {
+class CAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractCAdESTestSignature {
 
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
     private CAdESSignatureParameters signatureParameters;
@@ -59,7 +59,7 @@ public class CAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractCAdESTest
 
     @ParameterizedTest(name = "Combination {index} of RSASSA-PSS and digest algorithm {0}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo) {
+    void init(DigestAlgorithm digestAlgo) {
         documentToSign = new InMemoryDocument("Hello World".getBytes());
 
         signatureParameters = new CAdESSignatureParameters();

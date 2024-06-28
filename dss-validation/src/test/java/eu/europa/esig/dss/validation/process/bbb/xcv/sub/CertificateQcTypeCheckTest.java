@@ -39,10 +39,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateQcTypeCheckTest extends AbstractTestCheck {
+class CertificateQcTypeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -69,7 +69,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multipleAllowedValuesTest() throws Exception {
+    void multipleAllowedValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -97,7 +97,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void oidTest() throws Exception {
+    void oidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -124,7 +124,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -151,7 +151,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void qcTypeNotPresentTest() throws Exception {
+    void qcTypeNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -173,7 +173,7 @@ public class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() throws Exception {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("qc-type-esign");

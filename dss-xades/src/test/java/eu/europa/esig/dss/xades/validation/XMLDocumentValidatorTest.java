@@ -34,10 +34,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XMLDocumentValidatorTest extends AbstractTestDocumentValidator {
+class XMLDocumentValidatorTest extends AbstractTestDocumentValidator {
 
 	@Test
-	public void isSupported() {
+	void isSupported() {
 		XMLDocumentValidator validator = new XMLDocumentValidator();
 		
 		byte[] wrongBytes = new byte[] { 1, 2 };

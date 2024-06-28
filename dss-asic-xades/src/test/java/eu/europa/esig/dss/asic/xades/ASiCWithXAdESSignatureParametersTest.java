@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class ASiCWithXAdESSignatureParametersTest {
+class ASiCWithXAdESSignatureParametersTest {
 
 	@Test
-	public void test() {
+	void test() {
 		ASiCWithXAdESSignatureParameters params = new ASiCWithXAdESSignatureParameters();
 		Exception exception = assertThrows(IllegalArgumentException.class,
 				() -> params.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B));

@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author akoepe
  * @version 1.0
  */
-public class ModelCertificateValidationTest extends ModelAbstractValidation {
+class ModelCertificateValidationTest extends ModelAbstractValidation {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
 	private static Stream<Arguments> data() throws Exception {
@@ -119,7 +119,7 @@ public class ModelCertificateValidationTest extends ModelAbstractValidation {
 
 	@ParameterizedTest(name = "{index}: inputData - {0}")
 	@MethodSource("data")
-	public void testModelBasedCertificateChain(final TestCase testCase) throws Exception {
+	void testModelBasedCertificateChain(final TestCase testCase) throws Exception {
 		
 		ConstraintsParameters policyJaxB = ValidationPolicyFacade.newFacade().unmarshall(new File(testCase.getTestData().getPolicy()));
 

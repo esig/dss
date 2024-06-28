@@ -27,32 +27,32 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustServiceLegalPersonConsistencyTest extends AbstractTrustServiceConsistencyTest {
+class TrustServiceLegalPersonConsistencyTest extends AbstractTrustServiceConsistencyTest {
 
 	private TrustServiceCondition condition = new TrustServiceLegalPersonConsistency();
 
 	@Test
-	public void testEmpty() {
+	void testEmpty() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testLegalOnly() {
+	void testLegalOnly() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_FOR_LEGAL_PERSON.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testESigOnly() {
+	void testESigOnly() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_FOR_ESIG.getUri()));
 		assertTrue(condition.isConsistent(service));
 	}
 
 	@Test
-	public void testConflict() {
+	void testConflict() {
 		TrustServiceWrapper service = new TrustServiceWrapper();
 		service.setCapturedQualifiers(getXmlQualifierList(ServiceQualification.QC_FOR_ESIG.getUri(), ServiceQualification.QC_FOR_LEGAL_PERSON.getUri()));
 		assertFalse(condition.isConsistent(service));

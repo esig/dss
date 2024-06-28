@@ -29,12 +29,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExceptionAlertTest {
+class ExceptionAlertTest {
 	
 	private static final String EXCEPTION_MESSAGE = "Bye World!";
 	
 	@Test
-	public void throwExceptionAlertTest() {
+	void throwExceptionAlertTest() {
 		MessageStatus status = new MessageStatus();
 		status.setMessage(EXCEPTION_MESSAGE);
 		
@@ -44,7 +44,7 @@ public class ExceptionAlertTest {
 	}
 
 	@Test
-	public void throwNothing() {
+	void throwNothing() {
 		MessageStatus status = new MessageStatus();
 
 		ExceptionOnStatusAlert exceptionAlert = new ExceptionOnStatusAlert();
@@ -54,7 +54,7 @@ public class ExceptionAlertTest {
 	}
 
 	@Test
-	public void silenceMode() {
+	void silenceMode() {
 		MessageStatus status = new MessageStatus();
 		status.setMessage(EXCEPTION_MESSAGE);
 
@@ -65,7 +65,7 @@ public class ExceptionAlertTest {
 	}
 
 	@Test
-	public void throwExceptionAlertWithSubMessagesTest() {
+	void throwExceptionAlertWithSubMessagesTest() {
 		ObjectStatus status = new ObjectStatus();
 		status.setMessage(EXCEPTION_MESSAGE);
 

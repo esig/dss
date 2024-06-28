@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ValidationProcessUtilsTest {
+class ValidationProcessUtilsTest {
 
     @Test
-    public void getDomainNameTest() {
+    void getDomainNameTest() {
         assertNull(ValidationProcessUtils.getDomainName(null));
         assertEquals("", ValidationProcessUtils.getDomainName(""));
         assertEquals(" ", ValidationProcessUtils.getDomainName(" "));

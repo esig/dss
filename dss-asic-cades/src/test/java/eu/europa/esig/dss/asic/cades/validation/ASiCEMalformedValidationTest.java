@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.cades.validation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCEMalformedValidationTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCEMalformedValidationTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

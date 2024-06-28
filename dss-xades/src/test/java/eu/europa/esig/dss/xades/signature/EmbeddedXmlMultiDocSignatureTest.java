@@ -20,11 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -32,6 +27,10 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class EmbeddedXmlMultiDocSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
@@ -39,7 +38,7 @@ public class EmbeddedXmlMultiDocSignatureTest extends AbstractXAdESMultipleDocum
 	private List<DSSDocument> documentToSigns;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.xml"),
 				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"));
 

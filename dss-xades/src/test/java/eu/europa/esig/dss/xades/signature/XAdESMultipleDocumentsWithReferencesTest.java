@@ -47,14 +47,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESMultipleDocumentsWithReferencesTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class XAdESMultipleDocumentsWithReferencesTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private XAdESService service;
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 		

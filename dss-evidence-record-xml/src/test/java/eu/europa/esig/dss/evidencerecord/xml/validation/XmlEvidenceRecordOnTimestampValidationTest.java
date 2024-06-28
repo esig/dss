@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlEvidenceRecordOnTimestampValidationTest extends AbstractDocumentTestValidation {
+class XmlEvidenceRecordOnTimestampValidationTest extends AbstractDocumentTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

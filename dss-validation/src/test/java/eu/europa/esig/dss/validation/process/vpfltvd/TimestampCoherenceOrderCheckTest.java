@@ -43,13 +43,13 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
 
-public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
+class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	
 	private LevelConstraint constraint;
 	private XmlValidationProcessLongTermData result;
 	
 	@BeforeEach
-	public void initialize() {
+	void initialize() {
 		constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -57,7 +57,7 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void validOrderCheckTest() {
+	void validOrderCheckTest() {
 		Calendar calendar = Calendar.getInstance();
 
 		List<TimestampWrapper> timestamps = new ArrayList<>();
@@ -75,7 +75,7 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void sameTimeCheckTest() {
+	void sameTimeCheckTest() {
 		List<TimestampWrapper> timestamps = new ArrayList<>();
 		Date productionTime = new Date();
 		timestamps.add(getTimestampWrapper("T-1", productionTime, TimestampType.CONTENT_TIMESTAMP));
@@ -88,7 +88,7 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void contentTstsCheckTest() {
+	void contentTstsCheckTest() {
 
 		Calendar calendar = Calendar.getInstance();
 
@@ -103,7 +103,7 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void separatedSignatureAndArchiveTimestampsTest() {
+	void separatedSignatureAndArchiveTimestampsTest() {
 
 		Calendar calendar = Calendar.getInstance();
 
@@ -122,7 +122,7 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void separatedSignatureAndArchiveTimestampsDifferentTimeTest() {
+	void separatedSignatureAndArchiveTimestampsDifferentTimeTest() {
 
 		Calendar calendar = Calendar.getInstance();
 
@@ -141,7 +141,7 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void typeOrderFailCheckTest() {
+	void typeOrderFailCheckTest() {
 
 		Calendar calendar = Calendar.getInstance();
 
@@ -160,7 +160,7 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void timeOrderFailCheckTest() {
+	void timeOrderFailCheckTest() {
 
 		Calendar beforeAll = Calendar.getInstance();
 
@@ -181,7 +181,7 @@ public class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void refOrderFailCheckTest() {
+	void refOrderFailCheckTest() {
 
 		Calendar calendar = Calendar.getInstance();
 

@@ -39,10 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CryptographicConstraintWrapperTest {
+class CryptographicConstraintWrapperTest {
 
     @Test
-    public void isEncryptionAlgorithmReliableTest() {
+    void isEncryptionAlgorithmReliableTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         ListAlgo listAlgo = new ListAlgo();
@@ -62,7 +62,7 @@ public class CryptographicConstraintWrapperTest {
     }
 
     @Test
-    public void isDigestAlgorithmReliableTest() {
+    void isDigestAlgorithmReliableTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         ListAlgo listAlgo = new ListAlgo();
@@ -82,7 +82,7 @@ public class CryptographicConstraintWrapperTest {
     }
 
     @Test
-    public void isEncryptionAlgorithmWithKeySizeReliableTest() {
+    void isEncryptionAlgorithmWithKeySizeReliableTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         ListAlgo listAlgo = new ListAlgo();
@@ -97,7 +97,7 @@ public class CryptographicConstraintWrapperTest {
     }
 
     @Test
-    public void getExpirationDateEncryptionAlgoTest() {
+    void getExpirationDateEncryptionAlgoTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         AlgoExpirationDate listAlgo = new AlgoExpirationDate();
@@ -120,7 +120,7 @@ public class CryptographicConstraintWrapperTest {
     }
 
     @Test
-    public void getExpirationDateDigestAlgoTest() {
+    void getExpirationDateDigestAlgoTest() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
 
         AlgoExpirationDate listAlgo = new AlgoExpirationDate();

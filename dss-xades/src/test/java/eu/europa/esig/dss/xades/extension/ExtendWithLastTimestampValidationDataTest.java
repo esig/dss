@@ -57,10 +57,10 @@ import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
+class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		/* Test that new TimeStampValidation data added instead of the old element */
 		
 		DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");

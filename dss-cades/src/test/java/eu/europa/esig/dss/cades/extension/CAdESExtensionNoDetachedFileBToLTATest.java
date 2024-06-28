@@ -37,10 +37,10 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 
-public class CAdESExtensionNoDetachedFileBToLTATest extends PKIFactoryAccess {
+class CAdESExtensionNoDetachedFileBToLTATest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 
 		DSSDocument detachedFile = new InMemoryDocument("hello".getBytes());
 

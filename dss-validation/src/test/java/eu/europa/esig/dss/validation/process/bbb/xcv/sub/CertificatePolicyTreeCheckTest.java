@@ -42,10 +42,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
+class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void valid() {
+    void valid() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -85,7 +85,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void noSignCertPolicy() {
+    void noSignCertPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -124,7 +124,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void otherSignCertPolicy() {
+    void otherSignCertPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -169,7 +169,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void validCaExplicitPolicy() {
+    void validCaExplicitPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
@@ -209,7 +209,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidCaExplicitPolicy() {
+    void invalidCaExplicitPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
@@ -254,7 +254,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void validRootCertReqExplicitPolOnePolicy() {
+    void validRootCertReqExplicitPolOnePolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -294,7 +294,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidRootCertReqExplicitPolOnePolicy() {
+    void invalidRootCertReqExplicitPolOnePolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -339,7 +339,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void caNoPolicy() {
+    void caNoPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -378,7 +378,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void caAnyPolicy() {
+    void caAnyPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -428,7 +428,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void caAnyPolicySelfSigned() {
+    void caAnyPolicySelfSigned() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -480,7 +480,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void caAnyPolicyWithInhibitAnyPolicyValid() {
+    void caAnyPolicyWithInhibitAnyPolicyValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -535,7 +535,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void caAnyPolicyWithInhibitAnyPolicyInvalid() {
+    void caAnyPolicyWithInhibitAnyPolicyInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -590,7 +590,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void caSelfSignedAnyPolicyWithInhibitAnyPolicyInvalid() {
+    void caSelfSignedAnyPolicyWithInhibitAnyPolicyInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -647,7 +647,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void largeRequireExplicitPolicy() {
+    void largeRequireExplicitPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -685,7 +685,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void requireExplicitPolicySignCertNoPolicy() {
+    void requireExplicitPolicySignCertNoPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -723,7 +723,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void signCertOverwriteRequireExplicitPolicyNoPolicy() {
+    void signCertOverwriteRequireExplicitPolicyNoPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -766,7 +766,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void signCertOverwriteRequireExplicitPolicyWithPolicyNoPolicyCA() {
+    void signCertOverwriteRequireExplicitPolicyWithPolicyNoPolicyCA() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -816,7 +816,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void signCertOverwriteRequireExplicitPolicyWithPolicy() {
+    void signCertOverwriteRequireExplicitPolicyWithPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -873,7 +873,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void signCertAnyPolicy() {
+    void signCertAnyPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -925,7 +925,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void signCertAnyPolicyWithInhibitAnyPolicy() {
+    void signCertAnyPolicyWithInhibitAnyPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -982,7 +982,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void signCertAnyPolicyWithCaInhibitAnyPolicy() {
+    void signCertAnyPolicyWithCaInhibitAnyPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -1039,7 +1039,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void signCertAnyPolicyWithCaAllowingAnyPolicy() {
+    void signCertAnyPolicyWithCaAllowingAnyPolicy() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -1096,7 +1096,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multiPoliciesDescendingTest() {
+    void multiPoliciesDescendingTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -1157,7 +1157,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multiPoliciesDescendingInvalidTest() {
+    void multiPoliciesDescendingInvalidTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -1218,7 +1218,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multiPoliciesAscendingTest() {
+    void multiPoliciesAscendingTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();
@@ -1279,7 +1279,7 @@ public class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multiPoliciesAscendingInvalidTest() {
+    void multiPoliciesAscendingInvalidTest() {
         XmlCertificate rootCertificate = new XmlCertificate();
 
         XmlPolicyConstraints policyConstraints = new XmlPolicyConstraints();

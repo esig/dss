@@ -56,11 +56,11 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateRepor
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
-public class CertificateUnmarshallingTest {
+class CertificateUnmarshallingTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateUnmarshallingTest.class);
 
-	public static Stream<Arguments> data() {
+	static Stream<Arguments> data() {
 		File folder = new File("src/test/resources/certificates");
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "cer", "crt" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<>();
@@ -72,7 +72,7 @@ public class CertificateUnmarshallingTest {
 
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void test(File certToTest) throws JAXBException, IOException, SAXException, TransformerException {
+	void test(File certToTest) throws JAXBException, IOException, SAXException, TransformerException {
 		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(certToTest));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
 

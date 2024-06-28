@@ -39,18 +39,18 @@ import java.io.StringWriter;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCManifestUtilsTest {
+class ASiCManifestUtilsTest {
 	
 	private static ASiCManifestUtils asicManifestUtils;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		asicManifestUtils = ASiCManifestUtils.getInstance();
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void test() throws JAXBException, SAXException {
+	void test() throws JAXBException, SAXException {
 
 		File xmldsigFile = new File("src/test/resources/ASiCManifest.xml");
 
@@ -79,7 +79,7 @@ public class ASiCManifestUtilsTest {
 	}
 	
 	@Test
-	public void testInvalidFile() throws JAXBException, SAXException {
+	void testInvalidFile() throws JAXBException, SAXException {
 
 		File xmldsigFile = new File("src/test/resources/ASiCManifestInvalid.xml");
 
@@ -96,7 +96,7 @@ public class ASiCManifestUtilsTest {
 	}
 
 	@Test
-	public void getSchemaASiCManifest() throws SAXException {
+	void getSchemaASiCManifest() throws SAXException {
 		assertNotNull(asicManifestUtils.getSchema());
 		// cached
 		assertNotNull(asicManifestUtils.getSchema());

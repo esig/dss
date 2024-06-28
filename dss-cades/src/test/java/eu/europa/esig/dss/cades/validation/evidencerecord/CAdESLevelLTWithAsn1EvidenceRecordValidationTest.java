@@ -36,7 +36,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelLTWithAsn1EvidenceRecordValidationTest extends AbstractCAdESWithEvidenceRecordTestValidation {
+class CAdESLevelLTWithAsn1EvidenceRecordValidationTest extends AbstractCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

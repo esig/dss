@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest extends AbstractCAdESCounterSignatureTest {
+class CAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest extends AbstractCAdESCounterSignatureTest {
 
     private CAdESService service;
     private DSSDocument documentToSign;
@@ -56,7 +56,7 @@ public class CAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest exte
     private Date signingDate;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new CAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = new InMemoryDocument("Hello World!".getBytes());

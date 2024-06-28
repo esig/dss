@@ -27,10 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class MimeTypeTest {
+class MimeTypeTest {
 
     @Test
-    public void fromFileNameTest() {
+    void fromFileNameTest() {
         assertEquals(MimeTypeEnum.TEXT, MimeType.fromFileName("test.txt"));
         assertEquals(MimeTypeEnum.PDF, MimeType.fromFileName("pades.pdf"));
         assertEquals(MimeTypeEnum.PKCS7, MimeType.fromFileName("cades.p7s"));
@@ -49,7 +49,7 @@ public class MimeTypeTest {
     }
 
     @Test
-    public void getExtensionTest() {
+    void getExtensionTest() {
         assertEquals("txt", MimeTypeEnum.TEXT.getExtension());
         assertEquals("pdf", MimeTypeEnum.PDF.getExtension());
         assertEquals("zip", MimeTypeEnum.ZIP.getExtension());
@@ -58,7 +58,7 @@ public class MimeTypeTest {
     }
 
     @Test
-    public void getFileExtensionTest() {
+    void getFileExtensionTest() {
         assertEquals("txt", MimeType.getFileExtension("test.txt"));
         assertEquals("pdf", MimeType.getFileExtension("pades.pdf"));
         assertEquals("p7s", MimeType.getFileExtension("cades.p7s"));
@@ -71,7 +71,7 @@ public class MimeTypeTest {
     }
 
     @Test
-    public void fromMimeTypeStringTest() {
+    void fromMimeTypeStringTest() {
         assertEquals(MimeTypeEnum.XML, MimeType.fromMimeTypeString("text/xml"));
         assertEquals(MimeTypeEnum.PDF, MimeType.fromMimeTypeString("application/pdf"));
         assertEquals(MimeTypeEnum.PNG, MimeType.fromMimeTypeString("image/png"));

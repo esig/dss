@@ -28,16 +28,16 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
-public class RemoteDocumentTest {
+class RemoteDocumentTest {
 
 	@Test
-	public void testDocNull() {
+	void testDocNull() {
 		RemoteDocument doc = new RemoteDocument();
 		assertNotNull(doc.toString());
 	}
 
 	@Test
-	public void testEquals() {
+	void testEquals() {
 		RemoteDocument doc1 = new RemoteDocument(new byte[] { 1, 2, 3 }, "bla");
 		RemoteDocument doc2 = new RemoteDocument(new byte[] { 1, 2, 3 }, "bla");
 		assertEquals(doc1, doc2);

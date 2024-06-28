@@ -33,7 +33,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithASN1SigPolicyTest extends AbstractJAdESTestValidation {
+class JAdESWithASN1SigPolicyTest extends AbstractJAdESTestValidation {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final DSSDocument POLICY_CONTENT = new FileDocument("src/test/resources/validation/signature-policy.der");

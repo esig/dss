@@ -44,14 +44,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESLevelLTADetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
+class JAdESLevelLTADetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DSSDocument originalDocument = new FileDocument(new File("src/test/resources/sample.json"));
         documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
         documentToSign.setName(originalDocument.getName());

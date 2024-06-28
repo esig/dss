@@ -44,14 +44,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class XAdESExtensionTToTTest extends AbstractXAdESTestExtension {
+class XAdESExtensionTToTTest extends AbstractXAdESTestExtension {
 
     private TSPSource tspSource;
 
     private TimestampBinary cachedTimestamp;
 
     @BeforeEach
-    public void initTimestamp() {
+    void initTimestamp() {
 
         final TSPSource proxiedTspSource = getGoodTsa();
 

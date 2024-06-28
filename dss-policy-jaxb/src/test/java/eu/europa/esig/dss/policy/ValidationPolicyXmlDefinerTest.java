@@ -29,16 +29,16 @@ import jakarta.xml.bind.JAXBException;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-public class ValidationPolicyXmlDefinerTest {
+class ValidationPolicyXmlDefinerTest {
 
 	@Test
-	public void getJAXBContext() throws SAXException, JAXBException {
+	void getJAXBContext() throws SAXException, JAXBException {
 		assertNotNull(ValidationPolicyXmlDefiner.getJAXBContext());
 		assertNotNull(ValidationPolicyXmlDefiner.getJAXBContext());
 	}
 
 	@Test
-	public void getSchema() throws SAXException, IOException {
+	void getSchema() throws SAXException, IOException {
 		assertNotNull(ValidationPolicyXmlDefiner.getSchema());
 		assertNotNull(ValidationPolicyXmlDefiner.getSchema());
 	}

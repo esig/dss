@@ -44,10 +44,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class SignatureValidationContextTest {
+class SignatureValidationContextTest {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
@@ -77,7 +77,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void testCannotDownload() throws Exception {
+	void testCannotDownload() throws Exception {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
@@ -107,7 +107,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void testBridgeCertificateMovesUpInsteadOfSidewaysWithoutRootOnValidation() {
+	void testBridgeCertificateMovesUpInsteadOfSidewaysWithoutRootOnValidation() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certificateVerifier.setTrustedCertSources(certSource);
@@ -139,7 +139,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void testBridgeCertificateMovesUpInsteadOfSidewaysAndFindsRootOnValidation() {
+	void testBridgeCertificateMovesUpInsteadOfSidewaysAndFindsRootOnValidation() {
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		CertificateSource certSource = new CommonTrustedCertificateSource();
 		certificateVerifier.setTrustedCertSources(certSource);
@@ -197,7 +197,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void successfulAiaRequestTest() {
+	void successfulAiaRequestTest() {
 		CertificateToken certToken = DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer"));
 
 		Map<String, byte[]> dataMap = new HashMap<>();
@@ -225,7 +225,7 @@ public class SignatureValidationContextTest {
 	}
 
 	@Test
-	public void unsuccessfulAiaRequestTest() {
+	void unsuccessfulAiaRequestTest() {
 		CertificateToken certToken = DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer"));
 
 		DataLoader dataLoader = new IgnoreDataLoader();

@@ -38,10 +38,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
+class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() {
+    void validTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlBasicSignature basicSignature = new XmlBasicSignature();
@@ -64,7 +64,7 @@ public class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidTest() {
+    void invalidTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlBasicSignature basicSignature = new XmlBasicSignature();
@@ -87,7 +87,7 @@ public class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void notEcdsaTest() {
+    void notEcdsaTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlBasicSignature basicSignature = new XmlBasicSignature();
@@ -110,7 +110,7 @@ public class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void notIdentifiedEncryptionAlgoTest() {
+    void notIdentifiedEncryptionAlgoTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlBasicSignature basicSignature = new XmlBasicSignature();
@@ -132,7 +132,7 @@ public class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void notIdentifiedDigestAlgoTest() {
+    void notIdentifiedDigestAlgoTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlBasicSignature basicSignature = new XmlBasicSignature();
@@ -154,7 +154,7 @@ public class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void notIdentifiedKeyLengthTest() {
+    void notIdentifiedKeyLengthTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlBasicSignature basicSignature = new XmlBasicSignature();
@@ -176,7 +176,7 @@ public class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void notAuthorizedDigestAlgoTest() {
+    void notAuthorizedDigestAlgoTest() {
         XmlSignature xmlSignature = new XmlSignature();
 
         XmlBasicSignature basicSignature = new XmlBasicSignature();

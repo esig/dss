@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.Indication;
  */
 public final class IndicationParser {
 
+	/**
+	 * Default constructor
+	 */
 	private IndicationParser() {
+		// empty
 	}
 
 	/**

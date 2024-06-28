@@ -36,17 +36,17 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JWSUtilsTest {
+class JWSUtilsTest {
 	
 	private static JWSUtils jwsUtils;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		jwsUtils = JWSUtils.getInstance();
 	}
 	
 	@Test
-	public void jsonSerializationTest() {
+	void jsonSerializationTest() {
 		InputStream is = JWSUtilsTest.class.getResourceAsStream("/jws-serialization.json");
 		JsonObject jws = jwsUtils.parseJson(is);
 		
@@ -64,7 +64,7 @@ public class JWSUtilsTest {
 	}
 	
 	@Test
-	public void jsonFlattenedTest() {
+	void jsonFlattenedTest() {
 		InputStream is = JWSUtilsTest.class.getResourceAsStream("/jws-flattened.json");
 		JsonObject jws = jwsUtils.parseJson(is);
 		

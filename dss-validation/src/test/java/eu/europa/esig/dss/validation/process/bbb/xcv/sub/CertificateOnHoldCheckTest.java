@@ -40,13 +40,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateOnHoldCheckTest extends AbstractTestCheck {
+class CertificateOnHoldCheckTest extends AbstractTestCheck {
 
 	private static final Calendar CAL1 = DatatypeConverter.parseDate("2017-01-01");
 	private static final Calendar CAL2 = DatatypeConverter.parseDate("2018-01-01");
 
 	@Test
-	public void certificateOnHoldCheck() throws Exception {
+	void certificateOnHoldCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -65,7 +65,7 @@ public class CertificateOnHoldCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedCertificateOnHoldCheck() throws Exception {
+	void failedCertificateOnHoldCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

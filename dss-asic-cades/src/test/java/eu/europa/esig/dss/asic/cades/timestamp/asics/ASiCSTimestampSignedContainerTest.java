@@ -37,14 +37,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCSTimestampSignedContainerTest extends AbstractASiCSCAdESTestSignature {
+class ASiCSTimestampSignedContainerTest extends AbstractASiCSCAdESTestSignature {
 
     private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
     private ASiCWithCAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getAlternateGoodTsa());
 
@@ -58,7 +58,7 @@ public class ASiCSTimestampSignedContainerTest extends AbstractASiCSCAdESTestSig
     }
 
     @Test
-    public void test() {
+    void test() {
         DSSDocument signedDocument = super.sign();
 
         ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();

@@ -50,10 +50,10 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
+class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 
 	@Test
-	public void firstOnlySignaturesPrettyPrintTest() throws IOException {
+	void firstOnlySignaturesPrettyPrintTest() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -89,7 +89,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void secondSignaturePrettyPrintTest() throws IOException {
+	void secondSignaturePrettyPrintTest() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -124,7 +124,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void bothSignaturesPrettyPrintTest() throws IOException {
+	void bothSignaturesPrettyPrintTest() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -160,7 +160,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void doubleSignatureLTALevelTest() throws IOException {
+	void doubleSignatureLTALevelTest() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -198,7 +198,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void doubleSignatureMixedLevelTest() throws IOException {
+	void doubleSignatureMixedLevelTest() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -237,7 +237,7 @@ public class DoubleSignaturePrettyPrintTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void doubleCreatedSignatureTest() {
+	void doubleCreatedSignatureTest() {
 		DiagnosticData diagnosticData = validate(new FileDocument("src/test/resources/validation/doubleSignedTest.xml"));
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		assertEquals(2, signatures.size());

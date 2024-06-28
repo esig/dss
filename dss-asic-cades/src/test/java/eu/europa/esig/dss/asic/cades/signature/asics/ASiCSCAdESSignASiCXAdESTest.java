@@ -32,10 +32,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCSCAdESSignASiCXAdESTest extends PKIFactoryAccess {
+class ASiCSCAdESSignASiCXAdESTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument documentToSign = new FileDocument("src/test/resources/signable/asic_xades.zip");
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();

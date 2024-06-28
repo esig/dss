@@ -47,14 +47,14 @@ import eu.europa.esig.dss.xades.reference.XPath2FilterEnvelopedSignatureTransfor
 /*
  * DSS-1613 test
  */
-public class XAdESLevelBEnvelopedWithXPath2FilterBigFileTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedWithXPath2FilterBigFileTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/xml700kb.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

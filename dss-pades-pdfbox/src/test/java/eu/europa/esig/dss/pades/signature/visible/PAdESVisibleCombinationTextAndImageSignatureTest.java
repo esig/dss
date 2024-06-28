@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTestVisualComparator {
+class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTestVisualComparator {
 
 	protected PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
@@ -58,7 +58,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	private float similarityLimit;
 	
 	@BeforeEach
-	public void init(TestInfo testInfo) {
+	void init(TestInfo testInfo) {
 		testName = testInfo.getTestMethod().get().getName();
 		
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
@@ -74,7 +74,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	}
 
 	@Test
-	public void testGeneratedImagePNGWithText() throws IOException {
+	void testGeneratedImagePNGWithText() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 
@@ -94,7 +94,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	}
 
 	@Test
-	public void testGeneratedImagePNGWithTextOnTop() throws IOException {
+	void testGeneratedImagePNGWithTextOnTop() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getPngPicture());
 		
@@ -119,7 +119,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	}
 
 	@Test
-	public void testGeneratedImageAndTextOnTop() throws IOException {
+	void testGeneratedImageAndTextOnTop() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(getSmallRedJPG());
 		
@@ -142,7 +142,7 @@ public class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTe
 	}
 
 	@Test
-	public void testGeneratedImageWithText() throws IOException {
+	void testGeneratedImageWithText() throws IOException {
 		SignatureImageParameters imageParameters = createSignatureImageParameters();
 		similarityLimit = 0.993f;
 		signatureParameters.setImageParameters(imageParameters);

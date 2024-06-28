@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ContentTimestampsCheckTest extends AbstractTestCheck {
+class ContentTimestampsCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         List<TimestampWrapper> contentTimestamps = new ArrayList<>();
         contentTimestamps.add(new TimestampWrapper(new XmlTimestamp()));
 
@@ -56,7 +56,7 @@ public class ContentTimestampsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         List<TimestampWrapper> contentTimestamps = new ArrayList<>();
 
         LevelConstraint constraint = new LevelConstraint();

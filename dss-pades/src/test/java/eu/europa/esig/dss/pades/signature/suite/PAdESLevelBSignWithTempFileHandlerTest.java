@@ -64,7 +64,7 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(PAdESLevelBSignWithTempFileHandlerTest.class
                 .getResourceAsStream("/big_file.pdf"), "big_file.pdf", MimeTypeEnum.PDF);
 

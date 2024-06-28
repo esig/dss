@@ -34,10 +34,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UnsupportedOperationTimestampASiCContainerWithXAdESTest extends PKIFactoryAccess {
+class UnsupportedOperationTimestampASiCContainerWithXAdESTest extends PKIFactoryAccess {
 
 	@Test
-	public void unsupportedOperationException() throws IOException {
+	void unsupportedOperationException() throws IOException {
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 

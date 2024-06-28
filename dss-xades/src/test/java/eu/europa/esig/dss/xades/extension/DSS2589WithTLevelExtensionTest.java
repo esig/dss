@@ -45,7 +45,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2589WithTLevelExtensionTest extends AbstractXAdESTestSignature {
+class DSS2589WithTLevelExtensionTest extends AbstractXAdESTestSignature {
 
     private final static DSSDocument ORIGINAL_DOC = new FileDocument("src/test/resources/sample.xml");
 
@@ -54,7 +54,7 @@ public class DSS2589WithTLevelExtensionTest extends AbstractXAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = ORIGINAL_DOC;
         signatureParameters = initSignatureParameters();
         service = new XAdESService(getOfflineCertificateVerifier());

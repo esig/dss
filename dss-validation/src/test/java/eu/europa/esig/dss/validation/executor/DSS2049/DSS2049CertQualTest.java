@@ -45,38 +45,38 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class DSS2049CertQualTest extends AbstractTestValidationExecutor {
+class DSS2049CertQualTest extends AbstractTestValidationExecutor {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, true);
 		CertificateReports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, CertificateQualification.QCERT_FOR_ESIG_QSCD, true, true);
 	}
 	
 	@Test
-	public void lotlFailWithWarnLevel() throws Exception {
+	void lotlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(false, true);
 		CertificateReports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, CertificateQualification.QCERT_FOR_ESIG_QSCD, true, true);
 	}
 	
 	@Test
-	public void lotlFailWithFailLevel() throws Exception {
+	void lotlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(false, true);
 		CertificateReports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, CertificateQualification.NA, false, false);
 	}
 	
 	@Test
-	public void tlFailWithWarnLevel() throws Exception {
+	void tlFailWithWarnLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false);
 		CertificateReports reports = execute(diagnosticData, Level.WARN);
 		assertValid(reports, CertificateQualification.QCERT_FOR_ESIG_QSCD, true, true);
 	}
 	
 	@Test
-	public void tlFailWithFailLevel() throws Exception {
+	void tlFailWithFailLevel() throws Exception {
 		XmlDiagnosticData diagnosticData = getDiagnosticData(true, false);
 		CertificateReports reports = execute(diagnosticData, Level.FAIL);
 		assertValid(reports, CertificateQualification.NA, true, false);

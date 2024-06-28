@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OnlineOCSPSourceTest extends OnlineSourceTest {
+class OnlineOCSPSourceTest extends OnlineSourceTest {
 
 	private static final String CUSTOM_TIMEOUT_OCSP_URL = ONLINE_PKI_HOST + "/ocsp/timeout/%s/%s";
 
@@ -78,7 +78,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	private static byte[] qtspOcsp;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
 
@@ -99,7 +99,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testOCSPWithoutNonce() {
+	void testOCSPWithoutNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
@@ -108,7 +108,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testOCSP() {
+	void testOCSP() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
 		assertNotNull(ocspToken);
@@ -117,7 +117,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 	
 	@Test
-	public void testWithCustomDataLoaderConstructor() {
+	void testWithCustomDataLoaderConstructor() {
 		OCSPDataLoader ocspDataLoader = new OCSPDataLoader();
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource(ocspDataLoader);
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
@@ -126,7 +126,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 	
 	@Test
-	public void testWithSetDataLoader() {
+	void testWithSetDataLoader() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(new OCSPDataLoader());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
@@ -135,7 +135,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testOCSPEd25519() {
+	void testOCSPEd25519() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa);
 		assertNotNull(ocspToken);
@@ -145,7 +145,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testOCSPWithNonce() {
+	void testOCSPWithNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
@@ -153,7 +153,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void noNonceResponderTest() {
+	void noNonceResponderTest() {
 		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
@@ -161,7 +161,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void noNonceResponderEnforceNonceTest() {
+	void noNonceResponderEnforceNonceTest() {
 		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		ocspSource.setAlertOnNonexistentNonce(new DSSExternalResourceExceptionAlert());
@@ -171,7 +171,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void noNonceResponderSilentOnStatusAlertTest() {
+	void noNonceResponderSilentOnStatusAlertTest() {
 		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		ocspSource.setAlertOnNonexistentNonce(new SilentOnStatusAlert());
@@ -180,7 +180,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void getRevocationTokenInvalidSignatureTest() {
+	void getRevocationTokenInvalidSignatureTest() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(invalidSigGoodUser, goodCa);
 		assertNotNull(ocspToken);
@@ -189,7 +189,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void getRevocationTokenTimeoutTest() {
+	void getRevocationTokenTimeoutTest() {
 		OCSPDataLoader dataLoader = new OCSPDataLoader();
 		dataLoader.setTimeoutResponse(1000);
 
@@ -220,7 +220,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void invalidNonceResponderTest() {
+	void invalidNonceResponderTest() {
 		OnlineOCSPSource ocspSource = new InvalidNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		Exception exception = assertThrows(DSSExternalResourceException.class,
@@ -229,7 +229,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void invalidNonceResponderSilentOnStatusTest() {
+	void invalidNonceResponderSilentOnStatusTest() {
 		OnlineOCSPSource ocspSource = new InvalidNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		ocspSource.setAlertOnInvalidNonce(new SilentOnStatusAlert());
@@ -238,7 +238,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void noNextUpdateTest() {
+	void noNextUpdateTest() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
 		Exception exception = assertThrows(DSSExternalResourceException.class,
@@ -247,14 +247,14 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void validNextUpdateTest() {
+	void validNextUpdateTest() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
 		assertNotNull(ocspToken);
 	}
 
 	@Test
-	public void validNextUpdateEnforcedTest() {
+	void validNextUpdateEnforcedTest() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
@@ -262,14 +262,14 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void invalidNextUpdateTest() {
+	void invalidNextUpdateTest() {
 		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
 		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
 		assertNotNull(ocspToken);
 	}
 
 	@Test
-	public void invalidNextUpdateEnforcedTest() {
+	void invalidNextUpdateEnforcedTest() {
 		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
 		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
 		Exception exception = assertThrows(DSSExternalResourceException.class,
@@ -278,7 +278,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void invalidNextUpdateWithLargeToleranceTest() {
+	void invalidNextUpdateWithLargeToleranceTest() {
 		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
 		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
 		ocspSource.setNextUpdateTolerancePeriod(1000L * 60 * 60 * 24 * 365 * 20); // 20 years
@@ -287,7 +287,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testOCSPWithFileCache() {
+	void testOCSPWithFileCache() {
 		File cacheFolder = new File("target/ocsp-cache");
 
 		// clean cache if exists
@@ -349,7 +349,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testInjectExternalUrls() {
+	void testInjectExternalUrls() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		List<String> alternativeOCSPUrls = new ArrayList<>();
 		alternativeOCSPUrls.add("http://wrong.url.com");
@@ -361,7 +361,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 	
 	@Test
-	public void customCertIDDigestAlgorithmTest() {
+	void customCertIDDigestAlgorithmTest() {
 		OCSPDataLoader dataLoader = new OCSPDataLoader();
 		dataLoader.setTimeoutConnection(10000);
 		dataLoader.setTimeoutSocket(10000);
@@ -390,7 +390,7 @@ public class OnlineOCSPSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testNullDataLoader() {
+	void testNullDataLoader() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(null);
 

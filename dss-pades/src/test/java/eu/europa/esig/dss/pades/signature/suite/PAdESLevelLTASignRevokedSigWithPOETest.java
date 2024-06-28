@@ -62,7 +62,7 @@ public class PAdESLevelLTASignRevokedSigWithPOETest extends AbstractPAdESTestVal
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/validation/doc-firmado-T.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();

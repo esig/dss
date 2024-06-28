@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class XAdESSignWithReInitParametersTest extends AbstractXAdESTestSignature {
+class XAdESSignWithReInitParametersTest extends AbstractXAdESTestSignature {
 
     private static XAdESSignatureParameters signatureParameters;
     private static XAdESService service;
@@ -56,7 +56,7 @@ public class XAdESSignWithReInitParametersTest extends AbstractXAdESTestSignatur
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new XAdESService(certificateVerifier);
 
@@ -92,7 +92,7 @@ public class XAdESSignWithReInitParametersTest extends AbstractXAdESTestSignatur
 
     @ParameterizedTest(name = "Sign XAdES {index} : {0} - {1} - {2} - {3}")
     @MethodSource("data")
-    public void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
+    void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

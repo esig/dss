@@ -28,24 +28,24 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-public class ValidationReportUtilsTest {
+class ValidationReportUtilsTest {
 	
 	private static ValidationReportUtils validationReportUtils;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		validationReportUtils = ValidationReportUtils.getInstance();
 	}
 
 	@Test
-	public void getJAXBContext() throws JAXBException {
+	void getJAXBContext() throws JAXBException {
 		assertNotNull(validationReportUtils.getJAXBContext());
 		// cached
 		assertNotNull(validationReportUtils.getJAXBContext());
 	}
 
 	@Test
-	public void getSchema() throws SAXException {
+	void getSchema() throws SAXException {
 		assertNotNull(validationReportUtils.getSchema());
 		// cached
 		assertNotNull(validationReportUtils.getSchema());

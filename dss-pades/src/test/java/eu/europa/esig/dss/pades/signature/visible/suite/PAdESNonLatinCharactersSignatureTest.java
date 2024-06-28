@@ -46,7 +46,7 @@ public class PAdESNonLatinCharactersSignatureTest extends AbstractPAdESTestSigna
 	private DSSDocument documentToSign;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();

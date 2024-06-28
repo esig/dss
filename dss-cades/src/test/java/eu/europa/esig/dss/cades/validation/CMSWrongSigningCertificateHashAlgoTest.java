@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CMSWrongSigningCertificateHashAlgoTest extends AbstractCAdESTestValidation {
+class CMSWrongSigningCertificateHashAlgoTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

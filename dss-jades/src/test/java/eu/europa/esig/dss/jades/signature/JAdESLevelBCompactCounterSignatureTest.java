@@ -39,7 +39,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESLevelBCompactCounterSignatureTest extends AbstractJAdESCounterSignatureTest {
+class JAdESLevelBCompactCounterSignatureTest extends AbstractJAdESCounterSignatureTest {
 
     private JAdESService service;
     private DSSDocument documentToSign;
@@ -47,7 +47,7 @@ public class JAdESLevelBCompactCounterSignatureTest extends AbstractJAdESCounter
     private Date signingDate;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

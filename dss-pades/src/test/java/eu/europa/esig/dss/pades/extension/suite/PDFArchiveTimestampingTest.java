@@ -68,7 +68,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		String originalDocDigestBase64 = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, doc));

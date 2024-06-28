@@ -27,12 +27,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServiceConsistencyTest {
+class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServiceConsistencyTest {
 
     private final static TrustServiceCondition condition = new TrustServiceStatusPreEIDASConsistency();
 
     @Test
-    public void testAccreditedPreEidas() {
+    void testAccreditedPreEidas() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setStatus(TrustServiceStatus.ACCREDITED.getUri());
@@ -40,7 +40,7 @@ public class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServ
     }
 
     @Test
-    public void testSupervisionPreEidas() {
+    void testSupervisionPreEidas() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setStatus(TrustServiceStatus.SUPERVISION_CEASED.getUri());
@@ -48,7 +48,7 @@ public class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServ
     }
 
     @Test
-    public void testGrantedPreEidas() {
+    void testGrantedPreEidas() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setStatus(TrustServiceStatus.GRANTED.getUri());
@@ -56,7 +56,7 @@ public class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServ
     }
 
     @Test
-    public void testWithdrawnPreEidas() {
+    void testWithdrawnPreEidas() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(PRE_EIDAS_DATE);
         service.setStatus(TrustServiceStatus.WITHDRAWN.getUri());
@@ -64,7 +64,7 @@ public class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServ
     }
 
     @Test
-    public void testAccreditedPostEidas() {
+    void testAccreditedPostEidas() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setStatus(TrustServiceStatus.ACCREDITED.getUri());
@@ -72,7 +72,7 @@ public class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServ
     }
 
     @Test
-    public void testSupervisionPostEidas() {
+    void testSupervisionPostEidas() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setStatus(TrustServiceStatus.SUPERVISION_CEASED.getUri());
@@ -80,7 +80,7 @@ public class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServ
     }
 
     @Test
-    public void testGrantedPostEidas() {
+    void testGrantedPostEidas() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setStatus(TrustServiceStatus.GRANTED.getUri());
@@ -88,7 +88,7 @@ public class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServ
     }
 
     @Test
-    public void testWithdrawnPostEidas() {
+    void testWithdrawnPostEidas() {
         TrustServiceWrapper service = new TrustServiceWrapper();
         service.setStartDate(POST_EIDAS_DATE);
         service.setStatus(TrustServiceStatus.WITHDRAWN.getUri());

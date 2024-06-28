@@ -41,10 +41,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends AbstractTestCheck {
+class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void validTest() throws Exception {
+	void validTest() throws Exception {
 		
 		Date bestSignatureTime = new Date();
 		
@@ -70,7 +70,7 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends Abst
 	}
 
 	@Test
-	public void validWithCustomIndicationTest() throws Exception {
+	void validWithCustomIndicationTest() throws Exception {
 		
 		Date bestSignatureTime = new Date();
 		
@@ -95,7 +95,7 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends Abst
 	}
 
 	@Test
-	public void invalidTest() throws Exception {
+	void invalidTest() throws Exception {
 		
 		Date bestSignatureTime = new Date();
 		

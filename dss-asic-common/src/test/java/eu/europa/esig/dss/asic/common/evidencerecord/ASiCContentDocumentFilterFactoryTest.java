@@ -31,10 +31,10 @@ import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCContentDocumentFilterFactoryTest {
+class ASiCContentDocumentFilterFactoryTest {
 
     @Test
-    public void test() {
+    void test() {
         ASiCContent asicContent = new ASiCContent();
 
         DSSDocument signedDoc = new InMemoryDocument("Hello".getBytes(), "signed.xml");

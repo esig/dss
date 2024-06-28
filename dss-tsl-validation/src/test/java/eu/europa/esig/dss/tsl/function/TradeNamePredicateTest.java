@@ -25,22 +25,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class TradeNamePredicateTest {
+class TradeNamePredicateTest {
 
 	private TradeNamePredicate predicate = new TradeNamePredicate();
 
 	@Test
-	public void testNull() {
+	void testNull() {
 		assertFalse(predicate.test(null));
 	}
 
 	@Test
-	public void testTrue() {
+	void testTrue() {
 		assertTrue(predicate.test("ABC12"));
 	}
 
 	@Test
-	public void testFalse() {
+	void testFalse() {
 		assertFalse(predicate.test("VAT123"));
 		assertFalse(predicate.test("TIN123"));
 	}

@@ -37,14 +37,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class XAdESLevelLTDetachedDigestDocumentTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTDetachedDigestDocumentTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DSSDocument originalDocument = new FileDocument("src/test/resources/sample.xml");
         documentToSign = new DigestDocument(DigestAlgorithm.SHA512, originalDocument.getDigestValue(DigestAlgorithm.SHA512));
 

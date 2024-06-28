@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JdbcCacheOcspSourceTest extends OnlineSourceTest {
+class JdbcCacheOcspSourceTest extends OnlineSourceTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheOcspSourceTest.class);
 	
@@ -69,7 +69,7 @@ public class JdbcCacheOcspSourceTest extends OnlineSourceTest {
 	private Date requestTime = null;
 	
 	@BeforeEach
-	public void setUp() throws SQLException {
+	void setUp() throws SQLException {
 		dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
 		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
 		ocspSource.setJdbcCacheConnector(jdbcCacheConnector);
@@ -79,7 +79,7 @@ public class JdbcCacheOcspSourceTest extends OnlineSourceTest {
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		OCSPToken revocationToken;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
@@ -143,7 +143,7 @@ public class JdbcCacheOcspSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testMultipleOCSPResponses() {
+	void testMultipleOCSPResponses() {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 
 		CertificateToken goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user.crt"));
@@ -194,7 +194,7 @@ public class JdbcCacheOcspSourceTest extends OnlineSourceTest {
 	}
 	
 	@AfterEach
-	public void cleanUp() throws SQLException {
+	void cleanUp() throws SQLException {
 		ocspSource.destroyTable();
 		assertFalse(ocspSource.isTableExists());
 	}

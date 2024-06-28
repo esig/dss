@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 import java.io.File;
 import java.util.Date;
 
-public class XAdESLevelLTAInternallyDetachedCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
+class XAdESLevelLTAInternallyDetachedCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
 	private XAdESService service;
 	private DSSDocument documentToSign;
@@ -44,7 +44,7 @@ public class XAdESLevelLTAInternallyDetachedCounterSignatureTest extends Abstrac
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample-with-id.xml"));

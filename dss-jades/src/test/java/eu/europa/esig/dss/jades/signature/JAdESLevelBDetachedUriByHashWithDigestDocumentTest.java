@@ -46,14 +46,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
+class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
@@ -98,7 +98,7 @@ public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends Abstract
 	}
 
 	@Test
-	public void createContentTstTest() {
+	void createContentTstTest() {
 		DSSDocument documentToSign = getDocumentToSign();
 		JAdESSignatureParameters signatureParameters = getSignatureParameters();
 		DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service = getService();

@@ -57,7 +57,7 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -73,7 +73,7 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 	}
 	
 	@Test
-	public void signatureOverlapTest() throws IOException {
+	void signatureOverlapTest() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		signatureParameters.setImageParameters(imageParameters);
 		imageParameters.setImage(image);
@@ -99,7 +99,7 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 	}
 	
 	@Test
-	public void signatureAndTimestampOverlapTest() throws IOException {
+	void signatureAndTimestampOverlapTest() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		signatureParameters.setImageParameters(imageParameters);
 		imageParameters.setImage(image);
@@ -146,7 +146,7 @@ public class PAdESMultipleVisibleSignaturesTest extends AbstractPAdESTestValidat
 	}
 	
 	@Test
-	public void signOverEmptySignatureFieldTest() throws IOException {
+	void signOverEmptySignatureFieldTest() throws IOException {
 		SignatureFieldParameters signatureFieldParameters = new SignatureFieldParameters();
 		signatureFieldParameters.setOriginX(100);
 		signatureFieldParameters.setOriginY(100);

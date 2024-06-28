@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SignedDocumentValidatorTest {
+class SignedDocumentValidatorTest {
 
 	@Test
-	public void testNoDependency() {
+	void testNoDependency() {
 		FileDocument fileDocument = new FileDocument("src/test/resources/sample.xml");
 		Exception exception = assertThrows(UnsupportedOperationException.class,
 				() -> SignedDocumentValidator.fromDocument(fileDocument));
@@ -38,12 +38,12 @@ public class SignedDocumentValidatorTest {
 	}
 
 	@Test
-	public void testNull() {
+	void testNull() {
 		assertThrows(NullPointerException.class, () -> SignedDocumentValidator.fromDocument(null));
 	}
 
 	@Test
-	public void testEmptyDoc() {
+	void testEmptyDoc() {
 		InMemoryDocument emptyDoc = new InMemoryDocument();
 		assertThrows(NullPointerException.class, () -> SignedDocumentValidator.fromDocument(emptyDoc));
 	}

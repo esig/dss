@@ -38,14 +38,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-public class XAdESLevelBXPathEnvelopedWithContentTstTest extends AbstractXAdESTestSignature {
+class XAdESLevelBXPathEnvelopedWithContentTstTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample-c14n-dss.xml");
 
 		signatureParameters = new XAdESSignatureParameters();

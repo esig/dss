@@ -35,10 +35,10 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCeCAdESExtensionASiCXAdESTest extends PKIFactoryAccess {
+class ASiCeCAdESExtensionASiCXAdESTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument documentToExtend = new FileDocument("src/test/resources/signable/asic_xades.zip");
 
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();

@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DefaultTrustedListWithSha2PredicateTest {
+class DefaultTrustedListWithSha2PredicateTest {
 
     private DSSDocument tl;
 
@@ -46,7 +46,7 @@ public class DefaultTrustedListWithSha2PredicateTest {
     private DSSDocument wrongSha2Document;
 
     @BeforeEach
-    public void init() {
+    void init() {
         tl = new FileDocument("src/test/resources/sk-tl.xml");
         sha2Document = new InMemoryDocument("8c43cc710e6d1cc77189c6ca4ef3932e98860575aaaaab77446f167c4fb11618".getBytes());
 
@@ -55,7 +55,7 @@ public class DefaultTrustedListWithSha2PredicateTest {
     }
 
     @Test
-    public void test() {
+    void test() {
         DefaultTrustedListWithSha2Predicate currentTimePredicate = new MockDefaultTrustedListWithSha2Predicate(new Date());
 
         Exception exception = assertThrows(NullPointerException.class, () -> currentTimePredicate.test(null));

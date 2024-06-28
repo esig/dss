@@ -34,12 +34,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JWSCompactDocumentValidatorTest extends AbstractTestDocumentValidator {
+class JWSCompactDocumentValidatorTest extends AbstractTestDocumentValidator {
 
 	private static final DSSDocument JWS_SIGNATURE = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA.2yUt5UtfsRK1pnN0KTTv7gzHTxwDqDz2OkFSqlbQ40A".getBytes());
 
 	@Test
-	public void test() {
+	void test() {
 		
 		JWSCompactDocumentValidator validator = new JWSCompactDocumentValidator();
 

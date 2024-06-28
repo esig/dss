@@ -37,10 +37,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryExistenceCheck;
 
-public class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
+class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void valid() throws Exception {
+	void valid() throws Exception {
 		XmlDigestMatcher manifest = new XmlDigestMatcher();
 		manifest.setType(DigestMatcherType.MANIFEST);
 		
@@ -65,7 +65,7 @@ public class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void invalid() throws Exception {
+	void invalid() throws Exception {
 		XmlDigestMatcher manifest = new XmlDigestMatcher();
 		manifest.setType(DigestMatcherType.MANIFEST);
 		

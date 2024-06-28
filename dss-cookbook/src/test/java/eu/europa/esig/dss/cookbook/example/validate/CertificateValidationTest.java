@@ -36,10 +36,10 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CertificateValidationTest {
+class CertificateValidationTest {
 
 	@Test
-	public void getCertificateStatus() {
+	void getCertificateStatus() {
 
 		// tag::demo[]
 		// import eu.europa.esig.dss.detailedreport.DetailedReport;

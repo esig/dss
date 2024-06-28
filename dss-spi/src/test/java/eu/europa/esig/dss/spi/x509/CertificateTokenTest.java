@@ -34,12 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CertificateTokenTest {
+class CertificateTokenTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateTokenTest.class);
 
 	@Test
-	public void getKeyUsageBits() {
+	void getKeyUsageBits() {
 		CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
 		List<KeyUsageBit> keyUsageBits = certificate.getKeyUsageBits();
 		LOG.info("Key usage citizen_ca : " + keyUsageBits);

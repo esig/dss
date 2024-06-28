@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
-public class DigestAlgorithmParameterizedTest {
+class DigestAlgorithmParameterizedTest {
 
 	private static Collection<DigestAlgorithm> data() {
 		// digest algorithms which are supported by the JVM
@@ -43,7 +43,7 @@ public class DigestAlgorithmParameterizedTest {
 
 	@ParameterizedTest(name = "Digest {index} : {0}")
 	@MethodSource("data")
-	public void getMessageDigest(DigestAlgorithm digestAlgo) throws NoSuchAlgorithmException {
+	void getMessageDigest(DigestAlgorithm digestAlgo) throws NoSuchAlgorithmException {
 		MessageDigest md = digestAlgo.getMessageDigest();
 		assertNotNull(md);
 		assertNotNull(md.digest(new byte[] { 1, 2, 3 }));

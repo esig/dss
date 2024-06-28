@@ -56,10 +56,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * How to add signed properties to the signature.
  */
-public class SignXmlXadesBPropertiesTest extends CookbookTools {
+class SignXmlXadesBPropertiesTest extends CookbookTools {
 
 	@Test
-	public void testWithProperties() throws Exception {
+	void testWithProperties() throws Exception {
 
 		prepareXmlDoc();
 

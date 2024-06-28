@@ -44,10 +44,10 @@ import java.awt.Font;
 /**
  * How to sign PDF Document with PAdES-BASELINE-B and include a visual representation
  */
-public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
+class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 
 	@Test
-	public void signPAdESBaselineBWithExistingVisibleSignature() throws Exception {
+	void signPAdESBaselineBWithExistingVisibleSignature() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument

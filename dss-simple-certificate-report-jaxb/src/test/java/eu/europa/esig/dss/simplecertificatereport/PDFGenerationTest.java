@@ -38,13 +38,13 @@ import java.io.FileOutputStream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PDFGenerationTest {
+class PDFGenerationTest {
 
 	private static FopFactory fopFactory;
 	private static FOUserAgent foUserAgent;
 
 	@BeforeAll
-	public static void init() throws Exception {
+	static void init() throws Exception {
 		FopFactoryBuilder builder = new FopFactoryBuilder(new File(".").toURI());
 		builder.setAccessibility(true);
 
@@ -56,17 +56,17 @@ public class PDFGenerationTest {
 	}
 
 	@Test
-	public void generateSimpleCertificateReport() throws Exception {
+	void generateSimpleCertificateReport() throws Exception {
 		createAndValidate("simple-cert-report.xml");
 	}
 
 	@Test
-	public void generateSimpleCertificateReport2() throws Exception {
+	void generateSimpleCertificateReport2() throws Exception {
 		createAndValidate("simple-cert-report2.xml");
 	}
 
 	@Test
-	public void generateSimpleCertificateReport3() throws Exception {
+	void generateSimpleCertificateReport3() throws Exception {
 		createAndValidate("simple-cert-report3.xml");
 	}
 	

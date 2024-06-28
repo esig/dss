@@ -24,7 +24,7 @@ import java.util.Date;
 
 import eu.europa.esig.dss.spi.DSSUtils;
 
-public class CAdESLevelBAfter2049Test extends AbstractCAdESTestSigningTime {
+class CAdESLevelBAfter2049Test extends AbstractCAdESTestSigningTime {
 
 	@Override
 	protected Date getSigningTime() {

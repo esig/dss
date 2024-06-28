@@ -43,12 +43,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DigestTest {
+class DigestTest {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(DigestTest.class);
 
 	@Test
-	public void testEquals() throws Exception {
+	void testEquals() throws Exception {
 
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		byte[] value = md.digest("Hello World !".getBytes());
@@ -66,7 +66,7 @@ public class DigestTest {
 	}
 
 	@Test
-	public void testSerializable() throws Exception {
+	void testSerializable() throws Exception {
 
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
 		byte[] value = md.digest("Hello World !".getBytes());
@@ -87,7 +87,7 @@ public class DigestTest {
 	}
 	
 	@Test
-	public void nullValues() {
+	void nullValues() {
 		Digest digest = new Digest();
 		assertNull(digest.getAlgorithm());
 		assertNull(digest.getValue());
@@ -96,7 +96,7 @@ public class DigestTest {
 	}
 
 	@Test
-	public void stateless() {
+	void stateless() {
 		Digest d1 = new Digest(DigestAlgorithm.SHA256, new byte[] { 1, 2, 3 });
 		String hexValue = d1.getHexValue();
 		d1.setValue(new byte[] { 5, 6, 7 });
@@ -104,19 +104,19 @@ public class DigestTest {
 	}
 
 	@Test
-	public void hexTest() {
+	void hexTest() {
 		Digest d1 = new Digest(DigestAlgorithm.SHA256, new byte[] { 1, 2, 3 });
 		assertEquals("010203", d1.getHexValue());
 	}
 
 	@Test
-	public void base64Test() {
+	void base64Test() {
 		Digest d1 = new Digest(DigestAlgorithm.SHA256, new byte[] { 1, 2, 3 });
 		assertEquals("AQID", d1.getBase64Value());
 	}
 
 	@Disabled("performances")
-	public void perfs() {
+	void perfs() {
 
 		int bigIntCounter = 0;
 		int formatterCounter = 0;

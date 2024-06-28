@@ -49,14 +49,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-3298
 // This unit test ensures the revocation data is updated for a sig tst
-public class XAdESLevelLTTstRevocationFreshnessTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTTstRevocationFreshnessTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         Calendar calendar = Calendar.getInstance();

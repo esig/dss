@@ -42,7 +42,7 @@ import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class AbstractDKTestCertificate extends AbstractXAdESTestValidation {
+class AbstractDKTestCertificate extends AbstractXAdESTestValidation {
 
 	private static final String DATE_STRING = "2019-08-05";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";

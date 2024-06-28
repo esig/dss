@@ -36,13 +36,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
-public class NativeHTTPDataLoaderTest {
+class NativeHTTPDataLoaderTest {
 
 	private static final String HTTP_URL_TO_LOAD = "http://certs.eid.belgium.be/belgiumrs2.crt";
 	private static final String FILE_URL_TO_LOAD = "file:src/test/resources/belgiumrs2.crt";
 
 	@Test
-	public void testHttpGet() {
+	void testHttpGet() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		byte[] bytesArray = dataLoader.get(HTTP_URL_TO_LOAD);
 
@@ -51,7 +51,7 @@ public class NativeHTTPDataLoaderTest {
 	}
 
 	@Test
-	public void testFileGet() {
+	void testFileGet() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		byte[] bytesArray = dataLoader.get(FILE_URL_TO_LOAD);
 
@@ -60,7 +60,7 @@ public class NativeHTTPDataLoaderTest {
 	}
 
 	@Test
-	public void testGetSmallerThanMaxSize() {
+	void testGetSmallerThanMaxSize() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setMaxInputSize(1000000);
 		byte[] bytesArray = dataLoader.get(FILE_URL_TO_LOAD);
@@ -70,14 +70,14 @@ public class NativeHTTPDataLoaderTest {
 	}
 
 	@Test
-	public void testGetBiggerThanMaxSize() {
+	void testGetBiggerThanMaxSize() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setMaxInputSize(1);
 		assertThrows(DSSException.class, () -> dataLoader.get(FILE_URL_TO_LOAD));
 	}
 
 	@Test
-	public void testConnectTimeout() {
+	void testConnectTimeout() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setConnectTimeout(1);
 		// change URL, as a connection may be already established with the other one
@@ -85,14 +85,14 @@ public class NativeHTTPDataLoaderTest {
 	}
 
 	@Test
-	public void testReadTimeout() {
+	void testReadTimeout() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setReadTimeout(1);
 		assertThrows(DSSException.class, () -> dataLoader.get(HTTP_URL_TO_LOAD, true));
 	}
 
 	@Test
-	public void unresponsiveServiceTest() throws Exception {
+	void unresponsiveServiceTest() throws Exception {
 		// Creates a localhost:9090 to simulate an unresponsive service
 		try (ServerSocket serverSocket = new ServerSocket(9090, 0, InetAddress.getLoopbackAddress())) {
 			MockNativeHTTPDataLoader dataLoader = new MockNativeHTTPDataLoader();

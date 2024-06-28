@@ -43,7 +43,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private XAdESService service;
 	private List<DSSDocument> documentsToSign;
@@ -53,7 +53,7 @@ public class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends Abstr
 	private String signatureId;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		

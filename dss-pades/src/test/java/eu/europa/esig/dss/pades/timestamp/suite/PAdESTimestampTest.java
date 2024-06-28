@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PAdESTimestampTest extends AbstractPkiFactoryTestValidation {
 
 	@Test
-	public void test() {
+	void test() {
 		
 		DSSDocument documentToTimestamp = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
 		

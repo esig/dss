@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESExtensionWithSignaturePolicyStoreBToLTATest extends AbstractASiCWithXAdESTestExtension {
+class ASiCEXAdESExtensionWithSignaturePolicyStoreBToLTATest extends AbstractASiCWithXAdESTestExtension {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";

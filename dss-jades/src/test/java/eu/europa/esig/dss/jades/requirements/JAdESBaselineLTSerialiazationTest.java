@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 
-public class JAdESBaselineLTSerialiazationTest extends AbstractJAdESSerializationSignatureRequirementsCheck {
+class JAdESBaselineLTSerialiazationTest extends AbstractJAdESSerializationSignatureRequirementsCheck {
 
 	@Override
 	protected JAdESSignatureParameters getSignatureParameters() {

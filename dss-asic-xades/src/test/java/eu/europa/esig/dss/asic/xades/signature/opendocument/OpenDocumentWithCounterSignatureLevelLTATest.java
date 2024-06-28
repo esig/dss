@@ -36,13 +36,13 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 
-public class OpenDocumentWithCounterSignatureLevelLTATest extends AbstractOpenDocumentCounterSignatureTest {
+class OpenDocumentWithCounterSignatureLevelLTATest extends AbstractOpenDocumentCounterSignatureTest {
 
 	private ASiCWithXAdESService service;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		signingDate = new Date();

@@ -26,7 +26,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 import java.util.List;
 
-public class XAdESExtensionCToXTest extends AbstractXAdESTestExtension {
+class XAdESExtensionCToXTest extends AbstractXAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

@@ -44,10 +44,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferencesValidityCheck;
 
-public class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
+class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void signingCertificateReferenceCheckTest() throws Exception {
+	void signingCertificateReferenceCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -79,7 +79,7 @@ public class SigningCertificateReferencesValidityCheckTest extends AbstractTestC
 	}
 
 	@Test
-	public void failedSigningCertificateReferenceCheckTest() throws Exception {
+	void failedSigningCertificateReferenceCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -111,7 +111,7 @@ public class SigningCertificateReferencesValidityCheckTest extends AbstractTestC
 	}
 
 	@Test
-	public void additionalReferenceSigningCertificateReferenceCheckTest() throws Exception {
+	void additionalReferenceSigningCertificateReferenceCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -146,7 +146,7 @@ public class SigningCertificateReferencesValidityCheckTest extends AbstractTestC
 	}
 
 	@Test
-	public void additionalCertificateSigningCertificateReferenceCheckTest() throws Exception {
+	void additionalCertificateSigningCertificateReferenceCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -179,7 +179,7 @@ public class SigningCertificateReferencesValidityCheckTest extends AbstractTestC
 	}
 
 	@Test
-	public void signingCertificateReferenceWithOrphanCheckTest() throws Exception {
+	void signingCertificateReferenceWithOrphanCheckTest() throws Exception {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		

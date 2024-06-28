@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class CAdESExtensionBToTWithError500TimestampTest extends AbstractCAdESTestExtension {
+class CAdESExtensionBToTWithError500TimestampTest extends AbstractCAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {

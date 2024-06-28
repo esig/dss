@@ -52,7 +52,7 @@ public abstract class PAdESLevelBSha3AndEdDSAOldPdfDeveloperExtensionTest extend
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         signingAlias = RSA_SHA3_USER;
 

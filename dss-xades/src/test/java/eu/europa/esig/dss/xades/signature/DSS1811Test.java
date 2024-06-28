@@ -46,13 +46,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1811Test extends PKIFactoryAccess {
+class DSS1811Test extends PKIFactoryAccess {
 
 	private static final String DOCUMENT_NAME = "test.text";
 	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA512;
 
 	@Test
-	public void testWithCompleteDocument() throws IOException {
+	void testWithCompleteDocument() throws IOException {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocument = getCompleteDocument();
@@ -72,7 +72,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testWithCompleteDocumentNoName() throws IOException {
+	void testWithCompleteDocumentNoName() throws IOException {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -92,7 +92,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testWithDigestDocument() {
+	void testWithDigestDocument() {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument digestDocument = getDigestDocument();
@@ -112,7 +112,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void alteredDigestAlgo() {
+	void alteredDigestAlgo() {
 		// Changed digest algo for signed info
 		DSSDocument signedDoc = new FileDocument("src/test/resources/validation/dss1811-multi-algo.xml");
 

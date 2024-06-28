@@ -33,10 +33,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCWithXAdESContainerMergerFactoryTest {
+class ASiCWithXAdESContainerMergerFactoryTest {
 
     @Test
-    public void isSupportedDSSDocumentTest() {
+    void isSupportedDSSDocumentTest() {
         ASiCWithXAdESContainerMergerFactory factory = new ASiCWithXAdESContainerMergerFactory();
         assertTrue(factory.isSupported(new FileDocument("src/test/resources/validation/onefile-ok.asics")));
         assertTrue(factory.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asics")));
@@ -50,7 +50,7 @@ public class ASiCWithXAdESContainerMergerFactoryTest {
     }
 
     @Test
-    public void isSupportedMultipleDSSDocumentTest() {
+    void isSupportedMultipleDSSDocumentTest() {
         ASiCWithXAdESContainerMergerFactory factory = new ASiCWithXAdESContainerMergerFactory();
         assertTrue(factory.isSupported(
                 new FileDocument("src/test/resources/validation/onefile-ok.asics"),
@@ -71,7 +71,7 @@ public class ASiCWithXAdESContainerMergerFactoryTest {
     }
 
     @Test
-    public void isSupportedASiCContentTest() {
+    void isSupportedASiCContentTest() {
         ASiCWithXAdESContainerMergerFactory factory = new ASiCWithXAdESContainerMergerFactory();
         assertTrue(factory.isSupported(new ASiCWithXAdESContainerExtractor(
                 new FileDocument("src/test/resources/validation/onefile-ok.asics")).extract()));
@@ -88,7 +88,7 @@ public class ASiCWithXAdESContainerMergerFactoryTest {
     }
 
     @Test
-    public void isSupportedMultipleASiCContentTest() {
+    void isSupportedMultipleASiCContentTest() {
         ASiCWithXAdESContainerMergerFactory factory = new ASiCWithXAdESContainerMergerFactory();
         assertTrue(factory.isSupported(
                 new ASiCWithXAdESContainerExtractor(new FileDocument("src/test/resources/validation/onefile-ok.asics")).extract(),
@@ -103,7 +103,7 @@ public class ASiCWithXAdESContainerMergerFactoryTest {
     }
 
     @Test
-    public void isSupportedNullTest() {
+    void isSupportedNullTest() {
         ASiCWithXAdESContainerMergerFactory factory = new ASiCWithXAdESContainerMergerFactory();
 
         Exception exception = assertThrows(NullPointerException.class, () -> factory.isSupported((DSSDocument[]) null));
@@ -122,7 +122,7 @@ public class ASiCWithXAdESContainerMergerFactoryTest {
     }
 
     @Test
-    public void createFromDSSDocumentTest() {
+    void createFromDSSDocumentTest() {
         ASiCWithXAdESContainerMergerFactory factory = new ASiCWithXAdESContainerMergerFactory();
 
         ASiCContainerMerger merger = factory.create(
@@ -196,7 +196,7 @@ public class ASiCWithXAdESContainerMergerFactoryTest {
     }
 
     @Test
-    public void createFromASiCContainerTest() {
+    void createFromASiCContainerTest() {
         ASiCWithXAdESContainerMergerFactory factory = new ASiCWithXAdESContainerMergerFactory();
 
         ASiCContainerMerger merger = factory.create(
@@ -295,7 +295,7 @@ public class ASiCWithXAdESContainerMergerFactoryTest {
     }
 
     @Test
-    public void createNullTest() {
+    void createNullTest() {
         ASiCWithXAdESContainerMergerFactory factory = new ASiCWithXAdESContainerMergerFactory();
 
         Exception exception = assertThrows(NullPointerException.class, () -> factory.create((DSSDocument[]) null));

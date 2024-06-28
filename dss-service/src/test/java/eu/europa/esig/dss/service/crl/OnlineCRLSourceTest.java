@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OnlineCRLSourceTest extends OnlineSourceTest {
+class OnlineCRLSourceTest extends OnlineSourceTest {
 
 	private static final String ALTERNATIVE_URL = ONLINE_PKI_HOST + "/crl/root-ca.crl";
 	private static final String WRONG_URL = "http://wrong.url";
@@ -66,7 +66,7 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	private static CertificateToken timeoutSigGoodUser;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		dataLoader = new CommonsDataLoader();
 
 		goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user.crt"));
@@ -82,13 +82,13 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	}
 
 	@BeforeEach
-	public void beforeEach() {
+	void beforeEach() {
 		dataLoader.setTimeoutResponse(60000);
 		onlineCRLSource = new OnlineCRLSource(dataLoader);
 	}
 	
 	@Test
-	public void getRevocationTokenTest() {
+	void getRevocationTokenTest() {
 		Exception exception = assertThrows(DSSExternalResourceException.class,
 				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa));
 		assertEquals("No CRL location found for certificate with Id '" + goodUser.getDSSIdAsString() + "'", exception.getMessage());
@@ -99,7 +99,7 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	}
 	
 	@Test
-	public void getRevocationTokenEd25519Test() {
+	void getRevocationTokenEd25519Test() {
 		Exception exception = assertThrows(DSSExternalResourceException.class,
 				() -> onlineCRLSource.getRevocationToken(ed25519goodCa, ed25519goodUser));
 		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + ed25519goodCa.getDSSIdAsString() + "'"));
@@ -113,14 +113,14 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void getRevocationTokenInvalidSignatureTest() {
+	void getRevocationTokenInvalidSignatureTest() {
 		Exception exception = assertThrows(DSSExternalResourceException.class,
 				() -> onlineCRLSource.getRevocationToken(invalidSigGoodUser, goodCa));
 		assertTrue(exception.getMessage().contains("CRL Signature cannot be validated : CRL does not verify with supplied public key."));
 	}
 
 	@Test
-	public void getRevocationTokenTimeoutTest() {
+	void getRevocationTokenTimeoutTest() {
 		dataLoader.setTimeoutResponse(1000);
 
 		Exception exception = assertThrows(DSSExternalResourceException.class,
@@ -147,7 +147,7 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void getRevocationTokenWithAlternateUrlTest() {
+	void getRevocationTokenWithAlternateUrlTest() {
 		Exception exception = assertThrows(DSSExternalResourceException.class,
 				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa, Collections.singletonList(ALTERNATIVE_URL)));
 		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + goodUser.getDSSIdAsString() + "'"));
@@ -157,7 +157,7 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	}
 	
 	@Test
-	public void getRevocationTokenWithWrongAlternateUrlTest() {
+	void getRevocationTokenWithWrongAlternateUrlTest() {
 		Exception exception = assertThrows(DSSExternalResourceException.class,
 				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa, Collections.singletonList(WRONG_URL)));
 		assertTrue(exception.getMessage().contains("Unable to retrieve CRL for certificate with Id '" + goodUser.getDSSIdAsString() + "'"));
@@ -167,7 +167,7 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	}
 	
 	@Test
-	public void timeoutTest() {
+	void timeoutTest() {
 		dataLoader.setTimeoutResponse(1);
 
 		Exception exception = assertThrows(DSSExternalResourceException.class,
@@ -182,7 +182,7 @@ public class OnlineCRLSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	public void testNullDataLoader() {
+	void testNullDataLoader() {
 		onlineCRLSource.setDataLoader(null);
 
 		Exception exception = assertThrows(NullPointerException.class,

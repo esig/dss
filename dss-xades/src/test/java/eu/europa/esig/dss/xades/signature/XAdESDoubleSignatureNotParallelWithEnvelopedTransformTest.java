@@ -42,7 +42,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESDoubleSignatureNotParallelWithEnvelopedTransformTest extends AbstractXAdESTestSignature {
+class XAdESDoubleSignatureNotParallelWithEnvelopedTransformTest extends AbstractXAdESTestSignature {
 	private DSSDocument originalDocument;
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
@@ -50,7 +50,7 @@ public class XAdESDoubleSignatureNotParallelWithEnvelopedTransformTest extends A
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		originalDocument = new FileDocument(new File("src/test/resources/sample-with-different-id.xml"));
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}

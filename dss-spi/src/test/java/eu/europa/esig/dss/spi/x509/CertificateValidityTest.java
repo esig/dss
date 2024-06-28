@@ -32,12 +32,12 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CertificateValidityTest {
+class CertificateValidityTest {
 	
 	private static CertificateToken certificateToken;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		certificateToken = DSSUtils.loadCertificateFromBase64EncodedString(
 				"MIIC9TCCAd2gAwIBAgIBAjANBgkqhkiG9w0BAQUFADArMQswCQYDVQQGEwJBQTEMMAoGA1UEChMDRFNTMQ4wDAYDVQQDEwVJQ"
 				+ "0EgQTAeFw0xMzEyMDIxNzMzMTBaFw0xNTEyMDIxNzMzMTBaMDAxCzAJBgNVBAYTAkFBMQwwCgYDVQQKEwNEU1MxEzARBgNV"
@@ -53,7 +53,7 @@ public class CertificateValidityTest {
 	}
 	
 	@Test
-	public void test() {
+	void test() {
 		CertificateValidity certificateValidity = new CertificateValidity(certificateToken);
 		assertFalse(certificateValidity.isValid());
 		
@@ -85,7 +85,7 @@ public class CertificateValidityTest {
 	}
 	
 	@Test
-	public void validityTest() {
+	void validityTest() {
 		PublicKey publicKey = certificateToken.getPublicKey();
 		CertificateValidity certificateValidity = new CertificateValidity(publicKey);
 		assertFalse(certificateValidity.isValid());
@@ -106,13 +106,13 @@ public class CertificateValidityTest {
 	}
 	
 	@Test
-	public void nullCertificateTokenTest() {
+	void nullCertificateTokenTest() {
 		Exception exception = assertThrows(NullPointerException.class, () -> new CertificateValidity((CertificateToken) null));
 		assertEquals("CertificateToken cannot be null!", exception.getMessage());
 	}
 	
 	@Test
-	public void nullPublicKeyTest() {
+	void nullPublicKeyTest() {
 		Exception exception = assertThrows(NullPointerException.class, () -> new CertificateValidity((PublicKey) null));
 		assertEquals("PublicKey cannot be null!", exception.getMessage());
 	}

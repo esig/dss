@@ -48,16 +48,16 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignedDocumentAnalyzerTest {
+class SignedDocumentAnalyzerTest {
 
 	@Test
-	public void testXmlUTF8() {
+	void testXmlUTF8() {
 		DocumentAnalyzer documentAnalyzer = DefaultDocumentAnalyzer.fromDocument(new FileDocument(new File("src/test/resources/sample.xml")));
         assertInstanceOf(XMLDocumentAnalyzer.class, documentAnalyzer);
 	}
 
 	@Test
-	public void testXmlUTF8InMemory() throws IOException {
+	void testXmlUTF8InMemory() throws IOException {
 		FileInputStream fis = new FileInputStream("src/test/resources/sample.xml");
 		byte[] byteArray = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
@@ -67,13 +67,13 @@ public class SignedDocumentAnalyzerTest {
 	}
 
 	@Test
-	public void testXmlISO() {
+	void testXmlISO() {
 		DocumentAnalyzer documentAnalyzer = DefaultDocumentAnalyzer.fromDocument(new FileDocument(new File("src/test/resources/sampleISO.xml")));
         assertInstanceOf(XMLDocumentAnalyzer.class, documentAnalyzer);
 	}
 
 	@Test
-	public void testXmlUISOInMemory() throws IOException {
+	void testXmlUISOInMemory() throws IOException {
 		FileInputStream fis = new FileInputStream(new File("src/test/resources/sampleISO.xml"));
 		byte[] byteArray = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
@@ -83,7 +83,7 @@ public class SignedDocumentAnalyzerTest {
 	}
 	
 	@Test
-	public void internationalizationTest() {
+	void internationalizationTest() {
 		Locale systemLocale = Locale.getDefault();
 		try {
 			Locale.setDefault(Locale.ENGLISH);

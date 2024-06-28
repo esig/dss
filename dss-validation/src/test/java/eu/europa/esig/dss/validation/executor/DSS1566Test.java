@@ -37,10 +37,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1566Test extends AbstractTestValidationExecutor {
+class DSS1566Test extends AbstractTestValidationExecutor {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/dss1566-diagnostic.xml"));
 
 		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();

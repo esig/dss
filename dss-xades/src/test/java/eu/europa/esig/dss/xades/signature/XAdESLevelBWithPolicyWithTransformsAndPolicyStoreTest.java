@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBWithPolicyWithTransformsAndPolicyStoreTest extends AbstractXAdESTestSignature {
+class XAdESLevelBWithPolicyWithTransformsAndPolicyStoreTest extends AbstractXAdESTestSignature {
 
 	private static final String SIGNATURE_POLICY_ID = "urn:sbr:signature-policy:xml:2.0";
 	private static final String SIGNATURE_POLICY_URL = "http://www.nltaxonomie.nl/sbr/signature_policy_schema/v2.0/SBR-signature-policy-v2.0.xml";
@@ -68,7 +68,7 @@ public class XAdESLevelBWithPolicyWithTransformsAndPolicyStoreTest extends Abstr
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

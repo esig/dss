@@ -41,10 +41,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FieldMDPCheckTest extends AbstractTestCheck {
+class FieldMDPCheckTest extends AbstractTestCheck {
 
     @Test
-    public void allFieldsLockedValid() {
+    void allFieldsLockedValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -76,7 +76,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void allFieldsLockedFail() {
+    void allFieldsLockedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -109,7 +109,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void exclusiveFieldLockValid() {
+    void exclusiveFieldLockValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -144,7 +144,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void exclusiveFieldLockFail() {
+    void exclusiveFieldLockFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -183,7 +183,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void inclusiveFieldLockValid() {
+    void inclusiveFieldLockValid() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();
@@ -218,7 +218,7 @@ public class FieldMDPCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void inclusiveFieldLockFail() {
+    void inclusiveFieldLockFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureDictionary pdfSignatureDictionary = new XmlPDFSignatureDictionary();

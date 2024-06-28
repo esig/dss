@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashPresenceCheck;
 
-public class RevocationCertHashPresenceCheckTest extends AbstractTestCheck {
+class RevocationCertHashPresenceCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void revocationCertHashPresenceCheck() throws Exception {
+	void revocationCertHashPresenceCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		
@@ -57,7 +57,7 @@ public class RevocationCertHashPresenceCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	public void failRevocationCertHashPresenceCheck() throws Exception {
+	void failRevocationCertHashPresenceCheck() throws Exception {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		

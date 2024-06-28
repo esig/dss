@@ -105,7 +105,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * This test is only to ensure that we don't have exception with valid? files
  */
-public class SignaturePoolTest extends AbstractDocumentTestValidation {
+class SignaturePoolTest extends AbstractDocumentTestValidation {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SignaturePoolTest.class);
 
@@ -120,7 +120,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 	private static TrustedListsCertificateSource trustedCertSource;
 	
 	@BeforeAll
-	public static void init() throws Exception {
+	static void init() throws Exception {
 		// preload JAXB context before validation
 		ValidationReportUtils.getInstance().getJAXBContext();
 		
@@ -173,7 +173,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void testValidate(File fileToTest) {
+	void testValidate(File fileToTest) {
 		LOG.info("Begin : {}", fileToTest.getAbsolutePath());
 		document = new FileDocument(fileToTest);
 		try {

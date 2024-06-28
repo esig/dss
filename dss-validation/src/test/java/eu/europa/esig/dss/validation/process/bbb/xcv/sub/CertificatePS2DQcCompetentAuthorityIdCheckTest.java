@@ -39,10 +39,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTestCheck {
+class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTestCheck {
 
     @Test
-    public void validTest() throws Exception {
+    void validTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -68,7 +68,7 @@ public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTest
     }
 
     @Test
-    public void multipleValuesTest() throws Exception {
+    void multipleValuesTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -95,7 +95,7 @@ public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTest
     }
 
     @Test
-    public void invalidTest() throws Exception {
+    void invalidTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -121,7 +121,7 @@ public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTest
     }
 
     @Test
-    public void qcPS2DNotPresentTest() throws Exception {
+    void qcPS2DNotPresentTest() throws Exception {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -143,7 +143,7 @@ public class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTest
     }
 
     @Test
-    public void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() throws Exception {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("LU-CSSF");

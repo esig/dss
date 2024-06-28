@@ -38,10 +38,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class OtherTLSLPointerPredicatesTest {
+class OtherTLSLPointerPredicatesTest {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl.xml")) {
 			TrustStatusListType trustStatusListType = TrustedListFacade.newFacade().unmarshall(fis);
 			assertNotNull(trustStatusListType);
@@ -81,7 +81,7 @@ public class OtherTLSLPointerPredicatesTest {
 	}
 
 	@Test
-	public void exceptions() {
+	void exceptions() {
 		assertThrows(NullPointerException.class, () -> new MimetypeOtherTSLPointer(null));
 		assertThrows(NullPointerException.class, () -> new TypeOtherTSLPointer(null));
 	}

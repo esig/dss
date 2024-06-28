@@ -37,10 +37,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class ServerSignTest extends CookbookTools {
+class ServerSignTest extends CookbookTools {
 
     @Test
-    public void serverSignTest() throws Exception {
+    void serverSignTest() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

@@ -49,7 +49,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
         service = new PAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -63,7 +63,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void signBRevokedAndSignBGoodUserTest() {
+    void signBRevokedAndSignBGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -79,7 +79,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void signBRevokedAndSignLTGoodUserTest() {
+    void signBRevokedAndSignLTGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -93,7 +93,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void signBGoodUserAndSignBRevokedTest() {
+    void signBGoodUserAndSignBRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -109,7 +109,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void signBGoodUserAndSignLTRevokedTest() {
+    void signBGoodUserAndSignLTRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -123,7 +123,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void signBWithRevocationCheckEnabledTest() {
+    void signBWithRevocationCheckEnabledTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);

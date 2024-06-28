@@ -36,10 +36,10 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
 
-public class OrganizationUnitCheckTest extends AbstractTestCheck {
+class OrganizationUnitCheckTest extends AbstractTestCheck {
 
 	@Test
-	public void organizationUnitCheck() throws Exception {
+	void organizationUnitCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Valid_Org");
@@ -57,7 +57,7 @@ public class OrganizationUnitCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	public void failedOrganizationUnitCheck() throws Exception {
+	void failedOrganizationUnitCheck() throws Exception {
 		MultiValuesConstraint constraint = new MultiValuesConstraint();
 		constraint.setLevel(Level.FAIL);
 		constraint.getId().add("Invalid_Org");

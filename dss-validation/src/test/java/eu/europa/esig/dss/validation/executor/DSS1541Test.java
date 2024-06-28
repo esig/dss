@@ -36,10 +36,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS1541Test extends AbstractCryptographicConstraintsTest {
+class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	
 	@Test
-	public void signingCertificateWrongCryptographicConstrainsTest() throws Exception {
+	void signingCertificateWrongCryptographicConstrainsTest() throws Exception {
 		
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
@@ -64,7 +64,7 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	}
 
 	@Test
-	public void caCertificateWrongCryptographicConstrainsTest() throws Exception {
+	void caCertificateWrongCryptographicConstrainsTest() throws Exception {
 
 		initializeExecutor("src/test/resources/diag-data/universign.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
@@ -85,7 +85,7 @@ public class DSS1541Test extends AbstractCryptographicConstraintsTest {
 	}
 
 	@Test
-	public void timestampConstraintsTest() throws Exception {
+	void timestampConstraintsTest() throws Exception {
 
 		initializeExecutor("src/test/resources/diag-data/passed_out_of_bounds_with_timestamps.xml");
 		validationPolicyFile = new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");

@@ -34,7 +34,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class ASiCEWithXAdESMultiFilesCorruptedTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithXAdESMultiFilesCorruptedTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

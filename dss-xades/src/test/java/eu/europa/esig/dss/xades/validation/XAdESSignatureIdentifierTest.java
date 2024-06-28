@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XAdESSignatureIdentifierTest extends AbstractXAdESTestValidation {
+class XAdESSignatureIdentifierTest extends AbstractXAdESTestValidation {
 	
 	private static DSSDocument document = new FileDocument(new File("src/test/resources/validation/valid-xades.xml"));
 

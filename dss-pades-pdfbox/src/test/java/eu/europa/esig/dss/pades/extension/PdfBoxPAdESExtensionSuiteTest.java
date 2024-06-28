@@ -86,6 +86,6 @@ import org.junit.platform.suite.api.Suite;
 		PAdESExtensionInvalidLevelsTest.class, DSS2821ExtensionToTLevelTest.class, DSS2821ExtensionToLTLevelTest.class,
 		PAdESExtensionBToTDocWithVRITstTest.class, PAdESExtensionBToLTADocWithVRITstTest.class, PAdESExtensionBToTDocWithVRITest.class,
 		PAdESExtensionBToLTADocWithVRITest.class, PAdESExtensionLTWithVRIToLTATest.class, PAdESExtensionLTToLTAWithVRITest.class })
-public class PdfBoxPAdESExtensionSuiteTest {
+class PdfBoxPAdESExtensionSuiteTest {
 
 }

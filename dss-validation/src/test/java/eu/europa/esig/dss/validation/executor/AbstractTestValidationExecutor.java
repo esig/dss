@@ -146,7 +146,7 @@ public abstract class AbstractTestValidationExecutor {
 		}
 	}
 
-	public static void mapDetailedReport(Reports reports) {
+	protected static void mapDetailedReport(Reports reports) {
 		ObjectMapper om = getObjectMapper();
 		try {
 			String json = om.writeValueAsString(reports.getDetailedReportJaxb());

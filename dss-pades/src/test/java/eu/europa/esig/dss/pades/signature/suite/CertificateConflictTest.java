@@ -54,7 +54,7 @@ public class CertificateConflictTest {
 	private final PasswordProtection passwordProtection = new PasswordProtection("1qaz@WSX".toCharArray());
 
 	@Test
-	public void testPadesCaDuplicate() {
+	void testPadesCaDuplicate() {
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 		DSSDocument signedDocument = padesSign(doc);
 		assertEquals(MimeTypeEnum.PDF, signedDocument.getMimeType());

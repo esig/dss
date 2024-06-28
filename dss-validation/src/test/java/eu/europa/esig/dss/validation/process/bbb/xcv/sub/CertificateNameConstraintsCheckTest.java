@@ -44,10 +44,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
+class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
     @Test
-    public void permittedSubtreesValid() {
+    void permittedSubtreesValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -95,7 +95,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesInvalid() {
+    void permittedSubtreesInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -143,7 +143,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesMissingAttribute() {
+    void permittedSubtreesMissingAttribute() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -191,7 +191,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesValidCANotPresentCertExt() {
+    void permittedSubtreesValidCANotPresentCertExt() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -238,7 +238,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesInvalidCANotPresentCertExt() {
+    void permittedSubtreesInvalidCANotPresentCertExt() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -285,7 +285,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesCADefinedValid() {
+    void permittedSubtreesCADefinedValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -332,7 +332,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesCADefinedInvalid() {
+    void permittedSubtreesCADefinedInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -379,7 +379,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesValidCAOverwrite() {
+    void permittedSubtreesValidCAOverwrite() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -434,7 +434,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesValidCARemoveProp() {
+    void permittedSubtreesValidCARemoveProp() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -489,7 +489,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesValidCAAddProp() {
+    void permittedSubtreesValidCAAddProp() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -544,7 +544,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multiplePermittedSubtreesValid() {
+    void multiplePermittedSubtreesValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -595,7 +595,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multiplePermittedSubtreesInvalid() {
+    void multiplePermittedSubtreesInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -646,7 +646,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void emptyPermittedSubtrees() {
+    void emptyPermittedSubtrees() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -688,7 +688,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
         assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
     }
     @Test
-    public void permittedSubtreesEmptyCertDN() {
+    void permittedSubtreesEmptyCertDN() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -731,7 +731,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesValid() {
+    void excludedSubtreesValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -779,7 +779,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesInvalid() {
+    void excludedSubtreesInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -827,7 +827,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesMissingAttribute() {
+    void excludedSubtreesMissingAttribute() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -875,7 +875,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesValidCANotPresentCertExt() {
+    void excludedSubtreesValidCANotPresentCertExt() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -922,7 +922,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesInvalidCANotPresentCertExt() {
+    void excludedSubtreesInvalidCANotPresentCertExt() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -969,7 +969,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesCADefinedValid() {
+    void excludedSubtreesCADefinedValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1016,7 +1016,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesCADefinedInvalid() {
+    void excludedSubtreesCADefinedInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1063,7 +1063,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesValidCAAdd() {
+    void excludedSubtreesValidCAAdd() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1118,7 +1118,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesValidCAAddProp() {
+    void excludedSubtreesValidCAAddProp() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1173,7 +1173,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multipleExcludedSubtreesValid() {
+    void multipleExcludedSubtreesValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1224,7 +1224,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void multipleExcludedSubtreesInvalid() {
+    void multipleExcludedSubtreesInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1275,7 +1275,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void emptyExcludedSubtrees() {
+    void emptyExcludedSubtrees() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1318,7 +1318,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesEmptyCertDN() {
+    void excludedSubtreesEmptyCertDN() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1361,7 +1361,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedAndExcludedSubtreesValid() {
+    void permittedAndExcludedSubtreesValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1415,7 +1415,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedAndExcludedSubtreesInvalid() {
+    void permittedAndExcludedSubtreesInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1469,7 +1469,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesSubAltNameValid() {
+    void permittedSubtreesSubAltNameValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1524,7 +1524,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesSubAltNameInvalid() {
+    void permittedSubtreesSubAltNameInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1579,7 +1579,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesSubAltNameValid() {
+    void excludedSubtreesSubAltNameValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1634,7 +1634,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesSubAltNameInvalid() {
+    void excludedSubtreesSubAltNameInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1689,7 +1689,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesSubAltNameWithNotRDNValid() {
+    void permittedSubtreesSubAltNameWithNotRDNValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1744,7 +1744,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesSubAltNameWithNotRDNInvalidType() {
+    void permittedSubtreesSubAltNameWithNotRDNInvalidType() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1799,7 +1799,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesWithEscapedChar() {
+    void permittedSubtreesWithEscapedChar() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1847,7 +1847,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesWithEscapedChar() {
+    void excludedSubtreesWithEscapedChar() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1895,7 +1895,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesStartFromComma() {
+    void permittedSubtreesStartFromComma() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1943,7 +1943,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesEndWithComma() {
+    void permittedSubtreesEndWithComma() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -1991,7 +1991,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesStartFromComma() {
+    void excludedSubtreesStartFromComma() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2039,7 +2039,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesEndWithComma() {
+    void excludedSubtreesEndWithComma() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2087,7 +2087,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesEnrichInvalid() {
+    void permittedSubtreesEnrichInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2145,7 +2145,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesConflictInvalid() {
+    void permittedSubtreesConflictInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2203,7 +2203,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesEmptyDNValid() {
+    void permittedSubtreesEmptyDNValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2261,7 +2261,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreeMissedNameConstraintValid() {
+    void permittedSubtreeMissedNameConstraintValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2308,7 +2308,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesURIValid() {
+    void permittedSubtreesURIValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2374,7 +2374,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesURIInvalid() {
+    void permittedSubtreesURIInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2440,7 +2440,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesURIValid() {
+    void excludedSubtreesURIValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2506,7 +2506,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesURIInvalid() {
+    void excludedSubtreesURIInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2572,7 +2572,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesURIDomainValid() {
+    void permittedSubtreesURIDomainValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2629,7 +2629,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesURIDomainInvalid() {
+    void permittedSubtreesURIDomainInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2686,7 +2686,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesURIDomainValid() {
+    void excludedSubtreesURIDomainValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2743,7 +2743,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesURIDomainInvalid() {
+    void excludedSubtreesURIDomainInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2800,7 +2800,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesRFC822NameValid() {
+    void permittedSubtreesRFC822NameValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2857,7 +2857,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesRFC822NameInvalid() {
+    void permittedSubtreesRFC822NameInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2914,7 +2914,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesRFC822NameDomainInvalid() {
+    void permittedSubtreesRFC822NameDomainInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -2971,7 +2971,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesRFC822NameValid() {
+    void excludedSubtreesRFC822NameValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3028,7 +3028,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesRFC822NameInvalid() {
+    void excludedSubtreesRFC822NameInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3085,7 +3085,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesDNSNameValid() {
+    void permittedSubtreesDNSNameValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3142,7 +3142,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesDNSNameInvalid() {
+    void permittedSubtreesDNSNameInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3199,7 +3199,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesDNSNameMixedInvalid() {
+    void permittedSubtreesDNSNameMixedInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3256,7 +3256,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesDNSNameValid() {
+    void excludedSubtreesDNSNameValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3313,7 +3313,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesDNSNameInvalid() {
+    void excludedSubtreesDNSNameInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3370,7 +3370,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesDNAndRFC822NameInvalidDN() {
+    void permittedSubtreesDNAndRFC822NameInvalidDN() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3436,7 +3436,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesDNAndRFC822NameInvalidRFC822() {
+    void permittedSubtreesDNAndRFC822NameInvalidRFC822() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3502,7 +3502,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesDNAndRFC822NameValidRFC822Missed() {
+    void permittedSubtreesDNAndRFC822NameValidRFC822Missed() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3560,7 +3560,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesDNAndRFC822NameInvalidWithDNEmailAddress() {
+    void permittedSubtreesDNAndRFC822NameInvalidWithDNEmailAddress() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3618,7 +3618,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesIPAddressValid() {
+    void permittedSubtreesIPAddressValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3675,7 +3675,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesIPAddressInvalid() {
+    void permittedSubtreesIPAddressInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3732,7 +3732,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesIPAddressAllValid() {
+    void permittedSubtreesIPAddressAllValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3789,7 +3789,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesIPAddressNoneInvalid() {
+    void permittedSubtreesIPAddressNoneInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3846,7 +3846,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesIPAddressNoneValid() {
+    void excludedSubtreesIPAddressNoneValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3903,7 +3903,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesIPAddressAllInvalid() {
+    void excludedSubtreesIPAddressAllInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -3960,7 +3960,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesRFC822NameIntersectValid() {
+    void permittedSubtreesRFC822NameIntersectValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -4026,7 +4026,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void permittedSubtreesRFC822NameIntersectInvalid() {
+    void permittedSubtreesRFC822NameIntersectInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -4092,7 +4092,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesRFC822NameUnionValid() {
+    void excludedSubtreesRFC822NameUnionValid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 
@@ -4158,7 +4158,7 @@ public class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    public void excludedSubtreesRFC822NameUnionInvalid() {
+    void excludedSubtreesRFC822NameUnionInvalid() {
         XmlCertificate rootCertificate = new XmlCertificate();
         rootCertificate.setSelfSigned(true);
 

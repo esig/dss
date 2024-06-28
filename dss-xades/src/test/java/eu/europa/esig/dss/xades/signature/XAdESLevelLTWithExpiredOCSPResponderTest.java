@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -49,7 +49,7 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
     private CommonTrustedCertificateSource trustedCertSource;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

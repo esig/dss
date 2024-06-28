@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.QCStatement;
 
-public class OidRepositoryTest {
+class OidRepositoryTest {
 
 	@Test
-	public void test() {
+	void test() {
 		assertEquals(CertificatePolicy.QCP_LEGAL.getDescription(), OidRepository.getDescription(CertificatePolicy.QCP_LEGAL.getOid()));
 		assertEquals(QCStatement.QC_COMPLIANCE.getDescription(), OidRepository.getDescription(QCStatement.QC_COMPLIANCE.getOid()));
 		assertNull(OidRepository.getDescription("1.2.3"));

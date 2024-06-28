@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ASiCSXAdESLevelBDoubleSignatureTest extends AbstractASiCSXAdESTestSignature {
+class ASiCSXAdESLevelBDoubleSignatureTest extends AbstractASiCSXAdESTestSignature {
 
     private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
@@ -57,7 +57,7 @@ public class ASiCSXAdESLevelBDoubleSignatureTest extends AbstractASiCSXAdESTestS
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 
         signatureParameters = new ASiCWithXAdESSignatureParameters();

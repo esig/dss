@@ -40,10 +40,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class DetectionModificationAfterSignTest extends AbstractTestVisualComparator {
+class DetectionModificationAfterSignTest extends AbstractTestVisualComparator {
 
 	@Test
-	public void testWithModification() throws IOException {
+	void testWithModification() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/modified_after_signature.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);

@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTestSignature {
+class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTestSignature {
 	
 	private static final String REFERENCE_ID = "dss-tl-id-1";
 	private static final DigestAlgorithm REFERENCE_DIGEST_ALGORITHM = DigestAlgorithm.SHA512;
@@ -55,7 +55,7 @@ public class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTest
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
 		service = new XAdESService(getOfflineCertificateVerifier());
 		

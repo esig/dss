@@ -36,12 +36,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SchemeInformationURIPredicatesTest {
+class SchemeInformationURIPredicatesTest {
 
 	private static NonEmptyMultiLangURIListType SCHEME_INFORMATION_URI_LIST_TYPE;
 
 	@BeforeAll
-	public static void init() throws Exception {
+	static void init() throws Exception {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl-pivot.xml")) {
 			TrustStatusListType lotlPivot = TrustedListFacade.newFacade().unmarshall(fis);
 			assertNotNull(lotlPivot);
@@ -51,7 +51,7 @@ public class SchemeInformationURIPredicatesTest {
 	}
 
 	@Test
-	public void pivotLOTL() {
+	void pivotLOTL() {
 		List<String> pivotUrls = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new PivotSchemeInformationURI()).map(NonEmptyMultiLangURIType::getValue)
 				.collect(Collectors.toList());
 		assertEquals(4, pivotUrls.size());
@@ -64,14 +64,14 @@ public class SchemeInformationURIPredicatesTest {
 	}
 
 	@Test
-	public void byLang() {
+	void byLang() {
 		assertEquals(1, SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new SchemeInformationURIByLang("fr")).count());
 		assertEquals(0, SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new SchemeInformationURIByLang("xx")).count());
 		assertThrows(NullPointerException.class, () -> new SchemeInformationURIByLang(null));
 	}
 
 	@Test
-	public void oj() {
+	void oj() {
 
 		String currentPivotOjUrl = "http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG";
 

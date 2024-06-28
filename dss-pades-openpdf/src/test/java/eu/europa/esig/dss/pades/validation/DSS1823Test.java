@@ -28,7 +28,7 @@ import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.openpdf.ITextDocumentReader;
 
-public class DSS1823Test extends DSS1823 {
+class DSS1823Test extends DSS1823 {
 
 	@Override
 	protected PdfDocumentReader loadPDFDocument(DSSDocument dssDocument) {

@@ -59,13 +59,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2060/DSS-2061
-public class DSS2059Test extends AbstractCAdESTestExtension {
+class DSS2059Test extends AbstractCAdESTestExtension {
 
 	private DSSDocument document;
 	private CAdESService service;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		document = new FileDocument("src/test/resources/validation/dss2059.p7s");
 
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
@@ -95,7 +95,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 	}
 
 	@Test
-	public void counterSignTest() {
+	void counterSignTest() {
 		// see DSS-2178
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
@@ -114,7 +114,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 	}
 
 	@Test
-	public void signaturePolicyStoreTest() {
+	void signaturePolicyStoreTest() {
 		// see DSS-2172
 
 		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();

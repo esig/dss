@@ -60,14 +60,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSSASN1UtilsTest {
+class DSSASN1UtilsTest {
 	
 	private static CertificateToken certificateWithAIA;
 
 	private static CertificateToken certificateOCSP;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		certificateWithAIA = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
 		assertNotNull(certificateWithAIA);
 
@@ -77,7 +77,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getDigestSignaturePolicy() throws Exception {
+	void getDigestSignaturePolicy() throws Exception {
 		FileInputStream fis = new FileInputStream("src/test/resources/signature-policy-example.der");
 		byte[] policyBytes = Utils.toByteArray(fis);
 		Utils.closeQuietly(fis);
@@ -89,7 +89,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getSKI() {
+	void getSKI() {
 		CertificateToken c1 = DSSUtils.loadCertificateFromBase64EncodedString(
 				"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");
 		CertificateToken c2 = DSSUtils.loadCertificateFromBase64EncodedString(
@@ -102,7 +102,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getCertificateHolder() {
+	void getCertificateHolder() {
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		X509CertificateHolder certificateHolder = DSSASN1Utils.getX509CertificateHolder(token);
 		assertNotNull(certificateHolder);
@@ -111,17 +111,17 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getSubjectCommonName() {
+	void getSubjectCommonName() {
 		assertEquals("tts.luxtrust.lu", DSSASN1Utils.getSubjectCommonName(certificateWithAIA));
 	}
 
 	@Test
-	public void getHumanReadableName() {
+	void getHumanReadableName() {
 		assertEquals("tts.luxtrust.lu", DSSASN1Utils.getHumanReadableName(certificateWithAIA));
 	}
 
 	@Test
-	public void getIssuerSerialFromCert() {
+	void getIssuerSerialFromCert() {
 		IssuerSerial issuerSerial = DSSASN1Utils.getIssuerSerial(certificateWithAIA);
 		assertNotNull(issuerSerial);
 		assertNotNull(issuerSerial.getIssuer());
@@ -129,12 +129,12 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getAlgorithmIdentifier() {
+	void getAlgorithmIdentifier() {
 		assertNotNull(DSSASN1Utils.getAlgorithmIdentifier(DigestAlgorithm.SHA256));
 	}
 	
 	@Test
-	public void getIssuerInfo() {
+	void getIssuerInfo() {
 		String issuerV2base64 = "MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==";
 		IssuerSerial issuerInfo = DSSASN1Utils.getIssuerSerial(Utils.fromBase64(issuerV2base64));
 		assertNotNull(issuerInfo);
@@ -143,7 +143,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void x500PrincipalAreEquals() {
+	void x500PrincipalAreEquals() {
 		String issuerName1 = "CN=ESTEID-SK 2015,organizationIdentifier=NTREE-10747013,O=AS Sertifitseerimiskeskus,C=EE";
 		String issuerName2 = "CN=ESTEID-SK 2015,2.5.4.97=#0C0E4E545245452D3130373437303133,O=AS Sertifitseerimiskeskus,C=EE";
 		String issuerName3 = "2.5.4.97=#0C0E4E545245452D3130373437303133,O=AS Sertifitseerimiskeskus,C=EE,CN=ESTEID-SK 2015";
@@ -167,7 +167,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getDEREncoded() throws IOException, CMSException, TSPException {
+	void getDEREncoded() throws IOException, CMSException, TSPException {
 
 		String berEncodedTST = "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";
 		byte[] originalBinaries = Utils.fromBase64(berEncodedTST);
@@ -206,7 +206,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void convertSignatureValueTest() {
+	void convertSignatureValueTest() {
 		assertSignatureValueValid(Utils.fromBase64("MEQCIEJNA0AElH/vEH9xLxvqrwCqh+yUh9ACL2vU/2eObRbTAiAxTLSWSioJrfSwPkKcypf+KCHvMGdwZbRWQHnZN2sDnQ=="), true);
 		assertSignatureValueValid(Utils.fromHex("2B9099C9885DDB5BFDA2E9634905B9A63E7E3A6EC87BDC0A89014716B23F00B0AD787FC8D0DCF28F007E7DEC097F30DA892BE2AC61D90997DCDF05740E4D5B0C"), false);
 		assertSignatureValueValid(Utils.fromHex("947b79069e6a1e3316ec15d696649a4b67c6c188df9bc05458f3b0b94907f3fb52522d4cae24a75735969cff556b1476a5ccbe37ca65a928782c14f299f3b2d3"), false);
@@ -241,7 +241,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void isAsn1EncodedTest() throws Exception {
+	void isAsn1EncodedTest() throws Exception {
 		assertTrue(DSSASN1Utils.isAsn1Encoded(new DERUTCTime(new Date()).getEncoded()));
 		assertTrue(DSSASN1Utils.isAsn1Encoded(DSSASN1Utils.getDEREncoded(new DERUTCTime(new Date()))));
 		assertTrue(DSSASN1Utils.isAsn1Encoded(new DERUTF8String("Hello World!").getEncoded()));
@@ -259,7 +259,7 @@ public class DSSASN1UtilsTest {
 	}
 
 	@Test
-	public void getStringTest() {
+	void getStringTest() {
 		assertNull(DSSASN1Utils.getString(null));
 		assertEquals("", DSSASN1Utils.getString(new DERUTF8String("")));
 		assertEquals("Hello World!", DSSASN1Utils.getString(new DERUTF8String("Hello World!")));

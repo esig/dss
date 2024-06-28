@@ -45,7 +45,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithCAdESLevelLTAContainerMergerSingleDocumentCustomNamesTest extends AbstractWithCAdESTestMerge {
+class ASiCEWithCAdESLevelLTAContainerMergerSingleDocumentCustomNamesTest extends AbstractWithCAdESTestMerge {
 
     private DSSDocument documentToSign;
 
@@ -55,7 +55,7 @@ public class ASiCEWithCAdESLevelLTAContainerMergerSingleDocumentCustomNamesTest 
     private ASiCWithCAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new InMemoryDocument("Hello World!".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());

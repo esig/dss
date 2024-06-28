@@ -37,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TimestampValidationTest {
+class TimestampValidationTest {
 
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument document = new FileDocument("src/test/resources/validation/d-trust.tsr");
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
