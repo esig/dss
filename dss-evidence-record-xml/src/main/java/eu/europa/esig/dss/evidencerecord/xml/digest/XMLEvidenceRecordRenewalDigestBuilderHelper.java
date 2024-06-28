@@ -67,6 +67,7 @@ public class XMLEvidenceRecordRenewalDigestBuilderHelper extends AbstractEvidenc
      *
      * @param archiveTimeStamp {@link ArchiveTimeStampObject} to build digest on
      * @param digestAlgorithm {@link DigestAlgorithm} to be used on digest computation
+     * @param canonicalizationMethod {@link String}
      * @return {@link Digest}
      */
     public DSSMessageDigest buildTimeStampRenewalDigest(ArchiveTimeStampObject archiveTimeStamp, DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {

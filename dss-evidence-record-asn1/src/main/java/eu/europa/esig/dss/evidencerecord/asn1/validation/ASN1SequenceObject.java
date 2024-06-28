@@ -22,6 +22,10 @@ package eu.europa.esig.dss.evidencerecord.asn1.validation;
 
 import eu.europa.esig.dss.evidencerecord.common.validation.DigestValueGroup;
 
+/**
+ * Identifies a {@code PartialHashtree} object of an ASN.1 evidence record
+ *
+ */
 public class ASN1SequenceObject extends DigestValueGroup implements ASN1EvidenceRecordObject {
 
 	private static final long serialVersionUID = -747779213316560098L;

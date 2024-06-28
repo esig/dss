@@ -33,6 +33,8 @@ import eu.europa.esig.dss.validation.process.bbb.AbstractCertificateCheckItem;
 /**
  * This class is used to verify whether the revocation data check shall be skipped for the given certificate
  *
+ * @param <T> {@link XmlConstraintsConclusion}
+ *
  */
 public class RevocationDataRequiredCheck<T extends XmlConstraintsConclusion> extends AbstractCertificateCheckItem<T> {
 

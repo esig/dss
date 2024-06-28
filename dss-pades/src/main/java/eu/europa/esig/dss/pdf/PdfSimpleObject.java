@@ -34,6 +34,8 @@ public class PdfSimpleObject implements PdfObject {
 
     /**
      * Default constructor
+     *
+     * @param value {@link Object}
      */
     public PdfSimpleObject(final Object value) {
         this(value, null);

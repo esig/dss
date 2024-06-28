@@ -34,6 +34,9 @@ import java.util.Date;
 
 /**
  * Checks if the best-signature-time is before certificate's expiration
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ *
  */
 public class BestSignatureTimeBeforeCertificateExpirationCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

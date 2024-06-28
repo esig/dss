@@ -83,6 +83,7 @@ public abstract class AbstractEvidenceRecordRenewalDigestBuilderHelper {
      *       detached content. Please use {@code #buildHashTreeRenewalDigestGroup} method instead fo hash calculation
      *       in case of a hash-tree renewal with a new time-stamp
      *
+     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject}
      * @return {@link DSSMessageDigest}
      */
     public abstract DSSMessageDigest buildArchiveTimeStampSequenceDigest(ArchiveTimeStampChainObject archiveTimeStampChain);

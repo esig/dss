@@ -22,6 +22,11 @@ package eu.europa.esig.dss.spi.x509.evidencerecord.digest;
 
 import eu.europa.esig.dss.model.Digest;
 
+/**
+ * A common interface for the classes providing a functionality build digest for data objects
+ * to be protected by an evidence record preservation service
+ *
+ */
 public interface DataObjectDigestBuilder {
 
     /**

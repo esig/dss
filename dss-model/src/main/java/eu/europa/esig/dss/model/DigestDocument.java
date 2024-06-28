@@ -59,6 +59,8 @@ public class DigestDocument extends CommonDocument {
 	 *
 	 * @param digest
 	 *            {@code Digest} for the new DigestDocument
+	 * @param name
+	 * 			  {@link String} name of the document
 	 */
 	public DigestDocument(final Digest digest, final String name) {
 		this(digest);

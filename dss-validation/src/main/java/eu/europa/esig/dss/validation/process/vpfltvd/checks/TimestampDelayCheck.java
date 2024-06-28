@@ -34,6 +34,8 @@ import java.util.Date;
 
 /**
  * Checks if the claimed signing time + timestamp's delay is after the best-signature-time
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
  */
 public class TimestampDelayCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

@@ -47,10 +47,18 @@ public abstract class AbstractTrustedListWithSha2Predicate implements Predicate<
     /** The default sha2 digest algorithm defined in ETSI TS 119 612 */
     protected static final DigestAlgorithm SHA2_ALGORITHM = DigestAlgorithm.SHA256;
 
+    /** The path to reach a tl:NextUpdate element */
     protected static final String NEXT_UPDATE_PATH = "./tl:SchemeInformation/tl:NextUpdate";
 
     static {
         DomUtils.registerNamespace(TrustedListNamespace.NS);
+    }
+
+    /**
+     * Default constructor
+     */
+    protected AbstractTrustedListWithSha2Predicate() {
+        // empty
     }
 
     /**

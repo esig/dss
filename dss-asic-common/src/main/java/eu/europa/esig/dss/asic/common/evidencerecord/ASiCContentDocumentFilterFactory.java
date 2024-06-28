@@ -31,6 +31,13 @@ import java.util.Arrays;
 public class ASiCContentDocumentFilterFactory {
 
     /**
+     * Default constructor
+     */
+    public ASiCContentDocumentFilterFactory() {
+        // empty
+    }
+
+    /**
      * Creates an {@code ASiCContentDocumentFilter} with an empty configuration
      *
      * @return {@link ASiCContentDocumentFilter}

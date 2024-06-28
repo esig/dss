@@ -64,6 +64,7 @@ public class LongTermAvailabilityAndIntegrityValidationMaterialCheck extends Cha
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlValidationProcessArchivalData}
      * @param signature {@link SignatureWrapper} to be validated
+     * @param longTermValidationResult {@link XmlConstraintsConclusion}
      * @param constraint {@link LevelConstraint}
      */
     public LongTermAvailabilityAndIntegrityValidationMaterialCheck(I18nProvider i18nProvider,

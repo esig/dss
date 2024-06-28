@@ -53,6 +53,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheck extends ChainItem<XmlCV
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlCV}
+     * @param diagnosticData {@link DiagnosticData}
      * @param timestampWrapper {@link TimestampWrapper}
      * @param constraint {@link LevelConstraint}
      */

@@ -35,6 +35,8 @@ public abstract class AbstractJWSDocumentValidator extends SignedDocumentValidat
 
     /**
      * Empty constructor
+     *
+     * @param jwsDocumentAnalyzer {@link AbstractJWSDocumentAnalyzer}
      */
     protected AbstractJWSDocumentValidator(final AbstractJWSDocumentAnalyzer jwsDocumentAnalyzer) {
         super(jwsDocumentAnalyzer);

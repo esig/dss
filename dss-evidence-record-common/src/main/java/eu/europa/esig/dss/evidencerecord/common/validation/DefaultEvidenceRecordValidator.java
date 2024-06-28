@@ -42,6 +42,8 @@ public abstract class DefaultEvidenceRecordValidator extends SignedDocumentValid
 
     /**
      * Empty constructor
+     *
+     * @param evidenceRecordAnalyzer {@link DefaultEvidenceRecordAnalyzer}
      */
     protected DefaultEvidenceRecordValidator(final DefaultEvidenceRecordAnalyzer evidenceRecordAnalyzer) {
         super(evidenceRecordAnalyzer);

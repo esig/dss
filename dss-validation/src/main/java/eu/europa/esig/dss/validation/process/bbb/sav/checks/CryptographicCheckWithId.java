@@ -28,6 +28,12 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 
 import java.util.Date;
 
+/**
+ * This class verifies the result of a cryptographic validation process for the given token,
+ * providing its Identifier in the report
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class CryptographicCheckWithId<T extends XmlConstraintsConclusion> extends CryptographicCheck<T> {
 
     /** Token, which certificate chain will be validated */

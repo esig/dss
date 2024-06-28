@@ -59,6 +59,9 @@ public abstract class AbstractASiCManifestBuilder {
 
 	/**
 	 * Constructor to instantiate AbstractASiCManifestBuilder with a default SHA-256 digest algorithm
+	 *
+	 * @param asicContent {@link ASiCContent}
+	 * @param sigReferenceUri {@link String}
 	 */
 	protected AbstractASiCManifestBuilder(final ASiCContent asicContent, final String sigReferenceUri) {
 		this(asicContent, sigReferenceUri, DigestAlgorithm.SHA256);

@@ -29,11 +29,27 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 
 import java.util.Date;
 
+/**
+ * This class is used to verify a validation result of a certificate chain for the given token
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class TokenCertificateChainCryptographicCheck<T extends XmlConstraintsConclusion> extends CertificateChainCryptographicCheck<T> {
 
     /** Token, which certificate chain will be validated */
     private final TokenProxy token;
 
+    /**
+     * Default constructor
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlConstraintsConclusion}
+     * @param token {@link TokenProxy}
+     * @param validationDate {@link Date}
+     * @param position {@link MessageTag}
+     * @param ccResult {@link XmlCC}
+     * @param constraint {@link LevelConstraint}
+     */
     public TokenCertificateChainCryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token,
                                                    Date validationDate, MessageTag position, XmlCC ccResult,
                                                    LevelConstraint constraint) {

@@ -37,6 +37,8 @@ import java.util.Date;
 /**
  * This check verifies whether the signing-certificate is known to not be revoked and revocation data is acceptable
  *
+ * @param <T> {@link XmlConstraintsConclusion}
+ *
  */
 public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 

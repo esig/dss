@@ -71,6 +71,8 @@ public class JAXBCertEntityBuilder {
 
     /**
      * Instantiates the builder with a pre-created {@code JAXBCertEntity} instance, to be filled with data.
+     *
+     * @param certEntity {@link JAXBCertEntity}
      */
     public JAXBCertEntityBuilder(JAXBCertEntity certEntity) {
         this.certEntity = certEntity;

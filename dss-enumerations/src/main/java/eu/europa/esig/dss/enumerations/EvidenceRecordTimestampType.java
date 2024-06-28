@@ -26,13 +26,13 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum EvidenceRecordTimestampType {
 
-    /* The initial archive time-stamp */
+    /** The initial archive time-stamp */
     ARCHIVE_TIMESTAMP,
 
-    /* The time-stamp used to renew an previous archive time-stamp within the same ArchiveTimestampChain */
+    /** The time-stamp used to renew an previous archive time-stamp within the same ArchiveTimestampChain */
     TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP,
 
-    /* The time-stamp used to renew a hash-tree, starting a new ArchiveTimeStampSequence */
+    /** The time-stamp used to renew a hash-tree, starting a new ArchiveTimeStampSequence */
     HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP
 
 }

@@ -30,14 +30,40 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicChecker
 
 import java.util.Date;
 
+/**
+ * This class is used to verify a validation result of a cryptograpic validation process for a signature's certificate chain
+ *
+ * @param <T> {@link XmlConstraintsConclusion}
+ */
 public class CertificateChainCryptographicCheck<T extends XmlConstraintsConclusion> extends CryptographicCheckerResultCheck<T> {
 
+    /**
+     * Default constructor to create a CertificateChainCryptographicCheck
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlConstraintsConclusion}
+     * @param validationDate {@link Date}
+     * @param position {@link MessageTag}
+     * @param ccResult {@link XmlCC}
+     * @param constraint {@link LevelConstraint}
+     */
     public CertificateChainCryptographicCheck(final I18nProvider i18nProvider, final T result,
                                               final Date validationDate, final MessageTag position, final XmlCC ccResult,
                                               final LevelConstraint constraint) {
         super(i18nProvider, result, validationDate, position, ccResult, constraint);
     }
 
+    /**
+     * Constructor to create a CertificateChainCryptographicCheck with a defined token's id
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlConstraintsConclusion}
+     * @param token {@link TokenProxy}
+     * @param validationDate {@link Date}
+     * @param position {@link MessageTag}
+     * @param ccResult {@link XmlCC}
+     * @param constraint {@link LevelConstraint}
+     */
     protected CertificateChainCryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token,
                                                  Date validationDate, MessageTag position, XmlCC ccResult,
                                                  LevelConstraint constraint) {

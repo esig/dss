@@ -30,57 +30,114 @@ import eu.europa.esig.dss.spi.validation.ValidationContext;
 import java.util.Date;
 import java.util.Objects;
 
-public class XmlSignedDocumentDiagnosticDataFactory {
+/**
+ * This class creates a {@code XmlDiagnosticData}
+ *
+ */
+public class XmlDiagnosticDataFactory {
 
+    /** The corresponding diagnostic data builder */
     private final SignedDocumentDiagnosticDataBuilder diagnosticDataBuilder;
 
+    /** The document to be validated */
     private DSSDocument document;
 
+    /** The validation time */
     private Date validationTime;
 
+    /** The current validation context */
     private ValidationContext validationContext;
 
+    /** The used default digest algorithm for tokens definition */
     private DigestAlgorithm defaultDigestAlgorithm;
 
+    /** The token extraction strategy to be used (i.e. binaries vs digest) */
     private TokenExtractionStrategy tokenExtractionStrategy;
 
+    /** The class to compute identifiers for tokens to be returned in the reports */
     private TokenIdentifierProvider tokenIdentifierProvider;
 
-    public XmlSignedDocumentDiagnosticDataFactory(final SignedDocumentDiagnosticDataBuilder diagnosticDataBuilder) {
+    /**
+     * Default constructor
+     *
+     * @param diagnosticDataBuilder {@link SignedDocumentDiagnosticDataBuilder} corresponding to the given signature format
+     */
+    public XmlDiagnosticDataFactory(final SignedDocumentDiagnosticDataBuilder diagnosticDataBuilder) {
         Objects.requireNonNull(diagnosticDataBuilder, "SignedDocumentDiagnosticDataBuilder is null!");
         this.diagnosticDataBuilder = diagnosticDataBuilder;
     }
 
-    public XmlSignedDocumentDiagnosticDataFactory setDocument(DSSDocument document) {
+    /**
+     * Sets original document to be validated
+     *
+     * @param document {@link DSSDocument}
+     * @return {@link XmlDiagnosticDataFactory} this
+     */
+    public XmlDiagnosticDataFactory setDocument(DSSDocument document) {
         this.document = document;
         return this;
     }
 
-    public XmlSignedDocumentDiagnosticDataFactory setValidationTime(Date validationTime) {
+    /**
+     * Sets the validation time
+     *
+     * @param validationTime {@link Date}
+     * @return {@link XmlDiagnosticDataFactory} this
+     */
+    public XmlDiagnosticDataFactory setValidationTime(Date validationTime) {
         this.validationTime = validationTime;
         return this;
     }
 
-    public XmlSignedDocumentDiagnosticDataFactory setValidationContext(ValidationContext validationContext) {
+    /**
+     * Sets the validation context
+     *
+     * @param validationContext {@link ValidationContext}
+     * @return {@link XmlDiagnosticDataFactory} this
+     */
+    public XmlDiagnosticDataFactory setValidationContext(ValidationContext validationContext) {
         this.validationContext = validationContext;
         return this;
     }
 
-    public XmlSignedDocumentDiagnosticDataFactory setDefaultDigestAlgorithm(DigestAlgorithm defaultDigestAlgorithm) {
+    /**
+     * Sets the digest algorithm to be used to compute references to the data objects
+     *
+     * @param defaultDigestAlgorithm {@link DigestAlgorithm}
+     * @return {@link XmlDiagnosticDataFactory} this
+     */
+    public XmlDiagnosticDataFactory setDefaultDigestAlgorithm(DigestAlgorithm defaultDigestAlgorithm) {
         this.defaultDigestAlgorithm = defaultDigestAlgorithm;
         return this;
     }
 
-    public XmlSignedDocumentDiagnosticDataFactory setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
+    /**
+     * Sets the token extraction strategy
+     *
+     * @param tokenExtractionStrategy {@link TokenExtractionStrategy}
+     * @return {@link XmlDiagnosticDataFactory} this
+     */
+    public XmlDiagnosticDataFactory setTokenExtractionStrategy(TokenExtractionStrategy tokenExtractionStrategy) {
         this.tokenExtractionStrategy = tokenExtractionStrategy;
         return this;
     }
 
-    public XmlSignedDocumentDiagnosticDataFactory setTokenIdentifierProvider(TokenIdentifierProvider tokenIdentifierProvider) {
+    /**
+     * Sets the token identifier provider
+     *
+     * @param tokenIdentifierProvider {@link TokenIdentifierProvider}
+     * @return {@link XmlDiagnosticDataFactory} this
+     */
+    public XmlDiagnosticDataFactory setTokenIdentifierProvider(TokenIdentifierProvider tokenIdentifierProvider) {
         this.tokenIdentifierProvider = tokenIdentifierProvider;
         return this;
     }
 
+    /**
+     * Creates a {@code XmlDiagnosticData}
+     *
+     * @return {@link XmlDiagnosticData}
+     */
     public XmlDiagnosticData create() {
         return diagnosticDataBuilder
                 .document(document)

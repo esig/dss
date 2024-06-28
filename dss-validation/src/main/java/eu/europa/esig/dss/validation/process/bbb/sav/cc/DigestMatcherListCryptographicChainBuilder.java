@@ -46,6 +46,8 @@ import java.util.stream.Collectors;
  * This class extracts used Digest Algorithms across all provides digest matchers and
  * performs validation for the used algorithms
  *
+ * @param <T> {@link XmlConstraintsConclusion}
+ *
  */
 public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraintsConclusion> {
 

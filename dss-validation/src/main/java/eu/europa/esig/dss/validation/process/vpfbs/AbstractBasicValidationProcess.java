@@ -493,6 +493,12 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
                 timestamp, cryptographicValidation, getFailLevelConstraint());
     }
 
+    /**
+     * Executes a final validation check of the "5.3 Validation process for Basic Signatures" block
+     *
+     * @param xmlConclusion {@link XmlConclusion} containing the result of the validation process for Basic Signatures
+     * @return {@link ChainItem}
+     */
     protected ChainItem<T> basicValidationProcess(final XmlConclusion xmlConclusion) {
         return new BasicValidationProcessCheck<>(i18nProvider, result, xmlConclusion, token, getFailLevelConstraint());
     }

@@ -46,6 +46,7 @@ import java.util.List;
 /**
  * 5.2.7 Cryptographic verification
  * This building block checks the integrity of the signed data by performing the cryptographic verifications.
+ *
  */
 public class CryptographicVerification extends Chain<XmlCV> {
 
@@ -65,6 +66,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
+	 * @param diagnosticData {@link DiagnosticData}
 	 * @param token {@link TokenProxy}
 	 * @param context {@link Context}
 	 * @param validationPolicy {@link ValidationPolicy}

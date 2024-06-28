@@ -53,7 +53,7 @@ import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.diagnostic.SignedDocumentDiagnosticDataBuilder;
-import eu.europa.esig.dss.validation.reports.diagnostic.XmlSignedDocumentDiagnosticDataFactory;
+import eu.europa.esig.dss.validation.reports.diagnostic.XmlDiagnosticDataFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -425,6 +425,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		return processValidationPolicy(diagnosticData, validationPolicy);
 	}
 
+	/**
+	 * This method verifies whether the configuration of the current instance of a document validator is valid
+	 */
 	protected void assertConfigurationValid() {
 		if (ValidationLevel.BASIC_SIGNATURES == validationLevel
 				&& (Utils.isCollectionNotEmpty(documentAnalyzer.getDetachedTimestamps()) || Utils.isCollectionNotEmpty(documentAnalyzer.getDetachedEvidenceRecords()))
@@ -443,7 +446,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	public final XmlDiagnosticData getDiagnosticData() {
 		ValidationContext validationContext = documentAnalyzer.validate();
 		SignedDocumentDiagnosticDataBuilder diagnosticDataBuilder = initializeDiagnosticDataBuilder();
-		return new XmlSignedDocumentDiagnosticDataFactory(diagnosticDataBuilder)
+		return new XmlDiagnosticDataFactory(diagnosticDataBuilder)
 				.setDocument(documentAnalyzer.getDocument())
 				.setValidationTime(documentAnalyzer.getValidationTime())
 				.setTokenIdentifierProvider(documentAnalyzer.getTokenIdentifierProvider())

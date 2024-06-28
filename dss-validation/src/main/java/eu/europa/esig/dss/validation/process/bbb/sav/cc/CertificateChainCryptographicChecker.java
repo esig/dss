@@ -35,6 +35,10 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicChecker
 import java.util.Date;
 import java.util.List;
 
+/**
+ * This class performs a cryptographic validation process for a given certificate chain
+ *
+ */
 public class CertificateChainCryptographicChecker extends Chain<XmlCC> {
 
     /** The signing-certificate */
@@ -62,6 +66,12 @@ public class CertificateChainCryptographicChecker extends Chain<XmlCC> {
      * Common constructor
      *
      * @param i18nProvider the access to translations
+     * @param signingCertificate {@link CertificateWrapper}
+     * @param certificateChain a list of {@link CertificateWrapper}s
+     * @param validationTime {@link Date}
+     * @param context {@link Context}
+     * @param position {@link MessageTag}
+     * @param validationPolicy {@link ValidationPolicy}
      */
     public CertificateChainCryptographicChecker(final I18nProvider i18nProvider, final CertificateWrapper signingCertificate,
                                                 final List<CertificateWrapper> certificateChain, final Date validationTime,

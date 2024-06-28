@@ -94,6 +94,7 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
      * @param timestamp {@link TimestampWrapper}
      * @param vpftsp {@link XmlValidationProcessBasicTimestamp}
      * @param bbbs map of BasicBuildingBlocks
+     * @param evidenceRecordValidations a map of evidence record identifiers and their corresponding validation results
      * @param currentTime {@link Date} validation time
      * @param policy {@link ValidationPolicy}
      * @param poe {@link POEExtraction}

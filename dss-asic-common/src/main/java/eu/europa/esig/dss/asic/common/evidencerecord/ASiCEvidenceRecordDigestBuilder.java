@@ -65,6 +65,7 @@ public class ASiCEvidenceRecordDigestBuilder extends ZipContentEvidenceRecordDig
      * from a {@code DSSDocument}, represented by an ASiC container
      *
      * @param asicContainer {@link ASiCContent} representing a content of an ASiC archive
+     * @param digestAlgorithm {@link DigestAlgorithm}
      * @throws IllegalInputException if the provided document is not of a supported ASiC container type
      */
     public ASiCEvidenceRecordDigestBuilder(final DSSDocument asicContainer, final DigestAlgorithm digestAlgorithm) throws IllegalInputException {

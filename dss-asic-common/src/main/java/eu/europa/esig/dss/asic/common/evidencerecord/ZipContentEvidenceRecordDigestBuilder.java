@@ -65,6 +65,8 @@ public class ZipContentEvidenceRecordDigestBuilder {
 
     /**
      * Constructor with defined digest algorithm
+     *
+     * @param digestAlgorithm {@link DigestAlgorithm}
      */
     protected ZipContentEvidenceRecordDigestBuilder(final DigestAlgorithm digestAlgorithm) {
         this.documents = null;

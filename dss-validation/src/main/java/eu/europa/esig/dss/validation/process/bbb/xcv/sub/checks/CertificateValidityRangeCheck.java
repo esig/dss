@@ -59,6 +59,7 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	 * @param result the result
 	 * @param certificate {@link CertificateWrapper}
 	 * @param usedCertificateRevocation {@link CertificateRevocationWrapper}
+	 * @param revocationDataRequired whether a revocation data is required for the given certificate
 	 * @param currentTime {@link Date} validation time
 	 * @param constraint {@link LevelConstraint}
 	 */

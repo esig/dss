@@ -35,7 +35,6 @@ import java.util.Map.Entry;
  * non-empty response.
  *
  * @param <T> {@code Revocation}
- * @param <R> {@code RevocationSource}
  */
 public class CompositeRevocationSource<T extends Revocation> implements RevocationSource<T> {
 
