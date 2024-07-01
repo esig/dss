@@ -383,7 +383,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
      * @param certificateTokenIssuer issuer of a CertificateToken to check the revocation for
      * @return TRUE if the token is still valid, FALSE otherwise
      */
-    private boolean isNotExpired(RevocationToken<R> revocationToken, CertificateToken certificateTokenIssuer) {
+    protected boolean isNotExpired(RevocationToken<R> revocationToken, CertificateToken certificateTokenIssuer) {
         Date validationDate = new Date();
 
         Date nextUpdate = revocationToken.getNextUpdate();
