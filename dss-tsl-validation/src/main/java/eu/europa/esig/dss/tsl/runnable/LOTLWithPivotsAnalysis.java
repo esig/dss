@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.tsl.runnable;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
@@ -36,6 +38,7 @@ import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,43 +155,78 @@ public class LOTLWithPivotsAnalysis extends LOTLAnalysis {
 				pivotCacheAccess.update(validationTask.get());
 			} catch (Exception e) {
 				LOG.warn("Cannot validate the Pivot LOTL with the cache key '{}' : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
+				assertOriginalDocumentIsAccessible(pivotCacheAccess);
 				pivotCacheAccess.validationError(e);
 			}
 		}
 	}
 
+	private void assertOriginalDocumentIsAccessible(CacheAccessByKey pivotCacheAccess) {
+		// set the exception in order to avoid potential deadlock (file does not exist, but download result is present)
+		try {
+			if (pivotCacheAccess.getDownloadReadOnlyResult() != null
+					&& DSSUtils.isEmpty(pivotCacheAccess.getDownloadReadOnlyResult().getDocument())) {
+				LOG.warn("The Pivot LOTL with the cache key '{}' contains empty content", pivotCacheAccess.getCacheKey().getKey());
+				throw new DSSException("Empty content file is obtained!");
+			}
+		} catch (Exception e) {
+			LOG.warn("The Pivot LOTL with the cache key '{}' contains empty content : {}", pivotCacheAccess.getCacheKey().getKey(), e.getMessage());
+			pivotCacheAccess.downloadError(e);
+			pivotCacheAccess.parsingError(e);
+		}
+	}
+
 	private Map<String, PivotProcessingResult> downloadAndParseAllPivots(List<String> pivotURLs) {
-		ExecutorService executorService = Executors.newFixedThreadPool(pivotURLs.size());
+		final Map<String, PivotProcessingResult> processingResults = new HashMap<>();
 
 		LOTLSource lotlSource = (LOTLSource) getSource();
-		Map<String, Future<PivotProcessingResult>> futures = new HashMap<>();
+		CacheAccessByKey lotlCacheAccessByKey = getCacheAccessByKey();
+		Map<String, PivotProcessing> pivotProcessingMap = new HashMap<>();
+		List<CacheAccessByKey> pivotCacheAccessByKeyList = new ArrayList<>();
 		for (String pivotUrl : pivotURLs) {
 			CacheAccessByKey pivotCacheAccess = cacheAccessFactory.getCacheAccess(new CacheKey(pivotUrl));
-			LOTLSource pivotSource = new LOTLSource();
-			pivotSource.setUrl(pivotUrl);
-			pivotSource.setLotlPredicate(lotlSource.getLotlPredicate());
-			pivotSource.setTlPredicate(lotlSource.getTlPredicate());
-			pivotSource.setPivotSupport(lotlSource.isPivotSupport());
 
-			// .sha2 is not supported by pivot
-			DSSFileLoader dataLoader = dssFileLoader instanceof Sha2FileCacheDataLoader ?
-					((Sha2FileCacheDataLoader) dssFileLoader).getDataLoader() : dssFileLoader;
-			futures.put(pivotUrl, executorService.submit(new PivotProcessing(pivotSource, pivotCacheAccess, getCacheAccessByKey(), dataLoader)));
-		}
+			if (lotlCacheAccessByKey.isValidationRefreshNeeded() || pivotCacheAccess.isValidationRefreshNeeded()
+					|| !pivotCacheAccess.getDownloadReadOnlyResult().isResultExist()) {
+				LOTLSource pivotSource = new LOTLSource();
+				pivotSource.setUrl(pivotUrl);
+				pivotSource.setLotlPredicate(lotlSource.getLotlPredicate());
+				pivotSource.setTlPredicate(lotlSource.getTlPredicate());
+				pivotSource.setPivotSupport(lotlSource.isPivotSupport());
 
-		Map<String, PivotProcessingResult> processingResults = new HashMap<>();
-		for (Entry<String, Future<PivotProcessingResult>> entry : futures.entrySet()) {
-			try {
-				processingResults.put(entry.getKey(), entry.getValue().get());
-			} catch (InterruptedException e) {
-				LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
-				Thread.currentThread().interrupt();
-			} catch (ExecutionException e) {
-				LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
+				// .sha2 is not supported by pivot
+				DSSFileLoader dataLoader = dssFileLoader instanceof Sha2FileCacheDataLoader ?
+						((Sha2FileCacheDataLoader) dssFileLoader).getDataLoader() : dssFileLoader;
+				pivotProcessingMap.put(pivotUrl, new PivotProcessing(pivotSource, pivotCacheAccess, getCacheAccessByKey(),
+						new ArrayList<>(pivotCacheAccessByKeyList), dataLoader));
+
+			} else {
+				// if exists and no update is required
+				processingResults.put(pivotUrl, new PivotProcessingResultFromCacheAccessBuilder(pivotCacheAccess).build());
 			}
+
+			pivotCacheAccessByKeyList.add(pivotCacheAccess);
 		}
 
-		shutdownAndAwaitTermination(executorService);
+		if (Utils.isMapNotEmpty(pivotProcessingMap)) {
+			ExecutorService executorService = Executors.newFixedThreadPool(pivotProcessingMap.size());
+			Map<String, Future<PivotProcessingResult>> futures = new HashMap<>();
+			for (Map.Entry<String, PivotProcessing> processing : pivotProcessingMap.entrySet()) {
+				futures.put(processing.getKey(), executorService.submit(processing.getValue()));
+			}
+
+			for (Entry<String, Future<PivotProcessingResult>> entry : futures.entrySet()) {
+				try {
+					processingResults.put(entry.getKey(), entry.getValue().get());
+				} catch (InterruptedException e) {
+					LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
+					Thread.currentThread().interrupt();
+				} catch (ExecutionException e) {
+					LOG.error(String.format("Unable to retrieve the PivotProcessingResult for url '%s'", entry.getKey()), e);
+				}
+			}
+			shutdownAndAwaitTermination(executorService);
+		}
 
 		return processingResults;
 	}

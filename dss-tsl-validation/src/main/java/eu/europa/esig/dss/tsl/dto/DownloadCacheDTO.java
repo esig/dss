@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ import java.util.Optional;
 public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRecord {
 
 	private static final long serialVersionUID = 514589372769360786L;
+
+	/** The downloaded document */
+	private DSSDocument document;
 
 	/** Error messages occurred during sha2 processing */
 	private List<String> sha2ErrorMessages;
@@ -70,6 +74,15 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 		} else {
 			throw new IllegalStateException("All dates are null");
 		}
+	}
+
+	@Override
+	public DSSDocument getDocument() {
+		return document;
+	}
+
+	public void setDocument(DSSDocument document) {
+		this.document = document;
 	}
 
 	/**

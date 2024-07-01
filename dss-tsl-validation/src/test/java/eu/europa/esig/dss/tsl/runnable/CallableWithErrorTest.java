@@ -36,7 +36,7 @@ class CallableWithErrorTest extends AbstractTestRunnable {
     void test() {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
 
-        PivotProcessing process = new PivotProcessing(null, null, null, null);
+        PivotProcessing process = new PivotProcessing(null, null, null, null, null);
         assertNotNull(process);
 
         Future<PivotProcessingResult> future = executorService.submit(process);
