@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSignature {
+class XAdESManifestLevelBValidationTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -104,18 +104,22 @@ class XAdESManifestLevelBWithValidationTest extends AbstractXAdESTestSignature {
 		boolean foundSignedProperties = false;
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
+			assertTrue(xmlDigestMatcher.isDataFound());
+			assertTrue(xmlDigestMatcher.isDataIntact());
 			switch (xmlDigestMatcher.getType()) {
-			case MANIFEST:
-				foundManifest = true;
-				break;
-			case MANIFEST_ENTRY:
-				nbManifestEntries++;
-				break;
-			case SIGNED_PROPERTIES:
-				foundSignedProperties = true;
-				break;
-			default:
-				break;
+				case MANIFEST:
+					foundManifest = true;
+					break;
+				case MANIFEST_ENTRY:
+					assertNotNull(xmlDigestMatcher.getDocumentName());
+					assertEquals(xmlDigestMatcher.getUri(), xmlDigestMatcher.getDocumentName());
+					nbManifestEntries++;
+					break;
+				case SIGNED_PROPERTIES:
+					foundSignedProperties = true;
+					break;
+				default:
+					break;
 			}
 		}
 

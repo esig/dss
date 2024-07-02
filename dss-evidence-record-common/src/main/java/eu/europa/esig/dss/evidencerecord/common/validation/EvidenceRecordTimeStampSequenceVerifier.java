@@ -288,7 +288,6 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         List<ReferenceValidation> invalidReferences = referenceValidations.stream().filter(r -> !r.isIntact()).collect(Collectors.toList());
         for (ReferenceValidation reference : invalidReferences) {
             if (reference.getDigest() != null && Arrays.equals(messageDigest.getValue(), reference.getDigest().getValue())) {
-                reference.setName(null);
                 reference.setType(type);
                 reference.setFound(true);
                 reference.setIntact(true);
@@ -310,7 +309,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         }
 
         // create empty ReferenceValidations for not found manifest entries, when applicable
-        List<String> foundDocumentNames = referenceValidations.stream().map(ReferenceValidation::getName).filter(Objects::nonNull).collect(Collectors.toList());
+        List<String> foundDocumentNames = referenceValidations.stream().map(ReferenceValidation::getDocumentName).filter(Objects::nonNull).collect(Collectors.toList());
         if (Utils.collectionSize(manifestFile.getEntries()) > Utils.collectionSize(foundDocumentNames)) {
             List<ReferenceValidation> failedReferences = referenceValidations.stream().filter(r -> !r.isIntact()).collect(Collectors.toList());
             if (Utils.collectionSize(manifestFile.getEntries()) - Utils.collectionSize(foundDocumentNames) >= Utils.collectionSize(failedReferences)) {
@@ -329,7 +328,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                     ReferenceValidation referenceValidation = new ReferenceValidation();
                     referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
                     referenceValidation.setDigest(manifestEntry.getDigest());
-                    referenceValidation.setName(manifestEntry.getFileName());
+                    referenceValidation.setDocumentName(manifestEntry.getFileName()); // TODO : add separation between reference name and document name
                     referenceValidation.setFound(matchingDocument != null);
                     referenceValidation.setIntact(false);
                     referenceValidations.add(referenceValidation);
@@ -346,7 +345,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         if (firstTimeStamp) {
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
                 for (ReferenceValidation reference : referenceValidations) {
-                    if (manifestEntry.getFileName().equals(reference.getName()) &&
+                    if (manifestEntry.getFileName().equals(reference.getDocumentName()) &&
                             manifestEntry.getDigest() != null && reference.getDigest() != null &&
                             !manifestEntry.getDigest().getAlgorithm().equals(reference.getDigest().getAlgorithm())) {
                         LOG.warn("The digest algorithm '{}' defined in a manifest file with name '{}' does not match " +
@@ -398,11 +397,11 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 if (matchingManifestEntry != null) {
                     referenceValidation.setFound(matchingManifestEntry.isFound() || matchingDocument != null);
                     referenceValidation.setIntact(matchingManifestEntry.isIntact() && matchingDocument != null);
-                    referenceValidation.setName(matchingManifestEntry.getFileName());
+                    referenceValidation.setDocumentName(matchingManifestEntry.getFileName());
                     foundDocuments.add(matchingManifestEntry.getFileName());
 
                 } else if (matchingDocument != null) {
-                    referenceValidation.setName(matchingDocument.getName());
+                    referenceValidation.setDocumentName(matchingDocument.getName());
                     foundDocuments.add(matchingDocument.getName());
 
                 } else {
@@ -414,14 +413,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             } else if (matchingDocument != null) {
                 referenceValidation.setFound(true);
                 referenceValidation.setIntact(true);
-                referenceValidation.setName(matchingDocument.getName());
+                referenceValidation.setDocumentName(matchingDocument.getName());
                 foundDocuments.add(matchingDocument.getName());
 
             } else if (Utils.collectionSize(digestValues) == 1 && Utils.collectionSize(detachedContents) == 1) {
                 // if one document is expected and provided -> assume it as a signed data
                 referenceValidation.setFound(true);
                 referenceValidation.setIntact(false);
-                referenceValidation.setName(detachedContents.get(0).getName());
+                referenceValidation.setDocumentName(detachedContents.get(0).getName());
                 foundDocuments.add(detachedContents.get(0).getName());
 
             } else {

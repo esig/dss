@@ -2153,7 +2153,6 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         List<XmlDigestMatcher> digestMatchers = diagnosticData.getUsedTimestamps().get(1).getDigestMatchers();
         XmlDigestMatcher digestMatcher = digestMatchers.get(1);
         digestMatcher.setType(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE);
-        digestMatcher.setName(null);
         digestMatcher.setDataFound(false);
         digestMatcher.setDataIntact(false);
 

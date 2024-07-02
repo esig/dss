@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.TransformsDescriptionBuilder;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -36,6 +36,7 @@ import java.util.List;
 
 /**
  * Contains information about a XAdES reference validation
+ *
  */
 public class XAdESReferenceValidation extends ReferenceValidation {
 
@@ -45,10 +46,6 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 
 	/** The digest value of the original document, before applying transformations (if accessible) */
 	private final Reference reference;
-	/** For XAdES : reference id */
-	private final String id;
-	/** For XAdES : reference uri */
-	private final String uri;
 
 	/**
 	 * Default constructor
@@ -57,27 +54,11 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	 */
 	public XAdESReferenceValidation(Reference reference) {
 		this.reference = reference;
-		this.id = reference.getId();
-		this.uri = DSSXMLUtils.getReferenceURI(reference);
+		this.setId(DSSXMLUtils.getReferenceId(reference));
+		this.setUri(DSSXMLUtils.getReferenceURI(reference));
+		this.setDocumentName(DSSXMLUtils.getDocumentName(reference));
 	}
 
-	/**
-	 * Gets Id of the reference
-	 *
-	 * @return {@link String}
-	 */
-	public String getId() {
-		return id;
-	}
-
-	/**
-	 * Gets URI of the reference
-	 *
-	 * @return {@link String}
-	 */
-	public String getUri() {
-		return uri;
-	}
 	/**
 	 * Returns original bytes of the referenced document
 	 *
@@ -88,11 +69,12 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	}
 
 	@Override
+	@Deprecated
 	public String getName() {
-		if (Utils.isStringNotBlank(id)) {
-			return id;
-		} else if (Utils.isStringNotBlank(uri)) {
-			return uri;
+		if (Utils.isStringNotBlank(getId())) {
+			return getId();
+		} else if (Utils.isStringNotBlank(getUri())) {
+			return getUri();
 		}
 		return Utils.EMPTY_STRING;
 	}

@@ -93,7 +93,7 @@ public class EvidenceRecordScopeFinder {
     private DSSDocument getDetachedDocument(ReferenceValidation referenceValidation, List<DSSDocument> detachedDocuments) {
         for (DSSDocument document : detachedDocuments) {
             Objects.requireNonNull(document.getName(), "Name shall be defined when multiple documents provided!");
-            if (referenceValidation.getName().equals(document.getName())) {
+            if (referenceValidation.getDocumentName().equals(document.getName())) {
                 return document;
             }
         }

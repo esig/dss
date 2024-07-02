@@ -33,6 +33,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XAdESWithManifestDuplicatedReferenceTest extends AbstractXAdESTestValidation {
@@ -59,14 +60,16 @@ class XAdESWithManifestDuplicatedReferenceTest extends AbstractXAdESTestValidati
             if (DigestMatcherType.MANIFEST.equals(digestMatcher.getType())) {
                 assertFalse(digestMatcher.isDuplicated());
                 assertTrue(digestMatcher.isDataIntact());
-                assertEquals("r-manifest", digestMatcher.getName());
+                assertEquals("r-manifest", digestMatcher.getId());
+                assertEquals("#manifest", digestMatcher.getUri());
                 ++manifestCounter;
             } else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
                 ++manifestRefCounter;
             }
             if (!digestMatcher.isDataFound()) {
                 assertTrue(digestMatcher.isDuplicated());
-                assertEquals("#o-id-1075588d58231c730f94fb897ed0d7a9-1", digestMatcher.getName());
+                assertNull(digestMatcher.getId());
+                assertEquals("#o-id-1075588d58231c730f94fb897ed0d7a9-1", digestMatcher.getUri());
                 ++invalidRefCounter;
             } else {
                 assertTrue(digestMatcher.isDataIntact());

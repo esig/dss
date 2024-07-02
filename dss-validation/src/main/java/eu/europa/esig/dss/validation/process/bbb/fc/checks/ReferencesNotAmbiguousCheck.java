@@ -90,7 +90,7 @@ public class ReferencesNotAmbiguousCheck extends ChainItem<XmlFC> {
 	@Override
 	protected String buildAdditionalInfo() {
 		if (duplicatedReference != null) {
-			String referenceName = Utils.isStringNotBlank(duplicatedReference.getName()) ? duplicatedReference.getName()
+			String referenceName = Utils.isStringNotBlank(duplicatedReference.getId()) ? duplicatedReference.getId()
 					: duplicatedReference.getType().name();
 			return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
 		}

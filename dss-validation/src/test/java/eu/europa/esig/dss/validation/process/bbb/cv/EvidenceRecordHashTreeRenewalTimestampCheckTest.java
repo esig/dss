@@ -51,14 +51,14 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlDigestMatcher archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectOne);
 
         XmlDigestMatcher archiveDataObjectTwo = new XmlDigestMatcher();
         archiveDataObjectTwo.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectTwo.setName("test2");
+        archiveDataObjectTwo.setDocumentName("test2");
         archiveDataObjectTwo.setDataFound(true);
         archiveDataObjectTwo.setDataIntact(true);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectTwo);
@@ -69,14 +69,14 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlTimestamp.getDigestMatchers().add(archiveDataObjectOne);
 
         archiveDataObjectTwo = new XmlDigestMatcher();
         archiveDataObjectTwo.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectTwo.setName("test2");
+        archiveDataObjectTwo.setDocumentName("test2");
         archiveDataObjectTwo.setDataFound(true);
         archiveDataObjectTwo.setDataIntact(true);
         xmlTimestamp.getDigestMatchers().add(archiveDataObjectTwo);
@@ -106,14 +106,14 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlDigestMatcher archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectOne);
 
         XmlDigestMatcher archiveDataObjectTwo = new XmlDigestMatcher();
         archiveDataObjectTwo.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectTwo.setName("test2");
+        archiveDataObjectTwo.setDocumentName("test2");
         archiveDataObjectTwo.setDataFound(true);
         archiveDataObjectTwo.setDataIntact(true);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectTwo);
@@ -124,7 +124,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlTimestamp.getDigestMatchers().add(archiveDataObjectOne);
@@ -160,7 +160,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlDigestMatcher archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectOne);
@@ -177,14 +177,14 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlTimestamp.getDigestMatchers().add(archiveDataObjectOne);
 
         archiveDataObjectTwo = new XmlDigestMatcher();
         archiveDataObjectTwo.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectTwo.setName("test2");
+        archiveDataObjectTwo.setDocumentName("test2");
         archiveDataObjectTwo.setDataFound(true);
         archiveDataObjectTwo.setDataIntact(true);
         xmlTimestamp.getDigestMatchers().add(archiveDataObjectTwo);
@@ -241,14 +241,14 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlDigestMatcher archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectOne);
 
         XmlDigestMatcher archiveDataObjectTwo = new XmlDigestMatcher();
         archiveDataObjectTwo.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectTwo.setName("test2");
+        archiveDataObjectTwo.setDocumentName("test2");
         archiveDataObjectTwo.setDataFound(true);
         archiveDataObjectTwo.setDataIntact(true);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectTwo);
@@ -259,14 +259,14 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlTimestamp.getDigestMatchers().add(archiveDataObjectOne);
 
         archiveDataObjectTwo = new XmlDigestMatcher();
         archiveDataObjectTwo.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test3");
+        archiveDataObjectOne.setDocumentName("test3");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlTimestamp.getDigestMatchers().add(archiveDataObjectTwo);
@@ -392,14 +392,14 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlDigestMatcher archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectOne);
 
         XmlDigestMatcher archiveDataObjectTwo = new XmlDigestMatcher();
         archiveDataObjectTwo.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectTwo.setName("test2");
+        archiveDataObjectTwo.setDocumentName("test2");
         archiveDataObjectTwo.setDataFound(true);
         archiveDataObjectTwo.setDataIntact(false);
         xmlEvidenceRecord.getDigestMatchers().add(archiveDataObjectTwo);
@@ -410,7 +410,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         archiveDataObjectOne = new XmlDigestMatcher();
         archiveDataObjectOne.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
-        archiveDataObjectOne.setName("test1");
+        archiveDataObjectOne.setDocumentName("test1");
         archiveDataObjectOne.setDataFound(true);
         archiveDataObjectOne.setDataIntact(true);
         xmlTimestamp.getDigestMatchers().add(archiveDataObjectOne);

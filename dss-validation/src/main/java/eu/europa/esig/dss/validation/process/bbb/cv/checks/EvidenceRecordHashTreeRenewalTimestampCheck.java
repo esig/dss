@@ -82,7 +82,7 @@ public class EvidenceRecordHashTreeRenewalTimestampCheck extends ChainItem<XmlCV
 
     private List<String> getCoveredDocuments(List<XmlDigestMatcher> digestMatchers) {
         return digestMatchers.stream().filter(d -> DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == d.getType() && d.isDataFound())
-                .map(XmlDigestMatcher::getName).collect(Collectors.toList());
+                .map(XmlDigestMatcher::getDocumentName).collect(Collectors.toList());
     }
 
     private boolean timestampCoversAllOriginalDocuments(EvidenceRecordWrapper evidenceRecord, TimestampWrapper timestampWrapper) {

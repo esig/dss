@@ -61,7 +61,7 @@ class Asn1EvidenceRecordInvalidValidationTest extends AbstractAsn1EvidenceRecord
         assertEquals(2, referenceValidations.size());
         for (ReferenceValidation referenceValidation : referenceValidations) {
             assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, referenceValidation.getType());
-            assertNotNull(referenceValidation.getName());
+            assertNotNull(referenceValidation.getDocumentName());
             assertTrue(referenceValidation.isFound());
             assertTrue(referenceValidation.isIntact());
         }
