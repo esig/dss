@@ -62,13 +62,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static java.time.Duration.ofMillis;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -1439,6 +1442,11 @@ class TLValidationJobTest {
 			lastPivotUpdateTimes.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
 		}
 
+		// Wait
+		Calendar nextMilliSecond = Calendar.getInstance();
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
 		map.remove(LOTL_URL);
 		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
 		tlValidationJob.onlineRefresh();
@@ -1463,6 +1471,10 @@ class TLValidationJobTest {
 			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
 		}
 		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
 
 		map.put(LOTL_URL, new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
 		map.remove("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml");
@@ -1493,6 +1505,10 @@ class TLValidationJobTest {
 		}
 		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
 
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
 		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
 		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-226-mp.xml",
@@ -1513,6 +1529,10 @@ class TLValidationJobTest {
 		assertNotNull(lastDownloadAttemptTime);
 		pivotInfos = lotlInfo.getPivotInfos();
 		assertEquals(4, pivotInfos.size());
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
 
 		lastPivotUpdateTimesNewList = new ArrayList<>();
 		for (PivotInfo pivotInfo : pivotInfos) {
@@ -1553,6 +1573,10 @@ class TLValidationJobTest {
 		}
 		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
 
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
 		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp.xml"));
 		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
@@ -1578,6 +1602,10 @@ class TLValidationJobTest {
 			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
 		}
 		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
 
 		tlValidationJob.onlineRefresh();
 
@@ -1650,6 +1678,11 @@ class TLValidationJobTest {
 		}
 		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
 
+		// Wait
+		Calendar nextMilliSecond = Calendar.getInstance();
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
 		map.remove(LOTL_URL);
 		map.remove("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-282.xml");
 		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
@@ -1676,6 +1709,10 @@ class TLValidationJobTest {
 		}
 		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
 
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
 		map.put(LOTL_URL,
 				new FileDocument("src/test/resources/lotlCache/eu-lotl-pivot-341.xml"));
 		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
@@ -1701,6 +1738,10 @@ class TLValidationJobTest {
 			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
 		}
 		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
 
 		map.remove("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-300.xml");
 		map.put("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-282.xml",
