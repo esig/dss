@@ -926,7 +926,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			referenceValidation.setType(DigestMatcherType.SIG_D_ENTRY);
 			
 			String signedDataName = signedDataEntry.getKey();
-			referenceValidation.setName(signedDataName);
+			referenceValidation.setUri(signedDataName);
 			
 			String expectedDigestString = signedDataEntry.getValue();
 			byte[] expectedDigest = DSSJsonUtils.fromBase64Url(expectedDigestString);
@@ -938,11 +938,15 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			if (Utils.collectionSize(signedDataHashMap.entrySet()) == 1 && Utils.collectionSize(detachedDocuments) == 1) {
 				detachedDocument = detachedDocuments.iterator().next();
 			} else {
-				detachedDocument = getDetachedDocumentByName(signedDataName, detachedDocuments);
+				detachedDocument = getDetachedDocumentByDigest(digestAlgorithm, expectedDigest, detachedDocuments);
+				if (detachedDocument == null) {
+					detachedDocument = getDetachedDocumentByName(signedDataName, detachedDocuments);
+				}
 			}
 
 			if (detachedDocument != null) {
 				referenceValidation.setFound(true);
+				referenceValidation.setDocumentName(detachedDocument.getName());
 				if (digestAlgorithm != null && isDocumentDigestMatch(detachedDocument, digestAlgorithm, expectedDigest)) {
 					referenceValidation.setIntact(true);
 				}
@@ -982,7 +986,19 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 		}
 		return null;
 	}
-	
+
+	private DSSDocument getDetachedDocumentByDigest(DigestAlgorithm digestAlgorithm, byte[] expectedDigest, List<DSSDocument> detachedContent) {
+		if (digestAlgorithm == null || expectedDigest == null) {
+			return null;
+		}
+		for (DSSDocument detachedDocument : detachedContent) {
+			if (isDocumentDigestMatch(detachedDocument, digestAlgorithm, expectedDigest)) {
+				return detachedDocument;
+			}
+		}
+		return null;
+	}
+
 	private DSSDocument getDetachedDocumentByName(String documentName, List<DSSDocument> detachedContent) {
 		documentName = DSSUtils.decodeURI(documentName);
 		for (DSSDocument detachedDocument : detachedContent) {
@@ -1107,7 +1123,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			List<ReferenceValidation> referenceValidations = getReferenceValidations();
 			for (ReferenceValidation referenceValidation : referenceValidations) {
 				if (DigestMatcherType.SIG_D_ENTRY.equals(referenceValidation.getType()) && referenceValidation.isIntact()) {
-					String signedDataName = DSSUtils.decodeURI(referenceValidation.getName());
+					String signedDataName = DSSUtils.decodeURI(referenceValidation.getUri());
 					DSSDocument detachedDocument = getDetachedDocumentByName(signedDataName, detachedContents);
 					if (detachedDocument != null) {
 						originalDocuments.add(detachedDocument);

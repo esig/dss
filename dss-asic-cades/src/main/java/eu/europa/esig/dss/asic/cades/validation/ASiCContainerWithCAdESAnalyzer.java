@@ -244,7 +244,7 @@ public class ASiCContainerWithCAdESAnalyzer extends AbstractASiCContainerAnalyze
 				ManifestFile coveredManifest = timestampValidator.getCoveredManifest();
 				if (coveredManifest != null) {
 					for (ManifestEntry entry : coveredManifest.getEntries()) {
-						CAdESSignature cadesSignature = getCAdESSignatureFromFileName(allSignatures, entry.getFileName());
+						CAdESSignature cadesSignature = getCAdESSignatureFromFileName(allSignatures, entry.getUri());
 						if (cadesSignature != null) {
 							cadesSignature.addExternalTimestamp(timestamp);
 						}
@@ -339,7 +339,7 @@ public class ASiCContainerWithCAdESAnalyzer extends AbstractASiCContainerAnalyze
 		List<DSSDocument> result = new ArrayList<>();
 		for (ManifestEntry entry : entries) {
 			for (DSSDocument signedDocument : signedDocuments) {
-				if (Utils.areStringsEqual(entry.getFileName(), signedDocument.getName())) {
+				if (Utils.areStringsEqual(entry.getUri(), signedDocument.getName())) {
 					result.add(signedDocument);
 				}
 			}

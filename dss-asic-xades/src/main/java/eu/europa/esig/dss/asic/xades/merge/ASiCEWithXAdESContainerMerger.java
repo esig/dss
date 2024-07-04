@@ -219,7 +219,7 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
                 ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifestDocument);
                 if (manifestFile != null) {
                     for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                        result.add(manifestEntry.getFileName());
+                        result.add(manifestEntry.getUri());
                     }
                 }
             }
@@ -291,16 +291,16 @@ public class ASiCEWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
             mergedContent.getManifestDocuments().addAll(manifestDocuments);
 
             for (ManifestEntry entry : getManifestFileEntries(manifestDocuments)) {
-                if (!addedFileNames.contains(entry.getFileName())) {
+                if (!addedFileNames.contains(entry.getUri())) {
                     manifestEntries.add(entry);
-                    addedFileNames.add(entry.getFileName());
+                    addedFileNames.add(entry.getUri());
                 }
             }
             List<DSSDocument> signedDocuments = asicContent.getSignedDocuments();
             for (ManifestEntry entry : ASiCUtils.toSimpleManifestEntries(signedDocuments)) {
-                if (!addedFileNames.contains(entry.getFileName())) {
+                if (!addedFileNames.contains(entry.getUri())) {
                     manifestEntries.add(entry);
-                    addedFileNames.add(entry.getFileName());
+                    addedFileNames.add(entry.getUri());
                 }
             }
         }

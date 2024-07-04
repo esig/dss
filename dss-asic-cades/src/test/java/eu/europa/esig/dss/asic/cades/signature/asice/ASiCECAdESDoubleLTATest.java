@@ -119,15 +119,15 @@ class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
             ManifestFile manifestFile = ASiCManifestParser.getManifestFile(document);
             assertNotNull(manifestFile);
             for (ManifestEntry entry : manifestFile.getEntries()) {
-                if (originalDocument.getName().equals(entry.getFileName())) {
+                if (originalDocument.getName().equals(entry.getUri())) {
                     assertEquals(MimeTypeEnum.TEXT, entry.getMimeType());
                     signedFileFound = true;
                 }
-                if (entry.getFileName().contains("signature")) {
+                if (entry.getUri().contains("signature")) {
                     assertEquals(MimeTypeEnum.PKCS7, entry.getMimeType());
                     timestampedSignatureFound = true;
                 }
-                if (entry.getFileName().contains("timestamp")) {
+                if (entry.getUri().contains("timestamp")) {
                     assertEquals(MimeTypeEnum.TST, entry.getMimeType());
                     secondArchiveTstFound = true;
                 }

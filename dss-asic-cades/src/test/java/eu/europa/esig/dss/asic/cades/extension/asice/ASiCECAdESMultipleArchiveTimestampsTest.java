@@ -173,7 +173,7 @@ class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		assertEquals("META-INF/ASiCArchiveManifest.xml", lastCreatedArchiveManifestFile.getFilename());
 		
 		ManifestEntry rootfile = getRootfile(lastCreatedArchiveManifestFile);
-		assertEquals("META-INF/ASiCArchiveManifest002.xml", rootfile.getFileName());
+		assertEquals("META-INF/ASiCArchiveManifest002.xml", rootfile.getUri());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();
 
@@ -198,7 +198,7 @@ class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 	private void validateEntries(List<ManifestEntry> entries) {
 		assertTrue(Utils.isCollectionNotEmpty(entries));
 		for (ManifestEntry entry : entries) {
-			assertNotNull(entry.getFileName());
+			assertNotNull(entry.getUri());
 			assertNotNull(entry.getMimeType());
 			assertNotNull(entry.getDigest());
 			assertTrue(entry.isFound());

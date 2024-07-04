@@ -84,7 +84,7 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
                 if (manifestEntry.isIntact()) {
                     DSSDocument referencedDocument = getReferencedDocument(manifestEntry, cadesSignature.getContainerContents());
                     manifestSignatureScope.addChildSignatureScope(
-                            new FullSignatureScope(manifestEntry.getFileName(), referencedDocument));
+                            new FullSignatureScope(manifestEntry.getUri(), referencedDocument));
                 }
             }
 
@@ -174,7 +174,7 @@ public class CAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
      * @return {@link DSSDocument}
      */
     protected DSSDocument getReferencedDocument(ManifestEntry manifestEntry, List<DSSDocument> detachedDocuments) {
-        DSSDocument document = DSSUtils.getDocumentWithName(detachedDocuments, manifestEntry.getFileName());
+        DSSDocument document = DSSUtils.getDocumentWithName(detachedDocuments, manifestEntry.getUri());
         if (document == null) {
             document = createDigestDocument(manifestEntry.getDigest());
         }

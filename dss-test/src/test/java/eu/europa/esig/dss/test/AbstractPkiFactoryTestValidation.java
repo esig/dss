@@ -573,11 +573,15 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				if (!DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+				if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+					assertNotNull(digestMatcher.getUri());
+					assertEquals(digestMatcher.isDataFound(),
+							Utils.isStringEmpty(digestMatcher.getUri()) || digestMatcher.getUri().equals(digestMatcher.getDocumentName()));
+				} else {
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
-					assertFalse(digestMatcher.isDuplicated());
 				}
+				assertFalse(digestMatcher.isDuplicated());
 			}
 	
 			assertTrue(signatureWrapper.isSignatureIntact());

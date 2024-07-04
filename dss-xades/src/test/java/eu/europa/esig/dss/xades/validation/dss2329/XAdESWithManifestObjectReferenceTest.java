@@ -41,9 +41,10 @@ class XAdESWithManifestObjectReferenceTest extends AbstractXAdESTestValidation {
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        super.checkBLevelValid(diagnosticData);
-
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertTrue(signature.isSignatureIntact());
+        assertTrue(signature.isSignatureValid());
+        assertTrue(diagnosticData.isBLevelTechnicallyValid(signature.getId()));
 
         int manifestCounter = 0;
         int manifestRefCounter = 0;

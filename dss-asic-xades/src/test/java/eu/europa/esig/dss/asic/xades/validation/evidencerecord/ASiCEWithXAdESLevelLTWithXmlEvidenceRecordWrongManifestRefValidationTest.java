@@ -151,7 +151,7 @@ class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongManifestRefValidationTest e
         List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
         assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(digestMatcherList));
         for (XmlDigestMatcher digestMatcher : digestMatcherList) {
-            assertNotNull(digestMatcher.getName());
+            assertNotNull(digestMatcher.getDocumentName());
             assertTrue(digestMatcher.isDataFound());
             if (digestMatcher.isDataIntact()) {
                 ++validRefsCounter;

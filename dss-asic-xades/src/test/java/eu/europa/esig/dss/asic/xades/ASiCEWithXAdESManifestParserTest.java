@@ -53,13 +53,13 @@ class ASiCEWithXAdESManifestParserTest {
 		boolean containsTestTxt = false;
 		boolean containsTestDataFileBin = false;
 		for (ManifestEntry entry : entries) {
-			if ("test.txt".equals(entry.getFileName())) {
+			if ("test.txt".equals(entry.getUri())) {
 				containsTestTxt = true;
 			}
-			if ("test-data-file.bin".equals(entry.getFileName())) {
+			if ("test-data-file.bin".equals(entry.getUri())) {
 				containsTestDataFileBin = true;
 			}
-			assertNotNull(entry.getFileName());
+			assertNotNull(entry.getUri());
 			assertNotNull(entry.getMimeType());
 		}
 		assertTrue(containsTestTxt);

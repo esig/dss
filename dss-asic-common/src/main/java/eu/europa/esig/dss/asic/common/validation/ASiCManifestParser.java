@@ -188,7 +188,7 @@ public class ASiCManifestParser {
             for (int i = 0; i < dataObjectReferences.getLength(); i++) {
                 ManifestEntry entry = new ManifestEntry();
                 Element dataObjectReference = (Element) dataObjectReferences.item(i);
-                entry.setFileName(DSSUtils.decodeURI(dataObjectReference.getAttribute(ASiCManifestAttribute.URI.getAttributeName())));
+                entry.setUri(DSSUtils.decodeURI(dataObjectReference.getAttribute(ASiCManifestAttribute.URI.getAttributeName())));
                 entry.setMimeType(getMimeType(dataObjectReference));
 
                 DigestAlgorithm digestAlgorithm = getDigestAlgorithm(dataObjectReference);

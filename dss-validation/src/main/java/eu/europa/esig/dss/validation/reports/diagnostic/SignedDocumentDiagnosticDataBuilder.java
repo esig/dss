@@ -1143,8 +1143,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 				}
 				digestMatcher.setDataFound(entry.isFound());
 				digestMatcher.setDataIntact(entry.isIntact());
-				// TODO : add Id and URI values
-				digestMatcher.setDocumentName(entry.getFileName());
+				digestMatcher.setUri(entry.getUri());
+				digestMatcher.setDocumentName(entry.getDocumentName());
 
 				digestMatchers.add(digestMatcher);
 			}

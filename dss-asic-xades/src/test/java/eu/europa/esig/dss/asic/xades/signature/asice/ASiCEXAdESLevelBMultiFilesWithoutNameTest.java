@@ -120,7 +120,7 @@ class ASiCEXAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCEWithXAdESMu
 			assertTrue(Utils.isCollectionNotEmpty(manifestFile.getEntries()));
 			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
 				// Name is generated automatically
-				assertNotNull(manifestEntry.getFileName());
+				assertNotNull(manifestEntry.getUri());
 				// No MimeType defined
 				assertNull(manifestEntry.getMimeType());
 			}

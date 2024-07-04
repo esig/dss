@@ -176,7 +176,7 @@ class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTestExten
     private Digest getSignatureDigest(ManifestFile archiveManifestFile) {
         Digest digest = null;
         for (ManifestEntry entry : archiveManifestFile.getEntries()) {
-            if ("META-INF/signature001.p7s".equals(entry.getFileName())) {
+            if ("META-INF/signature001.p7s".equals(entry.getUri())) {
                 digest = entry.getDigest();
                 break;
             }

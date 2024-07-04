@@ -40,6 +40,8 @@ import org.w3c.dom.Node;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,6 +51,8 @@ class DSS2589WithTLevelExtensionTest extends AbstractXAdESTestSignature {
 
     private final static DSSDocument ORIGINAL_DOC = new FileDocument("src/test/resources/sample.xml");
 
+    private Calendar calendar;
+
     private XAdESService service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
@@ -56,13 +60,15 @@ class DSS2589WithTLevelExtensionTest extends AbstractXAdESTestSignature {
     @BeforeEach
     void init() throws Exception {
         documentToSign = ORIGINAL_DOC;
-        signatureParameters = initSignatureParameters();
+        calendar = Calendar.getInstance();
+        signatureParameters = initSignatureParameters(calendar.getTime());
         service = new XAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());
     }
 
-    private XAdESSignatureParameters initSignatureParameters() {
+    private XAdESSignatureParameters initSignatureParameters(Date date) {
         XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+        signatureParameters.bLevel().setSigningDate(date);
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -86,7 +92,8 @@ class DSS2589WithTLevelExtensionTest extends AbstractXAdESTestSignature {
         DSSDocument wrappedSignatureDoc = new InMemoryDocument(DomUtils.serializeNode(newDom));
         documentToSign = wrappedSignatureDoc;
 
-        signatureParameters = initSignatureParameters();
+        calendar.add(Calendar.MILLISECOND, 1);
+        signatureParameters = initSignatureParameters(calendar.getTime());
         signatureParameters.setEmbedXML(true);
 
         DSSDocument signedDocument = super.sign();

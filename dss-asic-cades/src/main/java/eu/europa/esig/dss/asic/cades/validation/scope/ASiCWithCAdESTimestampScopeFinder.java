@@ -107,7 +107,7 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
                                                                             List<DSSDocument> rootLevelDocuments) {
         if (manifestEntry.isIntact()) {
             for (DSSDocument document : containerDocuments) {
-                if (Utils.areStringsEqual(manifestEntry.getFileName(), document.getName())) {
+                if (Utils.areStringsEqual(manifestEntry.getUri(), document.getName())) {
                     if (Utils.collectionSize(rootLevelDocuments) == 1 && isASiCSContainer(document)) {
                         return getTimestampSignatureScopeForZipPackage(document);
                     } else {

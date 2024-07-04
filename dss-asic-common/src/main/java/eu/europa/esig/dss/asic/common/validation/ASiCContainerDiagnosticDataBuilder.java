@@ -92,7 +92,7 @@ public class ASiCContainerDiagnosticDataBuilder extends SignedDocumentDiagnostic
 				xmlManifest.setFilename(manifestFile.getFilename());
 				xmlManifest.setSignatureFilename(manifestFile.getSignatureFilename());
 				for (ManifestEntry entry : manifestFile.getEntries()) {
-					xmlManifest.getEntries().add(entry.getFileName());
+					xmlManifest.getEntries().add(entry.getUri());
 				}
 				xmlManifests.add(xmlManifest);
 			}

@@ -745,7 +745,7 @@ public final class ASiCUtils {
 	 */
 	public static boolean coversSignature(ManifestFile manifestFile) {
 		for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-			if (isSignature(manifestEntry.getFileName())) {
+			if (isSignature(manifestEntry.getUri())) {
 				return true;
 			}
 		}
@@ -912,9 +912,10 @@ public final class ASiCUtils {
 		List<ManifestEntry> entries = new ArrayList<>();
 		for (DSSDocument document : documents) {
 			ManifestEntry entry = new ManifestEntry();
-			entry.setFileName(document.getName());
+			entry.setUri(document.getName());
 			entry.setMimeType(document.getMimeType());
 			entry.setFound(true);
+			entry.setDocumentName(document.getName());
 			entries.add(entry);
 		}
 		return entries;

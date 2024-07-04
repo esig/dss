@@ -41,6 +41,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,20 +57,26 @@ class XAdESXPath2FilterDoubleSignatureTest extends PKIFactoryAccess {
 
 		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 
+		Calendar calendar = Calendar.getInstance();
+
 		XAdESSignatureParameters params = new XAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(getSigningCert());
+		params.bLevel().setSigningDate(calendar.getTime());
 		setXPath2Transformation(toBeSigned, params, "REF1");
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
+		calendar.add(Calendar.MILLISECOND, 1);
+
 		params = new XAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(getSigningCert());
+		params.bLevel().setSigningDate(calendar.getTime());
 		setXPath2Transformation(signedDocument, params, "REF2");
 
 		dataToSign = service.getDataToSign(signedDocument, params);

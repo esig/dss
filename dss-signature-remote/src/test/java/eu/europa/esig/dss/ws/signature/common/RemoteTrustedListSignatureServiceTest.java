@@ -120,7 +120,7 @@ class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServi
         boolean lotlRefFound = false;
         List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
         for (XmlDigestMatcher digestMatcher : digestMatchers) {
-            if (digestMatcher.getName().equals("lotl")) {
+            if (digestMatcher.getId() != null && digestMatcher.getId().equals("lotl")) {
                 assertEquals(DigestAlgorithm.SHA512, digestMatcher.getDigestMethod());
                 lotlRefFound = true;
             }
@@ -164,7 +164,7 @@ class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServi
         boolean lotlRefFound = false;
         List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
         for (XmlDigestMatcher digestMatcher : digestMatchers) {
-            if (digestMatcher.getName().equals("lotl")) {
+            if (digestMatcher.getId() != null && digestMatcher.getId().equals("lotl")) {
                 assertEquals(DigestAlgorithm.SHA256, digestMatcher.getDigestMethod());
                 lotlRefFound = true;
             }

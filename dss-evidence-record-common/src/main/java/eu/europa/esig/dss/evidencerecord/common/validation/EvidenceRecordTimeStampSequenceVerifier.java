@@ -320,15 +320,15 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             }
             // add references from a manifest
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                if (!foundDocumentNames.contains(manifestEntry.getFileName())) {
-                    LOG.warn("Manifest entry with name '{}' was not found within evidence record data objects!", manifestEntry.getFileName());
+                if (!foundDocumentNames.contains(manifestEntry.getUri())) {
+                    LOG.warn("Manifest entry with name '{}' was not found within evidence record data objects!", manifestEntry.getUri());
 
                     DSSDocument matchingDocument = getMatchingDocument(manifestEntry, evidenceRecord.getDetachedContents());
 
                     ReferenceValidation referenceValidation = new ReferenceValidation();
                     referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
                     referenceValidation.setDigest(manifestEntry.getDigest());
-                    referenceValidation.setDocumentName(manifestEntry.getFileName()); // TODO : add separation between reference name and document name
+                    referenceValidation.setDocumentName(manifestEntry.getUri()); // TODO : add separation between reference name and document name
                     referenceValidation.setFound(matchingDocument != null);
                     referenceValidation.setIntact(false);
                     referenceValidations.add(referenceValidation);
@@ -345,13 +345,13 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         if (firstTimeStamp) {
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
                 for (ReferenceValidation reference : referenceValidations) {
-                    if (manifestEntry.getFileName().equals(reference.getDocumentName()) &&
+                    if (manifestEntry.getUri().equals(reference.getDocumentName()) &&
                             manifestEntry.getDigest() != null && reference.getDigest() != null &&
                             !manifestEntry.getDigest().getAlgorithm().equals(reference.getDigest().getAlgorithm())) {
                         LOG.warn("The digest algorithm '{}' defined in a manifest file with name '{}' does not match " +
                                         "the digest algorithm '{}' used within an evidence record for file with name '{}'",
                                 manifestEntry.getDigest().getAlgorithm(), manifestFile.getFilename(),
-                                reference.getDigest().getAlgorithm(), manifestEntry.getFileName());
+                                reference.getDigest().getAlgorithm(), manifestEntry.getUri());
                         reference.setIntact(false);
                     }
                 }
@@ -397,8 +397,9 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 if (matchingManifestEntry != null) {
                     referenceValidation.setFound(matchingManifestEntry.isFound() || matchingDocument != null);
                     referenceValidation.setIntact(matchingManifestEntry.isIntact() && matchingDocument != null);
-                    referenceValidation.setDocumentName(matchingManifestEntry.getFileName());
-                    foundDocuments.add(matchingManifestEntry.getFileName());
+                    referenceValidation.setUri(matchingManifestEntry.getUri());
+                    referenceValidation.setDocumentName(matchingManifestEntry.getDocumentName());
+                    foundDocuments.add(matchingManifestEntry.getUri());
 
                 } else if (matchingDocument != null) {
                     referenceValidation.setDocumentName(matchingDocument.getName());
@@ -449,7 +450,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 if (digest.equals(manifestEntryDigest)) {
                     return manifestEntry;
                 }
-                if (document != null && document.getName().equals(manifestEntry.getFileName())) {
+                if (document != null && document.getName().equals(manifestEntry.getUri())) {
                     return manifestEntry;
                 }
             }
@@ -491,7 +492,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      */
     protected DSSDocument getMatchingDocument(ManifestEntry manifestEntry, List<DSSDocument> detachedContents) {
         for (DSSDocument document : detachedContents) {
-            if (manifestEntry.getFileName().equals(document.getName())) {
+            if (manifestEntry.getUri().equals(document.getName())) {
                 return document;
             }
         }

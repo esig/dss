@@ -68,10 +68,11 @@ class XAdESManifestLevelBPartialValidationWrongFilenameTest extends AbstractXAdE
     }
 
     @Override
-    protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
-        super.verifyDiagnosticData(diagnosticData);
-
+    protected void checkBLevelValid(DiagnosticData diagnosticData) {
         SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertTrue(signatureWrapper.isSignatureIntact());
+        assertTrue(signatureWrapper.isSignatureValid());
+        assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
 
         int nbFoundManifestEntries = 0;
         int nbInvalidManifestEntries = 0;
@@ -118,6 +119,7 @@ class XAdESManifestLevelBPartialValidationWrongFilenameTest extends AbstractXAdE
         assertEquals(1, nbNotFoundManifestEntries);
         assertTrue(foundSignedProperties);
     }
+
 
     @Override
     protected void validateETSISignersDocument(SignersDocumentType signersDocument) {

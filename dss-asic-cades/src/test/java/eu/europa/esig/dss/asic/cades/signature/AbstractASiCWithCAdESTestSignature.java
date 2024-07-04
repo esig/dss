@@ -118,7 +118,7 @@ public abstract class AbstractASiCWithCAdESTestSignature
             assertNotNull(manifestFile.getSignatureFilename());
             assertTrue(Utils.isCollectionNotEmpty(manifestFile.getEntries()));
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                assertNotNull(manifestEntry.getFileName());
+                assertNotNull(manifestEntry.getUri());
                 assertNotNull(manifestEntry.getDigest());
                 assertNotNull(manifestEntry.getMimeType());
                 assertTrue(Utils.isStringNotEmpty(manifestEntry.getMimeType().getMimeTypeString()));

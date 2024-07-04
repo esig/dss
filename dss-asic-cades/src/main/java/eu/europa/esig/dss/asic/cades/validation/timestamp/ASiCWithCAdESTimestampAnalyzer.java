@@ -127,7 +127,7 @@ public class ASiCWithCAdESTimestampAnalyzer extends DetachedTimestampAnalyzer {
 			return true;
 		}
 		for (ManifestEntry entry : erManifestFile.getEntries()) {
-			if (timestampToken.getFileName() != null && timestampToken.getFileName().equals(entry.getFileName())) {
+			if (timestampToken.getFileName() != null && timestampToken.getFileName().equals(entry.getUri())) {
 				return true;
 			}
 		}

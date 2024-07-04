@@ -81,10 +81,11 @@ class XAdESManifestLevelBValidationWrongFilenamesTest extends AbstractXAdESTestS
     }
 
     @Override
-    protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
-        super.verifyDiagnosticData(diagnosticData);
-
+    protected void checkBLevelValid(DiagnosticData diagnosticData) {
         SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertTrue(signatureWrapper.isSignatureIntact());
+        assertTrue(signatureWrapper.isSignatureValid());
+        assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
 
         int nbManifestEntries = 0;
         boolean foundManifest = false;

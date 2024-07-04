@@ -472,7 +472,7 @@ public abstract class AbstractASiCContainerAnalyzer extends DefaultDocumentAnaly
 	private boolean coversFile(ManifestFile manifestFile, String filename) {
 		if (manifestFile != null) {
 			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-				if (Utils.areStringsEqual(filename, manifestEntry.getFileName())) {
+				if (Utils.areStringsEqual(filename, manifestEntry.getUri())) {
 					return true;
 				}
 			}

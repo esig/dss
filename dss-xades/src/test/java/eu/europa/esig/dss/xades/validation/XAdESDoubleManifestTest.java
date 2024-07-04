@@ -46,10 +46,11 @@ class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 	
 	@Override
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
-		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
+		assertTrue(signature.isSignatureIntact());
+		assertTrue(signature.isSignatureValid());
+		assertTrue(signature.isBLevelTechnicallyValid());
 		
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertEquals(7, digestMatchers.size());
