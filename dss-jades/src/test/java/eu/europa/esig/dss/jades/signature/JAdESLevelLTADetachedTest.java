@@ -44,7 +44,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class JAdESLevelLTADetactedTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelLTADetachedTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private JAdESService service;
 	private List<DSSDocument> documentsToSign;

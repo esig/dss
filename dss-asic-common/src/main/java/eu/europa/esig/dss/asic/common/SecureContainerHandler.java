@@ -86,7 +86,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * Internal variable used to calculate the extracted entries size
 	 * NOTE: shall be reset on every use
 	 */
-	private int byteCounter = 0;
+	private long byteCounter = 0;
 
 	/**
 	 * Internal variables used to count a number of malformed ZIP entries
@@ -295,26 +295,28 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			 	ZipOutputStream zos = new ZipOutputStream(baos)) {
 
-			for (DSSDocument entry : containerEntries) {
-				final ZipEntry zipEntry = getZipEntry(entry, creationTime);
-				zos.putNextEntry(zipEntry);
-				try (InputStream entryIS = entry.openStream()) {
-					secureCopy(entryIS, zos, -1);
-				}
-			}
-			if (Utils.isStringNotEmpty(zipComment)) {
-				zos.setComment(zipComment);
-			}
-			zos.finish();
-
+			buildZip(containerEntries, creationTime, zipComment, zos);
 			return new InMemoryDocument(baos.toByteArray());
-
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to create an ASiC container. Reason : %s", e.getMessage()), e);
 		}
 	}
 
-	private ZipEntry getZipEntry(DSSDocument entry, Date creationTime) {
+	protected void buildZip(List<DSSDocument> containerEntries, Date creationTime, String zipComment, ZipOutputStream zos) throws IOException {
+		for (DSSDocument entry : containerEntries) {
+			final ZipEntry zipEntry = getZipEntry(entry, creationTime);
+			zos.putNextEntry(zipEntry);
+			try (InputStream entryIS = entry.openStream()) {
+				secureCopy(entryIS, zos, -1);
+			}
+		}
+		if (Utils.isStringNotEmpty(zipComment)) {
+			zos.setComment(zipComment);
+		}
+		zos.finish();
+	}
+
+	protected ZipEntry getZipEntry(DSSDocument entry, Date creationTime) {
 		final DSSZipEntry zipEntryWrapper;
 		if (entry instanceof DSSZipEntryDocument) {
 			DSSZipEntryDocument dssZipEntry = (DSSZipEntryDocument) entry;
@@ -345,17 +347,30 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		 * because they must appear before the user data in the resulting zip file.
 		 */
 		if (ZipEntry.STORED == zipEntry.getMethod()) {
-			final byte[] byteArray = DSSUtils.toByteArray(content);
-			zipEntry.setSize(byteArray.length);
-			zipEntry.setCompressedSize(byteArray.length);
-			final CRC32 crc = new CRC32();
-			crc.update(byteArray, 0, byteArray.length);
-			zipEntry.setCrc(crc.getValue());
+			addStoredContent(zipEntry, content);
 		}
 		/*
 		 * The default is DEFLATED, which will cause the size, compressed size, and CRC
 		 * to be set automatically, and the entry's data to be compressed.
 		 */
+	}
+
+	private void addStoredContent(ZipEntry zipEntry, DSSDocument content)  {
+		long size = 0l;
+		final CRC32 crc = new CRC32();
+		try (InputStream is = content.openStream()) {
+			int nbRead;
+			byte[] buffer = new byte[2048];
+			while ((nbRead = is.read(buffer)) != -1) {
+				crc.update(buffer, 0, nbRead);
+				size += nbRead;
+			}
+		} catch (IOException e) {
+			LOG.warn("Unable to process CRC32 computation", e);
+		}
+		zipEntry.setSize(size);
+		zipEntry.setCompressedSize(size);
+		zipEntry.setCrc(crc.getValue());
 	}
 
 	private void ensureTime(ZipEntry zipEntry, Date creationTime) {
@@ -445,7 +460,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 *                    -1 skips the validation
 	 * @throws IOException if an exception occurs
 	 */
-	private void secureCopy(InputStream is, OutputStream os, long allowedSize) throws IOException {
+	protected void secureCopy(InputStream is, OutputStream os, long allowedSize) throws IOException {
 		byte[] data = new byte[2048];
 		int nRead;
 		while ((nRead = is.read(data)) != -1) {
