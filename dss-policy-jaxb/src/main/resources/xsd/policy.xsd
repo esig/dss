@@ -532,9 +532,29 @@
 					<xsd:documentation>Checks if the embedded digest match the signed data</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ReferenceDataNameMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the name of the detached document matches the reference URI</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="ManifestEntryObjectExistence" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the manifest entry was provided for the validation</xsd:documentation>
+					<xsd:documentation>Checks if at least one of the provided manifest entries is found in the manifest</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ManifestEntryObjectGroup" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if all XML Manifest entries have been found during the validation process</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ManifestEntryObjectIntact" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the digest match the manifest entry</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ManifestEntryNameMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks that names of all provided documents match the manifest entry names</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SignatureIntact" type="LevelConstraint" minOccurs="0">

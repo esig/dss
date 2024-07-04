@@ -28,13 +28,13 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="old-detailed-report.pdf">
+                <DigestMatcher type="REFERENCE" uri="old-detailed-report.pdf" documentName="old-detailed-report.pdf">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="old-simple-report.pdf">
+                <DigestMatcher type="REFERENCE" uri="old-simple-report.pdf" documentName="old-simple-report.pdf">
                     <DigestMethod>SHA256</DigestMethod>
 					<DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
                     <DataFound>true</DataFound>

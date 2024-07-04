@@ -26,25 +26,25 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="FUL-pain.001.001.03.sct-1543416150404">
+                <DigestMatcher type="REFERENCE" id="FUL-pain.001.001.03.sct-1543416150404">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>RVqdeRq43KgCy8jqDT2GAFO7oWvSIoswy+Pgztvpod4=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="1543416150409-SignedPropertiesRef">
+                <DigestMatcher type="SIGNED_PROPERTIES" id="1543416150409-SignedPropertiesRef">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>oeWQCRT5JD1vtvxvfl1ThMu2BthTmQObKvf4fCM0SzQ=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="OBJECT" name="dynamic-linking">
+                <DigestMatcher type="OBJECT" id="dynamic-linking">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>KshNrXxZ9NkQ7jha/HXztI3Tv3FbZeZXvam6z3gEB/8=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="OBJECT" name="device-attestation">
+                <DigestMatcher type="OBJECT" id="device-attestation">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>lLiM5kW8ck7RlaHparJVD7wqp6PGw+Uw96SF/NIsfyU=</DigestValue>
                     <DataFound>true</DataFound>

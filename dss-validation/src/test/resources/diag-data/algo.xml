@@ -27,13 +27,13 @@
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="S0-RefId0">
+                <DigestMatcher type="REFERENCE" id="S0-RefId0">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="S0-RefId1">
+                <DigestMatcher type="SIGNED_PROPERTIES" id="S0-RefId1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>7X43zJcJN0kkN7sC/lz6PQc2FIqtesLdD9P8Wbtkbfo=</DigestValue>
                     <DataFound>true</DataFound>

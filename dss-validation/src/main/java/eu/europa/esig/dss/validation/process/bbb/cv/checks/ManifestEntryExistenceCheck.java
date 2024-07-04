@@ -33,7 +33,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.List;
 
 /**
- * Checks if a manifest entry is present
+ * Checks if at least one manifest entry is present
+ *
  */
 public class ManifestEntryExistenceCheck extends ChainItem<XmlCV> {
 
@@ -57,7 +58,7 @@ public class ManifestEntryExistenceCheck extends ChainItem<XmlCV> {
 	@Override
 	protected boolean process() {
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			if (DigestMatcherType.MANIFEST_ENTRY.equals(xmlDigestMatcher.getType())) {
+			if (DigestMatcherType.MANIFEST_ENTRY.equals(xmlDigestMatcher.getType()) && xmlDigestMatcher.isDataFound()) {
 				return true;
 			}
 		}

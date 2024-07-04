@@ -127,19 +127,19 @@
         <Timestamp Type="CONTAINER_TIMESTAMP" Id="T-06BE363732B698DB72F65B24FA41CC7BE2A88D5E4DE251519426BCC0EC5AE8BB">
             <TimestampFilename>META-INF/timestamp001.tst</TimestampFilename>
             <ProductionTime>2023-03-17T07:35:00Z</ProductionTime>
-            <DigestMatcher type="MESSAGE_IMPRINT" name="META-INF/ASiCManifest001.xml">
+            <DigestMatcher type="MESSAGE_IMPRINT" uri="META-INF/ASiCManifest001.xml" documentName="META-INF/ASiCManifest001.xml">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>SOdRr8lMJ/9e57Cyj+Q7+lpjFRfru7KICykhYsjlfPs=</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="MANIFEST_ENTRY" name="test.text">
+            <DigestMatcher type="MANIFEST_ENTRY" uri="test.text" documentName="test.text">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>B/K97zTtFuOhug27fke4/Zgc4Myz4b/lZNgsQjy6fkc=</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="MANIFEST_ENTRY" name="test2.text">
+            <DigestMatcher type="MANIFEST_ENTRY" uri="test2.text" documentName="test2.text">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>fQyRxzXujPt5VCeLE/TAlctes0Qm9qfrsP9ksQSZ5FY=</DigestValue>
                 <DataFound>true</DataFound>

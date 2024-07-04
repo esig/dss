@@ -53,7 +53,7 @@
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="MANIFEST_ENTRY" name="test.text">
+                <DigestMatcher type="MANIFEST_ENTRY" uri="test.text" documentName="test.text">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>B/K97zTtFuOhug27fke4/Zgc4Myz4b/lZNgsQjy6fkc=</DigestValue>
                     <DataFound>true</DataFound>
@@ -124,7 +124,7 @@
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="MANIFEST_ENTRY" name="test.text">
+                <DigestMatcher type="MANIFEST_ENTRY" uri="test.text" documentName="test.text">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>B/K97zTtFuOhug27fke4/Zgc4Myz4b/lZNgsQjy6fkc=</DigestValue>
                     <DataFound>true</DataFound>
@@ -423,13 +423,13 @@
             <TimestampFilename>META-INF/timestamp002.tst</TimestampFilename>
             <ArchiveTimestampType>CAdES_DETACHED</ArchiveTimestampType>
             <ProductionTime>2019-12-17T10:12:31Z</ProductionTime>
-            <DigestMatcher type="MESSAGE_IMPRINT" name="META-INF/ASiCManifest2.xml">
+            <DigestMatcher type="MESSAGE_IMPRINT" documentName="META-INF/ASiCManifest2.xml">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>9qOYbF34xTNfaOEl/ESE1xRKJt+s5do4krX76iyAiFM=</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="MANIFEST_ENTRY" name="test.text">
+            <DigestMatcher type="MANIFEST_ENTRY" uri="test.text" documentName="test.text">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>B/K97zTtFuOhug27fke4/Zgc4Myz4b/lZNgsQjy6fkc=</DigestValue>
                 <DataFound>true</DataFound>
@@ -462,13 +462,13 @@
             <TimestampFilename>META-INF/timestamp001.tst</TimestampFilename>
             <ArchiveTimestampType>CAdES_DETACHED</ArchiveTimestampType>
             <ProductionTime>2019-12-17T10:12:30Z</ProductionTime>
-            <DigestMatcher type="MESSAGE_IMPRINT" name="META-INF/ASiCManifest.xml">
+            <DigestMatcher type="MESSAGE_IMPRINT" documentName="META-INF/ASiCManifest.xml">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>tG97lbtnRtigiTNc62TCVyGZOrZupUydYRnMkH/yHRI=</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="MANIFEST_ENTRY" name="test.text">
+            <DigestMatcher type="MANIFEST_ENTRY" uri="test.text" documentName="">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>B/K97zTtFuOhug27fke4/Zgc4Myz4b/lZNgsQjy6fkc=</DigestValue>
                 <DataFound>true</DataFound>

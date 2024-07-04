@@ -169,7 +169,8 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
     }
 
     private List<String> getReferenceNames(List<XmlDigestMatcher> digestMatchers) {
-        return digestMatchers.stream().map(XmlDigestMatcher::getId).filter(Objects::nonNull).collect(Collectors.toList());
+        return digestMatchers.stream().map(d -> d.getId() != null ? d.getId() : d.getUri() != null ? d.getUri() : d.getDocumentName())
+                .filter(Objects::nonNull).collect(Collectors.toList());
     }
 
 }

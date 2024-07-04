@@ -9,19 +9,19 @@
             <Type>XML Evidence Record</Type>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="HELLO">
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="HELLO">
                     <DigestMethod>SHA224</DigestMethod>
                     <DigestValue>NzPNl3/46xi5hzV+Is7Zn0YJfzHssjnoeK5jdg6D5NU=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="BYE">
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="BYE">
                     <DigestMethod>SHA224</DigestMethod>
                     <DigestValue>V4juRlF1zhFV6732kFUYCvq/2tRfb9BtihJblPZ/C2w=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="CIAO">
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="CIAO">
                     <DigestMethod>SHA224</DigestMethod>
                     <DigestValue>ZhPd1U1tuJDsBlGXFCV91MKr6AgCKchskAtX+nVSqOw=</DigestValue>
                     <DataFound>true</DataFound>
@@ -354,19 +354,19 @@
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="BYE">
+            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="BYE">
                 <DigestMethod>SHA512</DigestMethod>
                 <DigestValue>AsfjpbnwGd42uBBuG98Qdhbg7Xfk56TpO/TPwg8l+bW1kXRTQuETpnWA2Onnw/Pc15qSrGQHGypeUXnRu7NvtA==</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="CIAO">
+            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="CIAO">
                 <DigestMethod>SHA512</DigestMethod>
                 <DigestValue>CHkIvVR6s9y1wDnbf/ypWSeC12jZW095TJLmc9zPQea1gFBoo9S78YJsjaYfkipX+RwSOQB7Yg2/9e2MaioGMg==</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="HELLO">
+            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="HELLO">
                 <DigestMethod>SHA512</DigestMethod>
                 <DigestValue>M98tzDHTXnvCVovr9dc6HkOg5iS2Ubpe8xV7v7coRGZ0ojG4tul/oeVww7HebWxndUGyYqwir9pYePorWRx/CA==</DigestValue>
                 <DataFound>true</DataFound>

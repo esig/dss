@@ -15,7 +15,7 @@
                     <DataFound>false</DataFound>
                     <DataIntact>false</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="d-trust.tsr">
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="d-trust.tsr">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>H59bkrnfVnjNV6e0f+6t3jZQF71n5edGilrfFPbMkB8=</DigestValue>
                     <DataFound>true</DataFound>

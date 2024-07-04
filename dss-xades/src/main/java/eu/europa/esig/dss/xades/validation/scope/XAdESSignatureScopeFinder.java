@@ -76,7 +76,6 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 			
 			final String uri = xadesReferenceValidation.getUri();
 			final String xmlIdOfSignedElement = DomUtils.getId(uri);
-			final String referenceName = getReferenceName(xadesReferenceValidation);
 			final List<String> transformations = xadesReferenceValidation.getTransformationNames();
 			
 			if (xadesReferenceValidation.isFound() && DigestMatcherType.XPOINTER.equals(xadesReferenceValidation.getType())) {
@@ -99,7 +98,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 					String manifestEntryReferenceName = getReferenceName(manifestEntry);
 					if (manifestEntryReferenceName != null && manifestEntry.isFound()) {
 						// try to get document digest from list of detached contents
-						SignatureScope detachedSignatureScopeResult = getFromDetachedContent(xadesSignature, transformations, manifestEntryReferenceName);
+						SignatureScope detachedSignatureScopeResult = getFromDetachedContent(xadesSignature, transformations, getReferencedDocumentName(manifestEntry));
 						if (detachedSignatureScopeResult != null) {
 							manifestSignatureScope.addChildSignatureScope(detachedSignatureScopeResult);
 						} else if (manifestEntry.getDigest() != null) {
@@ -138,9 +137,10 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				
 			} else if (xadesReferenceValidation.isIntact() && Utils.isCollectionNotEmpty(xadesSignature.getDetachedContents())) {
 				// detached file (the signature must intact in order to be sure in the correctness of the provided file)
-				SignatureScope signatureScope = getFromDetachedContent(xadesSignature, transformations, referenceName);
+				final String referencedDocumentName = getReferencedDocumentName(xadesReferenceValidation);
+				SignatureScope signatureScope = getFromDetachedContent(xadesSignature, transformations, referencedDocumentName);
 				if (signatureScope != null) {
-					result.add(getFromDetachedContent(xadesSignature, transformations, referenceName));
+					result.add(signatureScope);
 				}
 				
 			} else if (Utils.isCollectionEmpty(transformations)) {
@@ -153,12 +153,22 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 		
 	}
 
+	private String getReferencedDocumentName(ReferenceValidation referenceValidation) {
+		if (Utils.isStringNotEmpty(referenceValidation.getDocumentName())) {
+			return referenceValidation.getDocumentName();
+		} else if (Utils.isStringNotEmpty(referenceValidation.getUri())) {
+			// used for a document extraction, empty URI is not acceptable
+			return DomUtils.getId(referenceValidation.getUri());
+		}
+		return null;
+	}
+
 	private String getReferenceName(ReferenceValidation referenceValidation) {
 		if (Utils.isStringNotEmpty(referenceValidation.getDocumentName())) {
 			return referenceValidation.getDocumentName();
 		} else if (Utils.isStringNotEmpty(referenceValidation.getId())) {
-			return referenceValidation.getId();
-		} else if (Utils.isStringNotEmpty(referenceValidation.getUri())) {
+			return DomUtils.getId(referenceValidation.getId());
+		} else if (referenceValidation.getUri() != null) { // URI can be empty ""
 			return DomUtils.getId(referenceValidation.getUri());
 		}
 		return null;
@@ -171,7 +181,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 			for (DSSDocument detachedDocument : detachedContents) {
 
 				// check the original detached file by its name (or if no name if provided, see {@link DetachedSignatureResolver})
-				if (detachedDocument.getName() == null && (relatedDocumentName == null && Utils.collectionSize(detachedContents) == 0)
+				if (detachedDocument.getName() == null && (relatedDocumentName == null && Utils.collectionSize(detachedContents) == 1)
 						|| (relatedDocumentName != null && relatedDocumentName.equals(detachedDocument.getName())) ) {
 					String fileName = detachedDocument.getName() != null ? detachedDocument.getName() : relatedDocumentName;
 					if (detachedDocument instanceof DigestDocument) {

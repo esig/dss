@@ -8,7 +8,7 @@
 	        <ClaimedSigningTime>2014-10-14T14:49:49Z</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="#test">
+                <DigestMatcher type="REFERENCE" uri="#test">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>true</DataFound>

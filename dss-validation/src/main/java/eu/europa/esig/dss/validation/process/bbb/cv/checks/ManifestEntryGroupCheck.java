@@ -1,0 +1,73 @@
+package eu.europa.esig.dss.validation.process.bbb.cv.checks;
+
+import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.ChainItem;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+/**
+ * This class verifies whether all the manifest entries have been found during the validation process
+ *
+ */
+public class ManifestEntryGroupCheck extends ChainItem<XmlCV> {
+
+    /** The digest matchers to check */
+    private final List<XmlDigestMatcher> digestMatchers;
+
+    /**
+     * Default constructor
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlCV}
+     * @param digestMatchers a list of {@link XmlDigestMatcher}s
+     * @param constraint {@link LevelConstraint}
+     */
+    public ManifestEntryGroupCheck(I18nProvider i18nProvider, XmlCV result, List<XmlDigestMatcher> digestMatchers,
+                                   LevelConstraint constraint) {
+        super(i18nProvider, result, constraint);
+        this.digestMatchers = digestMatchers;
+    }
+
+    @Override
+    protected boolean process() {
+        return digestMatchers.stream().filter(d -> DigestMatcherType.MANIFEST_ENTRY == d.getType()).allMatch(XmlDigestMatcher::isDataFound);
+    }
+
+    @Override
+    protected String buildAdditionalInfo() {
+        List<String> notFoundNames = digestMatchers.stream().filter(d -> DigestMatcherType.MANIFEST_ENTRY == d.getType() && !d.isDataFound())
+                .map(XmlDigestMatcher::getUri).filter(Objects::nonNull).collect(Collectors.toList());
+        return i18nProvider.getMessage(MessageTag.REFERENCES_WITH_NAMES, Utils.joinStrings(notFoundNames, ", "));
+    }
+
+    @Override
+    protected MessageTag getMessageTag() {
+        return MessageTag.BBB_CV_AAMEF;
+    }
+
+    @Override
+    protected MessageTag getErrorMessageTag() {
+        return MessageTag.BBB_CV_AAMEF_ANS;
+    }
+
+    @Override
+    protected Indication getFailedIndicationForConclusion() {
+        return Indication.INDETERMINATE;
+    }
+
+    @Override
+    protected SubIndication getFailedSubIndicationForConclusion() {
+        return SubIndication.SIGNED_DATA_NOT_FOUND;
+    }
+
+}

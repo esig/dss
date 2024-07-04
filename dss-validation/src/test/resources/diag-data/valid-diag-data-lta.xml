@@ -10,13 +10,13 @@
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="OBJECT" name="r-id-21f8d7ca498dae29cab245dcc558b138-1">
+                <DigestMatcher type="OBJECT" id="r-id-21f8d7ca498dae29cab245dcc558b138-1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#xades-id-21f8d7ca498dae29cab245dcc558b138">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-21f8d7ca498dae29cab245dcc558b138">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>ISnYcpdZuxQkFziPfEpeoJck/BWSF1VKFuDkwyukCHY=</DigestValue>
                     <DataFound>true</DataFound>

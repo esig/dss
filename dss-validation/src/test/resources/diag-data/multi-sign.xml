@@ -9,7 +9,7 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="ref1">
+                <DigestMatcher type="REFERENCE" id="ref1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>true</DataFound>
@@ -79,7 +79,7 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="ref1">
+                <DigestMatcher type="REFERENCE" id="ref1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>true</DataFound>
@@ -149,7 +149,7 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="ref1">
+                <DigestMatcher type="REFERENCE" id="ref1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>true</DataFound>
@@ -217,7 +217,7 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="ref1">
+                <DigestMatcher type="REFERENCE" id="ref1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>true</DataFound>

@@ -65,6 +65,8 @@ public class ReferenceDataExistenceCheck<T extends XmlConstraintsConclusion> ext
 				return MessageTag.BBB_CV_TSP_IRDOF;
 			case COUNTER_SIGNED_SIGNATURE_VALUE:
 				return MessageTag.BBB_CV_CS_CSSVF;
+			case MANIFEST_ENTRY:
+				return MessageTag.BBB_CV_IMEOF;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
 				return MessageTag.BBB_CV_ER_ATSRF;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
@@ -81,6 +83,8 @@ public class ReferenceDataExistenceCheck<T extends XmlConstraintsConclusion> ext
 				return MessageTag.BBB_CV_TSP_IRDOF_ANS;
 			case COUNTER_SIGNED_SIGNATURE_VALUE:
 				return MessageTag.BBB_CV_CS_CSSVF_ANS;
+			case MANIFEST_ENTRY:
+				return MessageTag.BBB_CV_IMEOF_ANS;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
 				return MessageTag.BBB_CV_ER_ATSRF_ANS;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
@@ -114,8 +118,9 @@ public class ReferenceDataExistenceCheck<T extends XmlConstraintsConclusion> ext
 				referenceName = MessageTag.TST_TYPE_REF_ER_ATST_SEQ;
 				break;
 			default:
-				referenceName = Utils.isStringNotBlank(digestMatcher.getId()) ?
-						digestMatcher.getId() : digestMatcher.getType().name();
+				referenceName = Utils.isStringNotBlank(digestMatcher.getId()) ? digestMatcher.getId() :
+						Utils.isStringNotBlank(digestMatcher.getUri()) ? digestMatcher.getUri() :
+								digestMatcher.getType().name();
 		}
 		return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
 	}
