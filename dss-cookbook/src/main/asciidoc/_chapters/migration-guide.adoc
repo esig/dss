@@ -391,9 +391,10 @@ import eu.europa.esig.dss.model.ManifestEntry;
 
 ManifestEntry manifestEntry = ...
 String uri = manifestEntry.getUri();
-String documentName = manifestEntry.getDocumentName();
 ----
 or use _#getDocumentName_ for identified entries
+
+[source,java]
 ----
 String documentName = manifestEntry.getDocumentName();
 ----

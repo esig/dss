@@ -10,6 +10,31 @@
 This chapter covers the changes occurred between different versions of DSS within Diagnostic Data XSD.
 
 [cols="2,5,5"]
+.Diagnostic Data changes from version 6.0 to 6.1
+|===
+|Title                                |v6.0                           |v6.1
+|DigestMatcher attributes            a|[source,xml]
+----
+<DigestMatcher type="REFERENCE" name="r-id-6f216e2ab512034c99693f563ebfb9c0-1">
+    <DigestMethod>SHA256</DigestMethod>
+    <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
+    <DataFound>true</DataFound>
+    <DataIntact>true</DataIntact>
+</DigestMatcher>
+----
+                                                                      a|[source,xml]
+----
+<DigestMatcher type="REFERENCE" id="r-id-6f216e2ab512034c99693f563ebfb9c0-1" uri="sample.xml" documentName="sample.xml">
+    <DigestMethod>SHA256</DigestMethod>
+    <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
+    <DataFound>true</DataFound>
+    <DataIntact>true</DataIntact>
+</DigestMatcher>
+----
+
+|===
+
+[cols="2,5,5"]
 .Diagnostic Data changes from version 5.12 to 5.13
 |===
 |Title                                |v5.12                           |v5.13
