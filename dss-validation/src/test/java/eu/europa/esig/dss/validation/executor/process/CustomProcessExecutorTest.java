@@ -16536,7 +16536,6 @@ public class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
-		reports.print();
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertNotNull(detailedReport);

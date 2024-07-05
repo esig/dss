@@ -192,6 +192,11 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
+			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL" />
 			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />

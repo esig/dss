@@ -375,7 +375,21 @@ Default: `FAIL`
 </BasicSignatureConstraints>
 ----
 
-* `ManifestEntryObjectExistence` - this constraint is used to check whether the original documents referenced within the signed manifest have been provided to the validation process. If the original documents references from the manifest have not been provided to the validation process, the check will fail.
+* `ReferenceDataNameMatch` - this constraint is used to check whether the reference URI matches the corresponding document's name. If the document name does not match, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ReferenceDataNameMatch usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ReferenceDataNameMatch Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryObjectExistence` - this constraint is used to check whether at least one of the entries referenced within the signed manifest have been provided to the validation process. If the original documents referenced from the manifest have not been provided to the validation process, the check will fail.
 
 Default: `WARN`
 
@@ -385,6 +399,48 @@ Default: `WARN`
 <BasicSignatureConstraints>
     ...
     <ManifestEntryObjectExistence Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryObjectGroup` - this constraint is used to check whether all original documents referenced within the signed manifest have been found during the validation process. If some of the original documents referenced in the manifest have not been found, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ManifestEntryObjectGroup usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryObjectGroup Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryObjectIntact` - this constraint is used to check whether all original documents referenced within the signed manifest have been found and their digest match. If digest of some of the documents do not match the manifest entries, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ManifestEntryObjectIntact usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryObjectIntact Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryNameMatch` - this constraint is used to check whether names of the identified original documents provided to the validation process match the manifest entries URIs. If a document name does not match the manifest entry URI, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ManifestEntryNameMatch usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryNameMatch Level="WARN" />
     ...
 </BasicSignatureConstraints>
 ----
@@ -2629,17 +2685,21 @@ This table defines the correspondence between the enforced validation policy con
                                   |UnsignedAttributes              |UnsignedAttributesConstraints   2+|See UnsignedAttributesConstraints
 .12+|BasicSignatureConstraints    |ReferenceDataExistence          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |ReferenceDataIntact             |LevelConstraint                   |FAILED                |HASH_FAILURE
+                                  |ReferenceDataNameMatch          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |ManifestEntryObjectExistence    |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |ManifestEntryObjectGroup        |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |ManifestEntryObjectIntact       |LevelConstraint                   |FAILED                |HASH_FAILURE
+                                  |ManifestEntryObjectNameMatch    |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |SignatureIntact                 |LevelConstraint                   |FAILED                |SIG_CRYPTO_FAILURE
                                   |SignatureDuplicated             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ProspectiveCertificateChain     |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SignerInformationStore          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ByteRange                       |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |ByteRangeCollision              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+.12+|BasicSignatureConstraints    |ByteRangeCollision              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ByteRangeAllDocument            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfSignatureDictionary          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfPageDifference               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-.12+|BasicSignatureConstraints    |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfVisualDifference             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |DocMDP                          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE
@@ -2647,7 +2707,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |FormFillChanges                 |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |AnnotationChanges               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |UndefinedChanges                |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |TrustServiceTypeIdentifier      |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+.4+|BasicSignatureConstraints     |TrustServiceTypeIdentifier      |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |TrustServiceStatus              |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints

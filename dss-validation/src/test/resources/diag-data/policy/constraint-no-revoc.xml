@@ -16,6 +16,11 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
+			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 <!-- 			<TrustServiceTypeIdentifier Level="WARN"> -->
@@ -162,6 +167,11 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
+			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="WARN" />
 			<TrustServiceTypeIdentifier Level="WARN">
