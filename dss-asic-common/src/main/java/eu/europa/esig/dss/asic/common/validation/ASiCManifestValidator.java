@@ -81,7 +81,7 @@ public class ASiCManifestValidator {
                     } else {
                         LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getUri());
                         LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
-                        LOG.warn("Computed : '{}'", computedDigest);
+                        LOG.warn("Computed : '{}'", Utils.toBase64(computedDigest));
                     }
                 }
 
