@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -560,6 +561,14 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 	@Override
 	protected void checkDTBSR(DiagnosticData diagnosticData) {
 		// can be null
+	}
+
+	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			List<XmlDigestMatcher> digestMatchers = evidenceRecord.getDigestMatchers();
+			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+		}
 	}
 
 	@Override
