@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
@@ -871,11 +872,12 @@ public final class ASiCUtils {
 		int maxUnsignedInt = 0xFFFF;
 		int maxToRead = maxUnsignedInt + 2 + magicDir.length;
 
-		try (InputStream is = archiveContainer.openStream()) {
-			long length = Utils.getInputStreamSize(is);
+		long fileLength = getFileLength(archiveContainer);
 
-			if (length > maxToRead ) {
-				is.skip(length - maxToRead);
+		try (InputStream is = archiveContainer.openStream()) {
+
+			if (fileLength > maxToRead ) {
+				is.skip(fileLength - maxToRead);
 			}
 
 			int magicDirIterator = 0;
@@ -920,7 +922,19 @@ public final class ASiCUtils {
 			LOG.debug("Zip comment is not found in the provided container with name '{}'", archiveContainer.getName());
 		}
 		return null;
+	}
 
+	private static long getFileLength(DSSDocument archiveContainer) {
+		if (archiveContainer instanceof FileDocument) {
+			FileDocument doc = (FileDocument) archiveContainer;
+			return doc.getFile().length();
+		}
+
+		try (InputStream is = archiveContainer.openStream()) {
+			return Utils.getInputStreamSize(is);
+		} catch (IOException e) {
+			throw new DSSException("Unable to compute archive size", e);
+		}
 	}
 
 	/**
