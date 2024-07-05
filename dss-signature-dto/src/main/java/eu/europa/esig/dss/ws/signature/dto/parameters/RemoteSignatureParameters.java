@@ -102,6 +102,16 @@ public class RemoteSignatureParameters implements Serializable {
 	private SigDMechanism sigDMechanism;
 
 	/**
+	 * JAdES base64url encoded payload
+	 */
+	private boolean base64UrlEncodedPayload = true;
+
+	/**
+	 * JAdES base64url encoded etsiU components
+	 */
+	private boolean base64UrlEncodedEtsiUComponents = true;
+
+	/**
 	 * The signature algorithm used to create the signature
 	 *
 	 * @deprecated since DSS 6.1. Please use combination of {@code digestAlgorithm} and {@code encryptionAlgorithm}
@@ -351,6 +361,46 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	public void setSigDMechanism(SigDMechanism sigDMechanism) {
 		this.sigDMechanism = sigDMechanism;
+	}
+
+	/**
+	 * Gets whether a payload shall be base64url encoded
+	 * NOTE: used only for JAdES
+	 *
+	 * @return whether a JAdES payload shall be base64url encoded
+	 */
+	public boolean isBase64UrlEncodedPayload() {
+		return base64UrlEncodedPayload;
+	}
+
+	/**
+	 * Sets whether a payload shall be base64url encoded
+	 * NOTE: used only for JAdES
+	 *
+	 * @param base64UrlEncodedPayload  whether a JAdES payload shall be base64url encoded
+	 */
+	public void setBase64UrlEncodedPayload(boolean base64UrlEncodedPayload) {
+		this.base64UrlEncodedPayload = base64UrlEncodedPayload;
+	}
+
+	/**
+	 * Gets whether etsiU header components shall be base64url encoded
+	 * NOTE: used only for JAdES
+	 *
+	 * @return whether JAdES etsiU header components shall be base64url encoded
+	 */
+	public boolean isBase64UrlEncodedEtsiUComponents() {
+		return base64UrlEncodedEtsiUComponents;
+	}
+
+	/**
+	 * Sets whether etsiU header components shall be base64url encoded
+	 * NOTE: used only for JAdES
+	 *
+	 * @param base64UrlEncodedEtsiUComponents whether JAdES etsiU header components shall be base64url encoded
+	 */
+	public void setBase64UrlEncodedEtsiUComponents(boolean base64UrlEncodedEtsiUComponents) {
+		this.base64UrlEncodedEtsiUComponents = base64UrlEncodedEtsiUComponents;
 	}
 
 	/**

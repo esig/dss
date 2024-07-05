@@ -81,6 +81,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 	 * Default constructor
 	 */
 	protected AbstractRemoteSignatureServiceImpl() {
+		// empty
 	}
 
 	/**
@@ -187,6 +188,8 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 			jadesParameters.setJwsSerializationType(remoteParameters.getJwsSerializationType());
 		}
 		jadesParameters.setSigDMechanism(remoteParameters.getSigDMechanism());
+		jadesParameters.setBase64UrlEncodedPayload(remoteParameters.isBase64UrlEncodedPayload());
+		jadesParameters.setBase64UrlEncodedEtsiUComponents(remoteParameters.isBase64UrlEncodedEtsiUComponents());
 		return jadesParameters;
 	}
 
@@ -251,6 +254,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 	protected BLevelParameters toBLevelParameters(RemoteBLevelParameters remoteBLevelParameters) {
 		BLevelParameters bLevelParameters = new BLevelParameters();
 		bLevelParameters.setClaimedSignerRoles(remoteBLevelParameters.getClaimedSignerRoles());
+		bLevelParameters.setSignedAssertions(remoteBLevelParameters.getSignedAssertions());
 		if (remoteBLevelParameters.getCommitmentTypeIndications() != null) {
 			bLevelParameters.setCommitmentTypeIndications(toCommitmentTypeList(remoteBLevelParameters.getCommitmentTypeIndications()));
 		}

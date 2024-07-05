@@ -56,6 +56,8 @@ public class RemoteBLevelParameters implements Serializable {
 
 	/** The claimed signer roles */
 	private List<String> claimedSignerRoles;
+	/** Signed assertions */
+	private List<String> signedAssertions;
 
 	/** Signature policy id */
 	private String policyId;
@@ -247,6 +249,15 @@ public class RemoteBLevelParameters implements Serializable {
 	}
 
 	/**
+	 * Get claimed roles
+	 *
+	 * @return the list of claimed roles
+	 */
+	public List<String> getClaimedSignerRoles() {
+		return claimedSignerRoles;
+	}
+
+	/**
 	 * Set a list of claimed signer roles
 	 * 
 	 * @param claimedSignerRoles
@@ -257,12 +268,21 @@ public class RemoteBLevelParameters implements Serializable {
 	}
 
 	/**
-	 * Get claimed roles
+	 * Gets signed assertions
 	 *
-	 * @return the list of claimed roles
+	 * @return the list of {@link String} signed assertions
 	 */
-	public List<String> getClaimedSignerRoles() {
-		return claimedSignerRoles;
+	public List<String> getSignedAssertions() {
+		return signedAssertions;
+	}
+
+	/**
+	 * Sets signed assertions
+	 *
+	 * @param signedAssertions the list of {@link String} signed assertions
+	 */
+	public void setSignedAssertions(List<String> signedAssertions) {
+		this.signedAssertions = signedAssertions;
 	}
 
 	/**

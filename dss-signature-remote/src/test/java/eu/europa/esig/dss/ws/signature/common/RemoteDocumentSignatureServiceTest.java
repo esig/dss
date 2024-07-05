@@ -23,6 +23,7 @@ package eu.europa.esig.dss.ws.signature.common;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -54,6 +55,7 @@ import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureFieldParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureImageTextParameters;
@@ -65,10 +67,13 @@ import org.junit.jupiter.api.Test;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -339,6 +344,11 @@ class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceT
 		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		parameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 
+		RemoteBLevelParameters bLevelParameters = new RemoteBLevelParameters();
+		bLevelParameters.setClaimedSignerRoles(Arrays.asList("Manager", "Administrator"));
+		bLevelParameters.setSignedAssertions(Collections.singletonList("<saml2:Assertion xmlns:saml2=\"urn:oasis:names:tc:SAML:2.0:assertion\">test</saml2:Assertion>"));
+		parameters.setBLevelParams(bLevelParameters);
+
 		DSSDocument fileToSign = new InMemoryDocument("HelloWorld".getBytes());
 		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getName());
 		ToBeSignedDTO dataToSign = signatureService.getDataToSign(toSignDocument, parameters);
@@ -350,7 +360,15 @@ class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceT
 
 		assertNotNull(signedDocument);
 		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
-		validate(iMD, null);
+		DiagnosticData diagnosticData = validate(iMD, null);
+
+		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+		List<XmlSignerRole> claimedRoles = signatureWrapper.getClaimedRoles();
+		assertEquals(2, Utils.collectionSize(claimedRoles));
+		assertEquals(bLevelParameters.getClaimedSignerRoles(), claimedRoles.stream().map(XmlSignerRole::getRole).collect(Collectors.toList()));
+		List<XmlSignerRole> signedAssertions = signatureWrapper.getSignedAssertions();
+		assertEquals(1, Utils.collectionSize(signedAssertions));
+		assertEquals(bLevelParameters.getSignedAssertions(), signedAssertions.stream().map(XmlSignerRole::getRole).collect(Collectors.toList()));
 	}
 
 	@Test
@@ -374,6 +392,62 @@ class RemoteDocumentSignatureServiceTest extends AbstractRemoteSignatureServiceT
 
 		assertNotNull(signedDocument);
 		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
+		validate(iMD, Collections.singletonList(fileToSign));
+	}
+
+	@Test
+	void testSignJAdESWithPlainPayload() throws Exception {
+		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
+		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
+		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		parameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
+		parameters.setBase64UrlEncodedPayload(false);
+
+		DSSDocument fileToSign = new InMemoryDocument("HelloWorld".getBytes(), "helloWorld");
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getName());
+		ToBeSignedDTO dataToSign = signatureService.getDataToSign(toSignDocument, parameters);
+		assertNotNull(dataToSign);
+
+		SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+		RemoteDocument signedDocument = signatureService.signDocument(toSignDocument, parameters,
+				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+
+		assertNotNull(signedDocument);
+
+		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
+		String strSignature = new String(DSSUtils.toByteArray(iMD));
+		assertTrue(strSignature.contains(new String(DSSUtils.toByteArray(fileToSign))));
+		assertFalse(strSignature.contains("sigT"));
+		validate(iMD, Collections.singletonList(fileToSign));
+	}
+
+	@Test
+	void testSignJAdESWithPlainEtsiU() throws Exception {
+		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
+		parameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
+		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+		parameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
+		parameters.setBase64UrlEncodedEtsiUComponents(false);
+
+		DSSDocument fileToSign = new InMemoryDocument("HelloWorld".getBytes(), "helloWorld");
+		RemoteDocument toSignDocument = new RemoteDocument(Utils.toByteArray(fileToSign.openStream()), fileToSign.getName());
+		ToBeSignedDTO dataToSign = signatureService.getDataToSign(toSignDocument, parameters);
+		assertNotNull(dataToSign);
+
+		SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+		RemoteDocument signedDocument = signatureService.signDocument(toSignDocument, parameters,
+				new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+
+		assertNotNull(signedDocument);
+
+		InMemoryDocument iMD = new InMemoryDocument(signedDocument.getBytes());
+		String strSignature = new String(DSSUtils.toByteArray(iMD));
+		assertFalse(strSignature.contains(new String(DSSUtils.toByteArray(fileToSign))));
+		assertTrue(strSignature.contains("sigT"));
 		validate(iMD, Collections.singletonList(fileToSign));
 	}
 

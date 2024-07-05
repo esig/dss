@@ -134,6 +134,15 @@ public class BLevelParameters implements Serializable {
 	}
 
 	/**
+	 * Get claimed roles
+	 *
+	 * @return the list of claimed roles
+	 */
+	public List<String> getClaimedSignerRoles() {
+		return claimedSignerRoles;
+	}
+
+	/**
 	 * Set a list of claimed signer roles
 	 * 
 	 * @param claimedSignerRoles
@@ -141,15 +150,6 @@ public class BLevelParameters implements Serializable {
 	 */
 	public void setClaimedSignerRoles(List<String> claimedSignerRoles) {
 		this.claimedSignerRoles = claimedSignerRoles;
-	}
-
-	/**
-	 * Get claimed roles
-	 *
-	 * @return the list of claimed roles
-	 */
-	public List<String> getClaimedSignerRoles() {
-		return claimedSignerRoles;
 	}
 
 	/**
