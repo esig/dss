@@ -1,9 +1,9 @@
-[source,options="nowrap"]
+[source,json,options="nowrap"]
 ----
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2023-12-12T15:35:11Z",
+    "ValidationDate" : "2024-07-05T13:40:42Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
@@ -48,7 +48,6 @@
         "EncryptionAlgoUsedToSignThisToken" : "RSA",
         "KeyLengthUsedToSignThisToken" : "?",
         "DigestAlgoUsedToSignThisToken" : "SHA256",
-        "MaskGenerationFunctionUsedToSignThisToken" : null,
         "SignatureIntact" : false,
         "SignatureValid" : false
       },
@@ -72,7 +71,8 @@
         "DigestMethod" : "SHA256",
         "DigestValue" : "AvPrygFjJ0JTvICdJ0mN1BuwMW1+awZpYBFd4VVYnZw=",
         "match" : null
-      }
+      },
+      "Duplicated" : null
     } ],
     "Revocation" : [ ],
     "Timestamp" : null,
@@ -131,7 +131,7 @@
         "Info" : [ ]
       }
     } ],
-    "ValidationTime" : "2023-12-12T15:35:11Z"
+    "ValidationTime" : "2024-07-05T13:40:42Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrEvidenceRecord" : [ {

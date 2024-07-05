@@ -17,34 +17,38 @@ $ echo '{
     "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
-    "signatureAlgorithm" : "RSA_SHA256",
+    "base64UrlEncodedPayload" : true,
+    "base64UrlEncodedEtsiUComponents" : true,
+    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
-    "encryptionAlgorithm" : "RSA",
-    "referenceDigestAlgorithm" : null,
+    "encryptionAlgorithm" : null,
     "maskGenerationFunction" : null,
+    "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "signatureTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "archiveTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
+    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395301780,
+      "signingDate" : 1720186840482,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,
@@ -61,11 +65,11 @@ $ echo '{
     }
   },
   "cmsDocument" : {
-    "bytes" : "MIIFUgYJKoZIhvcNAQcCoIIFQzCCBT8CAQExDTALBglghkgBZQMEAgEwCwYJKoZIhvcNAQcBoIIC7jCCAuowggHSoAMCAQICBi7WFNe7VzANBgkqhkiG9w0BAQsFADAwMRswGQYDVQQDDBJSb290U2VsZlNpZ25lZEZha2UxETAPBgNVBAoMCERTUy10ZXN0MB4XDTE3MDYwODExMjYwMVoXDTQ3MDcwNDA3NTcyNFowKDETMBEGA1UEAwwKU2lnbmVyRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCN5GYbZ4qZ/oomR2fWsfBZXxOTsP3BcAU3wBG90dWUFKevwUJwbezqNCVgbXPapL+yVA3XASVz1eUFkuQMjDx6akO+R4rY7Kvxc7vHh7ZCqRYs3MRmvQWXZEI4eK0q7TtSo7NEXeQ0LVkoJHlQgjdPZDdGbGdBDWPiKfEMUpss7bErZGF3VC6qcM+CRF1vb8+uHk23XuL0CeqYxxmqyX9YEDRHNl84ZiP6a1y8rFjagu5WYOz1GVE63XoAAU1M2AkSdZFgUT5uKqNCzeNOXPeEEHeOWuZE4KMB8xIC5wECNvMdDNwOfUygvonjXOlRdT7Ey6VMOzzSNlbLV+YwLmrAgMBAAGjEjAQMA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAQEAiuixgNNU0fq5lPKesoQIuDpAzdm9XWyC/JfIgjGKKSwscfMaqt7m2QjsaodV9o+qYFs2q29G/zFIsdNCKFLzWxTsQFuzwWSCgy55ui7HJEcbNVN9rAvXdSzh3t1igTQehmQC09XsI4e4Um1o37ZZnKL6vunlRgOXL39rv9vk5CpMh1fzUd/eJ163bHab8oMMqRLV43rcw+1E/dzbsN8XFfFSH7SLx3/S41O4flIxpilxvXNeXmK90s1Jr+pMjiNAb8NeD1rbFhpdEHTkkbyAQaz+GnQpxk4I4I5PS03DvAfBSq6/vJRxrnNG6eJSFE6IlJBiC17IhHhIPVgKpvl6jjGCAiowggImAgEBMDowMDEbMBkGA1UEAwwSUm9vdFNlbGZTaWduZWRGYWtlMREwDwYDVQQKDAhEU1MtdGVzdAIGLtYU17tXMAsGCWCGSAFlAwQCAaCBxDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMC8GCSqGSIb3DQEJBDEiBCDHsm3Uyj6cNqCzjTzdOii4tmUw8Mc7q5XXUNI3HtFwBjB3BgsqhkiG9w0BCRACLzFoMGYwZDBiBCAC8+vKAWMnQlO8gJ0nSY3UG7AxbX5rBmlgEV3hVVidnDA+MDSkMjAwMRswGQYDVQQDDBJSb290U2VsZlNpZ25lZEZha2UxETAPBgNVBAoMCERTUy10ZXN0AgYu1hTXu1cwDQYJKoZIhvcNAQELBQAEggEAOjy3UUEIggO+kwfetIvpGbCyzEQGkUz/CAmrRArBFlia7SVnHU88T/V1H+a63PtyhsRV/ONfVyxNBt3T3xjct1eZsc4hnddiuDwVeesS1aQmbavU0dLP+ElBQBUepqOX+UtbSN82Cy8wuoDUs1nTkidIBpOWk1K3eUinS4vR9AfM/UJuMhmbDfclgypcLaUAi514i+F0fk6pJKwyxA/pj7bNY/FO1hOUeWnsck9ebwlplUN70cXzT1hLjlGxMl7BTa6TweWJGzXu/+Q7UZX8K8EHXxtJfuhdiuncJTtJPblc8vUYPXbvsIlyNm0PkaV1xNTtX8eO42Ot4xwESSJEyA==",
+    "bytes" : "MIIFUgYJKoZIhvcNAQcCoIIFQzCCBT8CAQExDTALBglghkgBZQMEAgEwCwYJKoZIhvcNAQcBoIIC7jCCAuowggHSoAMCAQICBi7WFNe7VzANBgkqhkiG9w0BAQsFADAwMRswGQYDVQQDDBJSb290U2VsZlNpZ25lZEZha2UxETAPBgNVBAoMCERTUy10ZXN0MB4XDTE3MDYwODExMjYwMVoXDTQ3MDcwNDA3NTcyNFowKDETMBEGA1UEAwwKU2lnbmVyRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCN5GYbZ4qZ/oomR2fWsfBZXxOTsP3BcAU3wBG90dWUFKevwUJwbezqNCVgbXPapL+yVA3XASVz1eUFkuQMjDx6akO+R4rY7Kvxc7vHh7ZCqRYs3MRmvQWXZEI4eK0q7TtSo7NEXeQ0LVkoJHlQgjdPZDdGbGdBDWPiKfEMUpss7bErZGF3VC6qcM+CRF1vb8+uHk23XuL0CeqYxxmqyX9YEDRHNl84ZiP6a1y8rFjagu5WYOz1GVE63XoAAU1M2AkSdZFgUT5uKqNCzeNOXPeEEHeOWuZE4KMB8xIC5wECNvMdDNwOfUygvonjXOlRdT7Ey6VMOzzSNlbLV+YwLmrAgMBAAGjEjAQMA4GA1UdDwEB/wQEAwIBBjANBgkqhkiG9w0BAQsFAAOCAQEAiuixgNNU0fq5lPKesoQIuDpAzdm9XWyC/JfIgjGKKSwscfMaqt7m2QjsaodV9o+qYFs2q29G/zFIsdNCKFLzWxTsQFuzwWSCgy55ui7HJEcbNVN9rAvXdSzh3t1igTQehmQC09XsI4e4Um1o37ZZnKL6vunlRgOXL39rv9vk5CpMh1fzUd/eJ163bHab8oMMqRLV43rcw+1E/dzbsN8XFfFSH7SLx3/S41O4flIxpilxvXNeXmK90s1Jr+pMjiNAb8NeD1rbFhpdEHTkkbyAQaz+GnQpxk4I4I5PS03DvAfBSq6/vJRxrnNG6eJSFE6IlJBiC17IhHhIPVgKpvl6jjGCAiowggImAgEBMDowMDEbMBkGA1UEAwwSUm9vdFNlbGZTaWduZWRGYWtlMREwDwYDVQQKDAhEU1MtdGVzdAIGLtYU17tXMAsGCWCGSAFlAwQCAaCBxDAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMC8GCSqGSIb3DQEJBDEiBCA0bUQOuvaFuq0SCipkK/EiASxYlbJMaruvCBV2TZRN7DB3BgsqhkiG9w0BCRACLzFoMGYwZDBiBCAC8+vKAWMnQlO8gJ0nSY3UG7AxbX5rBmlgEV3hVVidnDA+MDSkMjAwMRswGQYDVQQDDBJSb290U2VsZlNpZ25lZEZha2UxETAPBgNVBAoMCERTUy10ZXN0AgYu1hTXu1cwDQYJKoZIhvcNAQELBQAEggEArf6z3GOBZZyweIj+l51FUjlxvFc/QV7z1iDSbdSMQpgYyk24WmnUVgRxNroq5KZ1keEupLmO5vmPKoMRSNFsZ4//ynVhAt8rLuNHO/z9ZqL45/WtAxDhQQRJxBfzeXqvnAJt3LjFFff9qalrb1gaQmQMcpZifNWVx6g1XoU6JAlv5DFM1NocnjsCjlkM2bez22rIIKNuEGEGPzyboWLntYMf31UtL825r3NqNU+/aIDJrIjQefkdCBRMKin0IvLl2qafYyedEH5GmpX3BVfTncA3RWcl5l/EtV4R5u3nKPNzkGVQ5Gw8h9BULWxaafWIiLFC8xqPfEQ8KCFn6ZqR4A==",
     "digestAlgorithm" : null,
     "name" : null
   }
 }' | http POST 'http://localhost:8080/services/rest/signature/pades-external-cms/signDocument' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
-    'Content-Type:application/json; charset=UTF-8'
+    'Content-Type:application/json'
 ----

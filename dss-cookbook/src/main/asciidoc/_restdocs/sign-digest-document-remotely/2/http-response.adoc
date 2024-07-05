@@ -1,9 +1,12 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Tue, 12 Dec 2023 15:35:04 GMT
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Date: Fri, 05 Jul 2024 13:40:41 GMT
 X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
+X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -17,6 +20,6 @@ Connection: keep-alive
 Content-Length: 440
 
 {
-  "bytes" : "MYIBNTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMzEyMTIxNTM1MDRaMCQGBgQAjUUCATEaDBhhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0wKwYJKoZIhvcNAQk0MR4wHDALBglghkgBZQMEAgGhDQYJKoZIhvcNAQELBQAwLwYJKoZIhvcNAQkEMSIEIJHAxzmY8GYVX7g4boQnghEUZmKUx+CY+EZn1VYt9UPYMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
+  "bytes" : "MYIBNTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yNDA3MDUxMzQwNDBaMCQGBgQAjUUCATEaDBhhcHBsaWNhdGlvbi9vY3RldC1zdHJlYW0wKwYJKoZIhvcNAQk0MR4wHDALBglghkgBZQMEAgGhDQYJKoZIhvcNAQELBQAwLwYJKoZIhvcNAQkEMSIEIJHAxzmY8GYVX7g4boQnghEUZmKUx+CY+EZn1VYt9UPYMHcGCyqGSIb3DQEJEAIvMWgwZjBkMGIEIALz68oBYydCU7yAnSdJjdQbsDFtfmsGaWARXeFVWJ2cMD4wNKQyMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QCBi7WFNe7Vw=="
 }
 ----

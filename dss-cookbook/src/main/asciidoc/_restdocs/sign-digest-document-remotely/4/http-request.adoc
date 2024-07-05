@@ -2,12 +2,12 @@
 ----
 POST /services/rest/server-signing/sign-digest/certificate HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
-Content-Type: application/json; charset=UTF-8
+Content-Type: application/json
 Host: localhost:8080
 Content-Length: 115
 
 {
   "algorithm" : "SHA256",
-  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIEitnl2Xtyc1CRRLuRt3kzKBzVxtFiss7Oq8ZugpaP6W"
+  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIGFUpnf85A+gQwrvggYLsm0wTFDNedcZAi5apyk0MnB+"
 }
 ----

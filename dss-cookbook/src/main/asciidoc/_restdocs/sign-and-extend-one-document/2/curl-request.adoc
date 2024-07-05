@@ -2,7 +2,7 @@
 ----
 $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument' -i -X POST \
     -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
-    -H 'Content-Type: application/json; charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{
   "parameters" : {
     "signingCertificate" : {
@@ -17,34 +17,38 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
     "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
-    "signatureAlgorithm" : "RSA_SHA256",
+    "base64UrlEncodedPayload" : true,
+    "base64UrlEncodedEtsiUComponents" : true,
+    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
-    "encryptionAlgorithm" : "RSA",
-    "referenceDigestAlgorithm" : null,
+    "encryptionAlgorithm" : null,
     "maskGenerationFunction" : null,
+    "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "signatureTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "archiveTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
+    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395291494,
+      "signingDate" : 1720186839211,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,
@@ -62,7 +66,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "jZxeRhexjk9losMB1SpbqFxB2Tgx9iOKjsAegK8LwnnhjFSZPQzoyudgj0hV5E653BC4zw93vl60t/kiMm831jdefnXlqba5itA8yF7xW0O53p9DaSttA8jVmZO6m9xUr6Rm19Ocy0QiUDKVa36Wn2xrnbnzkdoIwVy+q8316VJroxL81xr1D/n6WQ+UH54M3xMuPW8OXupGkaFHztFxsGosvQEblwFtFsZWXWYYkIVQjYD7dZQFUYRvZf/L8tpw98OopWwbdkxef8FTKZCGljh2DhmDAXLgfcBdwtc7Z5n5qO8OKqJxm8MewF/M441os1SBCNzeP3Tm+bIRDR+EOg=="
+    "value" : "k/1g7a19ejH/V1VgaZ70erVp+9SnNxWUutK1v3fESXBx1ZzUtBKa7S4r8pp8+T1hDxlNcbvNznT8Cv64hq3EGcm4k4ZxkDiWlKRQNTw2dLKSC6U3b94wqosp+brjwZcXVK7Ujluxp0P70K99Y5w+fwf4jbpJ8bbMnXGZdOEmErzjysfn/akSQEXNgd5GTJRYKWw4Ha8M8sxUSXnF+E7DyEKht6huTTz3tWOZ0Bs8XWcXKbqDop52upENv2S2ZYvQr+4uvoJFxNuhG6bt+1Z+IfGOYYKxX9FBcin+SuwMPp/v5Li8ZvUBH6EdkvGeWl7t8mxsmbt0K5/gWkeLZf/m7A=="
   },
   "toSignDocument" : {
     "bytes" : "SGVsbG8=",

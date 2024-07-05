@@ -2,7 +2,7 @@
 ----
 $ curl 'http://localhost:8080/services/rest/signature/external-cms/signMessageDigest' -i -X POST \
     -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
-    -H 'Content-Type: application/json; charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{
   "parameters" : {
     "signingCertificate" : {
@@ -17,27 +17,30 @@ $ curl 'http://localhost:8080/services/rest/signature/external-cms/signMessageDi
     "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
-    "signatureAlgorithm" : "RSA_SHA256",
+    "base64UrlEncodedPayload" : true,
+    "base64UrlEncodedEtsiUComponents" : true,
+    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
-    "encryptionAlgorithm" : "RSA",
-    "referenceDigestAlgorithm" : null,
+    "encryptionAlgorithm" : null,
     "maskGenerationFunction" : null,
+    "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "signatureTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "archiveTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
+    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
     "signatureIdToCounterSign" : null,
@@ -45,6 +48,7 @@ $ curl 'http://localhost:8080/services/rest/signature/external-cms/signMessageDi
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1633219200000,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,
@@ -62,11 +66,11 @@ $ curl 'http://localhost:8080/services/rest/signature/external-cms/signMessageDi
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "Ojy3UUEIggO+kwfetIvpGbCyzEQGkUz/CAmrRArBFlia7SVnHU88T/V1H+a63PtyhsRV/ONfVyxNBt3T3xjct1eZsc4hnddiuDwVeesS1aQmbavU0dLP+ElBQBUepqOX+UtbSN82Cy8wuoDUs1nTkidIBpOWk1K3eUinS4vR9AfM/UJuMhmbDfclgypcLaUAi514i+F0fk6pJKwyxA/pj7bNY/FO1hOUeWnsck9ebwlplUN70cXzT1hLjlGxMl7BTa6TweWJGzXu/+Q7UZX8K8EHXxtJfuhdiuncJTtJPblc8vUYPXbvsIlyNm0PkaV1xNTtX8eO42Ot4xwESSJEyA=="
+    "value" : "rf6z3GOBZZyweIj+l51FUjlxvFc/QV7z1iDSbdSMQpgYyk24WmnUVgRxNroq5KZ1keEupLmO5vmPKoMRSNFsZ4//ynVhAt8rLuNHO/z9ZqL45/WtAxDhQQRJxBfzeXqvnAJt3LjFFff9qalrb1gaQmQMcpZifNWVx6g1XoU6JAlv5DFM1NocnjsCjlkM2bez22rIIKNuEGEGPzyboWLntYMf31UtL825r3NqNU+/aIDJrIjQefkdCBRMKin0IvLl2qafYyedEH5GmpX3BVfTncA3RWcl5l/EtV4R5u3nKPNzkGVQ5Gw8h9BULWxaafWIiLFC8xqPfEQ8KCFn6ZqR4A=="
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "x7Jt1Mo+nDags4083ToouLZlMPDHO6uV11DSNx7RcAY="
+    "value" : "NG1EDrr2hbqtEgoqZCvxIgEsWJWyTGq7rwgVdk2UTew="
   }
 }'
 ----

@@ -2,7 +2,7 @@
 ----
 $ curl 'http://localhost:8080/services/rest/server-signing/sign-with-signature-algo/certificate/RSA_SHA256' -i -X POST \
     -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
-    -H 'Content-Type: application/json; charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{
   "bytes" : "SGVsbG8gV29ybGQh"
 }'
