@@ -876,45 +876,42 @@ public final class ASiCUtils {
 
 		try (InputStream is = archiveContainer.openStream()) {
 
-			if (fileLength > maxToRead ) {
+			if (fileLength > maxToRead) {
 				is.skip(fileLength - maxToRead);
 			}
 
-			int magicDirIterator = 0;
-			int iRead = -1;
-			while ((iRead = is.read()) != -1) {
-				final byte bRead = (byte) iRead;
-
-				if (magicDir[magicDirIterator++] != bRead) {
-					magicDirIterator = 0;
-				}
-
-				if (magicDirIterator > 3) {
-					break;
-				}
+			byte[] buffer = DSSUtils.toByteArray(is);
+			if (Utils.isArrayEmpty(buffer)) {
+				LOG.warn("An empty container obtained! Unable to extract zip comment.");
+				return null;
 			}
 
-			final boolean isMagicStart = magicDirIterator > 3;
+			final int len = buffer.length;
+			final byte[] magicDirEnd = {0x50, 0x4b, 0x05, 0x06};
 
-			if (isMagicStart) {
-				is.skip(16);
-				int commentLen = is.read() + is.read() * 256;
-
-				final byte[] commentBuffer = new byte[commentLen];
-				final int realLen = is.read(commentBuffer);
-
-				if (commentLen != realLen) {
-					LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
+			// Check the buffer from the end
+			for (int ii = len - 22; ii >= 0; ii--) {
+				boolean isMagicStart = true;
+				for (int jj = 0; jj < magicDirEnd.length; jj++) {
+					if (buffer[ii + jj] != magicDirEnd[jj]) {
+						isMagicStart = false;
+						break;
+					}
 				}
-
-				if (realLen <= 0) {
-					return null;
+				if (isMagicStart) {
+					// Magic Start found!
+					int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
+					int realLen = len - ii - 22;
+					if (commentLen != realLen) {
+						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
+					}
+					if (realLen == 0) {
+						return null;
+					}
+					return new String(buffer, ii + 22, realLen);
 				}
-
-				return new String(commentBuffer, 0, realLen);
 			}
-
-		}  catch (final IOException e) {
+		} catch (final IOException e) {
 			throw new DSSException(String.format("Unable to read content of document with name '%s'. Reason : %s",
 					archiveContainer.getName(), e.getMessage()));
 		}
