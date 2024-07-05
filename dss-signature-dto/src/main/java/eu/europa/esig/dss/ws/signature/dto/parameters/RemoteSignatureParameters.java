@@ -102,6 +102,14 @@ public class RemoteSignatureParameters implements Serializable {
 	private SigDMechanism sigDMechanism;
 
 	/**
+	 * The signature algorithm used to create the signature
+	 *
+	 * @deprecated since DSS 6.1. Please use combination of {@code digestAlgorithm} and {@code encryptionAlgorithm}
+	 */
+	@Deprecated
+	private SignatureAlgorithm signatureAlgorithm;
+
+	/**
 	 * The digest algorithm used on signature creation.
 	 */
 	private DigestAlgorithm digestAlgorithm;
@@ -110,6 +118,14 @@ public class RemoteSignatureParameters implements Serializable {
 	 * The encryption algorithm shall be automatically extracted from the signing token.
 	 */
 	private EncryptionAlgorithm encryptionAlgorithm;
+
+	/**
+	 * The mask generation function
+	 *
+	 * @deprecated since DSS 6.1. Please use {@code encryptionAlgorithm} to indicate MGF1 (use EncryptionAlgorithm.RSASSA_PSS)
+	 */
+	@Deprecated
+	private MaskGenerationFunction maskGenerationFunction;
 
 	/**
 	 * XAdES: The digest algorithm used to hash ds:Reference.
@@ -138,7 +154,10 @@ public class RemoteSignatureParameters implements Serializable {
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
+	 *
+	 * @deprecated since DSS 6.1. Please see {@code CertificateVerifier#alertOnExpiredCertificate}
 	 */
+	@Deprecated
 	private boolean signWithExpiredCertificate = false;
 
 	/**
@@ -162,6 +181,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 * Default constructor
 	 */
 	public RemoteSignatureParameters() {
+		// empty
 	}
 
 	/**
@@ -390,6 +410,28 @@ public class RemoteSignatureParameters implements Serializable {
 	}
 
 	/**
+	 * Gets the signature algorithm.
+	 *
+	 * @return the signature algorithm
+	 * @deprecated since DSS 6.1. Please use {@code SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm())}
+	 */
+	@Deprecated
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		return signatureAlgorithm;
+	}
+
+	/**
+	 * Sets the signature algorithm
+	 *
+	 * @param signatureAlgorithm {@link SignatureAlgorithm}
+	 * @deprecated since DSS 6.1. Please use {@code #setDigestAlgorithm} and {@code #setEncryptionAlgorithm} methods
+	 */
+	@Deprecated
+	public void setSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm) {
+		this.signatureAlgorithm = signatureAlgorithm;
+	}
+
+	/**
 	 * Get the digest algorithm
 	 * 
 	 * @return the digest algorithm
@@ -409,17 +451,6 @@ public class RemoteSignatureParameters implements Serializable {
 	}
 
 	/**
-	 * This setter should be used only when dealing with web services (or when signing in three steps). Usually the
-	 * encryption algorithm is automatically extrapolated from the private key.
-	 *
-	 * @param encryptionAlgorithm
-	 *            the encryption algorithm to use
-	 */
-	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
-		this.encryptionAlgorithm = encryptionAlgorithm;
-	}
-
-	/**
 	 * Get the encryption algorithm
 	 *
 	 * @return the encryption algorithm.
@@ -429,19 +460,14 @@ public class RemoteSignatureParameters implements Serializable {
 	}
 
 	/**
-	 * Sets the mask generation function of the signature algorithm, when applicable
+	 * This setter should be used only when dealing with web services (or when signing in three steps). Usually the
+	 * encryption algorithm is automatically extrapolated from the private key.
 	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method to specify mask generation
-	 *             function using EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1
+	 * @param encryptionAlgorithm
+	 *            the encryption algorithm to use
 	 */
-	@Deprecated
-	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
-		} else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
-		}
+	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
+		this.encryptionAlgorithm = encryptionAlgorithm;
 	}
 	
 	/**
@@ -453,21 +479,19 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	@Deprecated
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			return MaskGenerationFunction.MGF1;
-		}
-		return null;
+		return maskGenerationFunction;
 	}
 
 	/**
-	 * Gets the signature algorithm.
+	 * Sets the mask generation function of the signature algorithm, when applicable
 	 *
-	 * @return the signature algorithm
-	 * @deprecated since DSS 6.1. Please use {@code SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm())}
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method to specify mask generation
+	 *             function using EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1
 	 */
 	@Deprecated
-	public SignatureAlgorithm getSignatureAlgorithm() {
-		return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
+	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+		this.maskGenerationFunction = maskGenerationFunction;
 	}
 	
 	/**
