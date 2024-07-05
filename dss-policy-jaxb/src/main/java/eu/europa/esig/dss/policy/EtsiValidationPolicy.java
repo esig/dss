@@ -1186,10 +1186,47 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getReferenceDataNameMatchConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getReferenceDataNameMatch();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getManifestEntryObjectExistenceConstraint(Context context) {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
 			return basicSignatureConstraints.getManifestEntryObjectExistence();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getManifestEntryObjectIntactConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getManifestEntryObjectIntact();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getManifestEntryObjectGroupConstraint(Context context) {
+
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getManifestEntryObjectGroup();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getManifestEntryNameMatchConstraint(Context context) {
+		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
+		if (basicSignatureConstraints != null) {
+			return basicSignatureConstraints.getManifestEntryNameMatch();
 		}
 		return null;
 	}

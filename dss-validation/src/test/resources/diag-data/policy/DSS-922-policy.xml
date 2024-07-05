@@ -13,8 +13,13 @@
       <Id>*</Id> <!-- ALL -->
     </AcceptableFormats>
     <BasicSignatureConstraints>
-      <ReferenceDataExistence Level="FAIL"/>
-      <ReferenceDataIntact Level="FAIL"/>
+      <ReferenceDataExistence Level="FAIL" />
+      <ReferenceDataIntact Level="FAIL" />
+      <ReferenceDataNameMatch Level="WARN" />
+      <ManifestEntryObjectExistence Level="WARN" />
+      <ManifestEntryObjectGroup Level="WARN" />
+      <ManifestEntryObjectIntact Level="FAIL" />
+      <ManifestEntryNameMatch Level="WARN" />
       <SignatureIntact Level="FAIL"/>
       <ProspectiveCertificateChain Level="FAIL"/>
 <!--       <TrustServiceTypeIdentifier Level="WARN"> -->
@@ -148,8 +153,13 @@
     <BestSignatureTimeBeforeExpirationDateOfSigningCertificate Level="FAIL"/>
     <Coherence Level="FAIL"/>
     <BasicSignatureConstraints>
-      <ReferenceDataExistence Level="FAIL"/>
-      <ReferenceDataIntact Level="FAIL"/>
+      <ReferenceDataExistence Level="FAIL" />
+      <ReferenceDataIntact Level="FAIL" />
+      <ReferenceDataNameMatch Level="WARN" />
+      <ManifestEntryObjectExistence Level="WARN" />
+      <ManifestEntryObjectGroup Level="WARN" />
+      <ManifestEntryObjectIntact Level="FAIL" />
+      <ManifestEntryNameMatch Level="WARN" />
       <SignatureIntact Level="FAIL"/>
       <ProspectiveCertificateChain Level="FAIL"/>
 <!--       <TrustServiceTypeIdentifier Level="WARN"> -->

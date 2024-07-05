@@ -77,7 +77,6 @@ Not present
 ----
 _(same for CounterSignatureConstraints)_
 
-
 |RSASSA-PSS encryption algorithm                                 a|[source,xml]
 ----
 <Cryptographic Level="FAIL">
@@ -133,6 +132,31 @@ _(same for CounterSignatureConstraints)_
     </AlgoExpirationDate>
     ...
 </Cryptographic>
+----
+
+|Original document name validation                 a|
+A document with a different name than the reference's URI does not match
+                                                   a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <ReferenceDataNameMatch Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+|XML Manifest validation constraints               a|
+Aligned with reference data constraints
+a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryObjectExistence Level="WARN" />
+    <ManifestEntryObjectGroup Level="WARN" />
+    <ManifestEntryObjectIntact Level="FAIL" />
+    <ManifestEntryNameMatch Level="WARN" />
+    ...
+</BasicSignatureConstraints>
 ----
 
 |===

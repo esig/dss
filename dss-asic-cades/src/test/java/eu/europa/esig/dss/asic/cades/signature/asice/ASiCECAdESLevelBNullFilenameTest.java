@@ -77,7 +77,7 @@ class ASiCECAdESLevelBNullFilenameTest extends AbstractASiCECAdESTestSignature {
 		assertEquals(1, manifestFile.getEntries().size());
 
 		ManifestEntry manifestEntry = manifestFile.getEntries().get(0);
-		assertNotNull(manifestEntry.getFileName());
+		assertNotNull(manifestEntry.getUri());
 		assertNotNull(manifestEntry.getDigest());
 		assertNull(manifestEntry.getMimeType());
 	}

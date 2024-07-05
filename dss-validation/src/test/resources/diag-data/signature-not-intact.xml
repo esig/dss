@@ -10,7 +10,7 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="xml_ref_id">
+                <DigestMatcher type="REFERENCE" id="xml_ref_id">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>8AzgcURkeZDp/DL2CgdfJVCpi8HUm73bbsUj79VEIhA=</DigestValue>
                     <DataFound>true</DataFound>

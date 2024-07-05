@@ -66,6 +66,8 @@ public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extend
 				return MessageTag.BBB_CV_TSP_IRDOI;
 			case COUNTER_SIGNED_SIGNATURE_VALUE:
 				return MessageTag.BBB_CV_CS_CSPS;
+			case MANIFEST_ENTRY:
+				return MessageTag.BBB_CV_IMEDOI;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
 				return MessageTag.BBB_CV_ER_ATSRI;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
@@ -82,6 +84,8 @@ public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extend
 				return MessageTag.BBB_CV_TSP_IRDOI_ANS;
 			case COUNTER_SIGNED_SIGNATURE_VALUE:
 				return MessageTag.BBB_CV_CS_CSPS_ANS;
+			case MANIFEST_ENTRY:
+				return MessageTag.BBB_CV_IMEDOI_ANS;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP:
 				return MessageTag.BBB_CV_ER_ATSRI_ANS;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
@@ -115,8 +119,9 @@ public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extend
 				referenceName = MessageTag.TST_TYPE_REF_ER_ATST_SEQ;
 				break;
 			default:
-				referenceName = Utils.isStringNotBlank(digestMatcher.getName()) ?
-						digestMatcher.getName() : digestMatcher.getType().name();
+				referenceName = Utils.isStringNotBlank(digestMatcher.getId()) ? digestMatcher.getId() :
+						Utils.isStringNotBlank(digestMatcher.getUri()) ? digestMatcher.getUri() :
+								digestMatcher.getType().name();
 		}
 		return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
 	}

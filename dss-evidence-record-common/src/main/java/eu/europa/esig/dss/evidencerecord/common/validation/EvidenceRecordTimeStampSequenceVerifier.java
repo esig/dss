@@ -288,7 +288,6 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         List<ReferenceValidation> invalidReferences = referenceValidations.stream().filter(r -> !r.isIntact()).collect(Collectors.toList());
         for (ReferenceValidation reference : invalidReferences) {
             if (reference.getDigest() != null && Arrays.equals(messageDigest.getValue(), reference.getDigest().getValue())) {
-                reference.setName(null);
                 reference.setType(type);
                 reference.setFound(true);
                 reference.setIntact(true);
@@ -310,7 +309,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         }
 
         // create empty ReferenceValidations for not found manifest entries, when applicable
-        List<String> foundDocumentNames = referenceValidations.stream().map(ReferenceValidation::getName).filter(Objects::nonNull).collect(Collectors.toList());
+        List<String> foundDocumentNames = referenceValidations.stream().map(ReferenceValidation::getDocumentName).filter(Objects::nonNull).collect(Collectors.toList());
         if (Utils.collectionSize(manifestFile.getEntries()) > Utils.collectionSize(foundDocumentNames)) {
             List<ReferenceValidation> failedReferences = referenceValidations.stream().filter(r -> !r.isIntact()).collect(Collectors.toList());
             if (Utils.collectionSize(manifestFile.getEntries()) - Utils.collectionSize(foundDocumentNames) >= Utils.collectionSize(failedReferences)) {
@@ -321,15 +320,15 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             }
             // add references from a manifest
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                if (!foundDocumentNames.contains(manifestEntry.getFileName())) {
-                    LOG.warn("Manifest entry with name '{}' was not found within evidence record data objects!", manifestEntry.getFileName());
+                if (!foundDocumentNames.contains(manifestEntry.getUri())) {
+                    LOG.warn("Manifest entry with name '{}' was not found within evidence record data objects!", manifestEntry.getUri());
 
                     DSSDocument matchingDocument = getMatchingDocument(manifestEntry, evidenceRecord.getDetachedContents());
 
                     ReferenceValidation referenceValidation = new ReferenceValidation();
                     referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
                     referenceValidation.setDigest(manifestEntry.getDigest());
-                    referenceValidation.setName(manifestEntry.getFileName());
+                    referenceValidation.setDocumentName(manifestEntry.getUri()); // TODO : add separation between reference name and document name
                     referenceValidation.setFound(matchingDocument != null);
                     referenceValidation.setIntact(false);
                     referenceValidations.add(referenceValidation);
@@ -346,13 +345,13 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         if (firstTimeStamp) {
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
                 for (ReferenceValidation reference : referenceValidations) {
-                    if (manifestEntry.getFileName().equals(reference.getName()) &&
+                    if (manifestEntry.getUri().equals(reference.getDocumentName()) &&
                             manifestEntry.getDigest() != null && reference.getDigest() != null &&
                             !manifestEntry.getDigest().getAlgorithm().equals(reference.getDigest().getAlgorithm())) {
                         LOG.warn("The digest algorithm '{}' defined in a manifest file with name '{}' does not match " +
                                         "the digest algorithm '{}' used within an evidence record for file with name '{}'",
                                 manifestEntry.getDigest().getAlgorithm(), manifestFile.getFilename(),
-                                reference.getDigest().getAlgorithm(), manifestEntry.getFileName());
+                                reference.getDigest().getAlgorithm(), manifestEntry.getUri());
                         reference.setIntact(false);
                     }
                 }
@@ -398,11 +397,12 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 if (matchingManifestEntry != null) {
                     referenceValidation.setFound(matchingManifestEntry.isFound() || matchingDocument != null);
                     referenceValidation.setIntact(matchingManifestEntry.isIntact() && matchingDocument != null);
-                    referenceValidation.setName(matchingManifestEntry.getFileName());
-                    foundDocuments.add(matchingManifestEntry.getFileName());
+                    referenceValidation.setUri(matchingManifestEntry.getUri());
+                    referenceValidation.setDocumentName(matchingManifestEntry.getDocumentName());
+                    foundDocuments.add(matchingManifestEntry.getUri());
 
                 } else if (matchingDocument != null) {
-                    referenceValidation.setName(matchingDocument.getName());
+                    referenceValidation.setDocumentName(matchingDocument.getName());
                     foundDocuments.add(matchingDocument.getName());
 
                 } else {
@@ -414,14 +414,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             } else if (matchingDocument != null) {
                 referenceValidation.setFound(true);
                 referenceValidation.setIntact(true);
-                referenceValidation.setName(matchingDocument.getName());
+                referenceValidation.setDocumentName(matchingDocument.getName());
                 foundDocuments.add(matchingDocument.getName());
 
             } else if (Utils.collectionSize(digestValues) == 1 && Utils.collectionSize(detachedContents) == 1) {
                 // if one document is expected and provided -> assume it as a signed data
                 referenceValidation.setFound(true);
                 referenceValidation.setIntact(false);
-                referenceValidation.setName(detachedContents.get(0).getName());
+                referenceValidation.setDocumentName(detachedContents.get(0).getName());
                 foundDocuments.add(detachedContents.get(0).getName());
 
             } else {
@@ -450,7 +450,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 if (digest.equals(manifestEntryDigest)) {
                     return manifestEntry;
                 }
-                if (document != null && document.getName().equals(manifestEntry.getFileName())) {
+                if (document != null && document.getName().equals(manifestEntry.getUri())) {
                     return manifestEntry;
                 }
             }
@@ -492,7 +492,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      */
     protected DSSDocument getMatchingDocument(ManifestEntry manifestEntry, List<DSSDocument> detachedContents) {
         for (DSSDocument document : detachedContents) {
-            if (manifestEntry.getFileName().equals(document.getName())) {
+            if (manifestEntry.getUri().equals(document.getName())) {
                 return document;
             }
         }

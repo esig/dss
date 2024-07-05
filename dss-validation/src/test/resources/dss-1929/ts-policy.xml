@@ -27,9 +27,13 @@
 			<Id>*</Id>
 		</AcceptableFormats>
 		<BasicSignatureConstraints>
-			<ReferenceDataExistence Level="FAIL"/>
-			<ReferenceDataIntact Level="FAIL"/>
-			<ManifestEntryObjectExistence Level="WARN"/>
+			<ReferenceDataExistence Level="FAIL" />
+			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
+			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL"/>
 			<SignatureDuplicated Level="FAIL"/>
 			<ProspectiveCertificateChain Level="FAIL"/>
@@ -91,8 +95,13 @@
 	</SignatureConstraints>
 	<CounterSignatureConstraints>
 		<BasicSignatureConstraints>
-			<ReferenceDataExistence Level="FAIL"/>
-			<ReferenceDataIntact Level="FAIL"/>
+			<ReferenceDataExistence Level="FAIL" />
+			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
+			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL"/>
 			<SignatureDuplicated Level="FAIL"/>
 			<ProspectiveCertificateChain Level="FAIL"/>
@@ -153,8 +162,13 @@
 		<BestSignatureTimeBeforeExpirationDateOfSigningCertificate Level="FAIL"/>
 		<Coherence Level="WARN"/>
 		<BasicSignatureConstraints>
-			<ReferenceDataExistence Level="FAIL"/>
-			<ReferenceDataIntact Level="FAIL"/>
+			<ReferenceDataExistence Level="FAIL" />
+			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
+			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL"/>
 			<ProspectiveCertificateChain Level="FAIL"/>
 			<SigningCertificate>

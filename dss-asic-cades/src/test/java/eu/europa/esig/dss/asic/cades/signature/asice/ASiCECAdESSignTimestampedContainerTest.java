@@ -92,7 +92,7 @@ class ASiCECAdESSignTimestampedContainerTest extends AbstractASiCECAdESTestSigna
 
         boolean originalDocFound = false;
         for (XmlDigestMatcher digestMatcher : timestampWrapper.getDigestMatchers()) {
-            if (originalDocument.getName().equals(digestMatcher.getName())) {
+            if (originalDocument.getName().equals(digestMatcher.getDocumentName())) {
                 originalDocFound = true;
             }
         }

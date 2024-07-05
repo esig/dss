@@ -119,7 +119,7 @@ class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 				assertEquals(1, timestamp.getTimestampedSignedData().size());
 				firstTstFound = true;
 			} else if (timestamp.getDigestMatchers().size() == 3) {
-				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
+				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getDocumentName());
 				assertEquals(2, timestamp.getTimestampedSignedData().size());
 				assertEquals(1, timestamp.getTimestampedTimestamps().size());
 				secondTstFound = true;

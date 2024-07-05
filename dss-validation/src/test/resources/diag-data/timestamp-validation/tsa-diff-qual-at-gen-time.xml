@@ -361,13 +361,13 @@
         <Timestamp Type="CONTAINER_TIMESTAMP" Id="T-C0F20A639DD595C32C43898096FB454EF0AFF48154F9F44A5BF82399891024C0">
             <TimestampFilename>META-INF/timestamp001.tst</TimestampFilename>
             <ProductionTime>2021-06-02T15:14:23Z</ProductionTime>
-            <DigestMatcher type="MESSAGE_IMPRINT" name="META-INF/ASiCManifest.xml">
+            <DigestMatcher type="MESSAGE_IMPRINT" documentName="META-INF/ASiCManifest.xml">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>Tqp0k9GbaLg8PxjdD6J5vs/zSe9c6+BXeH8pkikd44g=</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="MANIFEST_ENTRY" name="signed.xml">
+            <DigestMatcher type="MANIFEST_ENTRY" uri="signed.xml" documentName="signed.xml">
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>qgc3sZCipR5aX6+AhVjFj7noBlMZTF7as5glIgJle6c=</DigestValue>
                 <DataFound>true</DataFound>

@@ -69,8 +69,8 @@ class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 		boolean ASiCManifestSigned = false;
 		boolean entryFound = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			assertNotNull(digestMatcher.getName());
-			if ("META-INF/ASiCManifest.xml".equals(digestMatcher.getName())) {
+			assertNotNull(digestMatcher.getDocumentName());
+			if ("META-INF/ASiCManifest.xml".equals(digestMatcher.getDocumentName())) {
 				assertEquals(DigestMatcherType.MESSAGE_DIGEST, digestMatcher.getType());
 				ASiCManifestSigned = true;
 			} else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
@@ -95,9 +95,9 @@ class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 				assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestamp.getArchiveTimestampType());
 				XmlDigestMatcher messageImprint = timestamp.getMessageImprint();
 				assertNotNull(messageImprint);
-				assertNotNull(messageImprint.getName());
+				assertNotNull(messageImprint.getDocumentName());
 				for (XmlManifestFile manifestFile : manifestFiles) {
-					if (messageImprint.getName().equals(manifestFile.getFilename())) {
+					if (messageImprint.getDocumentName().equals(manifestFile.getFilename())) {
 						assertEquals(manifestFile.getEntries().size(), getNumberOfManifestEntries(timestamp));
 						archiveTimestampWithManifestCounter++;
 					}

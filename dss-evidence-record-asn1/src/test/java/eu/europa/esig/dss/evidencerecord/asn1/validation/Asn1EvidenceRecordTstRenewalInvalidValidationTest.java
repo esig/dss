@@ -65,7 +65,7 @@ class Asn1EvidenceRecordTstRenewalInvalidValidationTest extends AbstractAsn1Evid
         assertEquals(2, referenceValidations.size());
         for (ReferenceValidation referenceValidation : referenceValidations) {
             assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, referenceValidation.getType());
-            assertNotNull(referenceValidation.getName());
+            assertNotNull(referenceValidation.getDocumentName());
             assertTrue(referenceValidation.isFound());
             assertTrue(referenceValidation.isIntact());
         }
@@ -82,7 +82,7 @@ class Asn1EvidenceRecordTstRenewalInvalidValidationTest extends AbstractAsn1Evid
                 assertEquals(4, Utils.collectionSize(refValidations));
                 for (ReferenceValidation referenceValidation : refValidations) {
                     assertEquals(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE, referenceValidation.getType());
-                    assertNull(referenceValidation.getName());
+                    assertNull(referenceValidation.getDocumentName());
                     assertFalse(referenceValidation.isFound());
                     assertFalse(referenceValidation.isIntact());
                 }

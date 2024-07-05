@@ -10,13 +10,13 @@
             <SignatureFormat>XAdES-A</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="Ref_411528106849_3">
+                <DigestMatcher type="REFERENCE" id="Ref_411528106849_3">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>H9+v6FCxLmkdBrYFc67fBViYseZUH561Vzsj4/+FLzI=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="Ref_411528114007_4">
+                <DigestMatcher type="SIGNED_PROPERTIES" id="Ref_411528114007_4">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>PvHdrMyop1Cw35JhfHZ2vnnqah4z6JL+tLFsfjNTi7U=</DigestValue>
                     <DataFound>true</DataFound>

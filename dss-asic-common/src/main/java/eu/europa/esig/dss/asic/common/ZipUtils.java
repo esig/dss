@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -35,8 +33,6 @@ import java.util.Objects;
  *
  */
 public final class ZipUtils {
-
-	private static final Logger LOG = LoggerFactory.getLogger(ZipUtils.class);
 
 	private static ZipUtils singleton;
 

@@ -37,55 +37,55 @@
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-1">
+                <DigestMatcher type="REFERENCE" id="r-id-e6c343c6cfa65ee80586e9187acdf475-1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>4k25KYDelNg5nKMBnVvOt2s1BgZneY3rfwoMo//RBYw=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-2">
+                <DigestMatcher type="REFERENCE" id="r-id-e6c343c6cfa65ee80586e9187acdf475-2">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>4sdIMrakqwsnT4P5KJwZ0OfxiEogNr6kIa1as8RQ6sU=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-3">
+                <DigestMatcher type="REFERENCE" id="r-id-e6c343c6cfa65ee80586e9187acdf475-3">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>4IhWLpU2OXWhawv2ZIaxJsMCRMxR76/cY18APmulBv8=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-4">
+                <DigestMatcher type="REFERENCE" id="r-id-e6c343c6cfa65ee80586e9187acdf475-4">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>rrKXmEsmowvZom8wSzm8fZGiZFdJs1578/RMS5UR3HU=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-5">
+                <DigestMatcher type="REFERENCE" id="r-id-e6c343c6cfa65ee80586e9187acdf475-5">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>83PKsNWQBgEUzYkqiGBbjzgBGqejnaziucI1AUFlvcg=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-6">
+                <DigestMatcher type="REFERENCE" id="r-id-e6c343c6cfa65ee80586e9187acdf475-6">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>EcADixQh1WYTxatIQpAxObyYdhCbKFyxUW8JGRdUd6I=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-7">
+                <DigestMatcher type="REFERENCE" id="r-id-e6c343c6cfa65ee80586e9187acdf475-7">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>vT3c+QuzukAhRXYKA7TEfT7hx/Xw2eT82jxymWVNzDQ=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="r-id-e6c343c6cfa65ee80586e9187acdf475-8">
+                <DigestMatcher type="REFERENCE" id="r-id-e6c343c6cfa65ee80586e9187acdf475-8">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cU2+NwsKcGNmkhfZGyh1Zv6Lq7yFmbYpskR2/4G4NZM=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#xades-id-e6c343c6cfa65ee80586e9187acdf475">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-e6c343c6cfa65ee80586e9187acdf475">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cDxc0l03i0LbxSVqNahKBN5x6HR11JkYuxOqdfZ3IDo=</DigestValue>
                     <DataFound>true</DataFound>

@@ -813,7 +813,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		for (ManifestEntry entry : manifestFile.getEntries()) {
 			ReferenceValidation entryValidation = new ReferenceValidation();
 			entryValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
-			entryValidation.setName(entry.getFileName());
+			entryValidation.setUri(entry.getUri());
+			entryValidation.setDocumentName(entry.getDocumentName());
 			entryValidation.setDigest(entry.getDigest());
 			entryValidation.setFound(entry.isFound());
 			entryValidation.setIntact(entry.isIntact());
@@ -856,12 +857,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 
 		if (originalDocument != null) {
+			messageDigestValidation.setDocumentName(originalDocument.getName());
 			messageDigestValidation.setFound(true);
 			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, digestAlgorithmCandidates, messageDigest));
 
 			if (manifestFile != null && 
 					Arrays.equals(messageDigest.getValue(), manifestFile.getDigestValue(messageDigest.getAlgorithm()))) {
-				messageDigestValidation.setName(manifestFile.getFilename());
 				// get references to documents contained in the manifest file (for ASiC-E container)
 				messageDigestValidation.getDependentValidations()
 						.addAll(getManifestEntryValidation());

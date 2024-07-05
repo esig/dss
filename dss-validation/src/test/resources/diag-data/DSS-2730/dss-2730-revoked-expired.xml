@@ -29,19 +29,19 @@
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="r-id-443f58d7b69110994767ffa0c11cbaeb-1">
+                <DigestMatcher type="REFERENCE" id="r-id-443f58d7b69110994767ffa0c11cbaeb-1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>1WFkvp8m2XhYYUUQ0WNj3XXvjOpK5qh03oBqWBfbJNY=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="REFERENCE" name="r-id-443f58d7b69110994767ffa0c11cbaeb-2">
+                <DigestMatcher type="REFERENCE" id="r-id-443f58d7b69110994767ffa0c11cbaeb-2">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>S0rsZwZDFcpz0O6HhRMKgyzU2KGfrvBTgUnC9Ojd1CM=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#xades-id-443f58d7b69110994767ffa0c11cbaeb">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-443f58d7b69110994767ffa0c11cbaeb">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>yIcRK3xyYhKW6Imf3r0pySwnd2R2FBEGT2Yvgrd3cLc=</DigestValue>
                     <DataFound>true</DataFound>

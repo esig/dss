@@ -69,7 +69,7 @@ class Asn1EvidenceRecordInvalidRefValidationValidationTest extends AbstractAsn1E
             if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == referenceValidation.getType()) {
                 assertTrue(referenceValidation.isFound());
                 assertTrue(referenceValidation.isIntact());
-                assertEquals("some binary content", referenceValidation.getName());
+                assertEquals("some binary content", referenceValidation.getDocumentName());
                 ++foundDocCounter;
             } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == referenceValidation.getType()) {
                 assertFalse(referenceValidation.isFound());
@@ -91,7 +91,7 @@ class Asn1EvidenceRecordInvalidRefValidationValidationTest extends AbstractAsn1E
             if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == digestMatcher.getType()) {
                 assertTrue(digestMatcher.isDataFound());
                 assertTrue(digestMatcher.isDataIntact());
-                assertEquals("some binary content", digestMatcher.getName());
+                assertEquals("some binary content", digestMatcher.getDocumentName());
                 ++foundDocCounter;
             } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == digestMatcher.getType()) {
                 assertFalse(digestMatcher.isDataFound());

@@ -20,17 +20,20 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 
 import java.util.List;
@@ -41,6 +44,8 @@ import java.util.List;
  * The reference URI must be null or refer a specific file.
  */
 public class DetachedSignatureResolver extends ResourceResolverSpi {
+
+	private static final Logger LOG = LoggerFactory.getLogger(DetachedSignatureResolver.class);
 
 	/** Detached documents */
 	private final List<DSSDocument> documents;
@@ -61,35 +66,29 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 
 	@Override
 	public XMLSignatureInput engineResolveURI(ResourceResolverContext context) throws ResourceResolverException {
-		DSSDocument document = getCurrentDocument(context);
+		DSSDocument document = getBestCandidate(context);
 		if (document instanceof DigestDocument) {
-			DigestDocument digestDoc = (DigestDocument) document;
-			byte[] digestValue = digestDoc.getDigestValue(digestAlgorithm);
-			return new XMLSignatureInput(Utils.toBase64(digestValue)); // requires pre-calculated base64-encoded digest
+			// requires pre-calculated base64-encoded digest
+			return new DigestDocumentXMLSignatureInput((DigestDocument) document, digestAlgorithm);
 		} else {
-			return createFromCommonDocument(document);
+			return new DSSDocumentXMLSignatureInput(document);
 		}
 	}
 
-	private XMLSignatureInput createFromCommonDocument(DSSDocument document) {
-		// Full binaries are required
-		final XMLSignatureInput result = new XMLSignatureInput(DSSUtils.toByteArray(document));
-		final MimeType mimeType = document.getMimeType();
-		if (mimeType != null) {
-			result.setMIMEType(mimeType.getMimeTypeString());
-		}
-		return result;
-	}
-
-	private DSSDocument getCurrentDocument(ResourceResolverContext context) throws ResourceResolverException {
+	private DSSDocument getBestCandidate(ResourceResolverContext context) throws ResourceResolverException {
 		if (definedFilename(context) && isDocumentNamesDefined()) {
 			Attr uriAttr = context.attr;
 			String uriValue = DSSUtils.decodeURI(uriAttr.getNodeValue());
-			for (DSSDocument dssDocument : documents) {
-				if (Utils.areStringsEqual(dssDocument.getName(), uriValue)) {
-					return dssDocument;
-				}
+			Digest referenceDigest = DSSXMLUtils.getDigestAndValue(uriAttr.getOwnerElement());
+
+			DSSDocument bestCandidate = getBestCandidateByDigest(referenceDigest, uriValue);
+			if (bestCandidate == null) {
+				bestCandidate = getBestCandidateByName(uriValue);
 			}
+			if (bestCandidate != null) {
+				return bestCandidate;
+			}
+
 			Object[] exArgs = { "Unable to find document '" + uriValue + "' (detached signature)" };
 			throw new ResourceResolverException("generic.EmptyMessage", exArgs, uriValue, context.baseUri);
 		}
@@ -101,6 +100,57 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 		Object[] exArgs = { "Unable to find document (detached signature)" };
 		throw new ResourceResolverException("generic.EmptyMessage", exArgs, null, context.baseUri);
 
+	}
+
+	private DSSDocument getBestCandidateByDigest(Digest referenceDigest, String uriValue) {
+		if (referenceDigest == null) {
+			return null;
+		}
+		DSSDocument bestCandidate = null;
+		for (DSSDocument dssDocument : documents) {
+			if (referenceDigest.equals(getDocumentDigest(dssDocument))) {
+				if (bestCandidate != null) {
+					LOG.warn("Multiple documents match the same reference with URI '{}'!", uriValue);
+					if (!Utils.areStringsEqual(dssDocument.getName(), uriValue)) {
+						// do not change the best candidate in case of name mismatch
+						continue;
+					}
+				}
+				bestCandidate = dssDocument;
+			}
+		}
+		return bestCandidate;
+	}
+
+	private DSSDocument getBestCandidateByName(String uriValue) {
+		if (uriValue == null) {
+			return null;
+		}
+		DSSDocument bestCandidate = null;
+		for (DSSDocument dssDocument : documents) {
+			if (uriValue.equals(dssDocument.getName())) {
+				if (bestCandidate != null) {
+					LOG.warn("Multiple documents match the same reference with URI '{}'!", uriValue);
+					break;
+				}
+				bestCandidate = dssDocument;
+			}
+		}
+		return bestCandidate;
+	}
+
+	private Digest getDocumentDigest(DSSDocument document) {
+		try {
+			return DSSUtils.getDigest(digestAlgorithm, document);
+		} catch (Exception e) {
+			String errorMessage = "Unable to get digest for a document with name '{}' : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, document.getName(), e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, document.getName(), e.getMessage());
+			}
+			return new Digest();
+		}
 	}
 
 	@Override

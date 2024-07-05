@@ -100,7 +100,7 @@ class CAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractCAdE
             List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
             for (XmlDigestMatcher digestMatcher : digestMatcherList) {
                 assertTrue(digestMatcher.isDataFound());
-                assertEquals(signature.getSignatureFilename(), digestMatcher.getName());
+                assertEquals(signature.getSignatureFilename(), digestMatcher.getDocumentName());
                 if (digestMatcher.isDataIntact()) {
                     ++validRefCount;
                 } else {

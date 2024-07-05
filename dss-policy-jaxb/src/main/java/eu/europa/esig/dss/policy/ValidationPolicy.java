@@ -827,6 +827,15 @@ public interface ValidationPolicy {
 	LevelConstraint getReferenceDataIntactConstraint(Context context);
 
 	/**
+	 * Indicates if the referenced document names match the manifest entry references
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ReferenceDataNameMatch for a given context element is present in the
+	 *         constraint file, null otherwise.
+	 */
+	LevelConstraint getReferenceDataNameMatchConstraint(Context context);
+
+	/**
 	 * Indicates if the manifested document is found
 	 *
 	 * @param context {@link Context}
@@ -834,6 +843,33 @@ public interface ValidationPolicy {
 	 *         context element is present in the constraint file, null otherwise.
 	 */
 	LevelConstraint getManifestEntryObjectExistenceConstraint(Context context);
+
+	/**
+	 * Indicates if the manifested document is intact
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ManifestEntryObjectIntact for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryObjectIntactConstraint(Context context);
+
+	/**
+	 * Indicates if all manifest entries have been found
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ManifestEntryObjectGroup for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryObjectGroupConstraint(Context context);
+
+	/**
+	 * Indicates if names of all matching documents match to the manifest entry names
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ManifestEntryNameMatch for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryNameMatchConstraint(Context context);
 
 	/**
 	 * Indicates if the signature is intact

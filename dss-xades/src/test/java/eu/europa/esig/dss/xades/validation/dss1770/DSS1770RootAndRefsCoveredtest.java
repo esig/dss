@@ -75,7 +75,7 @@ class DSS1770RootAndRefsCoveredtest extends AbstractXAdESTestValidation {
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			if ("REF-ROOT".equals(digestMatcher.getName())) {
+			if ("REF-ROOT".equals(digestMatcher.getId())) {
 				refRootFound = true;
 				break;
 			}

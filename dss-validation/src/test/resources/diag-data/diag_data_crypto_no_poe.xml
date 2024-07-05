@@ -10,13 +10,13 @@
             <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="Signature_1377525082391-Reference-0">
+                <DigestMatcher type="REFERENCE" id="Signature_1377525082391-Reference-0">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>mSVL7i1p6DKIPOaFKz7sW8sAK+avXjShAn3dabRygbg=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#Signature_1377525082391_SignedProperties">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#Signature_1377525082391_SignedProperties">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>3S5u7/wByIGVpyI1xRRhTNuHQKFhPAs8xQGfL7INAlI=</DigestValue>
                     <DataFound>true</DataFound>

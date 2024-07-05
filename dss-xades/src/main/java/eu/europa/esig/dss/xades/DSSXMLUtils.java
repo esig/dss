@@ -33,6 +33,7 @@ import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
+import eu.europa.esig.dss.xades.validation.DSSDocumentXMLSignatureInput;
 import eu.europa.esig.dss.xades.validation.DetachedSignatureResolver;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
@@ -55,6 +56,7 @@ import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.XMLUtils;
@@ -1136,6 +1138,24 @@ public final class DSSXMLUtils {
 	}
 
 	/**
+	 * This method retrieves an Id attribute value of the given reference, when applicable
+	 *
+	 * NOTE: Method is used due to Apache Santuario Signature returning an empty string instead of null result.
+	 *
+	 * @param reference {@link Reference} to get value of Id attribute
+	 * @return {@link String} Id attribute value if available, NULL otherwise
+	 */
+	public static String getReferenceId(Reference reference) {
+		if (reference != null) {
+			Element element = reference.getElement();
+			if (element != null) {
+				return DSSXMLUtils.getAttribute(element, XMLDSigAttribute.ID.getAttributeName());
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * This method retrieves a URI attribute value of the given reference, when applicable
 	 *
 	 * NOTE: Method is used due to Apache Santuario Signature returning an empty string instead of null result.
@@ -1157,7 +1177,7 @@ public final class DSSXMLUtils {
 	 * Checks if the original reference document content can be obtained (de-referenced)
 	 *
 	 * @param reference {@link Reference} to check
-	 * @return TRUE if the de-referencing is succeeds, FALSE otherwise
+	 * @return TRUE if the de-referencing succeeds, FALSE otherwise
 	 */
 	public static boolean isAbleToDeReferenceContent(Reference reference) {
 		try {
@@ -1287,6 +1307,29 @@ public final class DSSXMLUtils {
 			element = DomUtils.getElementById(recreatedDocument, elementId);
 		}
 		return DomUtils.getElement(element, xpathString);
+	}
+
+	/**
+	 * This method returns a name of the linked document to the reference (when applicable)
+	 *
+	 * @param reference {@link Reference} to get a name of the linked document for
+	 * @return {@link String} document name
+	 */
+	public static String getDocumentName(Reference reference) {
+		try {
+			XMLSignatureInput xmlSignatureInput = reference.getContentsBeforeTransformation();
+			if (xmlSignatureInput instanceof DSSDocumentXMLSignatureInput) {
+				return ((DSSDocumentXMLSignatureInput) xmlSignatureInput).getDocumentName();
+			}
+		} catch (Exception e) {
+			String errorMessage = "Unable to verify matching document name for a reference with Id [{}] : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, reference.getId(), e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, reference.getId(), e.getMessage());
+			}
+		}
+		return null;
 	}
 
 }

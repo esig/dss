@@ -145,7 +145,7 @@ public class DetachedTimestampSource extends AbstractTimestampSource {
         ManifestFile manifestFile = evidenceRecord.getManifestFile();
         if (manifestFile != null) {
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                if (timestampToken.getFileName() != null && timestampToken.getFileName().equals(manifestEntry.getFileName())) {
+                if (timestampToken.getFileName() != null && timestampToken.getFileName().equals(manifestEntry.getUri())) {
                     return true;
                 }
             }

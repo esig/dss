@@ -58,12 +58,12 @@ class ASiCEWithCAdESAsn1EvidenceRecordTstRenewalValidationTest extends AbstractA
         boolean notFoundArchiveObject = false;
         for (ReferenceValidation referenceValidation : referenceValidationList) {
             if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == referenceValidation.getType()) {
-                assertNotNull(referenceValidation.getName());
+                assertNotNull(referenceValidation.getDocumentName());
                 assertTrue(referenceValidation.isFound());
                 assertTrue(referenceValidation.isIntact());
                 foundArchiveObject = true;
             } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == referenceValidation.getType()) {
-                assertNull(referenceValidation.getName());
+                assertNull(referenceValidation.getDocumentName());
                 assertFalse(referenceValidation.isFound());
                 assertFalse(referenceValidation.isIntact());
                 notFoundArchiveObject = true;
@@ -94,12 +94,12 @@ class ASiCEWithCAdESAsn1EvidenceRecordTstRenewalValidationTest extends AbstractA
         assertEquals(2, Utils.collectionSize(tstRenewal.getReferenceValidations()));
         for (ReferenceValidation referenceValidation : tstRenewal.getReferenceValidations()) {
             if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP == referenceValidation.getType()) {
-                assertNull(referenceValidation.getName());
+                assertNull(referenceValidation.getDocumentName());
                 assertTrue(referenceValidation.isFound());
                 assertTrue(referenceValidation.isIntact());
                 arcTstRefFound = true;
             } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == referenceValidation.getType()) {
-                assertNull(referenceValidation.getName());
+                assertNull(referenceValidation.getDocumentName());
                 assertFalse(referenceValidation.isFound());
                 assertFalse(referenceValidation.isIntact());
                 orphanRefFound = true;

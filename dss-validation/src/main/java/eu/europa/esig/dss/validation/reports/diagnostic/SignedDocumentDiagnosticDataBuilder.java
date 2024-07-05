@@ -644,7 +644,9 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	private XmlDigestMatcher getXmlDigestMatcher(ReferenceValidation referenceValidation) {
 		XmlDigestMatcher ref = new XmlDigestMatcher();
 		ref.setType(referenceValidation.getType());
-		ref.setName(referenceValidation.getName());
+		ref.setId(referenceValidation.getId());
+		ref.setUri(referenceValidation.getUri());
+		ref.setDocumentName(referenceValidation.getDocumentName());
 		Digest digest = referenceValidation.getDigest();
 		if (digest != null) {
 			ref.setDigestValue(digest.getValue());
@@ -1123,7 +1125,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		digestMatcher.setDataIntact(timestampToken.isMessageImprintDataIntact());
 		ManifestFile manifestFile = timestampToken.getManifestFile();
 		if (manifestFile != null) {
-			digestMatcher.setName(manifestFile.getFilename());
+			digestMatcher.setDocumentName(manifestFile.getFilename());
 		}
 		return digestMatcher;
 	}
@@ -1141,7 +1143,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 				}
 				digestMatcher.setDataFound(entry.isFound());
 				digestMatcher.setDataIntact(entry.isIntact());
-				digestMatcher.setName(entry.getFileName());
+				digestMatcher.setUri(entry.getUri());
+				digestMatcher.setDocumentName(entry.getDocumentName());
 
 				digestMatchers.add(digestMatcher);
 			}

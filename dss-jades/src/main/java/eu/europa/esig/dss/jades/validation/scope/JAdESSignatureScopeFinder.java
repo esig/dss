@@ -89,8 +89,8 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				} else if (referenceValidations.size() == 1) {
 					return getSignatureScopeFromOriginalDocuments(originalDocuments);
 					
-				} else if (referenceValidation.getName() != null) {
-					DSSDocument documentByName = getDocumentByName(originalDocuments, referenceValidation.getName());
+				} else if (referenceValidation.getUri() != null) {
+					DSSDocument documentByName = getDocumentByName(originalDocuments, referenceValidation.getUri());
 					result.add(getSignatureScopeFromOriginalDocument(documentByName));
 					
 				}

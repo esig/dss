@@ -10,13 +10,13 @@
             <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
-                <DigestMatcher type="MANIFEST" name="Signature_1372744990848-Reference-0">
+                <DigestMatcher type="MANIFEST" id="Signature_1372744990848-Reference-0">
                     <DigestMethod>SHA512</DigestMethod>
                     <DigestValue>Nrjc6xlFJ1AI6Iekn11mlbyn3p1VHU4pEHQuVPJ3jpbVEuVCskr+91bupUxSP7kvBAiJFsjKNy6yCeUTqy030Q==</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#Signature_1372744990848_SignedProperties">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#Signature_1372744990848_SignedProperties">
                     <DigestMethod>SHA512</DigestMethod>
                     <DigestValue>eh8fjDz1Hk5sNTENKze0rVimqQO9/0GNrmLk5dB9yIQ3Xpz47+1h61u8z2fl9CTKeqa/lOPytDgYPeq3oRB2Sw==</DigestValue>
                     <DataFound>true</DataFound>

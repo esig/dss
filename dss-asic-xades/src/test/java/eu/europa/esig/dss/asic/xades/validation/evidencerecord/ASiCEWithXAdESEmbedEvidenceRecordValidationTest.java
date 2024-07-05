@@ -155,9 +155,9 @@ class ASiCEWithXAdESEmbedEvidenceRecordValidationTest extends AbstractASiCWithEv
             assertNotNull(digestMatcher.getDigestValue());
             assertTrue(digestMatcher.isDataFound());
             assertTrue(digestMatcher.isDataIntact());
-            if ("test.zip".equals(digestMatcher.getName())) {
+            if ("test.zip".equals(digestMatcher.getDocumentName())) {
                 zipFileFound = true;
-            } else if ("test.txt".equals(digestMatcher.getName())) {
+            } else if ("test.txt".equals(digestMatcher.getDocumentName())) {
                 txtFileFound = true;
             }
         }

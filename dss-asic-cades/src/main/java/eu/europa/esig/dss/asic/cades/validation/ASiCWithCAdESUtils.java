@@ -95,7 +95,7 @@ public class ASiCWithCAdESUtils {
 				ManifestFile manifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
 				if (manifestFile != null) {
 					for (ManifestEntry entry : manifestFile.getEntries()) {
-						if (filename != null && filename.equals(entry.getFileName())) {
+						if (filename != null && filename.equals(entry.getUri())) {
 							return true;
 						}
 					}

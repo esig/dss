@@ -124,7 +124,7 @@ public class ASiCEWithXAdESManifestBuilder {
 
 		for (ManifestEntry entry : getEntries()) {
 			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestElement.FILE_ENTRY);
-			DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, entry.getFileName());
+			DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, entry.getUri());
 			MimeType mimeType = entry.getMimeType();
 			if (mimeType != null) {
 				DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, mimeType.getMimeTypeString());

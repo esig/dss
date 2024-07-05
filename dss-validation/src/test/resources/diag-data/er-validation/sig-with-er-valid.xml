@@ -10,13 +10,13 @@
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="OBJECT" name="r-id-21f8d7ca498dae29cab245dcc558b138-1">
+                <DigestMatcher type="OBJECT" id="r-id-21f8d7ca498dae29cab245dcc558b138-1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#xades-id-21f8d7ca498dae29cab245dcc558b138">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-21f8d7ca498dae29cab245dcc558b138">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>ISnYcpdZuxQkFziPfEpeoJck/BWSF1VKFuDkwyukCHY=</DigestValue>
                     <DataFound>true</DataFound>
@@ -107,7 +107,7 @@
             <Type>XML Evidence Record</Type>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="original-409d4d7b-b62c-4c2e-a4f0-a90d97d4a5e5-signed-xades-baseline-t-extended-xades-baseline-lta.xml">
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="original-409d4d7b-b62c-4c2e-a4f0-a90d97d4a5e5-signed-xades-baseline-t-extended-xades-baseline-lta.xml">
                     <DigestMethod>SHA224</DigestMethod>
                     <DigestValue>NzPNl3/46xi5hzV+Is7Zn0YJfzHssjnoeK5jdg6D5NU=</DigestValue>
                     <DataFound>true</DataFound>
@@ -868,19 +868,19 @@
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="original-409d4d7b-b62c-4c2e-a4f0-a90d97d4a5e5-signed-xades-baseline-t-extended-xades-baseline-lta.xml">
+            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="original-409d4d7b-b62c-4c2e-a4f0-a90d97d4a5e5-signed-xades-baseline-t-extended-xades-baseline-lta.xml">
                 <DigestMethod>SHA512</DigestMethod>
                 <DigestValue>AsfjpbnwGd42uBBuG98Qdhbg7Xfk56TpO/TPwg8l+bW1kXRTQuETpnWA2Onnw/Pc15qSrGQHGypeUXnRu7NvtA==</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="CIAO">
+            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="CIAO">
                 <DigestMethod>SHA512</DigestMethod>
                 <DigestValue>CHkIvVR6s9y1wDnbf/ypWSeC12jZW095TJLmc9zPQea1gFBoo9S78YJsjaYfkipX+RwSOQB7Yg2/9e2MaioGMg==</DigestValue>
                 <DataFound>true</DataFound>
                 <DataIntact>true</DataIntact>
             </DigestMatcher>
-            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="HELLO">
+            <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="HELLO">
                 <DigestMethod>SHA512</DigestMethod>
                 <DigestValue>M98tzDHTXnvCVovr9dc6HkOg5iS2Ubpe8xV7v7coRGZ0ojG4tul/oeVww7HebWxndUGyYqwir9pYePorWRx/CA==</DigestValue>
                 <DataFound>true</DataFound>

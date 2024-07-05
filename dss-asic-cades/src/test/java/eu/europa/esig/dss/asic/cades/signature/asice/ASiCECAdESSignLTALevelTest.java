@@ -123,7 +123,7 @@ class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
         		assertEquals(8, manifestFile.getEntries().size());
         		ManifestEntry rootFile = manifestFile.getRootFile();
         		assertNotNull(rootFile);
-        		ManifestFile rootManifestFile = getManifestFileByName(rootFile.getFileName(), result.getArchiveManifestDocuments());
+        		ManifestFile rootManifestFile = getManifestFileByName(rootFile.getUri(), result.getArchiveManifestDocuments());
         		assertNull(rootManifestFile.getRootFile());
         	}
         }

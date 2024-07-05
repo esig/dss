@@ -377,6 +377,27 @@ DocumentValidator documentValidator = ...
 documentValidator.setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE);
 ----
 
+a|`ManifestEntry#getName` has been deprecated     a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.ManifestEntry;
+
+ManifestEntry manifestEntry = ...
+String name = manifestEntry.getName();
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.model.ManifestEntry;
+
+ManifestEntry manifestEntry = ...
+String uri = manifestEntry.getUri();
+String documentName = manifestEntry.getDocumentName();
+----
+or use _#getDocumentName_ for identified entries
+----
+String documentName = manifestEntry.getDocumentName();
+----
+
 |===
 
 [cols="2,5,5"]

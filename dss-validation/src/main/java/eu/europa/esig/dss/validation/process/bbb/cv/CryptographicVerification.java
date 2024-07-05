@@ -37,8 +37,10 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.EvidenceRecordHashTreeRenewalTimestampCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryExistenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryGroupCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataExistenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
+import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataNameMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 
 import java.util.List;
@@ -100,11 +102,16 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		 */
 
 		List<XmlDigestMatcher> digestMatchers = token.getDigestMatchers();
-		
+		boolean containsManifest = containsManifest(digestMatchers);
+
 		if (Utils.isCollectionNotEmpty(digestMatchers)) {
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
 				if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == digestMatcher.getType()) {
 					// Evidence Records optionally allow additional digests to be present within first data group
+					continue;
+				}
+				if (containsManifest && DigestMatcherType.MANIFEST_ENTRY == digestMatcher.getType()) {
+					// move XML Manifest entries validation to a separate validation block
 					continue;
 				}
 				/*
@@ -124,7 +131,15 @@ public class CryptographicVerification extends Chain<XmlCV> {
 				 * failure, the building block shall return the indication FAILED with the
 				 * sub-indication HASH_FAILURE.
 				 */
-				item = item.setNextItem(referenceDataIntact(digestMatcher));
+				// to allow customizable validation of only identified entries
+				if (digestMatcher.isDataFound()) {
+					item = item.setNextItem(referenceDataIntact(digestMatcher));
+				}
+
+				// perform validation when only both URI and document name are present
+				if (Utils.isStringNotEmpty(digestMatcher.getUri()) && Utils.isStringNotEmpty(digestMatcher.getDocumentName())) {
+					item = item.setNextItem(referenceDataNameCheck(digestMatcher));
+				}
 			}
 
 			if (isEvidenceRecordHashTreeRenewalTimestamp()) {
@@ -139,15 +154,36 @@ public class CryptographicVerification extends Chain<XmlCV> {
 			}
 		}
 
-		// If we are verifying a signature based on Manifest, check if at least one
-		// entry is found
-		if (containsManifest(digestMatchers)) {
-			ChainItem<XmlCV> manifestEntryExistence = manifestEntryExistence(digestMatchers);
+		if (containsManifest) {
+
+			ChainItem<XmlCV> manifestEntryFound = manifestEntryExistence(digestMatchers);
 			if (item == null) {
-				firstItem = item = manifestEntryExistence;
+				firstItem = item = manifestEntryFound;
 			} else {
-				item = item.setNextItem(manifestEntryExistence);
+				item = item.setNextItem(manifestEntryFound);
 			}
+
+			// manifest entries may be omitted when no detached data is provided to the validation
+			if (containsManifestEntries(digestMatchers)) {
+
+				item = item.setNextItem(manifestEntryGroup(digestMatchers));
+
+				for (XmlDigestMatcher digestMatcher : digestMatchers) {
+					if (DigestMatcherType.MANIFEST_ENTRY == digestMatcher.getType()) {
+
+						if (digestMatcher.isDataFound()) {
+							item = item.setNextItem(manifestEntryIntact(digestMatcher));
+						}
+
+						if (Utils.isStringNotEmpty(digestMatcher.getUri()) && Utils.isStringNotEmpty(digestMatcher.getDocumentName())) {
+							item = item.setNextItem(manifestEntryNameCheck(digestMatcher));
+						}
+
+					}
+				}
+
+			}
+
 		}
 
 		/*
@@ -169,12 +205,11 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	}
 
 	private boolean containsManifest(List<XmlDigestMatcher> digestMatchers) {
-		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			if (DigestMatcherType.MANIFEST.equals(xmlDigestMatcher.getType())) {
-				return true;
-			}
-		}
-		return false;
+		return digestMatchers.stream().anyMatch(d -> DigestMatcherType.MANIFEST == d.getType());
+	}
+
+	private boolean containsManifestEntries(List<XmlDigestMatcher> digestMatchers) {
+		return digestMatchers.stream().anyMatch(d -> DigestMatcherType.MANIFEST_ENTRY == d.getType());
 	}
 
 	private ChainItem<XmlCV> referenceDataFound(XmlDigestMatcher digestMatcher) {
@@ -187,9 +222,29 @@ public class CryptographicVerification extends Chain<XmlCV> {
 		return new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
+	private ChainItem<XmlCV> referenceDataNameCheck(XmlDigestMatcher digestMatcher) {
+		LevelConstraint constraint = validationPolicy.getReferenceDataNameMatchConstraint(context);
+		return new ReferenceDataNameMatchCheck<>(i18nProvider, result, digestMatcher, constraint);
+	}
+
 	private ChainItem<XmlCV> manifestEntryExistence(List<XmlDigestMatcher> digestMatchers) {
 		LevelConstraint constraint = validationPolicy.getManifestEntryObjectExistenceConstraint(context);
 		return new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, constraint);
+	}
+
+	private ChainItem<XmlCV> manifestEntryGroup(List<XmlDigestMatcher> digestMatchers) {
+		LevelConstraint constraint = validationPolicy.getManifestEntryObjectGroupConstraint(context);
+		return new ManifestEntryGroupCheck(i18nProvider, result, digestMatchers, constraint);
+	}
+
+	private ChainItem<XmlCV> manifestEntryIntact(XmlDigestMatcher digestMatcher) {
+		LevelConstraint constraint = validationPolicy.getManifestEntryObjectIntactConstraint(context);
+		return new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
+	}
+
+	private ChainItem<XmlCV> manifestEntryNameCheck(XmlDigestMatcher digestMatcher) {
+		LevelConstraint constraint = validationPolicy.getManifestEntryNameMatchConstraint(context);
+		return new ReferenceDataNameMatchCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> signatureIntact() {

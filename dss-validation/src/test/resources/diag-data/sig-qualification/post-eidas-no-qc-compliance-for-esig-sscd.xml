@@ -10,13 +10,13 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="r-id-c2d6907a19c8c7d0443b26ad2087b1f3-1">
+                <DigestMatcher type="REFERENCE" id="r-id-c2d6907a19c8c7d0443b26ad2087b1f3-1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>kfsK43NJaZNZwDUkwbME+Sn+ziU/Rl4K0N2bvfbuwvk=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#xades-id-c2d6907a19c8c7d0443b26ad2087b1f3">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-c2d6907a19c8c7d0443b26ad2087b1f3">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>QRGFKCCkcYi5GVEgim/46YELoOwyJjQCIQHRs/ixWas=</DigestValue>
                     <DataFound>true</DataFound>

@@ -8,7 +8,7 @@
 	        <ClaimedSigningTime>2016-04-19T11:50:47Z</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="ref1">
+                <DigestMatcher type="REFERENCE" id="ref1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>true</DataFound>
@@ -64,7 +64,7 @@
 	        <ClaimedSigningTime>2016-04-19T11:53:08Z</ClaimedSigningTime>
 	        <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="ref1">
+                <DigestMatcher type="REFERENCE" id="ref1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>true</DataFound>

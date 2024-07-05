@@ -15,7 +15,7 @@
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIG_D_ENTRY" name="sample.json">
+                <DigestMatcher type="SIG_D_ENTRY" uri="sample.json" documentName="sample.json">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>iCj0lrb4Mhx4xd6zk4kxqGLGnlqrKpd5dobC3WtA6AM=</DigestValue>
                     <DataFound>true</DataFound>

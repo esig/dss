@@ -66,7 +66,7 @@ class XAdESEnvelopedManifestTest extends AbstractXAdESTestValidation {
             } else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
                 ++manifestRefCounter;
             }
-            if (Utils.isStringBlank(digestMatcher.getName())) {
+            if (Utils.isStringBlank(digestMatcher.getUri())) {
                 ++emptyRefCounter;
             }
         }

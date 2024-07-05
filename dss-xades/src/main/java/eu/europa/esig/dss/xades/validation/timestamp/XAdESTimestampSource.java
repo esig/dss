@@ -382,9 +382,11 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	private boolean isContentTimestampedReference(XAdESReferenceValidation xadesReferenceValidation, List<TimestampInclude> includes) {
-		for (TimestampInclude timestampInclude : includes) {
-			if (xadesReferenceValidation.getId().equals(timestampInclude.getURI())) {
-				return true;
+		if (xadesReferenceValidation.getId() != null) {
+			for (TimestampInclude timestampInclude : includes) {
+				if (xadesReferenceValidation.getId().equals(timestampInclude.getURI())) {
+					return true;
+				}
 			}
 		}
 		return false;

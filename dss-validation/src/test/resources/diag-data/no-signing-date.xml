@@ -8,7 +8,7 @@
             <SignatureFormat>XML-NOT-ETSI</SignatureFormat>
             <StructuralValidation valid="true" />
 	        <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="#test">
+                <DigestMatcher type="REFERENCE" uri="#test">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
                     <DataFound>false</DataFound>

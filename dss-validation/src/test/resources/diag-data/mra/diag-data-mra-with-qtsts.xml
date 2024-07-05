@@ -26,13 +26,13 @@
             <SignatureFormat>CAdES-C</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="MESSAGE_DIGEST" name="META-INF/ASiCManifest001.xml">
+                <DigestMatcher type="MESSAGE_DIGEST" documentName="META-INF/ASiCManifest001.xml">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>DrnJemey/6EhDyfz7IB3ayIHD7QLjjfYJYztTlK48bY=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="MANIFEST_ENTRY" name="UA_DIIA-A-E-C-B-B-V-2.pdf">
+                <DigestMatcher type="MANIFEST_ENTRY" uri="UA_DIIA-A-E-C-B-B-V-2.pdf" documentName="UA_DIIA-A-E-C-B-B-V-2.pdf">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>wOWeXgQ0MadXEgU0G2uEleegtJ6o1DWURqrntQfvKM8=</DigestValue>
                     <DataFound>true</DataFound>

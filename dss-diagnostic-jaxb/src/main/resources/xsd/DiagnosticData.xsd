@@ -1003,7 +1003,9 @@
 					<xs:element name="DataIntact" type="xs:boolean" />
 				</xs:sequence>
 				<xs:attribute name="type" type="DigestMatcherType" use="required" />
-				<xs:attribute name="name" type="xs:string" use="optional"/>
+				<xs:attribute name="id" type="xs:string" use="optional"/>
+				<xs:attribute name="uri" type="xs:string" use="optional"/>
+				<xs:attribute name="documentName" type="xs:string" use="optional"/>
 				<xs:attribute name="duplicated" type="xs:boolean" use="optional" default="false" />
 			</xs:extension>
 		</xs:complexContent>

@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.validation.executor;
+package eu.europa.esig.dss.validation.executor.process;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
@@ -45,9 +45,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualificat
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
@@ -101,9 +101,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
@@ -128,7 +128,6 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.ValidationLevel;
-import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
@@ -174,10 +173,9 @@ import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
-import org.junit.jupiter.api.BeforeAll;
+import jakarta.xml.bind.JAXB;
 import org.junit.jupiter.api.Test;
 
-import jakarta.xml.bind.JAXB;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.math.BigInteger;
@@ -188,7 +186,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -201,14 +198,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
-	
-	private static I18nProvider i18nProvider;
-	
-	@BeforeAll
-	static void init() {
-		i18nProvider = new I18nProvider(Locale.getDefault());
-	}
+public class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 
 	@Test
 	void skipRevocationDataValidation() throws Exception {
@@ -19189,36 +19179,6 @@ class CustomProcessExecutorTest extends AbstractTestValidationExecutor {
 		Reports reports = executor.execute();
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(SignatureQualification.UNKNOWN_QC_QSCD, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
-	}
-
-	private void validateBestSigningTimes(Reports reports) {
-		DetailedReport detailedReport = reports.getDetailedReport();
-		List<eu.europa.esig.dss.detailedreport.jaxb.XmlSignature> xmlSignatures = detailedReport.getSignatures();
-		for (eu.europa.esig.dss.detailedreport.jaxb.XmlSignature xmlSignature : xmlSignatures) {
-			assertNotNull(xmlSignature.getValidationProcessBasicSignature().getProofOfExistence());
-			assertNotNull(xmlSignature.getValidationProcessLongTermData().getProofOfExistence());
-			assertNotNull(xmlSignature.getValidationProcessArchivalData().getProofOfExistence());
-		}
-	}
-
-	private ValidationPolicy loadTLPolicy() throws Exception {
-		return ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
-	}
-
-	private ValidationPolicy loadPolicyNoRevoc() throws Exception {
-		return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/diag-data/policy/constraint-no-revoc.xml"));
-	}
-
-	private ValidationPolicy loadPolicyRevocSha1OK() throws Exception {
-		return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/diag-data/policy/revocation-sha1-ok-policy.xml"));
-	}
-
-	private ValidationPolicy loadPolicyCryptoWarn() throws Exception {
-		EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
-		CryptographicConstraint cryptographicConstraint = defaultPolicy.getDefaultCryptographicConstraint();
-		cryptographicConstraint.setLevel(Level.WARN);
-		cryptographicConstraint.getAlgoExpirationDate().setLevel(Level.WARN);
-		return defaultPolicy;
 	}
 
 }

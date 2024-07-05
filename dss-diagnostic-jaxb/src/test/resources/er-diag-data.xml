@@ -10,13 +10,13 @@
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="XPOINTER" name="REF-ID1">
+                <DigestMatcher type="XPOINTER" id="REF-ID1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>8AzgcURkeZDp/DL2CgdfJVCpi8HUm73bbsUj79VEIhA=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#xades-id-270f7c0b892f5ad2a1178a20b68d101a">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-270f7c0b892f5ad2a1178a20b68d101a">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>Hx6c9gExsyygrzGXS1AlKp1+NWcFDjlpS7o7gmJIHx0=</DigestValue>
                     <DataFound>true</DataFound>
@@ -118,13 +118,13 @@
             <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="r-id-6af532b50e9d95dfe0118830e0c0a6fe-1">
+                <DigestMatcher type="REFERENCE" id="r-id-6af532b50e9d95dfe0118830e0c0a6fe-1">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>8AzgcURkeZDp/DL2CgdfJVCpi8HUm73bbsUj79VEIhA=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#xades-id-6af532b50e9d95dfe0118830e0c0a6fe">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-6af532b50e9d95dfe0118830e0c0a6fe">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>yztLHC5hEogWWzPW8+IZ5Y9pFA7VrYhN/IXw8Pp3HYM=</DigestValue>
                     <DataFound>true</DataFound>
@@ -220,7 +220,7 @@
             <Type>XML Evidence Record</Type>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566.xml">
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566.xml">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>dCeyHarzzN3cWzVNTMKZyY00rW4gNGGto/2ZLfzpsXM=</DigestValue>
                     <DataFound>true</DataFound>
@@ -271,7 +271,7 @@
             <Type>XML Evidence Record</Type>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
-                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" name="Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566.xml">
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566.xml">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>dCeyHarzzN3cWzVNTMKZyY00rW4gNGGto/2ZLfzpsXM=</DigestValue>
                     <DataFound>true</DataFound>

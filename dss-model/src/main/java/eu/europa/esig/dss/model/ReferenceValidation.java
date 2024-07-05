@@ -50,8 +50,22 @@ public class ReferenceValidation implements Serializable {
 	/** The digest value embedded in reference element */
 	private Digest digest;
 
-	/** Name of the reference */
+	/**
+	 * Name of the reference
+	 *
+	 * @deprecated since DSS 6.1. Please see {@code id} and {@code uri}
+	 */
+	@Deprecated
 	private String name;
+
+	/** The unique identifier of the reference. (E.g. for XAdES : reference Id attribute value) */
+	private String id;
+
+	/** The reference to the original document. (E.g. for XAdES : reference URI attribute value) */
+	private String uri;
+
+	/** Name of the matching document (when applicable) */
+	private String documentName;
 
 	/** List of used transforms to compute digest of the reference */
 	protected List<String> transforms;
@@ -148,7 +162,9 @@ public class ReferenceValidation implements Serializable {
 	 * Gets name of the reference
 	 *
 	 * @return {@link String}
+	 * @deprecated since DSS 6.1. Please see {@code #getId} and {@code #getUri} methods
 	 */
+	@Deprecated
 	public String getName() {
 		return name;
 	}
@@ -157,9 +173,65 @@ public class ReferenceValidation implements Serializable {
 	 * Sets name of the reference
 	 *
 	 * @param name {@link String}
+	 * @deprecated since DSS 6.1. Please see {@code #setId} and {@code #setUri} methods
 	 */
+	@Deprecated
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Gets the unique identifier of a reference. (E.g. for XAdES : reference Id attribute value)
+	 *
+	 * @return {@link String}
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the unique identifier of a reference. (E.g. for XAdES : reference Id attribute value)
+	 *
+	 * @param id {@link String}
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	/**
+	 * Gets the reference to the original document. (E.g. for XAdES : reference URI attribute value).
+	 *
+	 * @return {@link String}
+	 */
+	public String getUri() {
+		return uri;
+	}
+
+	/**
+	 * Sets the reference to the original document. (E.g. for XAdES : reference URI attribute value).
+	 *
+	 * @param uri {@link String}
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	/**
+	 * Gets matching document name
+	 *
+	 * @return {@link String}
+	 */
+	public String getDocumentName() {
+		return documentName;
+	}
+
+	/**
+	 * Sets the matching document name
+	 *
+	 * @param documentName {@link String}
+	 */
+	public void setDocumentName(String documentName) {
+		this.documentName = documentName;
 	}
 
 	/**

@@ -103,7 +103,7 @@ class ASiCETimestampMultiFilesTest extends AbstractASiCWithCAdESTestValidation {
 		int messageImprintCounter = 0;
 		int filesCounter = 0;
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			assertNotNull(xmlDigestMatcher.getName());
+			assertNotNull(xmlDigestMatcher.getDocumentName());
 			if (DigestMatcherType.MESSAGE_IMPRINT == xmlDigestMatcher.getType()) {
 				messageImprintCounter++;
 			} else if (DigestMatcherType.MANIFEST_ENTRY == xmlDigestMatcher.getType()) {

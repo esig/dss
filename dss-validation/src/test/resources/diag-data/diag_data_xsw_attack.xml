@@ -10,13 +10,13 @@
             <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
             <StructuralValidation valid="true" />
             <DigestMatchers>
-                <DigestMatcher type="REFERENCE" name="id-LockItSignatureReference-1x365793516" duplicated="true">
+                <DigestMatcher type="REFERENCE" id="id-LockItSignatureReference-1x365793516" duplicated="true">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>Xw4TKNDi1+bcDJvFQxVz9MMmmtyfqaB+oXd29yX7rCc=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>false</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="SIGNED_PROPERTIES" name="#SignedProperties-1814812070">
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#SignedProperties-1814812070">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>aZfjg/Az9sVSGnRQ4LIkBhSWDOD0oe86OmWkxBE9n7c=</DigestValue>
                     <DataFound>true</DataFound>

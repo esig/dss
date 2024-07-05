@@ -34,6 +34,7 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -70,7 +71,10 @@ class XAdESDoubleSignatureBAndLTATest extends AbstractXAdESTestSignature {
         assertEquals(1, signatures.size());
         firstSignatureId = signatures.get(0).getDSSId().asXmlId();
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MILLISECOND, 1);
         signatureParameters = new XAdESSignatureParameters();
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         documentToSign = signedDocument;
         DSSDocument doubleSignedDocument = super.sign();
