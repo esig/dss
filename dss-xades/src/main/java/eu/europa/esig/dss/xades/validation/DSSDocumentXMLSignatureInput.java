@@ -3,6 +3,7 @@ package eu.europa.esig.dss.xades.validation;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
+import org.apache.xml.security.signature.XMLSignatureInput;
 
 import java.io.InputStream;
 
@@ -10,7 +11,7 @@ import java.io.InputStream;
  * This class represents an implementation of an {@code XMLSignatureInput} created on a base of {@code DSSDocument}
  *
  */
-public class DSSDocumentXMLSignatureInput extends CloseableXMLSignatureInput {
+public class DSSDocumentXMLSignatureInput extends XMLSignatureInput {
 
     /** The detached document to be provided */
     private final DSSDocument document;

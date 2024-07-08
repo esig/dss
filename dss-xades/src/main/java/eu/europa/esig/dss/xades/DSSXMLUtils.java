@@ -161,7 +161,7 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This class is an utility class and cannot be instantiated.
+	 * This class is a utility class and cannot be instantiated.
 	 */
 	private DSSXMLUtils() {
 		// empty
@@ -919,7 +919,7 @@ public final class DSSXMLUtils {
 	private static boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
 		final List<Reference> references = xadesCounterSignature.getReferences();
 		for (final Reference reference : references) {
-			if (DSSXMLUtils.isCounterSignature(reference, xadesCounterSignature.getXAdESPaths())) {
+			if (isCounterSignature(reference, xadesCounterSignature.getXAdESPaths())) {
 				return true;
 			}
 		}
@@ -1068,7 +1068,7 @@ public final class DSSXMLUtils {
 		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPath.REFERENCE_PATH);
 		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 			Element referenceElement = (Element) referenceNodeList.item(ii);
-			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
+			Digest digest = getDigestAndValue(referenceElement);
 			if (digest != null) {
 				digestAlgorithms.add(digest.getAlgorithm());
 			}
@@ -1149,7 +1149,7 @@ public final class DSSXMLUtils {
 		if (reference != null) {
 			Element element = reference.getElement();
 			if (element != null) {
-				return DSSXMLUtils.getAttribute(element, XMLDSigAttribute.ID.getAttributeName());
+				return getAttribute(element, XMLDSigAttribute.ID.getAttributeName());
 			}
 		}
 		return null;
@@ -1167,7 +1167,7 @@ public final class DSSXMLUtils {
 		if (reference != null) {
 			Element element = reference.getElement();
 			if (element != null) {
-				return DSSXMLUtils.getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
+				return getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
 			}
 		}
 		return null;
@@ -1177,20 +1177,10 @@ public final class DSSXMLUtils {
 	 * Checks if the original reference document content can be obtained (de-referenced)
 	 *
 	 * @param reference {@link Reference} to check
-	 * @return TRUE if the de-referencing succeeds, FALSE otherwise
+	 * @return TRUE if the de-referencing is succeeding, FALSE otherwise
 	 */
 	public static boolean isAbleToDeReferenceContent(Reference reference) {
-		try {
-			return reference.getContentsBeforeTransformation() != null;
-
-		} catch (ReferenceNotInitializedException e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug(String.format(
-						"Cannot get the pointed bytes by a reference with uri='%s'. Reason : [%s]",
-						reference.getURI(), e.getMessage()));
-			}
-			return false;
-		}
+		return getClosedContentsBeforeTransformation(reference) != null;
 	}
 
 	/**
@@ -1317,7 +1307,7 @@ public final class DSSXMLUtils {
 	 */
 	public static String getDocumentName(Reference reference) {
 		try {
-			XMLSignatureInput xmlSignatureInput = reference.getContentsBeforeTransformation();
+			XMLSignatureInput xmlSignatureInput = getClosedContentsBeforeTransformation(reference);
 			if (xmlSignatureInput instanceof DSSDocumentXMLSignatureInput) {
 				return ((DSSDocumentXMLSignatureInput) xmlSignatureInput).getDocumentName();
 			}
@@ -1330,6 +1320,34 @@ public final class DSSXMLUtils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * The close method is a workaround for the issue originating from
+	 * {@link <a href="https://issues.apache.org/jira/browse/SANTUARIO-622">SANTUARIO-622</a>},
+	 * as the {@code XMLSignatureInput} instantiated with an {@code InputStream}, does not close
+	 * the {@code InputStream}, unless it is consumed.
+	 *
+	 * @param reference {@link Reference}
+	 * @return {@link XMLSignatureInput}
+	 */
+	private static XMLSignatureInput getClosedContentsBeforeTransformation(Reference reference) {
+		try {
+			XMLSignatureInput xmlSignatureInput = reference.getContentsBeforeTransformation();
+			if (xmlSignatureInput != null) {
+				Utils.closeQuietly(xmlSignatureInput.getOctetStreamReal());
+			}
+			return xmlSignatureInput;
+
+		} catch (Exception e) {
+			String errorMessage = "Unable to get contents before transformation for a reference with Id '{}' : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, reference.getId(), e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, reference.getId(), e.getMessage());
+			}
+			return null;
+		}
 	}
 
 }
