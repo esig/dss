@@ -2,15 +2,15 @@ package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import org.apache.xml.security.signature.XMLSignatureInput;
+
+import java.io.InputStream;
 
 /**
  * This class represents an implementation of an {@code XMLSignatureInput} created on a base of {@code DSSDocument}
  *
  */
-public class DSSDocumentXMLSignatureInput extends XMLSignatureInput {
+public class DSSDocumentXMLSignatureInput extends CloseableXMLSignatureInput {
 
     /** The detached document to be provided */
     private final DSSDocument document;
@@ -21,12 +21,12 @@ public class DSSDocumentXMLSignatureInput extends XMLSignatureInput {
      * @param document {@link DSSDocument}
      */
     public DSSDocumentXMLSignatureInput(final DSSDocument document) {
-        super(getByteArray(document));
+        super(toInputStream(document));
         this.document = document;
     }
 
-    private static byte[] getByteArray(DSSDocument document) {
-        return DSSUtils.toByteArray(document);
+    private static InputStream toInputStream(DSSDocument document) {
+        return document.openStream();
     }
 
     /**
