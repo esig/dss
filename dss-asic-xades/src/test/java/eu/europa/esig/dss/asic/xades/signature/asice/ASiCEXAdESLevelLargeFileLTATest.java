@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import eu.europa.esig.dss.asic.common.TempFileSecureContainerHandlerBuilder;
+import eu.europa.esig.dss.asic.common.SecureContainerHandlerBuilder;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -32,6 +32,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +58,12 @@ class ASiCEXAdESLevelLargeFileLTATest extends AbstractASiCEXAdESTestSignature {
 	@BeforeEach
 	void init() throws Exception {
 
-		ZipUtils.getInstance().setZipContainerHandlerBuilder(new TempFileSecureContainerHandlerBuilder());
+		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
+
+		SecureContainerHandlerBuilder secureContainerHandlerBuilder = new SecureContainerHandlerBuilder()
+				.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
+		ZipUtils.getInstance().setZipContainerHandlerBuilder(secureContainerHandlerBuilder);
 
 		documentToSign = generateLargeFile();
 

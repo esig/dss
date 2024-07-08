@@ -28,12 +28,12 @@ import java.util.Objects;
 
 /**
  * The class is used for processing (reading and creation) of ZIP archives
- * 
- * See zipContainerHandler
+ * See {@code eu.europa.esig.dss.asic.common.ZipContainerHandler}
  *
  */
 public final class ZipUtils {
 
+	/** Singleton */
 	private static ZipUtils singleton;
 
 	/**

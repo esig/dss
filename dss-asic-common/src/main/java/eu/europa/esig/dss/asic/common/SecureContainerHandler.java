@@ -20,18 +20,18 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -93,6 +94,15 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * NOTE: shall be reset on every use
 	 */
 	private int malformedFilesCounter = 0;
+
+	/**
+	 * The builder to be used to create a new {@code DSSResourcesHandler} for each internal call,
+	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
+	 * The resources are used on a document creation
+	 *
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}, working with data in memory
+	 */
+	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = ASiCUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
 
 	/**
 	 * Default constructor instantiating handler with default configuration
@@ -165,6 +175,19 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 */
 	public void setExtractComments(boolean extractComments) {
 		this.extractComments = extractComments;
+	}
+
+	/**
+	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesHandler}
+	 * creation in internal methods.
+	 * {@code DSSResourcesHandler} defines a way to operate with OutputStreams and create {@code DSSDocument}s.
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		Objects.requireNonNull(resourcesHandlerBuilder, "DSSResourcesHandlerBuilder cannot be null!");
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
 
 	@Override
@@ -292,13 +315,23 @@ public class SecureContainerHandler implements ZipContainerHandler {
 
 	@Override
 	public DSSDocument createZipArchive(List<DSSDocument> containerEntries, Date creationTime, String zipComment) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 	ZipOutputStream zos = new ZipOutputStream(baos)) {
+		try (DSSResourcesHandler dssResourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = dssResourcesHandler.createOutputStream(); ZipOutputStream zos = new ZipOutputStream(os)) {
 			buildZip(containerEntries, creationTime, zipComment, zos);
-			return new InMemoryDocument(baos.toByteArray());
+			return dssResourcesHandler.writeToDSSDocument();
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to create an ASiC container. Reason : %s", e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * This method instantiates a new {@code DSSResourcesFactory}
+	 *
+	 * @return {@link DSSResourcesHandler}
+	 * @throws IOException if an error occurs on DSSResourcesHandler instantiation
+	 */
+	protected DSSResourcesHandler instantiateResourcesHandler() throws IOException {
+		return resourcesHandlerBuilder.createResourcesHandler();
 	}
 
 	/**
@@ -442,11 +475,12 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 */
 	private DSSDocument getCurrentEntryDocument(ZipInputStream zis, ZipEntry entry, long containerSize) {
 		long allowedSize = containerSize * maxCompressionRatio;
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			secureCopy(zis, baos, allowedSize);
-			baos.flush();
+		try (DSSResourcesHandler dssResourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = dssResourcesHandler.createOutputStream();) {
+			secureCopy(zis, os, allowedSize);
+			os.flush();
 
-			DSSDocument currentDocument = new InMemoryDocument(baos.toByteArray());
+			DSSDocument currentDocument = dssResourcesHandler.writeToDSSDocument();
 			String fileName = entry.getName();
 			currentDocument.setName(entry.getName());
 			currentDocument.setMimeType(MimeType.fromFileName(fileName));
