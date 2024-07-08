@@ -150,6 +150,12 @@ public final class ASiCUtils {
 	/** Identifies a first bytes of a zip archive document */
 	public static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
 
+	/** The zip comment identifier in the end of ZIP archive */
+	private static final byte[] MAGIC_DIR = {0x50, 0x4b, 0x05, 0x06};
+
+	/** The maximum number of bytes to be read in a file to extract a zip comment */
+	private static final int MAX_TO_READ = 0xFFFF + 2 + MAGIC_DIR.length;
+
 	/**
 	 * Singleton
 	 */
@@ -866,18 +872,14 @@ public final class ASiCUtils {
 	 * @return {@link String} zip comment
 	 */
 	public static String getZipComment(DSSDocument archiveContainer) {
-
-		final byte[] magicDir = {0x50, 0x4b, 0x05, 0x06};
-
-		int maxUnsignedInt = 0xFFFF;
-		int maxToRead = maxUnsignedInt + 2 + magicDir.length;
-
 		long fileLength = getFileLength(archiveContainer);
-
 		try (InputStream is = archiveContainer.openStream()) {
-
-			if (fileLength > maxToRead) {
-				is.skip(fileLength - maxToRead);
+			if (fileLength > MAX_TO_READ) {
+				long toSkip = fileLength - MAX_TO_READ;
+				long skipped = is.skip(toSkip);
+				if (skipped != toSkip) {
+					throw new IOException("Different amount of bytes have been skipped!");
+				}
 			}
 
 			byte[] buffer = DSSUtils.toByteArray(is);
@@ -887,13 +889,12 @@ public final class ASiCUtils {
 			}
 
 			final int len = buffer.length;
-			final byte[] magicDirEnd = {0x50, 0x4b, 0x05, 0x06};
 
 			// Check the buffer from the end
 			for (int ii = len - 22; ii >= 0; ii--) {
 				boolean isMagicStart = true;
-				for (int jj = 0; jj < magicDirEnd.length; jj++) {
-					if (buffer[ii + jj] != magicDirEnd[jj]) {
+				for (int jj = 0; jj < MAGIC_DIR.length; jj++) {
+					if (buffer[ii + jj] != MAGIC_DIR[jj]) {
 						isMagicStart = false;
 						break;
 					}

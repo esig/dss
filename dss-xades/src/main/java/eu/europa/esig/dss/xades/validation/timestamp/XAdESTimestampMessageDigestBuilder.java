@@ -210,7 +210,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			}
 			return messageDigest;
 
-		} catch (XMLSecurityException |IOException e) {
+		} catch (XMLSecurityException | IOException e) {
 			if (LOG.isDebugEnabled()) {
 				LOG.warn("Unable to extract AllDataObjectsTimestampData. Reason : {}", e.getMessage(), e);
 			} else {

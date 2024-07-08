@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
-import eu.europa.esig.dss.asic.common.SecureContainerHandler;
-import eu.europa.esig.dss.asic.common.SecureContainerHandlerBuilder;
-import eu.europa.esig.dss.asic.common.TempFileSecureContainerHandler;
+import eu.europa.esig.dss.asic.common.TempFileSecureContainerHandlerBuilder;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
@@ -72,14 +70,6 @@ class ASiCEXAdESLevelLargeFileLTATest extends AbstractASiCEXAdESTestSignature {
 
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
-	}
-
-	private class TempFileSecureContainerHandlerBuilder extends SecureContainerHandlerBuilder {
-
-		public SecureContainerHandler build() {
-			return new TempFileSecureContainerHandler();
-		}
-
 	}
 
 	private DSSDocument generateLargeFile() throws IOException {

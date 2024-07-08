@@ -294,7 +294,6 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	public DSSDocument createZipArchive(List<DSSDocument> containerEntries, Date creationTime, String zipComment) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			 	ZipOutputStream zos = new ZipOutputStream(baos)) {
-
 			buildZip(containerEntries, creationTime, zipComment, zos);
 			return new InMemoryDocument(baos.toByteArray());
 		} catch (IOException e) {
@@ -302,7 +301,18 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		}
 	}
 
-	protected void buildZip(List<DSSDocument> containerEntries, Date creationTime, String zipComment, ZipOutputStream zos) throws IOException {
+	/**
+	 * This method stores all {@code containerEntries} in a given order to a {@code ZipOutputStream}
+	 * with the given parameters
+	 *
+	 * @param containerEntries a list of {@link DSSDocument}s to store
+	 * @param creationTime {@link Date} ZIP archive creation time
+	 * @param zipComment {@link String} zip comment (optional)
+	 * @param zos {@link ZipOutputStream} to consume the ZIP entries
+	 * @throws IOException in case an error occurs on {@code ZipOutputStream} update
+	 */
+	protected void buildZip(List<DSSDocument> containerEntries, Date creationTime, String zipComment,
+							ZipOutputStream zos) throws IOException {
 		for (DSSDocument entry : containerEntries) {
 			final ZipEntry zipEntry = getZipEntry(entry, creationTime);
 			zos.putNextEntry(zipEntry);

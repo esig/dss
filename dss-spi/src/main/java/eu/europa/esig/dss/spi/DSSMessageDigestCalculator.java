@@ -80,14 +80,23 @@ public class DSSMessageDigestCalculator {
         }
     }
 
-    public void update(InputStream is) throws IOException {
-        if (is == null) {
+    /**
+     * Updates the digest by reading the provided {@code InputStream}.
+     * NOTE: the method consumes the {@code InputStream}, and closes it after.
+     *
+     * @param inputStream {@link InputStream}
+     * @throws IOException if an error is thrown on InputStream reading
+     */
+    public void update(InputStream inputStream) throws IOException {
+        if (inputStream == null) {
             return;
         }
-        int count;
-        byte[] buffer = new byte[4096];
-        while ((count = is.read(buffer)) >= 0) {
-            messageDigest.update(buffer, 0, count);
+        try (InputStream is = inputStream) {
+            int count;
+            byte[] buffer = new byte[4096];
+            while ((count = is.read(buffer)) >= 0) {
+                messageDigest.update(buffer, 0, count);
+            }
         }
     }
 
