@@ -124,7 +124,7 @@ public class InMemoryDocument extends CommonDocument {
 		Objects.requireNonNull(inputStream, "The InputStream is null");
 		try (InputStream is = inputStream; ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			int nRead;
-			byte[] data = new byte[2048];
+			byte[] data = new byte[8192];
 			while ((nRead = is.read(data, 0, data.length)) != -1) {
 				baos.write(data, 0, nRead);
 			}

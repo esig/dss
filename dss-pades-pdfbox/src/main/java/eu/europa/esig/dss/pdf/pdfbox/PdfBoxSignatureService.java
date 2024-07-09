@@ -186,7 +186,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			@Override
 			public byte[] sign(InputStream content) throws IOException {
 
-				byte[] b = new byte[4096];
+				byte[] b = new byte[8192];
 				int count;
 				while ((count = content.read(b)) > 0) {
 					digest.update(b, 0, count);

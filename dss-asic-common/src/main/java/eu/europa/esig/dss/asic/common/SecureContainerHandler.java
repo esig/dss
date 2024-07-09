@@ -403,7 +403,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		final CRC32 crc = new CRC32();
 		try (InputStream is = content.openStream()) {
 			int nbRead;
-			byte[] buffer = new byte[2048];
+			byte[] buffer = new byte[8192];
 			while ((nbRead = is.read(buffer)) != -1) {
 				crc.update(buffer, 0, nbRead);
 				size += nbRead;
@@ -430,8 +430,8 @@ public class SecureContainerHandler implements ZipContainerHandler {
 
 	/**
 	 * Returns the next entry from the given ZipInputStream by skipping corrupted or
-	 * not accessible files NOTE: returns null only when the end of ZipInputStream
-	 * is reached
+	 * not accessible files
+	 * NOTE: returns null only when the end of ZipInputStream is reached
 	 * 
 	 * @param zis {@link ZipInputStream} to get next entry from
 	 * @return list of file name {@link String}s
@@ -505,7 +505,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * @throws IOException if an exception occurs
 	 */
 	protected void secureCopy(InputStream is, OutputStream os, long allowedSize) throws IOException {
-		byte[] data = new byte[2048];
+		byte[] data = new byte[8192];
 		int nRead;
 		while ((nRead = is.read(data)) != -1) {
 			byteCounter += nRead;
@@ -522,7 +522,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * @throws IOException if an exception occurs
 	 */
 	protected void secureRead(InputStream is, long allowedSize) throws IOException {
-		byte[] data = new byte[2048];
+		byte[] data = new byte[8192];
 		int nRead;
 		while ((nRead = is.read(data)) != -1) {
 			byteCounter += nRead;

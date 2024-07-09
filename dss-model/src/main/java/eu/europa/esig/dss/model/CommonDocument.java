@@ -70,7 +70,7 @@ public abstract class CommonDocument implements DSSDocument {
 
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[8192];
 		int count = -1;
 		try (InputStream inStream = openStream()) {
 			while ((count = inStream.read(buffer)) > 0) {
@@ -112,7 +112,7 @@ public abstract class CommonDocument implements DSSDocument {
 		if (digest == null) {
 			try (InputStream is = openStream()) {
 				MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
-				final byte[] buffer = new byte[4096];
+				final byte[] buffer = new byte[8192];
 				int count;
 				while ((count = is.read(buffer)) > 0) {
 					messageDigest.update(buffer, 0, count);
