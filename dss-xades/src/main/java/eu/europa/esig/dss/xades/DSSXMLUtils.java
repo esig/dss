@@ -1061,14 +1061,14 @@ public final class DSSXMLUtils {
 	 * the provided {@code referenceContainer}
 	 *
 	 * @param referenceContainer {@link Element} containing the ds:Reference elements
-	 * @return a list of {@link DigestAlgorithm}s
+	 * @return a set of {@link DigestAlgorithm}s
 	 */
-	public static List<DigestAlgorithm> getReferenceDigestAlgos(Element referenceContainer) {
-		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
+	public static Set<DigestAlgorithm> getReferenceDigestAlgos(Element referenceContainer) {
+		final Set<DigestAlgorithm> digestAlgorithms = new HashSet<>();
 		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPath.REFERENCE_PATH);
 		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 			Element referenceElement = (Element) referenceNodeList.item(ii);
-			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
+			Digest digest = getDigestAndValue(referenceElement);
 			if (digest != null) {
 				digestAlgorithms.add(digest.getAlgorithm());
 			}
