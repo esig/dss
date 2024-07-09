@@ -103,15 +103,13 @@ class ASiCEXAdESLevelLargeFileLTATest extends AbstractASiCEXAdESTestSignature {
 		assertNotNull(signedDocument.getName());
 		assertNotNull(signedDocument.getMimeType());
 
-	//		signedDocument.save("target/" + signedDocument.getName());
-
 		checkMimeType(signedDocument);
 
 		verify(signedDocument);
 	}
 
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-
+		// skip
 	}
 
 	@Override
