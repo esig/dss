@@ -155,20 +155,27 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 	}
 
 	private DigestAlgorithm getDigestAlgorithm(ResourceResolverContext context) {
-		DigestAlgorithm currentDigestAlgorithm = digestAlgorithm;
+		DigestAlgorithm referenceDigestAlgorithm = getReferenceDigestAlgorithm(context);
+		return referenceDigestAlgorithm != null ? referenceDigestAlgorithm : digestAlgorithm;
+	}
+
+	private DigestAlgorithm getReferenceDigestAlgorithm(ResourceResolverContext context) {
 		if (context.attr != null) {
 			Digest digestAndValue = DSSXMLUtils.getDigestAndValue(context.attr.getOwnerElement());
 			if (digestAndValue != null) {
-				currentDigestAlgorithm = digestAndValue.getAlgorithm();
+				return digestAndValue.getAlgorithm();
 			}
 		}
-		return currentDigestAlgorithm;
+		return null;
 	}
 
 	private String getPreCalculatedDigest(DSSDocument document, ResourceResolverContext context) {
 		if (context.attr != null && !DSSXMLUtils.containsTransforms(context.attr.getOwnerElement())) {
-			byte[] digestValue = document.getDigestValue(getDigestAlgorithm(context));
-			return Utils.toBase64(digestValue);
+			DigestAlgorithm referenceDigestAlgorithm = getReferenceDigestAlgorithm(context);
+			if (referenceDigestAlgorithm != null) {
+				byte[] digestValue = document.getDigestValue(referenceDigestAlgorithm);
+				return Utils.toBase64(digestValue);
+			}
 		}
 		return null;
 	}
