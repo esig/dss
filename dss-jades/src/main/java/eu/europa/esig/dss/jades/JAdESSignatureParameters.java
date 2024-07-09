@@ -315,10 +315,10 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * Sets the claimed signing-time header parameters to be used.
 	 * <p>
 	 * Requirements ETSI TS 119 182-1, clause 6.3, for iat and sigT:
-	 * Before 2025-05-15T00:00:00Z the generator should include the iat header parameter
+	 * Before 2025-07-15T00:00:00Z the generator should include the iat header parameter
 	 * for indicating the claimed signing time in new JAdES signatures and should not include
 	 * the iat header parameter for indicating the claimed signing time in new JAdES signatures.
-	 * Starting at 2025-05-15T00:00:00Z the generator shall include the iat header parameter
+	 * Starting at 2025-07-15T00:00:00Z the generator shall include the iat header parameter
 	 * for indicating the claimed signing time in new JAdES signatures.
 	 * <p>
 	 * Default : IAT ('iat' header parameter will be used)

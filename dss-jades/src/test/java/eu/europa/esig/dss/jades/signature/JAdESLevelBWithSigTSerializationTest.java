@@ -66,7 +66,7 @@ class JAdESLevelBWithSigTSerializationTest extends AbstractJAdESTestSignature {
 
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
         signatureParameters = new JAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(DSSUtils.getUtcDate(2024, Calendar.JANUARY, 1)); // shall be before 2025-05-15
+        signatureParameters.bLevel().setSigningDate(DSSUtils.getUtcDate(2024, Calendar.JANUARY, 1)); // shall be before 2025-07-15
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

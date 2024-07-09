@@ -48,8 +48,8 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     private static final Logger LOG = LoggerFactory.getLogger(JAdESBaselineRequirementsChecker.class);
 
-    /** 2025-05-15T00:00:00Z date, see TS 119 182-1 */
-    private static final Date SIG_T_OBSOLESCENCE_DATE = DSSUtils.getUtcDate(2025, Calendar.MAY, 15);
+    /** 2025-07-15T00:00:00Z date, see TS 119 182-1 */
+    private static final Date SIG_T_OBSOLESCENCE_DATE = DSSUtils.getUtcDate(2025, Calendar.JULY, 15);
 
     /**
      * Default constructor
@@ -179,10 +179,10 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     private boolean signingTimeRequirement(JWS jws) {
         /*
-         * a) Requirements for iat and sigT. Before 2025-05-15T00:00:00Z the generator should include
+         * a) Requirements for iat and sigT. Before 2025-07-15T00:00:00Z the generator should include
          *    the iat header parameter for indicating the claimed signing time in new JAdES signatures
          *    and should not include the iat header parameter for indicating the claimed signing time
-         *    in new JAdES signatures. Starting at 2025-05-15T00:00:00Z the generator shall include the
+         *    in new JAdES signatures. Starting at 2025-07-15T00:00:00Z the generator shall include the
          *    iat header parameter for indicating the claimed signing time in new JAdES signatures.
          */
         Number iat = jws.getProtectedHeaderValueAsNumber(JAdESHeaderParameterNames.IAT);
@@ -191,7 +191,7 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
         // iat or sigT (Cardinality == 1)
         if (iat == null && Utils.isStringEmpty(sigT)) {
-            LOG.warn("Either iat header or sigT header (for signatures before 2025-05-15T00:00:00Z) shall be present " +
+            LOG.warn("Either iat header or sigT header (for signatures before 2025-07-15T00:00:00Z) shall be present " +
                     "for JAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
 
@@ -202,9 +202,9 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
         } else if (iat == null) {
             if (signingTime.before(SIG_T_OBSOLESCENCE_DATE)) {
-                LOG.debug("iat header should be present for JAdES-BASELINE-B signature produced before 2025-05-15T00:00:00Z (cardinality == 0 or 1)!");
+                LOG.debug("iat header should be present for JAdES-BASELINE-B signature produced before 2025-07-15T00:00:00Z (cardinality == 0 or 1)!");
             } else {
-                LOG.warn("iat header shall be present for JAdES-BASELINE-B signature produced starting at 2025-05-15T00:00:00Z (cardinality == 1)!");
+                LOG.warn("iat header shall be present for JAdES-BASELINE-B signature produced starting at 2025-07-15T00:00:00Z (cardinality == 1)!");
                 return false;
             }
 

@@ -36,7 +36,7 @@ class JAdESLevelBWithSigTAfterObsolescenceSerializationTest extends JAdESLevelBW
 
     @BeforeEach
     void initTime() {
-        signingTime = DSSUtils.getUtcDate(2025, Calendar.MAY, 15);
+        signingTime = DSSUtils.getUtcDate(2025, Calendar.JULY, 15);
     }
 
     @Override
@@ -48,7 +48,7 @@ class JAdESLevelBWithSigTAfterObsolescenceSerializationTest extends JAdESLevelBW
 
     @Override
     protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-        // iat header shall be present for JAdES-BASELINE-B signature produced starting at 2025-05-15T00:00:00Z (cardinality == 1)!
+        // iat header shall be present for JAdES-BASELINE-B signature produced starting at 2025-07-15T00:00:00Z (cardinality == 1)!
         Assertions.assertEquals(SignatureLevel.JSON_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
     }
 
