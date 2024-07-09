@@ -521,7 +521,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * @param allowedSize the maximum allowed size of the extracted content
 	 * @throws IOException if an exception occurs
 	 */
-	private void secureRead(InputStream is, long allowedSize) throws IOException {
+	protected void secureRead(InputStream is, long allowedSize) throws IOException {
 		byte[] data = new byte[2048];
 		int nRead;
 		while ((nRead = is.read(data)) != -1) {
