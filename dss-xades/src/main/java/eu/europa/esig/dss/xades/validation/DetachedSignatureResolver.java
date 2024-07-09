@@ -99,7 +99,6 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 
 		Object[] exArgs = { "Unable to find document (detached signature)" };
 		throw new ResourceResolverException("generic.EmptyMessage", exArgs, null, context.baseUri);
-
 	}
 
 	private DSSDocument getBestCandidateByDigest(Digest referenceDigest, String uriValue) {
@@ -108,7 +107,7 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 		}
 		DSSDocument bestCandidate = null;
 		for (DSSDocument dssDocument : documents) {
-			if (referenceDigest.equals(getDocumentDigest(dssDocument))) {
+			if (referenceDigest.equals(getDocumentDigest(referenceDigest.getAlgorithm(), dssDocument))) {
 				if (bestCandidate != null) {
 					LOG.warn("Multiple documents match the same reference with URI '{}'!", uriValue);
 					if (!Utils.areStringsEqual(dssDocument.getName(), uriValue)) {
@@ -139,9 +138,9 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 		return bestCandidate;
 	}
 
-	private Digest getDocumentDigest(DSSDocument document) {
+	private Digest getDocumentDigest(DigestAlgorithm referenceDigestAlgorithm, DSSDocument document) {
 		try {
-			return DSSUtils.getDigest(digestAlgorithm, document);
+			return DSSUtils.getDigest(referenceDigestAlgorithm, document);
 		} catch (Exception e) {
 			String errorMessage = "Unable to get digest for a document with name '{}' : {}";
 			if (LOG.isDebugEnabled()) {

@@ -1242,8 +1242,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		Element signedInfo = getSignedInfo();
 		if (signedInfo != null) {
 			XMLSignature xmlSignature = getSantuarioSignature();
-			List<DigestAlgorithm> usedReferenceDigestAlgos = DSSXMLUtils.getReferenceDigestAlgos(signedInfo);
-			for (DigestAlgorithm digestAlgorithm : usedReferenceDigestAlgos) {
+			for (DigestAlgorithm digestAlgorithm : DSSXMLUtils.getReferenceDigestAlgos(signedInfo)) {
 				xmlSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
 			}
 		}

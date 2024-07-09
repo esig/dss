@@ -507,14 +507,7 @@ public final class DSSUtils {
 	 * @return digest value
 	 */
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, DSSDocument document) {
-		if (document instanceof DigestDocument) {
-			return document.getDigestValue(digestAlgorithm);
-		}
-		try (InputStream is = document.openStream()) {
-			return digest(digestAlgorithm, is);
-		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to compute digest : %s", e.getMessage()), e);
-		}
+		return document.getDigestValue(digestAlgorithm);
 	}
 
 	/**
