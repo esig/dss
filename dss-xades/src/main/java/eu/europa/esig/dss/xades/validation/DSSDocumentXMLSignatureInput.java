@@ -16,6 +16,9 @@ public class DSSDocumentXMLSignatureInput extends XMLSignatureInput {
     /** The detached document to be provided */
     private final DSSDocument document;
 
+    /** Pre-calculated digest value of the object in base64. */
+    private String preCalculatedDigest;
+
     /**
      * Default constructor for an {@code XMLSignatureInput} from a detached document
      *
@@ -39,6 +42,7 @@ public class DSSDocumentXMLSignatureInput extends XMLSignatureInput {
     protected DSSDocumentXMLSignatureInput(final DSSDocument document, final DigestAlgorithm digestAlgorithm) {
         super(getBase64Digest(document, digestAlgorithm));
         this.document = document;
+        this.preCalculatedDigest = super.getPreCalculatedDigest(); // get digest provided in constructor
     }
 
     private static String getBase64Digest(DSSDocument document, DigestAlgorithm digestAlgorithm) {
@@ -61,6 +65,25 @@ public class DSSDocumentXMLSignatureInput extends XMLSignatureInput {
      */
     public String getDocumentName() {
         return document.getName();
+    }
+
+    @Override
+    public boolean isPreCalculatedDigest() {
+        return preCalculatedDigest != null;
+    }
+
+    @Override
+    public String getPreCalculatedDigest() {
+        return preCalculatedDigest;
+    }
+
+    /**
+     * Sets the pre-calculated digest to avoid document streaming
+     *
+     * @param preCalculatedDigest {@link String} base64-encoded value
+     */
+    public void setPreCalculatedDigest(String preCalculatedDigest) {
+        this.preCalculatedDigest = preCalculatedDigest;
     }
 
 }

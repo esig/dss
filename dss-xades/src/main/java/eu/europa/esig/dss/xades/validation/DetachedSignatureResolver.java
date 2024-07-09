@@ -69,9 +69,11 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 		DSSDocument document = getBestCandidate(context);
 		if (document instanceof DigestDocument) {
 			// requires pre-calculated base64-encoded digest
-			return new DigestDocumentXMLSignatureInput((DigestDocument) document, digestAlgorithm);
+			return new DigestDocumentXMLSignatureInput((DigestDocument) document, getDigestAlgorithm(context));
 		} else {
-			return new DSSDocumentXMLSignatureInput(document);
+			DSSDocumentXMLSignatureInput xmlSignatureInput = new DSSDocumentXMLSignatureInput(document);
+			xmlSignatureInput.setPreCalculatedDigest(getPreCalculatedDigest(document, context));
+			return xmlSignatureInput;
 		}
 	}
 
@@ -150,6 +152,25 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 			}
 			return new Digest();
 		}
+	}
+
+	private DigestAlgorithm getDigestAlgorithm(ResourceResolverContext context) {
+		DigestAlgorithm currentDigestAlgorithm = digestAlgorithm;
+		if (context.attr != null) {
+			Digest digestAndValue = DSSXMLUtils.getDigestAndValue(context.attr.getOwnerElement());
+			if (digestAndValue != null) {
+				currentDigestAlgorithm = digestAndValue.getAlgorithm();
+			}
+		}
+		return currentDigestAlgorithm;
+	}
+
+	private String getPreCalculatedDigest(DSSDocument document, ResourceResolverContext context) {
+		if (context.attr != null && !DSSXMLUtils.containsTransforms(context.attr.getOwnerElement())) {
+			byte[] digestValue = document.getDigestValue(getDigestAlgorithm(context));
+			return Utils.toBase64(digestValue);
+		}
+		return null;
 	}
 
 	@Override

@@ -662,6 +662,22 @@ public final class DSSXMLUtils {
 	}
 
 	/**
+	 * This method checks if the reference element contain any transformation
+	 *
+	 * @param referenceElement the DOM element with the reference
+	 * @return true if the reference contain any transform
+	 */
+	public static boolean containsTransforms(Element referenceElement) {
+		try {
+			Element transforms = DomUtils.getElement(referenceElement, XMLDSigPath.TRANSFORMS_PATH);
+			return transforms != null;
+		} catch (Exception e) {
+			LOG.warn("Unable to detect Transforms", e);
+			return false;
+		}
+	}
+
+	/**
 	 * Determines if the given {@code reference} refers to SignedProperties element
 	 *
 	 * @param reference {@link Reference} to check
