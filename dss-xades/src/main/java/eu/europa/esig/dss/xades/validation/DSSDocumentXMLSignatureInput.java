@@ -74,6 +74,7 @@ public class DSSDocumentXMLSignatureInput extends XMLSignatureInput {
 
     @Override
     public String getPreCalculatedDigest() {
+        Utils.closeQuietly(getOctetStreamReal()); // close original InputStream
         return preCalculatedDigest;
     }
 
