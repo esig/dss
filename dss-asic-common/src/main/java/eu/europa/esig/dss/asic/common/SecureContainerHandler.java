@@ -284,7 +284,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 			while ((entry = getNextValidEntry(zis)) != null) {
 				result.add(entry);
 				assertCollectionSizeValid(result);
-				secureRead(zis, allowedSize); // read securely before accessing the next entry
+				secureSkip(zis, allowedSize); // read securely before accessing the next entry
 			}
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Unable to extract entries from zip archive", e);
@@ -515,16 +515,15 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	}
 
 	/**
-	 * This method allows reading securely InputStream without caching the content
+	 * This method allows skipping securely InputStream without caching the content
 	 *
-	 * @param is          {@link InputStream} to read
+	 * @param is          {@link InputStream} to skip
 	 * @param allowedSize the maximum allowed size of the extracted content
 	 * @throws IOException if an exception occurs
 	 */
-	protected void secureRead(InputStream is, long allowedSize) throws IOException {
-		byte[] data = new byte[8192];
-		int nRead;
-		while ((nRead = is.read(data)) != -1) {
+	protected void secureSkip(InputStream is, long allowedSize) throws IOException {
+		long nRead;
+		while ((nRead = is.skip(8192)) > 0) {
 			byteCounter += nRead;
 			assertExtractEntryLengthValid(allowedSize);
 		}
