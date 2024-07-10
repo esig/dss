@@ -24,6 +24,8 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -75,6 +77,26 @@ public class DSSMessageDigestCalculator {
     public void update(byte[] bytes) {
         if (bytes != null) {
             messageDigest.update(bytes);
+        }
+    }
+
+    /**
+     * Updates the digest by reading the provided {@code InputStream}.
+     * NOTE: the method consumes the {@code InputStream}, and closes it after.
+     *
+     * @param inputStream {@link InputStream}
+     * @throws IOException if an error is thrown on InputStream reading
+     */
+    public void update(InputStream inputStream) throws IOException {
+        if (inputStream == null) {
+            return;
+        }
+        try (InputStream is = inputStream) {
+            int count;
+            byte[] buffer = new byte[4096];
+            while ((count = is.read(buffer)) >= 0) {
+                messageDigest.update(buffer, 0, count);
+            }
         }
     }
 

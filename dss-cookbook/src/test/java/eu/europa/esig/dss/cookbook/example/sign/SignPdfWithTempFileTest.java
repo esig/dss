@@ -39,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SignPdfWithTempFileTest extends CookbookTools {
@@ -111,7 +112,7 @@ class SignPdfWithTempFileTest extends CookbookTools {
 
             // end::demo[]
 
-            assertTrue(signedDocument instanceof FileDocument);
+            assertInstanceOf(FileDocument.class, signedDocument);
 
             signedDocument = new FileDocument(signedFileDestination);
             testFinalDocument(signedDocument);

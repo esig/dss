@@ -23,14 +23,17 @@ package eu.europa.esig.dss.asic.common;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -148,6 +151,15 @@ public final class ASiCUtils {
 
 	/** Identifies a first bytes of a zip archive document */
 	public static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
+
+	/** The zip comment identifier in the end of ZIP archive */
+	private static final byte[] MAGIC_DIR = {0x50, 0x4b, 0x05, 0x06};
+
+	/** The maximum number of bytes to be read in a file to extract a zip comment */
+	private static final int MAX_TO_READ = 0xFFFF + 2 + MAGIC_DIR.length;
+
+	/** The default resources handler builder to be used across the code */
+	public static final DSSResourcesHandlerBuilder DEFAULT_RESOURCES_HANDLER_BUILDER = new InMemoryResourcesHandlerBuilder();
 
 	/**
 	 * Singleton
@@ -865,41 +877,67 @@ public final class ASiCUtils {
 	 * @return {@link String} zip comment
 	 */
 	public static String getZipComment(DSSDocument archiveContainer) {
-		byte[] buffer = DSSUtils.toByteArray(archiveContainer);
-		if (Utils.isArrayEmpty(buffer)) {
-			LOG.warn("An empty container obtained! Unable to extract zip comment.");
-			return null;
-		}
-
-		final int len = buffer.length;
-		final byte[] magicDirEnd = { 0x50, 0x4b, 0x05, 0x06 };
-
-		// Check the buffer from the end
-		for (int ii = len - 22; ii >= 0; ii--) {
-			boolean isMagicStart = true;
-			for (int jj = 0; jj < magicDirEnd.length; jj++) {
-				if (buffer[ii + jj] != magicDirEnd[jj]) {
-					isMagicStart = false;
-					break;
+		long fileLength = getFileLength(archiveContainer);
+		try (InputStream is = archiveContainer.openStream()) {
+			if (fileLength > MAX_TO_READ) {
+				long toSkip = fileLength - MAX_TO_READ;
+				long skipped = is.skip(toSkip);
+				if (skipped != toSkip) {
+					throw new IOException("Different amount of bytes have been skipped!");
 				}
 			}
-			if (isMagicStart) {
-				// Magic Start found!
-				int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
-				int realLen = len - ii - 22;
-				if (commentLen != realLen) {
-					LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
-				}
-				if (realLen == 0) {
-					return null;
-				}
-				return new String(buffer, ii + 22, realLen);
+
+			byte[] buffer = DSSUtils.toByteArray(is);
+			if (Utils.isArrayEmpty(buffer)) {
+				LOG.warn("An empty container obtained! Unable to extract zip comment.");
+				return null;
 			}
+
+			final int len = buffer.length;
+
+			// Check the buffer from the end
+			for (int ii = len - 22; ii >= 0; ii--) {
+				boolean isMagicStart = true;
+				for (int jj = 0; jj < MAGIC_DIR.length; jj++) {
+					if (buffer[ii + jj] != MAGIC_DIR[jj]) {
+						isMagicStart = false;
+						break;
+					}
+				}
+				if (isMagicStart) {
+					// Magic Start found!
+					int commentLen = buffer[ii + 20] + buffer[ii + 21] * 256;
+					int realLen = len - ii - 22;
+					if (commentLen != realLen) {
+						LOG.warn("WARNING! ZIP comment size mismatch: directory says len is {}, but file ends after {} bytes!", commentLen, realLen);
+					}
+					if (realLen == 0) {
+						return null;
+					}
+					return new String(buffer, ii + 22, realLen);
+				}
+			}
+		} catch (final IOException e) {
+			throw new DSSException(String.format("Unable to read content of document with name '%s'. Reason : %s",
+					archiveContainer.getName(), e.getMessage()));
 		}
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("Zip comment is not found in the provided container with name '{}'", archiveContainer.getName());
 		}
 		return null;
+	}
+
+	private static long getFileLength(DSSDocument archiveContainer) {
+		if (archiveContainer instanceof FileDocument) {
+			FileDocument doc = (FileDocument) archiveContainer;
+			return doc.getFile().length();
+		}
+
+		try (InputStream is = archiveContainer.openStream()) {
+			return Utils.getInputStreamSize(is);
+		} catch (IOException e) {
+			throw new DSSException("Unable to compute archive size", e);
+		}
 	}
 
 	/**

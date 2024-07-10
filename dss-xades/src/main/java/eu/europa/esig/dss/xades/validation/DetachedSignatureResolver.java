@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ *
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -40,8 +40,8 @@ import java.util.List;
 
 /**
  * Resolver for detached signature only.
- * 
  * The reference URI must be null or refer a specific file.
+ *
  */
 public class DetachedSignatureResolver extends ResourceResolverSpi {
 
@@ -69,9 +69,11 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 		DSSDocument document = getBestCandidate(context);
 		if (document instanceof DigestDocument) {
 			// requires pre-calculated base64-encoded digest
-			return new DigestDocumentXMLSignatureInput((DigestDocument) document, digestAlgorithm);
+			return new DigestDocumentXMLSignatureInput((DigestDocument) document, getDigestAlgorithm(context));
 		} else {
-			return new DSSDocumentXMLSignatureInput(document);
+			DSSDocumentXMLSignatureInput xmlSignatureInput = new DSSDocumentXMLSignatureInput(document);
+			xmlSignatureInput.setPreCalculatedDigest(getPreCalculatedDigest(document, context));
+			return xmlSignatureInput;
 		}
 	}
 
@@ -150,6 +152,32 @@ public class DetachedSignatureResolver extends ResourceResolverSpi {
 			}
 			return new Digest();
 		}
+	}
+
+	private DigestAlgorithm getDigestAlgorithm(ResourceResolverContext context) {
+		DigestAlgorithm referenceDigestAlgorithm = getReferenceDigestAlgorithm(context);
+		return referenceDigestAlgorithm != null ? referenceDigestAlgorithm : digestAlgorithm;
+	}
+
+	private DigestAlgorithm getReferenceDigestAlgorithm(ResourceResolverContext context) {
+		if (context.attr != null) {
+			Digest digestAndValue = DSSXMLUtils.getDigestAndValue(context.attr.getOwnerElement());
+			if (digestAndValue != null) {
+				return digestAndValue.getAlgorithm();
+			}
+		}
+		return null;
+	}
+
+	private String getPreCalculatedDigest(DSSDocument document, ResourceResolverContext context) {
+		if (context.attr != null && !DSSXMLUtils.containsTransforms(context.attr.getOwnerElement())) {
+			DigestAlgorithm referenceDigestAlgorithm = getReferenceDigestAlgorithm(context);
+			if (referenceDigestAlgorithm != null) {
+				byte[] digestValue = document.getDigestValue(referenceDigestAlgorithm);
+				return Utils.toBase64(digestValue);
+			}
+		}
+		return null;
 	}
 
 	@Override

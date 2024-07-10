@@ -20,6 +20,10 @@
  */
 package eu.europa.esig.dss.asic.common;
 
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+
+import java.util.Objects;
+
 /**
  * Default implementation of a builder,
  * building a new instance of {@code eu.europa.esig.dss.asic.common.SecureContainerHandler}
@@ -52,6 +56,15 @@ public class SecureContainerHandlerBuilder implements ZipContainerHandlerBuilder
      * Default : false (not extracted)
      */
     private boolean extractComments = false;
+
+    /**
+     * The builder to be used to create a new {@code DSSResourcesHandler} for each internal call,
+     * defining a way working with internal resources (e.g. in memory or by using temporary files).
+     * The resources are used on a document creation
+     *
+     * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}, working with data in memory
+     */
+    private DSSResourcesHandlerBuilder resourcesHandlerBuilder = ASiCUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
 
     /**
      * Default constructor
@@ -136,6 +149,21 @@ public class SecureContainerHandlerBuilder implements ZipContainerHandlerBuilder
         return this;
     }
 
+    /**
+     * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesHandler}
+     * creation in internal methods.
+     * {@code DSSResourcesHandler} defines a way to operate with OutputStreams and create {@code DSSDocument}s.
+     * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
+     *
+     * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+     * @return {@link SecureContainerHandlerBuilder}
+     */
+    public SecureContainerHandlerBuilder setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+        Objects.requireNonNull(resourcesHandlerBuilder, "DSSResourcesHandlerBuilder cannot be null!");
+        this.resourcesHandlerBuilder = resourcesHandlerBuilder;
+        return this;
+    }
+
     @Override
     public SecureContainerHandler build() {
         final SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
@@ -144,6 +172,7 @@ public class SecureContainerHandlerBuilder implements ZipContainerHandlerBuilder
         secureContainerHandler.setMaxAllowedFilesAmount(maxAllowedFilesAmount);
         secureContainerHandler.setMaxMalformedFiles(maxMalformedFiles);
         secureContainerHandler.setExtractComments(extractComments);
+        secureContainerHandler.setResourcesHandlerBuilder(resourcesHandlerBuilder);
         return secureContainerHandler;
     }
 

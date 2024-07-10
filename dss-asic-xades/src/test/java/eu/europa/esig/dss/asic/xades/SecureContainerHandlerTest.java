@@ -30,6 +30,7 @@ import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidator;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -55,6 +56,7 @@ import java.util.zip.ZipEntry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -219,6 +221,7 @@ class SecureContainerHandlerTest {
 		DSSDocument zipArchive = secureContainerHandler.createZipArchive(
 				Arrays.asList(mimetypeDocument, documentOne, documentTwo), creationTime, ASiCUtils.getZipComment(mimeType));
 		assertNotNull(zipArchive);
+		assertInstanceOf(InMemoryDocument.class, zipArchive);
 
 		String zipArchiveFilePath = "target/zipArchive.asice";
 		zipArchive.save(zipArchiveFilePath);
@@ -270,6 +273,31 @@ class SecureContainerHandlerTest {
 
 		assertTrue(zipArchiveFile.delete());
 		assertFalse(zipArchiveFile.exists());
+	}
+
+	@Test
+	void createZipArchiveWithTempFileHandlerTest() {
+		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
+
+		DSSDocument mimetypeDocument = new InMemoryDocument(MimeTypeEnum.ASICE.getMimeTypeString().getBytes(), "mimetype");
+		DSSDocument docOne = new InMemoryDocument("Hello World!".getBytes(), "docOne.txt");
+		DSSDocument docTwo = new InMemoryDocument("Bye World!".getBytes(), "docTwo.txt");
+
+		SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
+		secureContainerHandler.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
+		DSSDocument zipArchive = secureContainerHandler.createZipArchive(
+				Arrays.asList(mimetypeDocument, docOne, docTwo), new Date(), null);
+		assertNotNull(zipArchive);
+		assertInstanceOf(FileDocument.class, zipArchive);
+
+		FileDocument fileDocument = (FileDocument) zipArchive;
+		File file = fileDocument.getFile();
+		assertNotNull(file);
+
+		assertTrue(file.exists());
+		assertTrue(file.delete());
+		assertFalse(file.exists());
 	}
 
 	@Test

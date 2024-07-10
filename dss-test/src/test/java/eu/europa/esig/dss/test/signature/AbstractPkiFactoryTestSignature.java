@@ -112,7 +112,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		final DSSDocument signedDocument = sign();
 
 		assertNotNull(signedDocument.getName());
-		assertNotNull(DSSUtils.toByteArray(signedDocument));
 		assertNotNull(signedDocument.getMimeType());
 
 		// signedDocument.save("target/" + signedDocument.getName());
