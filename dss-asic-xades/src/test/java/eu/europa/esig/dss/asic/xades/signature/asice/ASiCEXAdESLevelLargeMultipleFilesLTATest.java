@@ -31,7 +31,6 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -55,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Tag("slow")
 class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMultipleDocumentsTestSignature {
 
-    private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
+    private ASiCWithXAdESService service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
     private List<DSSDocument> documentToSigns;
 
@@ -106,6 +105,7 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
     }
 
     @Test
+    @Override
     public void signAndVerify() {
         final DSSDocument signedDocument = sign();
 
@@ -117,6 +117,7 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
         verify(signedDocument);
     }
 
+    @Override
     protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
         // skip
     }
@@ -144,8 +145,6 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
 
     @Override
     protected MultipleDocumentsSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> getService() {
-        ASiCWithXAdESService	service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
-        service.setTspSource(getGoodTsa());
         return service;
     }
 

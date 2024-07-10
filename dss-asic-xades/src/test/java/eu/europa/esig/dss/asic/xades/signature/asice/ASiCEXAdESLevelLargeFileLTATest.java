@@ -108,6 +108,7 @@ class ASiCEXAdESLevelLargeFileLTATest extends AbstractASiCEXAdESTestSignature {
 		verify(signedDocument);
 	}
 
+	@Override
 	protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
 		// skip
 	}

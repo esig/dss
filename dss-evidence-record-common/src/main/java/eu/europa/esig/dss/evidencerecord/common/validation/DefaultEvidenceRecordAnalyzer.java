@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
-import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.scope.SignatureScope;
-import eu.europa.esig.dss.spi.validation.analyzer.DefaultDocumentAnalyzer;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.analyzer.DefaultDocumentAnalyzer;
 import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzer;
 import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzerFactory;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
@@ -100,8 +99,5 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
         throw new UnsupportedOperationException("getOriginalDocuments(AdvancedSignature) is " +
                 "not supported for EvidenceRecordValidator!");
     }
-
-    @Override
-    public abstract EvidenceRecordTypeEnum getEvidenceRecordType();
 
 }

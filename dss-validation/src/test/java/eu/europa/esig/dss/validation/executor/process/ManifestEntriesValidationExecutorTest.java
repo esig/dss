@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest {
+class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest {
 
     @Test
     void detachedDocNameDoNotMatchWarnLevel() throws Exception {

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.model.signature;
 
 import eu.europa.esig.dss.model.Digest;
 
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,7 +30,9 @@ import java.util.Map;
  * Contains results of a {@code SignaturePolicy} validation
  *
  */
-public class SignaturePolicyValidationResult {
+public class SignaturePolicyValidationResult implements Serializable {
+
+    private static final long serialVersionUID = 9103973481602927960L;
 
     /** Indicated if the signature policy has been identified */
     private boolean identified = false;

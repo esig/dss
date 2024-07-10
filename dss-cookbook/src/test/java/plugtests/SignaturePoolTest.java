@@ -563,6 +563,7 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 		// can be null
 	}
 
+	@Override
 	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
 		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
 		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {

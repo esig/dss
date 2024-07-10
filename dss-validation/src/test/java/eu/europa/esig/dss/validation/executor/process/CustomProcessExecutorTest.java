@@ -157,7 +157,6 @@ import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
