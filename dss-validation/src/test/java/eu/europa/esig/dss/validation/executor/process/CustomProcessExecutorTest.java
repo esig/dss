@@ -157,6 +157,7 @@ import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamps;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -198,7 +199,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
+class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 
 	@Test
 	void skipRevocationDataValidation() throws Exception {
@@ -6475,8 +6476,6 @@ public class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 		DetailedReport detailedReport = reports.getDetailedReport();
 		XmlBasicBuildingBlocks bbb = detailedReport.getBasicBuildingBlockById(counterSignatures.iterator().next().getId());
 		assertNotNull(bbb);
-		assertEquals(Indication.FAILED, bbb.getConclusion().getIndication());
-		assertEquals(SubIndication.HASH_FAILURE, bbb.getConclusion().getSubIndication());
 
 		XmlCV cv = bbb.getCV();
 		assertEquals(Indication.FAILED, cv.getConclusion().getIndication());
@@ -16104,6 +16103,50 @@ public class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 
 		XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();
 		assertNull(validationProcessArchivalData);
+	}
+
+	@Test
+	void erWithNotIdentifiedDigestAlgoTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag-data/er-validation/er-valid.xml"));
+		assertNotNull(diagnosticData);
+
+		XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+		for (XmlDigestMatcher digestMatcher : evidenceRecord.getDigestMatchers()) {
+			digestMatcher.setDigestMethod(null);
+			digestMatcher.setDigestValue(null);
+			digestMatcher.setDataIntact(false);
+		}
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		checkReports(reports);
+
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.FAILED, simpleReport.getIndication(simpleReport.getFirstEvidenceRecordId()));
+		assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstEvidenceRecordId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord xmlEvidenceRecord =
+				detailedReport.getXmlEvidenceRecordById(detailedReport.getFirstEvidenceRecordId());
+		assertNotNull(xmlEvidenceRecord);
+
+		XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = xmlEvidenceRecord.getValidationProcessEvidenceRecord();
+		assertNotNull(validationProcessEvidenceRecord);
+		assertEquals(Indication.FAILED, validationProcessEvidenceRecord.getConclusion().getIndication());
+		assertEquals(SubIndication.HASH_FAILURE, validationProcessEvidenceRecord.getConclusion().getSubIndication());
+
+		XmlCryptographicValidation cryptographicValidation = validationProcessEvidenceRecord.getCryptographicValidation();
+		assertNotNull(cryptographicValidation);
+		assertNotNull(cryptographicValidation.getAlgorithm());
+		assertEquals("UNIDENTIFIED", cryptographicValidation.getAlgorithm().getName());
+		assertEquals("urn:etsi:019102:algorithm:unidentified", cryptographicValidation.getAlgorithm().getUri());
+		assertEquals(diagnosticData.getUsedTimestamps().get(0).getProductionTime(), cryptographicValidation.getValidationTime());
+		assertEquals(evidenceRecord.getId(), cryptographicValidation.getConcernedMaterial());
 	}
 
 	@Test

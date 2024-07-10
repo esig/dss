@@ -25,6 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -153,11 +154,12 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
 
     private List<XmlDigestMatcher> getDigestMatchersByAlgorithmAndPosition(
             List<XmlDigestMatcher> digestMatchers, DigestAlgorithm digestAlgorithm, MessageTag position) {
-        if (digestAlgorithm == null || position == null) {
+        if (position == null) {
             return Collections.emptyList();
         }
         return digestMatchers.stream().filter(d ->
-                digestAlgorithm == d.getDigestMethod() && position == ValidationProcessUtils.getDigestMatcherCryptoPosition(d))
+                digestAlgorithm == d.getDigestMethod() && position == ValidationProcessUtils.getDigestMatcherCryptoPosition(d)
+                        && DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE != d.getType()) // COUNTER_SIGNED_SIGNATURE_VALUE is an internal variable
                 .collect(Collectors.toList());
     }
 
