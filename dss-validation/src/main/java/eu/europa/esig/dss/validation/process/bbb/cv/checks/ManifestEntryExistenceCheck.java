@@ -28,9 +28,11 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Checks if at least one manifest entry is present
@@ -72,6 +74,10 @@ public class ManifestEntryExistenceCheck extends ChainItem<XmlCV> {
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
+		List<XmlDigestMatcher> manifestEntries = digestMatchers.stream().filter(d -> DigestMatcherType.MANIFEST_ENTRY == d.getType()).collect(Collectors.toList());
+		if (Utils.isCollectionNotEmpty(manifestEntries) && manifestEntries.stream().noneMatch(XmlDigestMatcher::isDataFound)) {
+			return MessageTag.BBB_CV_ISMEC_ANS_2;
+		}
 		return MessageTag.BBB_CV_ISMEC_ANS;
 	}
 

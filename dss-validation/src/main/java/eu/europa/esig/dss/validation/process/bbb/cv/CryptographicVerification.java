@@ -209,7 +209,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	}
 
 	private boolean containsManifestEntries(List<XmlDigestMatcher> digestMatchers) {
-		return digestMatchers.stream().anyMatch(d -> DigestMatcherType.MANIFEST_ENTRY == d.getType());
+		return digestMatchers.stream().anyMatch(d -> DigestMatcherType.MANIFEST_ENTRY == d.getType() && d.isDataFound());
 	}
 
 	private ChainItem<XmlCV> referenceDataFound(XmlDigestMatcher digestMatcher) {

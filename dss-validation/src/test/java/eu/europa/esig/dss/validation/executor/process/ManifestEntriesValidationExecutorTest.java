@@ -580,7 +580,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
         assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS_2)));
 
         DetailedReport detailedReport = reports.getDetailedReport();
         XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
@@ -599,7 +599,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         for (XmlConstraint constraint : cv.getConstraint()) {
             if (MessageTag.BBB_CV_ISMEC.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_CV_ISMEC_ANS.getId(), constraint.getError().getKey());
+                assertEquals(MessageTag.BBB_CV_ISMEC_ANS_2.getId(), constraint.getError().getKey());
                 ++digestMatcherValidationPerformedCounter;
             } else if (MessageTag.BBB_CV_AAMEF.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, constraint.getStatus());
@@ -1029,7 +1029,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
         assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS_2)));
 
         DetailedReport detailedReport = reports.getDetailedReport();
         XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
@@ -1048,7 +1048,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         for (XmlConstraint constraint : cv.getConstraint()) {
             if (MessageTag.BBB_CV_ISMEC.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_CV_ISMEC_ANS.getId(), constraint.getError().getKey());
+                assertEquals(MessageTag.BBB_CV_ISMEC_ANS_2.getId(), constraint.getError().getKey());
                 ++digestMatcherValidationPerformedCounter;
             } else if (MessageTag.BBB_CV_AAMEF.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, constraint.getStatus());
@@ -1486,7 +1486,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
         assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS_2)));
 
         DetailedReport detailedReport = reports.getDetailedReport();
         XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
@@ -1505,7 +1505,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         for (XmlConstraint constraint : cv.getConstraint()) {
             if (MessageTag.BBB_CV_ISMEC.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_CV_ISMEC_ANS.getId(), constraint.getError().getKey());
+                assertEquals(MessageTag.BBB_CV_ISMEC_ANS_2.getId(), constraint.getError().getKey());
                 ++digestMatcherValidationPerformedCounter;
             } else if (MessageTag.BBB_CV_AAMEF.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, constraint.getStatus());
@@ -1936,7 +1936,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
         assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS_2)));
 
         DetailedReport detailedReport = reports.getDetailedReport();
         XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
@@ -1955,7 +1955,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         for (XmlConstraint constraint : cv.getConstraint()) {
             if (MessageTag.BBB_CV_ISMEC.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_CV_ISMEC_ANS.getId(), constraint.getError().getKey());
+                assertEquals(MessageTag.BBB_CV_ISMEC_ANS_2.getId(), constraint.getError().getKey());
                 ++digestMatcherValidationPerformedCounter;
             } else if (MessageTag.BBB_CV_AAMEF.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, constraint.getStatus());
@@ -2384,7 +2384,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
-                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS_2)));
 
         DetailedReport detailedReport = reports.getDetailedReport();
         XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
@@ -2401,7 +2401,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         for (XmlConstraint constraint : cv.getConstraint()) {
             if (MessageTag.BBB_CV_ISMEC.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.WARNING, constraint.getStatus());
-                assertEquals(MessageTag.BBB_CV_ISMEC_ANS.getId(), constraint.getWarning().getKey());
+                assertEquals(MessageTag.BBB_CV_ISMEC_ANS_2.getId(), constraint.getWarning().getKey());
                 ++digestMatcherValidationPerformedCounter;
             } else if (MessageTag.BBB_CV_AAMEF.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.WARNING, constraint.getStatus());
@@ -2415,7 +2415,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             }
         }
         assertEquals(1, digestMatcherValidationPerformedCounter);
-        assertEquals(1, allDigestMatcherFoundCounter);
+        assertEquals(0, allDigestMatcherFoundCounter);
         assertEquals(0, digestMatcherIntactCounter);
         assertEquals(0, digestMatcherNameCounter);
 
@@ -2809,7 +2809,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
-                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_CV_ISMEC_ANS_2)));
 
         DetailedReport detailedReport = reports.getDetailedReport();
         XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
@@ -2826,7 +2826,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         for (XmlConstraint constraint : cv.getConstraint()) {
             if (MessageTag.BBB_CV_ISMEC.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.WARNING, constraint.getStatus());
-                assertEquals(MessageTag.BBB_CV_ISMEC_ANS.getId(), constraint.getWarning().getKey());
+                assertEquals(MessageTag.BBB_CV_ISMEC_ANS_2.getId(), constraint.getWarning().getKey());
                 ++digestMatcherValidationPerformedCounter;
             } else if (MessageTag.BBB_CV_AAMEF.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.WARNING, constraint.getStatus());
@@ -2840,7 +2840,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             }
         }
         assertEquals(1, digestMatcherValidationPerformedCounter);
-        assertEquals(1, allDigestMatcherFoundCounter);
+        assertEquals(0, allDigestMatcherFoundCounter);
         assertEquals(0, digestMatcherIntactCounter);
         assertEquals(0, digestMatcherNameCounter);
 
