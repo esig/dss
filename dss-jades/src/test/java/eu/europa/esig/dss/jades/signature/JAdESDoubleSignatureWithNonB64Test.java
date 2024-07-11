@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidation {
+class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidation {
 	
 	private static final String ORIGINAL_STRING = "Hello World!";
 	
@@ -55,7 +55,7 @@ public class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidat
 	private JAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		toBeSigned = new InMemoryDocument(ORIGINAL_STRING.getBytes());
 		
 		service = new JAdESService(getOfflineCertificateVerifier());
@@ -119,7 +119,7 @@ public class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidat
 	}
 	
 	@Test
-	public void signWithDifferentB64Test() {
+	void signWithDifferentB64Test() {
 		DSSDocument signedDocument = getCompleteSerializationSignature(toBeSigned);
 		
 		JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();

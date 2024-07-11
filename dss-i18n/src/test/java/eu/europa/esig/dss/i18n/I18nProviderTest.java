@@ -28,10 +28,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class I18nProviderTest {
+class I18nProviderTest {
 	
 	@Test
-	public void test() {
+	void test() {
 		Locale systemLocale = Locale.getDefault();
 		try {
 			Locale.setDefault(Locale.ENGLISH);
@@ -65,7 +65,7 @@ public class I18nProviderTest {
 	}
 	
 	@Test
-	public void parametrizedTest() {
+	void parametrizedTest() {
 		Locale systemLocale = Locale.getDefault();
 		try {
 			Locale.setDefault(Locale.ENGLISH);
@@ -93,7 +93,7 @@ public class I18nProviderTest {
 	}
 	
 	@Test
-	public void nestedMessageTagTest() {
+	void nestedMessageTagTest() {
 		Locale systemLocale = Locale.getDefault();
 		try {
 			Locale.setDefault(Locale.ENGLISH);
@@ -120,7 +120,7 @@ public class I18nProviderTest {
 	}
 	
 	@Test
-	public void apostropheTest() {
+	void apostropheTest() {
 		Locale systemLocale = Locale.getDefault();
 		try {
 			Locale.setDefault(Locale.ENGLISH);

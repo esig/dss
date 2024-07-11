@@ -30,43 +30,43 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class ASiCContainerWithCAdESValidatorFactory implements DocumentValidatorFactory {
 
-	/**
-	 * Default constructor
-	 */
-	public ASiCContainerWithCAdESValidatorFactory() {
-		// empty
-	}
+    /**
+     * Default constructor
+     */
+    public ASiCContainerWithCAdESValidatorFactory() {
+        // empty
+    }
 
-	@Override
-	public boolean isSupported(DSSDocument document) {
-		ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator();
-		return validator.isSupported(document);
-	}
+    @Override
+    public boolean isSupported(DSSDocument document) {
+        ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator();
+        return validator.isSupported(document);
+    }
 
-	/**
-	 * Verifies whether the provided {@code ASiCContent} is supported by the underlying validator's class
-	 *
-	 * @param asicContent {@link ASiCContent}
-	 * @return TRUE if the ASiC Content is supported, FALSE otherwise
-	 */
-	public boolean isSupported(ASiCContent asicContent) {
-		ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator();
-		return validator.isSupported(asicContent);
-	}
+    /**
+     * Verifies whether the provided {@code ASiCContent} is supported by the underlying validator's class
+     *
+     * @param asicContent {@link ASiCContent}
+     * @return TRUE if the ASiC Content is supported, FALSE otherwise
+     */
+    public boolean isSupported(ASiCContent asicContent) {
+        ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator();
+        return validator.isSupported(asicContent);
+    }
 
-	@Override
-	public SignedDocumentValidator create(DSSDocument document) {
-		return new ASiCContainerWithCAdESValidator(document);
-	}
+    @Override
+    public SignedDocumentValidator create(DSSDocument document) {
+        return new ASiCContainerWithCAdESValidator(document);
+    }
 
-	/**
-	 * Creates a {@code SignedDocumentValidator} for the given {@code asicContent}
-	 *
-	 * @param asicContent {@link ASiCContent} to be validated
-	 * @return {@link SignedDocumentValidator}
-	 */
-	public SignedDocumentValidator create(ASiCContent asicContent) {
-		return new ASiCContainerWithCAdESValidator(asicContent);
-	}
+    /**
+     * Creates a {@code SignedDocumentValidator} for the given {@code asicContent}
+     *
+     * @param asicContent {@link ASiCContent} to be validated
+     * @return {@link SignedDocumentValidator}
+     */
+    public SignedDocumentValidator create(ASiCContent asicContent) {
+        return new ASiCContainerWithCAdESValidator(asicContent);
+    }
 
 }

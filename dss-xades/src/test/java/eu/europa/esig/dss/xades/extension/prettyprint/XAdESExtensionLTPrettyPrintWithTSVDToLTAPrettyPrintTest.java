@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.extension.prettyprint;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.extension.XAdESExtensionLTWithTSVDToLTATest;
 
-public class XAdESExtensionLTPrettyPrintWithTSVDToLTAPrettyPrintTest extends XAdESExtensionLTWithTSVDToLTATest {
+class XAdESExtensionLTPrettyPrintWithTSVDToLTAPrettyPrintTest extends XAdESExtensionLTWithTSVDToLTATest {
 
     @Override
     protected XAdESSignatureParameters getSignatureParameters() {

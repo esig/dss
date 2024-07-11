@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.Context;
  */
 public final class ContextParser {
 
+	/**
+	 * Default constructor
+	 */
 	private ContextParser() {
+		// empty
 	}
 
 	/**

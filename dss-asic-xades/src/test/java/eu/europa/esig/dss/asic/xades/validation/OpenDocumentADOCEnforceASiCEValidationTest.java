@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentADOCEnforceASiCEValidationTest extends AbstractASiCWithXAdESTestValidation {
+class OpenDocumentADOCEnforceASiCEValidationTest extends AbstractASiCWithXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.QCTypeEnum;
-import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.model.tsl.Condition;
 import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
@@ -55,10 +55,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CriteriaListConverterTest {
+class CriteriaListConverterTest {
 
     @Test
-    public void extractKeyUsageTest() {
+    void extractKeyUsageTest() {
         CriteriaListType criteriaListType = new CriteriaListType();
 
         KeyUsageType keyUsageType = new KeyUsageType();
@@ -98,7 +98,7 @@ public class CriteriaListConverterTest {
     }
 
     @Test
-    public void extractPolicyIdTest() {
+    void extractPolicyIdTest() {
         CriteriaListType criteriaListType = new CriteriaListType();
 
         PoliciesListType policiesListType = new PoliciesListType();
@@ -148,7 +148,7 @@ public class CriteriaListConverterTest {
     }
 
     @Test
-    public void extractCertSubjectDNAttrTest() {
+    void extractCertSubjectDNAttrTest() {
         CriteriaListType criteriaListType = new CriteriaListType();
 
         CertSubjectDNAttributeType certSubjectDNAttributeType = new CertSubjectDNAttributeType();
@@ -193,7 +193,7 @@ public class CriteriaListConverterTest {
     }
 
     @Test
-    public void extractExtendedKeyUsageTest() {
+    void extractExtendedKeyUsageTest() {
         CriteriaListType criteriaListType = new CriteriaListType();
 
         ExtendedKeyUsageType extendedKeyUsageType = new ExtendedKeyUsageType();
@@ -244,7 +244,7 @@ public class CriteriaListConverterTest {
     }
 
     @Test
-    public void extractQcStatementTest() {
+    void extractQcStatementTest() {
         CriteriaListType criteriaListType = new CriteriaListType();
 
         QcStatementListType qcStatementListType = new QcStatementListType();

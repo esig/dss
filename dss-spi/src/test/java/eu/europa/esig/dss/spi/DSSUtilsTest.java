@@ -70,20 +70,20 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSSUtilsTest {
+class DSSUtilsTest {
 
 	private static final Logger logger = LoggerFactory.getLogger(DSSUtilsTest.class);
 
 	private static CertificateToken certificate;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		certificate = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
 		assertNotNull(certificate);
 	}
 
 	@Test
-	public void formatDateTest() {
+	void formatDateTest() {
 		Calendar calendar = Calendar.getInstance(DSSUtils.UTC_TIMEZONE);
 		calendar.set(2021, 0, 01, 0, 0, 0);
 		assertEquals("2021-01-01T00:00:00Z", DSSUtils.formatDateToRFC(calendar.getTime()));
@@ -120,7 +120,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void digestTest() {
+	void digestTest() {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
 
 		byte[] data = "Hello world!".getBytes(StandardCharsets.UTF_8);
@@ -151,7 +151,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void testDontSkipCertificatesWhenMultipleAreFoundInP7c() throws IOException {
+	void testDontSkipCertificatesWhenMultipleAreFoundInP7c() throws IOException {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/certchain.p7c")) {
 			DSSException exception = assertThrows(DSSException.class, () -> DSSUtils.loadCertificate(fis));
 			assertEquals("Could not parse certificate", exception.getMessage());
@@ -159,20 +159,20 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void testLoadP7cPEM() throws DSSException, IOException {
+	void testLoadP7cPEM() throws DSSException, IOException {
 		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/certchain.p7c"));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
 		assertTrue(certs.size() > 1);
 	}
 
 	@Test
-	public void testLoadP7cNotPEM() throws DSSException, IOException {
+	void testLoadP7cNotPEM() throws DSSException, IOException {
 		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/AdobeCA.p7c"));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
 	}
 
 	@Test
-	public void loadCertificate() throws Exception {
+	void loadCertificate() throws Exception {
 		CertificateToken certificate = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/belgiumrs2.crt"));
 		assertNotNull(certificate);
 
@@ -203,14 +203,14 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void loadCertificateDoesNotThrowNullPointerExceptionWhenProvidedNonCertificateFile() throws IOException {
+	void loadCertificateDoesNotThrowNullPointerExceptionWhenProvidedNonCertificateFile() throws IOException {
 		try (ByteArrayInputStream bais = new ByteArrayInputStream("test".getBytes("UTF-8"))) {
 			assertThrows(DSSException.class, () -> DSSUtils.loadCertificate(bais));
 		}
 	}
 
 	@Test
-	public void convertToPEM() {
+	void convertToPEM() {
 		String convertToPEM = DSSUtils.convertToPEM(certificate);
 
 		assertFalse(DSSUtils.isStartWithASN1SequenceTag(new ByteArrayInputStream(convertToPEM.getBytes())));
@@ -226,7 +226,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void testChainFromSchemeServiceDefinitionURI() {
+	void testChainFromSchemeServiceDefinitionURI() {
 
 		String base64 = "MIIFvjCCA6agAwIBAgIQALwvYx2O1YN6UxQOi3Bx3jANBgkqhkiG9w0BAQUFADBbMQswCQYDVQQGEwJFUzEoMCYGA1UECgwfRElSRUNDSU9OIEdFTkVSQUwgREUgTEEgUE9MSUNJQTEMMAoGA1UECwwDQ05QMRQwEgYDVQQDDAtBQyBSQUlaIERHUDAeFw0wNzAxMjUxMjA1MDhaFw0zNzAxMjUxMjA1MDhaMFsxCzAJBgNVBAYTAkVTMSgwJgYDVQQKDB9ESVJFQ0NJT04gR0VORVJBTCBERSBMQSBQT0xJQ0lBMQwwCgYDVQQLDANDTlAxFDASBgNVBAMMC0FDIFJBSVogREdQMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAgBD1t16zMJxvoxuIDlyt6pfgzPmmfJMFvPyoj0AOxjyxu6f77K/thV/pMatQqjGae3Yj83upv7YFygq/jU02EeEIeQQEf+QJ+B+LX+oGLPbU5g8/W1eFcnXC4Jg2ipP7L2qcEfA180AsT1UqmHTc7kRI3N6yJZZiHkM4hpjf3vgsCxUQtXw+XAZYtaRbjFO69tTSdbpbXN4fvOQwHNlenF1GMxsih7tgGUwRlY2EVfh7EGYvXt2mtpHiEIeSp1s2WBxzgiWU1IufiDo18olZj859oHkNBD0sx6LVPPun/sINuM1M6aBRwc725cMgZmIyNDOHZkqExL8DNUiTzXYzqr7R/X+kn59RYLwIEmfRQLkKxyYlZeFbuOI5n7Uz3vKANcTbUuCymA0+ZA9ESlrz8kA6fHV0+fMePUBYnociJO5fFX/jxtScOqrQt+K+gGm4TubalBoL7ECGzs3CmKtnuyOH+KFO/8q71Fxhn3WqlKgO7dBUhp0I/7dr4R2bF4ry1NnqZWObCuBfKqyL80Dx+6zaGsTo7UBLNdcA4sXArJoAMUqHb/77rqu45dWJIhQA5V3qolwowwuTdZwC1ec2AWwA6gMf2uchNJsPWWmQrkXvkhu2rI756cKwgR7y22517q/B9MNx7InsZbMbOWUwQuei3UcoIgCFs2TWCbhxHNkCAwEAAaN+MHwwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFA6cduGiLokzQfLjPmxbFkW9vYaOMDoGA1UdIAQzMDEwLwYEVR0gADAnMCUGCCsGAQUFBwIBFhlodHRwOi8vd3d3LnBvbGljaWEuZXMvZHBjMA0GCSqGSIb3DQEBBQUAA4ICAQBslvw3pwCj21vCctyL7YOrmfINjJFp4TNFfNnDwSsuonqOjwppXCEFJ6MkOeCUOy9vXziNoYtoDd/tXAn++9975d7PB9vXnu7ErHRx+e74obKpqfBoVv9fwPp0bObO3YbTq9EGPLM8mbcUEivPlL2mQ7tk78z2p8gpytcCZRc08Jd5m+AeYPrHUDeF6ZIlnH7SIrtP3Bp8zwnNIFbNtkyrCyWtN8Ajo3RXqecM/bs+YgGzjVbDToQUBkBCuoG3XU+QYSQ79yZsvjTCsFKBYnXXijiGZSokx33iauY0PIyaNu/ulMloSNUwWZ5WBPqJXWlkZ+deApxZLXJLFMSTjFeFdpZUgOC1wrRkxXidWQwr4566fYWhYH0w+hwK9gD6NEsMA3D7NOPCTCOx9Qst5848RsJVJ4F+ZFmT4iyTYLyglkNkeB+tSXVyC9Lg+Tvay85VyeZMSZ3PpGmpNzaQxVZl9XCfs8R6Ew4pG91eOA0BjsI1ZHY7H9e5Pomup/jTA6JwlCYooEiBM31Gdwe/3oUFNzB+NvOWdwb+ZG6va70j98EdipGWoLvjv/oJlFN2q1Nrt/u7whKp+VsVOjuZMrSpw9C+Ec4yiLha5RRiXnHX1cqwT694KIDQZIgqQChQDeDqrvCphtdHdxFQ5NBzt2HKhaSh8ggDdOdpH451rB45Jg==";
 		CertificateToken issuerCert = DSSUtils.loadCertificateFromBase64EncodedString(base64);
@@ -245,7 +245,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void loadRootCA2NotSelfSign() throws Exception {
+	void loadRootCA2NotSelfSign() throws Exception {
 
 		String certBase64 = "MIIDjjCCAnagAwIBAgIIKv++n6Lw6YcwDQYJKoZIhvcNAQEFBQAwKDELMAkGA1UEBhMCQkUxGTAXBgNVBAMTEEJlbGdpdW0gUm9vdCBDQTIwHhcNMDcxMDA0MTAwMDAwWhcNMjExMjE1MDgwMDAwWjAoMQswCQYDVQQGEwJCRTEZMBcGA1UEAxMQQmVsZ2l1bSBSb290IENBMjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMZzQh6S/3UPi790hqc/7bIYLS2X+an7mEoj39WN4IzGMhwWLQdC1i22bi+n9fzGhYJdld61IgDMqFNAn68KNaJ6x+HK92AQZw6nUHMXU5WfIp8MXW+2QbyM69odRr2nlL/zGsvU+40OHjPIltfsjFPekx40HopQcSZYtF3CiInaYNKJIT/e1wEYNm7hLHADBGXvmAYrXR5i3FVr/mZkIV/4L+HXmymvb82fqgxG0YjFnaKVn6w/Fa7yYd/vw2uaItgscf1YHewApDgglVrH1Tdjuk+bqv5WRi5j2Qsj1Yr6tSPwiRuhFA0m2kHwOI8w7QUmecFLTqG4flVSOmlGhHUCAwEAAaOBuzCBuDAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zBCBgNVHSAEOzA5MDcGBWA4CQEBMC4wLAYIKwYBBQUHAgEWIGh0dHA6Ly9yZXBvc2l0b3J5LmVpZC5iZWxnaXVtLmJlMB0GA1UdDgQWBBSFiuv0xbu+DlkDlN7WgAEV4xCcOTARBglghkgBhvhCAQEEBAMCAAcwHwYDVR0jBBgwFoAUhYrr9MW7vg5ZA5Te1oABFeMQnDkwDQYJKoZIhvcNAQEFBQADggEBAFHYhd27V2/MoGy1oyCcUwnzSgEMdL8rs5qauhjyC4isHLMzr87lEwEnkoRYmhC598wUkmt0FoqW6FHvv/pKJaeJtmMrXZRY0c8RcrYeuTlBFk0pvDVTC9rejg7NqZV3JcqUWumyaa7YwBO+mPyWnIR/VRPmPIfjvCCkpDZoa01gZhz5v6yAlGYuuUGK02XThIAC71AdXkbc98m6tTR8KvPG2F9fVJ3bTc0R5/0UAoNmXsimABKgX77OFP67H6dh96tK8QYUn8pJQsKpvO2FsauBQeYNxUJpU4c5nUwfAA4+Bw11V0SoU7Q2dmSZ3G7rPUZuFF1eR1ONeE3gJ7uOhXY=";
 		CertificateToken rootCA2 = DSSUtils.loadCertificateFromBase64EncodedString(certBase64);
@@ -259,7 +259,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void testRootCA2s() {
+	void testRootCA2s() {
 
 		CertificateToken selfSign = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrca2-self-sign.crt"));
 		CertificateToken signed = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2-signed.crt"));
@@ -284,12 +284,12 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void getMD5Digest() throws UnsupportedEncodingException {
+	void getMD5Digest() throws UnsupportedEncodingException {
 		assertEquals("3e25960a79dbc69b674cd4ec67a72c62", DSSUtils.getMD5Digest("Hello world".getBytes("UTF-8")));
 	}
 
 	@Test
-	public void getDeterministicId() {
+	void getDeterministicId() {
 
 		Calendar calendar = Calendar.getInstance();
 
@@ -310,7 +310,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void isSelfSigned() {
+	void isSelfSigned() {
 		CertificateToken selfSign = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrca2-self-sign.crt"));
 		assertTrue(selfSign.isSelfSigned());
 		assertTrue(selfSign.isSelfIssued());
@@ -330,12 +330,12 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void printSecurityProviders() {
+	void printSecurityProviders() {
 		assertDoesNotThrow(() -> DSSUtils.printSecurityProviders());
 	}
 
 	@Test
-	public void decodeURI() {
+	void decodeURI() {
 		assertEquals("012éù*34ä5µ£ 6789~#%&()+=`@{[]}'.txt",
 				DSSUtils.decodeURI("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%40%7B%5B%5D%7D%27.txt"));
 
@@ -347,7 +347,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void testRSASSAPSS() {
+	void testRSASSAPSS() {
 		CertificateToken token = DSSUtils.loadCertificate(this.getClass().getResourceAsStream("/BA-QC-Wurzel-CA-2_PN.txt"));
 		assertTrue(token.isSelfSigned());
 		assertTrue(token.isSignedBy(token));
@@ -355,7 +355,7 @@ public class DSSUtilsTest {
 	}
 	
 	@Test
-	public void getUTCDateTest() throws Exception {
+	void getUTCDateTest() throws Exception {
 		String pattern = "yyyy-MM-dd HH:mm:ss";
 		SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
 		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -369,7 +369,7 @@ public class DSSUtilsTest {
 	}
 	
 	@Test
-	public void removeControlCharactersTest() {
+	void removeControlCharactersTest() {
 		assertNull(DSSUtils.removeControlCharacters(null));
 		assertEquals("", DSSUtils.removeControlCharacters(""));
 		assertEquals(" ", DSSUtils.removeControlCharacters(" "));
@@ -384,7 +384,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void replaceAllNonAlphanumericCharactersTest() {
+	void replaceAllNonAlphanumericCharactersTest() {
 		assertEquals("-", DSSUtils.replaceAllNonAlphanumericCharacters(" ", "-"));
 		assertEquals("Nowina-Solutions", DSSUtils.replaceAllNonAlphanumericCharacters("Nowina Solutions", "-"));
 		assertEquals("Новина", DSSUtils.replaceAllNonAlphanumericCharacters("Новина", "?"));
@@ -397,7 +397,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void loadEdDSACert() throws NoSuchAlgorithmException, IOException {
+	void loadEdDSACert() throws NoSuchAlgorithmException, IOException {
 
 		// RFC 8410
 
@@ -432,7 +432,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void isUrnOidTest() {
+	void isUrnOidTest() {
 		assertFalse(DSSUtils.isUrnOid(null));
 		assertFalse(DSSUtils.isUrnOid(""));
 		assertFalse(DSSUtils.isUrnOid("aurn:oid:1.2.3.4"));
@@ -441,7 +441,7 @@ public class DSSUtilsTest {
 	}
 	
 	@Test
-	public void isOidCode() {
+	void isOidCode() {
 		assertFalse(DSSUtils.isOidCode(null));
 		assertFalse(DSSUtils.isOidCode(""));
 		assertFalse(DSSUtils.isOidCode("aurn:oid:1.2.3.4"));
@@ -456,7 +456,7 @@ public class DSSUtilsTest {
 	}
 	
 	@Test
-	public void getOidCodeTest() {
+	void getOidCodeTest() {
 		assertNull(DSSUtils.getOidCode(null));
 		assertEquals("", DSSUtils.getOidCode(""));
 		assertEquals("1.2.3.4", DSSUtils.getOidCode("aurn:oid:1.2.3.4"));
@@ -466,7 +466,7 @@ public class DSSUtilsTest {
 	}
 	
 	@Test
-	public void stripFirstLeadingOccurrenceTest() {
+	void stripFirstLeadingOccurrenceTest() {
 		assertNull(DSSUtils.stripFirstLeadingOccurrence(null, null));
 		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", null));
 		assertEquals("aaabbcc", DSSUtils.stripFirstLeadingOccurrence("aaabbcc", ""));
@@ -479,7 +479,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void signAndConvertECSignatureValueTest() throws Exception {
+	void signAndConvertECSignatureValueTest() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("ECDSA");
 		KeyPair pair = gen.generateKeyPair();
@@ -521,7 +521,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void convertECSignatureValueTest() throws Exception {
+	void convertECSignatureValueTest() throws Exception {
 		assertECSignatureValid(Utils.fromBase64("MEQCIEJNA0AElH/vEH9xLxvqrwCqh+yUh9ACL2vU/2eObRbTAiAxTLSWSioJrfSwPkKcypf+KCHvMGdwZbRWQHnZN2sDnQ=="),
 				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.ECDSA, DigestAlgorithm.SHA256));
 		assertECSignatureValid(Utils.fromHex("2B9099C9885DDB5BFDA2E9634905B9A63E7E3A6EC87BDC0A89014716B23F00B0AD787FC8D0DCF28F007E7DEC097F30DA892BE2AC61D90997DCDF05740E4D5B0C"),
@@ -573,7 +573,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void isLineBreakByteTest() {
+	void isLineBreakByteTest() {
 		assertTrue(DSSUtils.isLineBreakByte((byte) '\n'));
 		assertTrue(DSSUtils.isLineBreakByte((byte) '\r'));
 		assertTrue(DSSUtils.isLineBreakByte((byte) 0x0D));
@@ -586,7 +586,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void getObjectIdentifierValue() {
+	void getObjectIdentifierValue() {
 		// Silent processing
 		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com"));
 		assertEquals("https://nowina.lu/policy", DSSUtils.getObjectIdentifierValue("https://nowina.lu/policy"));
@@ -597,7 +597,7 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void getObjectIdentifierValueWithQualifier() {
+	void getObjectIdentifierValueWithQualifier() {
 		// See DEBUG logs
 		assertEquals("http://website.com", DSSUtils.getObjectIdentifierValue("http://website.com", null));
 		assertEquals("1.2.3", DSSUtils.getObjectIdentifierValue("1.2.3", null));
@@ -613,7 +613,19 @@ public class DSSUtilsTest {
 	}
 
 	@Test
-	public void isDocumentEmptyTest() {
+	void trimWhitespacesAndNewlinesTest() {
+		assertNull(DSSUtils.trimWhitespacesAndNewlines(null));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines(""));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines(" "));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines("\n"));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines("\r"));
+		assertEquals("", DSSUtils.trimWhitespacesAndNewlines("\r\n"));
+		assertEquals("1.2.5.3.4", DSSUtils.trimWhitespacesAndNewlines(" 1.2.5.3.4 "));
+		assertEquals("http://nowina.lu", DSSUtils.trimWhitespacesAndNewlines("http://nowina.lu \n"));
+	}
+
+	@Test
+	void isDocumentEmptyTest() {
 		assertTrue(DSSUtils.isEmpty(new InMemoryDocument(new byte[] {})));
 		assertTrue(DSSUtils.isEmpty(new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY)));
 		assertTrue(DSSUtils.isEmpty(InMemoryDocument.createEmptyDocument()));

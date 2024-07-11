@@ -39,10 +39,10 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-public class CRLTokenTest {
+class CRLTokenTest {
 
 	@Test
-	public void testOK() throws IOException {
+	void testOK() throws IOException {
 		FileDocument doc = new FileDocument("src/test/resources/crl/belgium2.crl");
 		FileDocument caCert = new FileDocument("src/test/resources/belgiumrs2.crt");
 		FileDocument tsaCert = new FileDocument("src/test/resources/TSA_BE.cer");
@@ -71,7 +71,7 @@ public class CRLTokenTest {
 	}
 
 	@Test
-	public void wrongCRLIssuer() throws IOException {
+	void wrongCRLIssuer() throws IOException {
 		FileDocument doc = new FileDocument("src/test/resources/crl/belgium2.crl");
 		FileDocument tsaCertFile = new FileDocument("src/test/resources/TSA_BE.cer");
 
@@ -87,7 +87,7 @@ public class CRLTokenTest {
 	}
 
 	@Test
-	public void wrongCertIssuer() throws IOException {
+	void wrongCertIssuer() throws IOException {
 		FileDocument doc = new FileDocument("src/test/resources/crl/belgium2.crl");
 		FileDocument caCertFile = new FileDocument("src/test/resources/belgiumrs2.crt");
 

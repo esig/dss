@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSSSecureRandomProviderTest {
+class DSSSecureRandomProviderTest {
 
 	private static Stream<Arguments> data() {
 		Object[] arr = { DigestAlgorithm.MD2, DigestAlgorithm.MD5, DigestAlgorithm.SHA1, DigestAlgorithm.SHA224, DigestAlgorithm.SHA256,
@@ -67,7 +67,7 @@ public class DSSSecureRandomProviderTest {
 
 	@ParameterizedTest(name = "DigestAlgorithm {index} : {0} - {1}")
 	@MethodSource("data")
-	public void signatureParametersTest(DigestAlgorithm digestAlgorithm, int byteArrayLength) throws IOException {
+	void signatureParametersTest(DigestAlgorithm digestAlgorithm, int byteArrayLength) throws IOException {
 		Date date = new Date();
 		
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
@@ -109,7 +109,7 @@ public class DSSSecureRandomProviderTest {
 	}
 	
 	@Test
-	public void propertiesTest() {
+	void propertiesTest() {
 		PAdESSignatureParameters parameters = new PAdESSignatureParameters();
 		DSSSecureRandomProvider fixedSecureRandomProvider = new DSSSecureRandomProvider(parameters);
 		assertThrows(NullPointerException.class, () -> fixedSecureRandomProvider.setDigestAlgorithm(null));
@@ -127,7 +127,7 @@ public class DSSSecureRandomProviderTest {
 	}
 
 	@Test
-	public void propertiesNullTest() {
+	void propertiesNullTest() {
 		Exception exception = assertThrows(NullPointerException.class, () -> new DSSSecureRandomProvider((PAdESCommonParameters) null));
 		assertEquals("Parameters must be defined! Unable to instantiate DSSSecureRandomProvider.", exception.getMessage());
 		exception = assertThrows(NullPointerException.class, () -> new DSSSecureRandomProvider((SignatureImageParameters) null));
@@ -135,7 +135,7 @@ public class DSSSecureRandomProviderTest {
 	}
 
 	@Test
-	public void signatureImageParametersTest() {
+	void signatureImageParametersTest() {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.getTextParameters().setText("Hello World!");
 

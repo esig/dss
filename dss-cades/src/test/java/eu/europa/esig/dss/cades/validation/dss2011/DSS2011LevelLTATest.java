@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2011LevelLTATest extends AbstractCAdESTestValidation {
+class DSS2011LevelLTATest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

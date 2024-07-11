@@ -52,7 +52,7 @@ public class PAdESExternalCMSSignatureLTALevelDocTstTest extends AbstractPAdESTe
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signingTime = new Date();
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
     }

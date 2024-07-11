@@ -33,13 +33,13 @@ import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESEnvelopingMultiDocSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class XAdESEnvelopingMultiDocSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.xml"), new FileDocument("src/test/resources/sample.png"));
 
 		signatureParameters = new XAdESSignatureParameters();

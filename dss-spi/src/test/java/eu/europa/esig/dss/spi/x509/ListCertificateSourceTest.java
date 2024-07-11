@@ -26,10 +26,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-public class ListCertificateSourceTest {
+class ListCertificateSourceTest {
 	
 	@Test
-	public void testReflection() {
+	void testReflection() {
 		ListCertificateSource ccv = new ListCertificateSource();
 		ccv.add(new CommonTrustedCertificateSource());
 		

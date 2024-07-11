@@ -20,22 +20,21 @@
  */
 package eu.europa.esig.dss.cades.validation.dss1419;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
-public class DSS1419Sha3224RsaTest extends AbstractCAdESTestValidation {
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class DSS1419Sha3224RsaTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -56,7 +55,6 @@ public class DSS1419Sha3224RsaTest extends AbstractCAdESTestValidation {
 
 		assertEquals(EncryptionAlgorithm.RSA, cades.getEncryptionAlgorithm());
 		assertEquals(DigestAlgorithm.SHA3_224, cades.getDigestAlgorithm());
-		assertNull(cades.getMaskGenerationFunction());
 	}
 
 }

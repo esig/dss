@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
@@ -51,7 +51,7 @@ import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class MultiThreadTLValidationJobTest {
+class MultiThreadTLValidationJobTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MultiThreadTLValidationJobTest.class);
 
@@ -65,7 +65,7 @@ public class MultiThreadTLValidationJobTest {
 	private static CertificateToken czSigningCertificate;
 	
 	@BeforeAll
-	public static void init() throws IOException {
+	static void init() throws IOException {
 		
 		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put(CZ_URL, new FileDocument("src/test/resources/lotlCache/CZ.xml"));
@@ -116,7 +116,7 @@ public class MultiThreadTLValidationJobTest {
 	}
 
 	@Test
-	public void test() {
+	void test() {
 
 		ExecutorService executor = Executors.newFixedThreadPool(40);
 

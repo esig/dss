@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
  */
 public class CertificateSourceTypeParser {
 
+	/**
+	 * Default constructor
+	 */
 	private CertificateSourceTypeParser() {
+		// empty
 	}
 
 	/**

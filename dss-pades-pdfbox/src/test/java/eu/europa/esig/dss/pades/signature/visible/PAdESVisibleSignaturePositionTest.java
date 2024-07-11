@@ -53,7 +53,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("slow")
-public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
+class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 
 	private static final Color TRANSPARENT = new Color(0, 0, 0, 0.25f);
 	private static final int DPI = 144;
@@ -85,7 +85,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	private Map<String, DSSDocument> signablePdfs = new HashMap<>();
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -113,7 +113,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	}
 
 	@Test
-	public void pdfRotateDegreeTest() throws IOException {
+	void pdfRotateDegreeTest() throws IOException {
 		service.setPdfObjFactory(new PdfBoxDefaultObjectFactory());
 		pdfRotateDegree();
 		service.setPdfObjFactory(new PdfBoxNativeObjectFactory());
@@ -131,7 +131,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	}
 
 	@Test
-	public void rotationTest() throws Exception {
+	void rotationTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
 		SignatureFieldParameters fieldParameters = signatureImageParameters.getFieldParameters();
 
@@ -180,7 +180,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	}
 	
 	@Test
-	public void relativePositioningTest() throws Exception {
+	void relativePositioningTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = new SignatureImageParameters();
 		signatureImageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png"), "signature-pen.png"));
 		signatureParameters.setImageParameters(signatureImageParameters);
@@ -208,7 +208,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 
 	@Test
 	@Disabled("for generation and manual testing")
-	public void bigGeneratorTest() throws Exception {
+	void bigGeneratorTest() throws Exception {
 		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
 		similarityLimit = 0.981f;
 		for (VisualSignatureRotation rotation : VisualSignatureRotation.values()) {
@@ -229,7 +229,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 
 	// Pull request 71
 	@Test
-	public void rotateSunTest() throws Exception {
+	void rotateSunTest() throws Exception {
 		
 		try (PDDocument inputPDF = PDDocument.load(getClass().getResourceAsStream("/visualSignature/sun.pdf"))) {
 			/**
@@ -255,7 +255,7 @@ public class PAdESVisibleSignaturePositionTest extends AbstractTestVisualCompara
 	}
 
 	@Test
-	public void rotateSun90Test() throws Exception {
+	void rotateSun90Test() throws Exception {
 	
 		try (PDDocument inputPDF = PDDocument.load(getClass().getResourceAsStream("/visualSignature/sun_90.pdf"))) {
 			/**

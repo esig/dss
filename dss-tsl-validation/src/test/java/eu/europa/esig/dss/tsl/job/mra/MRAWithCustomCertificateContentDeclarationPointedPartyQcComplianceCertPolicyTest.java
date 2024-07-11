@@ -22,13 +22,13 @@ package eu.europa.esig.dss.tsl.job.mra;
 
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
-import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.model.tsl.Condition;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.trustedlist.enums.Assert;
 
-public class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceCertPolicyTest extends AbstractMRALOTLTest {
+class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceCertPolicyTest extends AbstractMRALOTLTest {
 
     @Override
     protected Assert getCertificateContentDeclarationPointedPartyQcComplianceAssertStatus() {

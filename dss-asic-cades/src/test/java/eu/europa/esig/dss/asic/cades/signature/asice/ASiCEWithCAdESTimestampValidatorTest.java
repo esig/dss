@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESTimestampValidator;
 import eu.europa.esig.dss.asic.cades.validation.AbstractASiCWithCAdESTestValidation;
+import eu.europa.esig.dss.asic.cades.validation.timestamp.ASiCWithCAdESTimestampValidator;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
@@ -44,9 +44,9 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
@@ -63,12 +63,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCEWithCAdESTimestampValidatorTest extends AbstractASiCWithCAdESTestValidation {
 	
 	private static List<DSSDocument> documentsToSign;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentsToSign = new ArrayList<>();
 		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));
 		documentsToSign.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT));

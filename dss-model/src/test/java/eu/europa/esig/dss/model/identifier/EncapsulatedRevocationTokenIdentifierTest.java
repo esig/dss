@@ -29,11 +29,11 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class EncapsulatedRevocationTokenIdentifierTest {
+class EncapsulatedRevocationTokenIdentifierTest {
 
 	@Test
 	@SuppressWarnings("rawtypes")
-	public void test() {
+	void test() {
 		EncapsulatedRevocationTokenIdentifier id1 = new EncapsulatedRevocationTokenIdentifier(new byte[] { 1, 2, 3 });
 		EncapsulatedRevocationTokenIdentifier id2 = new EncapsulatedRevocationTokenIdentifier(new byte[] { 1, 2, 3 });
 		EncapsulatedRevocationTokenIdentifier id3 = new EncapsulatedRevocationTokenIdentifier(new byte[] { 1, 2, 2 });
@@ -52,7 +52,7 @@ public class EncapsulatedRevocationTokenIdentifierTest {
 
 	@Test
 	@SuppressWarnings("rawtypes")
-	public void assertNPE() {
+	void assertNPE() {
 		assertThrows(NullPointerException.class, () -> new EncapsulatedRevocationTokenIdentifier(null));
 	}
 

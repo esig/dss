@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.dss1770;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -35,7 +29,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class DSS1770RefUriRemovedTest extends AbstractXAdESTestValidation {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class DSS1770RefUriRemovedTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -73,7 +73,7 @@ public class DSS1770RefUriRemovedTest extends AbstractXAdESTestValidation {
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			if ("REF-ROOT".equals(digestMatcher.getName())) {
+			if ("REF-ROOT".equals(digestMatcher.getId())) {
 				assertFalse(digestMatcher.isDataFound());
 				assertFalse(digestMatcher.isDataIntact());
 				refRootFound = true;

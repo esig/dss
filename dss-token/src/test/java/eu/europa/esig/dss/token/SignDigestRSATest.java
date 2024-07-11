@@ -51,7 +51,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-public class SignDigestRSATest {
+class SignDigestRSATest {
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -71,7 +71,7 @@ public class SignDigestRSATest {
 
 	@ParameterizedTest(name = "DigestAlgorithm {index} : {0}")
 	@MethodSource("data")
-	public void testPkcs12(DigestAlgorithm digestAlgo) throws IOException {
+	void testPkcs12(DigestAlgorithm digestAlgo) throws IOException {
 		try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
 				new PasswordProtection("password".toCharArray()))) {
 

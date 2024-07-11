@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.0</version>
+		<version>6.1.RC1</version>
 	</parent>
 
 	<artifactId>dss-tsl-validation</artifactId>
@@ -23,6 +23,11 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-xades</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation</artifactId>
+			<optional>true</optional>
 		</dependency>
 		
 		<dependency>

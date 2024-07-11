@@ -22,8 +22,8 @@ package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
@@ -31,10 +31,10 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.policy.DefaultSignaturePolicyValidatorLoader;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.spi.policy.DefaultSignaturePolicyValidatorLoader;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
@@ -92,7 +92,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 		Objects.requireNonNull(cmsSignedData, "CMSSignedData must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		CMSDocumentValidator documentValidator = new CMSDocumentValidator(cmsSignedData);
+		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cmsSignedData);
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
 
 		if (Utils.isCollectionEmpty(signatures)) {
@@ -149,7 +149,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 		Objects.requireNonNull(cmsSignedData, "CMSSignedData must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		CMSDocumentValidator documentValidator = new CMSDocumentValidator(cmsSignedData);
+		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cmsSignedData);
 		AdvancedSignature signature = documentValidator.getSignatureById(signatureId);
 		if (signature == null) {
 			throw new IllegalInputException(String.format("Unable to find a signature with Id : %s!", signatureId));

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.trustedlist.enums.Assert;
 
-public class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceAssertStatusTest extends AbstractMRALOTLTest {
+class MRAWithCustomCertificateContentDeclarationPointedPartyQcComplianceAssertStatusTest extends AbstractMRALOTLTest {
 
     @Override
     protected Assert getCertificateContentDeclarationPointedPartyQcComplianceAssertStatus() {

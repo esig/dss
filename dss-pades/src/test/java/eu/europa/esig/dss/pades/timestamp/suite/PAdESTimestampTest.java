@@ -32,7 +32,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PAdESTimestampTest extends AbstractPkiFactoryTestValidation {
 
 	@Test
-	public void test() {
+	void test() {
 		
 		DSSDocument documentToTimestamp = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
 		

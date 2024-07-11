@@ -27,7 +27,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.bouncycastle.cms.CMSSignedData;
 
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESDEREncodedTst2Test extends AbstractCAdESTestValidation {
+class CAdESDEREncodedTst2Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

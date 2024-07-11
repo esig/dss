@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.tsl.alerts.detections;
 
 import eu.europa.esig.dss.alert.detector.AlertDetector;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.PivotInfo;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.PivotInfo;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
 

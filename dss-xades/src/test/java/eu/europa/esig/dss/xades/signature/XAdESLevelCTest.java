@@ -43,12 +43,12 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
@@ -67,14 +67,15 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelCTest extends AbstractXAdESTestSignature {
+class XAdESLevelCTest extends AbstractXAdESTestSignature {
 
+	protected CertificateVerifier certificateVerifier;
 	protected XAdESSignatureParameters signatureParameters;
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -84,7 +85,8 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_C);
 		signatureParameters.setTokenReferencesDigestAlgorithm(DigestAlgorithm.SHA384);
 		signatureParameters.setEn319132(false);
-		CertificateVerifier certificateVerifier=getCompleteCertificateVerifier();
+
+		certificateVerifier = getCompleteCertificateVerifier();
 		PKIOCSPSource pkiocspSource = pkiDelegatedOCSPSource();
 		certificateVerifier.setOcspSource(pkiocspSource);
 		service = new XAdESService(certificateVerifier);

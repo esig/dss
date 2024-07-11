@@ -37,7 +37,7 @@ public class PAdESLevelBHugeTest extends AbstractPAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 
 		documentToSign = new InMemoryDocument(PAdESLevelBHugeTest.class.getResourceAsStream("/sample.pdf"));
 

@@ -37,7 +37,7 @@ import eu.europa.esig.dss.pdfa.validation.PDFADocumentValidator;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
@@ -50,10 +50,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * How to sign PDF Document with PAdES-BASELINE-B
  */
-public class SignPdfPadesBTest extends CookbookTools {
+class SignPdfPadesBTest extends CookbookTools {
 
 	@Test
-	public void signPAdESBaselineB() throws Exception {
+	void signPAdESBaselineB() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -74,7 +74,7 @@ public class SignPdfPadesBTest extends CookbookTools {
 			// import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 			// import eu.europa.esig.dss.enumerations.SignatureLevel;
 			// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 			// import eu.europa.esig.dss.pades.signature.PAdESService;
 			// import eu.europa.esig.dss.model.ToBeSigned;
 			// import eu.europa.esig.dss.model.SignatureValue;
@@ -165,7 +165,7 @@ public class SignPdfPadesBTest extends CookbookTools {
 			// Extract PDF/A validation result
 			// This report contains only validation of a document against PDF/A specification
 			// and no signature validation process result
-			PDFAValidationResult pdfaValidationResult = documentValidator.getPdfValidationResult();
+			PDFAValidationResult pdfaValidationResult = documentValidator.getPdfaValidationResult();
 
 			// This variable contains the name of the identified PDF/A profile (or closest if validation failed)
 			String profileId = pdfaValidationResult.getProfileId();

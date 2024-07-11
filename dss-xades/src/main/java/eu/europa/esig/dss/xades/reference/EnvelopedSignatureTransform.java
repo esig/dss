@@ -21,10 +21,8 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import org.apache.xml.security.transforms.Transforms;
-import org.w3c.dom.Node;
 
 /**
  * Used for Enveloped Signature
@@ -48,13 +46,6 @@ public class EnvelopedSignatureTransform extends AbstractTransform {
 	 */
 	public EnvelopedSignatureTransform(DSSNamespace xmlDSigNamespace) {
 		super(xmlDSigNamespace, Transforms.TRANSFORM_ENVELOPED_SIGNATURE);
-	}
-
-	@Override
-	@Deprecated
-	public byte[] getBytesAfterTransformation(Node node) {
-		// do nothing the new signature is not existing yet
-		return DomUtils.serializeNode(node);
 	}
 
 	@Override

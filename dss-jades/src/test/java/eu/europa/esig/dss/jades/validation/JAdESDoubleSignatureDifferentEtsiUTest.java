@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class JAdESDoubleSignatureDifferentEtsiUTest extends AbstractJAdESTestValidation {
+class JAdESDoubleSignatureDifferentEtsiUTest extends AbstractJAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -35,7 +35,7 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.awt.Color;
@@ -44,10 +44,10 @@ import java.awt.Font;
 /**
  * How to sign PDF Document with PAdES-BASELINE-B and include a visual representation
  */
-public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
+class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 
 	@Test
-	public void signPAdESBaselineBWithExistingVisibleSignature() throws Exception {
+	void signPAdESBaselineBWithExistingVisibleSignature() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -78,7 +78,7 @@ public class SignPdfPadesBVisibleExistingTest extends CookbookTools {
 			// import eu.europa.esig.dss.pades.SignatureImageParameters;
 			// import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 			// import eu.europa.esig.dss.pades.signature.PAdESService;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
 			// Preparing parameters for the PAdES signature
 			PAdESSignatureParameters parameters = new PAdESSignatureParameters();

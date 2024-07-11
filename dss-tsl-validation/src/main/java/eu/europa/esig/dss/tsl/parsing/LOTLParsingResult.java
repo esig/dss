@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
 
 import java.util.List;
 

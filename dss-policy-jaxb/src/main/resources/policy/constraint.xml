@@ -45,7 +45,11 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
 			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL" />
 			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
@@ -75,6 +79,11 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<AuthorityInfoAccessPresent Level="WARN" />
+				<RevocationDataSkip Level="INFORM">
+					<CertificateExtensions>
+						<Id>0.4.0.194121.2.1</Id> <!-- valassured-ST-certs -->
+					</CertificateExtensions>
+				</RevocationDataSkip>
 				<RevocationInfoAccessPresent Level="WARN" />
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
@@ -183,6 +192,11 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
+			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL" />
 			<SignatureDuplicated Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
@@ -201,6 +215,11 @@
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
 				<AuthorityInfoAccessPresent Level="WARN" />
+				<RevocationDataSkip Level="INFORM">
+					<CertificateExtensions>
+						<Id>0.4.0.194121.2.1</Id> <!-- valassured-ST-certs -->
+					</CertificateExtensions>
+				</RevocationDataSkip>
 				<RevocationInfoAccessPresent Level="WARN" />
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
@@ -308,6 +327,11 @@
 		<BasicSignatureConstraints>
 			<ReferenceDataExistence Level="FAIL" />
 			<ReferenceDataIntact Level="FAIL" />
+			<ReferenceDataNameMatch Level="WARN" />
+			<ManifestEntryObjectExistence Level="WARN" />
+			<ManifestEntryObjectGroup Level="WARN" />
+			<ManifestEntryObjectIntact Level="FAIL" />
+			<ManifestEntryNameMatch Level="WARN" />
 			<SignatureIntact Level="FAIL" />
 			<ProspectiveCertificateChain Level="FAIL" />
 			<ByteRange Level="FAIL" />
@@ -415,6 +439,11 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<RevocationDataSkip Level="IGNORE">
+					<CertificateExtensions>
+						<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+					</CertificateExtensions>
+				</RevocationDataSkip>
 				<RevocationDataAvailable Level="FAIL" />
 				<AcceptableRevocationDataFound Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
@@ -483,11 +512,13 @@
 		<DataObjectIntact Level="FAIL" />
 		<DataObjectFound Level="FAIL" />
 		<DataObjectGroup Level="WARN" />
+		<HashTreeRenewal Level="FAIL" />
 		<Cryptographic />
 	</EvidenceRecord>
 	<Cryptographic Level="FAIL">
 		<AcceptableEncryptionAlgo>
 			<Algo>RSA</Algo>
+			<Algo>RSASSA-PSS</Algo>
 			<Algo>DSA</Algo>
 			<Algo>ECDSA</Algo>
 			<Algo>PLAIN-ECDSA</Algo>
@@ -496,6 +527,7 @@
 		<MiniPublicKeySize>
 			<Algo Size="1024">DSA</Algo>
 			<Algo Size="1024">RSA</Algo>
+			<Algo Size="1024">RSASSA-PSS</Algo>
 			<Algo Size="160">ECDSA</Algo>
 			<Algo Size="160">PLAIN-ECDSA</Algo>
 <!-- 		<Algo Size="24">EdDSA</Algo> 		Not referenced in ETSI/SOGIS -->
@@ -539,6 +571,10 @@
 			<Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
 			<Algo Date="2026" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2029" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+			<Algo Date="2009" Size="1024">RSASSA-PSS</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+			<Algo Date="2016" Size="1536">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.1.1 -->
+			<Algo Date="2026" Size="1900">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
+			<Algo Date="2029" Size="3000">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
 			<Algo Date="2013" Size="160">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 			<Algo Date="2013" Size="192">ECDSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 			<Algo Date="2016" Size="224">ECDSA</Algo> <!-- ETSI 119 312 V1.1.1 -->

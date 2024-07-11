@@ -33,7 +33,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 
 import java.util.List;
@@ -48,7 +48,7 @@ public class PAdESExtensionBToLTADocWithVRITstTest extends AbstractPAdESTestVali
     @Override
     protected DSSDocument getSignedDocument() {
         CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
-        completeCertificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert());
+        completeCertificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert());
         completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert());
 
         PAdESService padesService = new PAdESService(completeCertificateVerifier);

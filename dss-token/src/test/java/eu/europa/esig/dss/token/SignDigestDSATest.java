@@ -45,7 +45,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignDigestDSATest {
+class SignDigestDSATest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignDigestDSATest.class);
 
@@ -69,7 +69,7 @@ public class SignDigestDSATest {
 
 	@ParameterizedTest(name = "DigestAlgorithm {index} : {0}")
 	@MethodSource("data")
-	public void testPkcs12(DigestAlgorithm digestAlgo) throws IOException {
+	void testPkcs12(DigestAlgorithm digestAlgo) throws IOException {
 		try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/good-dsa-user.p12",
 				new PasswordProtection("ks-password".toCharArray()))) {
 

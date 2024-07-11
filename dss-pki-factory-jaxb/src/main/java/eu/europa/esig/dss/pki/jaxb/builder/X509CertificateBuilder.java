@@ -458,12 +458,12 @@ public class X509CertificateBuilder {
         // QC Types
         if (Utils.isCollectionNotEmpty(qcTypes)) {
             ASN1EncodableVector typeVector = new ASN1EncodableVector();
-            for (String qcTypes : qcTypes) {
-                typeVector.add(getQcTypeOid(qcTypes));
+            for (String qcType : qcTypes) {
+                typeVector.add(getQcTypeOid(qcType));
             }
 
-            QCStatement qcTypes = new QCStatement(ETSIQCObjectIdentifiers.id_etsi_qcs_QcType, new DERSequence(typeVector));
-            vector.add(qcTypes);
+            QCStatement qcsQcType = new QCStatement(ETSIQCObjectIdentifiers.id_etsi_qcs_QcType, new DERSequence(typeVector));
+            vector.add(qcsQcType);
         }
 
         // QC CClegislation

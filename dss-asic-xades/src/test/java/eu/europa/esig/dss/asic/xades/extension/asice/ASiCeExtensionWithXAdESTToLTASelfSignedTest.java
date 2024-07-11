@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.asice;
 
-public class ASiCeExtensionWithXAdESTToLTASelfSignedTest extends ASiCeExtensionWithXAdESTToLTATest {
+class ASiCeExtensionWithXAdESTToLTASelfSignedTest extends ASiCeExtensionWithXAdESTToLTATest {
 
 	@Override
 	protected String getSigningAlias() {

@@ -31,10 +31,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CommonTrustedCertificateSourceTest {
+class CommonTrustedCertificateSourceTest {
 
 	@Test
-	public void importKeyStore() throws IOException {
+	void importKeyStore() throws IOException {
 		CommonTrustedCertificateSource ctcs = new CommonTrustedCertificateSource();
 
 		KeyStoreCertificateSource keyStore = new KeyStoreCertificateSource("src/test/resources/keystore.jks", "JKS", "dss-password".toCharArray());

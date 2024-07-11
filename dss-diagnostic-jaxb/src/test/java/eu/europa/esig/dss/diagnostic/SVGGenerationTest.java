@@ -36,10 +36,10 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SVGGenerationTest {
+class SVGGenerationTest {
 
 	@Test
-	public void test() throws JAXBException, XMLStreamException, IOException, SAXException, TransformerException {
+	void test() throws JAXBException, XMLStreamException, IOException, SAXException, TransformerException {
 		DiagnosticDataFacade newFacade = DiagnosticDataFacade.newFacade();
 		XmlDiagnosticData diagnosticData = newFacade.unmarshall(new File("src/test/resources/diag-data.xml"));
 
@@ -56,7 +56,7 @@ public class SVGGenerationTest {
 	}
 
 	@Test
-	public void testER() throws JAXBException, XMLStreamException, IOException, SAXException, TransformerException {
+	void testER() throws JAXBException, XMLStreamException, IOException, SAXException, TransformerException {
 		DiagnosticDataFacade newFacade = DiagnosticDataFacade.newFacade();
 		XmlDiagnosticData diagnosticData = newFacade.unmarshall(new File("src/test/resources/er-diag-data.xml"));
 

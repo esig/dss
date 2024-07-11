@@ -41,7 +41,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.security.SecureRandom;
 
-public class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends AbstractPAdESTestSignature {
+class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends AbstractPAdESTestSignature {
 	
 	private static final char[] PASSWORD = new char[]{ ' ' };
 
@@ -50,7 +50,7 @@ public class PdfBoxSignEncryptedWithCustomFixedSecureRandomTest extends Abstract
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 		signatureParameters = new PAdESSignatureParameters();

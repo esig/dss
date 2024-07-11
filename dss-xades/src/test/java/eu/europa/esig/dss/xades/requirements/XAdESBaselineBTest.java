@@ -33,14 +33,14 @@ import org.junit.jupiter.api.BeforeEach;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 
-public class XAdESBaselineBTest extends AbstractXAdESRequirementChecks {
+class XAdESBaselineBTest extends AbstractXAdESRequirementChecks {
 
 	protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	protected XAdESSignatureParameters signatureParameters;
 	protected DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -53,7 +53,7 @@ public class XAdESBaselineBTest extends AbstractXAdESRequirementChecks {
 	}
 
 	@Override
-	public void checkUnsignedProperties() throws XPathExpressionException {
+	protected void checkUnsignedProperties() throws XPathExpressionException {
 		// do nothing
 	}
 

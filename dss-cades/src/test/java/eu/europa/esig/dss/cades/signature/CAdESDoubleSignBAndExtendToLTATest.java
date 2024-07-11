@@ -28,14 +28,14 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CAdESDoubleSignBAndExtendToLTATest extends AbstractCAdESTestSignature {
+class CAdESDoubleSignBAndExtendToLTATest extends AbstractCAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -44,7 +44,7 @@ public class CAdESDoubleSignBAndExtendToLTATest extends AbstractCAdESTestSignatu
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new CAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

@@ -72,6 +72,15 @@ public class EvidenceRecordWrapper {
     }
 
     /**
+     * Checks if the evidence record's Id is duplicated within the validating document
+     *
+     * @return TRUE if there is a duplicated evidence record Id, FALSE otherwise
+     */
+    public boolean isEvidenceRecordDuplicated() {
+        return evidenceRecord.isDuplicated() != null && evidenceRecord.isDuplicated();
+    }
+
+    /**
      * Returns name of the evidence record's document, when applicable
      *
      * @return {@link String}

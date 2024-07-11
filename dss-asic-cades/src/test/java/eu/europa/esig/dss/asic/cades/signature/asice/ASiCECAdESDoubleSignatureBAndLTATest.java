@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESDoubleSignatureBAndLTATest extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESDoubleSignatureBAndLTATest extends AbstractASiCECAdESTestSignature {
 
     private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
@@ -50,7 +50,7 @@ public class ASiCECAdESDoubleSignatureBAndLTATest extends AbstractASiCECAdESTest
     private String firstSignatureId;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

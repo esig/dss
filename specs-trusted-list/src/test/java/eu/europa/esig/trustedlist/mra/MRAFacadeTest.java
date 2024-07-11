@@ -41,25 +41,25 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class MRAFacadeTest {
+class MRAFacadeTest {
 
     @Test
-    public void testLOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
+    void testLOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
         marshallUnmarshall(new File("src/test/resources/lotl.xml"));
     }
 
     @Test
-    public void testMRA_LOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
+    void testMRA_LOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
         marshallUnmarshall(new File("src/test/resources/mra/mra-lotl.xml"));
     }
 
     @Test
-    public void testMRA_BE() throws JAXBException, XMLStreamException, IOException, SAXException {
+    void testMRA_BE() throws JAXBException, XMLStreamException, IOException, SAXException {
         marshallUnmarshall(new File("src/test/resources/mra/be-tl.xml"));
     }
 
     @Test
-    public void testMRA_TC() throws JAXBException, XMLStreamException, IOException, SAXException {
+    void testMRA_TC() throws JAXBException, XMLStreamException, IOException, SAXException {
         marshallUnmarshall(new File("src/test/resources/mra/tc-tl.xml"));
     }
 
@@ -75,7 +75,7 @@ public class MRAFacadeTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testMRA_LOTL_extract() throws JAXBException, XMLStreamException, IOException, SAXException {
+    void testMRA_LOTL_extract() throws JAXBException, XMLStreamException, IOException, SAXException {
         TrustedListFacade facade = MRAFacade.newFacade();
 
         TrustStatusListType trustStatusListType = facade

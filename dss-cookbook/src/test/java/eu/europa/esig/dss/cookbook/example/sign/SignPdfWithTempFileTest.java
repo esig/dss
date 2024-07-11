@@ -33,18 +33,19 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignPdfWithTempFileTest extends CookbookTools {
+class SignPdfWithTempFileTest extends CookbookTools {
 
     @Test
-    public void signPAdESWithTempFile() throws Exception {
+    void signPAdESWithTempFile() throws Exception {
 
         String signedFileDestination = "target/signed.pdf";
 
@@ -65,7 +66,7 @@ public class SignPdfWithTempFileTest extends CookbookTools {
             // import eu.europa.esig.dss.pdf.IPdfObjFactory;
             // import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
             // import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
-            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
             // Preparing parameters for the PAdES signature
             PAdESSignatureParameters parameters = new PAdESSignatureParameters();
@@ -111,7 +112,7 @@ public class SignPdfWithTempFileTest extends CookbookTools {
 
             // end::demo[]
 
-            assertTrue(signedDocument instanceof FileDocument);
+            assertInstanceOf(FileDocument.class, signedDocument);
 
             signedDocument = new FileDocument(signedFileDestination);
             testFinalDocument(signedDocument);

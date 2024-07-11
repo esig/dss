@@ -52,7 +52,7 @@ public class PAdESVisibleSignWithSignatureFieldTest extends PKIFactoryAccess {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -66,14 +66,14 @@ public class PAdESVisibleSignWithSignatureFieldTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testImageSign() throws IOException {
+	void testImageSign() throws IOException {
 		SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeTypeEnum.PNG));
 		signAndValidate();
 	}
 
 	@Test
-	public void testTextSign() throws IOException {
+	void testTextSign() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("NOWINA");

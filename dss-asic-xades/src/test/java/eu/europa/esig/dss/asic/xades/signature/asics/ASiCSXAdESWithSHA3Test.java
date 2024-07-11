@@ -44,14 +44,14 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class ASiCSXAdESWithSHA3Test extends AbstractASiCSXAdESTestSignature {
+class ASiCSXAdESWithSHA3Test extends AbstractASiCSXAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 	
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();

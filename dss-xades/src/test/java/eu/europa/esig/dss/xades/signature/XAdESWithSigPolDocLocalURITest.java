@@ -33,8 +33,8 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESWithSigPolDocLocalURITest extends AbstractXAdESTestSignature {
+class XAdESWithSigPolDocLocalURITest extends AbstractXAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -65,7 +65,7 @@ public class XAdESWithSigPolDocLocalURITest extends AbstractXAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         Policy signaturePolicy = new Policy();

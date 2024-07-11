@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.cache;
 
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,9 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 		if (!cachedFileEntry.isEmpty()) {
 			XmlDownloadResult cachedResult = cachedFileEntry.getCachedResult();
 			LOG.trace("Comparing digest of the stored file [{}] with the downloaded file [{}]", cachedResult.getDigest(), downloadedResult.getDigest());
-			boolean upToDate = cachedResult.getDigest().equals(downloadedResult.getDigest());
+			boolean digestMatch = cachedResult.getDigest().equals(downloadedResult.getDigest());
+			boolean sha2ContentMatch = isSHA2ContentMatch(cachedResult, downloadedResult);
+			boolean upToDate = digestMatch && sha2ContentMatch;
 			LOG.trace("Is file with the key [{}] up to date ? {}", cacheKey, upToDate);
 			if (upToDate) {
 				cachedFileEntry.syncUpdateDate();
@@ -62,6 +65,12 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 		}
 		LOG.trace("The FileCache does not contain a file result for the key [{}]!", cacheKey);
 		return false;
+	}
+
+	private boolean isSHA2ContentMatch(XmlDownloadResult cachedResult, XmlDownloadResult downloadedResult) {
+		return (Utils.isCollectionEmpty(cachedResult.getSha2ErrorMessages()) && Utils.isCollectionEmpty(downloadedResult.getSha2ErrorMessages())) ||
+				(Utils.isCollectionEmpty(cachedResult.getSha2ErrorMessages()) && cachedResult.getSha2ErrorMessages().equals(downloadedResult.getSha2ErrorMessages()));
+
 	}
 
 	@Override

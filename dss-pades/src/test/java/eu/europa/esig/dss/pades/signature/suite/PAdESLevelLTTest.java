@@ -30,7 +30,7 @@ import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -46,7 +46,7 @@ public class PAdESLevelLTTest extends AbstractPAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();

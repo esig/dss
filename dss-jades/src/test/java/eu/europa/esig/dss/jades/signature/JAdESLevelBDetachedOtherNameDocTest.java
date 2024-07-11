@@ -44,14 +44,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class JAdESLevelBDetachedOtherNameDocTest extends AbstractJAdESTestSignature {
+class JAdESLevelBDetachedOtherNameDocTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

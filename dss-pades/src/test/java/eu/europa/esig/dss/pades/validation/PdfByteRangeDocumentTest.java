@@ -42,27 +42,27 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfByteRangeDocumentTest {
+class PdfByteRangeDocumentTest {
 
     private static DSSDocument pdfDocument;
     private static ByteRange byteRange;
     private static ByteRange signatureValueByteRange;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         pdfDocument = new FileDocument("src/test/resources/validation/PAdES-LT.pdf");
         byteRange = new ByteRange(new int[]{0, 92856, 111802, 50376});
         signatureValueByteRange = new ByteRange(new int[] { 92857, 18944, 111801, 0 });
     }
 
     @Test
-    public void contentComparisonTest() throws IOException {
+    void contentComparisonTest() throws IOException {
         PdfByteRangeDocument pdfRevisionDocument = new PdfByteRangeDocument(pdfDocument, byteRange);
-        assertEquals("tlP+GBlImCLCAZGWWWTLmiHtZVVTqHeiRq+ddk5hV+M=", pdfRevisionDocument.getDigest(DigestAlgorithm.SHA256));
+        assertEquals("tlP+GBlImCLCAZGWWWTLmiHtZVVTqHeiRq+ddk5hV+M=", Utils.toBase64(pdfRevisionDocument.getDigestValue(DigestAlgorithm.SHA256)));
     }
 
     @Test
-    public void readByByteTest() throws IOException, NoSuchAlgorithmException {
+    void readByByteTest() throws IOException, NoSuchAlgorithmException {
         PdfByteRangeDocument pdfRevisionDocument = new PdfByteRangeDocument(pdfDocument, byteRange);
         MessageDigest messageDigest = DigestAlgorithm.SHA256.getMessageDigest();
         try (InputStream is = pdfRevisionDocument.openStream();) {
@@ -76,7 +76,7 @@ public class PdfByteRangeDocumentTest {
     }
 
     @Test
-    public void readWithBufferArrayTest() throws IOException, NoSuchAlgorithmException {
+    void readWithBufferArrayTest() throws IOException, NoSuchAlgorithmException {
         PdfByteRangeDocument pdfRevisionDocument = new PdfByteRangeDocument(pdfDocument, byteRange);
         MessageDigest messageDigest = DigestAlgorithm.SHA256.getMessageDigest();
         try (InputStream is = pdfRevisionDocument.openStream()) {
@@ -91,7 +91,7 @@ public class PdfByteRangeDocumentTest {
     }
 
     @Test
-    public void closeTest() throws IOException {
+    void closeTest() throws IOException {
         PdfByteRangeDocument pdfRevisionDocument = new PdfByteRangeDocument(pdfDocument, byteRange);
         try (InputStream is = pdfRevisionDocument.openStream()) {
             is.close();
@@ -102,15 +102,15 @@ public class PdfByteRangeDocumentTest {
     }
 
     @Test
-    public void readDocumentInsideOpenStreamTest() throws IOException {
+    void readDocumentInsideOpenStreamTest() throws IOException {
         PdfByteRangeDocument pdfRevisionDocument = new PdfByteRangeDocument(pdfDocument, byteRange);
         try (InputStream is = pdfRevisionDocument.openStream()) {
-            assertEquals(pdfRevisionDocument.getDigest(DigestAlgorithm.SHA256), Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, is)));
+            assertArrayEquals(pdfRevisionDocument.getDigestValue(DigestAlgorithm.SHA256), DSSUtils.digest(DigestAlgorithm.SHA256, is));
         }
     }
 
     @Test
-    public void extractSignatureValueTest() throws IOException {
+    void extractSignatureValueTest() throws IOException {
         PdfByteRangeDocument pdfCmsRevisionDocument = new PdfByteRangeDocument(pdfDocument, signatureValueByteRange);
         byte[] bytes = DSSUtils.toByteArray(pdfCmsRevisionDocument);
         assertTrue(Utils.isArrayNotEmpty(bytes));

@@ -30,7 +30,7 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CAdESRevocationSourceLevelLTTest extends AbstractCAdESTestValidation {
+class CAdESRevocationSourceLevelLTTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

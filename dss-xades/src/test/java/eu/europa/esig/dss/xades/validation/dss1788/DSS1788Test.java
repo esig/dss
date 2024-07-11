@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class DSS1788Test extends AbstractXAdESTestValidation {
+class DSS1788Test extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

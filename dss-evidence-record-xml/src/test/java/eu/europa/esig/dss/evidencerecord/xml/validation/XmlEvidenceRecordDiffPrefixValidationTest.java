@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import java.util.Arrays;
 import java.util.List;
 
-public class XmlEvidenceRecordDiffPrefixValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordDiffPrefixValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

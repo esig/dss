@@ -58,7 +58,7 @@ public abstract class AbstractUtilsTest {
     Path folder;
 
 	@Test
-	public void isStringEmpty() {
+	void isStringEmpty() {
 		assertTrue(Utils.isStringEmpty(""));
 		assertFalse(Utils.isStringEmpty("  "));
 		assertTrue(Utils.isStringEmpty(null));
@@ -66,7 +66,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isStringNotEmpty() {
+	void isStringNotEmpty() {
 		assertFalse(Utils.isStringNotEmpty(""));
 		assertTrue(Utils.isStringNotEmpty("  "));
 		assertFalse(Utils.isStringNotEmpty(null));
@@ -74,7 +74,7 @@ public abstract class AbstractUtilsTest {
 	}
 	
 	@Test
-	public void areAllStringsEmpty() {
+	void areAllStringsEmpty() {
 		String nullString = null;
 		assertTrue(Utils.areAllStringsEmpty(nullString));
 		assertTrue(Utils.areAllStringsEmpty(""));
@@ -90,7 +90,7 @@ public abstract class AbstractUtilsTest {
 	}
 	
 	@Test
-	public void isAtLeastOneStringNotEmpty() {
+	void isAtLeastOneStringNotEmpty() {
 		String nullString = null;
 		assertFalse(Utils.isAtLeastOneStringNotEmpty(nullString));
 		assertFalse(Utils.isAtLeastOneStringNotEmpty(""));
@@ -106,7 +106,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isStringBlank() {
+	void isStringBlank() {
 		assertTrue(Utils.isStringBlank(""));
 		assertTrue(Utils.isStringBlank("  "));
 		assertTrue(Utils.isStringBlank(null));
@@ -114,7 +114,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isStringNotBlank() {
+	void isStringNotBlank() {
 		assertFalse(Utils.isStringNotBlank(""));
 		assertFalse(Utils.isStringNotBlank("  "));
 		assertFalse(Utils.isStringNotBlank(null));
@@ -122,7 +122,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void areStringsEqual() {
+	void areStringsEqual() {
 		assertTrue(Utils.areStringsEqual(null, null));
 		assertTrue(Utils.areStringsEqual("", ""));
 		assertFalse(Utils.areStringsEqual("", "123"));
@@ -133,7 +133,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void areStringsEqualIgnoreCase() {
+	void areStringsEqualIgnoreCase() {
 		assertTrue(Utils.areStringsEqualIgnoreCase(null, null));
 		assertTrue(Utils.areStringsEqualIgnoreCase("", ""));
 		assertFalse(Utils.areStringsEqualIgnoreCase("", "123"));
@@ -144,7 +144,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isStringDigits() {
+	void isStringDigits() {
 		assertFalse(Utils.isStringDigits(""));
 		assertFalse(Utils.isStringDigits(null));
 		assertFalse(Utils.isStringDigits("bla"));
@@ -158,7 +158,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void trim() {
+	void trim() {
 		assertNull(Utils.trim(null));
 		assertEquals("", Utils.trim(""));
 		assertEquals("", Utils.trim("   "));
@@ -167,10 +167,11 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void joinStrings() {
+	void joinStrings() {
 		assertNull(Utils.joinStrings(null, null));
 		assertEquals("", Utils.joinStrings(new ArrayList<>(), null));
 		assertEquals("", Utils.joinStrings(new ArrayList<>(), ","));
+		assertEquals("a", Utils.joinStrings(Collections.singletonList("a"), ","));
 
 		List<String> list = new ArrayList<>();
 		list.add("a");
@@ -182,7 +183,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void concat() {
+	void concat() {
 		assertArrayEquals(new byte[] {'h','e','l','l','o','w','o','r','l','d'},
 				Utils.concat(new byte[] {'h','e','l','l','o'}, new byte[] {'w','o','r','l','d'}));
 		assertArrayEquals(new byte[] {'h','e','l','l','o','h','e','l','l','o'},
@@ -203,14 +204,14 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void substringAfter() {
+	void substringAfter() {
 		assertNull(Utils.substringAfter(null, null));
 		assertEquals("", Utils.substringAfter("", null));
 		assertEquals("bbb", Utils.substringAfter("aaaaa?bbb", "?"));
 	}
 
 	@Test
-	public void endsWithIgnoreCase() {
+	void endsWithIgnoreCase() {
 		assertTrue(Utils.endsWithIgnoreCase("hello", "lo"));
 		assertTrue(Utils.endsWithIgnoreCase("hello", "LO"));
 		assertFalse(Utils.endsWithIgnoreCase("hello", null));
@@ -219,7 +220,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void getFileNameExtension() {
+	void getFileNameExtension() {
 		assertEquals("xml", Utils.getFileNameExtension("file.xml"));
 		assertEquals("pdf", Utils.getFileNameExtension("document.pdf"));
 		assertEquals("pdf", Utils.getFileNameExtension("document..pdf"));
@@ -233,7 +234,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void lowerCase() {
+	void lowerCase() {
 		assertNull(Utils.lowerCase(null));
 		assertEquals("", Utils.lowerCase(""));
 		assertEquals(" ", Utils.lowerCase(" "));
@@ -242,7 +243,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void upperCase() {
+	void upperCase() {
 		assertNull(Utils.upperCase(null));
 		assertEquals("", Utils.upperCase(""));
 		assertEquals(" ", Utils.upperCase(" "));
@@ -251,7 +252,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isArrayEmptyObj() {
+	void isArrayEmptyObj() {
 		assertTrue(Utils.isArrayEmpty((Object[]) null));
 		assertTrue(Utils.isArrayEmpty(new Object[] {}));
 		assertFalse(Utils.isArrayEmpty(new Object[] { null }));
@@ -259,7 +260,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isArrayNotEmptyObj() {
+	void isArrayNotEmptyObj() {
 		assertFalse(Utils.isArrayNotEmpty((Object[]) null));
 		assertFalse(Utils.isArrayNotEmpty(new Object[] {}));
 		assertTrue(Utils.isArrayNotEmpty(new Object[] { null }));
@@ -267,21 +268,39 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isArrayEmpty() {
+	void arraySizeObj() {
+		assertEquals(0, Utils.arraySize((Object[]) null));
+		assertEquals(0, Utils.arraySize(new Object[] {}));
+		assertEquals(1, Utils.arraySize(new Object[] { null }));
+		assertEquals(2, Utils.arraySize(new Object[] { "1", 1 }));
+	}
+
+	@Test
+	void isArrayEmpty() {
 		assertTrue(Utils.isArrayEmpty((byte[]) null));
 		assertTrue(Utils.isArrayEmpty(new byte[] {}));
 		assertFalse(Utils.isArrayEmpty(new byte[] { 1 }));
+		assertFalse(Utils.isArrayEmpty(new byte[] { 1, 2 }));
 	}
 
 	@Test
-	public void isArrayNotEmpty() {
+	void isArrayNotEmpty() {
 		assertFalse(Utils.isArrayNotEmpty((byte[]) null));
 		assertFalse(Utils.isArrayNotEmpty(new byte[] {}));
 		assertTrue(Utils.isArrayNotEmpty(new byte[] { 1 }));
+		assertTrue(Utils.isArrayNotEmpty(new byte[] { 1, 2 }));
 	}
 
 	@Test
-	public void isArrayEmptyChar() {
+	void arraySize() {
+		assertEquals(0, Utils.arraySize((byte[]) null));
+		assertEquals(0, Utils.arraySize(new byte[] {}));
+		assertEquals(1, Utils.arraySize(new byte[] { 1 }));
+		assertEquals(2, Utils.arraySize(new byte[] { 1, 2 }));
+	}
+
+	@Test
+	void isArrayEmptyChar() {
 		assertTrue(Utils.isArrayEmpty((char[]) null));
 		assertTrue(Utils.isArrayEmpty(new char[] {}));
 		assertFalse(Utils.isArrayEmpty(new char[] { ' ' }));
@@ -291,7 +310,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isArrayNotEmptyChar() {
+	void isArrayNotEmptyChar() {
 		assertFalse(Utils.isArrayNotEmpty((char[]) null));
 		assertFalse(Utils.isArrayNotEmpty(new char[] {}));
 		assertTrue(Utils.isArrayNotEmpty(new char[] { ' ' }));
@@ -301,7 +320,17 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void subarray() {
+	void arraySizeChar() {
+		assertEquals(0, Utils.arraySize((char[]) null));
+		assertEquals(0, Utils.arraySize(new char[] {}));
+		assertEquals(1, Utils.arraySize(new char[] { ' ' }));
+		assertEquals(1, Utils.arraySize(new char[] { 'A' }));
+		assertEquals(4, Utils.arraySize(new char[] { 'A', 'A', 'A', 'A' }));
+		assertEquals(4, Utils.arraySize(new char[] { 'A', 'B', 'C', 'D' }));
+	}
+
+	@Test
+	void subarray() {
 		byte[] array = new byte[] { 1, 2, 3, 4, 5 };
 		assertArrayEquals(array, Utils.subarray(array, 0, array.length));
 		assertArrayEquals(new byte[] { 1, 2, 3 }, Utils.subarray(array, 0, 3));
@@ -310,7 +339,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isTrue() {
+	void isTrue() {
 		assertFalse(Utils.isTrue(null));
 		assertFalse(Utils.isTrue(false));
 		assertTrue(Utils.isTrue(true));
@@ -318,7 +347,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isCollectionEmpty() {
+	void isCollectionEmpty() {
 		assertTrue(Utils.isCollectionEmpty(null));
 		assertTrue(Utils.isCollectionEmpty(new ArrayList<String>()));
 
@@ -330,7 +359,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isCollectionNotEmpty() {
+	void isCollectionNotEmpty() {
 		assertFalse(Utils.isCollectionNotEmpty(null));
 		assertFalse(Utils.isCollectionNotEmpty(new ArrayList<String>()));
 
@@ -342,7 +371,7 @@ public abstract class AbstractUtilsTest {
 	}
 	
 	@Test
-	public void isMapEmpty() {
+	void isMapEmpty() {
 		assertTrue(Utils.isMapEmpty(null));
 		assertTrue(Utils.isMapEmpty(new HashMap<String, Integer>()));
 		
@@ -358,7 +387,7 @@ public abstract class AbstractUtilsTest {
 	}
 	
 	@Test
-	public void isMapNotEmpty() {
+	void isMapNotEmpty() {
 		assertFalse(Utils.isMapNotEmpty(null));
 		assertFalse(Utils.isMapNotEmpty(new HashMap<String, Integer>()));
 		
@@ -374,7 +403,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void collectionSize() {
+	void collectionSize() {
 		assertEquals(0, Utils.collectionSize(null));
 
 		assertEquals(0, Utils.collectionSize(new ArrayList<String>()));
@@ -387,7 +416,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void isHexEncodedTest() {
+	void isHexEncodedTest() {
 		assertTrue(Utils.isHexEncoded(""));
 		assertTrue(Utils.isHexEncoded("5361736861"));
 		assertTrue(Utils.isHexEncoded("30187F47A8D9AE9D3D12942CE996C3BF746E4F4F"));
@@ -402,19 +431,19 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void toHexNull() {
+	void toHexNull() {
 		assertThrows(NullPointerException.class, () -> Utils.toHex(null));
 	}
 
 	@Test
-	public void toHex() {
+	void toHex() {
 		assertEquals("", Utils.toHex(new byte[] {}));
 		assertEquals("0102030405", Utils.toHex(new byte[] { 1, 2, 3, 4, 5 }));
 		assertEquals("61027a6a09", Utils.toHex(new byte[] { 'a', 2, 'z', 'j', 9 }));
 	}
 
 	@Test
-	public void fromHex() {
+	void fromHex() {
 		assertNotNull(Utils.fromHex(""));
 		assertArrayEquals(new byte[] { 1, 2, 3, 4, 5 }, Utils.fromHex("0102030405"));
 		assertArrayEquals(new byte[] { 'a', 2, 'z', 'j', 9 }, Utils.fromHex("61027a6a09"));
@@ -422,12 +451,12 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void fromHexNull() {
+	void fromHexNull() {
 		assertThrows(NullPointerException.class, () -> Utils.fromHex(null));
 	}
 	
 	@Test
-	public void isBase64Encoded() {
+	void isBase64Encoded() {
 		assertTrue(Utils.isBase64Encoded(""));
 		assertTrue(Utils.isBase64Encoded("AQIDBAU="));
 		assertTrue(Utils.isBase64Encoded("AQIDBAU"));
@@ -440,24 +469,24 @@ public abstract class AbstractUtilsTest {
 	}
 	
 	@Test
-	public void isBase64EncodedNullPointer() {
+	void isBase64EncodedNullPointer() {
 		assertThrows(NullPointerException.class, () -> Utils.isBase64Encoded(null));
 	}
 
 	@Test
-	public void toBase64() {
+	void toBase64() {
 		assertEquals("", Utils.toBase64(new byte[] {}));
 		assertEquals("AQIDBAU=", Utils.toBase64(new byte[] { 1, 2, 3, 4, 5 }));
 	}
 
 	@Test
-	public void fromBase64() {
+	void fromBase64() {
 		assertArrayEquals(new byte[] { 1, 2, 3, 4, 5 }, Utils.fromBase64("AQIDBAU="));
 		assertArrayEquals(new byte[] { 1, 2, 3, 4, 5 }, Utils.fromBase64("\nAQI\nD BA\tU=\n"));
 	}
 
 	@Test
-	public void toByteArray() throws  IOException {
+	void toByteArray() throws  IOException {
 		File newFile = new File("target/sample.txt");
 		String newFileContent = "Hello world!";
 
@@ -475,7 +504,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void toByteArrayCRLForLF() throws IOException, NoSuchAlgorithmException {
+	void toByteArrayCRLForLF() throws IOException, NoSuchAlgorithmException {
 
 		try (InputStream is = AbstractUtilsTest.class.getResourceAsStream("/sample-lf.xml")) {
 			byte[] byteArray = Utils.toByteArray(is);
@@ -490,7 +519,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void closeQuietly() throws IOException {
+	void closeQuietly() throws IOException {
 		Utils.closeQuietly(null);
 		File newFile = new File("target/sample2.txt");
 		String newFileContent = "Hello world!";
@@ -516,7 +545,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void listFiles() {
+	void listFiles() {
 		File folder = new File("src/main/java");
 		String[] extensions = new String[] { "java" };
 		Collection<File> listFiles = Utils.listFiles(folder, extensions, true);
@@ -528,7 +557,7 @@ public abstract class AbstractUtilsTest {
 	}
 	
 	@Test
-	public void getInputStreamSize() throws IOException {
+	void getInputStreamSize() throws IOException {
 		
 		try (InputStream is = new ByteArrayInputStream("Hello World!".getBytes())) {
 			assertEquals(12, Utils.getInputStreamSize(is));
@@ -555,7 +584,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void compareInputStreams() throws IOException {
+	void compareInputStreams() throws IOException {
 		String content = "Hello world!";
 		String contentTwo = "Bye world!";
 		try (InputStream is1 = new ByteArrayInputStream(content.getBytes())) {
@@ -660,7 +689,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void startsWithByteArrayTest() {
+	void startsWithByteArrayTest() {
 		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'H'}));
 		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'H','e','l','l','o'}));
 		assertTrue(Utils.startsWith(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}, new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}));
@@ -699,7 +728,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void startsWithInputStreamTest() throws IOException {
+	void startsWithInputStreamTest() throws IOException {
 		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'H'}));
 		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'H','e','l','l','o'}));
 		assertTrue(Utils.startsWith(new ByteArrayInputStream(new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}), new byte[] {'H','e','l','l','o',' ','W','o','r','l','d'}));
@@ -724,7 +753,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void clearDirectory() throws IOException {
+	void clearDirectory() throws IOException {
 		Path pathToFolder = folder.resolve("test");
 		File dir = new File(pathToFolder.toString());
 		assertTrue(dir.mkdir());
@@ -739,12 +768,12 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void clearDirectoryNotFound() throws FileNotFoundException {
+	void clearDirectoryNotFound() throws FileNotFoundException {
 		assertThrows(FileNotFoundException.class, () -> Utils.cleanDirectory(new File("wrong")));
 	}
 
 	@Test
-	public void reverseListTest() {
+	void reverseListTest() {
 		List<String> stringsList = Arrays.asList("a", "b", "c");
 		assertEquals(Arrays.asList("c", "b", "a"), Utils.reverseList(stringsList));
 
@@ -758,7 +787,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	public void containsAnyTest() {
+	void containsAnyTest() {
 		assertTrue(Utils.containsAny(Arrays.asList("c", "b", "a"), Arrays.asList("c", "b", "a")));
 		assertTrue(Utils.containsAny(Arrays.asList("c", "b", "a"), Arrays.asList("a")));
 		assertTrue(Utils.containsAny(Arrays.asList("c", "b", "a"), Arrays.asList("d", "c", "b", "a")));

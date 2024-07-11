@@ -21,12 +21,13 @@
 package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
@@ -53,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class KeyEntityTSPSourceTest {
+class KeyEntityTSPSourceTest {
 
     private static final File KS_FILE = new File("src/test/resources/self-signed-tsa.p12");
     private static final String KS_TYPE = "PKCS12";
@@ -64,7 +65,7 @@ public class KeyEntityTSPSourceTest {
     private static final byte[] DTBS = "Hello World!".getBytes();
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
@@ -72,15 +73,16 @@ public class KeyEntityTSPSourceTest {
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
 
         AttributeTable signedAttributes = timeStampToken.getSignedAttributes();
-        Attribute signingTimeAttr = signedAttributes.get(CMSAttributes.signingTime);
-        final ASN1Set attrValues = signingTimeAttr.getAttrValues();
+        Attribute[] signingTimeAttrs = DSSASN1Utils.getAsn1Attributes(signedAttributes, CMSAttributes.signingTime);
+        assertEquals(1, Utils.arraySize(signingTimeAttrs));
+        final ASN1Set attrValues = signingTimeAttrs[0].getAttrValues();
         final ASN1Encodable attrValue = attrValues.getObjectAt(0);
 
         assertEquals(0, timeStampToken.getTimeStampInfo().getGenTime().compareTo(DSSASN1Utils.getDate(attrValue)));
     }
 
     @Test
-    public void noPolicyTest() throws Exception {
+    void noPolicyTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         Exception exception = assertThrows(NullPointerException.class, () -> tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest));
@@ -88,7 +90,7 @@ public class KeyEntityTSPSourceTest {
     }
 
     @Test
-    public void initWithKeyStoreTest() throws Exception {
+    void initWithKeyStoreTest() throws Exception {
         KeyStore keyStore = KeyStore.getInstance(KS_TYPE);
         keyStore.load(Files.newInputStream(KS_FILE.toPath()), KS_PASSWORD);
 
@@ -101,7 +103,7 @@ public class KeyEntityTSPSourceTest {
     }
 
     @Test
-    public void acceptedDigestAlgorithmsTest() throws Exception {
+    void acceptedDigestAlgorithmsTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         tspSource.setTsaPolicy(TSA_POLICY);
 
@@ -115,7 +117,7 @@ public class KeyEntityTSPSourceTest {
     }
 
     @Test
-    public void tsaPolicyTest() throws Exception {
+    void tsaPolicyTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         tspSource.setTsaPolicy("1.5.6.7.8.9");
 
@@ -126,7 +128,7 @@ public class KeyEntityTSPSourceTest {
     }
 
     @Test
-    public void productionDateTest() throws Exception {
+    void productionDateTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         tspSource.setTsaPolicy(TSA_POLICY);
 
@@ -142,14 +144,15 @@ public class KeyEntityTSPSourceTest {
         assertEquals(0, time.compareTo(timeStampToken.getTimeStampInfo().getGenTime()));
 
         AttributeTable signedAttributes = timeStampToken.getSignedAttributes();
-        Attribute signingTimeAttr = signedAttributes.get(CMSAttributes.signingTime);
-        final ASN1Set attrValues = signingTimeAttr.getAttrValues();
+        Attribute[] signingTimeAttrs = DSSASN1Utils.getAsn1Attributes(signedAttributes, CMSAttributes.signingTime);
+        assertEquals(1, Utils.arraySize(signingTimeAttrs));
+        final ASN1Set attrValues = signingTimeAttrs[0].getAttrValues();
         final ASN1Encodable attrValue = attrValues.getObjectAt(0);
         assertEquals(0, time.compareTo(DSSASN1Utils.getDate(attrValue)));
     }
 
     @Test
-    public void serialNumberTest() throws Exception {
+    void serialNumberTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
         tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
@@ -161,9 +164,11 @@ public class KeyEntityTSPSourceTest {
     }
 
     @Test
-    public void digestAlgoTest() throws Exception {
+    void digestAlgoTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
         tspSource.setTsaPolicy(TSA_POLICY);
+
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
@@ -177,15 +182,16 @@ public class KeyEntityTSPSourceTest {
     }
 
     @Test
-    public void pssTest() throws Exception {
+    void pssTest() throws Exception {
         KeyEntityTSPSource tspSource = new KeyEntityTSPSource(KS_FILE, KS_TYPE, KS_PASSWORD, ALIAS, KS_PASSWORD);
+        tspSource.setDigestAlgorithm(DigestAlgorithm.SHA256);
         tspSource.setTsaPolicy(TSA_POLICY);
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
         TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         TimeStampToken timeStampToken = assertTimestampValid(timeStampResponse, digest);
         assertEquals(SignatureAlgorithm.RSA_SHA256.getOid(), timeStampToken.toCMSSignedData().getSignerInfos().get(timeStampToken.getSID()).getEncryptionAlgOID());
 
-        tspSource.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+        tspSource.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
         timeStampResponse = tspSource.getTimeStampResponse(DigestAlgorithm.SHA256, digest);
         timeStampToken = assertTimestampValid(timeStampResponse, digest);
@@ -194,7 +200,7 @@ public class KeyEntityTSPSourceTest {
     }
 
     @Test
-    public void errorTest() throws Exception {
+    void errorTest() throws Exception {
         byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, DTBS);
 
         Exception exception1 = assertThrows(NullPointerException.class, () ->new KeyEntityTSPSource((KeyStore) null, null, null));

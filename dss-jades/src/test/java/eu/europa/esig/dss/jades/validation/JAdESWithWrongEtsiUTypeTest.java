@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithWrongEtsiUTypeTest extends AbstractJAdESTestValidation {
+class JAdESWithWrongEtsiUTypeTest extends AbstractJAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -33,7 +33,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class XAdESSignedSingleSignaturePropertyTest extends AbstractXAdESTestValidation {
+class XAdESSignedSingleSignaturePropertyTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

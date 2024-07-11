@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
-import eu.europa.esig.dss.FileNameBuilder;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -34,7 +32,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

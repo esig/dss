@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.jades;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.validation.JWS;
-import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
+import eu.europa.esig.dss.jades.validation.JWSSerializationAnalyzerValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
@@ -37,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JWSConverterTest {
+class JWSConverterTest {
 
 	@Test
-	public void testNotJSONCompact() {
+	void testNotJSONCompact() {
 		InMemoryDocument helloDoc = new InMemoryDocument("Hello".getBytes());
 		Exception exception = assertThrows(IllegalInputException.class, () -> JWSConverter.fromJWSCompactToJSONFlattenedSerialization(helloDoc));
 		assertEquals("Unable to instantiate a compact JWS", exception.getMessage());
@@ -49,8 +49,8 @@ public class JWSConverterTest {
 	}
 
 	@Test
-	public void test3Parts() {
-		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator();
+	void test3Parts() {
+		JWSSerializationAnalyzerValidator validator = new JWSSerializationAnalyzerValidator();
 
 		DSSDocument jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA.2yUt5UtfsRK1pnN0KTTv7gzHTxwDqDz2OkFSqlbQ40A".getBytes());
 		DSSDocument converted = JWSConverter.fromJWSCompactToJSONFlattenedSerialization(jws);
@@ -67,8 +67,8 @@ public class JWSConverterTest {
 	}
 
 	@Test
-	public void test2Parts() {
-		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator();
+	void test2Parts() {
+		JWSSerializationAnalyzerValidator validator = new JWSSerializationAnalyzerValidator();
 
 		DSSDocument jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9..c2lnaA".getBytes());
 		DSSDocument converted = JWSConverter.fromJWSCompactToJSONFlattenedSerialization(jws);
@@ -86,7 +86,7 @@ public class JWSConverterTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testConvertEtsiUToBase64Url() {
+	void testConvertEtsiUToBase64Url() {
 		DSSDocument jwsDocument = new FileDocument("src/test/resources/validation/jades-t-clear-etsiu.json");
 
 		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(jwsDocument);
@@ -132,7 +132,7 @@ public class JWSConverterTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testConvertEtsiUToClearRepresentation() {
+	void testConvertEtsiUToClearRepresentation() {
 		DSSDocument jwsDocument = new FileDocument("src/test/resources/validation/jades-with-counter-signature.json");
 
 		JWSJsonSerializationParser parser = new JWSJsonSerializationParser(jwsDocument);
@@ -177,7 +177,7 @@ public class JWSConverterTest {
 	}
 
 	@Test
-	public void testConvertWithTimestamp() {
+	void testConvertWithTimestamp() {
 		DSSDocument jwsDocument = new FileDocument("src/test/resources/validation/jades-lta.json");
 
 		Exception exception = assertThrows(DSSException.class,
@@ -187,7 +187,7 @@ public class JWSConverterTest {
 	}
 
 	@Test
-	public void testConvertWithMixedEtsiU() {
+	void testConvertWithMixedEtsiU() {
 		DSSDocument jwsDocument = new FileDocument("src/test/resources/validation/jades-with-mixed-etsiU-type.json");
 
 		Exception exception = assertThrows(DSSException.class,

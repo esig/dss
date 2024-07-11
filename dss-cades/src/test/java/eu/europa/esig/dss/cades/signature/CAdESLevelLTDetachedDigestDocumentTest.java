@@ -36,16 +36,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class CAdESLevelLTDetachedDigestDocumentTest extends AbstractCAdESTestSignature {
+class CAdESLevelLTDetachedDigestDocumentTest extends AbstractCAdESTestSignature {
 
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
     private CAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DSSDocument originalDocument = new InMemoryDocument("Hello World!".getBytes());
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigest(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA512, originalDocument.getDigestValue(DigestAlgorithm.SHA512));
 
         signatureParameters = new CAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());

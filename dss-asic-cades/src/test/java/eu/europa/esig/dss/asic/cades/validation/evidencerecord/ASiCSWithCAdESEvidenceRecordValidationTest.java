@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSWithCAdESEvidenceRecordValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
+class ASiCSWithCAdESEvidenceRecordValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -58,14 +58,14 @@ public class ASiCSWithCAdESEvidenceRecordValidationTest extends AbstractASiCWith
         for (XmlDigestMatcher digestMatcher : digestMatchers) {
             if (digestMatcher.isDataFound()) {
                 assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
-                assertEquals("test.txt", digestMatcher.getName());
+                assertEquals("test.text", digestMatcher.getDocumentName());
                 assertNotNull(digestMatcher.getDigestMethod());
                 assertNotNull(digestMatcher.getDigestValue());
                 assertTrue(digestMatcher.isDataIntact());
                 coveredFileFound = true;
             } else {
                 assertEquals(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE, digestMatcher.getType());
-                assertNull(digestMatcher.getName());
+                assertNull(digestMatcher.getDocumentName());
                 assertNotNull(digestMatcher.getDigestMethod());
                 assertNotNull(digestMatcher.getDigestValue());
                 assertFalse(digestMatcher.isDataIntact());

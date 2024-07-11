@@ -26,12 +26,15 @@ import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordTimeStampSequenceVerifier;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.evidencerecord.xml.validation.timestamp.XMLEvidenceRecordTimestampSource;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xmlers.XMLEvidenceRecordUtils;
 import org.w3c.dom.Element;
 
 import javax.xml.transform.dom.DOMSource;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * XML Evidence Record implementations (RFC 6283)
@@ -43,11 +46,31 @@ public class XmlEvidenceRecord extends DefaultEvidenceRecord {
     private final Element evidenceRecordElement;
 
     /**
+     * This constructor is used to create an {@code eu.europa.esig.dss.evidencerecord.xml.validation.XmlEvidenceRecord} 
+     * from a {@code eu.europa.esig.dss.model.DSSDocument} file
+     * 
+     * @param document {@link DSSDocument} representing a detached evidence record
+     */
+    public XmlEvidenceRecord(final DSSDocument document) {
+        Objects.requireNonNull(document, "Document cannot be null!");
+        this.evidenceRecordElement = getEvidenceRecordElement(document);
+    }
+    
+    private static Element getEvidenceRecordElement(DSSDocument document) {
+        Element evidenceRecordElement = new XMLEvidenceRecordAnalyzer(document).getEvidenceRecordElement();
+        if (evidenceRecordElement == null) {
+            throw new IllegalInputException("The provided document shall be an XML Evidence Record!");
+        }
+        return evidenceRecordElement;
+    }
+
+    /**
      * Default constructor to instantiate an XML Evidence Record from a root element
      *
      * @param evidenceRecordElement {@link Element} representing the 'ers:EvidenceRecord' element
      */
     public XmlEvidenceRecord(final Element evidenceRecordElement) {
+        Objects.requireNonNull(evidenceRecordElement, "Evidence Record Element cannot be null!");
         this.evidenceRecordElement = evidenceRecordElement;
     }
 

@@ -43,7 +43,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class DSS1636IncorrectDataTest extends AbstractXAdESTestValidation {
+class DSS1636IncorrectDataTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
  */
 public final class SignatureScopeTypeParser {
 
+	/**
+	 * Default constructor
+	 */
 	private SignatureScopeTypeParser() {
+		// empty
 	}
 
 	/**

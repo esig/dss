@@ -20,97 +20,161 @@
  */
 package eu.europa.esig.dss.cades.extension;
 
-import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.signature.CAdESService;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESExtensionAllSelfSignedCertsTest extends PKIFactoryAccess {
-	
+class CAdESExtensionAllSelfSignedCertsTest extends AbstractCAdESTestExtension {
+
+	private SignatureLevel originalSignatureLevel;
+	private SignatureLevel finalSignatureLevel;
+
 	private DSSDocument documentToSign;
-	private CAdESSignatureParameters parameters;
 	private CAdESService service;
+	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello World!".getBytes());
-		
-		parameters = new CAdESSignatureParameters();
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		parameters.setSigningCertificate(getSigningCert());
-		parameters.setCertificateChain(getCertificateChain());
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        service = new CAdESService(getCompleteCertificateVerifier());
+		certificateVerifier = getCompleteCertificateVerifier();
+		service = new CAdESService(certificateVerifier);
         service.setTspSource(getSelfSignedTsa());
 	}
 
 	@Test
-	public void bToTTest() {
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-        DSSDocument signedDocument = sign();
-        
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		DSSDocument extendedDocument = extend(signedDocument);
+	void bToTTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		finalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
+		DSSDocument extendedDocument = extendSignature(signedDocument);
 		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
 	}
 
 	@Test
-	public void bToLTTest() {
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		DSSDocument signedDocument = sign();
+	void bToLTTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LT;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
 	}
 
 	@Test
-	public void tToLTTest() {
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		DSSDocument signedDocument = sign();
+	void tToLTTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LT;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
 	}
 
 	@Test
-	public void tToLTATest() {
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		DSSDocument signedDocument = sign();
+	void bToLTATest() throws Exception {
+		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
-		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
-		assertEquals("Cannot extend the signature. The signature contains only self-signed certificate chains!", exception.getMessage());
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LTA;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
 	}
-	
-	private DSSDocument sign() {
-        ToBeSigned dataToSign = service.getDataToSign(documentToSign, parameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, parameters.getDigestAlgorithm(), getPrivateKeyEntry());
-        return service.signDocument(documentToSign, parameters, signatureValue);
+
+	@Test
+	void tToLTATest() throws Exception {
+		originalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LTA;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
 	}
-	
-	private DSSDocument extend(DSSDocument document) {
-		return service.extendDocument(document, parameters);
+
+	@Override
+	protected CAdESService getSignatureServiceToSign() {
+		return service;
+	}
+
+	@Override
+	protected CAdESService getSignatureServiceToExtend() {
+		return service;
+	}
+
+	@Override
+	protected SignatureLevel getOriginalSignatureLevel() {
+		return originalSignatureLevel;
+	}
+
+	@Override
+	protected SignatureLevel getFinalSignatureLevel() {
+		return finalSignatureLevel;
 	}
 
 	@Override
 	protected String getSigningAlias() {
 		return SELF_SIGNED_USER;
+	}
+
+	@Override
+	public void extendAndVerify() throws Exception {
+		// do nothing
 	}
 
 }

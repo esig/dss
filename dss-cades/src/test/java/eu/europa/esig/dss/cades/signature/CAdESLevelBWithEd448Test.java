@@ -35,7 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CAdESLevelBWithEd448Test extends AbstractCAdESTestSignature {
+class CAdESLevelBWithEd448Test extends AbstractCAdESTestSignature {
 
     private static final String HELLO_WORLD = "Hello World";
 
@@ -44,7 +44,7 @@ public class CAdESLevelBWithEd448Test extends AbstractCAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
         signatureParameters = new CAdESSignatureParameters();

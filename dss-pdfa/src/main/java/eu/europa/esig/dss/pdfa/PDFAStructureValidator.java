@@ -89,8 +89,9 @@ public class PDFAStructureValidator {
     private String buildProfileId(ValidationResult validationResult) {
         PDFAFlavour pdfaFlavour = validationResult.getPDFAFlavour();
         PDFAFlavour.Specification part = pdfaFlavour.getPart();
+        PDFAFlavour.SpecificationFamily family = part.getFamily();
         PDFAFlavour.Level level = pdfaFlavour.getLevel();
-        return new StringBuilder().append(part.getFamily()).append("-").append(part.getPartNumber()).append(level).toString();
+        return String.format("%s-%s%s", family.getFamily(), part.getPartNumber(), level);
     }
 
     private Collection<String> getErrorMessages(ValidationResult validationResult) {

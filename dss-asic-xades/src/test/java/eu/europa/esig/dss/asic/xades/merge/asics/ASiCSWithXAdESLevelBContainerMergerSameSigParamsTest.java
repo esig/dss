@@ -25,7 +25,7 @@ import eu.europa.esig.dss.asic.xades.merge.AbstractWithXAdESTestMerge;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
@@ -40,7 +40,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCSWithXAdESLevelBContainerMergerSameSigParamsTest extends AbstractWithXAdESTestMerge {
+class ASiCSWithXAdESLevelBContainerMergerSameSigParamsTest extends AbstractWithXAdESTestMerge {
 
     private DSSDocument documentToSign;
 
@@ -50,7 +50,7 @@ public class ASiCSWithXAdESLevelBContainerMergerSameSigParamsTest extends Abstra
     private ASiCWithXAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument("src/test/resources/signable/test.txt");
 
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());

@@ -1,0 +1,1746 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>dokument.eLTA.asice</DocumentName>
+    <ValidationDate>2024-05-31T10:55:06Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-e+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/manifest.xml</Filename>
+                <SignatureFilename>META-INF/signatures001.xml</SignatureFilename>
+                <Entries>
+                    <Entry>1226-200323-1.xdc.xml</Entry>
+                    <Entry>Document.pdf.pdf</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>1226-200323-1.xdc.xml</ContentFile>
+            <ContentFile>Document.pdf.pdf</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures>
+        <Signature Id="S-AF346D0AEAD56FFD023A72B30C6281E8187CC20C2CA244B303072539AB18E2AC">
+            <DAIdentifier>id-443f58d7b69110994767ffa0c11cbaeb</DAIdentifier>
+            <SignatureFilename>META-INF/signatures001.xml</SignatureFilename>
+            <ClaimedSigningTime>2020-03-23T07:56:01Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-LTA</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="REFERENCE" id="r-id-443f58d7b69110994767ffa0c11cbaeb-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>1WFkvp8m2XhYYUUQ0WNj3XXvjOpK5qh03oBqWBfbJNY=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="REFERENCE" id="r-id-443f58d7b69110994767ffa0c11cbaeb-2">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>S0rsZwZDFcpz0O6HhRMKgyzU2KGfrvBTgUnC9Ojd1CM=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-443f58d7b69110994767ffa0c11cbaeb">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>yIcRK3xyYhKW6Imf3r0pySwnd2R2FBEGT2Yvgrd3cLc=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368"/>
+                <ChainItem Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <MimeType>application/vnd.gov.sk.xmldatacontainer+xml</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHgwaqRoMGYxCzAJBgNVBAYTAlNLMRMwEQYDVQQHEwpCcmF0aXNsYXZhMRMwEQYDVQQKEwpEaXNpZyBhLnMuMRcwFQYDVQQLEw5BQ0EtMzA3LTIwMDctMjEUMBIGA1UEAxMLU1ZLIGVJRCBBQ0ECCgQ6O/NtXgEZM7I=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA512</DigestMethod>
+                            <DigestValue>lHsZnd0RvaGlgPSRS2k5pR/822sbXzBIQJUOpsFbr4QSaSKY4Rb3YalDRUFYHibMG1ax8xhCPU6vX3zJY8ABaA==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-291E7C7705D9116EF93FB4B7001C488D04D21D8BF73E3B1D9DC8E305DF2128B3">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-4B614C6CFB8CF6B1F9E9C74E07464CE6483EA31E0C3D58A7D4C56D540EDF40FB">
+                    <Type>CRL</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-9F3687FB9C2DC234434C5D007A2B56CA54989EBCB1E4D9407EC81511D48B9D33">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-7B1C73958B5B33DF49B9EEC155AB4E66DB6E709E4DB63CC71D26D5D3A0BFC291"/>
+                <FoundTimestamp Timestamp="T-637B9FC2EC233427EE366AB761B3F2E3660E852732F8122D22FF7E8B4C7D86B7"/>
+            </FoundTimestamps>
+            <FoundEvidenceRecords/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-5602A4CE1BCA5D75E8C24AB48B4BCB6BD9A865F9235C4AE2A0B26F7955F2BD33">
+                    <Scope>FULL</Scope>
+                    <Name>1226-200323-1.xdc.xml</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-91BD7D690AE21B6223A57611CD48CF112C9B4D482365332E7CA47809B7071D9F">
+                    <Scope>FULL</Scope>
+                    <Name>Document.pdf.pdf</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>JO5n2/F026r8O1nUqWRACttEREREdzuwQhdm3GZTDDM=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/bhMp0zO35T7pi5v3kA+DNk7WsIRf+BOyNwP6moWKtw=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>FSl/Qb7xfdE2Cb3LFblbX0yYMnOLVewQnrxYpuZG3IMEKP8N5ZHDQ69OEigYwJOmOApzKuy/6colPq31ZxIOAvMDj6JC9jmvwLMT/zQWhtPxswQdLtFcvWFuIghb7z/kcrR87RKTMZEatCx9nqVyZJKCgTPD7K4JIxU8UGBIABu3uc7ALOXVMrqwvgQVNSkb8B9MYyqz52xIM/6knTeFiqiFAkHSWBNUYOw8Aibl+XQ/jnIecw3MQ+KdxWsJ4bZlasIft6WOdi3UWi7VRwMQxTrLpYTi+dKFor5Qu/Pdf17a/MTL0ED2F3EfH4gE5c3+SNsW3nJ9SahjHDyG1fsDvmhK19HchmtEX6lpdD6r3Ik1JQlUicWQymChjHl3AfzhCeN1Oxl24wXEOZTLvVumlFBNWktM21/3SN6+5In5dX9woH7yHQnyufj857Ie5CrcNvzgQsBcrbQCU1WJ5BZoZP85FtVx2mbUypqFtlasUzt8CyW1KPXSbPlzGiDikm7X</SignatureValue>
+        </Signature>
+    </Signatures>
+    <EvidenceRecords/>
+    <UsedCertificates>
+        <Certificate Id="C-291E7C7705D9116EF93FB4B7001C488D04D21D8BF73E3B1D9DC8E305DF2128B3">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp svk eid aca,ou=responder 2_1,o=disig a.s.,2.5.4.5=#130e4e5452534b2d3335393735393436,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP SVK eID ACA,OU=Responder 2_1,O=Disig a.s.,2.5.4.5=#130e4e5452534b2d3335393735393436,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=svk eid aca,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SVK eID ACA,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>22662955881698036277923</SerialNumber>
+            <SubjectSerialNumber>NTRSK-35975946</SubjectSerialNumber>
+            <CommonName>OCSP SVK eID ACA</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Disig a.s.</OrganizationName>
+            <OrganizationalUnit>Responder 2_1</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-03-11T13:22:06Z</NotAfter>
+            <NotBefore>2018-03-12T13:22:06Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-723CEEEBD042BD6EE967C9B4673D426ECD5CCAB25D84CEFC4BD7793FC959916A</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>scrGpdrvqa+jvtPbQMnp6qFvkWE=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>8iN8II1fHXOv3was3co/jKQCWWM=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="false">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_svk_eid.pdf">1.3.158.35975946.0.0.1.1.9</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://eidrep1.disig.sk/svkeidaca/cert/svkeidaca.p7c</caIssuersUrl>
+                    <caIssuersUrl>http://eidrep2.disig.sk/svkeidaca/cert/svkeidaca.p7c</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</crlUrl>
+                    <crlUrl>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</crlUrl>
+                </CRLDistributionPoints>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Disig, a.s.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">CA Disig</TSPTradeName>
+                        <TSPTradeName lang="en">Disig a.s.</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATSK-2022116976</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRSK-35975946</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                            <ServiceNames>
+                                <ServiceName lang="en">(9) SVK eID ACA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:01Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://svkeidaca-ocsp.disig.sk/ocsp/svkeidaca</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Disig, a.s.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">CA Disig</TSPTradeName>
+                        <TSPTradeName lang="en">Disig a.s.</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATSK-2022116976</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRSK-35975946</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-291E7C7705D9116EF93FB4B7001C488D04D21D8BF73E3B1D9DC8E305DF2128B3">
+                            <ServiceNames>
+                                <ServiceName lang="en">(59) OCSP SVK eID ACA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:01Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="sk">Národný bezpečnostný úrad</TSPName>
+                        <TSPName lang="en">National Security Authority</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="sk">NBU</TSPTradeName>
+                        <TSPTradeName lang="sk">Národný bezpečnostný úrad SK</TSPTradeName>
+                        <TSPTradeName lang="sk">Narodny bezpecnostny urad</TSPTradeName>
+                        <TSPTradeName lang="en">National Security Authority SK</TSPTradeName>
+                        <TSPTradeName lang="en">NATIONAL SECURITY AUTHORITY</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATSK-2021594245</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRSK-36061701</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                            <ServiceNames>
+                                <ServiceName lang="sk">(2) Koreňová certifikačná autorita 3</ServiceName>
+                                <ServiceName lang="en">(2) Root Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://ep.nbu.gov.sk/kca/crls3/kcanbusr3.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://ocsp.nbu.gov.sk/ocsp/valid</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>KR58dwXZEW75P7S3ABxIjQTSHYv3PjsdncjjBd8hKLM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
+            <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Belgium Root CA4,C=BE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Belgium Root CA4,C=BE</IssuerDistinguishedName>
+            <SerialNumber>5706940941790920504</SerialNumber>
+            <CommonName>Belgium Root CA4</CommonName>
+            <CountryName>BE</CountryName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2032-10-22T12:00:00Z</NotAfter>
+            <NotBefore>2013-06-26T12:00:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-B1538A9071705A92D938E506B738DA0CAFD1AE66AEC2EEDDC75479D433BD8776</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Z+jxTk+ztfMHbwicDIPZetlb50k=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Z+jxTk+ztfMHbwicDIPZetlb50k=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://repository.eid.belgium.be">2.16.56.12.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <OtherExtension OID="2.16.840.1.113730.1.1" critical="false">
+                    <octets>BAQDAgAH</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Certipost n.v./s.a.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Certipost s.a./n.v.</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATBE-0475396406</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2013-06-26T12:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-41D146C2F39214C6BF8DAC131B4B21495C51EEDC517B841E6FDCBCE073A1063D">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>cC3VwaCTzwqdcfrdm/mnxYV9iftztxboZyKLPCvrlo8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-8460CCAEA91B0E805AB51C7CD46DDF2E8C1C494806D88B1FE2ED313D1D487E2E">
+            <SubjectDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Belgium Root CA4,C=BE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=cybertrust global root,o=cybertrust\, inc</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Cybertrust Global Root,O=Cybertrust\, Inc</IssuerDistinguishedName>
+            <SerialNumber>4835703278459898099219750</SerialNumber>
+            <CommonName>Belgium Root CA4</CommonName>
+            <CountryName>BE</CountryName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2025-05-12T22:59:00Z</NotAfter>
+            <NotBefore>2013-10-10T11:00:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-B1538A9071705A92D938E506B738DA0CAFD1AE66AEC2EEDDC75479D433BD8776</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-960ADF0063E96356750C2965DD0A0867DA0B9CBD6E77714AEAFB2349AB393DA3"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-960ADF0063E96356750C2965DD0A0867DA0B9CBD6E77714AEAFB2349AB393DA3"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>tgh7DXrMrCBMhlYyXs+rboUtcFc=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Z+jxTk+ztfMHbwicDIPZetlb50k=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="1" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://cybertrust.omniroot.com/repository">1.3.6.1.4.1.6334.1.100.1</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.omniroot.com/ctglobal.crl</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="2.16.840.1.113730.1.1" critical="false">
+                    <octets>BAQDAgAH</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Certipost n.v./s.a.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Certipost s.a./n.v.</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATBE-0475396406</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-8460CCAEA91B0E805AB51C7CD46DDF2E8C1C494806D88B1FE2ED313D1D487E2E">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-8460CCAEA91B0E805AB51C7CD46DDF2E8C1C494806D88B1FE2ED313D1D487E2E">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2013-06-26T12:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hGDMrqkbDoBatRx81G3fLowcSUgG2Isf4u0xPR1Ifi4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-960ADF0063E96356750C2965DD0A0867DA0B9CBD6E77714AEAFB2349AB393DA3">
+            <SubjectDistinguishedName Format="CANONICAL">cn=cybertrust global root,o=cybertrust\, inc</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Cybertrust Global Root,O=Cybertrust\, Inc</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=cybertrust global root,o=cybertrust\, inc</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Cybertrust Global Root,O=Cybertrust\, Inc</IssuerDistinguishedName>
+            <SerialNumber>4835703278459682877484360</SerialNumber>
+            <CommonName>Cybertrust Global Root</CommonName>
+            <OrganizationName>Cybertrust, Inc</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2021-12-15T08:00:00Z</NotAfter>
+            <NotBefore>2006-12-15T08:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-7E8782C150CE3952F802E636023A5D3E95BB5D68E33E85ADB2BA178125CEBF15</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>tgh7DXrMrCBMhlYyXs+rboUtcFc=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>tgh7DXrMrCBMhlYyXs+rboUtcFc=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www2.public-trust.com/crl/ct/ctroot.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lgrfAGPpY1Z1DCll3QoIZ9oLnL1ud3FK6vsjSas5PaM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+            <SubjectDistinguishedName Format="CANONICAL">cn=svk eid aca,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SVK eID ACA,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>1754</SerialNumber>
+            <CommonName>SVK eID ACA</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Disig a.s.</OrganizationName>
+            <OrganizationalUnit>ACA-307-2007-2</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2025-11-01T10:13:27Z</NotAfter>
+            <NotBefore>2013-11-20T10:14:56Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-2A563921F3C6D73FA4896575D8912E249F1F18ED1F9E6F2B3D9968AEB29ED428</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>f/E9IcKXWi6XBw6xaYMl/SGGPgc=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>scrGpdrvqa+jvtPbQMnp6qFvkWE=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="1" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <PolicyConstraints requireExplicitPolicy="0" OID="2.5.29.36" critical="true"/>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ep.nbusr.sk/kca/certs/kca3/kcanbusr3_p7c.p7c</caIssuersUrl>
+                    <caIssuersUrl>ldap://ep.nbusr.sk/cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</caIssuersUrl>
+                    <caIssuersUrl>ldap:///cn=KCA NBU SR 3,ou=SIBEP,o=Narodny bezpecnostny urad,l=Bratislava,c=SK?caCertificate;binary</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                    <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                    <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="2.5.29.33" description="policyMappings" critical="false">
+                    <octets>BDswOTAXBg0rgR6RmYQFAAAAAQICBgYEAIswAQEwHgYNK4EekZmEBQAAAAECAgYNK4EekZmEBQAAAAECAg==</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Disig, a.s.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">CA Disig</TSPTradeName>
+                        <TSPTradeName lang="en">Disig a.s.</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATSK-2022116976</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRSK-35975946</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                            <ServiceNames>
+                                <ServiceName lang="en">(9) SVK eID ACA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:01Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://svkeidaca-ocsp.disig.sk/ocsp/svkeidaca</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                            <ServiceNames>
+                                <ServiceName lang="en">(9) SVK eID ACA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:01Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                            <ServiceNames>
+                                <ServiceName lang="en">(9) SVK eID ACA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited</Status>
+                            <StartDate>2007-07-26T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="sk">Národný bezpečnostný úrad</TSPName>
+                        <TSPName lang="en">National Security Authority</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="sk">NBU</TSPTradeName>
+                        <TSPTradeName lang="sk">Národný bezpečnostný úrad SK</TSPTradeName>
+                        <TSPTradeName lang="sk">Narodny bezpecnostny urad</TSPTradeName>
+                        <TSPTradeName lang="en">National Security Authority SK</TSPTradeName>
+                        <TSPTradeName lang="en">NATIONAL SECURITY AUTHORITY</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATSK-2021594245</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRSK-36061701</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                            <ServiceNames>
+                                <ServiceName lang="sk">(2) Koreňová certifikačná autorita 3</ServiceName>
+                                <ServiceName lang="en">(2) Root Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://ep.nbu.gov.sk/kca/crls3/kcanbusr3.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://ocsp.nbu.gov.sk/ocsp/valid</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                            <ServiceNames>
+                                <ServiceName lang="sk">(2) Koreňová certifikačná autorita 3</ServiceName>
+                                <ServiceName lang="en">(2) Root Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
+                            <StartDate>2002-03-15T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>n+WYAOhJDyVTh9Qj3astW2Xxaq7YuCUY4haHirw2HLc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-AC7F7862E685C7A7D9826A58EA32D183D4893FCC8F8FD6D900C9769A987E77F0">
+            <SubjectDistinguishedName Format="CANONICAL">cn=postsignum root qca 4,o=česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PostSignum Root QCA 4,O=Česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=postsignum root qca 4,o=česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=PostSignum Root QCA 4,O=Česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,C=CZ</IssuerDistinguishedName>
+            <SerialNumber>4000</SerialNumber>
+            <CommonName>PostSignum Root QCA 4</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationIdentifier>NTRCZ-47114983</OrganizationIdentifier>
+            <OrganizationName>Česká pošta, s.p.</OrganizationName>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2038-07-26T09:56:08Z</NotAfter>
+            <NotBefore>2018-07-26T09:56:08Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C372F6D18EBEE5AA23D9E919F3E6BE98488EC01607DF3162FC192E4B1346AFB3</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>kxg2H6lpcFE1qk8/rI1QfiYFKQo=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>kxg2H6lpcFE1qk8/rI1QfiYFKQo=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="1" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.postsignum.cz/crl/psrootqca4.crl</crlUrl>
+                    <crlUrl>http://crl2.postsignum.cz/crl/psrootqca4.crl</crlUrl>
+                    <crlUrl>http://crl.postsignum.eu/crl/psrootqca4.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>rH94YuaFx6fZgmpY6jLRg9SJP8yPj9bZAMl2mph+d/A=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-BD0636ABC7F7501899C3FBD00AE071BB070B3E82ECAFF9A27F6E1FB1E7E2A2EA">
+            <SubjectDistinguishedName Format="CANONICAL">cn=postsignum qualified ca 5,o=česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PostSignum Qualified CA 5,O=Česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=postsignum root qca 4,o=česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=PostSignum Root QCA 4,O=Česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,C=CZ</IssuerDistinguishedName>
+            <SerialNumber>4203</SerialNumber>
+            <CommonName>PostSignum Qualified CA 5</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationIdentifier>NTRCZ-47114983</OrganizationIdentifier>
+            <OrganizationName>Česká pošta, s.p.</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2033-10-03T05:06:53Z</NotAfter>
+            <NotBefore>2018-10-03T05:06:53Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-4BF0FC2F8A685651297EF10200DF601B06070B5697C31DF0DC16217A057203A8</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-AC7F7862E685C7A7D9826A58EA32D183D4893FCC8F8FD6D900C9769A987E77F0"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-AC7F7862E685C7A7D9826A58EA32D183D4893FCC8F8FD6D900C9769A987E77F0"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>kxg2H6lpcFE1qk8/rI1QfiYFKQo=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>O5sgUnUjq4TkvWjsYNx0RCdWlQY=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crt.postsignum.cz/crt/psrootqca4.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.postsignum.cz/OCSP/RQCA4/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.postsignum.cz/crl/psrootqca4.crl</crlUrl>
+                    <crlUrl>http://crl2.postsignum.cz/crl/psrootqca4.crl</crlUrl>
+                    <crlUrl>http://crl.postsignum.eu/crl/psrootqca4.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">Česká pošta, s.p.</TSPName>
+                        <TSPName lang="en">The Czech Post, s.p.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="cs">Česká pošta, s.p. [IČ 47114983]</TSPTradeName>
+                        <TSPTradeName lang="en">PostSignum QCA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BD0636ABC7F7501899C3FBD00AE071BB070B3E82ECAFF9A27F6E1FB1E7E2A2EA">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(117) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(117) PostSignum - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-12-28T10:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vQY2q8f3UBiZw/vQCuBxuwcLPoLsr/mif24fsefiouo=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368">
+            <SubjectDistinguishedName Format="CANONICAL">c=sk,l=town,2.5.4.4=#26f6368c3a1736b0c0a50761,2.5.4.5=#4f534b2d373931310504e131303537333139,cn=name surname,2.5.4.42=#044ac0c3a16e,street=street 00/11</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=SK,L=town,2.5.4.4=#26f6368c3a1736b0c0a50761,2.5.4.5=#4f534b2d373931310504e131303537333139,CN=Name Surname,2.5.4.42=#044ac0c3a16e,STREET=Street 00/11</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=svk eid aca,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SVK eID ACA,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>47181996362606970048402</SerialNumber>
+            <SubjectSerialNumber>00001111</SubjectSerialNumber>
+            <CommonName>Name Surname</CommonName>
+            <Locality>town</Locality>
+            <CountryName>SK</CountryName>
+            <GivenName>Name</GivenName>
+            <Surname>Surname</Surname>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2023-11-30T09:36:32Z</NotAfter>
+            <NotBefore>2018-10-31T09:36:32Z</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-0570ED3660EFE4529408D593566206AF59C203B7964505FAC7DFFDE726D38DA6</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>scrGpdrvqa+jvtPbQMnp6qFvkWE=</keyIdentifier>
+                    <authorityCertIssuerSerial>MHcwcaRvMG0xCzAJBgNVBAYTAlNLMRMwEQYDVQQHDApCcmF0aXNsYXZhMSIwIAYDVQQKDBlOYXJvZG55IGJlenBlY25vc3RueSB1cmFkMQ4wDAYDVQQLDAVTSUJFUDEVMBMGA1UEAwwMS0NBIE5CVSBTUiAzAgIG2g==</authorityCertIssuerSerial>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>bT0Gv17DGrrOJOd6L1Nv9GrFSgY=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                    <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_svk_eid.pdf">1.3.158.35975946.0.0.1.1.9</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://eidrep1.disig.sk/svkeidaca/cert/svkeidaca.p7c</caIssuersUrl>
+                    <caIssuersUrl>http://eidrep2.disig.sk/svkeidaca/cert/svkeidaca.p7c</caIssuersUrl>
+                    <ocspUrl>http://svkeidaca-ocsp.disig.sk/ocsp/svkeidaca</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</crlUrl>
+                    <crlUrl>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Disig, a.s.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">CA Disig</TSPTradeName>
+                        <TSPTradeName lang="en">Disig a.s.</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATSK-2022116976</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRSK-35975946</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                            <ServiceNames>
+                                <ServiceName lang="en">(9) SVK eID ACA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:01Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://svkeidaca-ocsp.disig.sk/ocsp/svkeidaca</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="sk">Národný bezpečnostný úrad</TSPName>
+                        <TSPName lang="en">National Security Authority</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="sk">NBU</TSPTradeName>
+                        <TSPTradeName lang="sk">Národný bezpečnostný úrad SK</TSPTradeName>
+                        <TSPTradeName lang="sk">Narodny bezpecnostny urad</TSPTradeName>
+                        <TSPTradeName lang="en">National Security Authority SK</TSPTradeName>
+                        <TSPTradeName lang="en">NATIONAL SECURITY AUTHORITY</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATSK-2021594245</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRSK-36061701</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                            <ServiceNames>
+                                <ServiceName lang="sk">(2) Koreňová certifikačná autorita 3</ServiceName>
+                                <ServiceName lang="en">(2) Root Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://ep.nbu.gov.sk/kca/crls3/kcanbusr3.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://ocsp.nbu.gov.sk/ocsp/valid</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-9F3687FB9C2DC234434C5D007A2B56CA54989EBCB1E4D9407EC81511D48B9D33">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-C5D0E339D188EF1DC413B8C03A685E31F82D3E273052AE581507F2D507ED1A63">
+                    <Status>REVOKED</Status>
+                    <Reason>unspecified</Reason>
+                    <RevocationDate>2022-12-31T13:55:00Z</RevocationDate>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>0E0WZgprpf3Sw6UZ2tiHe2TR0sVr+RMWIIoK4vt202g=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+            <SubjectDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=kca nbu sr 3,ou=sibep,o=narodny bezpecnostny urad,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=KCA NBU SR 3,OU=SIBEP,O=Narodny bezpecnostny urad,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>KCA NBU SR 3</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Narodny bezpecnostny urad</OrganizationName>
+            <OrganizationalUnit>SIBEP</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2025-11-06T07:29:09Z</NotAfter>
+            <NotBefore>2009-11-06T09:59:39Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-8EFC8349B1D083224E7D4B427F27B0381977864A53196B83CB9816CE5BC952C6</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>f/E9IcKXWi6XBw6xaYMl/SGGPgc=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://ep.nbusr.sk/kca/doc/kca_cps.pdf">1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://ep.nbusr.sk/kca/crls3/kcanbusr3.crl</crlUrl>
+                    <crlUrl>ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                    <crlUrl>ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="1.3.6.1.5.5.7.1.11" description="subjectInfoAccess" critical="false">
+                    <octets>BIIBLjCCASowOwYIKwYBBQUHMAWGL2h0dHA6Ly9lcC5uYnVzci5zay9rY2EvY2VydHMva2NhMy9rY2FuYnVzcjMucDdjMHoGCCsGAQUFBzAFhm5sZGFwOi8vZXAubmJ1c3Iuc2svY249S0NBIE5CVSBTUiAzLG91PVNJQkVQLG89TmFyb2RueSBiZXpwZWNub3N0bnkgdXJhZCxsPUJyYXRpc2xhdmEsYz1TSz9jYUNlcnRpZmljYXRlO2JpbmFyeTBvBggrBgEFBQcwBYZjbGRhcDovLy9jbj1LQ0EgTkJVIFNSIDMsb3U9U0lCRVAsbz1OYXJvZG55IGJlenBlY25vc3RueSB1cmFkLGw9QnJhdGlzbGF2YSxjPVNLP2NhQ2VydGlmaWNhdGU7YmluYXJ5</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="sk">Národný bezpečnostný úrad</TSPName>
+                        <TSPName lang="en">National Security Authority</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="sk">NBU</TSPTradeName>
+                        <TSPTradeName lang="sk">Národný bezpečnostný úrad SK</TSPTradeName>
+                        <TSPTradeName lang="sk">Narodny bezpecnostny urad</TSPTradeName>
+                        <TSPTradeName lang="en">National Security Authority SK</TSPTradeName>
+                        <TSPTradeName lang="en">NATIONAL SECURITY AUTHORITY</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATSK-2021594245</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTRSK-36061701</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                            <ServiceNames>
+                                <ServiceName lang="sk">(2) Koreňová certifikačná autorita 3</ServiceName>
+                                <ServiceName lang="en">(2) Root Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://ep.nbu.gov.sk/kca/crls3/kcanbusr3.crl</ServiceSupplyPoint>
+                                <ServiceSupplyPoint>http://ocsp.nbu.gov.sk/ocsp/valid</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                            <ServiceNames>
+                                <ServiceName lang="sk">(2) Koreňová certifikačná autorita 3</ServiceName>
+                                <ServiceName lang="en">(2) Root Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/NationalRootCA-QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw</Status>
+                            <StartDate>2002-03-15T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>2DR34DiMQLoJL+ykhKXr060wKL9gIgEy6VFYwA3c6Y8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE">
+            <SubjectDistinguishedName Format="CANONICAL">cn=time stamping authority,o=belgium federal government,2.5.4.5=#130432303137,c=be</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Time Stamping Authority,O=Belgium Federal Government,2.5.4.5=#130432303137,C=BE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=belgium root ca4,c=be</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Belgium Root CA4,C=BE</IssuerDistinguishedName>
+            <SerialNumber>4835703278459997027741053</SerialNumber>
+            <SubjectSerialNumber>2017</SubjectSerialNumber>
+            <CommonName>Time Stamping Authority</CommonName>
+            <CountryName>BE</CountryName>
+            <OrganizationName>Belgium Federal Government</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2022-02-28T10:00:00Z</NotAfter>
+            <NotBefore>2016-11-28T10:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-FA554D2EBD3DE82DBDC0DB9455A449C3C2823B42A8DCFAA1977ABBBAF32DE24F</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-8460CCAEA91B0E805AB51C7CD46DDF2E8C1C494806D88B1FE2ED313D1D487E2E"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-8460CCAEA91B0E805AB51C7CD46DDF2E8C1C494806D88B1FE2ED313D1D487E2E"/>
+                <ChainItem Certificate="C-960ADF0063E96356750C2965DD0A0867DA0B9CBD6E77714AEAFB2349AB393DA3"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Z+jxTk+ztfMHbwicDIPZetlb50k=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>QaZB+h9U3NZCzN35F31ilT0ysJo=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://repository.pki.belgium.be">2.16.56.12.1.1.5</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.pki.belgium.be/belgium4.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Certipost n.v./s.a.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Certipost s.a./n.v.</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATBE-0475396406</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=Belgium Root CA4, C=BE</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/RootCA-QC</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-4B614C6CFB8CF6B1F9E9C74E07464CE6483EA31E0C3D58A7D4C56D540EDF40FB">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-41D146C2F39214C6BF8DAC131B4B21495C51EEDC517B841E6FDCBCE073A1063D">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>7jwi4GCHv+whNwmtPn8t2pzp0ZziONyoGmQz6QcKn74=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-FE345ADA19100E33C7D3FAF6DC890B934570E872F6BD8B3A16DBFD2B000A06E2">
+            <SubjectDistinguishedName Format="CANONICAL">cn=postsignum tsa - tsu 1,ou=time stamping authority,o=česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,c=cz</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PostSignum TSA - TSU 1,OU=Time Stamping Authority,O=Česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,C=CZ</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=postsignum qualified ca 5,o=česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,c=cz</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=PostSignum Qualified CA 5,O=Česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,C=CZ</IssuerDistinguishedName>
+            <SerialNumber>21000514</SerialNumber>
+            <CommonName>PostSignum TSA - TSU 1</CommonName>
+            <CountryName>CZ</CountryName>
+            <OrganizationIdentifier>NTRCZ-47114983</OrganizationIdentifier>
+            <OrganizationName>Česká pošta, s.p.</OrganizationName>
+            <OrganizationalUnit>Time Stamping Authority</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2025-10-27T10:41:06Z</NotAfter>
+            <NotBefore>2019-09-19T10:41:06Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-759A0CF46A29AF3FC67A740C63F537F962EEE9AEEB06AFF90C0405616538EF36</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BD0636ABC7F7501899C3FBD00AE071BB070B3E82ECAFF9A27F6E1FB1E7E2A2EA"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BD0636ABC7F7501899C3FBD00AE071BB070B3E82ECAFF9A27F6E1FB1E7E2A2EA"/>
+                <ChainItem Certificate="C-AC7F7862E685C7A7D9826A58EA32D183D4893FCC8F8FD6D900C9769A987E77F0"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>O5sgUnUjq4TkvWjsYNx0RCdWlQY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>yP/i4a7hxWXUGXid2+sG1oiSgkc=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://www.postsignum.cz">2.23.134.1.4.1.101.160</certificatePolicy>
+                    <certificatePolicy Description="qcp-legal">0.4.0.194112.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://crt.postsignum.cz/crt/psqualifiedca5.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.postsignum.cz/crl/psqualifiedca5.crl</crlUrl>
+                    <crlUrl>http://crl2.postsignum.cz/crl/psqualifiedca5.crl</crlUrl>
+                    <crlUrl>http://crl.postsignum.eu/crl/psqualifiedca5.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="false"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">https://www.postsignum.cz/pds/pdstsa_en.pdf</PdsLocation>
+                        <PdsLocation lang="cs">https://www.postsignum.cz/pds/pdstsa_cs.pdf</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">Česká pošta, s.p.</TSPName>
+                        <TSPName lang="en">The Czech Post, s.p.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="cs">Česká pošta, s.p. [IČ 47114983]</TSPTradeName>
+                        <TSPTradeName lang="en">PostSignum QCA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-FE345ADA19100E33C7D3FAF6DC890B934570E872F6BD8B3A16DBFD2B000A06E2">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(146)  PostSignum TSA - TSU 1</ServiceName>
+                                <ServiceName lang="en">(146)  PostSignum TSA - TSU 1</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2019-11-22T09:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="cs">Česká pošta, s.p.</TSPName>
+                        <TSPName lang="en">The Czech Post, s.p.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="cs">Česká pošta, s.p. [IČ 47114983]</TSPTradeName>
+                        <TSPTradeName lang="en">PostSignum QCA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATCZ-47114983</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BD0636ABC7F7501899C3FBD00AE071BB070B3E82ECAFF9A27F6E1FB1E7E2A2EA">
+                            <ServiceNames>
+                                <ServiceName lang="cs">(117) PostSignum - vydávání kvalifikovaných certifikátů</ServiceName>
+                                <ServiceName lang="en">(117) PostSignum - issuing qualified certificates</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-12-28T10:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier critical="true">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCQSCDStatusAsInCert</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/jRa2hkQDjPH0/r23IkLk0Vw6HL2vYs6Ftv9KwAKBuI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-E119131E5EFE099704A0A9CBF181A7B27577246134F93A4BDE1887956BB3D653">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp svk eid aca,ou=responder 3_1,o=disig a.s.,2.5.4.5=#130e4e5452534b2d3335393735393436,l=bratislava,c=sk</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP SVK eID ACA,OU=Responder 3_1,O=Disig a.s.,2.5.4.5=#130e4e5452534b2d3335393735393436,L=Bratislava,C=SK</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=svk eid aca,ou=aca-307-2007-2,o=disig a.s.,l=bratislava,c=sk</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SVK eID ACA,OU=ACA-307-2007-2,O=Disig a.s.,L=Bratislava,C=SK</IssuerDistinguishedName>
+            <SerialNumber>22307994267019588314109</SerialNumber>
+            <SubjectSerialNumber>NTRSK-35975946</SubjectSerialNumber>
+            <CommonName>OCSP SVK eID ACA</CommonName>
+            <Locality>Bratislava</Locality>
+            <CountryName>SK</CountryName>
+            <OrganizationName>Disig a.s.</OrganizationName>
+            <OrganizationalUnit>Responder 3_1</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2025-10-31T15:58:05Z</NotAfter>
+            <NotBefore>2023-12-15T15:58:05Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-6FD44496B674E804281F33A8436CB1CE83F35A33516584D3014A1C677C51804F</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>scrGpdrvqa+jvtPbQMnp6qFvkWE=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>cPzXwBZ4eHfsao0388Hm21pe2AM=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="false">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy>1.3.158.36061701.0.0.0.1.2.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.disig.sk/_pdf/cp_svk_eid.pdf">1.3.158.35975946.0.0.1.1.9</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://eidrep1.disig.sk/svkeidaca/cert/svkeidaca.p7c</caIssuersUrl>
+                    <caIssuersUrl>http://eidrep2.disig.sk/svkeidaca/cert/svkeidaca.p7c</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://eidrep1.disig.sk/svkeidaca/crl/svkeidaca.crl</crlUrl>
+                    <crlUrl>http://eidrep2.disig.sk/svkeidaca/crl/svkeidaca.crl</crlUrl>
+                </CRLDistributionPoints>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4RkTHl7+CZcEoKnL8YGnsnV3JGE0+TpL3hiHlWuz1lM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-41D146C2F39214C6BF8DAC131B4B21495C51EEDC517B841E6FDCBCE073A1063D">
+            <Origin>CACHED</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2024-01-01T11:00:00Z</ProductionDate>
+            <ThisUpdate>2024-01-01T11:00:00Z</ThisUpdate>
+            <NextUpdate>2024-07-31T11:00:00Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>QdFGwvOSFMa/jawTG0shSVxR7txRe4Qeb9y84HOhBj0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-4B614C6CFB8CF6B1F9E9C74E07464CE6483EA31E0C3D58A7D4C56D540EDF40FB">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2020-01-01T11:00:00Z</ProductionDate>
+            <ThisUpdate>2020-01-01T11:00:00Z</ThisUpdate>
+            <NextUpdate>2020-07-31T11:00:00Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>S2FMbPuM9rH56cdOB0ZM5kg+ox4MPVin1MVtVA7fQPs=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-9F3687FB9C2DC234434C5D007A2B56CA54989EBCB1E4D9407EC81511D48B9D33">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2020-03-23T09:31:15Z</ProductionDate>
+            <ThisUpdate>2020-03-23T09:31:13Z</ThisUpdate>
+            <NextUpdate>2020-03-23T09:41:13Z</NextUpdate>
+            <ArchiveCutOff>2013-11-20T10:14:56Z</ArchiveCutOff>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-291E7C7705D9116EF93FB4B7001C488D04D21D8BF73E3B1D9DC8E305DF2128B3"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-291E7C7705D9116EF93FB4B7001C488D04D21D8BF73E3B1D9DC8E305DF2128B3"/>
+                <ChainItem Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-291E7C7705D9116EF93FB4B7001C488D04D21D8BF73E3B1D9DC8E305DF2128B3">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=OCSP SVK eID ACA, OU=Responder 2_1, O=Disig a.s., SERIALNUMBER=NTRSK-35975946, L=Bratislava, C=SK</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>nzaH+5wtwjRDTF0AeitWylSYnryx5NlAfsgVEdSLnTM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-C5D0E339D188EF1DC413B8C03A685E31F82D3E273052AE581507F2D507ED1A63">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://svkeidaca-ocsp.disig.sk/ocsp/svkeidaca</SourceAddress>
+            <ProductionDate>2024-05-31T10:55:08Z</ProductionDate>
+            <ThisUpdate>2024-05-31T10:55:03Z</ThisUpdate>
+            <NextUpdate>2024-05-31T11:05:03Z</NextUpdate>
+            <ArchiveCutOff>2013-11-20T10:14:56Z</ArchiveCutOff>
+            <CertHashExtensionPresent>true</CertHashExtensionPresent>
+            <CertHashExtensionMatch>true</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-E119131E5EFE099704A0A9CBF181A7B27577246134F93A4BDE1887956BB3D653"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-E119131E5EFE099704A0A9CBF181A7B27577246134F93A4BDE1887956BB3D653"/>
+                <ChainItem Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7"/>
+                <ChainItem Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-E119131E5EFE099704A0A9CBF181A7B27577246134F93A4BDE1887956BB3D653">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=OCSP SVK eID ACA, OU=Responder 3_1, O=Disig a.s., SERIALNUMBER=NTRSK-35975946, L=Bratislava, C=SK</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>xdDjOdGI7x3EE7jAOmheMfgtPicwUq5YFQfy1QftGmM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-7B1C73958B5B33DF49B9EEC155AB4E66DB6E709E4DB63CC71D26D5D3A0BFC291">
+            <ProductionTime>2020-03-23T07:56:10Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>KHgBEBjahnKNXc6Xzk2GuToe4Kc7xRa0sR4EFcYN1So=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE"/>
+                <ChainItem Certificate="C-8460CCAEA91B0E805AB51C7CD46DDF2E8C1C494806D88B1FE2ED313D1D487E2E"/>
+                <ChainItem Certificate="C-960ADF0063E96356750C2965DD0A0867DA0B9CBD6E77714AEAFB2349AB393DA3"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=Belgium Root CA4, C=BE</IssuerName>
+                    <SerialNumber>4835703278459997027741053</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">CN=Time Stamping Authority,O=Belgium Federal Government,2.5.4.5=#130432303137,C=BE</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-8460CCAEA91B0E805AB51C7CD46DDF2E8C1C494806D88B1FE2ED313D1D487E2E">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MDswLKQqMCgxCzAJBgNVBAYTAkJFMRkwFwYDVQQDExBCZWxnaXVtIFJvb3QgQ0E0AgsEAAAAAAFYqnqtfQ==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>IfoWV88WMCGueSmJRjE9XkGGRe8=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-960ADF0063E96356750C2965DD0A0867DA0B9CBD6E77714AEAFB2349AB393DA3">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-5602A4CE1BCA5D75E8C24AB48B4BCB6BD9A865F9235C4AE2A0B26F7955F2BD33" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-91BD7D690AE21B6223A57611CD48CF112C9B4D482365332E7CA47809B7071D9F" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-AF346D0AEAD56FFD023A72B30C6281E8187CC20C2CA244B303072539AB18E2AC" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>kaxHY9enYfC/tSMEd3jlmB68Lsb89DJdGEo7r2ERqjk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="ARCHIVE_TIMESTAMP" Id="T-637B9FC2EC233427EE366AB761B3F2E3660E852732F8122D22FF7E8B4C7D86B7">
+            <ArchiveTimestampType>XAdES_141</ArchiveTimestampType>
+            <ProductionTime>2020-03-23T09:31:15Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hJB3gVOrbdRSTJiNrXd66GYBrWz4R9WcPXMfHtABVUk=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-FE345ADA19100E33C7D3FAF6DC890B934570E872F6BD8B3A16DBFD2B000A06E2"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-FE345ADA19100E33C7D3FAF6DC890B934570E872F6BD8B3A16DBFD2B000A06E2"/>
+                <ChainItem Certificate="C-BD0636ABC7F7501899C3FBD00AE071BB070B3E82ECAFF9A27F6E1FB1E7E2A2EA"/>
+                <ChainItem Certificate="C-AC7F7862E685C7A7D9826A58EA32D183D4893FCC8F8FD6D900C9769A987E77F0"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=PostSignum Qualified CA 5, O="Česká pošta, s.p.", OID.2.5.4.97=NTRCZ-47114983, C=CZ</IssuerName>
+                    <SerialNumber>21000514</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">CN=PostSignum TSA - TSU 1,OU=Time Stamping Authority,O=Česká pošta\, s.p.,2.5.4.97=#130e4e5452435a2d3437313134393833,C=CZ</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-FE345ADA19100E33C7D3FAF6DC890B934570E872F6BD8B3A16DBFD2B000A06E2">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHUwbaRrMGkxCzAJBgNVBAYTAkNaMRcwFQYDVQRhEw5OVFJDWi00NzExNDk4MzEdMBsGA1UECgwUxIxlc2vDoSBwb8WhdGEsIHMucC4xIjAgBgNVBAMTGVBvc3RTaWdudW0gUXVhbGlmaWVkIENBIDUCBAFAcUI=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>/jRa2hkQDjPH0/r23IkLk0Vw6HL2vYs6Ftv9KwAKBuI=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-BD0636ABC7F7501899C3FBD00AE071BB070B3E82ECAFF9A27F6E1FB1E7E2A2EA">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-5602A4CE1BCA5D75E8C24AB48B4BCB6BD9A865F9235C4AE2A0B26F7955F2BD33" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-91BD7D690AE21B6223A57611CD48CF112C9B4D482365332E7CA47809B7071D9F" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-AF346D0AEAD56FFD023A72B30C6281E8187CC20C2CA244B303072539AB18E2AC" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-D04D16660A6BA5FDD2C3A519DAD8877B64D1D2C56BF91316208A0AE2FB76D368" Category="CERTIFICATE"/>
+                <TimestampedObject Token="T-7B1C73958B5B33DF49B9EEC155AB4E66DB6E709E4DB63CC71D26D5D3A0BFC291" Category="TIMESTAMP"/>
+                <TimestampedObject Token="C-8460CCAEA91B0E805AB51C7CD46DDF2E8C1C494806D88B1FE2ED313D1D487E2E" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-960ADF0063E96356750C2965DD0A0867DA0B9CBD6E77714AEAFB2349AB393DA3" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-EE3C22E06087BFEC213709AD3E7F2DDA9CE9D19CE238DCA81A6433E9070A9FBE" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-D83477E0388C40BA092FECA484A5EBD3AD3028BF60220132E95158C00DDCE98F" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-702DD5C1A093CF0A9D71FADD9BF9A7C5857D89FB73B716E867228B3C2BEB968F" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-291E7C7705D9116EF93FB4B7001C488D04D21D8BF73E3B1D9DC8E305DF2128B3" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-9FE59800E8490F255387D423DDAB2D5B65F16AAED8B82518E216878ABC361CB7" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-4B614C6CFB8CF6B1F9E9C74E07464CE6483EA31E0C3D58A7D4C56D540EDF40FB" Category="REVOCATION"/>
+                <TimestampedObject Token="R-9F3687FB9C2DC234434C5D007A2B56CA54989EBCB1E4D9407EC81511D48B9D33" Category="REVOCATION"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="D-5602A4CE1BCA5D75E8C24AB48B4BCB6BD9A865F9235C4AE2A0B26F7955F2BD33">
+                    <Scope>FULL</Scope>
+                    <Name>1226-200323-1.xdc.xml</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+                <TimestampScope SignerData="D-91BD7D690AE21B6223A57611CD48CF112C9B4D482365332E7CA47809B7071D9F">
+                    <Scope>FULL</Scope>
+                    <Name>Document.pdf.pdf</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>J5TClp2f8apnZ8UDs8gBPMhimzSBSJakioSaH5GiIXw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-5602A4CE1BCA5D75E8C24AB48B4BCB6BD9A865F9235C4AE2A0B26F7955F2BD33">
+            <ReferencedName>1226-200323-1.xdc.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>1WFkvp8m2XhYYUUQ0WNj3XXvjOpK5qh03oBqWBfbJNY=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-91BD7D690AE21B6223A57611CD48CF112C9B4D482365332E7CA47809B7071D9F">
+            <ReferencedName>Document.pdf.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>S0rsZwZDFcpz0O6HhRMKgyzU2KGfrvBTgUnC9Ojd1CM=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>SK</CountryCode>
+            <Url>http://tl.nbu.gov.sk/kca/tsl/tsl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>116</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-05-31T08:33:23Z</LastLoading>
+            <IssueDate>2024-04-26T08:00:00Z</IssueDate>
+            <NextUpdate>2024-10-19T01:00:10Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>CZ</CountryCode>
+            <Url>https://tsl.gov.cz/publ/TSL_CZ.xtsl</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>150</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-05-31T08:33:23Z</LastLoading>
+            <IssueDate>2024-05-10T05:30:00Z</IssueDate>
+            <NextUpdate>2024-11-04T15:30:59Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-61C0487109BE27255C19CFF26D8F56BEA621E7F381A7B4CBE7FB4750BD477BF9" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>BE</CountryCode>
+            <Url>https://tsl.belgium.be/tsl-be.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>70</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-05-31T08:33:31Z</LastLoading>
+            <IssueDate>2024-04-29T15:00:22Z</IssueDate>
+            <NextUpdate>2024-10-29T16:00:22Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+            <SequenceNumber>340</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-05-31T08:33:19Z</LastLoading>
+            <IssueDate>2024-05-15T12:20:34Z</IssueDate>
+            <NextUpdate>2024-11-15T13:20:34Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

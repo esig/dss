@@ -35,7 +35,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESDetachedTstV2Test extends AbstractCAdESTestValidation {
+class CAdESDetachedTstV2Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

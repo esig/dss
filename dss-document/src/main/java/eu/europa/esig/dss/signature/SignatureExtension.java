@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**

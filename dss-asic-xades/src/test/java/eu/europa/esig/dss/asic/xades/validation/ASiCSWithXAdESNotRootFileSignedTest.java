@@ -38,7 +38,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ASiCSWithXAdESNotRootFileSignedTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCSWithXAdESNotRootFileSignedTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import java.util.Collections;
 import java.util.List;
 
-public class XmlEvidenceRecordOneOfDataObjectGroupValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordOneOfDataObjectGroupValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

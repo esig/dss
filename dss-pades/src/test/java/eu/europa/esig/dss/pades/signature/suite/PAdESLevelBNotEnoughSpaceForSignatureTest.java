@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PAdESLevelBNotEnoughSpaceForSignatureTest extends PKIFactoryAccess {
 
 	@Test
-	public void testException() throws Exception {
+	void testException() throws Exception {
 		DSSDocument toBeSigned = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();

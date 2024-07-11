@@ -33,9 +33,9 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithASN1PolicyWithDigPSpFailureTest extends AbstractJAdESTestSignature {
+class JAdESWithASN1PolicyWithDigPSpFailureTest extends AbstractJAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -62,7 +62,7 @@ public class JAdESWithASN1PolicyWithDigPSpFailureTest extends AbstractJAdESTestS
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.json");
 
         Policy signaturePolicy = new Policy();
@@ -70,9 +70,9 @@ public class JAdESWithASN1PolicyWithDigPSpFailureTest extends AbstractJAdESTestS
         signaturePolicy.setSpuri(HTTP_SPURI_TEST);
         signaturePolicy.setHashAsInTechnicalSpecification(true);
 
-        String base64Digest = POLICY_CONTENT.getDigest(DigestAlgorithm.SHA256);
+        byte[] base64Digest = POLICY_CONTENT.getDigestValue(DigestAlgorithm.SHA256);
         signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        signaturePolicy.setDigestValue(Utils.fromBase64(base64Digest));
+        signaturePolicy.setDigestValue(base64Digest);
 
         SpDocSpecification spDocSpecification = new SpDocSpecification();
         spDocSpecification.setId("urn:oid:" + SIGNATURE_POLICY_ID);

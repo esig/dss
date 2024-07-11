@@ -42,11 +42,11 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESWithTrustedOCSPResponderTest extends AbstractXAdESTestSignature {
+class XAdESWithTrustedOCSPResponderTest extends AbstractXAdESTestSignature {
 	
 	protected static final String OCSP_SKIP_USER_OCSP_RESPONDER = "ocsp-skip-ocsp-responder";
 
@@ -55,7 +55,7 @@ public class XAdESWithTrustedOCSPResponderTest extends AbstractXAdESTestSignatur
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {		
+	void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 
 		CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();

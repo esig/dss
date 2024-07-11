@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class JAdESLevelBWithPlainECDSATokenTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithPlainECDSATokenTest extends AbstractJAdESTestSignature {
 
     private static final String HELLO_WORLD = "Hello World";
 
@@ -86,7 +86,7 @@ public class JAdESLevelBWithPlainECDSATokenTest extends AbstractJAdESTestSignatu
 
     @ParameterizedTest(name = "Combination {index} of ECDSA with {0} and signer {1}")
     @MethodSource("data")
-    public void init(DigestAlgorithm digestAlgo, String signingAlias) {
+    void init(DigestAlgorithm digestAlgo, String signingAlias) {
         this.signingAlias = signingAlias;
 
         documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());

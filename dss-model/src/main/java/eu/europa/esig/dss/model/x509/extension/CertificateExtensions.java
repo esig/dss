@@ -78,7 +78,10 @@ public class CertificateExtensions implements Serializable {
     private QcStatements qcStatements;
 
     /** List of other extensions */
-    private List<CertificateExtension> otherExtensions = new ArrayList<>();
+    private final List<CertificateExtension> otherExtensions = new ArrayList<>();
+
+    /** List of all certificate extensions */
+    private final List<CertificateExtension> allExtensions = new ArrayList<>();
 
     /**
      * Default constructor
@@ -103,6 +106,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setKeyUsage(KeyUsage keyUsage) {
         this.keyUsage = keyUsage;
+        addToAllExtensionsList(keyUsage);
     }
 
     /**
@@ -121,6 +125,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setCertificatePolicies(CertificatePolicies certificatePolicies) {
         this.certificatePolicies = certificatePolicies;
+        addToAllExtensionsList(certificatePolicies);
     }
 
     /**
@@ -139,6 +144,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setSubjectAlternativeNames(SubjectAlternativeNames subjectAlternativeNames) {
         this.subjectAlternativeNames = subjectAlternativeNames;
+        addToAllExtensionsList(subjectAlternativeNames);
     }
 
     /**
@@ -157,6 +163,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setBasicConstraints(BasicConstraints basicConstraints) {
         this.basicConstraints = basicConstraints;
+        addToAllExtensionsList(basicConstraints);
     }
 
     /**
@@ -175,6 +182,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setNameConstraints(NameConstraints nameConstraints) {
         this.nameConstraints = nameConstraints;
+        addToAllExtensionsList(nameConstraints);
     }
 
     /**
@@ -193,6 +201,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setPolicyConstraints(PolicyConstraints policyConstraints) {
         this.policyConstraints = policyConstraints;
+        addToAllExtensionsList(policyConstraints);
     }
 
     /**
@@ -211,6 +220,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setExtendedKeyUsage(ExtendedKeyUsages extendedKeyUsage) {
         this.extendedKeyUsage = extendedKeyUsage;
+        addToAllExtensionsList(extendedKeyUsage);
     }
 
     /**
@@ -229,6 +239,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setCRLDistributionPoints(CRLDistributionPoints crlDistributionPoints) {
         this.crlDistributionPoints = crlDistributionPoints;
+        addToAllExtensionsList(crlDistributionPoints);
     }
 
     /**
@@ -247,6 +258,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setInhibitAnyPolicy(InhibitAnyPolicy inhibitAnyPolicy) {
         this.inhibitAnyPolicy = inhibitAnyPolicy;
+        addToAllExtensionsList(inhibitAnyPolicy);
     }
 
     /**
@@ -265,6 +277,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setAuthorityKeyIdentifier(AuthorityKeyIdentifier authorityKeyIdentifier) {
         this.authorityKeyIdentifier = authorityKeyIdentifier;
+        addToAllExtensionsList(authorityKeyIdentifier);
     }
 
     /**
@@ -283,6 +296,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setSubjectKeyIdentifier(SubjectKeyIdentifier subjectKeyIdentifier) {
         this.subjectKeyIdentifier = subjectKeyIdentifier;
+        addToAllExtensionsList(subjectKeyIdentifier);
     }
 
     /**
@@ -301,6 +315,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setAuthorityInformationAccess(AuthorityInformationAccess authorityInformationAccess) {
         this.authorityInformationAccess = authorityInformationAccess;
+        addToAllExtensionsList(authorityInformationAccess);
     }
 
     /**
@@ -319,6 +334,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setOcspNoCheck(OCSPNoCheck ocspNoCheck) {
         this.ocspNoCheck = ocspNoCheck;
+        addToAllExtensionsList(ocspNoCheck);
     }
 
     /**
@@ -337,6 +353,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setValidityAssuredShortTerm(ValidityAssuredShortTerm validityAssuredShortTerm) {
         this.validityAssuredShortTerm = validityAssuredShortTerm;
+        addToAllExtensionsList(validityAssuredShortTerm);
     }
 
     /**
@@ -355,6 +372,7 @@ public class CertificateExtensions implements Serializable {
      */
     public void setQcStatements(QcStatements qcStatements) {
         this.qcStatements = qcStatements;
+        addToAllExtensionsList(qcStatements);
     }
 
     /**
@@ -373,6 +391,22 @@ public class CertificateExtensions implements Serializable {
      */
     public void addOtherExtension(CertificateExtension certificateExtension) {
         this.otherExtensions.add(certificateExtension);
+        addToAllExtensionsList(certificateExtension);
+    }
+
+    /**
+     * Returns a list of all certificate extensions
+     *
+     * @return a list of {@link CertificateExtension}s
+     */
+    public List<CertificateExtension> getAllCertificateExtensions() {
+        return allExtensions;
+    }
+
+    private void addToAllExtensionsList(CertificateExtension certificateExtension) {
+        if (certificateExtension != null) {
+            this.allExtensions.add(certificateExtension);
+        }
     }
 
 }

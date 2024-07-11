@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.timestamp;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.asic.common.ASiCContent;
@@ -53,19 +53,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
+class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
 
     private TSPSource tspSource;
     private ASiCWithCAdESTimestampService timestampService;
 
     @BeforeEach
-    public void init() {
+    void init() {
         tspSource = getGoodTsa();
         timestampService = new ASiCWithCAdESTimestampService(tspSource);
     }
 
     @Test
-    public void timestampFromDocumentsWithASiCSOneFileTest() throws IOException {
+    void timestampFromDocumentsWithASiCSOneFileTest() throws IOException {
         DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         List<DSSDocument> documentsToSign = Arrays.asList(documentToSign);
 
@@ -96,7 +96,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void timestampFromDocumentsWithASiCSMultipleFilesTest() throws IOException {
+    void timestampFromDocumentsWithASiCSMultipleFilesTest() throws IOException {
         DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         DSSDocument documentToSign2 = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT);
         List<DSSDocument> documentsToSign = Arrays.asList(documentToSign, documentToSign2);
@@ -128,7 +128,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void timestampFromDocumentsWithASiCEOneFileTest() throws IOException {
+    void timestampFromDocumentsWithASiCEOneFileTest() throws IOException {
         DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         List<DSSDocument> documentsToSign = Arrays.asList(documentToSign);
 
@@ -165,7 +165,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void timestampFromDocumentsWithASiCEMultilpeFilesTest() throws IOException {
+    void timestampFromDocumentsWithASiCEMultilpeFilesTest() throws IOException {
         DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         DSSDocument documentToSign2 = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT);
         List<DSSDocument> documentsToSign = Arrays.asList(documentToSign, documentToSign2);
@@ -204,7 +204,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void timestampFromASiCContentWithASiCSTest() throws IOException {
+    void timestampFromASiCContentWithASiCSTest() throws IOException {
         ASiCContent asicContent = new ASiCContent();
 
         DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
@@ -250,7 +250,7 @@ public class ASiCWithCAdESTimestampServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void timestampFromASiCContentWithASiCETest() throws IOException {
+    void timestampFromASiCContentWithASiCETest() throws IOException {
         ASiCContent asicContent = new ASiCContent();
 
         DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);

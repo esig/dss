@@ -27,20 +27,20 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SimpleCertificateReportFacadeTest {
+class SimpleCertificateReportFacadeTest {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		createAndValidate("simple-cert-report.xml");
 	}
 
 	@Test
-	public void test2() throws Exception {
+	void test2() throws Exception {
 		createAndValidate("simple-cert-report2.xml");
 	}
 
 	@Test
-	public void test3() throws Exception {
+	void test3() throws Exception {
 		createAndValidate("simple-cert-report3.xml");
 	}
 	

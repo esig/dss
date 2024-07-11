@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.RevocationReason;
  */
 public class RevocationReasonParser {
 
+	/**
+	 * Default constructor
+	 */
 	private RevocationReasonParser() {
+		// empty
 	}
 
 	/**

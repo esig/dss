@@ -1,0 +1,591 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>test_esteid2018.asice</DocumentName>
+    <ValidationDate>2019-10-04T07:14:19Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-e+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/manifest.xml</Filename>
+                <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
+                <Entries>
+                    <Entry>test.txt</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>test.txt</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures>
+        <Signature Id="S-B9E1CEC2D55F6C3D14143FF0CE585FD28D375F3124D2F1BA156499D601B8B55C">
+            <DAIdentifier>S0</DAIdentifier>
+            <SignatureFilename>META-INF/signatures0.xml</SignatureFilename>
+            <ClaimedSigningTime>2019-09-23T14:25:17Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
+            <StructuralValidation valid="true" />
+            <DigestMatchers>
+                <DigestMatcher type="REFERENCE" id="S0-RefId0">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" id="S0-RefId1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>7X43zJcJN0kkN7sC/lz6PQc2FIqtesLdD9P8Wbtkbfo=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-58ABD5722C7A09EB1368285A3C1EDB668107D89FCCC71C2BA02E22F1EB66F987"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-58ABD5722C7A09EB1368285A3C1EDB668107D89FCCC71C2BA02E22F1EB66F987"/>
+                <ChainItem Certificate="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31"/>
+                <ChainItem Certificate="C-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0"/>
+            </CertificateChain>
+            <MimeType>application/octet-stream</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-156BF7E95B5629DDF162FF1D50480C389D1FBEEF9E401110901CC29E0275DD87">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-58ABD5722C7A09EB1368285A3C1EDB668107D89FCCC71C2BA02E22F1EB66F987">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHAwXKRaMFgxCzAJBgNVBAYTAkVFMRswGQYDVQQKExJTSyBJRCBTb2x1dGlvbnMgQVMxFzAVBgNVBGEMDk5UUkVFLTEwNzQ3MDEzMRMwEQYDVQQDEwpFU1RFSUQyMDE4AhBsoOFLMEStWlv2fZ47YgPT</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>WKvVcix6CesTaChaPB7bZoEH2J/MxxwroC4i8etm+Yc=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-74C4C865C864D10FB8803FC210EF5F588C61DD6133B5F1C8AC5C22F4BD8B9815">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-5A4869AA02C119D31348B4F5A3CA2268B13A741EADC993475A9B76B8902CF845"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-B626D6E3DB02434C70857B8375F9010776655894E91D2934162E77BD3B6EB993">
+                    <Scope>FULL</Scope>
+                    <Name>test.txt</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>k5HdjFz+4SziCB2BqbrytcTKRUPyTDSGFDE3S8zbYPg=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>OmFbhP3f76oAL+6AiM7rDXXRLeT6YSlU8GyWxY+VbKCKmvGJTq8G6AhcxzZIDwhSi2A8tflNAxO1fG0VY1PVIHoyF0k+0GO5ojzsIozHQ3sf46uFGw+2XScvfugYgGjm</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-156BF7E95B5629DDF162FF1D50480C389D1FBEEF9E401110901CC29E0275DD87">
+            <SubjectDistinguishedName Format="CANONICAL">cn=esteid2018 aia ocsp responder 201909,ou=ocsp,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=ESTEID2018 AIA OCSP RESPONDER 201909,OU=OCSP,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=esteid2018,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ESTEID2018,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</IssuerDistinguishedName>
+            <SerialNumber>117714142004091623548931313295083041416</SerialNumber>
+            <CommonName>ESTEID2018 AIA OCSP RESPONDER 201909</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <OrganizationalUnit>OCSP</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2019-10-04T21:00:00Z</NotAfter>
+            <NotBefore>2019-08-30T21:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-156BF7E95B5629DDF162FF1D50480C389D1FBEEF9E401110901CC29E0275DD87</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31"/>
+                <ChainItem Certificate="C-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.sk.ee/certs/ESTEID2018.der.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIDuTCCAxugAwIBAgIQWI7rSeYKmAtbOhssZHXyiDAKBggqhkjOPQQDBDBYMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzETMBEGA1UEAwwKRVNURUlEMjAxODAeFw0xOTA4MzAyMTAwMDBaFw0xOTEwMDQyMTAwMDBaMIGBMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzENMAsGA1UECwwET0NTUDEtMCsGA1UEAwwkRVNURUlEMjAxOCBBSUEgT0NTUCBSRVNQT05ERVIgMjAxOTA5MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzoyf7mvJYO90nRhVVn9NU458V4Z+JysNj9dWrk2sZTkW6Tkft1yC6E3LWzi8NI5WPpohcrVKB3twtTdI6ETPrbpnUpzFdgUOPT3hh5TQHzntR0rQ8kxypyLITNdjZEP2fJljkSU4b7qdq1xZR7Jy9e5dccssCupX39R0Y2f6m2U7pvs6iGfKfGOO1ZVlXaTHRNcJLUQgkXJpxlE1wP1geisx5/yV3so3QI95qmIGIVewsgvxX+v7fJYJWlWUzh6DCe0rTpNvz4cU9m3gBvl2NCRpqRHjnRmaNDz1bT5EbRts8G9MTf1lFKNPzqSF1VVmb1WcjDdBZxceKs6qF0qvrwIDAQABo4HRMIHOMA4GA1UdDwEB/wQEAwIHgDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCTAdBgNVHQ4EFgQUxAQxcPV/w3uvpAqKI92ocuQJx0UwHwYDVR0jBBgwFoAU2axw219+vpT4oOS+R6LQNK2aKhIwRQYIKwYBBQUHAQEEOTA3MDUGCCsGAQUFBzAChilodHRwOi8vd3d3LnNrLmVlL2NlcnRzL0VTVEVJRDIwMTguZGVyLmNydDAMBgNVHRMBAf8EAjAAMA8GCSsGAQUFBzABBQQCBQAwCgYIKoZIzj0EAwQDgYsAMIGHAkE77sMBvMrXQWov9+dhG0cO5Awp4ABbqCS3XoMIj/0VOSSEEa9c3jFVspNw7l83rr9sJ2b/74xEPpaX/ZtHobU+igJCAZG7ReQAXNTRJdO1XTw9utbvzFrBzlS0OctIym3iTC2LRpUcUp3MeVsPV3L8HOST/iPXtppulNf6HKcMsch1XTHp</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754">
+            <SubjectDistinguishedName Format="CANONICAL">c=ee,o=sk id solutions as,ou=tsa,2.5.4.97=#0c0e4e545245452d3130373437303133,cn=sk timestamping authority 2019</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=EE,O=SK ID Solutions AS,OU=TSA,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TIMESTAMPING AUTHORITY 2019</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>168600497314008997544586035080465486444</SerialNumber>
+            <CommonName>SK TIMESTAMPING AUTHORITY 2019</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <OrganizationalUnit>TSA</OrganizationalUnit>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2024-01-01T21:00:00Z</NotAfter>
+            <NotBefore>2019-01-01T21:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://aia.sk.ee/CA</ocspUrl>
+                </AuthorityInformationAccess>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754">
+                            <ServiceNames><ServiceName lang="en">SK Time-Stamping Authority for qualified electronic time stamps (SK-TSA 2019)</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2019-03-10T22:00:00Z</StartDate>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://tsa.sk.ee</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIEFjCCAv6gAwIBAgIQftdGTujTD01cG10EjrASbDANBgkqhkiG9w0BAQsFADB1MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEoMCYGA1UEAwwfRUUgQ2VydGlmaWNhdGlvbiBDZW50cmUgUm9vdCBDQTEYMBYGCSqGSIb3DQEJARYJcGtpQHNrLmVlMB4XDTE5MDEwMTIxMDAwMFoXDTI0MDEwMTIxMDAwMFowejEnMCUGA1UEAwweU0sgVElNRVNUQU1QSU5HIEFVVEhPUklUWSAyMDE5MRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzEMMAoGA1UECwwDVFNBMRswGQYDVQQKDBJTSyBJRCBTb2x1dGlvbnMgQVMxCzAJBgNVBAYTAkVFMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqfl9D1lK8LveyTb3tlOJZfc0J+W3uG7czOZuQKigwkxq2JXrqndigVtSZWzNnoO+somaNgXqw0lpu+8P0NdUw+y1a4znJntvf7HK4WNrHO94DcrcxIJRdRkxRH/e3/0SE1FpX8B96IgyjeQj9Y3tgHYAfSMo0Sj2ANYc/NpF59NWf0nBzJ5QvXD80N1ybiVVu4NALKFxTOEHPRmdFdptNNEaipwHyLwaSDpXCtnXxBz6zV/jIsMYCxNl0cXlx+mkD97scmLhGB27rmI8qEPM6Tue0iGp1Tb6hIFdEQF2gZ8VPOsyJl3cpQd5GRkT63bOtHUm54TYCfw/P7NhO7pFLwIDAQABo4GcMIGZMA4GA1UdDwEB/wQEAwIGwDAWBgNVHSUBAf8EDDAKBggrBgEFBQcDCDAdBgNVHQ4EFgQUnUvt/uXDNtWuqmMvTSBvDyrTJxYwHwYDVR0jBBgwFoAUEvJaPupWHL/NBqzx8SXJqUvUFJkwLwYIKwYBBQUHAQEEIzAhMB8GCCsGAQUFBzABhhNodHRwOi8vYWlhLnNrLmVlL0NBMA0GCSqGSIb3DQEBCwUAA4IBAQApC2BNnwqlgm3KsBMbp0lWw2uGVzUXiu4Cfsol6290Jzn6UftA3HjOG33vg5Dl3SV9Z97AfqgbE4A9Czms8veHwtNRLIaAHuRVm6C/GWa4+nuzNFoAK1pjjBGoPWvfYhud/bAlbYY1qF6nHA50/tFT0GGixrnmI9YsZ0tuXM9pQaoO0YnoCvw8cvMIt68WqIEST+OoCZipgdQRZ5IEJTmvE+LLBDuE87orGfxxswsy+jnOfHX8MLBOhWglrJ7RrXLNdKXOlbvhcU3vXl89gKtWWfr+OdVGdJc+/A3wdtTFhNdy7Ce0VIiZvmEx/UtUmfF41g/y+3lXOb3h6ipk037x</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-58ABD5722C7A09EB1368285A3C1EDB668107D89FCCC71C2BA02E22F1EB66F987">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#1311504e4f45452d3338373131303936353138,2.5.4.42=#0c045441564f,2.5.4.4=#0c0a544f4f4d454dc3844749,cn=toomemägi\,tavo\,38711096518,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#1311504e4f45452d3338373131303936353138,2.5.4.42=#0c045441564f,2.5.4.4=#0c0a544f4f4d454dc3844749,CN=TOOMEMÄGI\,TAVO\,38711096518,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=esteid2018,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ESTEID2018,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</IssuerDistinguishedName>
+            <SerialNumber>144391960541347802953240232755716031443</SerialNumber>
+            <CommonName>TOOMEMÄGI,TAVO,38711096518</CommonName>
+            <CountryName>EE</CountryName>
+            <GivenName>TAVO</GivenName>
+            <Surname>TOOMEMÄGI</Surname>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2023-11-21T21:59:59Z</NotAfter>
+            <NotBefore>2018-11-22T09:57:50Z</NotBefore>
+            <PublicKeySize>384</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-58ABD5722C7A09EB1368285A3C1EDB668107D89FCCC71C2BA02E22F1EB66F987</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31"/>
+                <ChainItem Certificate="C-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://c.sk.ee/esteid2018.der.crt</caIssuersUrl>
+                    <ocspUrl>http://aia.sk.ee/esteid2018</ocspUrl>
+                </AuthorityInformationAccess>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://www.sk.ee/CPS">1.3.6.1.4.1.51361.1.1.1</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-74C4C865C864D10FB8803FC210EF5F588C61DD6133B5F1C8AC5C22F4BD8B9815">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>MIIDyzCCAyygAwIBAgIQbKDhSzBErVpb9n2eO2ID0zAKBggqhkjOPQQDBDBYMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzETMBEGA1UEAwwKRVNURUlEMjAxODAeFw0xODExMjIwOTU3NTBaFw0yMzExMjEyMTU5NTlaMHMxCzAJBgNVBAYTAkVFMSQwIgYDVQQDDBtUT09NRU3DhEdJLFRBVk8sMzg3MTEwOTY1MTgxEzARBgNVBAQMClRPT01FTcOER0kxDTALBgNVBCoMBFRBVk8xGjAYBgNVBAUTEVBOT0VFLTM4NzExMDk2NTE4MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEbcGwoGEkQ0Dh2S5TjR9dDl969LaEJlWkef3IsnjWdsLh8OxqvehoGTmXTSoe/DmrfUkDdgXLDKJzUTJj4spPjZpGPCItfB/iaHwSBcSlsluUmN9CBYbO2E2DycL17dgao4IBnjCCAZowCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCBkAwSAYDVR0gBEEwPzAyBgsrBgEEAYORIQEBATAjMCEGCCsGAQUFBwIBFhVodHRwczovL3d3dy5zay5lZS9DUFMwCQYHBACL7EABAjAdBgNVHQ4EFgQU4mjeQ5L5yIxpWyq2gS2fdugpd8AwgYoGCCsGAQUFBwEDBH4wfDAIBgYEAI5GAQEwCAYGBACORgEEMBMGBgQAjkYBBjAJBgcEAI5GAQYBMFEGBgQAjkYBBTBHMEUWP2h0dHBzOi8vc2suZWUvZW4vcmVwb3NpdG9yeS9jb25kaXRpb25zLWZvci11c2Utb2YtY2VydGlmaWNhdGVzLxMCRU4wHwYDVR0jBBgwFoAU2axw219+vpT4oOS+R6LQNK2aKhIwZgYIKwYBBQUHAQEEWjBYMCcGCCsGAQUFBzABhhtodHRwOi8vYWlhLnNrLmVlL2VzdGVpZDIwMTgwLQYIKwYBBQUHMAKGIWh0dHA6Ly9jLnNrLmVlL2VzdGVpZDIwMTguZGVyLmNydDAKBggqhkjOPQQDBAOBjAAwgYgCQgDIOHvsdQ0eY5WdgYSiDe0TLQO/bRJwKtlSL0jrN/R67xrX3756IiWT6c4EeRqt3jUAlgD6PVLTdkXndlh+TQ2+WwJCAPqFK5LBF7lgy6XcAw56B/dycIUuwHie2AhqQoUJEhuboOoVEDqCLA13j/4/VAxxlWq03r7wg9LcD1cZtCBq47yb</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
+            <SubjectDistinguishedName Format="CANONICAL">cn=esteid2018,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=ESTEID2018,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ee-govca2018,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=EE-GovCA2018,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</IssuerDistinguishedName>
+            <SerialNumber>155893412819766287602132218565978641901</SerialNumber>
+            <CommonName>ESTEID2018</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2033-09-05T09:11:03Z</NotAfter>
+            <NotBefore>2018-09-20T09:22:28Z</NotBefore>
+            <PublicKeySize>521</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-545AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://c.sk.ee/EE-GovCA2018.der.crt</caIssuersUrl>
+                    <ocspUrl>http://aia.sk.ee/ee-govca2018</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://c.sk.ee/EE-GovCA2018.crl</crlUrl>
+                </CRLDistributionPoints>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.sk.ee/CPS">1.3.6.1.4.1.51361.1.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.2</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.5</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.6</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.7</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.3</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.4</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.8</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.9</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.10</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.11</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.12</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.13</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.14</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.15</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.16</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.17</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.18</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.19</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.20</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.2</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.3</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.4</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.5</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.6</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-EE" LOTL="LOTL-EU">
+                    <TSPNames><TSPName lang="en">SK ID Solutions AS</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31">
+                            <ServiceNames><ServiceName lang="en">ESTEID qualified certificates for electronic signatures (ESTEID2018)</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-11-02T14:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIFVzCCBLigAwIBAgIQdUf6rBR0S4tbo2bU/mZV7TAKBggqhkjOPQQDBDBaMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzEVMBMGA1UEAwwMRUUtR292Q0EyMDE4MB4XDTE4MDkyMDA5MjIyOFoXDTMzMDkwNTA5MTEwM1owWDELMAkGA1UEBhMCRUUxGzAZBgNVBAoMElNLIElEIFNvbHV0aW9ucyBBUzEXMBUGA1UEYQwOTlRSRUUtMTA3NDcwMTMxEzARBgNVBAMMCkVTVEVJRDIwMTgwgZswEAYHKoZIzj0CAQYFK4EEACMDgYYABAHHOBlv7UrRPYP1yHhOb7RA/YBDbtgynSVMqYdxnFrKHUXh6tFkghvHuA1k2DSom1hE5kqhB5VspDembwWDJBOQWQGOI/0t3EtccLYjeM7F9xOPdzUbZaIbpNRHpQgVBpFX0xpLTgW27MpIMhU8DHBWFpeAaNX3eUpD4gC5cvhsK0RFEqOCAx0wggMZMB8GA1UdIwQYMBaAFH4pVuc0knhOd+FvLjMqmHHB/TSfMB0GA1UdDgQWBBTZrHDbX36+lPig5L5HotA0rZoqEjAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBADCCAc0GA1UdIASCAcQwggHAMAgGBgQAj3oBAjAJBgcEAIvsQAECMDIGCysGAQQBg5EhAQEBMCMwIQYIKwYBBQUHAgEWFWh0dHBzOi8vd3d3LnNrLmVlL0NQUzANBgsrBgEEAYORIQEBAjANBgsrBgEEAYORfwEBATANBgsrBgEEAYORIQEBBTANBgsrBgEEAYORIQEBBjANBgsrBgEEAYORIQEBBzANBgsrBgEEAYORIQEBAzANBgsrBgEEAYORIQEBBDANBgsrBgEEAYORIQEBCDANBgsrBgEEAYORIQEBCTANBgsrBgEEAYORIQEBCjANBgsrBgEEAYORIQEBCzANBgsrBgEEAYORIQEBDDANBgsrBgEEAYORIQEBDTANBgsrBgEEAYORIQEBDjANBgsrBgEEAYORIQEBDzANBgsrBgEEAYORIQEBEDANBgsrBgEEAYORIQEBETANBgsrBgEEAYORIQEBEjANBgsrBgEEAYORIQEBEzANBgsrBgEEAYORIQEBFDANBgsrBgEEAYORfwEBAjANBgsrBgEEAYORfwEBAzANBgsrBgEEAYORfwEBBDANBgsrBgEEAYORfwEBBTANBgsrBgEEAYORfwEBBjAqBgNVHSUBAf8EIDAeBggrBgEFBQcDCQYIKwYBBQUHAwIGCCsGAQUFBwMEMGoGCCsGAQUFBwEBBF4wXDApBggrBgEFBQcwAYYdaHR0cDovL2FpYS5zay5lZS9lZS1nb3ZjYTIwMTgwLwYIKwYBBQUHMAKGI2h0dHA6Ly9jLnNrLmVlL0VFLUdvdkNBMjAxOC5kZXIuY3J0MBgGCCsGAQUFBwEDBAwwCjAIBgYEAI5GAQEwMAYDVR0fBCkwJzAloCOgIYYfaHR0cDovL2Muc2suZWUvRUUtR292Q0EyMDE4LmNybDAKBggqhkjOPQQDBAOBjAAwgYgCQgDeuUY4HczUbFKS002HZ88gclgYdztHqglENyTMtXE6dMBRnCbgUmhBCAA0mJSHbyFJ8W9ikLiSyurmkJM0hDE9KgJCASOqA405Ia5nKjTJPNsHQlMi7KZsIcTHOoBccx+54N8ZX1MgBozJmT59rZY/2/OeE163BAwD0UdUQAnMPP6+W3Vd</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ee-govca2018,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=EE-GovCA2018,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ee-govca2018,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=EE-GovCA2018,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</IssuerDistinguishedName>
+            <SerialNumber>64735946482218870384597214427357063035</SerialNumber>
+            <CommonName>EE-GovCA2018</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2033-09-05T09:11:03Z</NotAfter>
+            <NotBefore>2018-09-05T09:11:03Z</NotBefore>
+            <PublicKeySize>521</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.sk.ee/CPS">1.3.6.1.4.1.51361.1.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.2</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.5</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.6</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.7</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.3</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.4</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.8</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.9</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.10</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.11</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.12</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.13</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.14</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.15</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.16</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.17</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.18</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.19</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51361.1.1.20</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.2</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.3</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.4</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.5</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.51455.1.1.6</certificatePolicy>
+                    <certificatePolicy cpsUrl="https://www.sk.ee/CPS">1.3.6.1.4.1.51361.10.1</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations/>
+            <Base64Encoded>MIIE+DCCBFmgAwIBAgIQMLOwlXoR0oFbj52nmRsnezAKBggqhkjOPQQDBDBaMQswCQYDVQQGEwJFRTEbMBkGA1UECgwSU0sgSUQgU29sdXRpb25zIEFTMRcwFQYDVQRhDA5OVFJFRS0xMDc0NzAxMzEVMBMGA1UEAwwMRUUtR292Q0EyMDE4MB4XDTE4MDkwNTA5MTEwM1oXDTMzMDkwNTA5MTEwM1owWjELMAkGA1UEBhMCRUUxGzAZBgNVBAoMElNLIElEIFNvbHV0aW9ucyBBUzEXMBUGA1UEYQwOTlRSRUUtMTA3NDcwMTMxFTATBgNVBAMMDEVFLUdvdkNBMjAxODCBmzAQBgcqhkjOPQIBBgUrgQQAIwOBhgAEAMcb/dmAcVo/b2azEPS6CfW7fEA2KuHKC53D7ShVNvLz4QUjCdTXjds/4u99jUoYEQecluVVzMlgEJR1nkN2eOrLAZYxPjwG5HiI1iZEyW9QKVdeEgyvhzWWTNHGjV3HdZRv7L9o4533PtJAyqJq9OTs6mjsqwFXjH49bfZ6CGmzUJsHo4ICvDCCArgwEgYDVR0TAQH/BAgwBgEB/wIBATAOBgNVHQ8BAf8EBAMCAQYwNAYDVR0lAQH/BCowKAYIKwYBBQUHAwkGCCsGAQUFBwMCBggrBgEFBQcDBAYIKwYBBQUHAwEwHQYDVR0OBBYEFH4pVuc0knhOd+FvLjMqmHHB/TSfMB8GA1UdIwQYMBaAFH4pVuc0knhOd+FvLjMqmHHB/TSfMIICAAYDVR0gBIIB9zCCAfMwCAYGBACPegECMAkGBwQAi+xAAQIwMgYLKwYBBAGDkSEBAQEwIzAhBggrBgEFBQcCARYVaHR0cHM6Ly93d3cuc2suZWUvQ1BTMA0GCysGAQQBg5EhAQECMA0GCysGAQQBg5F/AQEBMA0GCysGAQQBg5EhAQEFMA0GCysGAQQBg5EhAQEGMA0GCysGAQQBg5EhAQEHMA0GCysGAQQBg5EhAQEDMA0GCysGAQQBg5EhAQEEMA0GCysGAQQBg5EhAQEIMA0GCysGAQQBg5EhAQEJMA0GCysGAQQBg5EhAQEKMA0GCysGAQQBg5EhAQELMA0GCysGAQQBg5EhAQEMMA0GCysGAQQBg5EhAQENMA0GCysGAQQBg5EhAQEOMA0GCysGAQQBg5EhAQEPMA0GCysGAQQBg5EhAQEQMA0GCysGAQQBg5EhAQERMA0GCysGAQQBg5EhAQESMA0GCysGAQQBg5EhAQETMA0GCysGAQQBg5EhAQEUMA0GCysGAQQBg5F/AQECMA0GCysGAQQBg5F/AQEDMA0GCysGAQQBg5F/AQEEMA0GCysGAQQBg5F/AQEFMA0GCysGAQQBg5F/AQEGMDEGCisGAQQBg5EhCgEwIzAhBggrBgEFBQcCARYVaHR0cHM6Ly93d3cuc2suZWUvQ1BTMBgGCCsGAQUFBwEDBAwwCjAIBgYEAI5GAQEwCgYIKoZIzj0EAwQDgYwAMIGIAkIBk698EqetY9Tt6HwO50CfzdIIjKmlfCI34xKdU7J+wz1tNVu2tHJwEhdsH0e92i969sRDp1RNPlVh4XFJzI3oQFQCQgGVxmcuVnsy7NUscDZ0erwovmbFOsNxELCANxNSWx5xMqzEIhV846opxu10UFDIBBPzkbBenL4h+g/WU7lG78fIhA==</Base64Encoded>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-74C4C865C864D10FB8803FC210EF5F588C61DD6133B5F1C8AC5C22F4BD8B9815">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2019-09-23T14:25:28Z</ProductionDate>
+            <ThisUpdate>2019-09-23T14:25:28Z</ThisUpdate>
+            <ArchiveCutOff>2018-09-20T09:22:28Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-156BF7E95B5629DDF162FF1D50480C389D1FBEEF9E401110901CC29E0275DD87"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-156BF7E95B5629DDF162FF1D50480C389D1FBEEF9E401110901CC29E0275DD87"/>
+                <ChainItem Certificate="C-C45AE81AC8B5ED5D8065213FD3DC250C7B3277368A3E97BD8299EFFAF8B65E31"/>
+                <ChainItem Certificate="C-F164ABE507407408292AF1FA368842B7482DD0D346D79EE8ECB94467D57579A0"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-156BF7E95B5629DDF162FF1D50480C389D1FBEEF9E401110901CC29E0275DD87">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>jzy9OBVZFYPmNyX6M9r1ywGFLmz4LJ39TwkdFgNJxzM=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <Base64Encoded>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</Base64Encoded>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-5A4869AA02C119D31348B4F5A3CA2268B13A741EADC993475A9B76B8902CF845">
+            <ProductionTime>2019-09-23T14:25:27Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ZcWkLqzwFY+Wy+zKeXWPmYKUaWySHo75Ghud7FI6u2Q=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-25D45A834C1EA0E669A8A5882D741C96189FEFC08F8CAE9ACCABF77758330754"/>
+            </CertificateChain>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-B626D6E3DB02434C70857B8375F9010776655894E91D2934162E77BD3B6EB993" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-B9E1CEC2D55F6C3D14143FF0CE585FD28D375F3124D2F1BA156499D601B8B55C" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-58ABD5722C7A09EB1368285A3C1EDB668107D89FCCC71C2BA02E22F1EB66F987" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <Base64Encoded>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</Base64Encoded>
+        </Timestamp>
+    </UsedTimestamps>
+    <OrphanTokens/>
+    <OriginalDocuments>
+        <SignerData Id="D-B626D6E3DB02434C70857B8375F9010776655894E91D2934162E77BD3B6EB993">
+            <ReferencedName>test.txt</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-EE">
+            <CountryCode>EE</CountryCode>
+            <Url>https://sr.riik.ee/tsl/estonian-tsl.xml</Url>
+            <SequenceNumber>47</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2019-10-07T07:14:08Z</LastLoading>
+            <IssueDate>2019-09-05T01:00:00Z</IssueDate>
+            <NextUpdate>2020-03-05T00:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EU" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+	        <SequenceNumber>250</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2019-10-07T07:14:04Z</LastLoading>
+	        <IssueDate>2019-10-04T11:00:00Z</IssueDate>
+	        <NextUpdate>2020-04-04T00:00:00Z</NextUpdate>
+	        <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

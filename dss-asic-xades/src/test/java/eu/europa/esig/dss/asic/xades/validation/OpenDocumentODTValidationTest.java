@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class OpenDocumentODTValidationTest extends AbstractOpenDocumentTestValidation {
+class OpenDocumentODTValidationTest extends AbstractOpenDocumentTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

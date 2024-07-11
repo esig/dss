@@ -1,4 +1,4 @@
-[source,options="nowrap"]
+[source,json,options="nowrap"]
 ----
 {
   "parameters" : {
@@ -14,24 +14,26 @@
     "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
-    "signatureAlgorithm" : "RSA_SHA256",
+    "base64UrlEncodedPayload" : true,
+    "base64UrlEncodedEtsiUComponents" : true,
+    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
-    "encryptionAlgorithm" : "RSA",
-    "referenceDigestAlgorithm" : null,
+    "encryptionAlgorithm" : null,
     "maskGenerationFunction" : null,
+    "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "signatureTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "archiveTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
@@ -41,8 +43,9 @@
     "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395293896,
+      "signingDate" : 1720186839565,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,

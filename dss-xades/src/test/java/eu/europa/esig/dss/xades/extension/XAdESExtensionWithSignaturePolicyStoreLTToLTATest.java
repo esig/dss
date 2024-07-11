@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractXAdESTestExtension {
+class XAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractXAdESTestExtension {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -134,8 +134,8 @@ public class XAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractX
 		assertEquals(policyDigestAlgoAndValue.getDigestMethod(), policyStoreDigestAlgoAndValue.getDigestMethod());
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 
-		assertEquals(POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()),
-				Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()),
+				policyDigestAlgoAndValue.getDigestValue());
 	}
 
 }

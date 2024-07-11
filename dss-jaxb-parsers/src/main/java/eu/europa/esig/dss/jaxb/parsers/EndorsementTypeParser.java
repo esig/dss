@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.EndorsementType;
  */
 public class EndorsementTypeParser {
 
+	/**
+	 * Default constructor
+	 */
 	private EndorsementTypeParser() {
+		// empty
 	}
 
 	/**

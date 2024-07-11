@@ -30,9 +30,11 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.validation.evidencerecord.ByteArrayComparator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,13 +88,15 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         referenceValidations = new ArrayList<>();
 
         DSSMessageDigest lastTimeStampHash = DSSMessageDigest.createEmptyDigest();
+        DSSMessageDigest lastTimeStampSequenceHash = DSSMessageDigest.createEmptyDigest();
 
-        boolean firstArchiveTimeStampChain = true;
         List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
-        for (ArchiveTimeStampChainObject archiveTimeStampChain : archiveTimeStampSequence) {
+        Iterator<? extends ArchiveTimeStampChainObject> archiveTimeStampSequenceIt = archiveTimeStampSequence.iterator();
+        while (archiveTimeStampSequenceIt.hasNext()) {
+            ArchiveTimeStampChainObject archiveTimeStampChain = archiveTimeStampSequenceIt.next();
             DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
-            DSSMessageDigest lastTimeStampSequenceHash = firstArchiveTimeStampChain ?
-                    DSSMessageDigest.createEmptyDigest() : computePrecedingTimeStampSequenceHash(digestAlgorithm, archiveTimeStampChain);
+            List<DSSDocument> detachedContents = lastTimeStampHash.isEmpty() ?
+                    evidenceRecord.getDetachedContents() : Collections.emptyList();
 
             List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChain.getArchiveTimeStamps();
             Iterator<? extends ArchiveTimeStampObject> archiveTimeStampsIt = archiveTimeStamps.iterator();
@@ -101,8 +105,6 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
 
                 List<ReferenceValidation> timestampValidations = new ArrayList<>();
                 DSSMessageDigest lastMessageDigest = DSSMessageDigest.createEmptyDigest();
-                List<DSSDocument> detachedContents = lastTimeStampHash.isEmpty() ?
-                        evidenceRecord.getDetachedContents() : Collections.emptyList();
 
                 List<? extends DigestValueGroup> hashTree = getHashTree(archiveTimeStamp.getHashTree(), detachedContents,
                         archiveTimeStampChain, lastTimeStampHash, lastTimeStampSequenceHash);
@@ -113,7 +115,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                                 evidenceRecord.getManifestFile() : null;
                         // execute for all time-stamps in order to create reference validations
                         List<ReferenceValidation> archiveDataObjectValidations =
-                                validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain, detachedContents, manifestFile);
+                                validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain, lastTimeStampSequenceHash, detachedContents, manifestFile);
 
                         if (!lastTimeStampHash.isEmpty()) {
                             // validate following archive time-stamps
@@ -124,12 +126,18 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                             // validate first time-stamp in ArchiveTimeStampChain
                             timestampValidations = validateArchiveTimeStampSequenceDigest(archiveDataObjectValidations, lastTimeStampSequenceHash);
                         }
-                        if (manifestFile != null) {
-                            archiveDataObjectValidations = validateManifestEntries(archiveDataObjectValidations, manifestFile, firstArchiveTimeStampChain);
+                        // if the first time-stamp and ER has a linked manifest
+                        else if (manifestFile != null) {
+                            archiveDataObjectValidations = validateManifestEntries(archiveDataObjectValidations, manifestFile, lastTimeStampSequenceHash.isEmpty());
                         }
 
-                        if (lastTimeStampHash.isEmpty() && firstArchiveTimeStampChain) {
+                        if (lastTimeStampHash.isEmpty() && lastTimeStampSequenceHash.isEmpty()) {
                             referenceValidations.addAll(archiveDataObjectValidations);
+                        }
+
+                        // assert hashtree is valid, otherwise fail validation
+                        if (!checkHashTreeValidity(archiveTimeStamp, archiveTimeStampChain)) {
+                            archiveDataObjectValidations.forEach(r -> r.setIntact(false));
                         }
                     }
                     // Validation of each followingHashTree/Sequence
@@ -142,12 +150,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 timestampToken.setReferenceValidations(timestampValidations);
 
                 if (archiveTimeStampsIt.hasNext()) {
-                    lastTimeStampHash = computeTimeStampHash(digestAlgorithm, archiveTimeStamp, archiveTimeStampChain);
+                    lastTimeStampHash = computeTimeStampHash(archiveTimeStamp);
                 }
             }
 
-            firstArchiveTimeStampChain = false;
-            lastTimeStampHash = DSSMessageDigest.createEmptyDigest();
+            if (archiveTimeStampSequenceIt.hasNext()) {
+                lastTimeStampSequenceHash = computeTimeStampSequenceHash(archiveTimeStampChain);
+                lastTimeStampHash = DSSMessageDigest.createEmptyDigest();
+            }
         }
     }
 
@@ -158,7 +168,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      * @param detachedContents a list of {@link DSSDocument}s, provided to the validation as a detached content
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} archive time-stamp chain containing the time-stamp
      * @param lastTimeStampHash {@link DSSMessageDigest} digest of the previous archive-time-stamp, when applicable
-     * @param lastTimeStampSequenceHash  {@link DSSMessageDigest} digest of the previous archive-time-stamp-sequence, when applicable
+     * @param lastTimeStampSequenceHash {@link DSSMessageDigest} digest of the previous archive-time-stamp-sequence, when applicable
      * @return a list of {@link DigestValueGroup}, representing a HashTree to be used for an archive-time-stamp validation
      */
     protected List<? extends DigestValueGroup> getHashTree(
@@ -181,7 +191,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
 
             } else if (lastTimeStampSequenceHash != null && !lastTimeStampSequenceHash.isEmpty()) {
                 // HashTree renewal
-                digestValues.add(lastTimeStampSequenceHash.getValue());
+                digestValues.addAll(getLastTimeStampSequenceHashList(lastTimeStampSequenceHash, detachedContents));
 
             } else if (Utils.collectionSize(detachedContents) == 1) {
                 // Initial time-stamp
@@ -202,6 +212,31 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
     }
 
     /**
+     * This method verifies whether the {@code ArchiveTimeStampObject} and its hash-tree is valid relatively
+     * the parent {@code ArchiveTimeStampChainObject}
+     *
+     * @param archiveTimeStamp {@link ArchiveTimeStampObject}
+     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject}
+     * @return TRUE if the validation succeeds, FALSE otherwise
+     */
+    protected boolean checkHashTreeValidity(ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain) {
+        // TRUE by default
+        return true;
+    }
+
+    /**
+     * Returns a list of hashes computed on a given previous time-stamp sequence hash
+     *
+     * @param lastTimeStampSequenceHash {@link DSSMessageDigest} of the previous ArchiveTimeStampSequence
+     * @param detachedDocuments a list of detached {@link DSSDocument}s
+     * @return a list of byte arrays
+     */
+    protected List<byte[]> getLastTimeStampSequenceHashList(
+            DSSMessageDigest lastTimeStampSequenceHash, List<DSSDocument> detachedDocuments) {
+        return Collections.singletonList(lastTimeStampSequenceHash.getValue());
+    }
+
+    /**
      * Returns digest value for the document
      *
      * @param document {@link DSSDocument} to get digest value for
@@ -209,22 +244,50 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      * @return byte array representing document digest
      */
     protected byte[] getDocumentDigest(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain) {
-        return Utils.fromBase64(document.getDigest(archiveTimeStampChain.getDigestAlgorithm()));
+        Digest digest = getDataObjectDigestBuilder(document, archiveTimeStampChain).build();
+        return digest.getValue();
     }
 
-    private List<ReferenceValidation> validateArchiveTimeStampSequenceDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampSequenceHash) {
-        return validateAdditionalDigest(referenceValidations, lastTimeStampSequenceHash, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE);
-    }
+    /**
+     * Returns {@code DataObjectDigestBuilder} corresponding to the current implementation
+     *
+     * @param document {@link DSSDocument} document to build digest for
+     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} of the current hashtree
+     * @return {@link DataObjectDigestBuilder}
+     */
+    protected abstract DataObjectDigestBuilder getDataObjectDigestBuilder(DSSDocument document, ArchiveTimeStampChainObject archiveTimeStampChain);
 
-    private List<ReferenceValidation> validateArchiveTimeStampDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest lastTimeStampHash) {
+    /**
+     * This method is used to verify presence of ArchiveTimeStamp digests within the reference validation list.
+     * If entry is not present, created one, when applicable
+     *
+     * @param referenceValidations a list of {@link ReferenceValidation}s
+     * @param lastTimeStampHash {@link DSSMessageDigest}
+     * @return an updated list of {@link ReferenceValidation}s
+     */
+    protected List<ReferenceValidation> validateArchiveTimeStampDigest(List<ReferenceValidation> referenceValidations,
+                                                                     DSSMessageDigest lastTimeStampHash) {
         return validateAdditionalDigest(referenceValidations, lastTimeStampHash, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP);
     }
 
-    private List<ReferenceValidation> validateAdditionalDigest(List<ReferenceValidation> referenceValidations, DSSMessageDigest messageDigest, DigestMatcherType type) {
+    /**
+     * This method is used to verify presence of ArchiveTimeStampSequence digests within the reference validation list.
+     * If entry is not present, created one, when applicable
+     *
+     * @param referenceValidations a list of {@link ReferenceValidation}s
+     * @param lastTimeStampSequenceHashes {@link DSSMessageDigest}
+     * @return an updated list of {@link ReferenceValidation}s
+     */
+    protected List<ReferenceValidation> validateArchiveTimeStampSequenceDigest(List<ReferenceValidation> referenceValidations,
+                                                                             DSSMessageDigest lastTimeStampSequenceHashes) {
+        return validateAdditionalDigest(referenceValidations, lastTimeStampSequenceHashes, DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE);
+    }
+    
+    private List<ReferenceValidation> validateAdditionalDigest(List<ReferenceValidation> referenceValidations,
+                                                               DSSMessageDigest messageDigest, DigestMatcherType type) {
         List<ReferenceValidation> invalidReferences = referenceValidations.stream().filter(r -> !r.isIntact()).collect(Collectors.toList());
         for (ReferenceValidation reference : invalidReferences) {
             if (reference.getDigest() != null && Arrays.equals(messageDigest.getValue(), reference.getDigest().getValue())) {
-                reference.setName(null);
                 reference.setType(type);
                 reference.setFound(true);
                 reference.setIntact(true);
@@ -246,7 +309,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         }
 
         // create empty ReferenceValidations for not found manifest entries, when applicable
-        List<String> foundDocumentNames = referenceValidations.stream().map(ReferenceValidation::getName).filter(Objects::nonNull).collect(Collectors.toList());
+        List<String> foundDocumentNames = referenceValidations.stream().map(ReferenceValidation::getDocumentName).filter(Objects::nonNull).collect(Collectors.toList());
         if (Utils.collectionSize(manifestFile.getEntries()) > Utils.collectionSize(foundDocumentNames)) {
             List<ReferenceValidation> failedReferences = referenceValidations.stream().filter(r -> !r.isIntact()).collect(Collectors.toList());
             if (Utils.collectionSize(manifestFile.getEntries()) - Utils.collectionSize(foundDocumentNames) >= Utils.collectionSize(failedReferences)) {
@@ -257,15 +320,15 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             }
             // add references from a manifest
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                if (!foundDocumentNames.contains(manifestEntry.getFileName())) {
-                    LOG.warn("Manifest entry with name '{}' was not found within evidence record data objects!", manifestEntry.getFileName());
+                if (!foundDocumentNames.contains(manifestEntry.getUri())) {
+                    LOG.warn("Manifest entry with name '{}' was not found within evidence record data objects!", manifestEntry.getUri());
 
                     DSSDocument matchingDocument = getMatchingDocument(manifestEntry, evidenceRecord.getDetachedContents());
 
                     ReferenceValidation referenceValidation = new ReferenceValidation();
                     referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
                     referenceValidation.setDigest(manifestEntry.getDigest());
-                    referenceValidation.setName(manifestEntry.getFileName());
+                    referenceValidation.setDocumentName(manifestEntry.getUri()); // TODO : add separation between reference name and document name
                     referenceValidation.setFound(matchingDocument != null);
                     referenceValidation.setIntact(false);
                     referenceValidations.add(referenceValidation);
@@ -282,13 +345,13 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         if (firstTimeStamp) {
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
                 for (ReferenceValidation reference : referenceValidations) {
-                    if (manifestEntry.getFileName().equals(reference.getName()) &&
+                    if (manifestEntry.getUri().equals(reference.getDocumentName()) &&
                             manifestEntry.getDigest() != null && reference.getDigest() != null &&
                             !manifestEntry.getDigest().getAlgorithm().equals(reference.getDigest().getAlgorithm())) {
                         LOG.warn("The digest algorithm '{}' defined in a manifest file with name '{}' does not match " +
                                         "the digest algorithm '{}' used within an evidence record for file with name '{}'",
                                 manifestEntry.getDigest().getAlgorithm(), manifestFile.getFilename(),
-                                reference.getDigest().getAlgorithm(), manifestEntry.getFileName());
+                                reference.getDigest().getAlgorithm(), manifestEntry.getUri());
                         reference.setIntact(false);
                     }
                 }
@@ -303,12 +366,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param digestValueGroup {@link DigestValueGroup} to find document corresponding digest in
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
+     * @param lastTimeStampSequenceHash {@link DSSMessageDigest} hash of the last archive time-stamp sequence
      * @param detachedContents a list of detached {@link DSSDocument}s
      * @param manifestFile {@link ManifestFile}, when present
      * @return a list of {@link ReferenceValidation}s
      */
     protected List<ReferenceValidation> validateArchiveDataObjects(DigestValueGroup digestValueGroup,
                                                                    ArchiveTimeStampChainObject archiveTimeStampChain,
+                                                                   DSSMessageDigest lastTimeStampSequenceHash,
                                                                    List<DSSDocument> detachedContents,
                                                                    ManifestFile manifestFile) {
         final List<ReferenceValidation> result = new ArrayList<>();
@@ -325,18 +390,19 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             Digest digest = new Digest(digestAlgorithm, hashValue);
             referenceValidation.setDigest(digest);
 
-            DSSDocument matchingDocument = getMatchingDocument(digest, archiveTimeStampChain, detachedContents);
+            DSSDocument matchingDocument = getMatchingDocument(digest, archiveTimeStampChain, lastTimeStampSequenceHash, detachedContents);
             ManifestEntry matchingManifestEntry = getMatchingManifestEntry(manifestFile, digest, matchingDocument);
 
             if (manifestFile != null) {
                 if (matchingManifestEntry != null) {
                     referenceValidation.setFound(matchingManifestEntry.isFound() || matchingDocument != null);
                     referenceValidation.setIntact(matchingManifestEntry.isIntact() && matchingDocument != null);
-                    referenceValidation.setName(matchingManifestEntry.getFileName());
-                    foundDocuments.add(matchingManifestEntry.getFileName());
+                    referenceValidation.setUri(matchingManifestEntry.getUri());
+                    referenceValidation.setDocumentName(matchingManifestEntry.getDocumentName());
+                    foundDocuments.add(matchingManifestEntry.getUri());
 
                 } else if (matchingDocument != null) {
-                    referenceValidation.setName(matchingDocument.getName());
+                    referenceValidation.setDocumentName(matchingDocument.getName());
                     foundDocuments.add(matchingDocument.getName());
 
                 } else {
@@ -348,14 +414,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             } else if (matchingDocument != null) {
                 referenceValidation.setFound(true);
                 referenceValidation.setIntact(true);
-                referenceValidation.setName(matchingDocument.getName());
+                referenceValidation.setDocumentName(matchingDocument.getName());
                 foundDocuments.add(matchingDocument.getName());
 
             } else if (Utils.collectionSize(digestValues) == 1 && Utils.collectionSize(detachedContents) == 1) {
                 // if one document is expected and provided -> assume it as a signed data
                 referenceValidation.setFound(true);
                 referenceValidation.setIntact(false);
-                referenceValidation.setName(detachedContents.get(0).getName());
+                referenceValidation.setDocumentName(detachedContents.get(0).getName());
                 foundDocuments.add(detachedContents.get(0).getName());
 
             } else {
@@ -366,7 +432,6 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
 
             result.add(referenceValidation);
         }
-
         return result;
     }
 
@@ -385,7 +450,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 if (digest.equals(manifestEntryDigest)) {
                     return manifestEntry;
                 }
-                if (document != null && document.getName().equals(manifestEntry.getFileName())) {
+                if (document != null && document.getName().equals(manifestEntry.getUri())) {
                     return manifestEntry;
                 }
             }
@@ -399,10 +464,12 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param digest {@link Digest} to check
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for validation
+     * @param lastTimeStampSequenceHash {@link DSSMessageDigest} hash of the last archive time-stamp sequence
      * @param detachedContents a list of {@link DSSDocument}s
      * @return {@link DSSDocument} if matching document found, NULL otherwise
      */
     protected DSSDocument getMatchingDocument(Digest digest, ArchiveTimeStampChainObject archiveTimeStampChain,
+                                              DSSMessageDigest lastTimeStampSequenceHash,
                                               List<DSSDocument> detachedContents) {
         byte[] documentDigest;
         if (Utils.isCollectionNotEmpty(detachedContents)) {
@@ -425,7 +492,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      */
     protected DSSDocument getMatchingDocument(ManifestEntry manifestEntry, List<DSSDocument> detachedContents) {
         for (DSSDocument document : detachedContents) {
-            if (manifestEntry.getFileName().equals(document.getName())) {
+            if (manifestEntry.getUri().equals(document.getName())) {
                 return document;
             }
         }
@@ -435,23 +502,19 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
     /**
      * Computes hash on {@code archiveTimeStamp} element provided the {@code archiveTimeStampChain}'s attributes
      *
-     * @param digestAlgorithm {@link DigestAlgorithm} to be used for hash computation
      * @param archiveTimeStamp {@link ArchiveTimeStampObject} to compute hash on
-     * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} defines configuration for hash computation
      * @return {@link DSSMessageDigest}
      */
-    protected abstract DSSMessageDigest computeTimeStampHash(DigestAlgorithm digestAlgorithm,
-                                                             ArchiveTimeStampObject archiveTimeStamp, ArchiveTimeStampChainObject archiveTimeStampChain);
+    protected abstract DSSMessageDigest computeTimeStampHash(ArchiveTimeStampObject archiveTimeStamp);
 
     /**
-     * Computes hash of {@code ArchiveTimeStampSequenceElement} preceding the incorporation of {@code ArchiveTimeStampChainObject}
+     * Computes hash of current {@code ArchiveTimeStampSequenceElement}
      *
-     * @param digestAlgorithm {@link DigestAlgorithm} to be used for hash computation
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} to compute hash for
      * @return {@link DSSMessageDigest}
      */
-    protected abstract DSSMessageDigest computePrecedingTimeStampSequenceHash(DigestAlgorithm digestAlgorithm, ArchiveTimeStampChainObject archiveTimeStampChain);
-
+    protected abstract DSSMessageDigest computeTimeStampSequenceHash(ArchiveTimeStampChainObject archiveTimeStampChain);
+    
     /**
      * Computes a hash value for a group of hashes
      *
@@ -465,7 +528,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
         /*
          * The algorithm by which a root hash value is generated from the
          * <HashTree> element is as follows: the content of each <DigestValue>
-         element within the first <Sequence> element is base64 ([RFC4648],
+         * element within the first <Sequence> element is base64 ([RFC4648],
          * using the base64 alphabet not the base64url alphabet) decoded to
          * obtain a binary value (representing the hash value). All collected
          * hash values from the sequence are ordered in binary ascending order,

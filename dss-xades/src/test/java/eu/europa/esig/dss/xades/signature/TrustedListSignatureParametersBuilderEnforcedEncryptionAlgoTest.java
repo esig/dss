@@ -30,7 +30,7 @@ import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TrustedListSignatureParametersBuilderEnforcedEncryptionAlgoTest extends TrustedListSignatureParametersBuilderTest {
+class TrustedListSignatureParametersBuilderEnforcedEncryptionAlgoTest extends TrustedListSignatureParametersBuilderTest {
 
     @Override
     protected TrustedListSignatureParametersBuilder getSignatureParametersBuilder() {
@@ -48,6 +48,11 @@ public class TrustedListSignatureParametersBuilderEnforcedEncryptionAlgoTest ext
     @Override
     protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
         // skip
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return ED25519_GOOD_USER;
     }
 
 }

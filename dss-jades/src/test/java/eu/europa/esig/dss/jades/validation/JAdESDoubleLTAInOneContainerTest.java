@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESDoubleLTAInOneContainerTest extends AbstractJAdESTestValidation {
+class JAdESDoubleLTAInOneContainerTest extends AbstractJAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

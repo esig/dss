@@ -23,12 +23,14 @@ package eu.europa.esig.dss.pdf.pdfbox;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfObject;
+import eu.europa.esig.dss.pdf.PdfSimpleObject;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSBoolean;
 import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNull;
 import org.apache.pdfbox.cos.COSNumber;
@@ -41,6 +43,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * The PDFBox implementation of {@code eu.europa.esig.dss.pdf.PdfArray}
@@ -50,14 +53,27 @@ class PdfBoxArray implements PdfArray {
 	private static final Logger LOG = LoggerFactory.getLogger(PdfBoxArray.class);
 
 	/** The PDFBox object */
-	private COSArray wrapped;
+	private final COSArray wrapped;
 
 	/**
 	 * The document
 	 *
 	 * NOTE for developers: Retain this reference ! PDDocument must not be garbage collected
 	 */
-	private PDDocument document;
+	private final PDDocument document;
+
+	/** Parent object */
+	private final PdfObject parent;
+
+	/**
+	 * Constructor to create a new empty array
+	 *
+	 * @param document {@link PDDocument}
+	 */
+	public PdfBoxArray(final PDDocument document) {
+		this(new COSArray(), document);
+	}
+
 
 	/**
 	 * Default constructor
@@ -65,9 +81,32 @@ class PdfBoxArray implements PdfArray {
 	 * @param wrapped {@link COSArray}
 	 * @param document {@link PDDocument}
 	 */
-	public PdfBoxArray(COSArray wrapped, PDDocument document) {
+	public PdfBoxArray(final COSArray wrapped, final PDDocument document) {
+		this(wrapped, document, null);
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param wrapped {@link COSArray}
+	 * @param document {@link PDDocument}
+	 */
+	public PdfBoxArray(final COSArray wrapped, final PDDocument document, final PdfObject parent) {
+		Objects.requireNonNull(wrapped, "Pdf array shall be provided!");
+		Objects.requireNonNull(document, "Pdf document shall be provided!");
 		this.wrapped = wrapped;
 		this.document = document;
+		this.parent = parent;
+	}
+
+	@Override
+	public COSArray getValue() {
+		return wrapped;
+	}
+
+	@Override
+	public PdfObject getParent() {
+		return parent;
 	}
 
 	@Override
@@ -111,10 +150,10 @@ class PdfBoxArray implements PdfArray {
 	public Number getNumber(int i) {
 		COSBase val = wrapped.get(i);
 		if (val != null) {
-			if (val instanceof COSFloat) {
-				return ((COSFloat) val).floatValue();
+			if (val instanceof COSInteger) {
+				return ((COSInteger) val).longValue();
 			} else if (val instanceof COSNumber) {
-				return ((COSNumber) val).longValue();
+				return ((COSNumber) val).floatValue();
 			}
 		}
 		return null;
@@ -136,14 +175,14 @@ class PdfBoxArray implements PdfArray {
 			cosDictionary = (COSDictionary) cosObject.getObject();
 		}
 		if (cosDictionary != null) {
-			return new PdfBoxDict(cosDictionary, document);
+			return new PdfBoxDict(cosDictionary, document, this);
 		}
 		LOG.warn("Unable to extract array entry as dictionary!");
 		return null;
 	}
 
 	@Override
-	public Object getObject(int i) {
+	public PdfObject getObject(int i) {
 		COSBase dictionaryObject = wrapped.getObject(i);
 		if (dictionaryObject == null) {
 			return null;
@@ -152,21 +191,35 @@ class PdfBoxArray implements PdfArray {
 				dictionaryObject instanceof COSObject) {
 			return getAsDict(i);
 		} else if (dictionaryObject instanceof COSArray) {
-			return new PdfBoxArray((COSArray) dictionaryObject, document);
+			return new PdfBoxArray((COSArray) dictionaryObject, document, this);
 		} else if (dictionaryObject instanceof COSString) {
-			return getString(i);
+			return new PdfSimpleObject(getString(i), this);
 		} else if (dictionaryObject instanceof COSName) {
-			return wrapped.getName(i);
+			return new PdfSimpleObject(wrapped.getName(i), this);
 		} else if (dictionaryObject instanceof COSNumber) {
-			return getNumber(i);
+			return new PdfSimpleObject(getNumber(i), this);
 		}else if (dictionaryObject instanceof COSBoolean) {
-			return ((COSBoolean) dictionaryObject).getValueAsObject();
+			return new PdfSimpleObject(((COSBoolean) dictionaryObject).getValueAsObject(), this);
 		} else if (dictionaryObject instanceof COSNull) {
 			return null;
 		} else {
 			LOG.warn("Unable to process an entry on position '{}' of type '{}'.", i, dictionaryObject.getClass());
 		}
 		return null;
+	}
+
+	@Override
+	public void addObject(PdfObject pdfObject) {
+		Object value = pdfObject.getValue();
+		if (!(value instanceof COSBase)) {
+			throw new UnsupportedOperationException("The object to be added shall be of type COSBase!");
+		}
+		wrapped.add((COSBase) value);
+	}
+
+	@Override
+	public void setDirect(boolean direct) {
+		wrapped.setDirect(direct);
 	}
 
 	@Override

@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.transforms.Transforms;
-import org.w3c.dom.Node;
 
 /**
  * Transforms a reference content to its base64 representation
@@ -52,12 +50,6 @@ public class Base64Transform extends AbstractTransform {
 	 */
 	public Base64Transform(DSSNamespace xmlDSigNamespace) {
 		super(xmlDSigNamespace, Transforms.TRANSFORM_BASE64_DECODE);
-	}
-
-	@Override
-	@Deprecated
-	public byte[] getBytesAfterTransformation(Node node) {
-		return DomUtils.serializeNode(node);
 	}
 
 	@Override

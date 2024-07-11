@@ -48,7 +48,7 @@ public class PAdESVisibleImageScalingTest extends AbstractPAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -61,7 +61,7 @@ public class PAdESVisibleImageScalingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void stretchImageTest() throws Exception {
+    void stretchImageTest() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
         imageParameters.setImage(RED_CROSS_IMAGE);
 
@@ -79,7 +79,7 @@ public class PAdESVisibleImageScalingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void zoomAndCenterImageTest() throws Exception {
+    void zoomAndCenterImageTest() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
         imageParameters.setImage(RED_CROSS_IMAGE);
 
@@ -98,7 +98,7 @@ public class PAdESVisibleImageScalingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void zoomAndCenterImageChangeDimensionsTest() throws Exception {
+    void zoomAndCenterImageChangeDimensionsTest() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
         imageParameters.setImage(RED_CROSS_IMAGE);
 
@@ -117,7 +117,7 @@ public class PAdESVisibleImageScalingTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void centerImageTest() throws Exception {
+    void centerImageTest() throws Exception {
         SignatureImageParameters imageParameters = new SignatureImageParameters();
         imageParameters.setImage(RED_CROSS_IMAGE);
 

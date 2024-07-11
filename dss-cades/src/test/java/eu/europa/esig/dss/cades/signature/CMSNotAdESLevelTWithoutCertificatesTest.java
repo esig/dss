@@ -31,21 +31,21 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CMSNotAdESLevelTWithoutCertificatesTest extends AbstractCAdESTestSignature {
+class CMSNotAdESLevelTWithoutCertificatesTest extends AbstractCAdESTestSignature {
 
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
     private CAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello world!".getBytes());
 
         signatureParameters = new CAdESSignatureParameters();

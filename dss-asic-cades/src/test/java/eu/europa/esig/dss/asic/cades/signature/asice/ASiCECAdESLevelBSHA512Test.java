@@ -32,14 +32,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
-public class ASiCECAdESLevelBSHA512Test extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESLevelBSHA512Test extends AbstractASiCECAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();

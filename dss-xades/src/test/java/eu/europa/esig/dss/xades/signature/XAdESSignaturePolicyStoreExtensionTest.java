@@ -32,14 +32,16 @@ import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESSignaturePolicyStoreExtensionTest extends AbstractXAdESTestValidation {
+class XAdESSignaturePolicyStoreExtensionTest extends AbstractXAdESTestValidation {
 
 	private static final String SIGNATURE_POLICY_ID = "urn:sbr:signature-policy:xml:2.0";
 	private static final DSSDocument POLICY_CONTENT = new FileDocument("src/test/resources/validation/dss2095/SBR-signature-policy-v2.0.xml");
@@ -48,7 +50,7 @@ public class XAdESSignaturePolicyStoreExtensionTest extends AbstractXAdESTestVal
 	private DSSDocument signedDocument;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		signedDocument = new FileDocument("src/test/resources/validation/dss2095/sigPolicyWithTransforms.xml");
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}
@@ -84,7 +86,8 @@ public class XAdESSignaturePolicyStoreExtensionTest extends AbstractXAdESTestVal
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 		
 		// transforms are applied
-		assertNotEquals(POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()), Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertFalse(Arrays.equals(POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()),
+				policyDigestAlgoAndValue.getDigestValue()));
 	}
 	
 	@Override

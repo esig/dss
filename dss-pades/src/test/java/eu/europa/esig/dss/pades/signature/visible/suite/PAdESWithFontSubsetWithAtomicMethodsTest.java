@@ -55,7 +55,7 @@ public class PAdESWithFontSubsetWithAtomicMethodsTest extends AbstractPAdESTestS
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -77,7 +77,7 @@ public class PAdESWithFontSubsetWithAtomicMethodsTest extends AbstractPAdESTestS
     }
 
     @Test
-    public void embedFontTest() throws IOException {
+    void embedFontTest() throws IOException {
         font.setEmbedFontSubset(false);
 
         DSSDocument signedDocument = sign();
@@ -87,7 +87,7 @@ public class PAdESWithFontSubsetWithAtomicMethodsTest extends AbstractPAdESTestS
     }
 
     @Test
-    public void embedSubsetTest() throws IOException {
+    void embedSubsetTest() throws IOException {
         font.setEmbedFontSubset(true);
 
         DSSDocument signedDocument = sign();
@@ -114,8 +114,7 @@ public class PAdESWithFontSubsetWithAtomicMethodsTest extends AbstractPAdESTestS
         PAdESSignatureParameters params = getSignatureParameters();
 
         ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 
         toBeSigned = createDocumentCopy(toBeSigned);

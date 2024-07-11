@@ -413,30 +413,6 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Gets timestamp validation indication for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return {@link Indication}
-	 * @deprecated since DSS 5.13. Use {@code #getBasicTimestampValidationIndication(timestampId)} instead
-	 */
-	@Deprecated
-	public Indication getTimestampValidationIndication(String timestampId) {
-		return getBasicTimestampValidationIndication(timestampId);
-	}
-
-	/**
-	 * Gets timestamp validation subIndication for a timestamp with id
-	 *
-	 * @param timestampId {@link String}
-	 * @return {@link Indication}
-	 * @deprecated since DSS 5.13. Use {@code #getBasicTimestampValidationSubIndication(timestampId)} instead
-	 */
-	@Deprecated
-	public SubIndication getTimestampValidationSubIndication(String timestampId) {
-		return getBasicTimestampValidationSubIndication(timestampId);
-	}
-
-	/**
 	 * Gets timestamp validation with archive data indication for a timestamp with id
 	 *
 	 * @param timestampId {@link String}
@@ -515,6 +491,13 @@ public class DetailedReport {
 		}
 		for (XmlSignature xmlSignature : getSignatures()) {
 			for (XmlEvidenceRecord xmlEvidenceRecord : xmlSignature.getEvidenceRecords()) {
+				if (xmlEvidenceRecord.getId().equals(evidenceRecordId)) {
+					return xmlEvidenceRecord;
+				}
+			}
+		}
+		for (XmlTimestamp xmlTimestamp : getIndependentTimestamps()) {
+			for (XmlEvidenceRecord xmlEvidenceRecord : xmlTimestamp.getEvidenceRecords()) {
 				if (xmlEvidenceRecord.getId().equals(evidenceRecordId)) {
 					return xmlEvidenceRecord;
 				}
@@ -680,6 +663,13 @@ public class DetailedReport {
 		for (XmlTimestamp xmlTimestamp : getIndependentTimestamps()) {
 			if (xmlTimestamp.getId().equals(timestampId)) {
 				return xmlTimestamp;
+			}
+			for (XmlEvidenceRecord xmlEvidenceRecord : xmlTimestamp.getEvidenceRecords()) {
+				for (XmlTimestamp xmlERTimestamp : xmlEvidenceRecord.getTimestamps()) {
+					if (xmlERTimestamp.getId().equals(timestampId)) {
+						return xmlERTimestamp;
+					}
+				}
 			}
 		}
 

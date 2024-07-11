@@ -24,7 +24,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESLevelBEnvelopingCounterSignatureTest;
 
-public class XAdESLevelBCounterSignaturePrettyPrintTest extends XAdESLevelBEnvelopingCounterSignatureTest {
+class XAdESLevelBCounterSignaturePrettyPrintTest extends XAdESLevelBEnvelopingCounterSignatureTest {
 
 	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {

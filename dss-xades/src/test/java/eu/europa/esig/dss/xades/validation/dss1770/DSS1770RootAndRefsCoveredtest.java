@@ -34,7 +34,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1770RootAndRefsCoveredtest extends AbstractXAdESTestValidation {
+class DSS1770RootAndRefsCoveredtest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -75,7 +75,7 @@ public class DSS1770RootAndRefsCoveredtest extends AbstractXAdESTestValidation {
 		assertEquals(4, digestMatchers.size());
 		boolean refRootFound = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
-			if ("REF-ROOT".equals(digestMatcher.getName())) {
+			if ("REF-ROOT".equals(digestMatcher.getId())) {
 				refRootFound = true;
 				break;
 			}

@@ -27,22 +27,23 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.visible.AbstractTestVisualComparator;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class DetectionModificationAfterSignTest extends AbstractTestVisualComparator {
+class DetectionModificationAfterSignTest extends AbstractTestVisualComparator {
 
 	@Test
-	public void testWithModification() throws IOException {
+	void testWithModification() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/modified_after_signature.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
@@ -59,7 +60,7 @@ public class DetectionModificationAfterSignTest extends AbstractTestVisualCompar
 
 		DSSDocument expected = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/retrieved-modified_after_signature.pdf"));
-		assertEquals(expected.getDigest(DigestAlgorithm.SHA256), retrievedDocument.getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(expected.getDigestValue(DigestAlgorithm.SHA256), retrievedDocument.getDigestValue(DigestAlgorithm.SHA256));
 
 		// Additional code to detect visual difference
 		assertFalse(arePdfDocumentsVisuallyEqual(dssDocument, expected));

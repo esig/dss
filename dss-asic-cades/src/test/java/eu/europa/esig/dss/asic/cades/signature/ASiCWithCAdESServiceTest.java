@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.BLevelParameters;
@@ -37,6 +39,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,20 +54,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
+class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
+    private static CertificateVerifier certificateVerifier;
 	private static ASiCWithCAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello world!".getBytes());
-        service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
+        certificateVerifier = getCompleteCertificateVerifier();
+        service = new ASiCWithCAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
 	}
 	
 	@Test
-	public void signatureTest() throws Exception {
+	void signatureTest() throws Exception {
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
@@ -76,11 +81,16 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
         exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
-        signatureParameters.setSignWithExpiredCertificate(true);
+        certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
+
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
         signatureParameters.setGenerateTBSWithoutCertificate(true);
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("ASiCContainerType must be defined!", exception.getMessage());
 
@@ -161,7 +171,7 @@ public class ASiCWithCAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extensionTest() throws IOException {
+	void extensionTest() throws IOException {
 		ASiCWithCAdESSignatureParameters signatureParameters = new ASiCWithCAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);

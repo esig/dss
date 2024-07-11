@@ -40,7 +40,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CAdESWithSHA3Test extends AbstractCAdESTestSignature {
+class CAdESWithSHA3Test extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -49,7 +49,7 @@ public class CAdESWithSHA3Test extends AbstractCAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();

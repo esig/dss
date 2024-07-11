@@ -48,7 +48,7 @@ public abstract class AbstractBCTestCRLUtils extends AbstractCRLParserTestUtils 
 	private static CertificateFactory certificateFactory;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		Security.addProvider(new BouncyCastleProvider());
 		try {
 			certificateFactory = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
@@ -58,7 +58,7 @@ public abstract class AbstractBCTestCRLUtils extends AbstractCRLParserTestUtils 
 	}
 
 	@AfterAll
-	public static void reset() {
+	static void reset() {
 		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
 	}
 

@@ -28,24 +28,24 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-public class TrustedListUtilsTest {
+class TrustedListUtilsTest {
 	
 	private static TrustedListUtils trustedListUtils;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		trustedListUtils = TrustedListUtils.getInstance();
 	}
 
 	@Test
-	public void getJAXBContext() throws JAXBException {
+	void getJAXBContext() throws JAXBException {
 		assertNotNull(trustedListUtils.getJAXBContext());
 		// cached
 		assertNotNull(trustedListUtils.getJAXBContext());
 	}
 
 	@Test
-	public void getSchema() throws SAXException {
+	void getSchema() throws SAXException {
 		assertNotNull(trustedListUtils.getSchema());
 		// cached
 		assertNotNull(trustedListUtils.getSchema());

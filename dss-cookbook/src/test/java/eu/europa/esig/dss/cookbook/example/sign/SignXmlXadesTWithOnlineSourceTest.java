@@ -33,17 +33,17 @@ import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
 /**
  * How to sign with XAdES-BASELINE-T
  */
-public class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
+class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineTWithOnlineTSP() throws Exception {
+	void signXAdESBaselineTWithOnlineTSP() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -69,7 +69,7 @@ public class SignXmlXadesTWithOnlineSourceTest extends CookbookTools {
 			// import eu.europa.esig.dss.model.ToBeSigned;
 			// import eu.europa.esig.dss.service.http.commons.TimestampDataLoader;
 			// import eu.europa.esig.dss.service.tsp.OnlineTSPSource;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 			// import eu.europa.esig.dss.xades.signature.XAdESService;
 

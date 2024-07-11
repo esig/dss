@@ -43,7 +43,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCSCAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCounterSignatureTest {
+class ASiCSCAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCounterSignatureTest {
 
 	private ASiCWithCAdESService service;
 	private DSSDocument documentToSign;
@@ -53,7 +53,7 @@ public class ASiCSCAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCou
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
@@ -121,7 +121,7 @@ public class ASiCSCAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCou
 	}
 	
 	@Test
-	public void ltaLevelCounterSignatureTest() {
+	void ltaLevelCounterSignatureTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> signAndVerify());

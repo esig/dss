@@ -36,12 +36,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * How to initialize online TSP source.
  */
-public class OnlineTSPSourceTest {
+class OnlineTSPSourceTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(OnlineTSPSourceTest.class);
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 
 		// tag::demo[]
 		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -66,7 +66,7 @@ public class OnlineTSPSourceTest {
 		assertNotNull(tsBinary);
 	}
 
-	public void policySnippet() {
+	void policySnippet() {
 		final String tspServer = "http://dss.nowina.lu/pki-factory/tsa/good-tsa";
 
 		// tag::policy[]

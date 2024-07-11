@@ -33,7 +33,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
@@ -42,8 +42,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,13 +59,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2060/DSS-2061
-public class DSS2059Test extends AbstractCAdESTestExtension {
+class DSS2059Test extends AbstractCAdESTestExtension {
 
 	private DSSDocument document;
 	private CAdESService service;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		document = new FileDocument("src/test/resources/validation/dss2059.p7s");
 
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
@@ -73,7 +73,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnInvalidTimestamp(new LogOnStatusAlert(Level.WARN));
 		certificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.WARN));
-		// certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
+		certificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert(Level.WARN));
 
 		certificateVerifier.setCrlSource(getCompositeCRLSource());
 
@@ -95,7 +95,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 	}
 
 	@Test
-	public void counterSignTest() {
+	void counterSignTest() {
 		// see DSS-2178
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
@@ -114,7 +114,7 @@ public class DSS2059Test extends AbstractCAdESTestExtension {
 	}
 
 	@Test
-	public void signaturePolicyStoreTest() {
+	void signaturePolicyStoreTest() {
 		// see DSS-2172
 
 		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();

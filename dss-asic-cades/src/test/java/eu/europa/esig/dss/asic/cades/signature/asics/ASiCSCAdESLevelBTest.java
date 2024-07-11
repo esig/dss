@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -37,8 +37,8 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.UnsupportedEncodingException;
@@ -51,14 +51,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCSCAdESLevelBTest extends AbstractASiCSCAdESTestSignature {
+class ASiCSCAdESLevelBTest extends AbstractASiCSCAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
@@ -85,7 +85,7 @@ public class ASiCSCAdESLevelBTest extends AbstractASiCSCAdESTestSignature {
 
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);
+		DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);
 		ASiCContent extract = extractor.extract();
 
 		assertEquals(0, extract.getUnsupportedDocuments().size());

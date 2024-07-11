@@ -42,7 +42,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
-public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -51,7 +51,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 	private DSSDocument attachment2;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		// Load any two files (rather not XML) to sign them
@@ -91,7 +91,7 @@ public class XAdESLevelBEnvelopedWithReferencesWithoutTransformationsTest extend
 		reference.setId("r-" + fileDocument.getName());
 		reference.setUri(fileDocument.getName());
 		reference.setContents(fileDocument);
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		return reference;
 	}
 

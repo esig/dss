@@ -44,7 +44,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 
 @Tag("slow")
-public class JAdESLevelBEnvelopingRSATest extends AbstractJAdESTestSignature {
+class JAdESLevelBEnvelopingRSATest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private JAdESSignatureParameters signatureParameters;
@@ -65,7 +65,7 @@ public class JAdESLevelBEnvelopingRSATest extends AbstractJAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} of RSA with digest algorithm {0}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo) {
+	void init(DigestAlgorithm digestAlgo) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
 		signatureParameters = new JAdESSignatureParameters();

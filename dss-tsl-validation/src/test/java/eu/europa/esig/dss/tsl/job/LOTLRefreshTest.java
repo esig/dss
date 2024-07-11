@@ -37,24 +37,24 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
-import eu.europa.esig.dss.spi.tsl.PivotInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.model.tsl.PivotInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
+import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 
-public class LOTLRefreshTest {
+class LOTLRefreshTest {
 
 	@TempDir
 	File cacheDirectory;
 
 	@Test
-	public void test() {
+	void test() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -75,7 +75,7 @@ public class LOTLRefreshTest {
 	}
 
 	@Test
-	public void testMissingCert() {
+	void testMissingCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -96,7 +96,7 @@ public class LOTLRefreshTest {
 	}
 
 	@Test
-	public void testWrongCert() {
+	void testWrongCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -120,7 +120,7 @@ public class LOTLRefreshTest {
 	}
 
 	@Test
-	public void testNullCertSource() {
+	void testNullCertSource() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 

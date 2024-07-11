@@ -59,7 +59,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdESWithEvidenceRecordTestValidation {
+class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -96,7 +96,7 @@ public class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends Abstr
             List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
             for (XmlDigestMatcher digestMatcher : digestMatcherList) {
                 assertTrue(digestMatcher.isDataFound());
-                assertEquals(signature.getSignatureFilename(), digestMatcher.getName());
+                assertEquals(signature.getSignatureFilename(), digestMatcher.getDocumentName());
                 if (digestMatcher.isDataIntact()) {
                     ++validRefCount;
                 } else {

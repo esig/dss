@@ -34,42 +34,42 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1444Test {
+class DSS1444Test {
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
 			assertThrows(InvalidPdfException.class, () -> new PdfReader(is));
 		}
 	}
 
 	@Test
-	public void testValidation() throws IOException {
+	void testValidation() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is, "corrupted.pdf"));
-			Exception exception = assertThrows(DSSException.class, () -> val.getSignatures());
+			PDFDocumentAnalyzer analyzer = new PDFDocumentAnalyzer(new InMemoryDocument(is, "corrupted.pdf"));
+			Exception exception = assertThrows(DSSException.class, () -> analyzer.getSignatures());
 			assertTrue(exception.getMessage().contains("The document with name [corrupted.pdf] is either not accessible or not PDF compatible. Reason :"));
 		}
 	}
 
 	@Test
-	public void test2() throws IOException {
+	void test2() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
 			assertThrows(InvalidPdfException.class, () -> new PdfReader(is));
 		}
 	}
 
 	@Test
-	public void test2Validation() throws IOException {
+	void test2Validation() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
-			PDFDocumentValidator val = new PDFDocumentValidator(new InMemoryDocument(is, "corrupted.pdf"));
-			Exception exception = assertThrows(DSSException.class, () -> val.getSignatures());
+			PDFDocumentAnalyzer analyzeral = new PDFDocumentAnalyzer(new InMemoryDocument(is, "corrupted.pdf"));
+			Exception exception = assertThrows(DSSException.class, () -> analyzeral.getSignatures());
 			assertTrue(exception.getMessage().contains("The document with name [corrupted.pdf] is either not accessible or not PDF compatible. Reason :"));
 		}
 	}
 
 	@Test
-	public void test3() throws IOException {
+	void test3() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
 			Exception exception = assertThrows(IOException.class, () -> new PdfReader(is));
 			assertEquals("PDF header signature not found.", exception.getMessage());
@@ -77,7 +77,7 @@ public class DSS1444Test {
 	}
 
 	@Test
-	public void test4() throws IOException {
+	void test4() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/sample.pdf")) {
 			PdfReader pdfReader = new PdfReader(is);
 			assertNotNull(pdfReader);

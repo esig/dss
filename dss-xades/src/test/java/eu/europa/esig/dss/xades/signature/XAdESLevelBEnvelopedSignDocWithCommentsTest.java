@@ -47,7 +47,7 @@ import java.util.stream.Stream;
 
 // See DSS-3105
 @Tag("slow")
-public class XAdESLevelBEnvelopedSignDocWithCommentsTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedSignDocWithCommentsTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -76,7 +76,7 @@ public class XAdESLevelBEnvelopedSignDocWithCommentsTest extends AbstractXAdESTe
 
     @ParameterizedTest(name = "Sign Enveloped XAdES {index} : {0} - {1} - {2}")
     @MethodSource("data")
-    public void test(String refUri, DSSTransform envelopedSigTransform, String canonicalization) {
+    void test(String refUri, DSSTransform envelopedSigTransform, String canonicalization) {
         documentToSign = new FileDocument(new File("src/test/resources/sample-with-comments.xml"));
         service = new XAdESService(getOfflineCertificateVerifier());
 

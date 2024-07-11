@@ -20,24 +20,39 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.asics;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.asic.xades.extension.AbstractASiCWithXAdESTestExtension;
+import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCsExtensionWithXAdESInvalidLevelsTest extends AbstractASiCWithXAdESTestExtension {
+class ASiCsExtensionWithXAdESInvalidLevelsTest extends AbstractASiCWithXAdESTestExtension {
 
     private SignatureLevel originalSignatureLevel;
     private SignatureLevel finalSignatureLevel;
 
+    private CertificateVerifier certificateVerifier;
+
+    @BeforeEach
+    void init() {
+        certificateVerifier = getCompleteCertificateVerifier();
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+    }
+
     @Test
-    public void tLevelExtensionTest() throws Exception {
+    void tLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -56,7 +71,7 @@ public class ASiCsExtensionWithXAdESInvalidLevelsTest extends AbstractASiCWithXA
     }
 
     @Test
-    public void ltLevelExtensionTest() throws Exception {
+    void ltLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_BASELINE_LT;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -68,18 +83,27 @@ public class ASiCsExtensionWithXAdESInvalidLevelsTest extends AbstractASiCWithXA
         assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
 
         finalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
-        exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
-        assertEquals("Cannot extend signature to 'XAdES-BASELINE-T'. The signature is already extended with LT level.", exception.getMessage());
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LT;
-        DSSDocument extendedSignature = extendSignature(signedDocument);
+        extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
         checkFinalLevel(reports.getDiagnosticData());
         assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
     }
 
     @Test
-    public void ltaLevelExtensionTest() throws Exception {
+    void ltaLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.XAdES_BASELINE_LTA;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -91,18 +115,253 @@ public class ASiCsExtensionWithXAdESInvalidLevelsTest extends AbstractASiCWithXA
         assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
 
         finalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
-        exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
-        assertEquals("Cannot extend signature to 'XAdES-BASELINE-T'. The signature is already extended with LT level.", exception.getMessage());
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LT;
-        exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
-        assertEquals("Cannot extend signature to 'XAdES-BASELINE-LT'. The signature is already extended with LTA level.", exception.getMessage());
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LTA;
-        DSSDocument extendedSignature = extendSignature(signedDocument);
+        extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
         checkFinalLevel(reports.getDiagnosticData());
         assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+    }
+
+    @Test
+    void cLevelExtensionTest() throws Exception {
+        originalSignatureLevel = SignatureLevel.XAdES_C;
+        DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
+        Reports reports = verify(signedDocument);
+        checkOriginalLevel(reports.getDiagnosticData());
+        assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
+
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> extendSignature(signedDocument));
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
+
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_C;
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        checkFinalLevel(reports.getDiagnosticData());
+        assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
+    }
+
+    @Test
+    void xLevelExtensionTest() throws Exception {
+        originalSignatureLevel = SignatureLevel.XAdES_X;
+        DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
+        Reports reports = verify(signedDocument);
+        checkOriginalLevel(reports.getDiagnosticData());
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> extendSignature(signedDocument));
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
+
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_C;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_X;
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        checkFinalLevel(reports.getDiagnosticData());
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+    }
+
+    @Test
+    void xlLevelExtensionTest() throws Exception {
+        originalSignatureLevel = SignatureLevel.XAdES_XL;
+        DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
+        Reports reports = verify(signedDocument);
+        checkOriginalLevel(reports.getDiagnosticData());
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> extendSignature(signedDocument));
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
+
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_C;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_X;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to X-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_XL;
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        checkFinalLevel(reports.getDiagnosticData());
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+    }
+
+    @Test
+    void aLevelExtensionTest() throws Exception {
+        originalSignatureLevel = SignatureLevel.XAdES_A;
+        DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
+        Reports reports = verify(signedDocument);
+        checkOriginalLevel(reports.getDiagnosticData());
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> extendSignature(signedDocument));
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
+
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(4, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_C;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_X;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to X-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(4, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_XL;
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to XL-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        finalSignatureLevel = SignatureLevel.XAdES_A;
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        checkFinalLevel(reports.getDiagnosticData());
+        assertEquals(4, reports.getDiagnosticData().getTimestampList().size());
+    }
+
+    @Override
+    protected ASiCWithXAdESService getSignatureServiceToExtend() {
+        ASiCWithXAdESService service = new ASiCWithXAdESService(getCertificateVerifier());
+        service.setTspSource(getUsedTSPSourceAtExtensionTime());
+        return service;
+    }
+
+    protected CertificateVerifier getCertificateVerifier() {
+        return certificateVerifier;
     }
 
     @Override
@@ -121,8 +380,13 @@ public class ASiCsExtensionWithXAdESInvalidLevelsTest extends AbstractASiCWithXA
     }
 
     @Override
-    public void extendAndVerify() throws Exception {
+    public void extendAndVerify() {
         // do nothing
+    }
+
+    @Override
+    protected void checkOrphanTokens(DiagnosticData diagnosticData) {
+        // skip
     }
 
 }

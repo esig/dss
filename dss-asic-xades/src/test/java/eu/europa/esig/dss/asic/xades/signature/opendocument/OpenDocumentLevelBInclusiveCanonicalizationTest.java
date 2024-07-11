@@ -37,13 +37,13 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class OpenDocumentLevelBInclusiveCanonicalizationTest extends AbstractOpenDocumentSetTestSignature {
+class OpenDocumentLevelBInclusiveCanonicalizationTest extends AbstractOpenDocumentSetTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());

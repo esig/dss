@@ -49,7 +49,7 @@ public class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();

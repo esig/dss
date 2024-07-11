@@ -41,7 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCEWithXAdESLevelBContainerMergerDifferentMimetypeTest extends AbstractWithXAdESTestMerge {
+class ASiCEWithXAdESLevelBContainerMergerDifferentMimetypeTest extends AbstractWithXAdESTestMerge {
 
     private List<DSSDocument> documentsToSign;
 
@@ -51,7 +51,7 @@ public class ASiCEWithXAdESLevelBContainerMergerDifferentMimetypeTest extends Ab
     private ASiCWithXAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentsToSign = Arrays.asList(new FileDocument("src/test/resources/signable/test.txt"),
                 new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT));
 

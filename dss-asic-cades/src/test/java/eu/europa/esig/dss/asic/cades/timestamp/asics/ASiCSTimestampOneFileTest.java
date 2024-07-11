@@ -28,7 +28,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -54,10 +54,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
+class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
@@ -119,7 +119,7 @@ public class ASiCSTimestampOneFileTest extends PKIFactoryAccess {
 				assertEquals(1, timestamp.getTimestampedSignedData().size());
 				firstTstFound = true;
 			} else if (timestamp.getDigestMatchers().size() == 3) {
-				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
+				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getDocumentName());
 				assertEquals(2, timestamp.getTimestampedSignedData().size());
 				assertEquals(1, timestamp.getTimestampedTimestamps().size());
 				secondTstFound = true;

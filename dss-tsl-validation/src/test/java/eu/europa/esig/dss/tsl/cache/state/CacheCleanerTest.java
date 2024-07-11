@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CacheCleanerTest {
+class CacheCleanerTest {
 	
 	private CacheCleaner cacheCleaner;
 	private FileCacheDataLoader fileLoader;
@@ -69,7 +69,7 @@ public class CacheCleanerTest {
 	private static final String LOTL_FILE_NAME = "eu-lotl";
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		
 		DSSDocument sampleDocument = new InMemoryDocument(SAMPLE_FILE_NAME.getBytes());
 		DSSDocument lotlDocument = new InMemoryDocument(LOTL_FILE_NAME.getBytes());
@@ -107,7 +107,7 @@ public class CacheCleanerTest {
 	}
 	
 	@Test
-	public void test() {
+	void test() {
 		cacheCleaner.setDSSFileLoader(fileLoader);
 		cacheCleaner.setCleanFileSystem(true);
 		
@@ -192,7 +192,7 @@ public class CacheCleanerTest {
 	}
 	
 	@Test
-	public void cacheCleanerNoDeleteTest() {
+	void cacheCleanerNoDeleteTest() {
 		cacheCleaner.setDSSFileLoader(fileLoader);
 		cacheCleaner.setCleanMemory(false);
 		cacheCleaner.setCleanFileSystem(false);
@@ -251,7 +251,7 @@ public class CacheCleanerTest {
 	}
 	
 	@Test
-	public void noFileLoaderDefinedTest() {
+	void noFileLoaderDefinedTest() {
 		CacheAccessByKey cacheAccessByKey = new CacheAccessByKey(new CacheKey(SAMPLE_FILE_NAME), downloadCache, parsingCache, validationCache);
 		cacheCleaner.clean(cacheAccessByKey);
 		

@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
@@ -51,7 +51,7 @@ import eu.europa.esig.dss.xades.reference.XsltTransform;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 
@@ -63,10 +63,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SignXmlXadesBWithTransformsTest extends CookbookTools {
+class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	
 	@Test
-	public void envelopedSignatureTest() throws IOException {
+	void envelopedSignatureTest() throws IOException {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -115,7 +115,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setTransforms(transforms);
 			// set empty URI to cover the whole document
 			dssReference.setUri("");
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 			references.add(dssReference);
 			// set references
 			parameters.setReferences(references);
@@ -236,7 +236,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	}
 	
 	@Test
-	public void base64TransformTest() throws IOException {
+	void base64TransformTest() throws IOException {
 
 		try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
@@ -260,7 +260,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setTransforms(transforms);
 			// set empty URI to cover the whole document
 			dssReference.setUri("#" + document.getName());
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 			references.add(dssReference);
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -303,7 +303,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	}
 	
 	@Test
-	public void envelopedSignatureXPathTest() throws IOException {
+	void envelopedSignatureXPathTest() throws IOException {
 
 		prepareXmlDoc();
 
@@ -326,7 +326,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setId("r-" + toSignDocument.getName());
 			dssReference.setTransforms(transforms);
 			dssReference.setUri("");
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 			references.add(dssReference);
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -370,7 +370,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	}
 	
 	@Test
-	public void envelopedSignatureXPath2FilterTest() throws IOException {
+	void envelopedSignatureXPath2FilterTest() throws IOException {
 
 		prepareXmlDoc();
 
@@ -393,7 +393,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setId("r-" + toSignDocument.getName());
 			dssReference.setTransforms(transforms);
 			dssReference.setUri("");
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 			references.add(dssReference);
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();
@@ -437,7 +437,7 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 	}
 
 	@Test
-	public void envelopedSignatureXSLTTransformTest() throws IOException {
+	void envelopedSignatureXSLTTransformTest() throws IOException {
 
 		prepareXmlDoc();
 
@@ -468,9 +468,9 @@ public class SignXmlXadesBWithTransformsTest extends CookbookTools {
 			dssReference.setId("DSS-REF-1");
 			dssReference.setUri("");
 			dssReference.setContents(toSignDocument);
-			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+			dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 
-			dssReference.setTransforms(Arrays.asList(xPathTransform));
+			dssReference.setTransforms(Collections.singletonList(xPathTransform));
 			references.add(dssReference);
 
 			XAdESSignatureParameters parameters = new XAdESSignatureParameters();

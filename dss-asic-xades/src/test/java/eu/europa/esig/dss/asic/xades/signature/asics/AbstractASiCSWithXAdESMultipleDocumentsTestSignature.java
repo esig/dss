@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.xades.signature.asics;
 
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.signature.AbstractASiCWithXAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;

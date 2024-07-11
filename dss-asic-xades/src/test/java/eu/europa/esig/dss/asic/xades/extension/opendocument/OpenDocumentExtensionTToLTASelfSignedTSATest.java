@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.xades.extension.opendocument;
 
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class OpenDocumentExtensionTToLTASelfSignedTSATest extends OpenDocumentExtensionTToLTATest {
+class OpenDocumentExtensionTToLTASelfSignedTSATest extends OpenDocumentExtensionTToLTATest {
 	
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {

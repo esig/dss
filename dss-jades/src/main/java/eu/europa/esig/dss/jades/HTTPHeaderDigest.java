@@ -22,6 +22,7 @@ package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Objects;
 
@@ -71,8 +72,9 @@ public class HTTPHeaderDigest extends HTTPHeader {
 		StringBuilder stringBuilder = new StringBuilder(jwsHttpHeaderAlgo);
 		stringBuilder.append("=");
 		
-		String digest = document.getDigest(digestAlgorithm);
-		stringBuilder.append(digest);
+		byte[] digest = document.getDigestValue(digestAlgorithm);
+		String base64EncodedDigest = Utils.toBase64(digest);
+		stringBuilder.append(base64EncodedDigest);
 		
 		return stringBuilder.toString();
 	}

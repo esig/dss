@@ -20,18 +20,15 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -71,14 +68,15 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	protected Element unsignedSignaturePropertiesDom;
 
 	/**
-	 * The used document validator
+	 * The used document analyzer
 	 */
-	protected XMLDocumentValidator documentValidator;
+	protected XMLDocumentAnalyzer documentAnalyzer;
 
 	/**
 	 * Empty constructor
 	 */
 	protected ExtensionBuilder() {
+		// empty
 	}
 
 	/**
@@ -165,24 +163,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 		final int length = signedDataObjectPropertiesNodeList.getLength();
 		if (length > 1) {
 			throw new IllegalInputException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");
-		}
-	}
-
-	/**
-	 * Verifies if the signature is valid. Throws an exception if the signature is invalid.
-	 *
-	 * @param signature {@link AdvancedSignature} to check
-	 */
-	protected void assertSignatureValid(final AdvancedSignature signature) {
-		if (params.isGenerateTBSWithoutCertificate() && signature.getCertificateSource().getNumberOfCertificates() == 0) {
-			LOG.debug("Extension of a signature without TBS certificate. Signature validity is not checked.");
-			return;
-		}
-
-		final SignatureCryptographicVerification signatureCryptographicVerification = signature.getSignatureCryptographicVerification();
-		if (!signatureCryptographicVerification.isSignatureIntact()) {
-			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
-			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
 		}
 	}
 

@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.test.signature;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters>
 		extends AbstractPkiFactoryTestSignature<SP, TP> {
@@ -50,7 +50,7 @@ public abstract class AbstractPkiFactoryTestMultipleDocumentsSignatureService<SP
 		MultipleDocumentsSignatureService<SP, TP> service = getService();
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getSignatureAlgorithm(), getPrivateKeyEntry());
 		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 		return service.signDocument(toBeSigned, params, signatureValue);
 	}

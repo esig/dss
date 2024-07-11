@@ -46,6 +46,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -63,7 +64,7 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(PAdESLevelBSignWithTempFileHandlerTest.class
                 .getResourceAsStream("/big_file.pdf"), "big_file.pdf", MimeTypeEnum.PDF);
 
@@ -97,8 +98,7 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
         double memoryAfterGetDataToSign = getRuntimeMemoryInMegabytes();
         LOG.info("Memory used for getDataToSign() : {}Mb", memoryAfterGetDataToSign - memoryBefore);
 
-        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 
         Runtime.getRuntime().gc();
@@ -110,14 +110,14 @@ public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSig
         assertNotNull(pdfSignatureCache.getMessageDigest().getAlgorithm());
         assertTrue(Utils.isArrayNotEmpty(pdfSignatureCache.getMessageDigest().getValue()));
         assertNotNull(pdfSignatureCache.getToBeSignedDocument());
-        assertTrue(pdfSignatureCache.getToBeSignedDocument() instanceof FileDocument);
+        assertInstanceOf(FileDocument.class, pdfSignatureCache.getToBeSignedDocument());
         assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(pdfSignatureCache.getToBeSignedDocument())));
 
         DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
         double memoryAfterSignDocument = getRuntimeMemoryInMegabytes();
         LOG.info("Memory used for signDocument() : {}Mb", memoryAfterSignDocument - memoryBefore);
-        assertTrue(signedDocument instanceof FileDocument);
+        assertInstanceOf(FileDocument.class, signedDocument);
 
         params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 

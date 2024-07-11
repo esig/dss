@@ -151,7 +151,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public PdfDssDict getDSSDictionary() {
-		PdfDict currentCatalog = new ITextPdfDict(pdfReader.getCatalog());
+		PdfDict currentCatalog = getCatalogDictionary();
 		return SingleDssDict.extract(currentCatalog);
 	}
 
@@ -264,6 +264,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 				}
 				PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 				pdfAnnotation.setName(getSignatureFieldName(annotDictionary));
+				pdfAnnotation.setSigned(isSignedField(annotDictionary));
 				return pdfAnnotation;
 			}
 		}
@@ -318,6 +319,10 @@ public class ITextDocumentReader implements PdfDocumentReader {
 			return pdfString.toString();
 		}
 		return null;
+	}
+
+	private boolean isSignedField(PdfDictionary annotDictionary) {
+		return annotDictionary.getAsDict(PdfName.V) != null;
 	}
 
 	@Override
@@ -447,6 +452,51 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		} catch (IOException e) {
 			throw new DSSException("Unable to generate the fileId", e);
 		}
+	}
+
+	@Override
+	public float getPdfHeaderVersion() {
+		// last char is returned, for instance for "1.x", the returned result is "x"
+		char pdfVersionLastChar = pdfReader.getPdfVersion();
+
+		float numVersion = 1 + Character.getNumericValue(pdfVersionLastChar) / 10f; // transform to "1 + 0.x = 1.x"
+		if (numVersion == 1) {
+			// OpenPdf returns 0 for PDF 2.0
+			++numVersion; // TODO : improve
+		}
+		return numVersion;
+	}
+
+	@Override
+	public float getVersion() {
+		float version = getPdfHeaderVersion();
+		PdfDictionary catalog = pdfReader.getCatalog();
+		try {
+			if (catalog != null) {
+				PdfName versionName = catalog.getAsName(PdfName.VERSION);
+				if (versionName != null) {
+					version = Float.parseFloat(PdfName.decodeName(versionName.toString()));
+				}
+			}
+		} catch (Exception e) {
+			LOG.warn("An error occurred on catalog /Version extraction : {}", e.getMessage(), e);
+		}
+		return version;
+	}
+
+	@Override
+	public void setVersion(float version) {
+		pdfReader.getCatalog().put(PdfName.VERSION, new PdfName(PdfName.encodeName(Float.toString(version))));
+	}
+
+	@Override
+	public PdfDict createPdfDict() {
+		return new ITextPdfDict();
+	}
+
+	@Override
+	public eu.europa.esig.dss.pdf.PdfArray createPdfArray() {
+		return new ITextPdfArray();
 	}
 
 }

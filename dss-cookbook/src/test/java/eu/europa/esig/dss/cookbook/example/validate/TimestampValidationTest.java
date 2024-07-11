@@ -36,6 +36,8 @@ import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
@@ -43,8 +45,6 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
@@ -53,10 +53,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TimestampValidationTest extends CookbookTools {
+class TimestampValidationTest extends CookbookTools {
 
     @Test
-    public void test() {
+    void test() {
 
         TSPSource goodTsa = getGoodTsa();
         TimestampBinary timestampBinary = goodTsa.getTimeStampResponse(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "Hello World!".getBytes()));
@@ -71,10 +71,10 @@ public class TimestampValidationTest extends CookbookTools {
         // import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
         // import eu.europa.esig.dss.simplereport.SimpleReport;
         // import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+        // import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
         // import eu.europa.esig.dss.tsl.job.TLValidationJob;
         // import eu.europa.esig.dss.tsl.source.TLSource;
-        // import eu.europa.esig.dss.validation.CertificateVerifier;
-        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
         // import eu.europa.esig.dss.validation.DocumentValidator;
         // import eu.europa.esig.dss.validation.reports.Reports;
         // import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;

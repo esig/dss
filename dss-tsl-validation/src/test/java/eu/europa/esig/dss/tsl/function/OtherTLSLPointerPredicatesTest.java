@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.tsl.function.converter.OtherTSLPointerConverter;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.OtherTSLPointersType;
@@ -38,10 +38,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class OtherTLSLPointerPredicatesTest {
+class OtherTLSLPointerPredicatesTest {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl.xml")) {
 			TrustStatusListType trustStatusListType = TrustedListFacade.newFacade().unmarshall(fis);
 			assertNotNull(trustStatusListType);
@@ -81,7 +81,7 @@ public class OtherTLSLPointerPredicatesTest {
 	}
 
 	@Test
-	public void exceptions() {
+	void exceptions() {
 		assertThrows(NullPointerException.class, () -> new MimetypeOtherTSLPointer(null));
 		assertThrows(NullPointerException.class, () -> new TypeOtherTSLPointer(null));
 	}

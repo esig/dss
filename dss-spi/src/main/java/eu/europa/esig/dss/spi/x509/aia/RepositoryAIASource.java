@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -225,16 +224,6 @@ public abstract class RepositoryAIASource implements AIASource {
      * @return a set of {@link CertificateToken}s
      */
     protected abstract Set<CertificateToken> findCertificates(final String key);
-
-    /**
-     * This method allows inserting of a certificate into the DB
-     *
-     * @param aiaKey            {@link String} AIA key identifying an AIA access URL
-     * @param certificateTokens a collection of {@link CertificateToken}s to insert
-     * @deprecated since DSS 5.13. Use {@code #insertCertificate} method instead.
-     */
-    @Deprecated
-    protected abstract void insertCertificates(final String aiaKey, final Collection<CertificateToken> certificateTokens);
 
     /**
      * This method allows inserting of a certificate into the DB

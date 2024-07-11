@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.test.validation.AbstractTestValidator;
+import eu.europa.esig.dss.test.validation.AbstractTestDocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 
@@ -34,10 +34,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XMLDocumentValidatorTest extends AbstractTestValidator {
+class XMLDocumentValidatorTest extends AbstractTestDocumentValidator {
 
 	@Test
-	public void isSupported() {
+	void isSupported() {
 		XMLDocumentValidator validator = new XMLDocumentValidator();
 		
 		byte[] wrongBytes = new byte[] { 1, 2 };

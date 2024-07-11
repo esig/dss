@@ -21,12 +21,12 @@
 package eu.europa.esig.dss.asic.xades.merge;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESFilenameFactory;
 import eu.europa.esig.dss.asic.xades.signature.DefaultASiCWithXAdESFilenameFactory;
-import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidatorFactory;
+import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESAnalyzerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.Objects;
@@ -80,16 +80,16 @@ public abstract class AbstractASiCWithXAdESContainerMerger extends DefaultContai
 
     @Override
     protected boolean isSupported(DSSDocument container) {
-        return new ASiCContainerWithXAdESValidatorFactory().isSupported(container);
+        return new ASiCContainerWithXAdESAnalyzerFactory().isSupported(container);
     }
 
     @Override
     protected boolean isSupported(ASiCContent asicContent) {
-        return new ASiCContainerWithXAdESValidatorFactory().isSupported(asicContent);
+        return new ASiCContainerWithXAdESAnalyzerFactory().isSupported(asicContent);
     }
 
     @Override
-    protected AbstractASiCContainerExtractor getContainerExtractor(DSSDocument container) {
+    protected DefaultASiCContainerExtractor getContainerExtractor(DSSDocument container) {
         return new ASiCWithXAdESContainerExtractor(container);
     }
 

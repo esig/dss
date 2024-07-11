@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESWithASN1SignaturePolicyTest extends AbstractXAdESTestSignature {
+class XAdESWithASN1SignaturePolicyTest extends AbstractXAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -58,7 +58,7 @@ public class XAdESWithASN1SignaturePolicyTest extends AbstractXAdESTestSignature
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         XmlPolicyWithTransforms signaturePolicy = new XmlPolicyWithTransforms();
@@ -67,9 +67,9 @@ public class XAdESWithASN1SignaturePolicyTest extends AbstractXAdESTestSignature
         signaturePolicy.setDocumentationReferences(SIGNATURE_POLICY_DOCUMENTATION);
         signaturePolicy.setSpuri(HTTP_SPURI_TEST);
 
-        String base64Digest = POLICY_CONTENT.getDigest(DigestAlgorithm.SHA256);
+        byte[] digest = POLICY_CONTENT.getDigestValue(DigestAlgorithm.SHA256);
         signaturePolicy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        signaturePolicy.setDigestValue(Utils.fromBase64(base64Digest));
+        signaturePolicy.setDigestValue(digest);
 
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());

@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.tsl.alerts;
 
 import eu.europa.esig.dss.alert.Alert;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

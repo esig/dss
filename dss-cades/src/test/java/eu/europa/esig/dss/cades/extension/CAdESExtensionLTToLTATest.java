@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.extension;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class CAdESExtensionLTToLTATest extends AbstractCAdESTestExtension {
+class CAdESExtensionLTToLTATest extends AbstractCAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

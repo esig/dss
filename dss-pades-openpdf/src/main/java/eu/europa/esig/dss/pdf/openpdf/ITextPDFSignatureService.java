@@ -53,9 +53,7 @@ import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
-import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
-import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.modifications.PdfModification;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawer;
 import eu.europa.esig.dss.pdf.openpdf.visible.ITextSignatureDrawerFactory;
@@ -67,8 +65,8 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.ValidationData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +139,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 			signatureDrawer.draw();
 		}
 
-		PdfDictionary signatureDictionary = createSignatureDictionary(fieldItem, parameters);
+		PdfDictionary signatureDictionary = createSignatureDictionary(reader, fieldItem, parameters);
 		if (PAdESConstants.SIGNATURE_TYPE.equals(getType())) {
 			PAdESSignatureParameters signatureParameters = (PAdESSignatureParameters) parameters;
 
@@ -165,6 +163,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		HashMap exc = new HashMap();
 		exc.put(PdfName.CONTENTS, csize * 2 + 2);
 
+		digitalSignatureEnhancement(documentReader, parameters);
 		sap.preClose(exc);
 
 		return stp;
@@ -172,7 +171,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	
 	private Item findExistingSignatureField(PdfReader reader, SignatureFieldParameters fieldParameters) {
 		String signatureFieldId = fieldParameters.getFieldId();
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(signatureFieldId)) {
+		if (Utils.isStringNotEmpty(signatureFieldId)) {
 			AcroFields acroFields = reader.getAcroFields();
 			List<String> signatureNames = acroFields.getFieldNamesWithBlankSignatures();
 			if (signatureNames.contains(signatureFieldId)) {
@@ -183,10 +182,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		return null;
 	}
 	
-	private PdfDictionary createSignatureDictionary(Item fieldItem, PAdESCommonParameters parameters) {
+	private PdfDictionary createSignatureDictionary(PdfReader reader, Item fieldItem, PAdESCommonParameters parameters) {
 		PdfDictionary dic;
 		if (fieldItem != null) {
 			dic = fieldItem.getMerged(0);
+			setFieldMDP(reader, dic);
 		} else {
 			dic = new PdfDictionary();
 		}
@@ -231,13 +231,36 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		return dic;
 	}
 
+	/**
+	 * Add FieldMDP TransformMethod if the signature field contains a Lock. OpenPDF implementation.
+	 *
+	 * @param reader {@link PdfReader}
+	 * @param sigFieldDictionary {@link PdfDictionary} representing a signature field
+	 */
+	private void setFieldMDP(PdfReader reader, PdfDictionary sigFieldDictionary) {
+		PdfDictionary lockDict = sigFieldDictionary.getAsDict(PdfName.LOCK);
+		if (lockDict != null) {
+			PdfDictionary transformParams = new PdfDictionary();
+			transformParams.putAll(lockDict);
+			transformParams.put(PdfName.TYPE, PdfName.TRANSFORMPARAMS);
+			transformParams.put(PdfName.V, new PdfName(PAdESConstants.VERSION_DEFAULT));
+			PdfDictionary sigRef = new PdfDictionary();
+			sigRef.put(PdfName.TYPE, PdfName.SIGREF);
+			sigRef.put(PdfName.TRANSFORMMETHOD, PdfName.FIELDMDP);
+			sigRef.put(PdfName.TRANSFORMPARAMS, transformParams);
+			sigRef.put(PdfName.DATA, reader.getCatalog());
+			PdfArray referenceArray = new PdfArray();
+			referenceArray.add(sigRef);
+			sigFieldDictionary.put(PdfName.REFERENCE, referenceArray);
+		}
+	}
+
 	private boolean containsFilledSignature(PdfReader reader) {
 		AcroFields acroFields = reader.getAcroFields();
 		List<String> signatureNames = acroFields.getSignedFieldNames();
 		for (String name : signatureNames) {
-			PdfDict dictionary = new ITextPdfDict(acroFields.getSignatureDictionary(name));
-			PdfSigDictWrapper signatureDictionary = new PdfSigDictWrapper(dictionary);
-			if (Utils.isArrayNotEmpty(signatureDictionary.getContents())) {
+			PdfDictionary signatureDictionary = acroFields.getSignatureDictionary(name);
+			if (signatureDictionary.contains(new PdfName(PAdESConstants.CONTENTS_NAME))) {
 				return true;
 			}
 		}
@@ -324,7 +347,8 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
-			 PdfReader reader = new PdfReader(is, getPasswordBytes(pwd))) {
+			 PdfReader reader = new PdfReader(is, getPasswordBytes(pwd));
+			 ITextDocumentReader documentReader = new ITextDocumentReader(reader)) {
 
 			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			PdfWriter writer = stp.getWriter();
@@ -337,6 +361,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 				writer.addToBody(reader.getCatalog(), reader.getCatalog().getIndRef(), false);
 			}
+			ensureESICDeveloperExtension1(documentReader);
 
 			stp.close();
 

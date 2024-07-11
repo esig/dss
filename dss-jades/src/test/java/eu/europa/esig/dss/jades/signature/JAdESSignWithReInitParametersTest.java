@@ -29,8 +29,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -38,7 +38,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +46,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignature {
+class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignature {
 
     private static JAdESSignatureParameters signatureParameters;
     private static JAdESService service;
@@ -57,7 +56,7 @@ public class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignatur
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new JAdESService(certificateVerifier);
 
@@ -98,7 +97,7 @@ public class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignatur
 
     @ParameterizedTest(name = "Sign JAdES {index} : {0} - {1} - {2} - {3} - {4}")
     @MethodSource("data")
-    public void init(SignatureLevel level, SignaturePackaging packaging, SigDMechanism sigDMechanism,
+    void init(SignatureLevel level, SignaturePackaging packaging, SigDMechanism sigDMechanism,
                      String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
@@ -128,8 +127,7 @@ public class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignatur
         JAdESSignatureParameters params = getSignatureParameters();
 
         ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 
         params.reinit();
@@ -140,7 +138,7 @@ public class JAdESSignWithReInitParametersTest extends AbstractJAdESTestSignatur
     @Override
     protected List<DSSDocument> getDetachedContents() {
         if (SignaturePackaging.DETACHED.equals(signatureParameters.getSignaturePackaging())) {
-            return Arrays.asList(getDocumentToSign());
+            return Collections.singletonList(getDocumentToSign());
         }
         return Collections.emptyList();
     }

@@ -41,7 +41,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
 
 @Tag("slow")
-public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
+class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -71,7 +71,7 @@ public class CAdESLevelBWithDSATest extends AbstractCAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} of DSA with {0} and message-digest algorithm {1}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo, DigestAlgorithm messageDigestAlgo) {
+	void init(DigestAlgorithm digestAlgo, DigestAlgorithm messageDigestAlgo) {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();

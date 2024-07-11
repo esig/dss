@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2095WithBrokenPolicyTransformsTest extends AbstractXAdESTestValidation {
+class DSS2095WithBrokenPolicyTransformsTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -20,27 +20,33 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.DSSFileFont;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
+import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,17 +64,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
+    private static CertificateVerifier certificateVerifier;
 	private static PAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
-        service = new PAdESService(getCompleteCertificateVerifier());
+        certificateVerifier = getCompleteCertificateVerifier();
+        service = new PAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
 	}
 	
 	@Test
-	public void testSignature() throws Exception {
+	void testSignature() throws Exception {
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
@@ -81,11 +89,16 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         
         signatureParameters.setGenerateTBSWithoutCertificate(true);
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("SignatureLevel must be defined!", exception.getMessage());
         signatureParameters.setGenerateTBSWithoutCertificate(false);
 
-        signatureParameters.setSignWithExpiredCertificate(true);
+        certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
+
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         
@@ -177,8 +190,31 @@ public class PAdESServiceTest extends PKIFactoryAccess {
         
         signatureParameters.setSignerName(Utils.EMPTY_STRING);
         signAndValidate(documentToSign, signatureParameters);
-        
-        signatureParameters.setImageParameters(new SignatureImageParameters());
+
+        SignatureImageParameters imageParameters = new SignatureImageParameters();
+        imageParameters.setImage(null);
+
+        exception = assertThrows(IllegalArgumentException.class, () -> imageParameters.setImage(new DigestDocument()));
+        assertEquals("DigestDocument cannot be used as an image!", exception.getMessage());
+
+        imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png")));
+
+        SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+
+        exception = assertThrows(NullPointerException.class, () -> new DSSFileFont((DSSDocument) null));
+        assertEquals("Font document cannot be null!", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> new DSSFileFont(new DigestDocument()));
+        assertEquals("DigestDocument cannot be used as a font document!", exception.getMessage());
+
+        textParameters.setFont(null);
+
+        DSSFileFont dssFileFont = new DSSFileFont(getClass().getResourceAsStream("/fonts/OpenSansBold.ttf"));
+        textParameters.setFont(dssFileFont);
+
+        imageParameters.setTextParameters(textParameters);
+
+        signatureParameters.setImageParameters(imageParameters);
         signAndValidate(documentToSign, signatureParameters);
 
         signatureParameters.setImageParameters(null);
@@ -212,7 +248,7 @@ public class PAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void testExtension() throws IOException {
+	void testExtension() throws IOException {
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);

@@ -34,10 +34,10 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureValidationContext;
-import eu.europa.esig.dss.validation.ValidationContext;
-import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import org.bouncycastle.cms.CMSTypedData;
@@ -182,10 +182,10 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
             return false;
         }
         PAdESSignature padesSignature = (PAdESSignature) signature;
-        boolean allSelfSigned = padesSignature.getCertificateSource().isAllSelfSigned();
+        boolean allSelfSigned = getCertificateSourcesExceptLastArchiveTimestamp().isAllSelfSigned();
         // SPO: DSS
         if (!allSelfSigned && padesSignature.getDssDictionary() == null) {
-            LOG.warn("DSS dictionary shall be present for PAdES-BASELINE-LT signature! (cardinality >= 1)");
+            LOG.debug("DSS dictionary shall be present for PAdES-BASELINE-LT signature! (cardinality >= 1)");
             return false;
         }
         return true;

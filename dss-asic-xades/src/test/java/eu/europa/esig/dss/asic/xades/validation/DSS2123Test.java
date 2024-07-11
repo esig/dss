@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
-public class DSS2123Test extends AbstractASiCWithXAdESTestValidation {
+class DSS2123Test extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

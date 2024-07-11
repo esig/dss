@@ -21,10 +21,11 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.w3c.dom.Element;
 
@@ -57,12 +58,14 @@ public class XAdESLevelA extends XAdESLevelXL {
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
 
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		signatureRequirementsChecker.assertSignaturesValid(signatures);
+
 		boolean addTimestampValidationData = false;
 
 		for (AdvancedSignature signature : signatures) {
 			initializeSignatureBuilder((XAdESSignature) signature);
 			assertExtendSignatureToAPossible();
-			assertSignatureValid(signature);
 
 			if (xadesSignature.hasLTAProfile()) {
 				addTimestampValidationData = true;
@@ -72,7 +75,7 @@ public class XAdESLevelA extends XAdESLevelXL {
 		// Perform signature validation
 		ValidationDataContainer validationDataContainer = null;
 		if (addTimestampValidationData) {
-			validationDataContainer = documentValidator.getValidationData(signatures);
+			validationDataContainer = documentAnalyzer.getValidationData(signatures);
 		}
 
 		// Append LTA-level (+ ValidationData)

@@ -49,10 +49,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAXBPKILoaderTest extends AbstractTestJaxbPKI {
+class JAXBPKILoaderTest extends AbstractTestJaxbPKI {
 
     @Test
-    public void certificatesTest() {
+    void certificatesTest() {
         JAXBCertEntity goodUser = repository.getCertEntityBySubject("good-user");
         assertEquals(10, goodUser.getSerialNumber());
         assertEquals("good-user", goodUser.getSubject());
@@ -161,7 +161,7 @@ public class JAXBPKILoaderTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void crossCertificatesTest() {
+    void crossCertificatesTest() {
         JAXBCertEntity firstCrossCertificate = repository.getCertEntityBySerialNumberAndParentSubject(2002L, "external-ca");
         JAXBCertEntity secondCrossCertificate = repository.getCertEntityBySerialNumberAndParentSubject(2003L, "cc-root-ca");
         assertArrayEquals(firstCrossCertificate.getCertificateToken().getPublicKey().getEncoded(),
@@ -181,7 +181,7 @@ public class JAXBPKILoaderTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void ed25519Test() {
+    void ed25519Test() {
         JAXBCertEntity goodUser = repository.getCertEntityBySubject("Ed25519-good-user");
         assertEquals(1100, goodUser.getSerialNumber());
         assertEquals("Ed25519-good-user", goodUser.getSubject());
@@ -200,7 +200,7 @@ public class JAXBPKILoaderTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void ed448Test() {
+    void ed448Test() {
         JAXBCertEntity goodUser = repository.getCertEntityBySubject("Ed448-good-user");
         assertEquals(1100, goodUser.getSerialNumber());
         assertEquals("Ed448-good-user", goodUser.getSubject());
@@ -219,7 +219,7 @@ public class JAXBPKILoaderTest extends AbstractTestJaxbPKI {
     }
 
     @Test
-    public void qcStatementsTest() {
+    void qcStatementsTest() {
         JAXBCertEntity johnDoe = repository.getCertEntityBySubject("John Doe");
         assertEquals(100111, johnDoe.getSerialNumber());
         assertEquals("John Doe", johnDoe.getSubject());

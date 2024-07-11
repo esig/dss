@@ -1,0 +1,908 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>xades-baseline-t.xml</DocumentName>
+    <ValidationDate>2020-04-24T08:06:50Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-4F14F75172A2660BDD5FC00BD391257F3705070F035BE53A67069A39299A44B5">
+            <DAIdentifier>id-1d69266294a96bd3728396a05b34653c</DAIdentifier>
+            <SignatureFilename>xades-baseline-t.xml</SignatureFilename>
+            <ClaimedSigningTime>2019-11-08T10:55:01Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
+            <StructuralValidation valid="true" />
+            <DigestMatchers>
+                <DigestMatcher type="OBJECT" id="r-id-1d69266294a96bd3728396a05b34653c-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>M3SyWJp0quY7K/QAPwwszsxnJR0NTElMOPw2FR0glfs=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-1d69266294a96bd3728396a05b34653c">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>2ULgMuWANYT6YTmzMzHiK+uCnorUkb/PK8f2ngKDr9k=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6D9F86B797BDB540FF1758E09C4B71CF3466BE22D6DA708378ECAB8D15D3B6B8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6D9F86B797BDB540FF1758E09C4B71CF3466BE22D6DA708378ECAB8D15D3B6B8"/>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <MimeType>text/plain</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-6D9F86B797BDB540FF1758E09C4B71CF3466BE22D6DA708378ECAB8D15D3B6B8">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MFkwUqRQME4xCzAJBgNVBAYTAkxVMRYwFAYDVQQKDA1MdXhUcnVzdCBTLkEuMScwJQYDVQQDDB5MdXhUcnVzdCBHbG9iYWwgUXVhbGlmaWVkIENBIDMCAzRf9w==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA512</DigestMethod>
+                            <DigestValue>BogIfZfwUQTdJEqhf9az0hbrVPrc7WJ5CbBsRjGJKPNdHIXXvkInL0TBwdu3aVQGh5TN8zoO4Cc648bp73IMBQ==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-EE61AA17CF333524A2214136F03446DBE0B8214672927D1476EADB23254A6926"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-59DA3AC971CEB47FEF44596AF39A2380CB4745472B6EFD580984C191BB05D2F3">
+                    <Scope>PARTIAL</Scope>
+                    <Name>o-id-1d69266294a96bd3728396a05b34653c-1</Name>
+                    <Description>The XML element with ID 'o-id-1d69266294a96bd3728396a05b34653c-1' with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Base64 Decoding</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>sFXqcECrJdV8M4F5OreCtFLikBZyuNHWgiwQ3H53DGI=</DigestValue>
+            </SignatureDigestReference>
+            <SignatureValue>oTQ4qzF+T5tnodFhW5752AmWp230IL3ElEx52Fh3U9jiujqzHKYKWevTfGsq684CdFvxQO053Ae4Puji7+CuL7MauMToRUYkmKQnM5gmWJiLaVH+JW/QnDdupYVFLRmxv6cNkPNVRfcVVAeykZNwm63fBcZU1CMwY3UU09oASrhOOaKlI3/gO9kaBgZ+u23VbbGj0Biy6ZqNMsVdAdhrDz+4uBwAo8T0YahI9kDMh5X3Iy6dqogzMd6zOUCpXIT0INRANCW+v5bOt12Yx/y/7mvgZkHZsNpFzJcGfiDDqNGqXb8kSU9Nqd83Rq8CoFltWOjqy15SGHij5pFqk1UgLw==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust global root 2,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust Global Root 2,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global root 2,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Root 2,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>59914338225734147123941058376788110305822489521</SerialNumber>
+            <CommonName>LuxTrust Global Root 2</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2035-03-05T13:21:57Z</NotAfter>
+            <NotBefore>2015-03-05T13:21:57Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>VEVfcSnCCxRHxBj5lxaPJMWPxQI79dpb4utuHdiQLtU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-6D9F86B797BDB540FF1758E09C4B71CF3466BE22D6DA708378ECAB8D15D3B6B8">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.12=#96f6e616c20506572736f6131350726f666573736e,2.5.4.5=#35333030353436303730383213143130383033313634,2.5.4.42=#72616e7a205130f4f6c697669657220462,2.5.4.4=#726574746513074261,cn=franz franzuasse,ou=b582186,o=nowina solutions,l=lu,c=be,1.2.840.113549.1.9.1=#2617265747465406e6f77696e612e6c7516196f6c69766965722e6</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.12=#96f6e616c20506572736f6131350726f666573736e,2.5.4.5=#35333030353436303730383213143130383033313634,2.5.4.42=#72616e7a205130f4f6c697669657220462,2.5.4.4=#726574746513074261,CN=Franz Franzuasse,OU=B582186,O=Nowina Solutions,L=LU,C=BE,1.2.840.113549.1.9.1=#2617265747465406e6f77696e612e6c7516196f6c69766965722e6</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 3,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 3,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>4393432</SerialNumber>
+            <CommonName>Franz Franzuasse</CommonName>
+            <Locality>LU</Locality>
+            <CountryName>BE</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>B582186</OrganizationalUnit>
+            <GivenName>Franz</GivenName>
+            <Surname>Franzuasse</Surname>
+            <Email>franz.franzuasse@nowina.lu</Email>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2021-10-08T11:45:03Z</NotAfter>
+            <NotBefore>2018-10-08T11:45:03Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-6D9F86B797BDB540FF1758E09C4B71CF3466BE22D6DA708378ECAB8D15D3B6B8</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.luxtrust.lu/LTGQCA3.crt</caIssuersUrl>
+                    <ocspUrl>http://qca.ocsp.luxtrust.lu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
+                </CRLDistributionPoints>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.26</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-A4705EE88C1CDAA3C8A1EB944A9F87A15232063ED2B76E53E31AF4C5EC3E406F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">LuxTrust S.A.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Qualified Time Stamping</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-508EEEBD78E9DC00B570C91540F7B22B3136FE4D783FB7832D27A239491A7821">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>bZ+Gt5e9tUD/F1jgnEtxzzRmviLW2nCDeOyrjRXTtrg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+            <SubjectDistinguishedName Format="CANONICAL">cn=baltstamp qtsa tsu2,o=baltstamp uab,l=vilnius,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=BalTstamp QTSA TSU2,O=BalTstamp UAB,L=Vilnius,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc qualified class 3 ca,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Qualified Class 3 CA,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>104155880393078814540679</SerialNumber>
+            <CommonName>BalTstamp QTSA TSU2</CommonName>
+            <Locality>Vilnius</Locality>
+            <CountryName>LT</CountryName>
+            <OrganizationName>BalTstamp UAB</OrganizationName>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2022-05-15T11:34:54Z</NotAfter>
+            <NotBefore>2012-05-15T11:34:54Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.ssc.lt/cacert/ssc_class3nqc.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp-3nqc.ssc.lt/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://ncrl.ssc.lt/class3nqc/cacrl.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="lt">UAB BalTstamp</TSPName>
+                        <TSPName lang="en">UAB BalTstamp</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRLT-302608545</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                            <ServiceNames>
+                                <ServiceName lang="lt">Kvalifikuoto elektroninio parašo laiko žymų paslauga 2</ServiceName>
+                                <ServiceName lang="en">Qualified time stamp service 2</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel</Status>
+                            <StartDate>2016-06-30T22:00:01Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                            <ServiceNames>
+                                <ServiceName lang="lt">Kvalifikuoto elektroninio parašo laiko žymų paslauga 2</ServiceName>
+                                <ServiceName lang="en">Qualified time stamp service 2</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:01Z</EndDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                            <ServiceNames>
+                                <ServiceName lang="lt">Kvalifikuoto elektroninio parašo laiko žymų paslauga 2</ServiceName>
+                                <ServiceName lang="en">Qualified time stamp service 2</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/TSS-AdESQCandQES</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2014-09-03T21:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                            <ServiceNames>
+                                <ServiceName lang="lt">Kvalifikuoto elektroninio parašo laiko žymų paslauga 3</ServiceName>
+                                <ServiceName lang="en">Qualified time stamp service 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-04-02T21:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+                <TrustServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="lt">UAB Skaitmeninio sertifikavimo centras</TSPName>
+                        <TSPName lang="en">UAB Skaitmeninio sertifikavimo centras</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLT-100001198416</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                            <ServiceNames>
+                                <ServiceName lang="lt">SSC_Kvalifikuoti elektroninio parašo sertifikatai-4 (SSC Qualified Class 3)</ServiceName>
+                                <ServiceName lang="en">SSC_Qualified certificates for electronic signature-4 (SSC Qualified Class 3)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2018-05-10T21:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                            <ServiceNames>
+                                <ServiceName lang="lt">SSC_Kvalifikuoti elektroninio parašo sertifikatai-4 (SSC Qualified Class 3)</ServiceName>
+                                <ServiceName lang="en">SSC_Qualified certificates for electronic signature-4 (SSC Qualified Class 3)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-05-10T21:00:00Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                            <ServiceNames>
+                                <ServiceName lang="lt">SSC_Kvalifikuoti elektroninio parašo sertifikatai-4 (SSC Qualified Class 3)</ServiceName>
+                                <ServiceName lang="en">SSC_Qualified certificates for electronic signature-4 (SSC Qualified Class 3)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2012-03-03T11:00:17Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lqVEdQJp/EAjc7mTBfk7EbgeMz1OS4gr2FNH+tps00A=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ssc qualified class 3 ca,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SSC Qualified Class 3 CA,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>117727027898364819414749499309229344414</SerialNumber>
+            <CommonName>SSC Qualified Class 3 CA</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
+            <OrganizationalUnit>Certification Authority</OrganizationalUnit>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2026-10-25T12:05:00Z</NotAfter>
+            <NotBefore>2012-03-03T11:00:17Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.ssc.lt/cacert/ssc_root_a.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp2.ssc.lt</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.ssc.lt/crl/ssc_root_a.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="lt">UAB Skaitmeninio sertifikavimo centras</TSPName>
+                        <TSPName lang="en">UAB Skaitmeninio sertifikavimo centras</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLT-100001198416</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                            <ServiceNames>
+                                <ServiceName lang="lt">SSC_Kvalifikuoti elektroninio parašo sertifikatai-4 (SSC Qualified Class 3)</ServiceName>
+                                <ServiceName lang="en">SSC_Qualified certificates for electronic signature-4 (SSC Qualified Class 3)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Status>
+                            <StartDate>2018-05-10T21:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                            <ServiceNames>
+                                <ServiceName lang="lt">SSC_Kvalifikuoti elektroninio parašo sertifikatai-4 (SSC Qualified Class 3)</ServiceName>
+                                <ServiceName lang="en">SSC_Qualified certificates for electronic signature-4 (SSC Qualified Class 3)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-05-10T21:00:00Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                            <ServiceNames>
+                                <ServiceName lang="lt">SSC_Kvalifikuoti elektroninio parašo sertifikatai-4 (SSC Qualified Class 3)</ServiceName>
+                                <ServiceName lang="en">SSC_Qualified certificates for electronic signature-4 (SSC Qualified Class 3)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2012-03-03T11:00:17Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithSSCD</Qualifier>
+                            </CapturedQualifiers>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>onfwYYsRYDtXap2bBFP6qp7CFgFyxW+mPYydQl+iyaU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 3,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 3,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global root 2,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Root 2,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>372465138737086689258246113329755871041849896622</SerialNumber>
+            <CommonName>LuxTrust Global Qualified CA 3</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2035-03-05T13:21:57Z</NotAfter>
+            <NotBefore>2015-03-06T14:12:15Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.luxtrust.lu/LTGRCA2.crt</caIssuersUrl>
+                    <ocspUrl>http://ltgroot.ocsp.luxtrust.lu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGRCA2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-A4705EE88C1CDAA3C8A1EB944A9F87A15232063ED2B76E53E31AF4C5EC3E406F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">LuxTrust S.A.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-04-06T13:00:00Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2015-08-12T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Qualified Time Stamping</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vtDxntRtlJANKp/NfG9mC2H/dYjYtxz48nnV+qMCHM8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C793268358DD92D6AFFA8AA8D1BC9A1BEA8D5309C405CB21F4A43AE41100D677">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust s.a. ocsp server,ou=pki entity,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust S.A. OCSP Server,OU=Pki entity,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 3,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 3,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>3933552</SerialNumber>
+            <CommonName>LuxTrust S.A. OCSP Server</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <OrganizationalUnit>Pki entity</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2021-03-13T07:58:51Z</NotAfter>
+            <NotBefore>2020-03-13T07:58:51Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C793268358DD92D6AFFA8AA8D1BC9A1BEA8D5309C405CB21F4A43AE41100D677</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGQCA3-OCSP.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-A4705EE88C1CDAA3C8A1EB944A9F87A15232063ED2B76E53E31AF4C5EC3E406F" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">LuxTrust S.A.</TSPName>
+                    </TSPNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Qualified Time Stamping</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-645C771FAFB3613364D688A10BA95B8BE63018BAA09C835E813AA2CAB64489C1">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>x5Mmg1jdktav+oqo0byaG+qNUwnEBcsh9KQ65BEA1nc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ssc root ca a,ou=certification authority,o=skaitmeninio sertifikavimo centras,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SSC Root CA A,OU=Certification Authority,O=Skaitmeninio sertifikavimo centras,C=LT</IssuerDistinguishedName>
+            <SerialNumber>135620924367389805115245033738757833813</SerialNumber>
+            <CommonName>SSC Root CA A</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationName>Skaitmeninio sertifikavimo centras</OrganizationName>
+            <OrganizationalUnit>Certification Authority</OrganizationalUnit>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2026-12-28T12:05:04Z</NotAfter>
+            <NotBefore>2006-12-27T12:18:52Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="http://www.ssc.lt/cps">1.3.6.1.4.1.22501.1.2.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.ssc.lt/root-a/cacrl.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>8bE/XJoyZAOw8xu+dpnNF8fRwLmBWG3Rp7IZxSUI/pk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-508EEEBD78E9DC00B570C91540F7B22B3136FE4D783FB7832D27A239491A7821">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://qca.ocsp.luxtrust.lu</SourceAddress>
+            <ProductionDate>2020-04-24T08:06:39Z</ProductionDate>
+            <ThisUpdate>2020-04-24T08:06:24Z</ThisUpdate>
+            <NextUpdate>2020-10-24T08:06:24Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C793268358DD92D6AFFA8AA8D1BC9A1BEA8D5309C405CB21F4A43AE41100D677"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C793268358DD92D6AFFA8AA8D1BC9A1BEA8D5309C405CB21F4A43AE41100D677"/>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-C793268358DD92D6AFFA8AA8D1BC9A1BEA8D5309C405CB21F4A43AE41100D677">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>7CuBdU0DP7kY90no645pNNPmx9A=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>UI7uvXjp3AC1cMkVQPeyKzE2/k14P7eDLSeiOUkaeCE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-645C771FAFB3613364D688A10BA95B8BE63018BAA09C835E813AA2CAB64489C1">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://crl.luxtrust.lu/LTGQCA3-OCSP.crl</SourceAddress>
+            <ProductionDate>2020-04-24T07:49:19Z</ProductionDate>
+            <ThisUpdate>2020-04-24T07:49:19Z</ThisUpdate>
+            <NextUpdate>2020-04-24T12:19:19Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ZFx3H6+zYTNk1oihC6lbi+YwGLqgnINegTqiyrZEicE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-EE61AA17CF333524A2214136F03446DBE0B8214672927D1476EADB23254A6926">
+            <ProductionTime>2020-04-24T08:06:34Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/mSFKh32TEBoDhvcIr/bfP7i+dkrbtzP6x7hXGAvJso=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340"/>
+                <ChainItem Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5"/>
+                <ChainItem Certificate="C-F1B13F5C9A326403B0F31BBE7699CD17C7D1C0B981586DD1A7B219C52508FE99"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=SSC Qualified Class 3 CA, OU=Certification Authority, O=Skaitmeninio sertifikavimo centras, C=LT</IssuerName>
+                    <SerialNumber>104155880393078814540679</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-96A544750269FC402373B99305F93B11B81E333D4E4B882BD85347FADA6CD340">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>IKNS4s4ucwcLs8+d3opO/vDwo1s=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-A277F0618B11603B576A9D9B0453FAAA9EC2160172C56FA63D8C9D425FA2C9A5">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-59DA3AC971CEB47FEF44596AF39A2380CB4745472B6EFD580984C191BB05D2F3" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-4F14F75172A2660BDD5FC00BD391257F3705070F035BE53A67069A39299A44B5" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-6D9F86B797BDB540FF1758E09C4B71CF3466BE22D6DA708378ECAB8D15D3B6B8" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>7mGqF88zNSSiIUE28DRG2+C4IUZykn0UdurbIyVKaSY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-59DA3AC971CEB47FEF44596AF39A2380CB4745472B6EFD580984C191BB05D2F3">
+            <ReferencedName>o-id-1d69266294a96bd3728396a05b34653c-1</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>M3SyWJp0quY7K/QAPwwszsxnJR0NTElMOPw2FR0glfs=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>263</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-04-24T08:06:22Z</LastLoading>
+            <IssueDate>2020-04-15T08:00:00Z</IssueDate>
+            <NextUpdate>2020-10-15T00:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-A4705EE88C1CDAA3C8A1EB944A9F87A15232063ED2B76E53E31AF4C5EC3E406F">
+            <CountryCode>LU</CountryCode>
+            <Url>https://portail-qualite.public.lu/content/dam/qualite/fr/publications/confiance-numerique/liste-confiance-nationale/tsl-xml/tsl.xml</Url>
+            <SequenceNumber>38</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-04-24T08:06:22Z</LastLoading>
+            <IssueDate>2019-12-30T01:00:00Z</IssueDate>
+            <NextUpdate>2020-06-30T00:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1">
+            <CountryCode>LT</CountryCode>
+            <Url>https://elektroninisparasas.lt/LT-TSL.xml</Url>
+            <SequenceNumber>52</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2020-04-24T08:06:26Z</LastLoading>
+            <IssueDate>2020-04-24T01:00:00Z</IssueDate>
+            <NextUpdate>2020-10-24T00:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

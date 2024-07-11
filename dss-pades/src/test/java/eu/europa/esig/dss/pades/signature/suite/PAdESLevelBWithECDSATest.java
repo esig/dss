@@ -65,7 +65,7 @@ public class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} of ECDSA with {0}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo) throws Exception {
+	void init(DigestAlgorithm digestAlgo) throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();

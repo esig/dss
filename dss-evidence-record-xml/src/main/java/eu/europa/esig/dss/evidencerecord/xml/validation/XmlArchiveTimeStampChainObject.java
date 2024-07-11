@@ -37,9 +37,6 @@ public class XmlArchiveTimeStampChainObject extends ArchiveTimeStampChainObject 
     /** Canonicalization method (XML only) */
     private String canonicalizationMethod;
 
-    /** Order of the element */
-    private int order;
-
     /**
      * Default constructor
      *
@@ -70,20 +67,6 @@ public class XmlArchiveTimeStampChainObject extends ArchiveTimeStampChainObject 
      */
     public void setCanonicalizationMethod(String canonicalizationMethod) {
         this.canonicalizationMethod = canonicalizationMethod;
-    }
-
-    @Override
-    public int getOrder() {
-        return order;
-    }
-
-    /**
-     * Sets order of the object within its parent
-     *
-     * @param order int value
-     */
-    public void setOrder(int order) {
-        this.order = order;
     }
 
 }

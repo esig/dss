@@ -51,6 +51,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -58,14 +59,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESLevelBDetachedUriByHashNonB64Test extends AbstractJAdESTestSignature {
+class JAdESLevelBDetachedUriByHashNonB64Test extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private DSSDocument documentToSign;
     private Date signingDate;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
@@ -168,7 +169,7 @@ public class JAdESLevelBDetachedUriByHashNonB64Test extends AbstractJAdESTestSig
         XmlDigestAlgoAndValue digestAlgoAndValue = signerData.getDigestAlgoAndValue();
         assertNotNull(digestAlgoAndValue);
 
-        assertEquals(documentToSign.getDigest(digestAlgoAndValue.getDigestMethod()), Utils.toBase64(digestAlgoAndValue.getDigestValue()));
+        assertArrayEquals(documentToSign.getDigestValue(digestAlgoAndValue.getDigestMethod()), digestAlgoAndValue.getDigestValue());
     }
 
     @Override

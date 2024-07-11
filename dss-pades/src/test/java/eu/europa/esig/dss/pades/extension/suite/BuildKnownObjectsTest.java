@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.extension.suite;
 
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -29,14 +30,14 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -60,18 +61,19 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 	 * @throws IOException
 	 */
 	@Test
-	public void buildKnownObjects() throws IOException {
+	void buildKnownObjects() throws IOException {
 
 		DSSDocument dssDocument = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/dss-1696/Test.signed_Certipost-2048-SHA512.extended.pdf"));
-		PDFDocumentValidator validator = new PDFDocumentValidator(dssDocument);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(dssDocument);
+
+		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 
 		// <</Type /DSS
 		// /Certs [20 0 R 26 0 R 30 0 R] -> 20 30
 		// /CRLs [21 0 R 22 0 R 27 0 R 28 0 R 29 0 R]>> -> 21 22 29
 
-		List<AdvancedSignature> signatures = validator.getSignatures();
+		List<AdvancedSignature> signatures = pdfDocumentAnalyzer.getSignatures();
 		assertEquals(1, signatures.size());
 
 		PAdESSignature padesSignature = (PAdESSignature) signatures.get(0);
@@ -79,9 +81,9 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		assertEquals(3, dssDictionary.getCERTs().size());
 		assertEquals(5, dssDictionary.getCRLs().size());
 
-		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert());
 		certificateVerifier.setAlertOnUncoveredPOE(new LogOnStatusAlert());
+		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 
 		CertificateSource trustedCertSource = new CommonTrustedCertificateSource();
 		trustedCertSource.addCertificate(DSSUtils.loadCertificateFromBase64EncodedString(
@@ -101,10 +103,10 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		DSSDocument extendSignature = padesService.extendDocument(dssDocument, parameters);
 		
-		validator = new PDFDocumentValidator(extendSignature);
-		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+		pdfDocumentAnalyzer = new PDFDocumentAnalyzer(extendSignature);
+		pdfDocumentAnalyzer.setCertificateVerifier(getOfflineCertificateVerifier());
 
-		signatures = validator.getSignatures();
+		signatures = pdfDocumentAnalyzer.getSignatures();
 		assertEquals(1, signatures.size());
 
 		PAdESSignature pades = (PAdESSignature) signatures.get(0);

@@ -57,7 +57,7 @@ public class PAdESLevelLTAAndLevelTTest extends AbstractPAdESTestSignature {
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signingTime = new Date();
         signingAlias = GOOD_USER;
 

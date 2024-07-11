@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 
-public class CAdESDEREncodedTstTest extends AbstractCAdESTestValidation {
+class CAdESDEREncodedTstTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

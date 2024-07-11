@@ -39,10 +39,10 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.status.RevocationFreshnessStatus;
+import eu.europa.esig.dss.spi.validation.status.RevocationFreshnessStatus;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.AfterEach;
@@ -64,7 +64,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
+class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	
 	private DSSDocument documentToSign;
 	private CertificateVerifier certificateVerifier;
@@ -72,7 +72,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	private XAdESSignatureParameters signatureParameters;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		// avoid caching
@@ -90,13 +90,13 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	}
 
 	@AfterEach
-	public void after() {
+	void after() {
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert());
 		certificateVerifier.setAlertOnUncoveredPOE(new LogOnStatusAlert());
 	}
 	
 	@Test
-	public void noExceptionTest() {
+	void noExceptionTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert());
@@ -114,7 +114,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void throwExceptionOnNoRevocationAfterBestSignatureTimeTest() {
+	void throwExceptionOnNoRevocationAfterBestSignatureTimeTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
@@ -137,7 +137,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void throwExceptionOnUncoveredPOETest() {
+	void throwExceptionOnUncoveredPOETest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert());
@@ -160,7 +160,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void throwExceptionWithDelayTest() {
+	void throwExceptionWithDelayTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
@@ -184,7 +184,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void throwExceptionOnNoRevocationAfterBestSignatureTimeEnsureNextUpdateTimeTest() {
+	void throwExceptionOnNoRevocationAfterBestSignatureTimeEnsureNextUpdateTimeTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		RevocationFreshnessStatusCheckAlertHandlerCallback callback = new RevocationFreshnessStatusCheckAlertHandlerCallback();
@@ -238,7 +238,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void throwExceptionOnNoRevocationAfterBestSignatureTimeStatusTest() {
+	void throwExceptionOnNoRevocationAfterBestSignatureTimeStatusTest() {
 		signingAlias = GOOD_USER_WITH_PEM_CRL;
 
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -315,7 +315,7 @@ public class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		return signingAlias;
 	}
 
-	private class RevocationFreshnessStatusCheckAlertHandlerCallback implements AlertHandler<Status> {
+	private static class RevocationFreshnessStatusCheckAlertHandlerCallback implements AlertHandler<Status> {
 
 		private Status status;
 

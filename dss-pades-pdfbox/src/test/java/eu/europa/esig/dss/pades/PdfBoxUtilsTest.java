@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfBoxUtilsTest {
+class PdfBoxUtilsTest {
 
 	private final char[] correctProtectionPhrase = new char[] { ' ' };
 	private final char[] wrongProtectionPhrase = new char[] { 'A', 'A', 'A', 'A' };
@@ -51,7 +51,7 @@ public class PdfBoxUtilsTest {
 	private DSSDocument twoPagesDocument;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		sampleDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		protectedDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"),
 				"sample.pdf", MimeTypeEnum.PDF);
@@ -59,7 +59,7 @@ public class PdfBoxUtilsTest {
 	}
 
 	@Test
-	public void generateScreenshotTest() {
+	void generateScreenshotTest() {
 		DSSDocument screenshot = PdfBoxUtils.generateScreenshot(sampleDocument, 1);
 		assertNotNull(screenshot);
 
@@ -76,7 +76,7 @@ public class PdfBoxUtilsTest {
 	}
 
 	@Test
-	public void generateScreenshotWithPassTest() {
+	void generateScreenshotWithPassTest() {
 		DSSDocument screenshot = PdfBoxUtils.generateScreenshot(protectedDocument, correctProtectionPhrase, 1);
 		assertNotNull(screenshot);
 
@@ -89,7 +89,7 @@ public class PdfBoxUtilsTest {
 	}
 
 	@Test
-	public void generateSubtractionImageTest() {
+	void generateSubtractionImageTest() {
 		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, null, 1,
 				protectedDocument, correctProtectionPhrase, 1);
 		assertNotNull(subtractionImage);
@@ -107,7 +107,7 @@ public class PdfBoxUtilsTest {
 	}
 
 	@Test
-	public void generateScreenshotWithTempFileTest() throws IOException  {
+	void generateScreenshotWithTempFileTest() throws IOException  {
 		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
 		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 

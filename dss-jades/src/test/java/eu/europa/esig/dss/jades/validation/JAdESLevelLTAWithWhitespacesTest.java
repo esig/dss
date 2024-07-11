@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class JAdESLevelLTAWithWhitespacesTest extends AbstractJAdESTestValidation {
+class JAdESLevelLTAWithWhitespacesTest extends AbstractJAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

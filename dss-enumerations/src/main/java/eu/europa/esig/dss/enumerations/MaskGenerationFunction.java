@@ -22,7 +22,10 @@ package eu.europa.esig.dss.enumerations;
 
 /**
  * Mask generation function.
+ *
+ * @deprecated since DSS 6.1. To be removed later. For MGF1 use EncryptionAlgorithm.RSASSA_PSS option instead
  */
+@Deprecated
 public enum MaskGenerationFunction {
 
 	/** Mask Generation Function 1 */

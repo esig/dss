@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.w3c.dom.Document;
-
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -43,15 +33,24 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XsltTransform;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
 
-public class XAdESLevelBXSLTTransformTest extends AbstractXAdESTestSignature {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+class XAdESLevelBXSLTTransformTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample-with-different-id.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -67,7 +66,7 @@ public class XAdESLevelBXSLTTransformTest extends AbstractXAdESTestSignature {
 		dssReference.setId("DSS-REF-1");
 		dssReference.setUri("");
 		dssReference.setContents(documentToSign);
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		
 		Document xsltTemplate = DomUtils.buildDOM("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"
 				+ "<xsl:template match=\"/\">" 

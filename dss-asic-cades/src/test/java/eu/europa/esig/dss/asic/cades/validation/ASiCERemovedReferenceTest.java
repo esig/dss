@@ -37,7 +37,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCERemovedReferenceTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCERemovedReferenceTest extends AbstractASiCWithCAdESTestValidation {
 	
 	@Override
 	protected DSSDocument getSignedDocument() {

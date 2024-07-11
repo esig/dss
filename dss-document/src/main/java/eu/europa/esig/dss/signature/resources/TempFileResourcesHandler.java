@@ -98,9 +98,15 @@ public class TempFileResourcesHandler extends AbstractResourcesHandler {
      */
     public void forceDelete() {
         if (tempFile != null) {
-            boolean deleted = tempFile.delete();
-            if (!deleted) {
-                LOG.warn("Unable to remove a temporary file '{}'", tempFile.getName());
+            try {
+                Files.delete(tempFile.toPath());
+            } catch (IOException e) {
+                String errorMessage = "Unable to remove a temporary file '{}'. Reason : {}";
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(errorMessage, tempFile.getName(), e.getMessage(), e);
+                } else {
+                    LOG.warn(errorMessage, tempFile.getName(), e.getMessage());
+                }
             }
         }
     }

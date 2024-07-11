@@ -43,7 +43,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
-import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.model.tsl.Condition;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -57,7 +57,7 @@ import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -67,8 +67,8 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.trustedlist.enums.Assert;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -109,7 +109,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     private static String signer;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         DomUtils.registerNamespace(XMLDSigNamespace.NS);
         DomUtils.registerNamespace(XAdESNamespace.XADES_132);
         DomUtils.registerNamespace(TL_NAMESPACE);
@@ -603,7 +603,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         }
     }
 
-    public void removeAllChildren(Node node)
+    void removeAllChildren(Node node)
     {
         while (node.getFirstChild() != null) {
             node.removeChild(node.getFirstChild());
@@ -793,7 +793,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         TLValidationJob tlValidationJob = new TLValidationJob();
 
         LOTLSource lotlSource = new LOTLSource();

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pdf.modifications;
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfObject;
 
 import java.util.Objects;
 
@@ -36,10 +37,10 @@ public class ObjectModification {
     private final PdfObjectTree objectTree;
 
     /** Signed revision modified object */
-    private final Object originalObject;
+    private final PdfObject originalObject;
 
     /** Final revision modified object */
-    private final Object finalObject;
+    private final PdfObject finalObject;
 
     /** Type of modification */
     private final PdfObjectModificationType objectModificationType;
@@ -48,11 +49,11 @@ public class ObjectModification {
      * Default constructor
      *
      * @param objectTree {@link PdfObjectTree}
-     * @param originalObject signed revision object
-     * @param finalObject final revision object
+     * @param originalObject {@link PdfObject} signed revision object
+     * @param finalObject {@link PdfObject} final revision object
      * @param objectModificationType {@link PdfObjectModificationType}
      */
-    private ObjectModification(PdfObjectTree objectTree, Object originalObject, Object finalObject, PdfObjectModificationType objectModificationType) {
+    private ObjectModification(PdfObjectTree objectTree, PdfObject originalObject, PdfObject finalObject, PdfObjectModificationType objectModificationType) {
         this.objectTree = objectTree;
         this.originalObject = originalObject;
         this.finalObject = finalObject;
@@ -63,10 +64,10 @@ public class ObjectModification {
      * Creates {@code ObjectModification} for a new object creation change
      *
      * @param objectTree {@link PdfObjectTree}
-     * @param finalObject final revision object
+     * @param finalObject {@link PdfObject} final revision object
      * @return {@link ObjectModification}
      */
-    public static ObjectModification create(PdfObjectTree objectTree, Object finalObject) {
+    public static ObjectModification create(PdfObjectTree objectTree, PdfObject finalObject) {
         return new ObjectModification(objectTree, null, finalObject, PdfObjectModificationType.CREATION);
     }
 
@@ -74,10 +75,10 @@ public class ObjectModification {
      * Creates {@code ObjectModification} for an object removal change
      *
      * @param objectTree {@link PdfObjectTree}
-     * @param originalObject signed revision object
+     * @param originalObject {@link PdfObject} signed revision object
      * @return {@link ObjectModification}
      */
-    public static ObjectModification delete(PdfObjectTree objectTree, Object originalObject) {
+    public static ObjectModification delete(PdfObjectTree objectTree, PdfObject originalObject) {
         return new ObjectModification(objectTree, originalObject, null, PdfObjectModificationType.DELETION);
     }
 
@@ -85,11 +86,11 @@ public class ObjectModification {
      * Creates {@code ObjectModification} for an object modification change
      *
      * @param objectTree {@link PdfObjectTree}
-     * @param originalObject signed revision object
-     * @param finalObject final revision object
+     * @param originalObject {@link PdfObject} signed revision object
+     * @param finalObject {@link PdfObject} final revision object
      * @return {@link ObjectModification}
      */
-    public static ObjectModification modify(PdfObjectTree objectTree, Object originalObject, Object finalObject) {
+    public static ObjectModification modify(PdfObjectTree objectTree, PdfObject originalObject, PdfObject finalObject) {
         return new ObjectModification(objectTree, originalObject, finalObject, PdfObjectModificationType.MODIFICATION);
     }
 
@@ -107,7 +108,7 @@ public class ObjectModification {
      *
      * @return original object
      */
-    public Object getOriginalObject() {
+    public PdfObject getOriginalObject() {
         return originalObject;
     }
 
@@ -116,7 +117,7 @@ public class ObjectModification {
      *
      * @return final object
      */
-    public Object getFinalObject() {
+    public PdfObject getFinalObject() {
         return finalObject;
     }
 

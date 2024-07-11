@@ -32,16 +32,16 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools {
+class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools {
 
 	@Test
-	public void signASiCEBaselineB() throws Exception {
+	void signASiCEBaselineB() throws Exception {
 
 		// Get a token connection based on a pkcs12 file commonly used to store
 		// private
@@ -62,7 +62,7 @@ public class SignMultipleDocumentsWithASiCSEWithCAdESTest extends CookbookTools 
 			// import eu.europa.esig.dss.model.DSSDocument;
 			// import eu.europa.esig.dss.model.SignatureValue;
 			// import eu.europa.esig.dss.model.ToBeSigned;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 			// import java.util.List;
 
 			// Preparing the documents to be embedded in the container and signed

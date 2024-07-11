@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESExtendedXLValidationTest extends AbstractXAdESTestValidation {
+class XAdESExtendedXLValidationTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

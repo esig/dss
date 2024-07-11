@@ -21,31 +21,26 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_X;
-import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_XL;
 
 /**
  * This class represents the implementation of XAdES level -X extension.
  *
  */
 public class XAdESLevelX extends XAdESLevelC {
-
-	private static final Logger LOG = LoggerFactory.getLogger(XAdESLevelX.class);
 
 	/**
 	 * The default constructor for XAdESLevelX.
@@ -69,16 +64,23 @@ public class XAdESLevelX extends XAdESLevelC {
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
 		super.extendSignatures(signatures);
 
-		for (AdvancedSignature signature : signatures) {
-			initializeSignatureBuilder((XAdESSignature) signature);
+		final List<AdvancedSignature> signaturesToExtend = getExtendToXLevelSignatures(signatures);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
+			return;
+		}
 
-			if (!xLevelExtensionRequired(params.getSignatureLevel())) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		if (XAdES_X.equals(params.getSignatureLevel())) {
+			signatureRequirementsChecker.assertExtendToXLevelPossible(signaturesToExtend);
+		}
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+
+		for (AdvancedSignature signature : signaturesToExtend) {
+			initializeSignatureBuilder((XAdESSignature) signature);
+			if (!xLevelExtensionRequired(signature)) {
+				// Unable to extend due to higher levels covering the current X-level
 				continue;
 			}
-
-			assertExtendSignatureToXPossible();
-
-			removeOldTimestamps();
 
 			final Element levelCUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
@@ -93,37 +95,19 @@ public class XAdESLevelX extends XAdESLevelC {
 		}
 	}
 
-	private boolean xLevelExtensionRequired(SignatureLevel signatureLevel) {
-		return XAdES_X.equals(signatureLevel) || XAdES_XL.equals(signatureLevel) || !xadesSignature.hasXProfile();
+
+	private List<AdvancedSignature> getExtendToXLevelSignatures(List<AdvancedSignature> signatures) {
+		final List<AdvancedSignature> signaturesToExtend = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			if (xLevelExtensionRequired(signature)) {
+				signaturesToExtend.add(signature);
+			}
+		}
+		return signaturesToExtend;
 	}
 
-	private void removeOldTimestamps() {
-		final NodeList sigAndRefsTimeStampList = xadesSignature.getSigAndRefsTimeStamp();
-		if (sigAndRefsTimeStampList != null && sigAndRefsTimeStampList.getLength() > 0) {
-			LOG.warn("An existing SigAndRefsTimeStamp found! " +
-					"The entry will be removed in order to extend the signature with the updated data.");
-		}
-		removeNodes(sigAndRefsTimeStampList);
-
-		NodeList refsOnlyTimestampTimeStamp = xadesSignature.getRefsOnlyTimestampTimeStamp();
-		if (refsOnlyTimestampTimeStamp != null && refsOnlyTimestampTimeStamp.getLength() > 0) {
-			LOG.warn("An existing RefsOnlyTimeStamp found! " +
-					"The entry will be removed in order to extend the signature with the updated data.");
-		}
-		removeNodes(refsOnlyTimestampTimeStamp);
-	}
-
-	/**
-	 * Checks if the extension is possible.
-	 */
-	private void assertExtendSignatureToXPossible() {
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if ((XAdES_X.equals(signatureLevel) && (xadesSignature.hasAProfile() ||
-				(xadesSignature.hasXLProfile() && !xadesSignature.areAllSelfSignedCertificates()) )) ||
-				(XAdES_XL.equals(signatureLevel) && xadesSignature.hasAProfile()) ) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signature is already extended with higher level.", signatureLevel));
-		}
+	private boolean xLevelExtensionRequired(AdvancedSignature signature) {
+		return XAdES_X.equals(params.getSignatureLevel()) || !signature.hasXProfile();
 	}
 
 }

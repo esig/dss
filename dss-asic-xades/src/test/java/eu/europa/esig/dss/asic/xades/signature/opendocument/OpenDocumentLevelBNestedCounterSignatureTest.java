@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDocumentSetTestSignature {
+class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDocumentSetTestSignature {
 
 	private DSSDocument documentToSign;
 	private ASiCWithXAdESService service;
@@ -56,7 +56,7 @@ public class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDo
 	private XAdESCounterSignatureParameters counterSignatureParameters;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -80,8 +80,7 @@ public class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDo
 		documentToSign = fileToTest;
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters));
@@ -92,8 +91,7 @@ public class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDo
 		counterSignatureParameters.setSignatureIdToCounterSign(validator.getSignatures().get(0).getId());
 		
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
 		// counterSignedSignature.save("target/counterSignedSignature.sce");
@@ -115,8 +113,7 @@ public class OpenDocumentLevelBNestedCounterSignatureTest extends AbstractOpenDo
 		counterSignatureParameters.setSignatureIdToCounterSign(counterSignature.getId());
 		
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(counterSignedSignature, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument nestedCounterSignedSignature = service.counterSignSignature(counterSignedSignature, counterSignatureParameters, signatureValue);
 		
 		// nestedCounterSignedSignature.save("target/nestedCounterSignature.sce");

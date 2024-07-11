@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -39,11 +39,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithXAdESEmptyOdtTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithXAdESEmptyOdtTest extends AbstractASiCWithXAdESTestValidation {
 
     private DSSDocument signedDocument;
 
-    public static Collection<Object[]> data() {
+    static Collection<Object[]> data() {
         File folder = new File("src/test/resources/opendocument");
         Collection<File> listFiles = Utils.listFiles(folder,
                 new String[] { "odt", "ods", "odp", "odg" }, true);
@@ -56,7 +56,7 @@ public class ASiCEWithXAdESEmptyOdtTest extends AbstractASiCWithXAdESTestValidat
 
     @ParameterizedTest
     @MethodSource("data")
-    public void bLevelTest(File file) {
+    void bLevelTest(File file) {
         signedDocument = new FileDocument(file);
         super.validate();
     }

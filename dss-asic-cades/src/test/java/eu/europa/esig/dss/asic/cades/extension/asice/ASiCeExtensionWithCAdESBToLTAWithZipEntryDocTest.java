@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCeExtensionWithCAdESBToLTAWithZipEntryDocTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
+class ASiCeExtensionWithCAdESBToLTAWithZipEntryDocTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
 
     private ContainerEntryDocument documentOne;
     private ContainerEntryDocument documentTwo;
@@ -60,7 +60,7 @@ public class ASiCeExtensionWithCAdESBToLTAWithZipEntryDocTest extends AbstractAS
     private List<DSSDocument> documentToSigns = new ArrayList<>();
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 
@@ -94,7 +94,7 @@ public class ASiCeExtensionWithCAdESBToLTAWithZipEntryDocTest extends AbstractAS
     }
 
     @AfterAll
-    public static void reset() {
+    static void reset() {
         ZipUtils.getInstance().setZipContainerHandlerBuilder(new SecureContainerHandlerBuilder());
     }
 

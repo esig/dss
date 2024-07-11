@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 
@@ -144,6 +144,28 @@ public abstract class AbstractASiCFilenameFactory implements Serializable {
             throw new IllegalArgumentException("A data package filename within ASiC container shall ends with '.zip'!");
         }
         return dataPackageFilename;
+    }
+
+    /**
+     * This method returns a valid evidence record manifest filename.
+     * NOTE: The name of the file shall be: "META-INF/ASiCEvidenceRecordManifest*.xml".
+     * "META-INF/" is optional.
+     *
+     * @param evidenceRecordManifestFilename {@link String} defines evidence record manifest filename
+     * @param asicContent {@link ASiCContent}
+     * @return {@link String} evidence record manifest filename
+     */
+    protected String getValidEvidenceRecordManifestFilename(String evidenceRecordManifestFilename, ASiCContent asicContent) {
+        evidenceRecordManifestFilename = getWithMetaInfFolder(evidenceRecordManifestFilename);
+        assertFilenameValid(evidenceRecordManifestFilename, asicContent.getEvidenceRecordManifestDocuments());
+        if (!evidenceRecordManifestFilename.startsWith(ASiCUtils.META_INF_FOLDER + ASiCUtils.ASIC_EVIDENCE_RECORD_MANIFEST_FILENAME) ||
+                !evidenceRecordManifestFilename.endsWith(ASiCUtils.XML_EXTENSION)) {
+            throw new IllegalArgumentException(String.format("ASiC evidence record manifest file within ASiC container " +
+                    "shall match the template '%s'!", ASiCUtils.META_INF_FOLDER + ASiCUtils.ASIC_EVIDENCE_RECORD_MANIFEST_FILENAME + "*"
+                    + ASiCUtils.XML_EXTENSION));
+
+        }
+        return evidenceRecordManifestFilename;
     }
 
 }

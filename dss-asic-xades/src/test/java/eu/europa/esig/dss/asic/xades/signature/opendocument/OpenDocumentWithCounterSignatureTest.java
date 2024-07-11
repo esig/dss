@@ -46,13 +46,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentWithCounterSignatureTest extends AbstractOpenDocumentCounterSignatureTest {
+class OpenDocumentWithCounterSignatureTest extends AbstractOpenDocumentCounterSignatureTest {
 
 	private ASiCWithXAdESService service;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		signingDate = new Date();

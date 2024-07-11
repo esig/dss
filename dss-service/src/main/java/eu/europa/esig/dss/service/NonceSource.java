@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.service;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 /**
  * Interface which allows to produce Nonce value.
@@ -34,14 +33,5 @@ public interface NonceSource extends Serializable {
 	 * @return byte array representing the unique value to use
 	 */
 	byte[] getNonceValue();
-
-	/**
-	 * This method allows retrieving of unique value to be used as a nonce.
-	 * 
-	 * @return {@link BigInteger} the unique value to use
-	 * @deprecated since DSS 5.13. Use {@code new BigInteger(nonceSource.getNonceValue())}
-	 */
-	@Deprecated
-	BigInteger getNonce();
 
 }

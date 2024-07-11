@@ -21,10 +21,10 @@
 package eu.europa.esig.dss.tsl.dto;
 
 import eu.europa.esig.dss.enumerations.TSLType;
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
-import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
-import eu.europa.esig.dss.spi.tsl.TrustService;
-import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.model.tsl.TrustService;
+import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Date;
@@ -76,7 +76,9 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	/**
 	 * Default constructor
 	 */
-	public ParsingCacheDTO() {}
+	public ParsingCacheDTO() {
+		// empty
+	}
 
 	/**
 	 * Copies the cache DTO

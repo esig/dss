@@ -42,11 +42,11 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class XAdESRevocationSourceHUTest extends AbstractXAdESTestValidation {
+class XAdESRevocationSourceHUTest extends AbstractXAdESTestValidation {
 	
 	private static Set<String> revocationIds = new HashSet<>();
 

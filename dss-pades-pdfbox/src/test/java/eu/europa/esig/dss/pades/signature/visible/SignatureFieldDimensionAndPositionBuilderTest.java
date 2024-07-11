@@ -42,10 +42,10 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class SignatureFieldDimensionAndPositionBuilderTest {
+class SignatureFieldDimensionAndPositionBuilderTest {
 
     @Test
-    public void dss2438Test() throws IOException {
+    void dss2438Test() throws IOException {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         DSSDocument image = new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png"));
 

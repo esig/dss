@@ -21,15 +21,14 @@
 package eu.europa.esig.dss.tsl.function.converter;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.Condition;
-import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
-import eu.europa.esig.dss.spi.tsl.TrustService;
-import eu.europa.esig.dss.spi.tsl.TrustService.TrustServiceBuilder;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
-import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
-import eu.europa.esig.dss.spi.util.TimeDependentValues;
+import eu.europa.esig.dss.model.tsl.Condition;
+import eu.europa.esig.dss.model.tsl.ConditionForQualifiers;
+import eu.europa.esig.dss.model.tsl.TrustService;
+import eu.europa.esig.dss.model.tsl.TrustService.TrustServiceBuilder;
+import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder;
+import eu.europa.esig.dss.model.timedependent.MutableTimeDependentValues;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.trustedlist.jaxb.ecc.QualificationElementType;
 import eu.europa.esig.trustedlist.jaxb.ecc.QualificationsType;

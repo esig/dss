@@ -27,7 +27,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdfBoxDSS2236HideTest extends DSS2236HideTest {
+class PdfBoxDSS2236HideTest extends DSS2236HideTest {
 
     @Override
     protected void checkPdfRevision(DiagnosticData diagnosticData) {

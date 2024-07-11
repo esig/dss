@@ -22,7 +22,7 @@ package eu.europa.esig.dss.crl.x509.impl;
 
 import eu.europa.esig.dss.crl.AbstractBCTestCRLUtils;
 
-public class CRLUtilsX509CRLImplWithBCTest extends AbstractBCTestCRLUtils {
+class CRLUtilsX509CRLImplWithBCTest extends AbstractBCTestCRLUtils {
 
 
 }

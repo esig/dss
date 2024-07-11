@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.service;
 
-import java.math.BigInteger;
 import java.security.SecureRandom;
 
 /**
@@ -45,12 +44,6 @@ public class SecureRandomNonceSource implements NonceSource {
 		byte[] bytes = new byte[32];
 		secureRandom.nextBytes(bytes);
 		return bytes;
-	}
-
-	@Override
-	@Deprecated
-	public BigInteger getNonce() {
-		return new BigInteger(getNonceValue());
 	}
 
 }

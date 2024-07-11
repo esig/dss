@@ -41,16 +41,15 @@ import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -165,11 +164,10 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 
 	protected void checkSigningTime(Map<String, Object> protectedHeaderMap) throws Exception {
 		String sigT = (String) protectedHeaderMap.get("sigT");
-		assertNotNull(sigT);
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // RFC 3339
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		Date date = sdf.parse(sigT);
+		assertNull(sigT);
+
+		Number iat = (Number) protectedHeaderMap.get("iat");
+		Date date = new Date(iat.longValue());
 		assertNotNull(date);
 	}
 
@@ -180,9 +178,6 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 	}
 
 	private void checkCrit(Map<String, Object> protectedHeaderMap) {
-		List<?> crit = (List<?>) protectedHeaderMap.get(HeaderParameterNames.CRITICAL);
-		assertTrue(Utils.isCollectionNotEmpty(crit));
-		
 		List<String> excludedHeaders = Arrays.asList(HeaderParameterNames.AGREEMENT_PARTY_U_INFO, HeaderParameterNames.AGREEMENT_PARTY_V_INFO,
 				HeaderParameterNames.ALGORITHM, HeaderParameterNames.AUTHENTICATION_TAG, HeaderParameterNames.CONTENT_TYPE, HeaderParameterNames.CRITICAL, 
 				HeaderParameterNames.ENCRYPTION_METHOD, HeaderParameterNames.EPHEMERAL_PUBLIC_KEY, HeaderParameterNames.INITIALIZATION_VECTOR, 
@@ -191,14 +186,25 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 				HeaderParameterNames.X509_CERTIFICATE_SHA256_THUMBPRINT, HeaderParameterNames.X509_CERTIFICATE_THUMBPRINT, HeaderParameterNames.X509_URL, 
 				HeaderParameterNames.ZIP, JAdESHeaderParameterNames.ETSI_U);
 		
-		List<String> includedHeaders = Arrays.asList(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, "sigT", "x5t#o",
-				"sigX5ts", "srCm", "sigPl", "srAts", "adoTst", "sigPld", "sigD");
-		
-		for (Object critEntry : crit) {
-			assertNotNull(critEntry);
-			assertTrue(critEntry instanceof String);
-			assertFalse(excludedHeaders.contains(critEntry));
-			assertTrue(includedHeaders.contains(critEntry));
+		List<String> includedHeaders = Arrays.asList(HeaderParameterNames.BASE64URL_ENCODE_PAYLOAD, "sigD");
+
+		List<String> presentHeaders = new ArrayList<>();
+		for (String protectedHeaderKey : protectedHeaderMap.keySet()) {
+			if (includedHeaders.contains(protectedHeaderKey)) {
+				presentHeaders.add(protectedHeaderKey);
+			}
+		}
+
+		List<?> crit = (List<?>) protectedHeaderMap.get(HeaderParameterNames.CRITICAL);
+		if (Utils.isCollectionNotEmpty(presentHeaders)) {
+			assertTrue(Utils.isCollectionNotEmpty(crit));
+
+			for (Object critEntry : crit) {
+				assertNotNull(critEntry);
+				assertInstanceOf(String.class, critEntry);
+				assertFalse(excludedHeaders.contains(critEntry));
+				assertTrue(includedHeaders.contains(critEntry));
+			}
 		}
 	}
 

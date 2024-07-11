@@ -33,7 +33,7 @@ import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.pki.x509.tsp.PKITSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -56,7 +56,7 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
     private int numberOfCalls;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         signingTime = new Date();
 
@@ -153,7 +153,7 @@ public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
 
         private static final long serialVersionUID = 7677238056219199658L;
 
-        public PKICRLSourceCounter(CertEntityRepository certEntityRepository) {
+        public PKICRLSourceCounter(CertEntityRepository<?> certEntityRepository) {
             super(certEntityRepository);
         }
 

@@ -38,8 +38,8 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -61,7 +61,7 @@ public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCoun
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));

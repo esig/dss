@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
@@ -45,7 +45,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * custom document MimeType after signing (see DSS-2586)
  *
  */
-public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECAdESTestSignature {
 
     private static DSSDocument originalDocument;
 
@@ -70,7 +70,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
         signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -97,8 +97,7 @@ public class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECA
         signerDocument.setMimeType(MimeTypeEnum.HTML);
 
         ToBeSigned dataToSign = service.getDataToSign(asicContent, signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
         return service.signDocument(asicContent, signatureParameters, signatureValue);
     }

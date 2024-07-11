@@ -37,7 +37,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.validationreport.jaxb.RevocationStatusInformationType;
@@ -46,14 +46,14 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
-public class XAdESLevelLTRevokedTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTRevokedTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

@@ -36,6 +36,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -108,10 +109,10 @@ public abstract class AbstractCAdESCounterSignatureTest
 			for (DSSDocument original : originalDocuments) {
 				boolean found = false;
 
-				String originalDigest = original.getDigest(DigestAlgorithm.SHA256);
+				byte[] originalDigest = original.getDigestValue(DigestAlgorithm.SHA256);
 				for (DSSDocument retrieved : retrievedOriginalDocuments) {
-					String retrievedDigest = retrieved.getDigest(DigestAlgorithm.SHA256);
-					if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+					byte[] retrievedDigest = retrieved.getDigestValue(DigestAlgorithm.SHA256);
+					if (Arrays.equals(originalDigest, retrievedDigest)) {
 						found = true;
 					}
 				}

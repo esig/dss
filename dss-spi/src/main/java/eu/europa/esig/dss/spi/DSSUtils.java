@@ -145,6 +145,23 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Parses a {@code String} date to {@code Date}
+	 *
+	 * @param str {@link String} in RFC format, e.g. "2019-11-19T17:28:15Z"
+	 * @return {@link Date}
+	 */
+	public static Date parseRFCDate(final String str) {
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat(RFC3339_TIME_FORMAT);
+			sdf.setTimeZone(UTC_TIMEZONE);
+			sdf.setLenient(false);
+			return sdf.parse(str);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(String.format("String '%s' doesn't follow the pattern '%s'", str, RFC3339_TIME_FORMAT));
+		}
+	}
+
+	/**
 	 * Formats the date according to the given format (with system TimeZone)
 	 * 
 	 * @param date {@link Date} to transform to a String
@@ -490,11 +507,7 @@ public final class DSSUtils {
 	 * @return digest value
 	 */
 	public static byte[] digest(DigestAlgorithm digestAlgorithm, DSSDocument document) {
-		try (InputStream is = document.openStream()) {
-			return digest(digestAlgorithm, is);
-		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to compute digest : %s", e.getMessage()), e);
-		}
+		return document.getDigestValue(digestAlgorithm);
 	}
 
 	/**
@@ -655,6 +668,20 @@ public final class DSSUtils {
 			throw new DSSException(String.format("Unable to read InputStream : %s", e.getMessage()), e);
 		}
 	}
+
+	/**
+	 * Gets CMSSignedData from the {@code InputStream}
+	 *
+	 * @param inputStream {@link InputStream} contained CMSSignedData
+	 * @return {@link CMSSignedData}
+	 */
+	public static CMSSignedData toCMSSignedData(final InputStream inputStream) {
+		try (InputStream is = inputStream) {
+			return new CMSSignedData(is);
+		} catch (IOException | CMSException e) {
+			throw new DSSException("Not a valid CAdES file", e);
+		}
+	}
 	
 	/**
 	 * Gets CMSSignedData from the {@code document} bytes
@@ -663,11 +690,7 @@ public final class DSSUtils {
 	 * @return {@link CMSSignedData}
 	 */
 	public static CMSSignedData toCMSSignedData(final DSSDocument document) {
-		try (InputStream inputStream = document.openStream()) {
-			return new CMSSignedData(inputStream);
-		} catch (IOException | CMSException e) {
-			throw new DSSException("Not a valid CAdES file", e);
-		}
+		return toCMSSignedData(document.openStream());
 	}
 
 	/**
@@ -897,49 +920,6 @@ public final class DSSUtils {
 			throw new DSSException(String.format("Cannot read first byte of the document. Reason : %s", e.getMessage()), e);
 		}
 		return result[0];
-	}
-	
-	/**
-	 * Reads first {@code preamble.length} bytes of the {@code dssDocument} and compares them with {@code preamble}
-	 * 
-	 * @param dssDocument {@link DSSDocument} to read bytes from
-	 * @param preamble {@code byte} array to compare the beginning string with
-	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWith(inputStream, preamble)}
-	 */
-	@Deprecated
-	public static boolean startsWithBytes(final DSSDocument dssDocument, byte[] preamble) {
-		return startsWithBytes(dssDocument.openStream(), preamble);
-	}
-
-	/**
-	 * Reads first {@code preamble.length} bytes of the {@code byteArray} and compares them with {@code preamble}
-	 *
-	 * @param byteArray {@link DSSDocument} to compare bytes from
-	 * @param preamble {@code byte} array to compare the beginning string with
-	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWithBytes(byteArray, preamble)}
-	 */
-	@Deprecated
-	public static boolean startsWithBytes(final byte[] byteArray, byte[] preamble) {
-		return Utils.startsWith(byteArray, preamble);
-	}
-
-	/**
-	 * Reads first {@code preamble.length} bytes of the {@code InputStream} and compares them with {@code preamble}
-	 *
-	 * @param inputStream {@link InputStream} to read bytes from
-	 * @param preamble {@code byte} array to compare the beginning string with
-	 * @return TRUE if the document starts from {@code preamble}, FALSE otherwise
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.utils.Utils.startsWith(inputStream, preamble)}
-	 */
-	@Deprecated
-	public static boolean startsWithBytes(final InputStream inputStream, byte[] preamble) {
-		try (InputStream is = inputStream) {
-			return Utils.startsWith(is, preamble);
-		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to read document : %s", e.getMessage()), e);
-		}
 	}
 
 	/**
@@ -1219,8 +1199,7 @@ public final class DSSUtils {
 	private static String getObjectIdentifierValue(String oidOrUriString, ObjectIdentifierQualifier qualifier, boolean xades) {
 		String value = oidOrUriString;
 		if (Utils.isStringNotEmpty(oidOrUriString)) {
-			value = value.replace("\n", "");
-			value = Utils.trim(value);
+			value = trimWhitespacesAndNewlines(value);
 			if (DSSUtils.isUrnOid(value)) {
 				if (xades && !ObjectIdentifierQualifier.OID_AS_URN.equals(qualifier)) {
 					LOG.debug("When OID is encoded as URN, a Qualifier=\"OIDAsURN\" shall be used!");
@@ -1240,6 +1219,21 @@ public final class DSSUtils {
 			}
 		}
 		return value;
+	}
+
+	/**
+	 * Trims whitespaces and new line characters
+	 *
+	 * @param str {@link String} to trim
+	 * @return {@link String}
+	 */
+	public static String trimWhitespacesAndNewlines(String str) {
+		if (str != null) {
+			str = str.replace("\n", "");
+			str = str.replace("\r", "");
+			str = Utils.trim(str);
+		}
+		return str;
 	}
 	
 	/**
@@ -1368,7 +1362,7 @@ public final class DSSUtils {
 		} else if (signatureValue.length == 114) {
 			return SignatureAlgorithm.ED448;
 		} else {
-			LOG.error("Unable to identify EdDSA Signature Algorithm!");
+			LOG.warn("Unable to identify EdDSA Signature Algorithm!");
 			return null;
 		}
 	}

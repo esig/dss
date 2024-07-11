@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
@@ -48,7 +48,7 @@ public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidatio
 	private static DSSDocument document;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		document = new InMemoryDocument(PAdESTimestampWithOrphanRefsTest.class
 				.getResourceAsStream("/validation/dss-1959/pades-tst-with-orphan-refs.pdf"));
 	}

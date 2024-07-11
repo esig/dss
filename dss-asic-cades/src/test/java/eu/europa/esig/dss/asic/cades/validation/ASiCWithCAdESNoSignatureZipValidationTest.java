@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
 import java.util.List;
@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCWithCAdESNoSignatureZipValidationTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCWithCAdESNoSignatureZipValidationTest extends AbstractASiCWithCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

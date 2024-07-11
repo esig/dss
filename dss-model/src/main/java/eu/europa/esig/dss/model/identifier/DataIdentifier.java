@@ -28,7 +28,6 @@ import eu.europa.esig.dss.model.DigestDocument;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Base64;
 
 /**
  * The DSS identifier for a SignedData
@@ -92,7 +91,7 @@ public final class DataIdentifier extends Identifier {
 			if (document instanceof DigestDocument) {
 				return ((DigestDocument) document).getExistingDigest();
 			} else {
-				return new Digest(DIGEST_ALGO, Base64.getDecoder().decode(document.getDigest(DIGEST_ALGO)));
+				return new Digest(DIGEST_ALGO, document.getDigestValue(DIGEST_ALGO));
 			}
 		}
 		return null;

@@ -29,8 +29,8 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,7 +53,7 @@ public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignatu
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new PAdESService(certificateVerifier);
 
@@ -87,7 +87,7 @@ public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignatu
 
     @ParameterizedTest(name = "Sign PAdES {index} : {0} - {1} - {2} - {3}")
     @MethodSource("data")
-    public void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
+    void init(SignatureLevel level, SignaturePackaging packaging, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

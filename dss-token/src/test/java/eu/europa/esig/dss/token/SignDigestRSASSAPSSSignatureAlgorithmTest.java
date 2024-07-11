@@ -22,7 +22,6 @@ package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -37,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore.PasswordProtection;
 import java.security.Security;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignDigestRSASSAPSSSignatureAlgorithmTest {
+class SignDigestRSASSAPSSSignatureAlgorithmTest {
 
     static {
         Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -62,8 +62,7 @@ public class SignDigestRSASSAPSSSignatureAlgorithmTest {
     private static Collection<SignatureAlgorithm> data() {
         Collection<SignatureAlgorithm> rsaCombinations = new ArrayList<>();
         for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
-            SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
-                    EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1);
+            SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, digestAlgorithm);
             if (signatureAlgorithm != null) {
                 rsaCombinations.add(signatureAlgorithm);
             }
@@ -73,14 +72,14 @@ public class SignDigestRSASSAPSSSignatureAlgorithmTest {
 
     @ParameterizedTest(name = "SignatureAlgorithm {index} : {0}")
     @MethodSource("data")
-    public void testPkcs12PSS(SignatureAlgorithm signatureAlgorithm) throws IOException {
+    void testPkcs12PSS(SignatureAlgorithm signatureAlgorithm) throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
                 new PasswordProtection("password".toCharArray()))) {
 
             List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
             KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
 
-            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
+            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
 
             SignatureValue signValue = signatureToken.sign(toBeSigned, signatureAlgorithm, entry);
             assertNotNull(signValue.getAlgorithm());

@@ -34,14 +34,14 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Arrays;
 
-public class ASiCEXAdESLevelBSpecialCharsInReferenceURITest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESLevelBSpecialCharsInReferenceURITest extends AbstractASiCEXAdESTestSignature {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello World !".getBytes(), "012éù*34ä5µ£ 6789~#&()+=` @{[]}'.txt");
 
         signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -54,7 +54,7 @@ public class ASiCEXAdESLevelBSpecialCharsInReferenceURITest extends AbstractASiC
         dssReference.setId("r-" + signatureParameters.getDeterministicId());
         dssReference.setUri(documentToSign.getName());
         dssReference.setContents(documentToSign);
-        dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 
         signatureParameters.setReferences(Arrays.asList(dssReference));
 

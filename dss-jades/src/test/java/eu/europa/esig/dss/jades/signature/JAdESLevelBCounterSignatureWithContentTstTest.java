@@ -37,14 +37,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBCounterSignatureWithContentTstTest extends AbstractJAdESTestValidation {
+class JAdESLevelBCounterSignatureWithContentTstTest extends AbstractJAdESTestValidation {
 	
 	private JAdESService service;
 	private DSSDocument documentToSign;
@@ -62,7 +62,7 @@ public class JAdESLevelBCounterSignatureWithContentTstTest extends AbstractJAdES
 	private JAdESCounterSignatureParameters counterSignatureParameters;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		
 		service = new JAdESService(getCompleteCertificateVerifier());
@@ -84,10 +84,9 @@ public class JAdESLevelBCounterSignatureWithContentTstTest extends AbstractJAdES
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 
 		SignedDocumentValidator validator = getValidator(signedDocument);
@@ -95,12 +94,11 @@ public class JAdESLevelBCounterSignatureWithContentTstTest extends AbstractJAdES
 		
 		service.setTspSource(getGoodTsa());
 		TimestampToken contentTimestamp = service.getContentTimestamp(new InMemoryDocument(masterSignature.getSignatureValue()), counterSignatureParameters);
-		counterSignatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+		counterSignatureParameters.setContentTimestamps(Collections.singletonList(contentTimestamp));
 		
 		counterSignatureParameters.setSignatureIdToCounterSign(masterSignature.getId());
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
 		verify(counterSignedSignature);

@@ -33,21 +33,21 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
+class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
 
     private static CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.addTrustedCertSources(getTrustedCertSource());
-        certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         certificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());
     }
 

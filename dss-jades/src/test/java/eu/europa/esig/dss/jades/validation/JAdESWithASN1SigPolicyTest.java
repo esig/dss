@@ -25,7 +25,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithASN1SigPolicyTest extends AbstractJAdESTestValidation {
+class JAdESWithASN1SigPolicyTest extends AbstractJAdESTestValidation {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final DSSDocument POLICY_CONTENT = new FileDocument("src/test/resources/validation/signature-policy.der");

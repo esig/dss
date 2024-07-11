@@ -108,7 +108,7 @@ As mentioned before, in the present context, digital signatures are supported by
 
 The ITU-T X.509 Recommendation is a standard describing (among others) such a data structure, and public key certificates structured as per the specifications provided in that standard are commonly referred to as “X.509 public key certificates”.
 
-Furthermore, the IETF published the RFC 5280 (<<R23>>) which specifies a profile for X.509 public key certificates (and certificate revocation lists). For the remainder of this document, X.509 public key certificates are assumed to be profiled as per RFC 5280.
+Furthermore, the IETF published the RFC 5280 (<<R24>>) which specifies a profile for X.509 public key certificates (and certificate revocation lists). For the remainder of this document, X.509 public key certificates are assumed to be profiled as per RFC 5280.
 
 Certificates can be end-entity certificates or CA certificates:
 
@@ -132,11 +132,11 @@ A certificate contains among other things information on:
 ==== CRLs and OCSP
 As previously mentionned, a certificate can be revoked or suspended. This information is usually provided in the form of a Certificate Revocation List (CRL), or through the Online Certificate Status Protocol (OCSP).
 
-A CRL is a list of revoked (and/or suspended) certificates that is digitally signed and published by a CRL issuer. This issuer can be the CA having issued the certificates listed in the CRL, or it can be another CA in which case the CRL is called an “indirect CRL”. RFC 5280 (<<R23>>) provides a profile for X.509 CRLs.
+A CRL is a list of revoked (and/or suspended) certificates that is digitally signed and published by a CRL issuer. This issuer can be the CA having issued the certificates listed in the CRL, or it can be another CA in which case the CRL is called an “indirect CRL”. RFC 5280 (<<R24>>) provides a profile for X.509 CRLs.
 
-The OCSP is a protocol defined in RFC 6960 (<<R24>>) that enables the determination of the (revocation) status of a certificate without the use of a CRL. An OCSP request, containing (among other things) information on the certificate for which the (revocation) status is requested, is sent to a server and a response, containing information of that (revocation) status, is provided by an OCSP responder. OCSP responses are signed by the OCSP responder, and the OCSP responder can be the CA having issued the certificate or another CA in which case the OCSP responder is called a “delegated OCSP responder”.
+The OCSP is a protocol defined in RFC 6960 (<<R25>>) that enables the determination of the (revocation) status of a certificate without the use of a CRL. An OCSP request, containing (among other things) information on the certificate for which the (revocation) status is requested, is sent to a server and a response, containing information of that (revocation) status, is provided by an OCSP responder. OCSP responses are signed by the OCSP responder, and the OCSP responder can be the CA having issued the certificate or another CA in which case the OCSP responder is called a “delegated OCSP responder”.
 
-https://datatracker.ietf.org/doc/html/rfc5280#section-6.3[RFC 5280 section 6.3] describes an algorithm for the validation of CRLs, while Common PKI v2.0 part 5 section 2.3 (<<R25>>) describes an algorithm for checking the revocation status of a certificate using CRLs and OCSP responses.
+https://datatracker.ietf.org/doc/html/rfc5280#section-6.3[RFC 5280 section 6.3] describes an algorithm for the validation of CRLs, while Common PKI v2.0 part 5 section 2.3 (<<R26>>) describes an algorithm for checking the revocation status of a certificate using CRLs and OCSP responses.
 
 
 [[CA]]
@@ -200,7 +200,7 @@ The certificate path validation is an algorithm that seeks to verify the binding
 . certificate n is the certificate to be validated (i.e., the target certificate); and
 . for all x in {1, ..., n}, the certificate was valid at the time in question.
 
-Although RFC 5280 states that procedures performed to obtain the sequence of certificate that is provided to the certification path validation is outside its scope, Common PKI v2.0 part 5 section 2.1 (<<R25>>) provides one such possible procedure.
+Although RFC 5280 states that procedures performed to obtain the sequence of certificate that is provided to the certification path validation is outside its scope, Common PKI v2.0 part 5 section 2.1 (<<R26>>) provides one such possible procedure.
 
 An intuitive approach to build a prospective certification path is to start by looking at the “Authority Information Access” (AIA) extension of the target certificate (see https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.2.1[RFC 5280 section 4.2.2.1]) which, if present, frequently includes information on how to retrieve the certificate of the issuer of that certificate. Repeating this action on the certificate retrieved can then allow to build a prospective certification path.
 

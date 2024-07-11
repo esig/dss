@@ -30,19 +30,22 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
+import eu.europa.esig.dss.model.timedependent.BaseTimeDependent;
+import eu.europa.esig.dss.model.timedependent.MutableTimeDependentValues;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import org.junit.jupiter.api.Test;
 
 
-public class TimeDependentTest {
+class TimeDependentTest {
 
 	@Test
-	public void emptyCollection() {
+	void emptyCollection() {
 		final TimeDependentValues<BaseTimeDependent> coll = new TimeDependentValues<>();
 		assertFalse( coll.iterator().hasNext() );
 	}
 
 	@Test
-	public void oneEntryCollection() {
+	void oneEntryCollection() {
 		final BaseTimeDependent v1In = new BaseTimeDependent( null, null );
 		final TimeDependentValues<BaseTimeDependent> coll = new TimeDependentValues<>( Collections.singleton( v1In ) );
 		
@@ -56,7 +59,7 @@ public class TimeDependentTest {
 	}
 
 	@Test
-	public void oneAddOldestWithGap() {
+	void oneAddOldestWithGap() {
 		final BaseTimeDependent v1In = new BaseTimeDependent( new Date( 30000 ), null );
 		final MutableTimeDependentValues<BaseTimeDependent> coll = new MutableTimeDependentValues<>( Collections.singleton( v1In ) );
 		final BaseTimeDependent v2In = new BaseTimeDependent( new Date( 10000 ), new Date( 20000 ) );
@@ -86,7 +89,7 @@ public class TimeDependentTest {
 	}
 
 	@Test
-	public void oneAddOldestBackToBack() {
+	void oneAddOldestBackToBack() {
 		final Date dx = new Date( 30000 );
 		final BaseTimeDependent v1In = new BaseTimeDependent( dx, null );
 		final MutableTimeDependentValues<BaseTimeDependent> coll = new MutableTimeDependentValues<>( Collections.singleton( v1In ) );
@@ -117,7 +120,7 @@ public class TimeDependentTest {
 	}
 
 	@Test
-	public void oneAddOldestOverlap() {
+	void oneAddOldestOverlap() {
 		final BaseTimeDependent v1In = new BaseTimeDependent( new Date( 30000 ), null );
 		final MutableTimeDependentValues<BaseTimeDependent> coll = new MutableTimeDependentValues<>( Collections.singleton( v1In ) );
 		final BaseTimeDependent v2In = new BaseTimeDependent( new Date( 10000 ), new Date( 40000 ) );
@@ -130,7 +133,7 @@ public class TimeDependentTest {
 	}
 
 	@Test
-	public void oneAddOldestLimited() {
+	void oneAddOldestLimited() {
 		final Date dx = new Date( 30000 );
 		final BaseTimeDependent v1In = new BaseTimeDependent( dx, new Date( 40000 ) );
 		final MutableTimeDependentValues<BaseTimeDependent> coll = new MutableTimeDependentValues<>( Collections.singleton( v1In ) );

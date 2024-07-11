@@ -291,7 +291,7 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			ContentVerifierProvider contentVerifierProvider = jcaContentVerifierProviderBuilder.build(publicKey);
 			signatureValidity = SignatureValidity.get(basicOCSPResp.isSignatureValid(contentVerifierProvider));
 		} catch (Exception e) {
-			LOG.error("An error occurred during in attempt to check signature owner : ", e);
+			LOG.warn("An error occurred during in attempt to check signature owner : ", e);
 			signatureInvalidityReason = e.getClass().getSimpleName() + " - " + e.getMessage();
 			signatureValidity = SignatureValidity.INVALID;
 		}

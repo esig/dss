@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -45,7 +45,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJAdESTestSignature {
+class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJAdESTestSignature {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -76,7 +76,7 @@ public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJ
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
@@ -239,8 +239,8 @@ public class JAdESLevelTWithSignaturePolicyStoreClearEtsiUTest extends AbstractJ
 		assertEquals(policyDigestAlgoAndValue.getDigestMethod(), policyStoreDigestAlgoAndValue.getDigestMethod());
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 
-		assertEquals(SIGNATURE_POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()),
-				Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(SIGNATURE_POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()),
+				policyDigestAlgoAndValue.getDigestValue());
 	}
 
 	@Override

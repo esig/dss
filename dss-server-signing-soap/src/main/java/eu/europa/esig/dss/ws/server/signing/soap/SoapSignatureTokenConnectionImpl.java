@@ -73,6 +73,7 @@ public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConne
 	}
 
 	@Override
+	@Deprecated
 	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) {
 		return token.sign(toBeSigned, digestAlgorithm, mgf, alias);
 	}
@@ -88,6 +89,7 @@ public class SoapSignatureTokenConnectionImpl implements SoapSignatureTokenConne
 	}
 
 	@Override
+	@Deprecated
 	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) {
 		return token.signDigest(digest, mgf, alias);
 	}

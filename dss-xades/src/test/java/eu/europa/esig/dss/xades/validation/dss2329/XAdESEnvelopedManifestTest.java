@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2329
-public class XAdESEnvelopedManifestTest extends AbstractXAdESTestValidation {
+class XAdESEnvelopedManifestTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -66,7 +66,7 @@ public class XAdESEnvelopedManifestTest extends AbstractXAdESTestValidation {
             } else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
                 ++manifestRefCounter;
             }
-            if (Utils.isStringBlank(digestMatcher.getName())) {
+            if (Utils.isStringBlank(digestMatcher.getUri())) {
                 ++emptyRefCounter;
             }
         }

@@ -32,7 +32,7 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateRepor
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;
@@ -56,12 +56,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RemoteCertificateValidationServiceTest {
+class RemoteCertificateValidationServiceTest {
 	
 	private RemoteCertificateValidationService validationService;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		validationService = new RemoteCertificateValidationService();
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier();
 		verifier.setAIASource(new DefaultAIASource(new IgnoreDataLoader()));
@@ -69,7 +69,7 @@ public class RemoteCertificateValidationServiceTest {
 	}
 	
 	@Test
-	public void testWithCertificateChainAndValidationTime() {
+	void testWithCertificateChainAndValidationTime() {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
 		
 		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
@@ -83,7 +83,7 @@ public class RemoteCertificateValidationServiceTest {
 	}
 	
 	@Test
-	public void noCertificateChainAndValidationTimeProvidedTest() {
+	void noCertificateChainAndValidationTimeProvidedTest() {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
 		certificateDTO.setCertificateChain(null);
 		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
@@ -91,7 +91,7 @@ public class RemoteCertificateValidationServiceTest {
 	}
 	
 	@Test
-	public void noCertificateChainNoStrategyAndValidationTimeProvidedTest() {
+	void noCertificateChainNoStrategyAndValidationTimeProvidedTest() {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
 		certificateDTO.setCertificateChain(null);
 		certificateDTO.setTokenExtractionStrategy(null);
@@ -100,7 +100,7 @@ public class RemoteCertificateValidationServiceTest {
 	}
 
 	@Test
-	public void testWithValidationPolicy() {
+	void testWithValidationPolicy() {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
 
 		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
@@ -114,7 +114,7 @@ public class RemoteCertificateValidationServiceTest {
 	}
 
 	@Test
-	public void testWithDefaultValidationPolicy() throws Exception {
+	void testWithDefaultValidationPolicy() throws Exception {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
 
 		Unmarshaller unmarshaller = ValidationPolicyFacade.newFacade().getUnmarshaller(true);
@@ -136,7 +136,7 @@ public class RemoteCertificateValidationServiceTest {
 	}
 
 	@Test
-	public void testWithDefaultAndOverwrittenValidationPolicy() throws Exception {
+	void testWithDefaultAndOverwrittenValidationPolicy() throws Exception {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
 
 		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
@@ -161,7 +161,7 @@ public class RemoteCertificateValidationServiceTest {
 	}
 
 	@Test
-	public void testWithNoCertificateProvided() {
+	void testWithNoCertificateProvided() {
 		assertThrows(NullPointerException.class, () -> validationService.validateCertificate(null));
 		CertificateToValidateDTO emptyDTO=	new CertificateToValidateDTO();
 		assertThrows(NullPointerException.class, () -> validationService.validateCertificate(emptyDTO));

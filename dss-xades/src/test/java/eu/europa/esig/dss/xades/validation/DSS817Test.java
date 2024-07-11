@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class DSS817Test extends AbstractXAdESTestValidation {
+class DSS817Test extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

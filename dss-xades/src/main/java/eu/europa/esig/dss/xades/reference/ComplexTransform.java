@@ -23,13 +23,12 @@ package eu.europa.esig.dss.xades.reference;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
@@ -83,12 +82,6 @@ public abstract class ComplexTransform extends AbstractTransform {
 			throw new DSSException(String.format("Cannot initialize a transform [%s]", algorithm), e);
 		}
 	}
-	
-	@Override
-	@Deprecated
-	public byte[] getBytesAfterTransformation(Node node) {
-		return performTransform(new DSSTransformOutput(node)).getBytes();
-	}
 
 	@Override
 	public DSSTransformOutput performTransform(DSSTransformOutput transformOutput) {
@@ -100,18 +93,6 @@ public abstract class ComplexTransform extends AbstractTransform {
 			throw new DSSException(String.format("Cannot process transformation [%s] on the given DOM object. Reason : [%s]",
 					algorithm, e.getMessage()), e);
 		}
-	}
-
-	/**
-	 * Gets {@code XMLSignatureInput} for the given node
-	 *
-	 * @param node {@link Node}
-	 * @return {@link XMLSignatureInput}
-	 * @deprecated since DSS 5.13. To be removed.
-	 */
-	@Deprecated
-	protected XMLSignatureInput getXMLSignatureInput(Node node) {
-		return new XMLSignatureInput(node);
 	}
 
 }

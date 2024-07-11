@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -42,14 +42,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCSCAdESLevelBWithZipCommentTest extends AbstractASiCSCAdESTestSignature {
+class ASiCSCAdESLevelBWithZipCommentTest extends AbstractASiCSCAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -68,7 +68,7 @@ public class ASiCSCAdESLevelBWithZipCommentTest extends AbstractASiCSCAdESTestSi
 
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);
+		DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);
 		ASiCContent extract = extractor.extract();
 
 		assertEquals(0, extract.getUnsupportedDocuments().size());

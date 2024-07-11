@@ -37,12 +37,12 @@ import java.security.Signature;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EncodingASN1SignatureValueTest {
+class EncodingASN1SignatureValueTest {
 
 	private static final String HELLO_WORLD = "Hello World";
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		String test = "MEQCIEJNA0AElH/vEH9xLxvqrwCqh+yUh9ACL2vU/2eObRbTAiAxTLSWSioJrfSwPkKcypf+KCHvMGdwZbRWQHnZN2sDnQ==";
 		byte[] signatureValue = DatatypeConverter.parseBase64Binary(test);
 
@@ -54,7 +54,7 @@ public class EncodingASN1SignatureValueTest {
 	}
 
 	@Test
-	public void testDSA() throws Exception {
+	void testDSA() throws Exception {
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
 		KeyPair pair = gen.generateKeyPair();
 
@@ -68,7 +68,7 @@ public class EncodingASN1SignatureValueTest {
 	}
 
 	@Test
-	public void testRSA() throws Exception {
+	void testRSA() throws Exception {
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
 		KeyPair pair = gen.generateKeyPair();
 
@@ -80,7 +80,7 @@ public class EncodingASN1SignatureValueTest {
 	}
 
 	@Test
-	public void testDSA2048() throws Exception {
+	void testDSA2048() throws Exception {
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("DSA");
 		gen.initialize(2048); // works with 4096 too but it takes lot of time
 		KeyPair pair = gen.generateKeyPair();
@@ -93,7 +93,7 @@ public class EncodingASN1SignatureValueTest {
 	}
 
 	@Test
-	public void testECDSA() throws Exception {
+	void testECDSA() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("ECDSA");
 		KeyPair pair = gen.generateKeyPair();
@@ -115,7 +115,7 @@ public class EncodingASN1SignatureValueTest {
 	}
 
 	@Test
-	public void testECDSA192() throws Exception {
+	void testECDSA192() throws Exception {
 		Security.addProvider(new BouncyCastleProvider());
 		KeyPairGenerator gen = KeyPairGenerator.getInstance("ECDSA");
 		gen.initialize(192);
@@ -138,7 +138,7 @@ public class EncodingASN1SignatureValueTest {
 	}
 
 	@Test
-	public void testECDSA_CVC_ConcatenatedSignature() throws IOException {
+	void testECDSA_CVC_ConcatenatedSignature() throws IOException {
 		assertCvcSignatureValid("2B9099C9885DDB5BFDA2E9634905B9A63E7E3A6EC87BDC0A89014716B23F00B0AD787FC8D0DCF28F007E7DEC097F30DA892BE2AC61D90997DCDF05740E4D5B0C");
 		assertCvcSignatureValid("947b79069e6a1e3316ec15d696649a4b67c6c188df9bc05458f3b0b94907f3fb52522d4cae24a75735969cff556b1476a5ccbe37ca65a928782c14f299f3b2d3");
 		assertCvcSignatureValid("28a1583e58e93a661322f776618d83b023bdc52b2e909cf9d53030b9260ed667b588fd39eeee5b1b55523a7e71cb4187d8b1bbf56c1581fc845863157d279cf5");

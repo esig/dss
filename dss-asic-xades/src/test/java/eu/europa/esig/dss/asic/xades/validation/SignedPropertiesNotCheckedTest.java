@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * one referencing one of them)
  * plus one ds:Reference element referencing xades:SignedProperties element.
  */
-public class SignedPropertiesNotCheckedTest extends AbstractASiCWithXAdESTestValidation {
+class SignedPropertiesNotCheckedTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

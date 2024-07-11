@@ -15,6 +15,9 @@
 				},
 				{
 					"properties": {
+						"iat": {
+							"$ref": "rfcs/rfc7519.json#/definitions/iat"
+						},
 						"sigT": {
 							"$ref": "19182-jsonSchema.json#/definitions/sigT"
 						},
@@ -67,6 +70,19 @@
 								"x5t#o"
 							]
 						}
+					],
+					"oneOf": [
+						{
+							"required": [
+								"iat"
+							]
+						},
+						{
+							"required": [
+								"sigT"
+							]
+						}
+
 					],
 					"not": {
 						"required": [

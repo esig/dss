@@ -23,7 +23,7 @@ package eu.europa.esig.dss.tsl.dto.condition;
 
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.Condition;
+import eu.europa.esig.dss.model.tsl.Condition;
 
 import java.util.Objects;
 

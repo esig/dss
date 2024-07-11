@@ -5,5 +5,5 @@ $ echo '{
   "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIH+DsWV/8fxTuS3BgUih1l38LUsfo9Z3KErd0gASbZBp"
 }' | http POST 'http://localhost:8080/services/rest/server-signing/sign-digest/certificate' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
-    'Content-Type:application/json; charset=UTF-8'
+    'Content-Type:application/json'
 ----

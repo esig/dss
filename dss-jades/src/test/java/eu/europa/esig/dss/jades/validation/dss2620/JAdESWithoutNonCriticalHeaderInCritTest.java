@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JAdESWithoutNonCriticalHeaderInCritTest extends AbstractJAdESTestValidation {
+class JAdESWithoutNonCriticalHeaderInCritTest extends AbstractJAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -37,7 +37,9 @@ public class JAdESWithoutNonCriticalHeaderInCritTest extends AbstractJAdESTestVa
 
     @Override
     protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-        assertEquals(SignatureLevel.JSON_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+        super.checkSignatureLevel(diagnosticData);
+        // valid since last ETSI TS 119 182-1 update
+        assertEquals(SignatureLevel.JAdES_BASELINE_B, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
     }
 
 }

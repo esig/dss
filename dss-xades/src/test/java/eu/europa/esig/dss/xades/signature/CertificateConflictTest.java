@@ -34,8 +34,8 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -49,12 +49,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CertificateConflictTest {
+class CertificateConflictTest {
 
 	private final PasswordProtection passwordProtection = new PasswordProtection("1qaz@WSX".toCharArray());
 
 	@Test
-	public void testXadesCaDuplicate() throws IOException {
+	void testXadesCaDuplicate() throws IOException {
 		DSSDocument signedDocument = xadesSign(new FileDocument("src/test/resources/sample.xml"));
 		assertEquals(MimeTypeEnum.XML, signedDocument.getMimeType());
 		xadesVerifyPreviousKeystore(signedDocument);

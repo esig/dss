@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>sample-signed-xades-baseline-b.xml</DocumentName>
+    <ValidationDate>2021-02-04T08:55:50Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-02AA8ECDB7A68731BCAF2FD8E28FA75E16724036604594EF0619474787C9694A">
+            <DAIdentifier>id-ffb596d0d9a10815978f54fc09eea41a</DAIdentifier>
+            <SignatureFilename>sample-signed-xades-baseline-b.xml</SignatureFilename>
+            <ClaimedSigningTime>2021-02-04T08:55:47Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="OBJECT" id="r-id-ffb596d0d9a10815978f54fc09eea41a-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-ffb596d0d9a10815978f54fc09eea41a">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>ux1L5S2adKPCTCWzwa1iD28r2BnjN9FS/EAVUhsTruA=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-96EFEB0433CB3144822A8647317D75E7EE5E26C523F0731CAC18CCAA48259908"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-96EFEB0433CB3144822A8647317D75E7EE5E26C523F0731CAC18CCAA48259908"/>
+                <ChainItem Certificate="C-E6E41B57F9015B4D885CB17F168DBC42E5286E6B1258B4FBEEA38393440AED5D"/>
+                <ChainItem Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            </CertificateChain>
+            <MimeType>text/xml</MimeType>
+            <CommitmentTypeIndications/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-96EFEB0433CB3144822A8647317D75E7EE5E26C523F0731CAC18CCAA48259908">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MGIwXKRaMFgxGzAZBgNVBAMMEm9jc3Atc2tpcC12YWxpZC1jYTEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVAgID9A==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA512</DigestMethod>
+                            <DigestValue>SGH3GWU0ghwVDZPHY1L3diTFqj5S2u+7VRf5XKo32N7JbpUcuwkTspiJq24/B5/TycsWcprGigjZBajDLH+fqw==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-E6E41B57F9015B4D885CB17F168DBC42E5286E6B1258B4FBEEA38393440AED5D">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-363832F48AC40506E044AA9F063CFB9BA485B423F8B8F4C96B970AA1E33D5BFB">
+                    <Scope>PARTIAL</Scope>
+                    <Name>o-id-ffb596d0d9a10815978f54fc09eea41a-1</Name>
+                    <Description>The XML element with ID 'o-id-ffb596d0d9a10815978f54fc09eea41a-1' with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Base64 Decoding</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Rm+U14LsibaQddNh0paDHdNPrXWjZrPrAkXFTOf1+6M=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>UEXjoCuuHcAvGi6lc6qdXilpTLZcs2uw2t/B1g4B77s=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>Lag3Vj2MoGrXoZHy74F3MG/AKzfOzCs0znUIgztwVf4O+OvaM2kVPM38FNs4ObmTOcZJT9b0fFY9DAdADgsrgM0lhZZIDb49a9aM18TYBhafQlgACIWE3dQgyPz06FZ2Y6i1jy/f6rE8Qrfh7kmvxYdv+hBPbWBwUlDAxuTm6zZpU7raDIV8vqKChpEDHWUP0kZx5wqIcg6lAkgsu9Pw9ta8b4qYDDArjRh59HxzmM+/hhErlWIfvwlcfwp6O6W1HTvcZpyICMf3gKWpFIl5MDCr0SAPRpN+hBKtavRkpJU1x83td/0DIzU3QGWUCnn0l9qnGO3BdBHq3Uaa44nXug==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-96EFEB0433CB3144822A8647317D75E7EE5E26C523F0731CAC18CCAA48259908">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-skip-expired-ocsp-user</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-skip-expired-ocsp-user</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-skip-valid-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-skip-valid-ca</IssuerDistinguishedName>
+            <SerialNumber>1012</SerialNumber>
+            <CommonName>ocsp-skip-expired-ocsp-user</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2022-01-04T08:40:45Z</NotAfter>
+            <NotBefore>2020-03-04T08:40:45Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-366C4B2EE93282F158FB1EDFBC052E739FA4861554502E3365412B655D866D0D</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-E6E41B57F9015B4D885CB17F168DBC42E5286E6B1258B4FBEEA38393440AED5D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-E6E41B57F9015B4D885CB17F168DBC42E5286E6B1258B4FBEEA38393440AED5D"/>
+                <ChainItem Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://localhost:9999/pki-factory/crl/ocsp-skip-valid-ca.crl</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://localhost:9999/pki-factory/ocsp/ocsp-skip-valid-ca</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-A490F4D57AF16788419404D2A6D4AEF045E415973B981DBF9A0D8C5B2E421B84">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lu/rBDPLMUSCKoZHMX115+5eJsUj8HMcrBjMqkglmQg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-skip-root-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-skip-root-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-skip-root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-skip-root-ca</IssuerDistinguishedName>
+            <SerialNumber>1000</SerialNumber>
+            <CommonName>ocsp-skip-root-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2022-02-04T08:40:43Z</NotAfter>
+            <NotBefore>2020-02-04T08:40:43Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-482BCA9A7D4E2A0DAA0CB5D564DE2D047DCA66FFBA9F90B1EED85FF34BF5C915</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>u7nGtdOyf/iqH/RKopzqsqEwZBUr6N5oDWGCNhjnzP8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-DC49A6DDBE796293D58C53B62D7B5DBFC1FDF93D51BFBA5617E60F2939921300">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-skip-expired-responder</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-skip-expired-responder</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-skip-root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-skip-root-ca</IssuerDistinguishedName>
+            <SerialNumber>1003</SerialNumber>
+            <CommonName>ocsp-skip-expired-responder</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2021-01-04T08:40:43Z</NotAfter>
+            <NotBefore>2020-11-04T08:40:43Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-6F2A24E0B7F7F18063D84F4026BD612CDF452206D4312C750C8F4E8F4B2820CE</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>3Emm3b55YpPVjFO2LXtdv8H9+T1Rv7pWF+YPKTmSEwA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-E6E41B57F9015B4D885CB17F168DBC42E5286E6B1258B4FBEEA38393440AED5D">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-skip-valid-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-skip-valid-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-skip-root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-skip-root-ca</IssuerDistinguishedName>
+            <SerialNumber>1004</SerialNumber>
+            <CommonName>ocsp-skip-valid-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2024-02-04T08:40:43Z</NotAfter>
+            <NotBefore>2018-02-04T08:40:43Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-135FFBE9A102029D376A618F07DF49BECD9B94EE7A5F0AC15A7985A45270CC86</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://localhost:9999/pki-factory/crt/ocsp-skip-root-ca.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://localhost:9999/pki-factory/crl/ocsp-skip-root-ca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <Revocations>
+                <CertificateRevocation Revocation="R-B9C9909E9466265591EADA473F9E5D8FB349C9F97C392DE1091EDCDF275E77EC">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>5uQbV/kBW02IXLF/Fo28QuUobmsSWLT77qODk0QK7V0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-A490F4D57AF16788419404D2A6D4AEF045E415973B981DBF9A0D8C5B2E421B84">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://localhost:9999/pki-factory/ocsp/ocsp-skip-valid-ca</SourceAddress>
+            <ProductionDate>2021-02-04T08:55:50Z</ProductionDate>
+            <ThisUpdate>2021-02-04T08:55:50Z</ThisUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-DC49A6DDBE796293D58C53B62D7B5DBFC1FDF93D51BFBA5617E60F2939921300"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-DC49A6DDBE796293D58C53B62D7B5DBFC1FDF93D51BFBA5617E60F2939921300"/>
+                <ChainItem Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-DC49A6DDBE796293D58C53B62D7B5DBFC1FDF93D51BFBA5617E60F2939921300">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>Z9m7GB29Yv0MLzsjY2MgUJxJp2E=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>pJD01XrxZ4hBlATSptSu8EXkFZc7mB2/mg2MWy5CG4Q=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-B9C9909E9466265591EADA473F9E5D8FB349C9F97C392DE1091EDCDF275E77EC">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://localhost:9999/pki-factory/crl/ocsp-skip-root-ca.crl</SourceAddress>
+            <ProductionDate>2021-02-04T08:55:50Z</ProductionDate>
+            <ThisUpdate>2021-02-04T08:55:50Z</ThisUpdate>
+            <NextUpdate>2021-08-04T07:55:50Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BBB9C6B5D3B27FF8AA1FF44AA29CEAB2A13064152BE8DE680D61823618E7CCFF"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ucmQnpRmJlWR6tpHP55dj7NJyfl8OS3hCR7c3yded+w=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OriginalDocuments>
+        <SignerData Id="D-363832F48AC40506E044AA9F063CFB9BA485B423F8B8F4C96B970AA1E33D5BFB">
+            <ReferencedName>o-id-ffb596d0d9a10815978f54fc09eea41a-1</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

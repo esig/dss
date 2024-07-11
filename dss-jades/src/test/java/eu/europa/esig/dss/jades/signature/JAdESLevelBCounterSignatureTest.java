@@ -49,7 +49,7 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.lang.JoseException;
@@ -77,7 +77,7 @@ public class JAdESLevelBCounterSignatureTest extends AbstractJAdESCounterSignatu
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

@@ -39,17 +39,17 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class ASiCEXAdESLevelBPolicyIdTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESLevelBPolicyIdTest extends AbstractASiCEXAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();

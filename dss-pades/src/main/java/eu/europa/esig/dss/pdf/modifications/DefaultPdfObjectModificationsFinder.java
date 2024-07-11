@@ -24,6 +24,8 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
+import eu.europa.esig.dss.pdf.PdfObject;
+import eu.europa.esig.dss.pdf.PdfSimpleObject;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -50,8 +52,11 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
     /** Defines the maximum value of enveloped objects tree deepness to be checked */
     private int maximumObjectVerificationDeepness = 500;
 
+    /** Defines whether an integer shall be promoted to a real for comparison against a real number */
+    private boolean laxNumericComparison = true;
+
     /** Used to categorize found object modifications to different groups */
-    private PdfObjectModificationsFilter pdfObjectModificationsFilter = new PdfObjectModificationsFilter();
+    private PdfObjectModificationsFilter pdfObjectModificationsFilter;
 
     /**
      * Default constructor instantiating object with default configuration
@@ -76,6 +81,30 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
     }
 
     /**
+     * Sets whether an integer number shall be promoted to a real for comparison against a real number.
+     * Example: when enabled, numbers 612.0 and 612 would be considered as equal.
+     * If disabled, the numbers will not be considered as equivalent.
+     * Default: TRUE (integer number is promoted to real for comparison against real number)
+     *
+     * @param laxNumericComparison whether the integer number shall be promoted to a real for comparison against a real number
+     */
+    public void setLaxNumericComparison(boolean laxNumericComparison) {
+        this.laxNumericComparison = laxNumericComparison;
+    }
+
+    /**
+     * Gets a {@code PdfObjectModificationsFilter}. If not set, creates a new instance.
+     *
+     * @return {@link PdfObjectModificationsFilter}
+     */
+    public PdfObjectModificationsFilter getPdfObjectModificationsFilter() {
+        if (pdfObjectModificationsFilter == null) {
+            pdfObjectModificationsFilter = new PdfObjectModificationsFilter();
+        }
+        return pdfObjectModificationsFilter;
+    }
+
+    /**
      * Sets the {@code PdfObjectModificationsFilter} used to categorize found differences between PDF objects.
      *
      * @param pdfObjectModificationsFilter {@link PdfObjectModificationsFilter}
@@ -88,7 +117,7 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
     @Override
     public PdfObjectModifications find(PdfDocumentReader originalRevisionReader, PdfDocumentReader finalRevisionReader) {
         final Set<ObjectModification> objectModifications = findObjectModifications(originalRevisionReader, finalRevisionReader);
-        return pdfObjectModificationsFilter.filter(objectModifications);
+        return getPdfObjectModificationsFilter().filter(objectModifications);
     }
 
     private Set<ObjectModification> findObjectModifications(final PdfDocumentReader originalRevisionReader,
@@ -112,7 +141,7 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         final Set<ObjectModification> objectModifications = new LinkedHashSet<>();
         compareDictsRecursively(objectModifications, new HashSet<>(), new PdfObjectTree(),
                 originalRevisionDict, finalRevisionDict);
-        return pdfObjectModificationsFilter.filter(objectModifications);
+        return getPdfObjectModificationsFilter().filter(objectModifications);
     }
 
     private void compareDictsRecursively(Set<ObjectModification> modifications, Set<String> processedObjects,
@@ -135,7 +164,7 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
             final PdfObjectTree currentObjectTree = objectTree.copy();
             if (!signedRevKeyList.contains(key)) {
                 currentObjectTree.addKey(key);
-                Object finalObject = finalDict.getObject(key);
+                PdfObject finalObject = finalDict.getObject(key);
                 if (finalObject instanceof PdfDict || finalObject instanceof PdfArray) {
                     Long objectNumber = finalDict.getObjectNumber(key);
                     addProcessedReference(processedObjects, currentObjectTree, key, objectNumber);
@@ -156,7 +185,7 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
     }
 
     private void compareObjectsRecursively(Set<ObjectModification> modifications, Set<String> processedObjects,
-                                                  PdfObjectTree objectTree, String key, Object signedObject, Object finalObject) {
+                                                  PdfObjectTree objectTree, String key, PdfObject signedObject, PdfObject finalObject) {
         if (maximumObjectVerificationDeepness < objectTree.getChainDeepness()) {
             LOG.warn("Maximum objects verification deepness has been reached : {}. " +
                     "Chain of objects is skipped.", maximumObjectVerificationDeepness);
@@ -202,28 +231,51 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
                 compareArraysRecursively(modifications, processedObjects, objectTree, key,
                         finalArray, signedArray, false);
 
-            } else if (signedObject instanceof String && finalObject instanceof String) {
-                if (!signedObject.equals(finalObject)) {
-                    modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Object changed with key '{}'.", objectTree);
+            } else if (signedObject instanceof PdfSimpleObject && finalObject instanceof PdfSimpleObject) {
+                Object signedObjectValue = signedObject.getValue();
+                Object finalObjectValue = finalObject.getValue();
+                if (signedObjectValue instanceof String && finalObjectValue instanceof String) {
+                    if (!signedObjectValue.equals(finalObjectValue)) {
+                        modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Object changed with key '{}'.", objectTree);
+                        }
                     }
-                }
 
-            } else if (signedObject instanceof Number && finalObject instanceof Number) {
-                if (!signedObject.equals(finalObject)) {
-                    modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Object changed with key '{}'.", objectTree);
-                    }
-                }
+                } else if (signedObjectValue instanceof Number && finalObjectValue instanceof Number) {
+                    if (!signedObjectValue.equals(finalObjectValue)) {
+                        if (!laxNumericComparison) {
+                            modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Object changed with key '{}'.", objectTree);
+                            }
 
-            } else if (signedObject instanceof Boolean && finalObject instanceof Boolean) {
-                if (!signedObject.equals(finalObject)) {
-                    modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Object changed with key '{}'.", objectTree);
+                        } else if (((Number) signedObjectValue).floatValue() != ((Number) finalObjectValue).floatValue()) {
+                            modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Object changed with key '{}'.", objectTree);
+                            }
+
+                        } else {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Number object with key changed type '{}'. " +
+                                        "Set #setLaxNumericComparison(false) to return a warning.", objectTree);
+                            }
+                        }
                     }
+
+                } else if (signedObjectValue instanceof Boolean && finalObjectValue instanceof Boolean) {
+                    if (!signedObjectValue.equals(finalObjectValue)) {
+                        modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Object changed with key '{}'.", objectTree);
+                        }
+                    }
+
+                } else {
+                    modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                    LOG.warn("Unsupported objects found with key '{}' of types '{}' and '{}'",
+                            objectTree, signedObject.getClass(), finalObject.getClass());
                 }
 
             } else {
@@ -239,8 +291,8 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         for (int i = 0; i < firstArray.size(); i++) {
             final PdfObjectTree currentObjectTree = objectTree.copy();
 
-            Object signedRevObject = firstArray.getObject(i);
-            Object finalRevObject = null;
+            PdfObject signedRevObject = firstArray.getObject(i);
+            PdfObject finalRevObject = null;
 
             Long objectNumber = firstArray.getObjectNumber(i);
             if (objectNumber != null) {

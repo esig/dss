@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithXAdESEvidenceRecordValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
+class ASiCEWithXAdESEvidenceRecordValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -59,9 +59,9 @@ public class ASiCEWithXAdESEvidenceRecordValidationTest extends AbstractASiCWith
             assertNotNull(digestMatcher.getDigestValue());
             assertTrue(digestMatcher.isDataFound());
             assertTrue(digestMatcher.isDataIntact());
-            if ("test.zip".equals(digestMatcher.getName())) {
+            if ("test.zip".equals(digestMatcher.getDocumentName())) {
                 zipFileFound = true;
-            } else if ("test.txt".equals(digestMatcher.getName())) {
+            } else if ("test.txt".equals(digestMatcher.getDocumentName())) {
                 txtFileFound = true;
             }
         }

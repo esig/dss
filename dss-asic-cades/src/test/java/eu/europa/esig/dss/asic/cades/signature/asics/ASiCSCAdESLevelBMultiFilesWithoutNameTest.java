@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -44,14 +44,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
+class ASiCSCAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithCAdESService service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns = new ArrayList<>();
 	
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes()));
@@ -68,7 +68,7 @@ public class ASiCSCAdESLevelBMultiFilesWithoutNameTest extends AbstractASiCSWith
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(new InMemoryDocument(byteArray));
+		DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(new InMemoryDocument(byteArray));
 		ASiCContent result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());

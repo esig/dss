@@ -35,14 +35,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
-public class JAdESLevelBWithContentTimestampTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithContentTimestampTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

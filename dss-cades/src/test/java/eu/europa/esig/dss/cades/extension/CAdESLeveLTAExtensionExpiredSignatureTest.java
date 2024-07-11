@@ -28,8 +28,8 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2369
-public class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTestExtension {
+class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTestExtension {
 
     private DSSDocument document;
     private CAdESService service;
@@ -48,7 +48,7 @@ public class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTest
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         document = new FileDocument("src/test/resources/validation/Signature-C-CZ_SIX-1.p7m");
 
         certificateVerifier = getOfflineCertificateVerifier();
@@ -66,7 +66,7 @@ public class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTest
         assertTrue(exception.getMessage().contains("The signing certificate has expired and " +
                 "there is no POE during its validity range :"));
 
-        certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 
         DSSDocument extendedDocument = extendSignature(document);
         verify(extendedDocument);

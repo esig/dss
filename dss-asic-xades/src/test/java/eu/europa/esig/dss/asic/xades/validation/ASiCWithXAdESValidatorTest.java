@@ -22,14 +22,15 @@ package eu.europa.esig.dss.asic.xades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.test.validation.AbstractTestValidator;
+import eu.europa.esig.dss.test.validation.AbstractTestDocumentValidator;
+import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
+class ASiCWithXAdESValidatorTest extends AbstractTestDocumentValidator {
 
 	@Override
 	protected SignedDocumentValidator initEmptyValidator() {
@@ -79,23 +80,23 @@ public class ASiCWithXAdESValidatorTest extends AbstractTestValidator {
 	}
 
 	@Test
-	public void validateEmptyContainer() {
+	void validateEmptyContainer() {
 		DSSDocument document = new FileDocument("src/test/resources/signable/empty.zip");
-		SignedDocumentValidator validator = initValidator(document);
+		DocumentValidator validator = initValidator(document);
 		validate(validator, false);
 	}
 
 	@Test
-	public void validateZipContainer() {
+	void validateZipContainer() {
 		DSSDocument document = new FileDocument("src/test/resources/signable/test.zip");
-		SignedDocumentValidator validator = initValidator(document);
+		DocumentValidator validator = initValidator(document);
 		validate(validator, false);
 	}
 
 	@Test
-	public void validateEvidenceRecordContainer() {
+	void validateEvidenceRecordContainer() {
 		DSSDocument document = new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce");
-		SignedDocumentValidator validator = initValidator(document);
+		DocumentValidator validator = initValidator(document);
 		validate(validator, false);
 	}
 

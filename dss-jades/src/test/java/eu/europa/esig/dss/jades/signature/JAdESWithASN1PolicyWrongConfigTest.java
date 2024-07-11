@@ -33,10 +33,10 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.BasicASN1SignaturePolicyValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithASN1PolicyWrongConfigTest extends AbstractJAdESTestSignature {
+class JAdESWithASN1PolicyWrongConfigTest extends AbstractJAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -61,14 +61,14 @@ public class JAdESWithASN1PolicyWrongConfigTest extends AbstractJAdESTestSignatu
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.json");
 
         Policy signaturePolicy = new Policy();
         signaturePolicy.setId("urn:oid:" + SIGNATURE_POLICY_ID);
         signaturePolicy.setSpuri(HTTP_SPURI_TEST);
 
-        BasicASNSignaturePolicyValidator asnSignaturePolicyValidator = new BasicASNSignaturePolicyValidator();
+        BasicASN1SignaturePolicyValidator asnSignaturePolicyValidator = new BasicASN1SignaturePolicyValidator();
         Digest digest = asnSignaturePolicyValidator.getComputedDigest(POLICY_CONTENT, DigestAlgorithm.SHA256);
         signaturePolicy.setDigestAlgorithm(digest.getAlgorithm());
         signaturePolicy.setDigestValue(digest.getValue());

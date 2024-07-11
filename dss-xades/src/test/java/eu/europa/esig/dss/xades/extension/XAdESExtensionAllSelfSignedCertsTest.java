@@ -20,16 +20,14 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,80 +35,306 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionAllSelfSignedCertsTest extends PKIFactoryAccess {
+class XAdESExtensionAllSelfSignedCertsTest extends AbstractXAdESTestExtension {
+
+	private SignatureLevel originalSignatureLevel;
+	private SignatureLevel finalSignatureLevel;
 	
 	private DSSDocument documentToSign;
-	private XAdESSignatureParameters parameters;
 	private XAdESService service;
+	private CertificateVerifier certificateVerifier;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
-		
-		parameters = new XAdESSignatureParameters();
-		parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-		parameters.setSigningCertificate(getSigningCert());
-		parameters.setCertificateChain(getCertificateChain());
-		parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        service = new XAdESService(getCompleteCertificateVerifier());
+		certificateVerifier = getCompleteCertificateVerifier();
+		service = new XAdESService(certificateVerifier);
         service.setTspSource(getSelfSignedTsa());
 	}
 
 	@Test
-	public void bToTTest() {
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-        DSSDocument signedDocument = sign();
-        
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		DSSDocument extendedDocument = extend(signedDocument);
+	void bToTTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		finalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+		DSSDocument extendedDocument = extendSignature(signedDocument);
 		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
 	}
 
 	@Test
-	public void bToLTTest() {
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		DSSDocument signedDocument = sign();
+	void bToLTTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
-		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LT;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
 	}
 
 	@Test
-	public void tToLTTest() {
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		DSSDocument signedDocument = sign();
+	void tToLTTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
-		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LT;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
 	}
 
 	@Test
-	public void tToLTATest() {
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
-		DSSDocument signedDocument = sign();
+	void bToLTATest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
 
-		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		Exception exception = assertThrows(IllegalInputException.class, () -> extend(signedDocument));
-		assertEquals("Cannot extend signature. The signature contains only self-signed certificate chains.", exception.getMessage());
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LTA;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
 	}
-	
-	private DSSDocument sign() {
-        ToBeSigned dataToSign = service.getDataToSign(documentToSign, parameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, parameters.getDigestAlgorithm(), getPrivateKeyEntry());
-        return service.signDocument(documentToSign, parameters, signatureValue);
+
+	@Test
+	void tToLTATest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LTA;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
 	}
-	
-	private DSSDocument extend(DSSDocument document) {
-		return service.extendDocument(document, parameters);
+
+	@Test
+	void bToCTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_C;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
+	}
+
+	@Test
+	void tToCTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_C;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
+	}
+
+	@Test
+	void bToXTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_X;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+	}
+
+	@Test
+	void tToXTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_X;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+	}
+
+	@Test
+	void bToXLTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_XL;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+	}
+
+	@Test
+	void tToXLTest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_XL;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+	}
+
+	@Test
+	void bToATest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_B;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_A;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+	}
+
+	@Test
+	void tToATest() throws Exception {
+		originalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+		DSSDocument signedDocument = getSignedDocument(documentToSign);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
+
+		finalSignatureLevel = SignatureLevel.XAdES_A;
+		Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
+		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+
+		DSSDocument extendedDocument = extendSignature(signedDocument);
+		assertNotNull(extendedDocument);
+		Reports reports = verify(extendedDocument);
+		assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+	}
+
+	@Override
+	protected XAdESService getSignatureServiceToSign() {
+		return service;
+	}
+
+	@Override
+	protected XAdESService getSignatureServiceToExtend() {
+		return service;
+	}
+
+	@Override
+	protected SignatureLevel getOriginalSignatureLevel() {
+		return originalSignatureLevel;
+	}
+
+	@Override
+	protected SignatureLevel getFinalSignatureLevel() {
+		return finalSignatureLevel;
 	}
 
 	@Override
 	protected String getSigningAlias() {
 		return SELF_SIGNED_USER;
+	}
+
+	@Override
+	public void extendAndVerify() throws Exception {
+		// do nothing
 	}
 
 }

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -27,7 +29,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -60,20 +62,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESServiceTest extends PKIFactoryAccess {
+class XAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
+	private static CertificateVerifier certificateVerifier;
 	private static XAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
-        service = new XAdESService(getCompleteCertificateVerifier());
+		certificateVerifier = getCompleteCertificateVerifier();
+        service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
 	}
 	
 	@Test
-	public void signatureTest() throws Exception {
+	void signatureTest() throws Exception {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate((DSSDocument) null, signatureParameters));
@@ -90,11 +94,11 @@ public class XAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Cannot create a SignatureBuilder. SignaturePackaging is not defined!", exception.getMessage());
         signatureParameters.setGenerateTBSWithoutCertificate(false);
 
-		signatureParameters.setSignWithNotYetValidCertificate(true);
+		certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
 		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
 		assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
-        signatureParameters.setSignWithExpiredCertificate(true);
+		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 		exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
 		assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         
@@ -197,7 +201,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void multipleDocumentsSignatureTest() throws Exception {
+	void multipleDocumentsSignatureTest() throws Exception {
 		DSSDocument documentToSign1 = new InMemoryDocument("Hello World!".getBytes());
 		DSSDocument documentToSign2 = new InMemoryDocument("Bye World.".getBytes());
 
@@ -246,7 +250,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extensionTest() {
+	void extensionTest() {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -276,7 +280,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void contentTstTest() throws Exception {
+	void contentTstTest() throws Exception {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		InMemoryDocument emptyBinaryDoc = InMemoryDocument.createEmptyDocument();
 		Exception exception = assertThrows(NullPointerException.class, () -> 
@@ -322,7 +326,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void addSignaturePolicyStoreTest() {
+	void addSignaturePolicyStoreTest() {
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -332,7 +336,7 @@ public class XAdESServiceTest extends PKIFactoryAccess {
 		Policy policy = new Policy();
 		policy.setId("Policy Id");
 		policy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		policy.setDigestValue(Utils.fromBase64(signaturePolicy.getDigest(DigestAlgorithm.SHA256)));
+		policy.setDigestValue(signaturePolicy.getDigestValue(DigestAlgorithm.SHA256));
 		signatureParameters.bLevel().setSignaturePolicy(policy);
 
 		DSSDocument signedDocument = sign(documentToSign, signatureParameters);

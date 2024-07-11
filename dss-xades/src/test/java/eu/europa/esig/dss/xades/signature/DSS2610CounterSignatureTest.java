@@ -32,7 +32,7 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /*
  * In this unit test no revocation data shall be requested for counter-signature on validation
  */
-public class DSS2610CounterSignatureTest extends AbstractXAdESCounterSignatureTest {
+class DSS2610CounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
     private String signingAlias;
 
@@ -63,7 +63,7 @@ public class DSS2610CounterSignatureTest extends AbstractXAdESCounterSignatureTe
     private MockOnlineCRLSource mockOnlineCRLSource;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         Calendar calendar = Calendar.getInstance();

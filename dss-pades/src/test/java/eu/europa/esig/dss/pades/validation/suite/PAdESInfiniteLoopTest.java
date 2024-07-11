@@ -23,8 +23,8 @@ package eu.europa.esig.dss.pades.validation.suite;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 public class PAdESInfiniteLoopTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 		assertTimeoutPreemptively(ofMillis(3000), () -> {
 			DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/pades_infinite_loop.pdf"));
 	
@@ -50,7 +50,7 @@ public class PAdESInfiniteLoopTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void oppositeLoopTest() {
+	void oppositeLoopTest() {
 		assertTimeoutPreemptively(ofMillis(3000), () -> {
 			DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/pades_opposite_infinite_loop.pdf"));
 	

@@ -33,13 +33,13 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
@@ -64,7 +64,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXAdESTestValidation {
+class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXAdESTestValidation {
 
 	private DSSDocument documentToSign;
 	private ASiCWithXAdESService service;
@@ -87,7 +87,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 	}
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		
@@ -111,14 +111,13 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 	
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void test(DSSDocument fileToTest) {
+	void test(DSSDocument fileToTest) {
 		documentToSign = fileToTest;
 		
 		signingAlias = SELF_SIGNED_USER;
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		signingAlias = GOOD_USER;
@@ -129,8 +128,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 		counterSignatureParameters.setSignatureIdToCounterSign(validator.getSignatures().get(0).getId());
 		
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
 		validator = getValidator(counterSignedSignature);
@@ -177,7 +175,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 		
 		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 		List<String> certificateValuesIds = foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)
-				.stream().map(c -> c.getId()).collect(Collectors.toList());
+				.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
 		for (CertificateWrapper certificateWrapper : counterSignature.getCertificateChain()) {
 			assertTrue(certificateValuesIds.contains(certificateWrapper.getId()));
 		}
@@ -189,8 +187,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 		// possible to counter sign the main signature again
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaXAdES, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		counterSignedSignature = service.counterSignSignature(ltaXAdES, counterSignatureParameters, signatureValue);
 		assertNotNull(counterSignedSignature);
 		
@@ -259,7 +256,7 @@ public class OpenDocumentLevelLTAExtensionForCounterSignedTest extends AbstractA
 		assertTrue(arcTstFound);
 	}
 	
-	public void verifySignatureFileName(List<DSSDocument> signatureFiles) {
+	void verifySignatureFileName(List<DSSDocument> signatureFiles) {
 		assertEquals(1, signatureFiles.size());
 		DSSDocument signature = signatureFiles.get(0);
 		assertEquals("META-INF/documentsignatures.xml", signature.getName());

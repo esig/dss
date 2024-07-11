@@ -44,14 +44,14 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS920Test extends AbstractXAdESTestSignature {
+class DSS920Test extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -67,7 +67,7 @@ public class DSS920Test extends AbstractXAdESTestSignature {
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
 		List<DSSDocument> detachedContents = new ArrayList<>();
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, documentToSign.getDigest(DigestAlgorithm.SHA256));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, documentToSign.getDigestValue(DigestAlgorithm.SHA256));
 		digestDocument.setName("sample.xml");
 		detachedContents.add(digestDocument);
 		return detachedContents;
@@ -90,7 +90,8 @@ public class DSS920Test extends AbstractXAdESTestSignature {
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 
-		assertArrayEquals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(), Utils.fromBase64(documentToSign.getDigest(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod())));
+		assertArrayEquals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(),
+				documentToSign.getDigestValue(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod()));
 	}
 	
 	@Override

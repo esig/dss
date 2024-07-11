@@ -32,7 +32,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -40,12 +40,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MultipleSignPadesBTest extends CookbookTools {
+class MultipleSignPadesBTest extends CookbookTools {
 
     private String signingAlias;
 
     @Test
-    public void signPAdESBaselineB() throws Exception {
+    void signPAdESBaselineB() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

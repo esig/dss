@@ -36,7 +36,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import org.junit.jupiter.api.Test;
 
@@ -49,10 +49,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSTripleTimestampTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCSTripleTimestampTest extends AbstractASiCWithCAdESTestValidation {
 
     @Test
-    public void test() throws IOException {
+    void test() throws IOException {
         DSSDocument documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         DSSDocument documentToSign2 = new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT);
         List<DSSDocument> docs = Arrays.asList(documentToSign, documentToSign2);

@@ -49,7 +49,7 @@ public class PAdESSignatureParametersSerializationTest extends AbstractPAdESTest
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -70,7 +70,7 @@ public class PAdESSignatureParametersSerializationTest extends AbstractPAdESTest
 	}
 
 	@Test
-	public void testSerialization() throws IOException, ClassNotFoundException {
+	void testSerialization() throws IOException, ClassNotFoundException {
 		
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeTypeEnum.PNG));

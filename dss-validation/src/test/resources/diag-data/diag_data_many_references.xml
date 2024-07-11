@@ -1,0 +1,1151 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>ONE_AND_ONLY_TRUE_OJ.sce.com</DocumentName>
+    <ValidationDate>2024-04-23T14:16:11Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-e+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/manifest.xml</Filename>
+                <SignatureFilename>META-INF/signature.xml</SignatureFilename>
+                <Entries>
+                    <Entry>L_202400212HU.pdf</Entry>
+                    <Entry>L_202400212IT.pdf</Entry>
+                    <Entry>L_202400212LT.pdf</Entry>
+                    <Entry>L_202400212LV.pdf</Entry>
+                    <Entry>L_202400212MT.pdf</Entry>
+                    <Entry>L_202400212NL.pdf</Entry>
+                    <Entry>L_202400212PL.pdf</Entry>
+                    <Entry>L_202400212PT.pdf</Entry>
+                    <Entry>L_202400212RO.pdf</Entry>
+                    <Entry>L_202400212SK.pdf</Entry>
+                    <Entry>L_202400212SL.pdf</Entry>
+                    <Entry>L_202400212SV.pdf</Entry>
+                    <Entry>L_202400212EN.pdf</Entry>
+                    <Entry>L_202400212BG.pdf</Entry>
+                    <Entry>L_202400212CS.pdf</Entry>
+                    <Entry>L_202400212DA.pdf</Entry>
+                    <Entry>L_202400212DE.pdf</Entry>
+                    <Entry>L_202400212EL.pdf</Entry>
+                    <Entry>L_202400212ES.pdf</Entry>
+                    <Entry>L_202400212ET.pdf</Entry>
+                    <Entry>L_202400212FI.pdf</Entry>
+                    <Entry>L_202400212FR.pdf</Entry>
+                    <Entry>L_202400212GA.pdf</Entry>
+                    <Entry>L_202400212HR.pdf</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>L_202400212BG.pdf</ContentFile>
+            <ContentFile>L_202400212CS.pdf</ContentFile>
+            <ContentFile>L_202400212DA.pdf</ContentFile>
+            <ContentFile>L_202400212DE.pdf</ContentFile>
+            <ContentFile>L_202400212EL.pdf</ContentFile>
+            <ContentFile>L_202400212EN.pdf</ContentFile>
+            <ContentFile>L_202400212ES.pdf</ContentFile>
+            <ContentFile>L_202400212ET.pdf</ContentFile>
+            <ContentFile>L_202400212FI.pdf</ContentFile>
+            <ContentFile>L_202400212FR.pdf</ContentFile>
+            <ContentFile>L_202400212GA.pdf</ContentFile>
+            <ContentFile>L_202400212HR.pdf</ContentFile>
+            <ContentFile>L_202400212HU.pdf</ContentFile>
+            <ContentFile>L_202400212IT.pdf</ContentFile>
+            <ContentFile>L_202400212LT.pdf</ContentFile>
+            <ContentFile>L_202400212LV.pdf</ContentFile>
+            <ContentFile>L_202400212MT.pdf</ContentFile>
+            <ContentFile>L_202400212NL.pdf</ContentFile>
+            <ContentFile>L_202400212PL.pdf</ContentFile>
+            <ContentFile>L_202400212PT.pdf</ContentFile>
+            <ContentFile>L_202400212RO.pdf</ContentFile>
+            <ContentFile>L_202400212SK.pdf</ContentFile>
+            <ContentFile>L_202400212SL.pdf</ContentFile>
+            <ContentFile>L_202400212SV.pdf</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures>
+        <Signature Id="S-6F644E2878DCF424D95C98AD356EE3AC303A87F5C6FC33E6F4AFC5D02546988A">
+            <DAIdentifier>id-c88d23ea47e1967716d7151b6e1cd72c</DAIdentifier>
+            <SignatureFilename>META-INF/signature.xml</SignatureFilename>
+            <ClaimedSigningTime>2024-01-05T01:30:12Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MANIFEST" id="r-id-c88d23ea47e1967716d7151b6e1cd72c-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>00KTaxKNDJsy3eFKa8+PshShOj5ts7cUxz+JqDBQsRM=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212BG.pdf" documentName="L_202400212BG.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>n9gPUqXB8DdS/xN/8z6v7wwrqgwOg3cIl7UwRmFwb4gRjzc3KRbaXJF2nFRlWJl9SnlQDAsRu2QAQDtRKcob0g==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212CS.pdf" documentName="L_202400212CS.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>CFpZsvV1P9Ii3iQHyXgF5mHm7CpJROPE6L6RRZV6Q9DIid5nM1tqqY6MoJ3awTGEqiW4TfFfZsuXXMF7C16Rww==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212DA.pdf" documentName="L_202400212DA.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>cipmHN9wnX9v9XYku1/ZlZx1Clk1YdIS2u7ccogb7DfeEKTlOqf8SeqAEyzLR/UQilmQ7KWs57WSLZaPoJ4sEw==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212DE.pdf" documentName="L_202400212DE.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>eTajD+HjXduo2mvL2PTz9NBZuUd+kkzf/OJdJUSK1mh34VdfpzHuW1HrACFCpS391vfxRQxIa6r2hwEl/YauYg==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212EL.pdf" documentName="L_202400212EL.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>5tl0Z+w7bozfQH005diddkMIPNoON2GLQcY4AKJ5yBVuRbkziNNsZsqZkAI5aMmVInuBQh01CVKsi+QFWCdhog==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212EN.pdf" documentName="L_202400212EN.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>bdlRobXxX2K9VcVzjOjCjFGlWvSo69lbz9Jw65rByVtzMVEq/X2/zN+Sx6y16jQUWyC4BzkR+sd8zNdf4YF3wg==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212ES.pdf" documentName="L_202400212ES.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>fXDEvm9GvQLhvNuLqVOvIuhibi+qA2W5xuBEzyaqw2CzQCsnhRMa3VJv7lKL3um7r1YYtPq9eUmHn00VtiyZXA==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212ET.pdf" documentName="L_202400212ET.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>Pr5u96y+x0LWGobFM6+ooacSizmfhitcwVGJAQdJ06+MufIfBcK99X5zf6dIu8WRN0UTTQN0iwxJXx8/CKVdng==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212FI.pdf" documentName="L_202400212FI.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>9vfIxIVNDo+nwfvSi6/ushjvtfbg+Qb1dKdtvkBHjHPuyBLW2K0WwXaHbxLj8olZRm3tA/WJID2fNebLM1Zk7Q==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212FR.pdf" documentName="L_202400212FR.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>ZZMjcsN1yvxDyOG1yM16uHU30abvpws5n9L/HyH0RfhPV0LX3MXLh8oc2f5saw5sGKe+xJvSOfrSpVEzaTXM2g==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212GA.pdf" documentName="L_202400212GA.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>mOAaKzsWyIB7EgUYFpgwvHVT5PpGIP2OXgBg8vmLHdBZTdGuVdAW1oPQYffp3vELlv+uTD7qnZK69jCnJuwpyQ==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212HR.pdf" documentName="L_202400212HR.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>pkbFJQRClgUSo4qyOKRKWicMKeIXsUsRC2YJQU5jdt5/sfgduwRKuZ82avebzTDwWRONeFN3VUzXrbxKfpyZiA==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212HU.pdf" documentName="L_202400212HU.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>x9j7ITftbpDRf+HgrOMyXKC/XwAnonbAL8cvpn8EAvxe0zKoFA13TQaTxb1+x5mLMijEF4zi9g1grD33U3/fhA==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212IT.pdf" documentName="L_202400212IT.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>INxkh2ZVCGVuzjBtck4xTKua4dZaLDDPz/m1KDxgkZOVyXYfix+qul710GOFnuAnvyAh67E2AFR8UkiaqP4MVg==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212LT.pdf" documentName="L_202400212LT.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>b6l88FprnpsH86SJsh2P6ClXb85l6eCANcaYTGCVJkH2SSPBhluRyGQWQpQei3EVhwcRW2bf6hykxiMctWijag==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212LV.pdf" documentName="L_202400212LV.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>adDgqfy/Sd6ysv3IqffPdKmGd+L7PDp4zuQvUIqmxfmQQHZNkoENI8X7PYm4JREiKzaLz/E1BpoSrnuX/J8F/Q==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212MT.pdf" documentName="L_202400212MT.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>a3hf2RkI6ggzqIFsJCHT3/4Z8R9H1d+7CRtXggxPL9Rc+mSrDrNJ40mFnoE4hx0X2/W6NMiWbJ1NGWbR8/q/bw==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212NL.pdf" documentName="L_202400212NL.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>bu5Ry8QLibHC73RSBZPZim6Ujs1F5iaq5b09U2OR+uiuSWN4FSnAUWOPkQb9Qm7leWK9G5W+a0XyMgw57i2CLA==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212PL.pdf" documentName="L_202400212PL.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>GqAHi2hDhDsSjZntmPBs4BYSHcNPPYaLWJEpQXI5FunZRsbl61FEpDamcdsS7YYypSw50521eplzFtJcw/oXpQ==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212PT.pdf" documentName="L_202400212PT.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>RU/bB32jYMJRcUJ4902c2NOH6Iw23F/+uf59dY5jRxqXqgYBfpGM91CappcH4yQLXOo3e5b5uUZCPC7ofOts6A==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212RO.pdf" documentName="L_202400212RO.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>xRyAYeg8uV3+VwUzby3WpfumeBHdFquxJwB7LwVT0HS9dK9JZr7RLfymBMs287R0rJ7beRofjAmsdPCcQ7H9ug==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212SK.pdf" documentName="L_202400212SK.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>YfXYjw4h0lo3HGTXgiuZqroXGoqdwPaF06oNqFHnNtwzJBLN7Zh6AKSzeueb9atWDI2zWs/f4eKbc8uvzDvPtA==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212SL.pdf" documentName="L_202400212SL.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>iVaXvAP6t20IjY0DlySd3xf0QUI4q2vBNo4WZSjyMchP407W/M7EnT+CPbZsXbdeIeUva0zhoNi44upnGbhQNQ==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="L_202400212SV.pdf" documentName="L_202400212SV.pdf">
+                    <DigestMethod>SHA512</DigestMethod>
+                    <DigestValue>KfQKAwmPyBfmwvHJkQfYmvnc9Pih9AXEW05tlKwCJMtnuBtifM9+7YAmBxpOWRnKJRof3dOwAPAN5L2bkVP9YQ==</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-c88d23ea47e1967716d7151b6e1cd72c">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>haIIWHd0R32r4N1qUkdubAvIc8MOBtbD16ZTq/rnLdY=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BF362A7F9B07EC93E64E835AC7A38EB4FB99AEBCD9CD770B41A8BCC5B338CA2C"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BF362A7F9B07EC93E64E835AC7A38EB4FB99AEBCD9CD770B41A8BCC5B338CA2C"/>
+                <ChainItem Certificate="C-27BB49D206B6DEC161EBB8EA739530E90AC68498D2EEA05A7ED9603D1DCE0FD5"/>
+                <ChainItem Certificate="C-82BD5D851ACF7F6E1BA7BFCBC53030D0E7BC3C21DF772D858CAB41D199BDF595"/>
+            </CertificateChain>
+            <MimeType>text/xml</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-BF362A7F9B07EC93E64E835AC7A38EB4FB99AEBCD9CD770B41A8BCC5B338CA2C">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHswY6RhMF8xCzAJBgNVBAYTAlBUMSowKAYDVQQKDCFEaWdpdGFsU2lnbiBDZXJ0aWZpY2Fkb3JhIERpZ2l0YWwxJDAiBgNVBAMMG0RJR0lUQUxTSUdOIFFVQUxJRklFRCBDQSBHMQIULuqP+NQksUFpOk7Zenw2erJWKWE=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA512</DigestMethod>
+                            <DigestValue>0VqJV4RPLAEqOfFdFwZPTojv/izB2IO4SlbWHJ+5d05r4a9MkScjxHDlUJHRJ/L/5d4mstt8Uy/UxnDyPI1kiA==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-A505B31B8ECE4C10F46F88FB3F0E411858746DB3199043C88515BEC477C90FAE"/>
+            </FoundTimestamps>
+            <FoundEvidenceRecords/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F">
+                    <Scope>FULL</Scope>
+                    <Name>r-id-c88d23ea47e1967716d7151b6e1cd72c-1</Name>
+                    <Description>Manifest document</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-C0A660580C3BCF3156713F0C38ACF2F0364BA18E407147C591EA88A6A0866FDB">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212BG.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-9371E2B0D1808A5738BA8943632E5FF9355D57D0FD05CD03567C9EFACE508DE5">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212CS.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-1F3F61D3994D355E5182D6897FA2A192E07F3F5BF5FE2E92174DBFDB4B037026">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212DA.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-731E71B48ABC8F6CC87E949630D9C6E3662203A48ED4E857D313142F479BEF0F">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212DE.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-292CEF64624D42DDE9A7F6B8759F44F4FCDE3AFCD6DCA6208E0B251D0F97C9A4">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212EL.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-343D0891A4C68F877022B9C3B385BF84A943C734C2ED856A09E6C66881F6EC8B">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212EN.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-5E0E01A761507BFB05FCBA3D10BD36077EF47F441CEF02A14E2107524830AF60">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212ES.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-0D12E99A0C50D4A5A902F0943FD052FE07764D9F4E8B0C1D68F4669258C4E210">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212ET.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-81AB2EDFE5CF9F98EF1A0A2B13E9D03D3429E3FB4FA6C042E78A7FCC8B269496">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212FI.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-DED692019CB51ABD35F8102A00E6FA224BD2688B73EEC5282682EEAE5B7AA4AB">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212FR.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-CA96D21AA2F402E56BCA1A57421349BF74996DBE5455685379B6DBD2B72AF3A4">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212GA.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-09164782C8994AF10E060B3029C1FE0A5E8AC345070AB197B3062526CC3250A3">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212HR.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-209810095335595EDC3E9F483D7E6CD9B276D4252840A347284F136BE4674129">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212HU.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-26E5506934245F32DB79467101653D263B5978FE605F8A02E95B86B972D6A616">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212IT.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-39201A40551F4CBD8B50E75F4B3B8C0A0A237D3414872A232455A864541DC49C">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212LT.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-2A19468E8D5065FBFF9061C9FA4E43EC5141293BAE0A655E5E8F5BC07BBF3187">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212LV.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-F91A97B8BB0E781582306CEE608DEEC69A37F8381FD66B94700091CB65EAB825">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212MT.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-FCFF8BB51CAE2C82A0CEB5F1A0E6266CB87EAB4282A4CF565BDB6B7DF9562BEC">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212NL.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-97E04D4AE431B36154501379694605BEAE4BE17E77423F8C5C6766BA1F3820DB">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212PL.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-14A799D8D3A15273540B9305C5DB89285902ADB7209D5E3BF088B00B65532244">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212PT.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-8392786CE6F72C54E343DE6862267543E2D6D637013D923D942B3597C35D1E3B">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212RO.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-F6616DF688535687A9316576B48F36F375F4C8B07FC287576803F3DD684FC74A">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212SK.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-675F6DB33C986D178106EE782C35C7AB89C7200E92AE12AD0DC27051BAB32B8B">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212SL.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+                <SignatureScope SignerData="D-6716B9D00C271FEA7C84825AD9070D0E836854A94D2CEC71067C4683AFFD342E">
+                    <Scope>FULL</Scope>
+                    <Name>L_202400212SV.pdf</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Canonical XML 1.1 (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>v7X7lDabown5fSAbl/lx1IIQVSAoVsP3QQ+EHFnghkI=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>HKeFd8b2thJlWjmLVgcYwWP5Ldh5cv4VUiz2pJEAvxw=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>F3kKihTRArabqWKBnQZYayEJPXKyeeKO7HaYuyTDF+PBBNNjGErZJsNRY8mRA1WcFwkHSr66LVoRqDTf8MmPEfCuxwrYeYRsb+sZObJxIHJJfgANvWfsVR31tcQ8bZo5D4ifozysJqONzeym66qWWiHEdPSZxtbgVAogxRfjxSJGm5a8SVxGXKq/eRGp6m/+E+RAaT07jrmPqbct1hujuAgdOCmXWkIKMIvalNtwXU+N+n512NdKvPYxuxpLJq9tFOa9KF0p8i8v81cgoUHjD3iy8b0Hnye8MUvtof69cNZuE5O4wgX2d5wGff9JEK6XFwfwVJpbdNipi/0HM2k3qurAkPn1uNLHKh2EJts6KLm/PTTe8eoVyI7EWU2/xaCXn2Dj4URO6IwtCLDiaTeXPTb3axAvaOiuCIO/ySVhgfPddDXimB8d/qjQC4DsJRvkQfDG3L6L46PlggqPfhyfFMCRxcHvnxbwFakkBJmnmONi88GRb+d1pQbcr4Y4so2uesLYx1fbvU6iKpVIUkJDLfylvrZ/Qr8Zy7P6w+krEKOcuitB8sqKrvKB7njYWFRDfBSl/0AMYBui8i6aNByKICZqUJilRMr+l5Z8hl1DrizQn2EPK/I1M7tlUlZk8ZMovypNuQylYePHEdY8FXWSR95cO4ct81VF6ifC0qr6aCk=</SignatureValue>
+        </Signature>
+    </Signatures>
+    <EvidenceRecords/>
+    <UsedCertificates>
+        <Certificate Id="C-27BB49D206B6DEC161EBB8EA739530E90AC68498D2EEA05A7ED9603D1DCE0FD5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=digitalsign qualified ca g1,o=digitalsign certificadora digital,c=pt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=DIGITALSIGN QUALIFIED CA G1,O=DigitalSign Certificadora Digital,C=PT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=digitalsign global root rsa ca,o=digitalsign certificadora digital,c=pt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DIGITALSIGN GLOBAL ROOT RSA CA,O=DigitalSign Certificadora Digital,C=PT</IssuerDistinguishedName>
+            <SerialNumber>330444127560240380976396101945240260095972967226</SerialNumber>
+            <CommonName>DIGITALSIGN QUALIFIED CA G1</CommonName>
+            <CountryName>PT</CountryName>
+            <OrganizationName>DigitalSign Certificadora Digital</OrganizationName>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2033-01-19T10:11:50Z</NotAfter>
+            <NotBefore>2021-01-22T10:11:50Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-18338705E7A9E94ABE47B13573F79731526C0444CF90A23FCD7F8E248E3D108B</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-82BD5D851ACF7F6E1BA7BFCBC53030D0E7BC3C21DF772D858CAB41D199BDF595"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-82BD5D851ACF7F6E1BA7BFCBC53030D0E7BC3C21DF772D858CAB41D199BDF595"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>tTa8PIwaqyz2WRktgxTakyUV1oY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>c0nxQBwUBHyaEn/6L81cZyMY6RQ=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://pki.digitalsign.pt">1.3.6.1.4.1.25596.4.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://root-rsa.digitalsign.pt/DIGITALSIGNGLOBALROOTRSACA.p7b</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://root-rsa.digitalsign.pt/DIGITALSIGNGLOBALROOTRSACA.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>J7tJ0ga23sFh67jqc5Uw6QrGhJjS7qBaftlgPR3OD9U=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76">
+            <SubjectDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>112324828676200291871926431888494945866</SerialNumber>
+            <CommonName>EE Certification Centre Root CA</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationName>AS Sertifitseerimiskeskus</OrganizationName>
+            <Email>pki@sk.ee</Email>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2030-12-17T23:59:59Z</NotAfter>
+            <NotBefore>2010-10-30T10:10:30Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-56174D3AD971A8944964B189811F3008493A6A90422E3C5804EC838D4F94F622</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>EvJaPupWHL/NBqzx8SXJqUvUFJk=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="serverAuth">1.3.6.1.5.5.7.3.1</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="codeSigning">1.3.6.1.5.5.7.3.3</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PoS6Q0KQhRbndXPAmS8JecoITkaFaB/xlcy6iiKbinY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-82BD5D851ACF7F6E1BA7BFCBC53030D0E7BC3C21DF772D858CAB41D199BDF595">
+            <SubjectDistinguishedName Format="CANONICAL">cn=digitalsign global root rsa ca,o=digitalsign certificadora digital,c=pt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=DIGITALSIGN GLOBAL ROOT RSA CA,O=DigitalSign Certificadora Digital,C=PT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=digitalsign global root rsa ca,o=digitalsign certificadora digital,c=pt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DIGITALSIGN GLOBAL ROOT RSA CA,O=DigitalSign Certificadora Digital,C=PT</IssuerDistinguishedName>
+            <SerialNumber>532938399430857273295062163423481632018408969607</SerialNumber>
+            <CommonName>DIGITALSIGN GLOBAL ROOT RSA CA</CommonName>
+            <CountryName>PT</CountryName>
+            <OrganizationName>DigitalSign Certificadora Digital</OrganizationName>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2046-01-15T10:50:34Z</NotAfter>
+            <NotBefore>2021-01-21T10:50:34Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-152CDFF99E4895AE8FD4CDC7B19D8DADABD3C3DD168BCF20444419DD5C72BC3E</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>tTa8PIwaqyz2WRktgxTakyUV1oY=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>tTa8PIwaqyz2WRktgxTakyUV1oY=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gr1dhRrPf24bp7/LxTAw0Oe8PCHfdy2FjKtB0Zm99ZU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-AF1FE66562A3A7CEB99A41E5B09B6DC46749036F641B2DED17FE4475F22BE6C0">
+            <SubjectDistinguishedName Format="CANONICAL">c=ee,o=sk id solutions as,ou=tsa,2.5.4.97=#0c0e4e545245452d3130373437303133,cn=sk timestamping authority 2023</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=EE,O=SK ID Solutions AS,OU=TSA,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TIMESTAMPING AUTHORITY 2023</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,cn=ee certification centre root ca,o=as sertifitseerimiskeskus,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">1.2.840.113549.1.9.1=#1609706b6940736b2e6565,CN=EE Certification Centre Root CA,O=AS Sertifitseerimiskeskus,C=EE</IssuerDistinguishedName>
+            <SerialNumber>67205934710543798222704146034089873665</SerialNumber>
+            <CommonName>SK TIMESTAMPING AUTHORITY 2023</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationIdentifier>NTREE-10747013</OrganizationIdentifier>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <OrganizationalUnit>TSA</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2028-12-31T22:00:01Z</NotAfter>
+            <NotBefore>2022-12-31T22:00:01Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-7FA286D0E4FF47492EACA15FB74DAB5EA9908C82C0B142BA8986689998EA461F</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>EvJaPupWHL/NBqzx8SXJqUvUFJk=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>uTR73sWfYH5L+mH3/RD0UAlC7eg=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://c.sk.ee/EE_Certification_Centre_Root_CA.der.crt</caIssuersUrl>
+                    <ocspUrl>http://aia.sk.ee/CA</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>rx/mZWKjp865mkHlsJttxGdJA29kGy3tF/5EdfIr5sA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-BF362A7F9B07EC93E64E835AC7A38EB4FB99AEBCD9CD770B41A8BCC5B338CA2C">
+            <SubjectDistinguishedName Format="CANONICAL">cn=european commission,1.2.840.113549.1.9.1=#16266575726c65782d68656c706465736b407075626c69636174696f6e732e6575726f70612e6575,ou=publications office of the european union,o=european commission,2.5.4.97=#0c1a4c454958472d3235343930305a4e594131464c55513955333933,ou=certificate profile - qualified certificate - organization,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=EUROPEAN COMMISSION,1.2.840.113549.1.9.1=#16266575726c65782d68656c706465736b407075626c69636174696f6e732e6575726f70612e6575,OU=Publications Office of the European Union,O=EUROPEAN COMMISSION,2.5.4.97=#0c1a4c454958472d3235343930305a4e594131464c55513955333933,OU=Certificate Profile - Qualified Certificate - Organization,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=digitalsign qualified ca g1,o=digitalsign certificadora digital,c=pt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DIGITALSIGN QUALIFIED CA G1,O=DigitalSign Certificadora Digital,C=PT</IssuerDistinguishedName>
+            <SerialNumber>267844491563254875000059627297253501633025157473</SerialNumber>
+            <CommonName>EUROPEAN COMMISSION</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationIdentifier>LEIXG-254900ZNYA1FLUQ9U393</OrganizationIdentifier>
+            <OrganizationName>EUROPEAN COMMISSION</OrganizationName>
+            <OrganizationalUnit>Certificate Profile - Qualified Certificate - Organization</OrganizationalUnit>
+            <Email>eurlex-helpdesk@publications.europa.eu</Email>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2026-09-26T10:59:45Z</NotAfter>
+            <NotBefore>2023-09-27T10:59:45Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-923A3248C88BD67B5B85CE2A8227EA7ADDA50CDAFAA5DB21A4B7839B0E02F7CD</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-27BB49D206B6DEC161EBB8EA739530E90AC68498D2EEA05A7ED9603D1DCE0FD5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-27BB49D206B6DEC161EBB8EA739530E90AC68498D2EEA05A7ED9603D1DCE0FD5"/>
+                <ChainItem Certificate="C-82BD5D851ACF7F6E1BA7BFCBC53030D0E7BC3C21DF772D858CAB41D199BDF595"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>c0nxQBwUBHyaEn/6L81cZyMY6RQ=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>jCgcVjCBLTUHRJet9Gt5AFvCi+8=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://pki.digitalsign.pt">1.3.6.1.4.1.25596.4.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.25596.4.2.1.1.1.6</certificatePolicy>
+                    <certificatePolicy Description="qcp-legal-qscd">0.4.0.194112.1.3</certificatePolicy>
+                </CertificatePolicies>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName type="rfc822Name">eurlex-helpdesk@publications.europa.eu</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="clientAuth">1.3.6.1.5.5.7.3.2</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="emailProtection">1.3.6.1.5.5.7.3.4</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://qca-g1.digitalsign.pt/DIGITALSIGNQUALIFIEDCAG1.p7b</caIssuersUrl>
+                    <ocspUrl>https://qca-g1.digitalsign.pt/ocsp</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>https://qca-g1.digitalsign.pt/DIGITALSIGNQUALIFIEDCAG1.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">https://qca-g1.digitalsign.pt/PDS_en.pdf</PdsLocation>
+                        <PdsLocation lang="pt">https://qca-g1.digitalsign.pt/PDS_pt.pdf</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-CB31BD69181BDDC51F7087830348EE6A2F9205A51AAA81A12B395D3105235217">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vzYqf5sH7JPmToNax6OOtPuZrrzZzXcLQai8xbM4yiw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C4D1E892E325AB641FA6111EB7D8115302D7BDD91807525EC0E07BC66EF07951">
+            <SubjectDistinguishedName Format="CANONICAL">c=pt,o=digitalsign certificadora digital,cn=ocsp digitalsign qualified ca g1</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=PT,O=DigitalSign Certificadora Digital,CN=OCSP DIGITALSIGN QUALIFIED CA G1</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=digitalsign qualified ca g1,o=digitalsign certificadora digital,c=pt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=DIGITALSIGN QUALIFIED CA G1,O=DigitalSign Certificadora Digital,C=PT</IssuerDistinguishedName>
+            <SerialNumber>326214055514543252758336642769349650377329697116</SerialNumber>
+            <CommonName>OCSP DIGITALSIGN QUALIFIED CA G1</CommonName>
+            <CountryName>PT</CountryName>
+            <OrganizationName>DigitalSign Certificadora Digital</OrganizationName>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2033-01-19T10:11:50Z</NotAfter>
+            <NotBefore>2021-01-28T10:30:26Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-21FB065239724E1BC49FF284AD37524DAE52672EC31A23B169566DF7CD6293B8</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-27BB49D206B6DEC161EBB8EA739530E90AC68498D2EEA05A7ED9603D1DCE0FD5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-27BB49D206B6DEC161EBB8EA739530E90AC68498D2EEA05A7ED9603D1DCE0FD5"/>
+                <ChainItem Certificate="C-82BD5D851ACF7F6E1BA7BFCBC53030D0E7BC3C21DF772D858CAB41D199BDF595"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>c0nxQBwUBHyaEn/6L81cZyMY6RQ=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>bPtib5+esFYOcfOhhbqu/hfFQ8A=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://pki.digitalsign.pt">1.3.6.1.4.1.25596.4.1.1</certificatePolicy>
+                    <certificatePolicy>1.3.6.1.4.1.25596.4.2.1.1.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://qca-g1.digitalsign.pt/DIGITALSIGNQUALIFIEDCAG1.p7b</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>xNHokuMlq2QfphEet9gRUwLXvdkYB1JewOB7xm7weVE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-CB31BD69181BDDC51F7087830348EE6A2F9205A51AAA81A12B395D3105235217">
+            <Origin>CACHED</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>https://qca-g1.digitalsign.pt/ocsp</SourceAddress>
+            <ProductionDate>2024-04-23T14:15:00Z</ProductionDate>
+            <ThisUpdate>2024-04-23T14:15:00Z</ThisUpdate>
+            <NextUpdate>2024-04-23T22:14:59Z</NextUpdate>
+            <ArchiveCutOff>2021-01-22T10:11:50Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C4D1E892E325AB641FA6111EB7D8115302D7BDD91807525EC0E07BC66EF07951"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C4D1E892E325AB641FA6111EB7D8115302D7BDD91807525EC0E07BC66EF07951"/>
+                <ChainItem Certificate="C-27BB49D206B6DEC161EBB8EA739530E90AC68498D2EEA05A7ED9603D1DCE0FD5"/>
+                <ChainItem Certificate="C-82BD5D851ACF7F6E1BA7BFCBC53030D0E7BC3C21DF772D858CAB41D199BDF595"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-27BB49D206B6DEC161EBB8EA739530E90AC68498D2EEA05A7ED9603D1DCE0FD5">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-C4D1E892E325AB641FA6111EB7D8115302D7BDD91807525EC0E07BC66EF07951">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>bPtib5+esFYOcfOhhbqu/hfFQ8A=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>yzG9aRgb3cUfcIeDA0juai+SBaUaqoGhKzldMQUjUhc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-A505B31B8ECE4C10F46F88FB3F0E411858746DB3199043C88515BEC477C90FAE">
+            <ProductionTime>2024-01-05T01:35:15Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>LmlcBhwNK931XaRfGdR9GQ6Q+BzXlOcrHBQZdmeIXRo=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-AF1FE66562A3A7CEB99A41E5B09B6DC46749036F641B2DED17FE4475F22BE6C0"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-AF1FE66562A3A7CEB99A41E5B09B6DC46749036F641B2DED17FE4475F22BE6C0"/>
+                <ChainItem Certificate="C-3E84BA4342908516E77573C0992F0979CA084E4685681FF195CCBA8A229B8A76"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>EMAILADDRESS=pki@sk.ee, CN=EE Certification Centre Root CA, O=AS Sertifitseerimiskeskus, C=EE</IssuerName>
+                    <SerialNumber>67205934710543798222704146034089873665</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">C=EE,O=SK ID Solutions AS,OU=TSA,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TIMESTAMPING AUTHORITY 2023</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-AF1FE66562A3A7CEB99A41E5B09B6DC46749036F641B2DED17FE4475F22BE6C0">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGNMHmkdzB1MQswCQYDVQQGEwJFRTEiMCAGA1UECgwZQVMgU2VydGlmaXRzZWVyaW1pc2tlc2t1czEoMCYGA1UEAwwfRUUgQ2VydGlmaWNhdGlvbiBDZW50cmUgUm9vdCBDQTEYMBYGCSqGSIb3DQEJARYJcGtpQHNrLmVlAhAyj2Rn3ypnV2N0oXjmZVEB</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>rx/mZWKjp865mkHlsJttxGdJA29kGy3tF/5EdfIr5sA=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-C0A660580C3BCF3156713F0C38ACF2F0364BA18E407147C591EA88A6A0866FDB" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-9371E2B0D1808A5738BA8943632E5FF9355D57D0FD05CD03567C9EFACE508DE5" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-1F3F61D3994D355E5182D6897FA2A192E07F3F5BF5FE2E92174DBFDB4B037026" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-731E71B48ABC8F6CC87E949630D9C6E3662203A48ED4E857D313142F479BEF0F" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-292CEF64624D42DDE9A7F6B8759F44F4FCDE3AFCD6DCA6208E0B251D0F97C9A4" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-343D0891A4C68F877022B9C3B385BF84A943C734C2ED856A09E6C66881F6EC8B" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-5E0E01A761507BFB05FCBA3D10BD36077EF47F441CEF02A14E2107524830AF60" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-0D12E99A0C50D4A5A902F0943FD052FE07764D9F4E8B0C1D68F4669258C4E210" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-81AB2EDFE5CF9F98EF1A0A2B13E9D03D3429E3FB4FA6C042E78A7FCC8B269496" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-DED692019CB51ABD35F8102A00E6FA224BD2688B73EEC5282682EEAE5B7AA4AB" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-CA96D21AA2F402E56BCA1A57421349BF74996DBE5455685379B6DBD2B72AF3A4" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-09164782C8994AF10E060B3029C1FE0A5E8AC345070AB197B3062526CC3250A3" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-209810095335595EDC3E9F483D7E6CD9B276D4252840A347284F136BE4674129" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-26E5506934245F32DB79467101653D263B5978FE605F8A02E95B86B972D6A616" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-39201A40551F4CBD8B50E75F4B3B8C0A0A237D3414872A232455A864541DC49C" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-2A19468E8D5065FBFF9061C9FA4E43EC5141293BAE0A655E5E8F5BC07BBF3187" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-F91A97B8BB0E781582306CEE608DEEC69A37F8381FD66B94700091CB65EAB825" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-FCFF8BB51CAE2C82A0CEB5F1A0E6266CB87EAB4282A4CF565BDB6B7DF9562BEC" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-97E04D4AE431B36154501379694605BEAE4BE17E77423F8C5C6766BA1F3820DB" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-14A799D8D3A15273540B9305C5DB89285902ADB7209D5E3BF088B00B65532244" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-8392786CE6F72C54E343DE6862267543E2D6D637013D923D942B3597C35D1E3B" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-F6616DF688535687A9316576B48F36F375F4C8B07FC287576803F3DD684FC74A" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-675F6DB33C986D178106EE782C35C7AB89C7200E92AE12AD0DC27051BAB32B8B" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-6716B9D00C271FEA7C84825AD9070D0E836854A94D2CEC71067C4683AFFD342E" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-6F644E2878DCF424D95C98AD356EE3AC303A87F5C6FC33E6F4AFC5D02546988A" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-BF362A7F9B07EC93E64E835AC7A38EB4FB99AEBCD9CD770B41A8BCC5B338CA2C" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hyCe5frfuA1V5Q2AoyokblsL8Dh5xElSYYj242ItcYY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F">
+            <ReferencedName>r-id-c88d23ea47e1967716d7151b6e1cd72c-1</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>00KTaxKNDJsy3eFKa8+PshShOj5ts7cUxz+JqDBQsRM=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-C0A660580C3BCF3156713F0C38ACF2F0364BA18E407147C591EA88A6A0866FDB">
+            <ReferencedName>L_202400212BG.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>1YqWNzp6SfFtxdhGwvPbgQ9fCaxnF+TRHWp96/6EiD8=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-9371E2B0D1808A5738BA8943632E5FF9355D57D0FD05CD03567C9EFACE508DE5">
+            <ReferencedName>L_202400212CS.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>y20h9OUEp0pn5Bl4KVXbk/un9b78aOUtqGPulAJqeH4=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-1F3F61D3994D355E5182D6897FA2A192E07F3F5BF5FE2E92174DBFDB4B037026">
+            <ReferencedName>L_202400212DA.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>WihJDxLAI4MPVczs40G2261TNxUuO6PHVh1a/pCY7Ts=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-731E71B48ABC8F6CC87E949630D9C6E3662203A48ED4E857D313142F479BEF0F">
+            <ReferencedName>L_202400212DE.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4JMHCCkUqXrQGn6LqmVszn9cNLayb6isw0839dFihfs=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-292CEF64624D42DDE9A7F6B8759F44F4FCDE3AFCD6DCA6208E0B251D0F97C9A4">
+            <ReferencedName>L_202400212EL.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>oyM9/LDL+7xFGOW6NjIEpFACjbEcmsWVcWdKXmU6XfY=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-343D0891A4C68F877022B9C3B385BF84A943C734C2ED856A09E6C66881F6EC8B">
+            <ReferencedName>L_202400212EN.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>FFrbBJLCrUFTvvlRvR+Gjpw0+E6HLfkdDG0t79vJQbo=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-5E0E01A761507BFB05FCBA3D10BD36077EF47F441CEF02A14E2107524830AF60">
+            <ReferencedName>L_202400212ES.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>3HY0DahqEqqmimoLvJVGggFg524zZLTvgWqWFpP8cHQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-0D12E99A0C50D4A5A902F0943FD052FE07764D9F4E8B0C1D68F4669258C4E210">
+            <ReferencedName>L_202400212ET.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>O/JZQ1pHIWi8diw5XHyQjGeeylZGfQIpTVGfeA7CwV4=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-81AB2EDFE5CF9F98EF1A0A2B13E9D03D3429E3FB4FA6C042E78A7FCC8B269496">
+            <ReferencedName>L_202400212FI.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>BGWLsAbm9sihY+K6l89x9KCvF8VRuM+Eot2NsT84sPA=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-DED692019CB51ABD35F8102A00E6FA224BD2688B73EEC5282682EEAE5B7AA4AB">
+            <ReferencedName>L_202400212FR.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>oLIOCN4Mpi6J4pva4fC08d4U6FRBvVTe9nZO9tq9o68=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-CA96D21AA2F402E56BCA1A57421349BF74996DBE5455685379B6DBD2B72AF3A4">
+            <ReferencedName>L_202400212GA.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>6tljwcTMsLqWq2n+6tofBQL/mC86Hk9mRp+JJ0w1V8M=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-09164782C8994AF10E060B3029C1FE0A5E8AC345070AB197B3062526CC3250A3">
+            <ReferencedName>L_202400212HR.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>5Uw2xulbGzFPXwkvfVFWr4w6kuN9hjKhFloJm0Kn6VU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-209810095335595EDC3E9F483D7E6CD9B276D4252840A347284F136BE4674129">
+            <ReferencedName>L_202400212HU.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>6NVgm0TYoAq/NhndPGVumzjdvDG2UrlYqja4pBKQJ/8=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-26E5506934245F32DB79467101653D263B5978FE605F8A02E95B86B972D6A616">
+            <ReferencedName>L_202400212IT.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>5mDJL70ijWsURrPg02mHjpOUaWHXCSbD8nSHwntLEPQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-39201A40551F4CBD8B50E75F4B3B8C0A0A237D3414872A232455A864541DC49C">
+            <ReferencedName>L_202400212LT.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>O0iJxGZxEpGN5ltGnNey2MnXZd11itHiWRs7D73YTas=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-2A19468E8D5065FBFF9061C9FA4E43EC5141293BAE0A655E5E8F5BC07BBF3187">
+            <ReferencedName>L_202400212LV.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>afU26Js73asZ1usd/gfZoPK4/KvKpiBp4dQDgou5fv4=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-F91A97B8BB0E781582306CEE608DEEC69A37F8381FD66B94700091CB65EAB825">
+            <ReferencedName>L_202400212MT.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>RUCVKeeCVrxax5gFzW+IKaJ4IEO5WRuS015RiPmBn8E=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-FCFF8BB51CAE2C82A0CEB5F1A0E6266CB87EAB4282A4CF565BDB6B7DF9562BEC">
+            <ReferencedName>L_202400212NL.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>7D4WS5qJ1sEIAbGi7Pwk/XevmIe/xZskwh0bg2Bq6gI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-97E04D4AE431B36154501379694605BEAE4BE17E77423F8C5C6766BA1F3820DB">
+            <ReferencedName>L_202400212PL.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CpAQ3JBosCr2QSTI6oyDolD1blZQy7k9mZxEisv1P00=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-14A799D8D3A15273540B9305C5DB89285902ADB7209D5E3BF088B00B65532244">
+            <ReferencedName>L_202400212PT.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>KbmJ7TJBd0diJdE6MrPIEVcCH3z1juzjtA0sPAnMN1M=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-8392786CE6F72C54E343DE6862267543E2D6D637013D923D942B3597C35D1E3B">
+            <ReferencedName>L_202400212RO.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/HbiDFtcpFFT0rCNzoRTA/sqZjIJ+4Zj7r9Zm0TlHxo=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-F6616DF688535687A9316576B48F36F375F4C8B07FC287576803F3DD684FC74A">
+            <ReferencedName>L_202400212SK.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>sKHAryM9bSfZ794+wjUHYRJHzHvZJRKGysul6hYjUuQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-675F6DB33C986D178106EE782C35C7AB89C7200E92AE12AD0DC27051BAB32B8B">
+            <ReferencedName>L_202400212SL.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>xF0wLdtHcjrv6Z7pkVeuYPhJAR2KGj5H46Euh+MpPP4=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-0CEA3E1DB3C9859397DA95EA3B318CDAD14E6F75C580F8D01410027F016AA51F" Id="D-6716B9D00C271FEA7C84825AD9070D0E836854A94D2CEC71067C4683AFFD342E">
+            <ReferencedName>L_202400212SV.pdf</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>knFZ0C4eZX6id90QQi2rsyYTg+Rn4Mk8CmfxQOohSoQ=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists/>
+</DiagnosticData>

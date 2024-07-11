@@ -25,12 +25,12 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CAdESWithSPUserNoticeTest extends AbstractCAdESTestValidation {
+class CAdESWithSPUserNoticeTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

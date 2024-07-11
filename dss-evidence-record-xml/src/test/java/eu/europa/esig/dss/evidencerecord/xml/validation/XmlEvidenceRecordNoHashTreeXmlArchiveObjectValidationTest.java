@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import java.util.Collections;
 import java.util.List;
 
-public class XmlEvidenceRecordNoHashTreeXmlArchiveObjectValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordNoHashTreeXmlArchiveObjectValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

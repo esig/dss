@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTDetachedWithXmlEvidenceRecordCoversOnlySigValidationTest extends AbstractXAdESWithEvidenceRecordTestValidation {
+class XAdESLevelLTDetachedWithXmlEvidenceRecordCoversOnlySigValidationTest extends AbstractXAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -101,7 +101,7 @@ public class XAdESLevelLTDetachedWithXmlEvidenceRecordCoversOnlySigValidationTes
             if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == digestMatcher.getType()) {
                 assertTrue(digestMatcher.isDataFound());
                 assertTrue(digestMatcher.isDataIntact());
-                assertEquals(diagnosticData.getDocumentName(), digestMatcher.getName());
+                assertEquals(diagnosticData.getDocumentName(), digestMatcher.getDocumentName());
                 ++foundRefCounter;
 
             } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == digestMatcher.getType()) {

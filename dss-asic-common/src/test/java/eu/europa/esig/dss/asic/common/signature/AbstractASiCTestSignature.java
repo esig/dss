@@ -23,8 +23,8 @@ package eu.europa.esig.dss.asic.common.signature;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCTestUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -56,7 +56,7 @@ public abstract class AbstractASiCTestSignature<SP extends SerializableSignature
 		checkExtractedContent(asicContent);
 	}
 
-	protected abstract AbstractASiCContainerExtractor getContainerExtractor(DSSDocument document);
+	protected abstract DefaultASiCContainerExtractor getContainerExtractor(DSSDocument document);
 
 	protected void checkExtractedContent(ASiCContent asicContent) {
 		assertNotNull(asicContent);

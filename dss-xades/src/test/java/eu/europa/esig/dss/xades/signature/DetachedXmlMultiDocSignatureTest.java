@@ -40,13 +40,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DetachedXmlMultiDocSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class DetachedXmlMultiDocSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private XAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.xml"),
 				new FileDocument("src/test/resources/sampleWithPlaceOfSignature.xml"),
 				new InMemoryDocument(DSSUtils.EMPTY_BYTE_ARRAY, "emptyByteArray"));

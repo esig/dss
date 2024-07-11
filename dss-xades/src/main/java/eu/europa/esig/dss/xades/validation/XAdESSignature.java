@@ -48,14 +48,15 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommitmentTypeIndication;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.SignerRole;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
+import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
+import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.EnforcedResolverFragment;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
@@ -65,15 +66,15 @@ import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xades.definition.XAdESPath;
-import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
@@ -154,20 +155,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		DSSXMLUtils.registerXAdESNamespaces();
 
-		/**
-		 * Adds the support of ECDSA_RIPEMD160 for XML signature. Used by AT. The BC provider must be previously added.
-		 */
-		// final JCEMapper.Algorithm algorithm = new JCEMapper.Algorithm("",
-		// SignatureAlgorithm.ECDSA_RIPEMD160.getJCEId(), "Signature");
-		// final String xmlId = SignatureAlgorithm.ECDSA_RIPEMD160.getXMLId();
-		// JCEMapper.register(xmlId, algorithm);
-		// try {
-		// org.apache.xml.security.algorithms.SignatureAlgorithm.register(xmlId,
-		// SignatureECDSARIPEMD160.class);
-		// } catch (Exception e) {
-		// LOG.error("ECDSA_RIPEMD160 algorithm initialisation failed.", e);
-		// }
-
 		//
 		// Set the default JCE algorithms
 		//
@@ -187,6 +174,20 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			LOG.error("ECDSA_RIPEMD160AT algorithm initialisation failed.", e);
 		}
 
+		initDefaultResolvers();
+
+	}
+
+	/**
+	 * Customized
+	 * org.apache.xml.security.utils.resolver.ResourceResolver.registerDefaultResolvers()
+	 *
+	 * Ignore references which point to a file (file://) or external http urls
+	 * Enforce ResolverFragment against XPath injections
+	 */
+	private static void initDefaultResolvers() {
+		ResourceResolver.register(new EnforcedResolverFragment(), false);
+		ResourceResolver.register(new ResolverXPointer(), false);
 	}
 
 	/**
@@ -344,12 +345,13 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
+	@Deprecated
 	public MaskGenerationFunction getMaskGenerationFunction() {
-		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm();
-		if (signatureAlgorithm == null) {
-			return null;
+		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+			return MaskGenerationFunction.MGF1;
 		}
-		return signatureAlgorithm.getMaskGenerationFunction();
+		return null;
 	}
 
 	@Override
@@ -358,7 +360,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 		SignatureAlgorithm signatureAlgorithm =  SignatureAlgorithm.forXML(xmlName, null);
 		if (signatureAlgorithm == null) {
-			LOG.error("SignatureAlgorithm '{}' is not supported!", xmlName);
+			LOG.warn("SignatureAlgorithm '{}' is not supported!", xmlName);
 		}
 		return signatureAlgorithm;
 	}
@@ -423,18 +425,18 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				// Explicit policy
 				String policyUrlString = null;
 
-				String policyIdString = policyId.getTextContent();
-				if (Utils.isStringNotBlank(policyIdString) && !DSSUtils.isUrnOid(policyIdString) && !DSSUtils.isOidCode(policyIdString)) {
-					policyUrlString = policyIdString;
-				}
-
 				ObjectIdentifierQualifier qualifier = null;
 				String qualifierString = policyId.getAttribute(XAdES132Attribute.QUALIFIER.getAttributeName());
 				if (Utils.isStringNotBlank(qualifierString)) {
 					qualifier = ObjectIdentifierQualifier.fromValue(qualifierString);
 				}
 
+				String policyIdString = policyId.getTextContent();
 				policyIdString = DSSUtils.getObjectIdentifierValue(policyIdString, qualifier);
+				if (Utils.isStringNotBlank(policyIdString) && !DSSUtils.isUrnOid(policyIdString) && !DSSUtils.isOidCode(policyIdString)) {
+					policyUrlString = policyIdString;
+				}
+
 				xadesSignaturePolicy = new XAdESSignaturePolicy(policyIdString);
 
 				final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(policyIdentifier, xadesPath.getCurrentSignaturePolicyDigestAlgAndValue()));
@@ -443,7 +445,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				final Element policyUrl = DomUtils.getElement(policyIdentifier, xadesPath.getCurrentSignaturePolicySPURI());
 				if (policyUrl != null) {
 					policyUrlString = policyUrl.getTextContent();
-					policyUrlString = Utils.trim(policyUrlString);
+					policyUrlString = DSSUtils.trimWhitespacesAndNewlines(policyUrlString);
 				}
 				xadesSignaturePolicy.setUri(policyUrlString);
 
@@ -516,7 +518,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return userNotice;
 
 		} catch (Exception e) {
-			LOG.error("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
+			LOG.warn("Unable to build SPUserNotice qualifier. Reason : {}", e.getMessage(), e);
 			return null;
 		}
 	}
@@ -894,73 +896,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected XAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
-		return new XAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
-	}
-
-	/**
-	 * Checks the presence of signing certificate covered by the signature, what is the proof -BES profile existence
-	 *
-	 * @return true if BES Profile is detected
-	 */
-	public boolean hasBESProfile() {
-		return getBaselineRequirementsChecker().hasExtendedBESProfile();
-	}
-
-	/**
-	 * Checks the presence of SignaturePolicyIdentifier element in the signature,
-	 * what is the proof -EPES profile existence
-	 *
-	 * @return true if EPES Profile is detected
-	 */
-	public boolean hasEPESProfile() {
-		return getBaselineRequirementsChecker().hasExtendedEPESProfile();
-	}
-
-	/**
-	 * Checks the presence of SignatureTimeStamp element in the signature, what is the proof -T profile existence
-	 *
-	 * @return true if T Profile is detected
-	 */
-	public boolean hasExtendedTProfile() {
-		return getBaselineRequirementsChecker().hasExtendedTProfile();
-	}
-
-	/**
-	 * Checks the presence of CompleteCertificateRefs and CompleteRevocationRefs segments in the signature,
-	 * what is the proof -C profile existence
-	 *
-	 * @return true if C Profile is detected
-	 */
-	public boolean hasCProfile() {
-		return getBaselineRequirementsChecker().hasExtendedCProfile();
-	}
-
-	/**
-	 * Checks the presence of SigAndRefsTimeStamp segment in the signature, what is the proof -X profile existence
-	 *
-	 * @return true if the -X extension is present
-	 */
-	public boolean hasXProfile() {
-		return getBaselineRequirementsChecker().hasExtendedXProfile();
-	}
-
-	/**
-	 * Checks the presence of CertificateValues/RevocationValues segment in the signature, what is the proof -XL profile existence
-	 *
-	 * @return true if the -XL extension is present
-	 */
-	public boolean hasXLProfile() {
-		return getBaselineRequirementsChecker().hasExtendedXLProfile();
-	}
-
-	/**
-	 * Checks the presence of ArchiveTimeStamp element in the signature, what is the proof -A profile existence
-	 *
-	 * @return true if the -A extension is present
-	 */
-	public boolean hasAProfile() {
-		return getBaselineRequirementsChecker().hasExtendedAProfile();
+	protected XAdESBaselineRequirementsChecker createBaselineRequirementsChecker(CertificateVerifier certificateVerifier) {
+		return new XAdESBaselineRequirementsChecker(this, certificateVerifier);
 	}
 
 	@Override
@@ -995,8 +932,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setSignatureIntact(certificateValidity != null);
 			
 		} catch (Exception e) {
-			LOG.error("checkSignatureIntegrity : {}", e.getMessage());
-			LOG.debug("checkSignatureIntegrity : {}", e.getMessage(), e);
+			String errorMessage = "checkSignatureIntegrity : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 			StackTraceElement[] stackTrace = e.getStackTrace();
 			final String name = XAdESSignature.class.getName();
 			int lineNumber = 0;
@@ -1285,8 +1226,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			DSSXMLUtils.setIDIdentifier(rootElement);
 			DSSXMLUtils.recursiveIdBrowse(rootElement);
 
-			initDefaultResolvers();
-
 			// Secure validation disabled to support all signature algos
 			santuarioSignature = new XMLSignature(signatureElement, "", false);
 			if (Utils.isCollectionNotEmpty(detachedContents)) {
@@ -1299,25 +1238,12 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		}
 	}
 
-	/**
-	 * Customized
-	 * org.apache.xml.security.utils.resolver.ResourceResolver.registerDefaultResolvers()
-	 *
-	 * Ignore references which point to a file (file://) or external http urls
-	 * Enforce ResolverFragment against XPath injections
-	 */
-	private void initDefaultResolvers() {
-		ResourceResolver.register(new EnforcedResolverFragment(), false);
-		ResourceResolver.register(new ResolverXPointer(), false);
-	}
-
 	private void initDetachedSignatureResolvers(List<DSSDocument> detachedContents) {
 		Element signedInfo = getSignedInfo();
 		if (signedInfo != null) {
-			XMLSignature santuarioSignature = getSantuarioSignature();
-			List<DigestAlgorithm> usedReferenceDigestAlgos = DSSXMLUtils.getReferenceDigestAlgos(signedInfo);
-			for (DigestAlgorithm digestAlgorithm : usedReferenceDigestAlgos) {
-				santuarioSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
+			XMLSignature xmlSignature = getSantuarioSignature();
+			for (DigestAlgorithm digestAlgorithm : DSSXMLUtils.getReferenceDigestAlgos(signedInfo)) {
+				xmlSignature.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
 			}
 		}
 	}
@@ -1328,14 +1254,14 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	private void initCounterSignatureResolver(List<DSSDocument> detachedContents) {
 		Element signedInfo = getSignedInfo();
 		if (signedInfo != null) {
-			XMLSignature santuarioSignature = getSantuarioSignature();
+			XMLSignature xmlSignature = getSantuarioSignature();
 			List<String> types = DSSXMLUtils.getReferenceTypes(signedInfo);
 			for (String type : types) {
 				if (xadesPath.getCounterSignatureUri().equals(type)) {
 					for (DSSDocument document : detachedContents) {
 						// only one SignatureValue document shall be provided
 						if (isDetachedSignatureValueDocument(document)) {
-							santuarioSignature.addResourceResolver(new CounterSignatureResolver(document));
+							xmlSignature.addResourceResolver(new CounterSignatureResolver(document));
 							break;
 						}
 					}
@@ -1618,8 +1544,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public List<Reference> getReferences() {
 		if (references == null) {
-			XMLSignature santuarioSignature = getSantuarioSignature();
-			SignedInfo signedInfo = santuarioSignature.getSignedInfo();
+			XMLSignature xmlSignature = getSantuarioSignature();
+			SignedInfo signedInfo = xmlSignature.getSignedInfo();
             references = DSSXMLUtils.extractReferences(signedInfo);
 		}
 		return references;
@@ -1632,7 +1558,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public List<Element> getSignatureObjects() {
 		final NodeList list = DomUtils.getNodeList(signatureElement, XMLDSigPath.OBJECT_PATH);
-		final List<Element> references = new ArrayList<>(list.getLength());
+		final List<Element> objectElements = new ArrayList<>(list.getLength());
 		for (int ii = 0; ii < list.getLength(); ii++) {
 			final Node node = list.item(ii);
 			final Element element = (Element) node;
@@ -1640,9 +1566,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				// ignore signed properties
 				continue;
 			}
-			references.add(element);
+			objectElements.add(element);
 		}
-		return references;
+		return objectElements;
 	}
 
 	/**

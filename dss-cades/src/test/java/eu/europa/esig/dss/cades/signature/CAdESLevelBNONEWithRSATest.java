@@ -43,7 +43,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 
 @Tag("slow")
-public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
+class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -89,7 +89,7 @@ public class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} of message-digest algorithm {0} + digest algorithm {1}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm messageDigestAlgo, DigestAlgorithm digestAlgo) {
+	void init(DigestAlgorithm messageDigestAlgo, DigestAlgorithm digestAlgo) {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes(), "BC-CAdES-BpB-att-" + messageDigestAlgo.name() + "-" + digestAlgo.name() + "withRSA.p7m");
 
 		signatureParameters = new CAdESSignatureParameters();

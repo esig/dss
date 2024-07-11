@@ -93,11 +93,14 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.identifier.OriginalIdentifierProvider;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -106,21 +109,20 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.OriginalIdentifierProvider;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
-import eu.europa.esig.dss.validation.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.spi.policy.BasicASN1SignaturePolicyValidator;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
@@ -301,6 +303,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		validator.setDetachedContents(getDetachedContents());
 		validator.setDetachedEvidenceRecordDocuments(getDetachedEvidenceRecords());
 		validator.setTokenIdentifierProvider(getTokenIdentifierProvider());
+		validator.setSigningCertificateSource(getSigningCertificateSource());
 		return validator;
 	}
 
@@ -321,6 +324,10 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	}
 
 	protected List<DSSDocument> getDetachedEvidenceRecords() {
+		return null;
+	}
+
+	protected CertificateSource getSigningCertificateSource() {
 		return null;
 	}
 
@@ -354,6 +361,13 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 							if (signaturePolicyValidator.canValidate(signature.getSignaturePolicy())) {
 								validators.add(signaturePolicyValidator);
 							}
+						}
+					}
+					if (validators.isEmpty()) {
+						// not provided by serviceLoader
+						BasicASN1SignaturePolicyValidator signaturePolicyValidator = new BasicASN1SignaturePolicyValidator();
+						if (signaturePolicyValidator.canValidate(signature.getSignaturePolicy())) {
+							validators.add(signaturePolicyValidator);
 						}
 					}
 					if (validators.size() != 1) {
@@ -514,7 +528,6 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkNumberOfSignatures(diagnosticData);
 		checkDigestAlgorithm(diagnosticData);
 		checkEncryptionAlgorithm(diagnosticData);
-		checkMaskGenerationFunction(diagnosticData);
 		checkSigningCertificateValue(diagnosticData);
 		checkIssuerSigningCertificateValue(diagnosticData);
 		checkCertificateChain(diagnosticData);
@@ -560,11 +573,15 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
-				if (!DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+				if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
+					assertNotNull(digestMatcher.getUri());
+					assertEquals(digestMatcher.isDataFound(),
+							Utils.isStringEmpty(digestMatcher.getUri()) || digestMatcher.getUri().equals(digestMatcher.getDocumentName()));
+				} else {
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
-					assertFalse(digestMatcher.isDuplicated());
 				}
+				assertFalse(digestMatcher.isDuplicated());
 			}
 	
 			assertTrue(signatureWrapper.isSignatureIntact());
@@ -588,10 +605,6 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertNotNull(signatureWrapper.getEncryptionAlgorithm());
 		}
-	}
-	
-	protected void checkMaskGenerationFunction(DiagnosticData diagnosticData) {
-		// not implemented by default
 	}
 
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
@@ -925,6 +938,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		List<SignatureWrapper> allSignatures = diagnosticData.getSignatures();
 		for (SignatureWrapper signatureWrapper : allSignatures) {
 			checkNoDuplicateTimestamps(signatureWrapper.getTimestampList());
+			checkNoDuplicateEvidenceRecords(signatureWrapper.getEvidenceRecords());
 
 			List<String> timestampIdList = diagnosticData.getTimestampIdList(signatureWrapper.getId());
 	
@@ -988,8 +1002,13 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 		List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			assertTrue(xmlDigestMatcher.isDataFound());
-			assertTrue(xmlDigestMatcher.isDataIntact());
+			if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != xmlDigestMatcher.getType()) {
+				assertTrue(xmlDigestMatcher.isDataFound());
+				assertTrue(xmlDigestMatcher.isDataIntact());
+			} else {
+				assertFalse(xmlDigestMatcher.isDataFound());
+				assertFalse(xmlDigestMatcher.isDataIntact());
+			}
 		}
 		if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
 			assertNotNull(timestampWrapper.getArchiveTimestampType());
@@ -1156,6 +1175,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	}
 
 	protected void checkEvidenceRecords(DiagnosticData diagnosticData) {
+		checkNoDuplicateEvidenceRecords(diagnosticData.getEvidenceRecords());
 		checkEvidenceRecordDigestMatchers(diagnosticData);
 		checkEvidenceRecordTimestamps(diagnosticData);
 		checkEvidenceRecordValidationData(diagnosticData);
@@ -1163,6 +1183,12 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		checkEvidenceRecordScopes(diagnosticData);
 		checkEvidenceRecordTimestampedReferences(diagnosticData);
 		checkEvidenceRecordRepresentation(diagnosticData);
+	}
+
+	protected void checkNoDuplicateEvidenceRecords(List<EvidenceRecordWrapper> evidenceRecordWrappers) {
+		Set<String> erIds = evidenceRecordWrappers.stream().map(EvidenceRecordWrapper::getId).collect(Collectors.toSet());
+		assertEquals(evidenceRecordWrappers.size(), erIds.size());
+		assertFalse(evidenceRecordWrappers.stream().anyMatch(EvidenceRecordWrapper::isEvidenceRecordDuplicated));
 	}
 
 	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
@@ -1502,6 +1528,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void checkNoDuplicateTimestamps(List<TimestampWrapper> timestampTokens) {
 		Set<String> tstIds = timestampTokens.stream().map(TimestampWrapper::getId).collect(Collectors.toSet());
 		assertEquals(timestampTokens.size(), tstIds.size());
+		assertFalse(timestampTokens.stream().anyMatch(TimestampWrapper::isTimestampDuplicated));
 	}
 	
 	protected void checkNoDuplicateCompleteCertificates(FoundCertificatesProxy foundCertificates) {

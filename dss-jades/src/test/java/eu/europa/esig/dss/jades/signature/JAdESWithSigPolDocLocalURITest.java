@@ -40,8 +40,8 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESWithSigPolDocLocalURITest extends AbstractJAdESTestSignature {
+class JAdESWithSigPolDocLocalURITest extends AbstractJAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -71,7 +71,7 @@ public class JAdESWithSigPolDocLocalURITest extends AbstractJAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.json");
 
         Policy signaturePolicy = new Policy();

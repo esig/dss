@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -30,7 +32,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Calendar;
@@ -47,7 +49,7 @@ public class PAdESExtensionBToLTAWithExpiredUserTest extends AbstractPAdESTestEx
     private PAdESService service;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new PAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
     }
@@ -56,28 +58,28 @@ public class PAdESExtensionBToLTAWithExpiredUserTest extends AbstractPAdESTestEx
     protected CertificateVerifier getCompleteCertificateVerifier() {
         CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
         certificateVerifier.setRevocationFallback(true);
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         return certificateVerifier;
     }
 
     @Override
-    protected PAdESSignatureParameters getSignatureParameters() {
-        PAdESSignatureParameters signatureParameters = super.getSignatureParameters();
-        signatureParameters.setSignWithExpiredCertificate(true);
+    protected PAdESSignatureParameters getExtensionParameters() {
+        PAdESSignatureParameters signatureParameters = super.getExtensionParameters();
+        signatureParameters.setCheckCertificateRevocation(true); // TODO : to be removed in 6.2
         return signatureParameters;
     }
 
     @Override
-    protected PAdESSignatureParameters getExtensionParameters() {
-        PAdESSignatureParameters extensionParameters = super.getExtensionParameters();
-        extensionParameters.setSignWithExpiredCertificate(true);
-        return extensionParameters;
-    }
+    protected DSSDocument extendSignature(DSSDocument signedDocument) {
+        CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
-    @Override
-    protected DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
-        Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
-        assertTrue(exception.getMessage().contains("The signing certificate has expired and " +
-                "there is no POE during its validity range :"));
+        PAdESService service = new PAdESService(certificateVerifier);
+        service.setTspSource(getUsedTSPSourceAtExtensionTime());
+
+        Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
+        assertTrue(exception.getMessage().contains("is expired at signing time"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotAfter());
@@ -86,12 +88,20 @@ public class PAdESExtensionBToLTAWithExpiredUserTest extends AbstractPAdESTestEx
 
         service.setTspSource(getGoodTsaByTime(tstTime));
 
-        DSSDocument extendedDocument = super.extendSignature(signedDocument);
+        exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
+        assertTrue(exception.getMessage().contains("is expired at signing time"));
+
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+
+        DSSDocument extendedDocument = service.extendDocument(signedDocument, getExtensionParameters());
         assertNotNull(extendedDocument);
+
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
         service.setTspSource(getGoodTsa());
 
-        extendedDocument = super.extendSignature(extendedDocument);
+        extendedDocument = service.extendDocument(extendedDocument, getExtensionParameters());
         assertNotNull(extendedDocument);
         return extendedDocument;
     }

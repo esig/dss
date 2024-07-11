@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -42,14 +42,14 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JsonNotAdESLevelTWithoutCertificatesTest extends AbstractJAdESTestSignature {
+class JsonNotAdESLevelTWithoutCertificatesTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 
         signatureParameters = new JAdESSignatureParameters();

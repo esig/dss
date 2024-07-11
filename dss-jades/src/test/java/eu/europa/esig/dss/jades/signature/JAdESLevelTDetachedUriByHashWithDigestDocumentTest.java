@@ -40,16 +40,16 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class JAdESLevelTDetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
+class JAdESLevelTDetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DSSDocument originalDocument = new FileDocument(new File("src/test/resources/sample.json"));
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigest(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA512, originalDocument.getDigestValue(DigestAlgorithm.SHA512));
         documentToSign.setName(originalDocument.getName());
 
         signatureParameters = new JAdESSignatureParameters();
@@ -61,7 +61,7 @@ public class JAdESLevelTDetachedUriByHashWithDigestDocumentTest extends Abstract
         signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
         signatureParameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
-        signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
+        signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA512);
 
         service = new JAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());

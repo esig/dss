@@ -30,10 +30,10 @@ import java.util.Set;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.junit.jupiter.api.Test;
 
-public class JsonObjectTest {
+class JsonObjectTest {
 	
 	@Test
-	public void orderTest() {
+	void orderTest() {
 		LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
 		linkedHashMap.put("key1", "value1");
 		linkedHashMap.put("key2", "value2");
@@ -56,7 +56,7 @@ public class JsonObjectTest {
 	}
 	
 	@Test
-	public void compareTest() {
+	void compareTest() {
 		LinkedHashMap<String, Object> linkedHashMap = new LinkedHashMap<>();
 		linkedHashMap.put("header", "fh43hq94gf3j9o");
 		

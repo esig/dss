@@ -32,10 +32,10 @@ import java.util.TimeZone;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ValidAtTimeKeyEntryPredicateTest {
+class ValidAtTimeKeyEntryPredicateTest {
 
     @Test
-    public void rsaTest() throws IOException {
+    void rsaTest() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
                 new KeyStore.PasswordProtection("password".toCharArray()))) {
 
@@ -78,7 +78,7 @@ public class ValidAtTimeKeyEntryPredicateTest {
     }
 
     @Test
-    public void dsaTest() throws IOException {
+    void dsaTest() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/good-dsa-user.p12",
                 new KeyStore.PasswordProtection("ks-password".toCharArray()))) {
 
@@ -97,7 +97,7 @@ public class ValidAtTimeKeyEntryPredicateTest {
     }
 
     @Test
-    public void ecdsaTest() throws IOException {
+    void ecdsaTest() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/good-ecdsa-user.p12",
                 new KeyStore.PasswordProtection("ks-password".toCharArray()))) {
 
@@ -116,7 +116,7 @@ public class ValidAtTimeKeyEntryPredicateTest {
     }
 
     @Test
-    public void ed25519Test() throws IOException {
+    void ed25519Test() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/Ed25519-good-user.p12",
                 new KeyStore.PasswordProtection("ks-password".toCharArray()))) {
 
@@ -135,7 +135,7 @@ public class ValidAtTimeKeyEntryPredicateTest {
     }
 
     @Test
-    public void combinedTest() throws IOException {
+    void combinedTest() throws IOException {
         try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/combined.p12",
                 new KeyStore.PasswordProtection("password".toCharArray()))) {
 
@@ -172,7 +172,7 @@ public class ValidAtTimeKeyEntryPredicateTest {
     }
 
     @Test
-    public void nullValueTest() {
+    void nullValueTest() {
         Exception exception = assertThrows(NullPointerException.class,
                 () -> new ValidAtTimeKeyEntryPredicate(null));
         assertEquals("Validation time cannot be null!", exception.getMessage());

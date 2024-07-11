@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -37,21 +29,28 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
 
-public class OpenDocumentWithPSSTest extends AbstractOpenDocumentSetTestSignature {
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class OpenDocumentWithPSSTest extends AbstractOpenDocumentSetTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -59,9 +58,9 @@ public class OpenDocumentWithPSSTest extends AbstractOpenDocumentSetTestSignatur
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
 		signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-		signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
 
-		service = new ASiCWithXAdESService(getCertificateVerifierWithMGF1());
+		service = new ASiCWithXAdESService(getCertificateVerifierWithPSS());
 		service.setTspSource(getPSSGoodTsa());
 	}
 
@@ -77,23 +76,23 @@ public class OpenDocumentWithPSSTest extends AbstractOpenDocumentSetTestSignatur
 		verifyDiagnosticData(diagnosticData);
 		
 		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
-		for(SignatureWrapper wrapper: allSignatures) {
-			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+		for (SignatureWrapper wrapper: allSignatures) {
+			assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
 		}
 		
 		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
-		for(CertificateWrapper wrapper: usedCertificates) {
-			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+		for (CertificateWrapper wrapper: usedCertificates) {
+			assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
 		}
 		
 		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
-		for(RevocationWrapper wrapper : allRevocationData) {
-			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+		for (RevocationWrapper wrapper : allRevocationData) {
+			assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
 		}
 		
 		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
-		for(TimestampWrapper wrapper : timestampList) {
-			assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+		for (TimestampWrapper wrapper : timestampList) {
+			assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
 		}
 	}
 

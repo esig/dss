@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelLTAWithSignaturePolicyStoreExtensionTest extends AbstractCAdESTestSignature {
+class CAdESLevelLTAWithSignaturePolicyStoreExtensionTest extends AbstractCAdESTestSignature {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -61,7 +61,7 @@ public class CAdESLevelLTAWithSignaturePolicyStoreExtensionTest extends Abstract
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello world".getBytes());
 
 		Policy signaturePolicy = new Policy();

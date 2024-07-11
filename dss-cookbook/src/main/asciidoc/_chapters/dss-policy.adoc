@@ -375,7 +375,21 @@ Default: `FAIL`
 </BasicSignatureConstraints>
 ----
 
-* `ManifestEntryObjectExistence` - this constraint is used to check whether the original documents referenced within the signed manifest have been provided to the validation process. If the original documents references from the manifest have not been provided to the validation process, the check will fail.
+* `ReferenceDataNameMatch` - this constraint is used to check whether the reference URI matches the corresponding document's name. If the document name does not match, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ReferenceDataNameMatch usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ReferenceDataNameMatch Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryObjectExistence` - this constraint is used to check whether at least one of the entries referenced within the signed manifest have been provided to the validation process. If the original documents referenced from the manifest have not been provided to the validation process, the check will fail.
 
 Default: `WARN`
 
@@ -385,6 +399,48 @@ Default: `WARN`
 <BasicSignatureConstraints>
     ...
     <ManifestEntryObjectExistence Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryObjectGroup` - this constraint is used to check whether all original documents referenced within the signed manifest have been found during the validation process. If some of the original documents referenced in the manifest have not been found, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ManifestEntryObjectGroup usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryObjectGroup Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryObjectIntact` - this constraint is used to check whether all original documents referenced within the signed manifest have been found and their digest match. If digest of some of the documents do not match the manifest entries, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ManifestEntryObjectIntact usage (with FAIL validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryObjectIntact Level="FAIL" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `ManifestEntryNameMatch` - this constraint is used to check whether names of the identified original documents provided to the validation process match the manifest entries URIs. If a document name does not match the manifest entry URI, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ManifestEntryNameMatch usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryNameMatch Level="WARN" />
     ...
 </BasicSignatureConstraints>
 ----
@@ -621,11 +677,43 @@ Note: executed for PAdES only
 </BasicSignatureConstraints>
 ----
 
+* `FormFillChanges` - this constraint is used to check whether a PDF document does not contain any form fill-in or signing changes. This constraint corresponds to the changes listed under `/P 2` of `/DocMDP` dictionary defined in ISO 32000-1 (cf. <<R06>>). If a provided PDF document contains any of the changes within internal PDF objects occurred between the signed PDF document revision and the final PDF document revision, the check will fail.
+
+Default: not executed
+
+Note: executed for PAdES only. This does not fail under signature augmentation modifications.
+
+[source,xml,indent=0]
+.Example of FormFillChanges usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <FormFillChanges Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+* `AnnotationChanges` - this constraint is used to check whether a PDF document does not contain any annotation creation, modification or deletion changes. This constraint corresponds to the changes listed under `/P 3` of `/DocMDP` dictionary defined in ISO 32000-1 (cf. <<R06>>). If a provided PDF document contains any of the changes within internal PDF objects occurred between the signed PDF document revision and the final PDF document revision, the check will fail.
+
+Default: not executed
+
+Note: executed for PAdES only. This does not fail under signature augmentation modifications.
+
+[source,xml,indent=0]
+.Example of AnnotationChanges usage (with WARN validation level)
+----
+<BasicSignatureConstraints>
+    ...
+    <AnnotationChanges Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
 * `UndefinedChanges` - this constraint is used to check whether a PDF document does not contain any undefined (suspicious) changes, i.e. no signature addition, extension, timestamp addition or annotation addition/edition. If a provided PDF document contains undefined changes within internal PDF objects occurred between the signed PDF document revision and the final PDF document revision, the check will fail.
 
 Default: `WARN`
 
-Note: executed for PAdES only
+Note: executed for PAdES only. This does not fail under signature augmentation modifications.
 
 [source,xml,indent=0]
 .Example of UndefinedChanges usage (with WARN validation level)
@@ -742,6 +830,26 @@ Default: `WARN`
 <SigningCertificate>
     ...
     <AuthorityInfoAccessPresent Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `RevocationDataSkip` - this constraint defines a list of certificate extensions or certificate policies which, when present in a certificate, indicate that no revocation data check should be performed for that certificate. If the certificate matches one of the defined conditions, no revocation data check will be performed.
+
+NOTE: `FAIL` indication is not recommended, as it will interrupt the validation process.
+
+Default: `INFORM` for short-term signing-certificate, `IGNORE` for revocation issuer certificate (ocsp-no-check)
+
+[source,xml,indent=0]
+.Example of RevocationDataSkip usage (with IGNORE validation level)
+----
+<SigningCertificate>
+    ...
+    <RevocationDataSkip Level="IGNORE">
+        <CertificateExtensions>
+            <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+        </CertificateExtensions>
+    </RevocationDataSkip>
     ...
 </SigningCertificate>
 ----
@@ -1042,7 +1150,55 @@ Default: not executed
 </SigningCertificate>
 ----
 
-* `OrganizationUnit` - this constraint is used to check whether the certificate's subject distinguished name contains the OrganizationUnit attribute with one of the acceptable values. If the OrganizationUnit attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+* `Title` - this constraint is used to check whether the certificate's subject distinguished name contains the Title attribute with one of the acceptable values. If the Title attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Title usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Title Level="WARN">
+        <Id>CEO</Id>
+    </Title>
+    ...
+</SigningCertificate>
+----
+
+* `Email` - this constraint is used to check whether the certificate's subject distinguished name contains the EmailAddress attribute with one of the acceptable values. If the EmailAddress attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Email usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Email Level="WARN">
+        <Id>hello@nowina.lu</Id>
+    </Email>
+    ...
+</SigningCertificate>
+----
+
+* `OrganizationIdentifier` - this constraint is used to check whether the certificate's subject distinguished name contains the OrganizationIdentifier attribute with one of the acceptable values. If the OrganizationIdentifier attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of OrganizationIdentifier usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <OrganizationIdentifier Level="WARN">
+        <Id>1235</Id>
+    </OrganizationIdentifier>
+    ...
+</SigningCertificate>
+----
+
+* `OrganizationUnit` - this constraint is used to check whether the certificate's subject distinguished name contains the OrganizationalUnitName attribute with one of the acceptable values. If the OrganizationalUnitName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
 
 Default: not executed
 
@@ -1074,7 +1230,7 @@ Default: not executed
 </SigningCertificate>
 ----
 
-* `Country` - this constraint is used to check whether the certificate's subject distinguished name contains the Country attribute with one of the acceptable values. If the Country attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+* `Country` - this constraint is used to check whether the certificate's subject distinguished name contains the CountryName attribute with one of the acceptable values. If the CountryName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
 
 Default: not executed
 
@@ -1086,6 +1242,38 @@ Default: not executed
     <Country Level="WARN">
         <Id>USA</Id>
     </Country>
+    ...
+</SigningCertificate>
+----
+
+* `Locality` - this constraint is used to check whether the certificate's subject distinguished name contains the LocalityName attribute with one of the acceptable values. If the LocalityName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of Locality usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <Locality Level="WARN">
+        <Id>Boston</Id>
+    </Locality>
+    ...
+</SigningCertificate>
+----
+
+* `State` - this constraint is used to check whether the certificate's subject distinguished name contains the StateOrProvinceName attribute with one of the acceptable values. If the StateOrProvinceName attribute from certificate's subject distinguished name does not match to one of the defined values, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of State usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <State Level="WARN">
+        <Id>Massachusetts</Id>
+    </State>
     ...
 </SigningCertificate>
 ----
@@ -2222,7 +2410,21 @@ Default: `WARN`
 ----
 <EvidenceRecord>
     ...
-    <DataObjectGroup Level="FAIL" />
+    <DataObjectGroup Level="WARN" />
+    ...
+</EvidenceRecord>
+----
+
+* `HashTreeRenewal` - this constraint checks if the evidence record's time-stamp used to renew the hashtree (i.e. the time-stamp starting a new ArchiveTimeStampChain) covers all archive data objects covered by the initial archive time-stamp of the evidence record.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of HashTreeRenewal usage (with FAIL validation level)
+----
+<EvidenceRecord>
+    ...
+    <HashTreeRenewal Level="FAIL" />
     ...
 </EvidenceRecord>
 ----
@@ -2242,6 +2444,7 @@ Default: `FAIL` (`RSA`, `DSA`, `ECDSA`, `PLAIN-ECDSA`)
     ...
     <AcceptableEncryptionAlgo>
         <Algo>RSA</Algo>
+        <Algo>RSASSA-PSS</Algo>
         <Algo>DSA</Algo>
         <Algo>ECDSA</Algo>
         <Algo>PLAIN-ECDSA</Algo>
@@ -2262,6 +2465,7 @@ Default: `FAIL` (`RSA=1024`, `DSA=1024`, `ECDSA=160`, `PLAIN-ECDSA=160`)
     <MiniPublicKeySize>
         <Algo Size="1024">DSA</Algo>
         <Algo Size="1024">RSA</Algo>
+        <Algo Size="1024">RSASSA-PSS</Algo>
         <Algo Size="160">ECDSA</Algo>
         <Algo Size="160">PLAIN-ECDSA</Algo>
     </MiniPublicKeySize>
@@ -2337,6 +2541,10 @@ NOTE: If one of the `UpdateDate` or `LevelAfterUpdate` attributes is not defined
 			<Algo Date="2016" Size="1536">RSA</Algo>
 			<Algo Date="2026" Size="1900">RSA</Algo>
 			<Algo Date="2029" Size="3000">RSA</Algo>
+			<Algo Date="2009" Size="1024">RSASSA-PSS</Algo>
+			<Algo Date="2016" Size="1536">RSASSA-PSS</Algo>
+			<Algo Date="2026" Size="1900">RSASSA-PSS</Algo>
+			<Algo Date="2029" Size="3000">RSASSA-PSS</Algo>
 			<Algo Date="2013" Size="160">ECDSA</Algo>
 			<Algo Date="2013" Size="192">ECDSA</Algo>
 			<Algo Date="2016" Size="224">ECDSA</Algo>
@@ -2477,28 +2685,34 @@ This table defines the correspondence between the enforced validation policy con
                                   |UnsignedAttributes              |UnsignedAttributesConstraints   2+|See UnsignedAttributesConstraints
 .12+|BasicSignatureConstraints    |ReferenceDataExistence          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |ReferenceDataIntact             |LevelConstraint                   |FAILED                |HASH_FAILURE
+                                  |ReferenceDataNameMatch          |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |ManifestEntryObjectExistence    |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |ManifestEntryObjectGroup        |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |ManifestEntryObjectIntact       |LevelConstraint                   |FAILED                |HASH_FAILURE
+                                  |ManifestEntryObjectNameMatch    |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |SignatureIntact                 |LevelConstraint                   |FAILED                |SIG_CRYPTO_FAILURE
                                   |SignatureDuplicated             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ProspectiveCertificateChain     |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SignerInformationStore          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ByteRange                       |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |ByteRangeCollision              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+.12+|BasicSignatureConstraints    |ByteRangeCollision              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ByteRangeAllDocument            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfSignatureDictionary          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfPageDifference               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-.11+|BasicSignatureConstraints    |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |PdfAnnotationOverlap            |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |PdfVisualDifference             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |DocMDP                          |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |FieldMDP                        |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |SigFieldLock                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |FormFillChanges                 |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |AnnotationChanges               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |UndefinedChanges                |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |TrustServiceTypeIdentifier      |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
+.4+|BasicSignatureConstraints     |TrustServiceTypeIdentifier      |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |TrustServiceStatus              |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
-                                  |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
-.12+|CertificateConstraints       |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
+.12+|CertificateConstraints       |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
+                                  |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                .2+|NotExpired                   .2+|LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
                                                                                                                               OUT_OF_BOUNDS_NOT_REVOKED
@@ -2510,8 +2724,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |CRLNextUpdatePresent            |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |OCSPNextUpdatePresent           |LevelConstraint                   |INDETERMINATE         |TRY_LATER
                                   |RevocationFreshness             |TimeConstraint                    |INDETERMINATE         |TRY_LATER
-                                  |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
-.12+|CertificateConstraints       |CA                              |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+.12+|CertificateConstraints       |RevocationFreshnessNextUpdate   |LevelConstraint                   |INDETERMINATE         |TRY_LATER
+                                  |CA                              |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |MaxPathLength                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |KeyUsage                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE +
                                                                                                                               CERTIFICATE_CHAIN_GENERAL_FAILURE
@@ -2523,12 +2737,19 @@ This table defines the correspondence between the enforced validation policy con
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints       |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.12+|CertificateConstraints       |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Title                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Email                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationIdentifier          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |OrganizationUnit                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |OrganizationName                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Country                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Locality                        |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |State                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |IssuerName                      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SerialNumberPresent             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                               .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
+.12+|CertificateConstraints    .2+|NotRevoked                   .2+|LevelConstraint                   |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                                                                                       |FAILED                |REVOKED
                                   |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |TRY_LATER
@@ -2537,11 +2758,11 @@ This table defines the correspondence between the enforced validation policy con
                                   |NotSelfSigned                   |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyIds                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyQualificationIds          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints       |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PolicySupportedByQSCDIds        |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcCompliance                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcEuLimitValueCurrency          |ValueConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |MinQcEuLimitValue               |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.13+|CertificateConstraints       |MinQcEuRetentionPeriod          |IntValueConstraint                |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcSSCD                          |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcEuPDSLocation                 |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |QcType                          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2549,7 +2770,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |IssuedToNaturalPerson           |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |IssuedToLegalPerson             |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |SemanticsIdentifier             |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.5+|CertificateConstraints        |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |PSD2QcTypeRolesOfPSP            |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PSD2QcCompetentAuthorityName    |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PSD2QcCompetentAuthorityId      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2600,6 +2821,15 @@ This table defines the correspondence between the enforced validation policy con
                                   |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
+.7+|EvidenceRecordConstraints     |EvidenceRecordValid             |LevelConstraint                   |Indication from ER or timestamp |SubIndication from ER or timestamp
+                                  |DataObjectExistence             |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |DataObjectIntact                |LevelConstraint                   |FAILED                |HASH_FAILURE
+                                  |DataObjectFound                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |DataObjectGroup                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |HashTreeRenewal                 |LevelConstraint                   |INDETERMINATE +
+                                                                                                       FAILED                |SIGNED_DATA_NOT_FOUND +
+                                                                                                                              HASH_FAILURE
+                                  |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
 .4+|Cryptographic                 |AcceptableEncryptionAlgo        |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
                                                                                                                               CRYPTO_CONSTRAINTS_FAILURE
                                   |MiniPublicKeySize               |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +

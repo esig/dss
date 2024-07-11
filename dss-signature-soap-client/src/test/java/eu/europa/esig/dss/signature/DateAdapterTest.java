@@ -31,33 +31,33 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.ws.signature.soap.client.DateAdapter;
 
-public class DateAdapterTest {
+class DateAdapterTest {
 
 	private DateAdapter adapter = new DateAdapter();
 
 	@Test
-	public void dateAdapter() throws Exception {
+	void dateAdapter() throws Exception {
 		Date date = new Date();
 		assertEquals(adapter.marshal(date), adapter.marshal(adapter.unmarshal(adapter.marshal(date))));
 	}
 
 	@Test
-	public void marshallNull() throws Exception {
+	void marshallNull() throws Exception {
 		assertThrows(NullPointerException.class, () -> adapter.marshal(null));
 	}
 
 	@Test
-	public void unmarshallNull() throws Exception {
+	void unmarshallNull() throws Exception {
 		assertThrows(NullPointerException.class, () -> adapter.unmarshal(null));
 	}
 
 	@Test
-	public void unmarshallInvalid() throws Exception {
+	void unmarshallInvalid() throws Exception {
 		assertThrows(ParseException.class, () -> adapter.unmarshal("aa"));
 	}
 
 	@Test
-	public void unmarshall() throws Exception {
+	void unmarshall() throws Exception {
 		assertNotNull(adapter.unmarshal("2017-06-19T13:40:01.555Z"));
 	}
 

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 
 // Default configuration test
-public class MRALOTLTest extends AbstractMRALOTLTest {
+class MRALOTLTest extends AbstractMRALOTLTest {
 
     @Override
     protected Indication getFinalIndication() {

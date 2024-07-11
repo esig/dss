@@ -32,16 +32,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PemToDerConverterTest {
+class PemToDerConverterTest {
 
 	@Test
-	public void testException() {
+	void testException() {
 		Exception exception = assertThrows(DSSException.class, () -> PemToDerConverter.convert(new byte[] {}));
 		assertEquals("Unable to read PEM Object", exception.getMessage());
 	}
 
 	@Test
-	public void pemFile() throws IOException {
+	void pemFile() throws IOException {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/belgium2.pem.crl")) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Streams.pipeAll(is, baos);

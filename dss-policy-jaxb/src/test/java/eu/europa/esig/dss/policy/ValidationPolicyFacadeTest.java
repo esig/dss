@@ -43,12 +43,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ValidationPolicyFacadeTest {
+class ValidationPolicyFacadeTest {
 
 	private ValidationPolicyFacade facade = ValidationPolicyFacade.newFacade();
 
 	@Test
-	public void testUnmarshalling() throws Exception {
+	void testUnmarshalling() throws Exception {
 		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade()
 				.unmarshall(new File("src/test/resources/constraint.xml"));
 
@@ -64,7 +64,7 @@ public class ValidationPolicyFacadeTest {
 	}
 
 	@Test
-	public void testUnmarshallingWithModel() throws Exception {
+	void testUnmarshallingWithModel() throws Exception {
 		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade()
 				.unmarshall(new File("src/test/resources/constraint.xml"));
 
@@ -82,40 +82,40 @@ public class ValidationPolicyFacadeTest {
 	}
 
 	@Test
-	public void testUnmarshalCoreValidation() throws Exception {
+	void testUnmarshalCoreValidation() throws Exception {
 		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade()
 				.unmarshall(new File("src/test/resources/constraint-core-validation.xml"));
 		assertNotNull(constraintsParameters);
 	}
 
 	@Test
-	public void getDefaultValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
+	void getDefaultValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
 		assertNotNull(ValidationPolicyFacade.newFacade().getDefaultValidationPolicy());
 	}
 
 	@Test
-	public void getCertificateValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
+	void getCertificateValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
 		ValidationPolicy certificateValidationPolicy = ValidationPolicyFacade.newFacade().getCertificateValidationPolicy();
 		assertNotNull(certificateValidationPolicy);
 		assertEquals("Certificate policy TL based", certificateValidationPolicy.getPolicyName());
 	}
 
 	@Test
-	public void getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
+	void getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
 		ValidationPolicy trustedListValidationPolicy = ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
 		assertNotNull(trustedListValidationPolicy);
 		assertEquals("Policy to validate Trusted Lists", trustedListValidationPolicy.getPolicyDescription());
 	}
 
 	@Test
-	public void incorrectPath() {
+	void incorrectPath() {
 		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy("aaaa"));
 		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy((InputStream) null));
 		assertThrows(NullPointerException.class, () -> facade.getValidationPolicy((File) null));
 	}
 
 	@Test
-	public void testUnmarshalConstraint() throws Exception {
+	void testUnmarshalConstraint() throws Exception {
 		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade()
 				.unmarshall(new File("src/test/resources/constraint.xml"));
 		RevocationConstraints revocation = constraintsParameters.getRevocation();
@@ -130,33 +130,33 @@ public class ValidationPolicyFacadeTest {
 	}
 
 	@Test
-	public void testInvalid() throws Exception {
+	void testInvalid() throws Exception {
 		File invalidFile = new File("src/test/resources/invalid-policy.xml");
 		assertThrows(UnmarshalException.class, () -> facade.unmarshall(invalidFile));
 	}
 
 	@Test
-	public void unmarshallNullIS() throws Exception {
+	void unmarshallNullIS() throws Exception {
 		assertThrows(NullPointerException.class, () -> facade.unmarshall((InputStream) null));
 	}
 
 	@Test
-	public void unmarshallNullFile() throws Exception {
+	void unmarshallNullFile() throws Exception {
 		assertThrows(NullPointerException.class, () -> facade.unmarshall((File) null));
 	}
 
 	@Test
-	public void unmarshallNullString() throws Exception {
+	void unmarshallNullString() throws Exception {
 		assertThrows(NullPointerException.class, () -> facade.unmarshall((String) null));
 	}
 
 	@Test
-	public void marshallNull() throws Exception {
+	void marshallNull() throws Exception {
 		assertThrows(NullPointerException.class, () -> facade.marshall(null));
 	}
 
 	@Test
-	public void marshallNull2() throws Exception {
+	void marshallNull2() throws Exception {
 		assertThrows(NullPointerException.class, () -> facade.marshall(null, null));
 	}
 

@@ -49,12 +49,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class RemoteMultipleDocumentsSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
+class RemoteMultipleDocumentsSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 	
 	private RemoteMultipleDocumentsSignatureServiceImpl signatureService;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		signatureService = new RemoteMultipleDocumentsSignatureServiceImpl();
 		signatureService.setXadesService(getXAdESService());
 		signatureService.setAsicWithXAdESService(getASiCXAdESService());
@@ -62,7 +62,7 @@ public class RemoteMultipleDocumentsSignatureServiceTest extends AbstractRemoteS
 	}
 
 	@Test
-	public void testSigningAndExtensionMultiDocuments() throws Exception {
+	void testSigningAndExtensionMultiDocuments() throws Exception {
 		RemoteSignatureParameters parameters = new RemoteSignatureParameters();
 		parameters.setAsicContainerType(ASiCContainerType.ASiC_E);
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
@@ -99,7 +99,7 @@ public class RemoteMultipleDocumentsSignatureServiceTest extends AbstractRemoteS
 	}
 	
 	@Test
-	public void multipleDocumentTimestampingTest() throws Exception {
+	void multipleDocumentTimestampingTest() throws Exception {
 		RemoteTimestampParameters timestampParameters = new RemoteTimestampParameters();
 		timestampParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 		timestampParameters.setTimestampContainerForm(TimestampContainerForm.ASiC_E);

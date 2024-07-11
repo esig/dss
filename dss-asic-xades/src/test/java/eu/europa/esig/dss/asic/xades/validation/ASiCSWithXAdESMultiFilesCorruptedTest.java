@@ -31,10 +31,10 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class ASiCSWithXAdESMultiFilesCorruptedTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCSWithXAdESMultiFilesCorruptedTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -49,7 +49,7 @@ public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		originalDocument = new InMemoryDocument(getClass().getResourceAsStream("/pdf-two-fields.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();

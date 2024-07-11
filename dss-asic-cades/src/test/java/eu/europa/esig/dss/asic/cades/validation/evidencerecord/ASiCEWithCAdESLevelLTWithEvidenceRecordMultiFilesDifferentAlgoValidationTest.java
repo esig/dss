@@ -31,7 +31,7 @@ import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesDifferentAlgoValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesDifferentAlgoValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

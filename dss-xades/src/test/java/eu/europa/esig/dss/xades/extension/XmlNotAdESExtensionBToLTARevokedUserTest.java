@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
@@ -36,12 +37,12 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -56,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlNotAdESExtensionBToLTARevokedUserTest extends AbstractXAdESTestExtension {
+class XmlNotAdESExtensionBToLTARevokedUserTest extends AbstractXAdESTestExtension {
 
     private XAdESService extensionService;
 
@@ -72,6 +73,7 @@ public class XmlNotAdESExtensionBToLTARevokedUserTest extends AbstractXAdESTestE
         signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         signatureParameters.setGenerateTBSWithoutCertificate(true);
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
         return signatureParameters;
     }
 

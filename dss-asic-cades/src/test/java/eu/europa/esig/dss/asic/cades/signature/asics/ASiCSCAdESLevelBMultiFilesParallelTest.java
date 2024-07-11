@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -40,7 +40,6 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -57,10 +56,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
+class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		List<DSSDocument> documentToSigns = new ArrayList<>();
 		DSSDocument firstDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 		documentToSigns.add(firstDocument);
@@ -109,7 +108,7 @@ public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 			assertNotEquals(Indication.FAILED, reports.getSimpleReport().getIndication(sigId));
 		}
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(resignedDocument);
+		DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(resignedDocument);
 		ASiCContent result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());
@@ -158,7 +157,7 @@ public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		XmlDigestAlgoAndValue digestAlgoAndValue = xmlSignatureScopeFirstDocument.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
 		DigestAlgorithm digestAlgorithm = digestAlgoAndValue.getDigestMethod();
-        assertArrayEquals(Utils.fromBase64(firstDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue());
+        assertArrayEquals(firstDocument.getDigestValue(digestAlgorithm), digestAlgoAndValue.getDigestValue());
 		
 		XmlSignatureScope xmlSignatureScopeSecondDocument = signatureScopes.get(2);
 		assertNotNull(xmlSignatureScopeSecondDocument.getName());
@@ -166,7 +165,7 @@ public class ASiCSCAdESLevelBMultiFilesParallelTest extends PKIFactoryAccess {
 		digestAlgoAndValue = xmlSignatureScopeSecondDocument.getSignerData().getDigestAlgoAndValue();
 		assertNotNull(digestAlgoAndValue);
 		digestAlgorithm = digestAlgoAndValue.getDigestMethod();
-		assertArrayEquals(Utils.fromBase64(secondDocument.getDigest(digestAlgorithm)), digestAlgoAndValue.getDigestValue());
+		assertArrayEquals(secondDocument.getDigestValue(digestAlgorithm), digestAlgoAndValue.getDigestValue());
 		
 	}
 

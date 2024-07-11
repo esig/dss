@@ -47,6 +47,7 @@ public class CachedEntry<R extends CachedResult> {
 	 * Empty constructor
 	 */
 	public CachedEntry() {
+		// empty
 	}
 
 	/**
@@ -250,4 +251,5 @@ public class CachedEntry<R extends CachedResult> {
 		}
 		return null;
 	}
+
 }

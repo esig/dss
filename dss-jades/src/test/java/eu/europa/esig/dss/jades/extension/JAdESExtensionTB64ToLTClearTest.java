@@ -23,7 +23,7 @@ package eu.europa.esig.dss.jades.extension;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSConverter;
@@ -40,14 +40,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESExtensionTB64ToLTClearTest extends AbstractJAdESTestSignature {
+class JAdESExtensionTB64ToLTClearTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

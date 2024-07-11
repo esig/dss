@@ -53,7 +53,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
@@ -73,7 +73,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testJavaFont() throws IOException {
+	void testJavaFont() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -86,7 +86,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testFontByFamilyName() throws IOException {
+	void testFontByFamilyName() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -99,7 +99,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testFontByFamilyNameAndSize() throws IOException {
+	void testFontByFamilyNameAndSize() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -111,7 +111,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testFontAllValues() throws IOException {
+	void testFontAllValues() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");
@@ -124,7 +124,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testFontBoldAndItalic() throws IOException {
+	void testFontBoldAndItalic() throws IOException {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature");

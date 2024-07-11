@@ -21,6 +21,10 @@
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
 import eu.europa.esig.asic.manifest.ASiCManifestUtils;
+import eu.europa.esig.dss.asic.cades.SimpleASiCWithCAdESFilenameFactory;
+import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilterFactory;
+import eu.europa.esig.dss.asic.common.evidencerecord.ASiCEvidenceRecordManifestBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -39,18 +43,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASiCEWithCAdESManifestBuilderTest {
+class ASiCEWithCAdESManifestBuilderTest {
 
 	private static Validator validator;
 
 	@BeforeEach
-	public void init() throws SAXException {
+	void init() throws SAXException {
 		Schema schema = ASiCManifestUtils.getInstance().getSchema();
 		validator = schema.newValidator();
 	}
 
 	@Test
-	public void testManifestAgainstXSD() throws SAXException, IOException {
+	void testManifestAgainstXSD() throws SAXException, IOException {
 		List<DSSDocument> documents = new ArrayList<>();
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.bin"));
 		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test", MimeTypeEnum.BINARY));
@@ -73,7 +77,7 @@ public class ASiCEWithCAdESManifestBuilderTest {
 	}
 
 	@Test
-	public void testArchiveManifestAgainstXSD() throws SAXException, IOException {
+	void testArchiveManifestAgainstXSD() throws SAXException, IOException {
 		List<DSSDocument> signatures = new ArrayList<>();
 		signatures.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.p7s", MimeTypeEnum.PKCS7));
 		List<DSSDocument> timestamps = new ArrayList<>();
@@ -93,6 +97,37 @@ public class ASiCEWithCAdESManifestBuilderTest {
 		ASiCEWithCAdESArchiveManifestBuilder builder = new ASiCEWithCAdESArchiveManifestBuilder(
 				asicContent, null, DigestAlgorithm.SHA256, "timestamp.tst");
 		DSSDocument manifest = builder.build();
+
+		validator.validate(new DOMSource(DomUtils.buildDOM(manifest)));
+	}
+
+	@Test
+	void testEvidenceRecordManifestAgainstXSD() throws SAXException, IOException {
+		List<DSSDocument> documents = new ArrayList<>();
+		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test.bin"));
+		documents.add(new InMemoryDocument(new byte[] { 1, 2, 3 }, "test", MimeTypeEnum.BINARY));
+
+		ASiCContent asicContent = new ASiCContent();
+		asicContent.setSignedDocuments(documents);
+		asicContent.setContainerType(ASiCContainerType.ASiC_E);
+
+		ASiCEvidenceRecordManifestBuilder builder = new ASiCEvidenceRecordManifestBuilder(asicContent,
+				DigestAlgorithm.SHA256, "evidencerecord.xml")
+				.setAsicContentDocumentFilter(ASiCContentDocumentFilterFactory.signedDocumentsOnlyFilter())
+				.setEvidenceRecordFilenameFactory(new SimpleASiCWithCAdESFilenameFactory());
+		DSSDocument manifest = builder.build();
+
+		manifest.save("target/manifest.xml");
+
+		validator.validate(new DOMSource(DomUtils.buildDOM(manifest)));
+
+		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContent);
+
+		builder = new ASiCEvidenceRecordManifestBuilder(zipArchive,
+				DigestAlgorithm.SHA256, "evidencerecord.xml")
+				.setAsicContentDocumentFilter(ASiCContentDocumentFilterFactory.signedDocumentsOnlyFilter())
+				.setEvidenceRecordFilenameFactory(new SimpleASiCWithCAdESFilenameFactory());
+		manifest = builder.build();
 
 		validator.validate(new DOMSource(DomUtils.buildDOM(manifest)));
 	}

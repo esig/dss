@@ -20,17 +20,18 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.FileNameBuilder;
+import eu.europa.esig.dss.signature.FileNameBuilder;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.CMSForPAdESBaselineRequirementsChecker;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
@@ -40,8 +41,8 @@ import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
@@ -147,7 +148,7 @@ public class PAdESWithExternalCMSService implements Serializable {
     public DSSMessageDigest getMessageDigest(DSSDocument toSignDocument, PAdESSignatureParameters parameters) {
         Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-        assertDocumentValid(toSignDocument);
+        PAdESUtils.assertPdfDocument(toSignDocument);
 
         final PDFSignatureService pdfSignatureService = getPAdESSignatureService();
         return pdfSignatureService.messageDigest(toSignDocument, parameters);
@@ -172,8 +173,8 @@ public class PAdESWithExternalCMSService implements Serializable {
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
         Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel shall be defined within parameters!");
         Objects.requireNonNull(cmsDocument, "CMSDocument cannot be null!");
-        assertDocumentValid(toSignDocument);
-        assertDocumentValid(cmsDocument);
+        PAdESUtils.assertPdfDocument(toSignDocument);
+        assertNotDigestDocument(cmsDocument);
 
         final CMSSignedData cmsSignedData = toCMSSignedData(cmsDocument);
         byte[] derEncodedCMS = DSSASN1Utils.getDEREncoded(cmsSignedData);
@@ -237,9 +238,9 @@ public class PAdESWithExternalCMSService implements Serializable {
                 .setSignaturePackaging(SignaturePackaging.ENVELOPED).setMimeType(MimeTypeEnum.PDF).build();
     }
 
-    private void assertDocumentValid(DSSDocument document) {
+    private void assertNotDigestDocument(DSSDocument document) {
         if (document instanceof DigestDocument) {
-            throw new IllegalArgumentException("DigestDocument cannot be used for PAdES!");
+            throw new IllegalArgumentException("DigestDocument is not allowed for current operation!");
         }
     }
 
@@ -274,20 +275,20 @@ public class PAdESWithExternalCMSService implements Serializable {
         try {
             cmsSignedData = DSSUtils.toCMSSignedData(cms);
         } catch (Exception e) {
-            LOG.error("Unable to decode the provided CMS document : {}", e.getMessage());
+            LOG.warn("Unable to decode the provided CMS document : {}", e.getMessage());
             return false;
         }
 
         SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
         if (signerInfos.size() != 1) {
-            LOG.error("CMSSignedData shall contain one and only one SignerInformation for signature signing process!");
+            LOG.warn("CMSSignedData shall contain one and only one SignerInformation for signature signing process!");
             return false;
         }
 
         final CAdESSignature cadesSignature = toCAdESSignature(cmsSignedData, messageDigest);
         SignatureCryptographicVerification scv = cadesSignature.getSignatureCryptographicVerification();
         if (!scv.isSignatureValid()) {
-            LOG.error("CMSSignedData signature is not valid!");
+            LOG.warn("CMSSignedData signature is not valid!");
             return false;
         }
         return true;
@@ -308,7 +309,7 @@ public class PAdESWithExternalCMSService implements Serializable {
         try {
             cmsSignedData = DSSUtils.toCMSSignedData(cms);
         } catch (Exception e) {
-            LOG.error("Unable to decode the provided CMS document : {}", e.getMessage());
+            LOG.warn("Unable to decode the provided CMS document : {}", e.getMessage());
             return false;
         }
 

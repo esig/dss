@@ -21,12 +21,13 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 
 /**
  * The simple enveloped signature transform.
- *
+ * <p>
  * WARN: cannot be used with parallel signatures!
+ *
  */
 public final class XPathEnvelopedSignatureTransform extends XPathTransform {
 
@@ -35,13 +36,15 @@ public final class XPathEnvelopedSignatureTransform extends XPathTransform {
 	/**
 	 * This XPath filter allows to remove all ds:Signature elements from the XML
 	 */
-	private static final String NOT_ANCESTOR_OR_SELF_DS_SIGNATURE = "not(ancestor-or-self::ds:Signature)";
+	private static final String NOT_ANCESTOR_OR_SELF_PREFIX = "not(ancestor-or-self::";
+
+	private static final String SIGNATURE_SUFFIX = ":Signature)";
 
 	/**
 	 * Default constructor
 	 */
 	public XPathEnvelopedSignatureTransform() {
-		super(XMLDSigNamespace.NS, NOT_ANCESTOR_OR_SELF_DS_SIGNATURE);
+		this(XMLDSigNamespace.NS);
 	}
 
 	/**
@@ -50,7 +53,7 @@ public final class XPathEnvelopedSignatureTransform extends XPathTransform {
 	 * @param xmlDSigNamespace {@link DSSNamespace}
 	 */
 	public XPathEnvelopedSignatureTransform(DSSNamespace xmlDSigNamespace) {
-		super(xmlDSigNamespace, NOT_ANCESTOR_OR_SELF_DS_SIGNATURE);
+		super(xmlDSigNamespace, NOT_ANCESTOR_OR_SELF_PREFIX + xmlDSigNamespace.getPrefix() + SIGNATURE_SUFFIX);
 	}
 
 }

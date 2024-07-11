@@ -45,14 +45,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESLevelBEnvelopingCustomDataObjectFormatTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopingCustomDataObjectFormatTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
 
         documentToSign = new FileDocument("src/test/resources/sample.xml");
 
@@ -73,7 +73,7 @@ public class XAdESLevelBEnvelopingCustomDataObjectFormatTest extends AbstractXAd
         ref1.setTransforms(transforms);
         ref1.setType(Reference.OBJECT_URI);
         ref1.setUri('#' + documentToSign.getName());
-        ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 
         signatureParameters.setReferences(Collections.singletonList(ref1));
 

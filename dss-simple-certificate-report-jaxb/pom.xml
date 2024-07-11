@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.0</version>
+		<version>6.1.RC1</version>
 	</parent>
 	<artifactId>dss-simple-certificate-report-jaxb</artifactId>
 
@@ -134,6 +134,10 @@
 				<exclusion>
 					<groupId>javax.servlet</groupId>
 					<artifactId>servlet-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

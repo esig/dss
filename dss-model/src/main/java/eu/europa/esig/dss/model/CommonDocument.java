@@ -42,8 +42,7 @@ public abstract class CommonDocument implements DSSDocument {
 	/**
 	 * Cached map of DigestAlgorithms and the corresponding digests for the document
 	 */
-	protected EnumMap<DigestAlgorithm, String> base64EncodeDigestMap = new EnumMap<>(
-			DigestAlgorithm.class);
+	protected EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<>(DigestAlgorithm.class);
 
 	/**
 	 * The MimeType of the document
@@ -71,7 +70,7 @@ public abstract class CommonDocument implements DSSDocument {
 
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[8192];
 		int count = -1;
 		try (InputStream inStream = openStream()) {
 			while ((count = inStream.read(buffer)) > 0) {
@@ -101,30 +100,35 @@ public abstract class CommonDocument implements DSSDocument {
 	}
 
 	@Override
+	@Deprecated
 	public String getDigest(final DigestAlgorithm digestAlgorithm) {
-		String base64EncodeDigest = base64EncodeDigestMap.get(digestAlgorithm);
-		if (base64EncodeDigest == null) {
+		final byte[] digestBytes = getDigestValue(digestAlgorithm);
+		return Base64.getEncoder().encodeToString(digestBytes);
+	}
+
+	@Override
+	public byte[] getDigestValue(DigestAlgorithm digestAlgorithm) {
+		byte[] digest = digestMap.get(digestAlgorithm);
+		if (digest == null) {
 			try (InputStream is = openStream()) {
 				MessageDigest messageDigest = digestAlgorithm.getMessageDigest();
-				final byte[] buffer = new byte[4096];
-				int count = 0;
+				final byte[] buffer = new byte[8192];
+				int count;
 				while ((count = is.read(buffer)) > 0) {
 					messageDigest.update(buffer, 0, count);
 				}
-				final byte[] digestBytes = messageDigest.digest();
-				base64EncodeDigest = Base64.getEncoder().encodeToString(digestBytes);
-				base64EncodeDigestMap.put(digestAlgorithm, base64EncodeDigest);
+				digest = messageDigest.digest();
+				digestMap.put(digestAlgorithm, digest);
 			} catch (IOException | NoSuchAlgorithmException e) {
 				throw new DSSException("Unable to compute the digest", e);
 			}
 		}
-		return base64EncodeDigest;
+		return digest;
 	}
 
 	@Override
 	public String toString() {
 		final String mimeTypeString = (mimeType == null) ? "" : mimeType.getMimeTypeString();
-		final String name = getName();
 		return "Name: " + name + " / MimeType: " + mimeTypeString;
 	}
 

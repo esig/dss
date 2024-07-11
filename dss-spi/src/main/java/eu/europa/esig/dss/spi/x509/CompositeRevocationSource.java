@@ -35,9 +35,8 @@ import java.util.Map.Entry;
  * non-empty response.
  *
  * @param <T> {@code Revocation}
- * @param <R> {@code RevocationSource}
  */
-public class CompositeRevocationSource<T extends Revocation, R extends RevocationSource<T>> implements RevocationSource<T> {
+public class CompositeRevocationSource<T extends Revocation> implements RevocationSource<T> {
 
     private static final long serialVersionUID = 948088043702414489L;
 
@@ -46,7 +45,7 @@ public class CompositeRevocationSource<T extends Revocation, R extends Revocatio
     /**
      * A map of source keys and corresponding  Sources
      */
-    private Map<String, R> compositeRevocationSources;
+    private Map<String, RevocationSource<T>> compositeRevocationSources;
 
     /**
      * Default constructor instantiating object with null values
@@ -60,13 +59,13 @@ public class CompositeRevocationSource<T extends Revocation, R extends Revocatio
      *
      * @param compositeRevocationSources a {@code Map} of String and RevocationSources with a label and its corresponding source
      */
-    public void setSources(Map<String, R> compositeRevocationSources) {
+    public void setSources(Map<String, RevocationSource<T>> compositeRevocationSources) {
         this.compositeRevocationSources = compositeRevocationSources;
     }
 
     @Override
     public RevocationToken<T> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
-        for (Entry<String, R> entry : compositeRevocationSources.entrySet()) {
+        for (Entry<String, RevocationSource<T>> entry : compositeRevocationSources.entrySet()) {
             String sourceKey = entry.getKey();
             RevocationSource<T> source = entry.getValue();
             LOG.debug("Trying to get revocation token with Source '{}'", sourceKey);
@@ -80,7 +79,7 @@ public class CompositeRevocationSource<T extends Revocation, R extends Revocatio
                 LOG.debug("Unable to retrieve the revocation token with Source '{}' : {}", sourceKey, e.getMessage());
             }
         }
-        LOG.debug("Unable to retrieve the ocsp token (" + compositeRevocationSources.size() + " tries)");
+        LOG.debug("Unable to retrieve the ocsp token ({} tries)", compositeRevocationSources.size());
         return null;
     }
 

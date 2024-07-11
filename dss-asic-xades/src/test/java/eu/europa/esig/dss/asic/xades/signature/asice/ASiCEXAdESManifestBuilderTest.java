@@ -32,12 +32,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESManifestBuilderTest {
+class ASiCEXAdESManifestBuilderTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEXAdESManifestBuilderTest.class);
 
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument d1 = new InMemoryDocument("hello".getBytes(), "test.txt");
 		DSSDocument d2 = new InMemoryDocument("world".getBytes(), "test.html");
 		DSSDocument d3 = new InMemoryDocument("bye".getBytes(), "test.pdf");

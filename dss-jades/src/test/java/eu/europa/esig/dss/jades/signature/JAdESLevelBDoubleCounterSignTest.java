@@ -40,9 +40,9 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
-public class JAdESLevelBDoubleCounterSignTest extends AbstractJAdESCounterSignatureTest {
+class JAdESLevelBDoubleCounterSignTest extends AbstractJAdESCounterSignatureTest {
 
 	private JAdESService service;
 	private DSSDocument documentToSign;
@@ -50,7 +50,7 @@ public class JAdESLevelBDoubleCounterSignTest extends AbstractJAdESCounterSignat
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

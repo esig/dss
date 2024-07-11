@@ -30,13 +30,14 @@ import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESValidator;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.AfterEach;
@@ -55,29 +56,30 @@ import java.util.zip.ZipEntry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SecureContainerHandlerTest {
+class SecureContainerHandlerTest {
 
 	private static DSSDocument smallerDocument;
 	private static DSSDocument biggerDocument;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		smallerDocument = new FileDocument("src/test/resources/validation/dss-2245-2400.asice");
 		biggerDocument = new FileDocument("src/test/resources/validation/dss-2245-2500.asice");
 	}
 
 	@AfterEach
-	public void reset() {
+	void reset() {
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(new SecureContainerHandlerBuilder());
 	}
 
 	@Test
-	public void testDefault() {
+	void testDefault() {
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(new SecureContainerHandlerBuilder());
 
 		DocumentValidator validator = getValidator(smallerDocument);
@@ -90,7 +92,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void testSmallerRatio() {
+	void testSmallerRatio() {
 		SecureContainerHandlerBuilder containerHandlerBuilder = new SecureContainerHandlerBuilder()
 				.setMaxCompressionRatio(50);
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(containerHandlerBuilder);
@@ -104,7 +106,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void testBiggerThreshold() {
+	void testBiggerThreshold() {
 		SecureContainerHandlerBuilder containerHandlerBuilder = new SecureContainerHandlerBuilder()
 				.setMaxCompressionRatio(50);
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(containerHandlerBuilder);
@@ -123,7 +125,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void testDifferentDocumentsAmount() {
+	void testDifferentDocumentsAmount() {
 		SecureContainerHandlerBuilder containerHandlerBuilder = new SecureContainerHandlerBuilder()
 				.setMaxAllowedFilesAmount(1);
 		ZipUtils.getInstance().setZipContainerHandlerBuilder(containerHandlerBuilder);
@@ -139,7 +141,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void extractContainerContentTest() {
+	void extractContainerContentTest() {
 		DSSDocument document = new FileDocument("src/test/resources/validation/multifiles-ok.asice");
 
 		SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
@@ -162,7 +164,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void extractContainerContentInMemoryDocumentTest() {
+	void extractContainerContentInMemoryDocumentTest() {
 		DSSDocument document = new InMemoryDocument(
 				DSSUtils.toByteArray(new File("src/test/resources/validation/multifiles-ok.asice")));
 
@@ -186,7 +188,7 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void createZipArchiveTest() throws IOException {
+	void createZipArchiveTest() throws IOException {
 		Date creationTime = new Date();
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(creationTime);
@@ -219,6 +221,7 @@ public class SecureContainerHandlerTest {
 		DSSDocument zipArchive = secureContainerHandler.createZipArchive(
 				Arrays.asList(mimetypeDocument, documentOne, documentTwo), creationTime, ASiCUtils.getZipComment(mimeType));
 		assertNotNull(zipArchive);
+		assertInstanceOf(InMemoryDocument.class, zipArchive);
 
 		String zipArchiveFilePath = "target/zipArchive.asice";
 		zipArchive.save(zipArchiveFilePath);
@@ -273,7 +276,32 @@ public class SecureContainerHandlerTest {
 	}
 
 	@Test
-	public void extractCommentsTest() throws IOException {
+	void createZipArchiveWithTempFileHandlerTest() {
+		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
+
+		DSSDocument mimetypeDocument = new InMemoryDocument(MimeTypeEnum.ASICE.getMimeTypeString().getBytes(), "mimetype");
+		DSSDocument docOne = new InMemoryDocument("Hello World!".getBytes(), "docOne.txt");
+		DSSDocument docTwo = new InMemoryDocument("Bye World!".getBytes(), "docTwo.txt");
+
+		SecureContainerHandler secureContainerHandler = new SecureContainerHandler();
+		secureContainerHandler.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
+		DSSDocument zipArchive = secureContainerHandler.createZipArchive(
+				Arrays.asList(mimetypeDocument, docOne, docTwo), new Date(), null);
+		assertNotNull(zipArchive);
+		assertInstanceOf(FileDocument.class, zipArchive);
+
+		FileDocument fileDocument = (FileDocument) zipArchive;
+		File file = fileDocument.getFile();
+		assertNotNull(file);
+
+		assertTrue(file.exists());
+		assertTrue(file.delete());
+		assertFalse(file.exists());
+	}
+
+	@Test
+	void extractCommentsTest() throws IOException {
 		String comment = "Comment shall be preserved!";
 
 		DSSZipEntry zipEntry = new DSSZipEntry("doc.txt");

@@ -33,10 +33,10 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
-public class VRITest {
+class VRITest {
 
 	@Test
-	public void vri() throws Exception {
+	void vri() throws Exception {
 		String path = "/validation/Signature-P-HU_MIC-3.pdf";
 		String vriValue = "C41B1DBFE0E816D8A6F99A9DB98FD43960A5CF45";
 

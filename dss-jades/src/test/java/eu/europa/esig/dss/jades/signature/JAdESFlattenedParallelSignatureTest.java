@@ -48,13 +48,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESFlattenedParallelSignatureTest extends AbstractJAdESTestValidation {
+class JAdESFlattenedParallelSignatureTest extends AbstractJAdESTestValidation {
 	
 	private DSSDocument toBeSigned;
 	private JAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		toBeSigned = new FileDocument(new File("src/test/resources/sample.json"));
 		service = new JAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -99,14 +99,14 @@ public class JAdESFlattenedParallelSignatureTest extends AbstractJAdESTestValida
 	}
 	
 	@Test
-	public void parallelSignFlattenedTest() {
+	void parallelSignFlattenedTest() {
 		DSSDocument serializationSignature = getCompleteSerializationSignature(toBeSigned);
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> getFlattenedSignature(serializationSignature));
 		assertEquals("The 'FLATTENED_JSON_SERIALIZATION' type is not supported for a parallel signing!", exception.getMessage());
 	}
 	
 	@Test
-	public void twiceSignFlattenedTest() {
+	void twiceSignFlattenedTest() {
 		DSSDocument flattenedSignature = getFlattenedSignature(toBeSigned);
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> getFlattenedSignature(flattenedSignature));
 		assertEquals("The 'FLATTENED_JSON_SERIALIZATION' type is not supported for a parallel signing!", exception.getMessage());

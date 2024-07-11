@@ -41,11 +41,11 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampIdentifierBuilder;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
@@ -56,11 +56,11 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESSignedDataObjectProperties;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xades.validation.scope.XAdESTimestampScopeFinder;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xades.definition.XAdESPath;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.xades.definition.xadesen.XAdESENElement;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceElement;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -286,7 +286,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected boolean isEvidenceRecord(XAdESAttribute unsignedAttribute) {
-		return XAdESENElement.SEALING_EVIDENCE_RECORDS.isSameTagName(unsignedAttribute.getName());
+		return XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
@@ -350,7 +350,10 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected List<EvidenceRecord> makeEvidenceRecords(XAdESAttribute signatureAttribute, List<TimestampedReference> references) {
-		throw new UnsupportedOperationException("Not implemented!");
+		if (signatureAttribute != null) {
+			LOG.warn("Embedded evidence records are not supported! The unsigned attribute is skipped.");
+		}
+		return Collections.emptyList();
 	}
 
 	@Override
@@ -379,9 +382,11 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	private boolean isContentTimestampedReference(XAdESReferenceValidation xadesReferenceValidation, List<TimestampInclude> includes) {
-		for (TimestampInclude timestampInclude : includes) {
-			if (xadesReferenceValidation.getId().equals(timestampInclude.getURI())) {
-				return true;
+		if (xadesReferenceValidation.getId() != null) {
+			for (TimestampInclude timestampInclude : includes) {
+				if (xadesReferenceValidation.getId().equals(timestampInclude.getURI())) {
+					return true;
+				}
 			}
 		}
 		return false;

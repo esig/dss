@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature.prettyprint;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESLevelBWithPolicyTest;
 
-public class XAdESWithPolicyPrettyPrintTest extends XAdESLevelBWithPolicyTest {
+class XAdESWithPolicyPrettyPrintTest extends XAdESLevelBWithPolicyTest {
 
 	@Override
 	protected XAdESSignatureParameters getSignatureParameters() {

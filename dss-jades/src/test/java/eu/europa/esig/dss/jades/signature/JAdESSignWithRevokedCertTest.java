@@ -26,14 +26,14 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.validation.JWSSerializationDocumentValidator;
+import eu.europa.esig.dss.jades.validation.JWSSerializationAnalyzerValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.DocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
+class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private JAdESSignatureParameters signatureParameters;
@@ -53,7 +53,7 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -69,7 +69,7 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
     }
 
     @Test
-    public void signBRevokedAndSignBGoodUserTest() {
+    void signBRevokedAndSignBGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -80,12 +80,12 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentValidator validator = new JWSSerializationDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        assertEquals(2, analyzer.getSignatures().size());
     }
 
     @Test
-    public void signBRevokedAndSignLTGoodUserTest() {
+    void signBRevokedAndSignLTGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -97,12 +97,12 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentValidator validator = new JWSSerializationDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        assertEquals(2, analyzer.getSignatures().size());
     }
 
     @Test
-    public void signBGoodUserAndSignBRevokedTest() {
+    void signBGoodUserAndSignBRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -113,12 +113,12 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentValidator validator = new JWSSerializationDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        assertEquals(2, analyzer.getSignatures().size());
     }
 
     @Test
-    public void signBGoodUserAndSignLTRevokedTest() {
+    void signBGoodUserAndSignLTRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -132,7 +132,7 @@ public class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
     }
 
     @Test
-    public void signBWithRevocationCheckEnabledTest() {
+    void signBWithRevocationCheckEnabledTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);

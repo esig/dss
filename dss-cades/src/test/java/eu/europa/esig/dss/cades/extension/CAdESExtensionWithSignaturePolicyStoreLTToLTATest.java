@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.utils.Utils;
 
-public class CAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractCAdESTestExtension {
+class CAdESExtensionWithSignaturePolicyStoreLTToLTATest extends AbstractCAdESTestExtension {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";

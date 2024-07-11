@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.KeyUsageBit;
  */
 public final class KeyUsageBitParser {
 
+	/**
+	 * Default constructor
+	 */
 	private KeyUsageBitParser() {
+		// empty
 	}
 
 	/**

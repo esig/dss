@@ -24,7 +24,7 @@ import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,13 +32,13 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionBToLTWithRevokedCertTest extends AbstractXAdESTestExtension {
+class XAdESExtensionBToLTWithRevokedCertTest extends AbstractXAdESTestExtension {
 
     private XAdESSignatureParameters signatureParameters;
     private XAdESSignatureParameters extensionParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         signatureParameters = super.getSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(false);
 

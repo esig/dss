@@ -34,13 +34,13 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class OpenDocumentLevelLTASignatureTest extends AbstractOpenDocumentSetTestSignature {
+class OpenDocumentLevelLTASignatureTest extends AbstractOpenDocumentSetTestSignature {
 	
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());

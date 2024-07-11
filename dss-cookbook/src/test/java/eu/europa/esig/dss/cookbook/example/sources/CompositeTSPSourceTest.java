@@ -40,12 +40,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * How to configure a Composite TSP Source.
  */
-public class CompositeTSPSourceTest {
+class CompositeTSPSourceTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CompositeTSPSourceTest.class);
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 
 		// tag::demo[]
 		// import java.util.HashMap;

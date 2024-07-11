@@ -29,7 +29,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -45,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /*
  * In this unit test a revocation data shall be requested for the second signature on validation
  */
-public class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
+class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
 
     private static final DSSDocument ORIGINAL_DOC = new FileDocument("src/test/resources/sample.xml");
 
@@ -58,7 +59,7 @@ public class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
     private MockOnlineCRLSource mockOnlineCRLSource;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.MONTH, -1);
@@ -103,6 +104,12 @@ public class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
 
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setCrlSource(mockOnlineCRLSource);
+
+        // rollback behavior after DSS-3298
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        revocationDataVerifier.setTimestampMaximumRevocationFreshness(null); // disable tst revocation data update
+        certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
+
         validator.setCertificateVerifier(certificateVerifier);
 
         return validator;

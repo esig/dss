@@ -22,6 +22,7 @@ package eu.europa.esig.dss.service.crl;
 
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.OnlineSourceTest;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
@@ -45,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class JdbcCacheCrlSourceTest {
+class JdbcCacheCrlSourceTest extends OnlineSourceTest {
 	
 	private JdbcDataSource dataSource = new JdbcDataSource();
 	
@@ -54,7 +55,7 @@ public class JdbcCacheCrlSourceTest {
 //	private Server webServer;
 	
 	@BeforeEach
-	public void setUp() throws SQLException {		
+	void setUp() throws SQLException {
 		// for testing purposes. DB view available on http://localhost:8082
 		// webServer = Server.createWebServer("-web","-webAllowOthers","-webPort","8082").start();
 		dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
@@ -66,12 +67,12 @@ public class JdbcCacheCrlSourceTest {
 	}
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		CRLToken revocationToken;
 
 		DataLoader dataLoader = new CommonsDataLoader();
-		CertificateToken certificateToken = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user-crl-ocsp.crt"));
-		CertificateToken caToken = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
+		CertificateToken certificateToken = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-crl-ocsp.crt"));
+		CertificateToken caToken = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-ca.crt"));
 
 		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
 		assertNull(revocationToken);
@@ -130,7 +131,7 @@ public class JdbcCacheCrlSourceTest {
 	}
 	
 	@Test
-	public void testExpired() throws SQLException {
+	void testExpired() throws SQLException {
 		CRLToken revocationToken;
 
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
@@ -151,7 +152,7 @@ public class JdbcCacheCrlSourceTest {
 	}
 
 	@AfterEach
-	public void cleanUp() throws SQLException {
+	void cleanUp() throws SQLException {
 		crlSource.destroyTable();
 		assertFalse(crlSource.isTableExists());
 		// uncomment if webserver is active

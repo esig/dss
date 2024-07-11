@@ -37,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSSJsonUtilsTest {
+class DSSJsonUtilsTest {
 	
 	@Test
-	public void isBase64UrlEncodedTest() {
+	void isBase64UrlEncodedTest() {
 		assertTrue(DSSJsonUtils.isBase64UrlEncoded(""));
 		assertTrue(DSSJsonUtils.isBase64UrlEncoded("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9"));
 		assertTrue(DSSJsonUtils.isBase64UrlEncoded(
@@ -52,7 +52,7 @@ public class DSSJsonUtilsTest {
 	}
 
 	@Test
-	public void isUrlSafePayloadTest() {
+	void isUrlSafePayloadTest() {
 		assertTrue(DSSJsonUtils.isUrlSafePayload(""));
 		assertTrue(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9"));
 		assertTrue(DSSJsonUtils.isUrlSafePayload("ew0KICAgICJ0aXRsZSI6ICJIZWxsbyBXb3JsZCEiDQp9???!!!"));
@@ -65,7 +65,7 @@ public class DSSJsonUtilsTest {
 	}
 
 	@Test
-	public void isUtf8Test() {
+	void isUtf8Test() {
 		assertTrue(DSSJsonUtils.isUtf8("Some string".getBytes()));
 		assertTrue(DSSJsonUtils.isUtf8(new byte[]{ (byte) 0b11001111, (byte) 0b10111111 }));
 		assertTrue(DSSJsonUtils.isUtf8(new byte[]{ (byte) 0b11101111, (byte) 0b10101010, (byte) 0b10111111 }));
@@ -75,7 +75,7 @@ public class DSSJsonUtilsTest {
 	}
 	
 	@Test
-	public void fromAsn1ToRSTest() throws Exception {
+	void fromAsn1ToRSTest() throws Exception {
 		assertSignatureValid("2B9099C9885DDB5BFDA2E9634905B9A63E7E3A6EC87BDC0A89014716B23F00B0AD787FC8D0DCF28F007E7DEC097F30DA892BE2AC61D90997DCDF05740E4D5B0C");
 		assertSignatureValid("947b79069e6a1e3316ec15d696649a4b67c6c188df9bc05458f3b0b94907f3fb52522d4cae24a75735969cff556b1476a5ccbe37ca65a928782c14f299f3b2d3");
 		assertSignatureValid("28a1583e58e93a661322f776618d83b023bdc52b2e909cf9d53030b9260ed667b588fd39eeee5b1b55523a7e71cb4187d8b1bbf56c1581fc845863157d279cf5");
@@ -101,7 +101,7 @@ public class DSSJsonUtilsTest {
 	}
 	
 	@Test
-	public void isJSONDocumentTest() {
+	void isJSONDocumentTest() {
 		FileDocument jsonDoc = new FileDocument("src/test/resources/sample.json");
 		assertTrue(DSSJsonUtils.isJsonDocument(jsonDoc));
 		assertTrue(DSSJsonUtils.isJsonDocument(new FileDocument("src/test/resources/validation/jades-lta.json")));

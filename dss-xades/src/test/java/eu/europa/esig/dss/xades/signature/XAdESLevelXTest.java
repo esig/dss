@@ -34,12 +34,12 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -60,7 +60,7 @@ public class XAdESLevelXTest extends AbstractXAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

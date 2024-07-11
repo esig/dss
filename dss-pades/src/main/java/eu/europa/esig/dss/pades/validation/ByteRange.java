@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.DSSUtils;
 
 import java.io.Serializable;

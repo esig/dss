@@ -36,7 +36,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS2116WithXAdESTest extends AbstractXAdESTestValidation {
+class DSS2116WithXAdESTest extends AbstractXAdESTestValidation {
 
 	private static final DigestAlgorithm ORIGINAL_DA = DigestAlgorithm.SHA256;
 	private static final String ORIGINAL_DTBSR = "CBsRrzsxVYvtNeym2gjAAbnpjZrnhXwF7WciEmbtpFw=";

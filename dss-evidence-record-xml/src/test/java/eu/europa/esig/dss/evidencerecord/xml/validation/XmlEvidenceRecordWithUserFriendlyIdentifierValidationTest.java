@@ -28,14 +28,14 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
-import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
+import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XmlEvidenceRecordWithUserFriendlyIdentifierValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordWithUserFriendlyIdentifierValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

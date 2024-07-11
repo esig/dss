@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.ReferenceValidation;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
@@ -101,6 +101,10 @@ public final class XAdESSignatureUtils {
 		try {
 			byte[] referencedBytes = reference.getReferencedBytes();
 			if (referencedBytes != null) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Retrieved reference bytes: ");
+					LOG.debug(new String(referencedBytes));
+				}
 				return new InMemoryDocument(referencedBytes, reference.getURI());
 			}
 			LOG.warn("Reference bytes returned null value : {}", reference.getId());

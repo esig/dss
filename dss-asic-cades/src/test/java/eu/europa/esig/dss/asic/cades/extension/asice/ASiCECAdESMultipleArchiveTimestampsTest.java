@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.extension.asice;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -57,10 +57,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
+class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		List<DSSDocument> documentToSigns = new ArrayList<>();
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));
 		documentToSigns.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT));
@@ -114,7 +114,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 			assertTrue(timestampWrapper.isMessageImprintDataIntact());
 		}
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleExtendedDocument);
+		DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleExtendedDocument);
 		ASiCContent result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());
@@ -173,7 +173,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 		assertEquals("META-INF/ASiCArchiveManifest.xml", lastCreatedArchiveManifestFile.getFilename());
 		
 		ManifestEntry rootfile = getRootfile(lastCreatedArchiveManifestFile);
-		assertEquals("META-INF/ASiCArchiveManifest002.xml", rootfile.getFileName());
+		assertEquals("META-INF/ASiCArchiveManifest002.xml", rootfile.getUri());
 
 		DSSDocument mimeTypeDocument = result.getMimeTypeDocument();
 
@@ -198,7 +198,7 @@ public class ASiCECAdESMultipleArchiveTimestampsTest extends PKIFactoryAccess {
 	private void validateEntries(List<ManifestEntry> entries) {
 		assertTrue(Utils.isCollectionNotEmpty(entries));
 		for (ManifestEntry entry : entries) {
-			assertNotNull(entry.getFileName());
+			assertNotNull(entry.getUri());
 			assertNotNull(entry.getMimeType());
 			assertNotNull(entry.getDigest());
 			assertTrue(entry.isFound());

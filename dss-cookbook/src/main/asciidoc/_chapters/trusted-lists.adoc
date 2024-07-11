@@ -49,16 +49,34 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidati
 [[DSSFileLoader]]
 ==== DSSFileLoader
 
-The `FileCacheDataLoader` is used to download the trusted list contents in the file system. Two different configurations are needed. Both of them share the same folder:
+The `DSSFileLoader` represents an interface for accessing documents from a file system. DSS provides the following implementations of the interface:
 
-* *offline refresh*: disabled download from Internet and unlimited cache expiration
-* *online refresh*: enabled download from Internet and limited cache expiration
+* `FileCacheDataLoader` - returns a cached document from a file system when available, otherwise performs a request to a provided `DataLoader` (e.g. to download the content from a remote source);
+* `Sha2FileCacheDataLoader` (available since DSS `6.1`) - implements a Trusted List download logic defined within ETSI TS 119 612 (cf. <<R11>>), using a ".sha2" file, containing digest of the corresponding Trusted List. When digest is updated or a NextUpdate is reached, re-downloads the XML Trusted List. This class is meant to save bandwidth on `TLValidationJob`, as well as to improve performance.
+
+`TLValidationJob` requires two objects for configuration of the Trusted Lists download process, namely:
+
+* *offline refresh* is used to load a document from a local file system, without querying online sources, providing an unlimited cache expiration. Usually is used on an application's build;
+* *online refresh* is used to download a document from a remote source, using none or a limited cache expiration. Usually is used within a cron job, updating content of Trusted Lists regularly (e.g. every hour).
+
+The snippets below provide an example of a basic configuration of offline and online `DSSFileLoader` for configuration of `TLValidationJob`.
 
 [source,java,indent=0]
 .Offline and Online refresh configuration
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=job-loaders]
 ----
+
+As an alternative, in order to improve efficiency of the Trusted List download process, a `Sha2FileCacheDataLoader` class can be used.
+DSS provides multiple ways to configure the class, see examples below:
+
+[source,java,indent=0]
+.Sha2FileCacheDataLoader instantiation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=sha2-loaders]
+----
+
+NOTE: `Sha2FileCacheDataLoader` is meant to be used for downloading of Trusted Lists implementing the ETSI TS 119 612 standard (cf. <<R11>>). There is no guarantee the class will work as intended in any other scope. Thus, it is use is not recommended outside of `TLValidationJob`. If needed, please use `FileCacheDataLoader` instead.
 
 ==== The SynchronizationStrategy
 
@@ -252,6 +270,8 @@ NOTE: In order to apply changes, the application using Java must be rebooted.
 After these steps the `TLValidationJob` will successfully download the target Trusted List (i.e. Estonian in our example).
 
 NOTE: This described algorithm is not only one available solution, if you have difficulties with this, you can search in the Internet for another working for you solution.
+
+NOTE: When using DSS-demonstrations, you may also set property `tl.loader.trust.all=true` to trust all SSL-certificates on Trusted Lists loading, in order to avoid manual configuration of the trusted store. Be aware, that this constraint will skip the SSL-certificate validation.
 
 ==== TLValidationJobSummary
 

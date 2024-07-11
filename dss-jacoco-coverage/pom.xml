@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.0</version>
+		<version>6.1.RC1</version>
 	</parent>
 
 	<artifactId>dss-jacoco-coverage</artifactId>
@@ -177,6 +177,10 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-evidence-record-xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-evidence-record-asn1</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -361,7 +365,7 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>validation-policy</artifactId>
+			<artifactId>dss-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

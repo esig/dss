@@ -22,11 +22,13 @@ package eu.europa.esig.dss.asic.xades;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -48,20 +50,20 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ZipExtractorTest extends PKIFactoryAccess {
+class ZipExtractorTest extends PKIFactoryAccess {
 	
 	private DSSDocument openDocument;
 	private DSSDocument zipArchive;
 	
 	
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		openDocument = new FileDocument(new File("src/test/resources/signable/open-document.odt"));
 		zipArchive = new FileDocument(new File("src/test/resources/signable/test.zip"));
 	}
 	
 	@Test
-	public void extractUnsignedOpenDocument() {
+	void extractUnsignedOpenDocument() {
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(openDocument);
 		ASiCContent extract = extractor.extract();
 		
@@ -80,7 +82,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extractUnsignedZip() {
+	void extractUnsignedZip() {
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(zipArchive);
 		ASiCContent extract = extractor.extract();
 		
@@ -100,7 +102,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extractSignedZip() {
+	void extractSignedZip() {
 		DSSDocument document = signDocument(zipArchive);
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
 		ASiCContent extract = extractor.extract();
@@ -127,7 +129,7 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void extractSignedOpenDocument() {
+	void extractSignedOpenDocument() {
 		DSSDocument document = signDocument(openDocument);
 		ASiCWithXAdESContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(document);
 		ASiCContent extract = extractor.extract();
@@ -191,11 +193,11 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 		assertEquals(extractOriginal.getSignedDocuments().size(), extractSigned.getSignedDocuments().size());
 		
 		List<String> fileNames = getSignedFilesNames(extractSigned.getSignedDocuments());		
-		List<String> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
+		List<Digest> fileDigests = getSignedFilesDigests(extractSigned.getSignedDocuments());
 
 		for (DSSDocument doc : extractOriginal.getSignedDocuments()) {
 			assertTrue(fileNames.contains(doc.getName()));
-			assertTrue(fileDigests.contains(doc.getDigest(DigestAlgorithm.SHA256)));
+			assertTrue(fileDigests.contains(new Digest(DigestAlgorithm.SHA256, doc.getDigestValue(DigestAlgorithm.SHA256))));
 		}	
 	}
 	
@@ -207,10 +209,10 @@ public class ZipExtractorTest extends PKIFactoryAccess {
 		return fileNames;
 	}
 	
-	private List<String> getSignedFilesDigests(List<DSSDocument> files) {
-		List<String> fileDigests = new ArrayList<>();
-		for (DSSDocument doc: files) {
-			fileDigests.add(doc.getDigest(DigestAlgorithm.SHA256));
+	private List<Digest> getSignedFilesDigests(List<DSSDocument> files) {
+		List<Digest> fileDigests = new ArrayList<>();
+		for (DSSDocument doc : files) {
+			fileDigests.add(new Digest(DigestAlgorithm.SHA256, doc.getDigestValue(DigestAlgorithm.SHA256)));
 		}
 		return fileDigests;
 	}

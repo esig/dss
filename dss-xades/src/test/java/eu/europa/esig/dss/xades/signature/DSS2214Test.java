@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -37,6 +38,7 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -50,14 +52,14 @@ import jakarta.xml.bind.Unmarshaller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class DSS2214Test extends AbstractXAdESTestSignature {
+class DSS2214Test extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -65,9 +67,10 @@ public class DSS2214Test extends AbstractXAdESTestSignature {
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.setSignWithExpiredCertificate(true);
 
-		service = new XAdESService(getOfflineCertificateVerifier());
+		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
+		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+		service = new XAdESService(certificateVerifier);
 	}
 
 	@Override

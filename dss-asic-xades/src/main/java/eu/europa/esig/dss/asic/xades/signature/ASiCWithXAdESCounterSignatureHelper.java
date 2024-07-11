@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 
 import java.util.List;
 
@@ -44,13 +44,13 @@ public class ASiCWithXAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	}
 
 	@Override
-	protected AbstractASiCContainerExtractor getASiCContainerExtractor() {
+	protected DefaultASiCContainerExtractor getASiCContainerExtractor() {
 		return new ASiCWithXAdESContainerExtractor(asicContainer);
 	}
 
 	@Override
-	protected DocumentValidator getDocumentValidator(DSSDocument signatureDocument) {
-		return new XMLDocumentValidator(signatureDocument);
+	protected DocumentAnalyzer getDocumentAnalyzer(DSSDocument signatureDocument) {
+		return new XMLDocumentAnalyzer(signatureDocument);
 	}
 
 	@Override

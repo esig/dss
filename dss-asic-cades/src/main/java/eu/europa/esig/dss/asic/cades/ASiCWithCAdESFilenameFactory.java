@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.cades;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-
-import java.io.Serializable;
+import eu.europa.esig.dss.asic.common.ASiCEvidenceRecordFilenameFactory;
+import eu.europa.esig.dss.asic.common.ASiCFilenameFactory;
 
 /**
  * This interface is used to provide filenames for newly created ZIP-entries
@@ -36,15 +36,7 @@ import java.io.Serializable;
  * The type of the container can be obtained from {@code asicContent.getContainerType()} method.
  *
  */
-public interface ASiCWithCAdESFilenameFactory extends Serializable {
-
-    /**
-     * Returns a filename for a signature file to be created
-     *
-     * @param asicContent {@link ASiCContent} representing a content of an ASiC container
-     * @return {@link String} signature filename
-     */
-    String getSignatureFilename(ASiCContent asicContent);
+public interface ASiCWithCAdESFilenameFactory extends ASiCFilenameFactory, ASiCEvidenceRecordFilenameFactory {
 
     /**
      * Returns a filename for a timestamp file to be created
@@ -53,14 +45,6 @@ public interface ASiCWithCAdESFilenameFactory extends Serializable {
      * @return {@link String} timestamp filename
      */
     String getTimestampFilename(ASiCContent asicContent);
-
-    /**
-     * Returns a filename of a manifest file to be created
-     *
-     * @param asicContent {@link ASiCContent} representing a content of an ASiC container
-     * @return {@link String} manifest filename
-     */
-    String getManifestFilename(ASiCContent asicContent);
 
     /**
      * Returns a new filename of an archive manifest file to be moved.
@@ -72,13 +56,5 @@ public interface ASiCWithCAdESFilenameFactory extends Serializable {
      * @return {@link String} manifest filename
      */
     String getArchiveManifestFilename(ASiCContent asicContent);
-
-    /**
-     * Returns a name of a ZIP archive containing signed documents in case of an ASiC-E signature, when applicable
-     *
-     * @param asicContent {@link ASiCContent} representing a content of an ASiC container
-     * @return {@link String} data package filename
-     */
-    String getDataPackageFilename(ASiCContent asicContent);
 
 }

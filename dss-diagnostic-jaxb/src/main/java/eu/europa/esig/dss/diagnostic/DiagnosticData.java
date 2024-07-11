@@ -236,10 +236,16 @@ public class DiagnosticData {
 	 * @param signatureId
 	 *            The identifier of the signature, for which the algorithm is sought.
 	 * @return The {@code MaskGenerationFunction} for the given signature
+	 * @deprecated since DSS 6.1. Please use {@code #getSignatureEncryptionAlgorithm} method to determine
+	 *             the mask generation function (i.e. RSA for none MGF, RSASSA-PSS for MGF1)
 	 */
+	@Deprecated
 	public MaskGenerationFunction getSignatureMaskGenerationFunction(String signatureId) {
-		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		return signature.getMaskGenerationFunction();
+		EncryptionAlgorithm encryptionAlgorithm = getSignatureEncryptionAlgorithm(signatureId);
+		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+			return MaskGenerationFunction.MGF1;
+		}
+		return null;
 	}
 
 	/**

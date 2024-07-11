@@ -23,7 +23,7 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBCounterSignatureWithNonB64Test extends AbstractJAdESCounterSignatureTest {
+class JAdESLevelBCounterSignatureWithNonB64Test extends AbstractJAdESCounterSignatureTest {
 
     private JAdESService service;
     private DSSDocument documentToSign;
@@ -61,7 +61,7 @@ public class JAdESLevelBCounterSignatureWithNonB64Test extends AbstractJAdESCoun
     private Date signingDate;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

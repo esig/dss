@@ -30,7 +30,7 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -38,7 +38,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JAdESDoubleSignBAndExtendToLTATest extends AbstractJAdESTestSignature {
+class JAdESDoubleSignBAndExtendToLTATest extends AbstractJAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -47,7 +47,7 @@ public class JAdESDoubleSignBAndExtendToLTATest extends AbstractJAdESTestSignatu
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

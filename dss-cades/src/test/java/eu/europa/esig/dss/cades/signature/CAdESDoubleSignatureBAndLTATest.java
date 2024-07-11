@@ -41,15 +41,15 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
-public class CAdESDoubleSignatureBAndLTATest extends PKIFactoryAccess {
+class CAdESDoubleSignatureBAndLTATest extends PKIFactoryAccess {
 
 	@Test
-	public void testSameTime() throws Exception {
+	void testSameTime() throws Exception {
 		testWithTime(new Date());
 	}
 
 	@Test
-	public void testDifferentTime() throws Exception {
+	void testDifferentTime() throws Exception {
 		testWithTime(null);
 	}
 	

@@ -31,7 +31,7 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -45,7 +45,7 @@ public abstract class AbstractExternalCMSServiceTest extends AbstractPAdESTestSi
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signingTime = new Date();
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
     }
@@ -134,7 +134,7 @@ public abstract class AbstractExternalCMSServiceTest extends AbstractPAdESTestSi
             return this.cmsSignedData;
         }
 
-        public void setCmsSignedData(final byte[] cmsSignedData) {
+        void setCmsSignedData(final byte[] cmsSignedData) {
             this.cmsSignedData = cmsSignedData;
         }
 

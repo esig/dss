@@ -51,7 +51,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCounterSignatureTest {
+class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCounterSignatureTest {
 
 	private JAdESService service;
 	private DSSDocument documentToSign;
@@ -59,7 +59,7 @@ public class JAdESLevelLTAFlattenedCounterSignatureTest extends AbstractJAdESCou
 	private JAdESCounterSignatureParameters counterSignatureParameters;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

@@ -36,11 +36,11 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class ASiCEWithXAdESNoEmbeddedOcspCertWithProvidedCertTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithXAdESNoEmbeddedOcspCertWithProvidedCertTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

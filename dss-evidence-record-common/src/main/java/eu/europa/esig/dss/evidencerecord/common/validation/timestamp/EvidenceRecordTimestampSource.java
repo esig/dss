@@ -22,6 +22,7 @@ package eu.europa.esig.dss.evidencerecord.common.validation.timestamp;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
@@ -41,8 +42,8 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.timestamp.AbstractTimestampSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.validation.timestamp.AbstractTimestampSource;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,7 +174,7 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
                 addReferences(references, erValidationDataReferences);
                 previousTimestampReferences = new ArrayList<>();
 
-                TimestampToken timestampToken = createTimestampToken(archiveTimeStamp);
+                TimestampToken timestampToken = createTimestampToken(archiveTimeStamp, getEvidenceRecordTimestampType(archiveTimeStamp));
                 timestampToken.getTimestampedReferences().addAll(references);
                 timestampToken.setTimestampScopes(findTimestampScopes(timestampToken));
 
@@ -194,14 +195,32 @@ public abstract class EvidenceRecordTimestampSource<ER extends DefaultEvidenceRe
         }
     }
 
+    private EvidenceRecordTimestampType getEvidenceRecordTimestampType(ArchiveTimeStampObject archiveTimeStamp) {
+        ArchiveTimeStampChainObject firstArchiveTimeStampChain = evidenceRecord.getArchiveTimeStampSequence().get(0);
+        for (ArchiveTimeStampChainObject archiveTimeStampChain : evidenceRecord.getArchiveTimeStampSequence()) {
+            ArchiveTimeStampObject firstArchiveTimeStamp = archiveTimeStampChain.getArchiveTimeStamps().get(0);
+            if (firstArchiveTimeStamp == archiveTimeStamp) {
+                if (firstArchiveTimeStampChain == archiveTimeStampChain) {
+                    return EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP;
+                } else {
+                    return EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP;
+                }
+            }
+        }
+        return EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP;
+    }
+
     /**
      * This method is used to create a {@code TimestampToken} from {@code ArchiveTimeStampObject}
      *
      * @param archiveTimeStamp {@link ArchiveTimeStampObject} to extract time-stamp token from
+     * @param evidenceRecordTimestampType {@link EvidenceRecordTimestampType}
      * @return {@link TimestampToken}
      */
-    protected TimestampToken createTimestampToken(ArchiveTimeStampObject archiveTimeStamp) {
-        return archiveTimeStamp.getTimestampToken();
+    protected TimestampToken createTimestampToken(ArchiveTimeStampObject archiveTimeStamp, EvidenceRecordTimestampType evidenceRecordTimestampType) {
+        TimestampToken timestampToken = archiveTimeStamp.getTimestampToken();
+        timestampToken.setEvidenceRecordTimestampType(evidenceRecordTimestampType);
+        return timestampToken;
     }
 
     /**

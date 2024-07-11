@@ -30,7 +30,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class LibreOfficeODSValidationTest extends AbstractOpenDocumentTestValidation {
+class LibreOfficeODSValidationTest extends AbstractOpenDocumentTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

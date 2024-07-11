@@ -154,6 +154,11 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public int arraySize(Object[] array) {
+		return ArrayUtils.getLength(array);
+	}
+
+	@Override
 	public boolean isArrayEmpty(byte[] array) {
 		return ArrayUtils.isEmpty(array);
 	}
@@ -164,6 +169,11 @@ public class ApacheCommonsUtils implements IUtils {
 	}
 
 	@Override
+	public int arraySize(byte[] array) {
+		return ArrayUtils.getLength(array);
+	}
+
+	@Override
 	public boolean isArrayEmpty(char[] array) {
 		return ArrayUtils.isEmpty(array);
 	}
@@ -171,6 +181,11 @@ public class ApacheCommonsUtils implements IUtils {
 	@Override
 	public boolean isArrayNotEmpty(char[] array) {
 		return ArrayUtils.isNotEmpty(array);
+	}
+
+	@Override
+	public int arraySize(char[] array) {
+		return ArrayUtils.getLength(array);
 	}
 
 	@Override

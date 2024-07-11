@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades.reference;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import java.io.Serializable;
 
@@ -45,16 +44,6 @@ public interface DSSTransform extends Serializable {
 	 * @param namespace {@link DSSNamespace} uri
 	 */
 	void setNamespace(DSSNamespace namespace);
-	
-	/**
-	 * Performs transformation on the given {@code node} and returns resulting bytes
-	 * 
-	 * @param node {@link Node} to perform transformation on
-	 * @return byte array
-	 * @deprecated since DSS 5.13. Use {@code performTransform(new DSSTransformOutput(node)).getBytes()}
-	 */
-	@Deprecated
-	byte[] getBytesAfterTransformation(Node node);
 
 	/**
 	 * Executes a transform on the provided {@code DSSTransformOutput}

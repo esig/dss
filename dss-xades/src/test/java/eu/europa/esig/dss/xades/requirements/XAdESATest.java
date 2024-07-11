@@ -28,11 +28,11 @@ import javax.xml.xpath.XPathExpressionException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESATest extends XAdESXLTest {
+class XAdESATest extends XAdESXLTest {
 
     @BeforeEach
     @Override
-    public void init() throws Exception {
+    void init() throws Exception {
         super.init();
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_A);
     }
@@ -40,7 +40,7 @@ public class XAdESATest extends XAdESXLTest {
     /**
      * Checks UnsignedSignatureProperties present for T/LT/LTA levels
      */
-    public void checkUnsignedProperties() throws XPathExpressionException {
+    protected void checkUnsignedProperties() throws XPathExpressionException {
         super.checkUnsignedProperties();
 
         checkArchiveTimeStampPresent();

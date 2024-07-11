@@ -31,7 +31,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -40,14 +40,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignature {
+class CAdESLevelBDetachedError500OCSPTest extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();

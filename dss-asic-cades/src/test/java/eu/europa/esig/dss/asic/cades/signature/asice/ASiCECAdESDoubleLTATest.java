@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
 
     private static DSSDocument originalDocument;
 
@@ -66,7 +66,7 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
         signingAlias = EE_GOOD_USER;
 
@@ -119,15 +119,15 @@ public class ASiCECAdESDoubleLTATest extends AbstractASiCECAdESTestSignature {
             ManifestFile manifestFile = ASiCManifestParser.getManifestFile(document);
             assertNotNull(manifestFile);
             for (ManifestEntry entry : manifestFile.getEntries()) {
-                if (originalDocument.getName().equals(entry.getFileName())) {
+                if (originalDocument.getName().equals(entry.getUri())) {
                     assertEquals(MimeTypeEnum.TEXT, entry.getMimeType());
                     signedFileFound = true;
                 }
-                if (entry.getFileName().contains("signature")) {
+                if (entry.getUri().contains("signature")) {
                     assertEquals(MimeTypeEnum.PKCS7, entry.getMimeType());
                     timestampedSignatureFound = true;
                 }
-                if (entry.getFileName().contains("timestamp")) {
+                if (entry.getUri().contains("timestamp")) {
                     assertEquals(MimeTypeEnum.TST, entry.getMimeType());
                     secondArchiveTstFound = true;
                 }

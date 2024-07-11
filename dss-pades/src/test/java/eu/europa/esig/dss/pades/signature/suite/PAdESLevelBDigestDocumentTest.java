@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -45,8 +46,8 @@ public class PAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
     private final DSSDocument ORIGINAL_DOCUMENT = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
     @BeforeEach
-    public void init() throws Exception {
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, ORIGINAL_DOCUMENT.getDigest(DigestAlgorithm.SHA256));
+    void init() throws Exception {
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, ORIGINAL_DOCUMENT.getDigestValue(DigestAlgorithm.SHA256));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
@@ -58,14 +59,18 @@ public class PAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
     }
 
     @Test
-    public void test() {
+    void test() {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> service.getDataToSign(documentToSign, signatureParameters));
-        assertEquals("DigestDocument cannot be used for PAdES!", exception.getMessage());
+        assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class,
+                () -> service.signDocument(documentToSign, signatureParameters, new SignatureValue()));
+        assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());
 
         exception = assertThrows(IllegalArgumentException.class,
                 () -> service.getContentTimestamp(documentToSign, signatureParameters));
-        assertEquals("DigestDocument cannot be used for PAdES!", exception.getMessage());
+        assertEquals("DigestDocument cannot be used! PDF document is expected!", exception.getMessage());
     }
 
     @Override

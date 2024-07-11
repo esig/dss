@@ -50,13 +50,13 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
+class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 
 	private static final String DOCUMENT_NAME = "test.text";
 	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA256;
 
 	@Test
-	public void testWithCompleteDocument() {
+	void testWithCompleteDocument() {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocument = getCompleteDocument();
@@ -95,7 +95,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testWithCompleteDocumentNoName() throws IOException {
+	void testWithCompleteDocumentNoName() throws IOException {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
@@ -134,7 +134,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testWithDigestDocument() {
+	void testWithDigestDocument() {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument digestDocument = getDigestDocument();
@@ -162,7 +162,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testContentTstWithDigestDocument() {
+	void testContentTstWithDigestDocument() {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument digestDocument = getDigestDocument();
@@ -224,8 +224,7 @@ public class XAdESLevelBDetachedDigestDocumentTest extends PKIFactoryAccess {
 	}
 
 	private DSSDocument getDigestDocument() {
-		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
-		return digestDocument;
+		return new DigestDocument(USED_DIGEST, getCompleteDocument().getDigestValue(USED_DIGEST));
 	}
 
 	private DSSDocument getWrongDocument() {

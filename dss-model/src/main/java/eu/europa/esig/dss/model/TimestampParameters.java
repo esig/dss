@@ -35,7 +35,7 @@ public abstract class TimestampParameters implements SerializableTimestampParame
 	/**
 	 * The digest algorithm to provide to the timestamping authority
 	 */
-	protected DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
+	protected DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA512;
 
 	/**
 	 * Empty constructor

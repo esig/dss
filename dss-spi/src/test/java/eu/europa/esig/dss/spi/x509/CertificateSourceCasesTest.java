@@ -35,10 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CertificateSourceCasesTest {
+class CertificateSourceCasesTest {
 
 	@Test
-	public void sameSubjectDifferentKeys() {
+	void sameSubjectDifferentKeys() {
 
 		// 2 certs : same subject + different keypairs
 		CertificateToken c1 = DSSUtils.loadCertificateFromBase64EncodedString(
@@ -73,7 +73,7 @@ public class CertificateSourceCasesTest {
 	}
 
 	@Test
-	public void crossCertificatesDifferentSubject() {
+	void crossCertificatesDifferentSubject() {
 
 		// 2 cross certificates : same keypair + different subjects
 		CertificateToken c1 = DSSUtils.loadCertificateFromBase64EncodedString(
@@ -113,7 +113,7 @@ public class CertificateSourceCasesTest {
 	}
 
 	@Test
-	public void crossCertificatesSameSubject() {
+	void crossCertificatesSameSubject() {
 
 		// 2 cross certificates : same keypair + same subject
 		CertificateToken c1 = DSSUtils.loadCertificate(new File("src/test/resources/belgiumrs2.crt"));
@@ -155,7 +155,7 @@ public class CertificateSourceCasesTest {
 	}
 
 	@Test
-	public void extractTLSKeystore() {
+	void extractTLSKeystore() {
 		assertTimeout(ofMillis(30000), () -> {
 			KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/extract-tls.p12"),
 					"PKCS12", "ks-password".toCharArray());

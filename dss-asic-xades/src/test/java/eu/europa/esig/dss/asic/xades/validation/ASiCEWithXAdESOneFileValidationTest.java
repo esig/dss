@@ -26,14 +26,15 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCEWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTestValidation {
 
 	private static final DSSDocument EXPECTED_ONEFILE = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
@@ -57,7 +58,7 @@ public class ASiCEWithXAdESOneFileValidationTest extends AbstractASiCWithXAdESTe
 		for (AdvancedSignature advancedSignature : signatures) {
 			List<DSSDocument> originalDocuments = validator.getOriginalDocuments(advancedSignature.getId());
 			assertEquals(1, originalDocuments.size());
-			assertEquals(EXPECTED_ONEFILE.getDigest(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigest(DigestAlgorithm.SHA256));
+			assertArrayEquals(EXPECTED_ONEFILE.getDigestValue(DigestAlgorithm.SHA256), originalDocuments.get(0).getDigestValue(DigestAlgorithm.SHA256));
 		}
 	}
 

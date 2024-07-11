@@ -27,14 +27,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class ASiCEWithCAdESLevelLTWithCopiedEvidenceRecordChainRenewalValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESLevelLTWithCopiedEvidenceRecordChainRenewalValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -74,6 +74,7 @@ public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConne
 	}
 
 	@Override
+	@Deprecated
 	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
 		return token.sign(toBeSigned, digestAlgorithm, mgf, alias);
 	}
@@ -89,6 +90,7 @@ public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConne
 	}
 
 	@Override
+	@Deprecated
 	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) throws DSSException {
 		return token.signDigest(digest, mgf, alias);
 	}

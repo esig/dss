@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import java.util.Objects;
+
 /**
  * Contains relative information about a PDF annotation
  *
@@ -31,6 +33,9 @@ public class PdfAnnotation {
 
 	/** The name of the annotation */
 	private String name;
+
+	/** Defines whether annotation is signed */
+	private boolean signed;
 
 	/**
 	 * Default constructor
@@ -68,42 +73,48 @@ public class PdfAnnotation {
 		this.name = name;
 	}
 
+	/**
+	 * Gets whether the annotation field is signed
+	 *
+	 * @return TRUE if the annotation field contains a signature, FALSE otherwise
+	 */
+	public boolean isSigned() {
+		return signed;
+	}
+
+	/**
+	 * Sets whether the annotation field is signed
+	 *
+	 * @param signed  whether the annotation field is signed
+	 */
+	public void setSigned(boolean signed) {
+		this.signed = signed;
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((annotationBox == null) ? 0 : annotationBox.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		int result = annotationBox != null ? annotationBox.hashCode() : 0;
+		result = 31 * result + (name != null ? name.hashCode() : 0);
+		result = 31 * result + (signed ? 1 : 0);
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof PdfAnnotation)) return false;
+
+		PdfAnnotation that = (PdfAnnotation) o;
+
+		if (signed != that.signed) return false;
+		if (!Objects.equals(annotationBox, that.annotationBox))
 			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		PdfAnnotation other = (PdfAnnotation) obj;
-		if (annotationBox == null) {
-			if (other.annotationBox != null) {
-				return false;
-			}
-		} else if (!annotationBox.equals(other.annotationBox)) {
-			return false;
-		}
-		if (name == null) {
-			return other.name == null;
-		} else return name.equals(other.name);
-	}
+        return Objects.equals(name, that.name);
+    }
 
 	@Override
 	public String toString() {
-		return "PdfAnnotation [annotationBox=" + annotationBox + ", name=" + name + "]";
+		return "PdfAnnotation [annotationBox=" + annotationBox + ", name=" + name + ", signed=" + signed + "]";
 	}
 
 }

@@ -20,17 +20,15 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.manifest;
 
-import eu.europa.esig.asic.manifest.definition.ASiCManifestAttribute;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestElement;
-import eu.europa.esig.asic.manifest.definition.ASiCManifestNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.AbstractASiCManifestBuilder;
+import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilter;
+import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilterFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * This class is used to generate the ASiCArchiveManifest.xml content (ASiC-E)
@@ -57,19 +55,10 @@ import org.w3c.dom.Element;
  * }
  * </pre>
  */
-public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilder {
-
-	/** The ASiC Container document representation */
-	private final ASiCContent asicContent;
+public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractASiCManifestBuilder {
 
 	/** The "ASiCArchiveManifest.xml" document (root manifest) */
 	private final DSSDocument lastArchiveManifest;
-
-	/** The DigestAlgorithm to use for reference digests computation */
-	private final DigestAlgorithm digestAlgorithm;
-
-	/** The name of the timestamp document */
-	private final String timestampFileUri;
 
 	/**
 	 * The default constructor
@@ -77,56 +66,37 @@ public class ASiCEWithCAdESArchiveManifestBuilder extends AbstractManifestBuilde
 	 * @param asicContent {@link ASiCContent}
 	 * @param lastArchiveManifest {@link DSSDocument} the last archive manifest "ASiCArchiveManifest.xml"
 	 * @param digestAlgorithm {@link DigestAlgorithm} to use for digest calculation
-	 * @param timestampFileUri {@link String} the name of the timestamp to add
+	 * @param timestampFilename {@link String} the filename of the timestamp to be associated with the archive manifest
 	 */
-	public ASiCEWithCAdESArchiveManifestBuilder(ASiCContent asicContent, DSSDocument lastArchiveManifest,
-												DigestAlgorithm digestAlgorithm, String timestampFileUri) {
-		this.asicContent = asicContent;
+	public ASiCEWithCAdESArchiveManifestBuilder(final ASiCContent asicContent, final DSSDocument lastArchiveManifest,
+												final DigestAlgorithm digestAlgorithm, final String timestampFilename) {
+		super(asicContent, timestampFilename, digestAlgorithm);
 		this.lastArchiveManifest = lastArchiveManifest;
-		this.digestAlgorithm = digestAlgorithm;
-		this.timestampFileUri = timestampFileUri;
 	}
 
-	/**
-	 * Builds the ArchiveManifest and returns the Document Node
-	 *
-	 * @return {@link DSSDocument} archive manifest
-	 */
-	public DSSDocument build() {
-		final Document documentDom = DomUtils.buildDOM();
-		final Element asicManifestDom = DomUtils.createElementNS(documentDom, ASiCManifestNamespace.NS, ASiCManifestElement.ASIC_MANIFEST);
-		documentDom.appendChild(asicManifestDom);
-
-		addSigReference(documentDom, asicManifestDom, timestampFileUri, MimeTypeEnum.TST);
-
-		for (DSSDocument signature : asicContent.getSignatureDocuments()) {
-			addDataObjectReference(documentDom, asicManifestDom, signature, digestAlgorithm);
-		}
-		
-		for (DSSDocument timestamp : asicContent.getTimestampDocuments()) {
-			addDataObjectReference(documentDom, asicManifestDom, timestamp, digestAlgorithm);
-		}
-
-		for (DSSDocument manifest : asicContent.getAllManifestDocuments()) {
-			if (lastArchiveManifest == manifest) {
-				addDataObjectReferenceForRootArchiveManifest(documentDom, asicManifestDom, lastArchiveManifest, digestAlgorithm);
-			} else {
-				addDataObjectReference(documentDom, asicManifestDom, manifest, digestAlgorithm);
-			}
-		}
-
-		for (DSSDocument document : asicContent.getSignedDocuments()) {
-			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
-		}
-
-		return DomUtils.createDssDocumentFromDomDocument(documentDom, ASiCWithCAdESUtils.DEFAULT_ARCHIVE_MANIFEST_FILENAME);
+	@Override
+	protected boolean isRootfile(DSSDocument document) {
+		return lastArchiveManifest == document;
 	}
-	
-	private Element addDataObjectReferenceForRootArchiveManifest(final Document documentDom, final Element asicManifestDom, 
-			DSSDocument document, DigestAlgorithm digestAlgorithm) {
-		Element dataObjectReferenceElement = addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
-		dataObjectReferenceElement.setAttribute(ASiCManifestAttribute.ROOTFILE.getAttributeName(), "true");
-		return dataObjectReferenceElement;
+
+	@Override
+	protected MimeType getSigReferenceMimeType() {
+		return MimeTypeEnum.TST;
+	}
+
+	@Override
+	protected ASiCContentDocumentFilter initDefaultAsicContentDocumentFilter() {
+		return ASiCContentDocumentFilterFactory.archiveDocumentsFilter();
+	}
+
+	@Override
+	public ASiCEWithCAdESArchiveManifestBuilder setAsicContentDocumentFilter(ASiCContentDocumentFilter asicContentDocumentFilter) {
+		return (ASiCEWithCAdESArchiveManifestBuilder) super.setAsicContentDocumentFilter(asicContentDocumentFilter);
+	}
+
+	@Override
+	protected String getManifestFilename() {
+		return ASiCWithCAdESUtils.DEFAULT_ARCHIVE_MANIFEST_FILENAME;
 	}
 
 }

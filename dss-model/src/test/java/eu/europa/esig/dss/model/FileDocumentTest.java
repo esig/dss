@@ -28,6 +28,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,31 +36,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileDocumentTest {
+class FileDocumentTest {
 
 	@TempDir
 	static Path temporaryFolder;
 
 	@Test
-	public void testNull() {
+	void testNull() {
 		assertThrows(NullPointerException.class, () -> new FileDocument((String) null));
 	}
 
 	@Test
-	public void testNull2() {
+	void testNull2() {
 		Exception exception = assertThrows(NullPointerException.class, () -> new FileDocument((File) null));
 		assertEquals("File cannot be null", exception.getMessage());
 	}
 
 	@Test
-	public void testFile() throws IOException {
+	void testFile() throws IOException {
 		FileDocument doc = new FileDocument("src/test/resources/AdobeCA.p7c");
 		assertNotNull(doc);
 		assertTrue(doc.exists());
 		assertEquals("AdobeCA.p7c", doc.getName());
 		assertEquals(MimeTypeEnum.BINARY, doc.getMimeType());
-		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest(DigestAlgorithm.SHA256));
-		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", doc.getDigest(DigestAlgorithm.SHA256)); // uses map
+		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", Base64.getEncoder().encodeToString(doc.getDigestValue(DigestAlgorithm.SHA256)));
+		assertEquals("xF8SpcLlrd4Bhl1moh4Ciz+Rq/PImaChEl/tyGTZyPM=", Base64.getEncoder().encodeToString(doc.getDigestValue(DigestAlgorithm.SHA256))); // uses map
 
 		Path containerTemporaryPath = temporaryFolder.resolve("testFileDocument");
 		doc.save(containerTemporaryPath.toString());

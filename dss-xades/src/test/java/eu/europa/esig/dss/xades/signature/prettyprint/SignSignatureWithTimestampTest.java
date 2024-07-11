@@ -43,14 +43,14 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class SignSignatureWithTimestampTest extends PKIFactoryAccess {
+class SignSignatureWithTimestampTest extends PKIFactoryAccess {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/validation/Signature-X-ES-103.xml");
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
@@ -63,7 +63,7 @@ public class SignSignatureWithTimestampTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);

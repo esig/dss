@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ReferenceIdProviderTest {
+class ReferenceIdProviderTest {
 
     @Test
-    public void defaultTest() {
+    void defaultTest() {
         ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
         assertEquals("r-1", referenceIdProvider.getReferenceId());
         assertEquals("r-2", referenceIdProvider.getReferenceId());
@@ -45,7 +45,7 @@ public class ReferenceIdProviderTest {
     }
 
     @Test
-    public void customPrefixTest() {
+    void customPrefixTest() {
         ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
         referenceIdProvider.setReferenceIdPrefix("r-manifest");
         assertEquals("r-manifest-1", referenceIdProvider.getReferenceId());
@@ -64,7 +64,7 @@ public class ReferenceIdProviderTest {
     }
 
     @Test
-    public void signatureParamsTest() {
+    void signatureParamsTest() {
         ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
         XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
         referenceIdProvider.setSignatureParameters(signatureParameters);
@@ -85,7 +85,7 @@ public class ReferenceIdProviderTest {
     }
 
     @Test
-    public void combinationParamsTest() {
+    void combinationParamsTest() {
         ReferenceIdProvider referenceIdProvider = new ReferenceIdProvider();
         XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
         referenceIdProvider.setSignatureParameters(signatureParameters);

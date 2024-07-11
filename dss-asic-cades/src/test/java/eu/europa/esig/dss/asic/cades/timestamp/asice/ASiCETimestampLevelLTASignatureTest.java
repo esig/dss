@@ -36,7 +36,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -49,14 +49,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCETimestampLevelLTASignatureTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
+class ASiCETimestampLevelLTASignatureTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
 
     private ASiCWithCAdESService service;
     private ASiCWithCAdESSignatureParameters signatureParameters;
     private List<DSSDocument> documentsToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getAlternateGoodTsa());
 

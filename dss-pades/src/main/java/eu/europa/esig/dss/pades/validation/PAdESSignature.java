@@ -42,11 +42,12 @@ import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.Arrays;
@@ -244,7 +245,7 @@ public class PAdESSignature extends CAdESSignature {
 		 */
 		if (signerDocument != null && getPdfSignatureDictionary() != null &&
 				PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(getPdfSignatureDictionary().getSubFilter())) {
-			signerDocument = new InMemoryDocument(Utils.fromBase64(signerDocument.getDigest(DigestAlgorithm.SHA1)));
+			signerDocument = new InMemoryDocument(signerDocument.getDigestValue(DigestAlgorithm.SHA1));
 		}
 		return signerDocument;
 	}
@@ -306,8 +307,8 @@ public class PAdESSignature extends CAdESSignature {
 	}
 
 	@Override
-	protected PAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
-		return new PAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
+	protected PAdESBaselineRequirementsChecker createBaselineRequirementsChecker(CertificateVerifier certificateVerifier) {
+		return new PAdESBaselineRequirementsChecker(this, certificateVerifier);
 	}
 
 	/**

@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.scope.EncapsulatedTimestampScopeFinder;
+import eu.europa.esig.dss.spi.validation.scope.EncapsulatedTimestampScopeFinder;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 
 import java.util.ArrayList;
@@ -68,9 +68,11 @@ public class XAdESTimestampScopeFinder extends EncapsulatedTimestampScopeFinder 
     }
 
     private boolean isContentTimestampedReference(XAdESReferenceValidation xadesReferenceValidation, List<TimestampInclude> includes) {
-        for (TimestampInclude timestampInclude : includes) {
-            if (xadesReferenceValidation.getId().equals(timestampInclude.getURI())) {
-                return true;
+        if (xadesReferenceValidation.getId() != null) {
+            for (TimestampInclude timestampInclude : includes) {
+                if (xadesReferenceValidation.getId().equals(timestampInclude.getURI())) {
+                    return true;
+                }
             }
         }
         return false;

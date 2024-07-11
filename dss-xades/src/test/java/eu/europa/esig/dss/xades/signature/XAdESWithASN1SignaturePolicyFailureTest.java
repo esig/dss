@@ -30,8 +30,8 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
-import eu.europa.esig.dss.validation.policy.BasicASNSignaturePolicyValidator;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.BasicASN1SignaturePolicyValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESWithASN1SignaturePolicyFailureTest extends AbstractXAdESTestSignature {
+class XAdESWithASN1SignaturePolicyFailureTest extends AbstractXAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -60,7 +60,7 @@ public class XAdESWithASN1SignaturePolicyFailureTest extends AbstractXAdESTestSi
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         XmlPolicyWithTransforms signaturePolicy = new XmlPolicyWithTransforms();
@@ -69,8 +69,8 @@ public class XAdESWithASN1SignaturePolicyFailureTest extends AbstractXAdESTestSi
         signaturePolicy.setDocumentationReferences(SIGNATURE_POLICY_DOCUMENTATION);
         signaturePolicy.setSpuri(HTTP_SPURI_TEST);
 
-        BasicASNSignaturePolicyValidator asnSignaturePolicyValidator = new BasicASNSignaturePolicyValidator();
-        Digest digest = asnSignaturePolicyValidator.getComputedDigest(POLICY_CONTENT, DigestAlgorithm.SHA256);
+        BasicASN1SignaturePolicyValidator asn1SignaturePolicyValidator = new BasicASN1SignaturePolicyValidator();
+        Digest digest = asn1SignaturePolicyValidator.getComputedDigest(POLICY_CONTENT, DigestAlgorithm.SHA256);
         signaturePolicy.setDigestAlgorithm(digest.getAlgorithm());
         signaturePolicy.setDigestValue(digest.getValue());
 

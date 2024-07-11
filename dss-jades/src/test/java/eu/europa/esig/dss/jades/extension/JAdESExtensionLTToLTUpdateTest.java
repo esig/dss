@@ -30,7 +30,7 @@ import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.jose4j.json.JsonUtil;
 
 import java.util.List;
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESExtensionLTToLTUpdateTest extends AbstractJAdESTestExtension {
+class JAdESExtensionLTToLTUpdateTest extends AbstractJAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

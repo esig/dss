@@ -29,10 +29,10 @@ import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class BOMTest {
+class BOMTest {
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		ApacheCommonsUtils acu = new ApacheCommonsUtils();
 
 		try (FileInputStream fis = new FileInputStream("src/test/resources/lotl_utf-8-sansbom.xml");

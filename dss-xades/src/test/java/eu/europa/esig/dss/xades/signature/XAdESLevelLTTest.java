@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -31,6 +27,9 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
 
 public class XAdESLevelLTTest extends AbstractXAdESTestSignature {
 
@@ -39,7 +38,7 @@ public class XAdESLevelLTTest extends AbstractXAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class FileCacheDataLoaderTest {
+class FileCacheDataLoaderTest {
 
 	static final String URL_TO_LOAD = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
 
@@ -58,20 +58,20 @@ public class FileCacheDataLoaderTest {
 	private FileCacheDataLoader dataLoader;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	void setUp() throws Exception {
 		dataLoader = new FileCacheDataLoader();
 		dataLoader.setDataLoader(new CommonsDataLoader());
 		dataLoader.setFileCacheDirectory(cacheDirectory);
 	}
 
 	@Test
-	public void testNotDefineSubDataLoader() {
+	void testNotDefineSubDataLoader() {
 		FileCacheDataLoader fcdl = new FileCacheDataLoader();
 		assertThrows(NullPointerException.class, () -> fcdl.get(URL_TO_LOAD));
 	}
 
 	@Test
-	public void getUrlWhenExpirationTimeIsNotSetUseCachedFile() {
+	void getUrlWhenExpirationTimeIsNotSetUseCachedFile() {
 		long cacheCreationTime = getUrlAndReturnCacheCreationTime();
 		waitOneSecond();
 		long newCacheCreationTime = getUrlAndReturnCacheCreationTime();
@@ -80,7 +80,7 @@ public class FileCacheDataLoaderTest {
 	}
 
 	@Test
-	public void getUrlWhenCacheIsNotExpiredUseCachedFile() {
+	void getUrlWhenCacheIsNotExpiredUseCachedFile() {
 		dataLoader.setCacheExpirationTime(2000L);
 		long cacheCreationTime = getUrlAndReturnCacheCreationTime();
 		waitOneSecond();
@@ -90,7 +90,7 @@ public class FileCacheDataLoaderTest {
 	}
 
 	@Test
-	public void getUrlWhenCacheIsExpiredDownloadNewCopy() {
+	void getUrlWhenCacheIsExpiredDownloadNewCopy() {
 		dataLoader.setCacheExpirationTime(500L);
 		long cacheCreationTime = getUrlAndReturnCacheCreationTime();
 		waitOneSecond();
@@ -100,7 +100,7 @@ public class FileCacheDataLoaderTest {
 	}
 
 	@Test
-	public void testNotNetworkProtocol() throws IOException {
+	void testNotNetworkProtocol() throws IOException {
 		FileCacheDataLoader specificDataLoader = new FileCacheDataLoader();
 		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<>()));
 		specificDataLoader.setFileCacheDirectory(cacheDirectory);
@@ -118,13 +118,13 @@ public class FileCacheDataLoaderTest {
 	}
 	
 	@Test
-	public void testGetDSSDocument() {
+	void testGetDSSDocument() {
 		DSSDocument dssDocument = getDSSDocumentByUrl();
 		assertTrue(Utils.isArrayNotEmpty(DSSUtils.toByteArray(dssDocument)));
 	}
 	
 	@Test
-	public void offlineDataLoaderTest() throws IOException {
+	void offlineDataLoaderTest() throws IOException {
 		File cacheDirectory = new File("target/cache");
 		cacheDirectory.mkdirs();
 		Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);

@@ -41,7 +41,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 @Tag("slow")
-public class XAdESLevelBEnvelopedSHA256WITHRSAAndDigestReferenceTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedSHA256WITHRSAAndDigestReferenceTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -61,7 +61,7 @@ public class XAdESLevelBEnvelopedSHA256WITHRSAAndDigestReferenceTest extends Abs
 
 	@ParameterizedTest(name = "digest algorithm for references {index} : {0}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm referenceDigestAlgo) {
+	void init(DigestAlgorithm referenceDigestAlgo) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ITextPdfArrayTest {
+class ITextPdfArrayTest {
 
     @Test
-    public void getLongValueTest() {
+    void getLongValueTest() {
         PdfArray pdfArray = new PdfArray();
         pdfArray.add(new PdfNumber(123456789));
 
@@ -44,7 +44,7 @@ public class ITextPdfArrayTest {
     }
 
     @Test
-    public void getFloatValueTest() {
+    void getFloatValueTest() {
         PdfArray pdfArray = new PdfArray();
         pdfArray.add(new PdfNumber("1.23456789e8"));
 

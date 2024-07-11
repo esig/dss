@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.dss2011;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Collections;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
@@ -39,7 +30,17 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class XAdESWrongDetachedFileTest extends AbstractXAdESTestValidation {
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class XAdESWrongDetachedFileTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -66,6 +67,8 @@ public class XAdESWrongDetachedFileTest extends AbstractXAdESTestValidation {
 				assertFalse(digestMatcher.isDataIntact());
 				assertEquals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestMethod(), digestMatcher.getDigestMethod());
                 assertArrayEquals(originalSignerDocuments.get(0).getDigestAlgoAndValue().getDigestValue(), digestMatcher.getDigestValue());
+				assertEquals("sample.xml", digestMatcher.getUri());
+				assertNull(digestMatcher.getDocumentName());
 				referenceDigestMatcherFound = true;
 			}
 		}

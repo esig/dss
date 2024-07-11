@@ -33,17 +33,17 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 
-public class OpenDocumentLevelBCounterSignatureByDAIdentifierTest extends AbstractOpenDocumentCounterSignatureTest {
+class OpenDocumentLevelBCounterSignatureByDAIdentifierTest extends AbstractOpenDocumentCounterSignatureTest {
 
 	private ASiCWithXAdESService service;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		signingDate = new Date();

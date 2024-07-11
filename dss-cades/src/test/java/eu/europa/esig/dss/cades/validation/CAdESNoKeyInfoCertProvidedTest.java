@@ -34,7 +34,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class CAdESNoKeyInfoCertProvidedTest extends AbstractCAdESTestValidation {
+class CAdESNoKeyInfoCertProvidedTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

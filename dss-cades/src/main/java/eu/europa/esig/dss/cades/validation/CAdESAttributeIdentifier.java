@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.validation.SignatureAttributeIdentifier;
+import eu.europa.esig.dss.spi.validation.identifier.SignatureAttributeIdentifier;
 import org.bouncycastle.asn1.cms.Attribute;
 
 import java.io.ByteArrayOutputStream;
@@ -43,18 +43,6 @@ public class CAdESAttributeIdentifier extends SignatureAttributeIdentifier {
      */
     CAdESAttributeIdentifier(byte[] data) {
         super(data);
-    }
-
-    /**
-     * Builds the identifier for CAdES attribute
-     *
-     * @param attribute {@link Attribute}
-     * @return {@link CAdESAttributeIdentifier}
-     * @deprecated since DSS 5.13. Please use {@code #build(Attribute attribute, Integer order)}
-     */
-    @Deprecated
-    public static CAdESAttributeIdentifier build(Attribute attribute) {
-        return build(attribute, null);
     }
 
     /**

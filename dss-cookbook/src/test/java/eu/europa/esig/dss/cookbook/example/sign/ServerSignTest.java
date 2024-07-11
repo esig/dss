@@ -32,15 +32,15 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-public class ServerSignTest extends CookbookTools {
+class ServerSignTest extends CookbookTools {
 
     @Test
-    public void serverSignTest() throws Exception {
+    void serverSignTest() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

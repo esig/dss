@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import eu.europa.esig.dss.spi.tsl.CertificateContentEquivalence;
-import eu.europa.esig.dss.spi.tsl.Condition;
-import eu.europa.esig.dss.spi.tsl.QCStatementOids;
-import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
-import eu.europa.esig.dss.spi.tsl.ServiceTypeASi;
-import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.model.tsl.CertificateContentEquivalence;
+import eu.europa.esig.dss.model.tsl.Condition;
+import eu.europa.esig.dss.model.tsl.QCStatementOids;
+import eu.europa.esig.dss.model.tsl.ServiceEquivalence;
+import eu.europa.esig.dss.model.tsl.ServiceTypeASi;
+import eu.europa.esig.dss.model.timedependent.MutableTimeDependentValues;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.QCStatementCondition;
 import eu.europa.esig.dss.utils.Utils;

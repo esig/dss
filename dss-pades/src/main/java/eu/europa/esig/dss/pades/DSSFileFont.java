@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -30,6 +31,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * The Font created from a file
@@ -98,6 +100,11 @@ public class DSSFileFont extends AbstractDSSFont {
 	 * @param size value of the font
 	 */
 	public DSSFileFont(DSSDocument dssDocument, float size) {
+		Objects.requireNonNull(dssDocument, "Font document cannot be null!");
+		if (dssDocument instanceof DigestDocument) {
+			throw new IllegalArgumentException("DigestDocument cannot be used as a font document!");
+		}
+
 		this.fileFont = dssDocument;
 		this.size = size;
 		initFontName(dssDocument);

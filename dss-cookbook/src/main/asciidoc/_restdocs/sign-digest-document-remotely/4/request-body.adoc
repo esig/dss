@@ -1,7 +1,7 @@
-[source,options="nowrap"]
+[source,json,options="nowrap"]
 ----
 {
   "algorithm" : "SHA256",
-  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIEitnl2Xtyc1CRRLuRt3kzKBzVxtFiss7Oq8ZugpaP6W"
+  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIGFUpnf85A+gQwrvggYLsm0wTFDNedcZAi5apyk0MnB+"
 }
 ----

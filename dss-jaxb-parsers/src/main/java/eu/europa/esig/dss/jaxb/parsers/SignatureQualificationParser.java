@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.SignatureQualification;
  */
 public final class SignatureQualificationParser {
 
+	/**
+	 * Default constructor
+	 */
 	private SignatureQualificationParser() {
+		// empty
 	}
 
 	/**

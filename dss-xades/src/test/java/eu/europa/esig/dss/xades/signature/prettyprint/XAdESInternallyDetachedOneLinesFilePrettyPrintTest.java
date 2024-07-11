@@ -47,14 +47,14 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.AbstractXAdESTestSignature;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class XAdESInternallyDetachedOneLinesFilePrettyPrintTest extends AbstractXAdESTestSignature {
+class XAdESInternallyDetachedOneLinesFilePrettyPrintTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

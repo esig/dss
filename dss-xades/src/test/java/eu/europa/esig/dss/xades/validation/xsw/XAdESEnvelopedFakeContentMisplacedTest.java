@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class XAdESEnvelopedFakeContentMisplacedTest extends AbstractXAdESTestValidation {
+class XAdESEnvelopedFakeContentMisplacedTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

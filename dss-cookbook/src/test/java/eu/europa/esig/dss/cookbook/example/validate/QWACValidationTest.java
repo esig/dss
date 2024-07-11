@@ -37,8 +37,8 @@ import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.junit.jupiter.api.Test;
@@ -47,10 +47,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class QWACValidationTest {
+class QWACValidationTest {
 
 	@Test
-	public void test() {
+	void test() {
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
 

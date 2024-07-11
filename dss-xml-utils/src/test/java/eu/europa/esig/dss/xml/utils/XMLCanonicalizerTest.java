@@ -33,10 +33,10 @@ import java.security.MessageDigest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XMLCanonicalizerTest {
+class XMLCanonicalizerTest {
 
     @Test
-    public void canonicalizeInputStreamTest() throws Exception {
+    void canonicalizeInputStreamTest() throws Exception {
         DSSDocument document = new FileDocument("src/test/resources/sample-c14n.xml");
         try (InputStream is = document.openStream()) {
             byte[] canonicalized = XMLCanonicalizer
@@ -57,7 +57,7 @@ public class XMLCanonicalizerTest {
     }
 
     @Test
-    public void canonicalizeNodeTest() throws Exception {
+    void canonicalizeNodeTest() throws Exception {
         DSSDocument document = new FileDocument("src/test/resources/sample-c14n.xml");
         Document dom = DomUtils.buildDOM(document);
 
@@ -76,7 +76,7 @@ public class XMLCanonicalizerTest {
     }
 
     @Test
-    public void canonicalizeBytesTest() throws Exception {
+    void canonicalizeBytesTest() throws Exception {
         DSSDocument document = new FileDocument("src/test/resources/sample-c14n.xml");
 
         byte[] byteArray;

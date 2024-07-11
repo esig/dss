@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class CAdESLevelBWithPolicyTest extends AbstractCAdESTestSignature {
+class CAdESLevelBWithPolicyTest extends AbstractCAdESTestSignature {
 
 	private static final String POLICY_ID = "1.2.3.4.5.6";
 	private static final String HELLO_WORLD = "Hello World";
@@ -47,7 +47,7 @@ public class CAdESLevelBWithPolicyTest extends AbstractCAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		Policy signaturePolicy = new Policy();

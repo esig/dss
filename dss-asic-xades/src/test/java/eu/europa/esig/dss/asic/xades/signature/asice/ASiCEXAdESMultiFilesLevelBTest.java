@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.asic.xades.validation.ASiCEWithXAdESManifestParser;
@@ -54,14 +54,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESMultiFilesLevelBTest extends AbstractASiCEWithXAdESMultipleDocumentsTestSignature {
+class ASiCEXAdESMultiFilesLevelBTest extends AbstractASiCEWithXAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithXAdESService service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns = new ArrayList<>();
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
@@ -86,7 +86,7 @@ public class ASiCEXAdESMultiFilesLevelBTest extends AbstractASiCEWithXAdESMultip
 
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doc);
+		DefaultASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(doc);
 		ASiCContent extract = extractor.extract();
 
 		assertEquals(0, extract.getUnsupportedDocuments().size());

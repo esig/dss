@@ -20,26 +20,24 @@
  */
 package eu.europa.esig.dss.model;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SignatureAlgorithmParameterizedTest {
+class SignatureAlgorithmParameterizedTest {
 
 	@ParameterizedTest(name = "SignatureAlgorithm {index} : {0}")
 	@EnumSource(SignatureAlgorithm.class)
-	public void test(SignatureAlgorithm signatureAlgo) {
-		SignatureAlgorithm retrieved = SignatureAlgorithm.getAlgorithm(signatureAlgo.getEncryptionAlgorithm(), signatureAlgo.getDigestAlgorithm(),
-				signatureAlgo.getMaskGenerationFunction());
+	void test(SignatureAlgorithm signatureAlgo) {
+		SignatureAlgorithm retrieved = SignatureAlgorithm.getAlgorithm(signatureAlgo.getEncryptionAlgorithm(), signatureAlgo.getDigestAlgorithm());
 		assertEquals(signatureAlgo, retrieved);
 	}
 
 	@ParameterizedTest(name = "SignatureAlgorithm {index} : {0}")
 	@EnumSource(SignatureAlgorithm.class)
-	public void forJAVA(SignatureAlgorithm signatureAlgo) {
+	void forJAVA(SignatureAlgorithm signatureAlgo) {
 		assertEquals(signatureAlgo, SignatureAlgorithm.forJAVA(signatureAlgo.getJCEId()));
 	}
 

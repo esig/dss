@@ -24,10 +24,13 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCFilenameFactory;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * This class provides a default implementation of {@code ASiCWithCAdESFilenameFactory}
@@ -97,6 +100,50 @@ public class DefaultASiCWithCAdESFilenameFactory extends AbstractASiCFilenameFac
     @Override
     public String getDataPackageFilename(ASiCContent asicContent) {
         return ASiCUtils.PACKAGE_ZIP; // "package.zip"
+    }
+
+    @Override
+    public String getEvidenceRecordFilename(ASiCContent asicContent, EvidenceRecordTypeEnum evidenceRecordType) {
+        Objects.requireNonNull(evidenceRecordType, "EvidenceRecordType shall be defined!");
+        assertASiCContentIsValid(asicContent);
+        if (ASiCUtils.isASiCSContainer(asicContent)) {
+            switch (evidenceRecordType) {
+                case XML_EVIDENCE_RECORD:
+                    return ASiCUtils.EVIDENCE_RECORD_XML; // "META-INF/evidencerecord.xml"
+                case ASN1_EVIDENCE_RECORD:
+                    return ASiCUtils.EVIDENCE_RECORD_ERS;
+                default:
+                    throw new UnsupportedOperationException(
+                            String.format("The Evidence Record Type '%s' is not supported!", evidenceRecordType));
+            }
+        } else { // ASiC-E
+            List<String> existingEvidenceRecordNames = DSSUtils.getDocumentNames(asicContent.getEvidenceRecordDocuments());
+            String targetEvidenceRecordName;
+            switch (evidenceRecordType) {
+                case XML_EVIDENCE_RECORD:
+                    targetEvidenceRecordName = ASiCUtils.ASICE_METAINF_CADES_EVIDENCE_RECORD_XML; // "META-INF/evidencerecord*.xml"
+                    existingEvidenceRecordNames = existingEvidenceRecordNames.stream()
+                            .filter(n -> n.endsWith(ASiCUtils.XML_EXTENSION)).collect(Collectors.toList());
+                    break;
+                case ASN1_EVIDENCE_RECORD:
+                    targetEvidenceRecordName = ASiCUtils.ASICE_METAINF_CADES_EVIDENCE_RECORD_ASN1; // "META-INF/evidencerecord*.ers"
+                    existingEvidenceRecordNames = existingEvidenceRecordNames.stream()
+                            .filter(n -> n.endsWith(ASiCUtils.ER_ASN1_EXTENSION)).collect(Collectors.toList());
+                    break;
+                default:
+                    throw new UnsupportedOperationException(
+                            String.format("The Evidence Record Type '%s' is not supported!", evidenceRecordType));
+            }
+            return getNextAvailableDocumentName(targetEvidenceRecordName, existingEvidenceRecordNames);
+        }
+    }
+
+    @Override
+    public String getEvidenceRecordManifestFilename(ASiCContent asicContent) {
+        assertASiCContentIsValid(asicContent);
+        List<String> existingManifestNames = DSSUtils.getDocumentNames(asicContent.getEvidenceRecordManifestDocuments());
+        // "META-INF/ASiCEvidenceRecordManifest*.xml"
+        return getNextAvailableDocumentName(ASiCUtils.ASICE_METAINF_EVIDENCE_RECORD_MANIFEST, existingManifestNames);
     }
 
 }

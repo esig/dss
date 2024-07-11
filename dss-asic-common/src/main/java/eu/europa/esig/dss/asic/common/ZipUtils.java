@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -30,14 +28,12 @@ import java.util.Objects;
 
 /**
  * The class is used for processing (reading and creation) of ZIP archives
- * 
- * See zipContainerHandler
+ * See {@code eu.europa.esig.dss.asic.common.ZipContainerHandler}
  *
  */
 public final class ZipUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ZipUtils.class);
-
+	/** Singleton */
 	private static ZipUtils singleton;
 
 	/**
@@ -74,21 +70,6 @@ public final class ZipUtils {
 	public void setZipContainerHandlerBuilder(ZipContainerHandlerBuilder<?> zipContainerHandlerBuilder) {
 		Objects.requireNonNull(zipContainerHandlerBuilder, "ZipContainerHandlerBuilder shall be defined!");
 		this.zipContainerHandlerBuilder = zipContainerHandlerBuilder;
-	}
-
-	/**
-	 * Sets a handler to process ZIP-content retrieving
-	 * Default : {@code SecureContainerHandler}
-	 * 
-	 * @param zipContainerHandler {@link ZipContainerHandler}
-	 * @deprecated since DSS 5.13. Please use {@code #setZipContainerHandlerBuilder} instead
-	 */
-	@Deprecated
-	public void setZipContainerHandler(ZipContainerHandler zipContainerHandler) {
-		Objects.requireNonNull(zipContainerHandler, "zipContainerHandler shall be defined!");
-		LOG.warn("Use of deprecated method #setZipContainerHandler(zipContainerHandler)! Not thread-safe! " +
-				"Please use #setZipContainerHandlerBuilder(zipContainerHandlerBuilder) method instead.");
-		this.zipContainerHandlerBuilder = (ZipContainerHandlerBuilder<ZipContainerHandler>) () -> zipContainerHandler;
 	}
 
 	/**

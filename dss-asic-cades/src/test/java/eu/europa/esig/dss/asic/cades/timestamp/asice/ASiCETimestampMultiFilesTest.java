@@ -32,11 +32,11 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
@@ -59,10 +59,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCETimestampMultiFilesTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCETimestampMultiFilesTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 
@@ -103,7 +103,7 @@ public class ASiCETimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 		int messageImprintCounter = 0;
 		int filesCounter = 0;
 		for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-			assertNotNull(xmlDigestMatcher.getName());
+			assertNotNull(xmlDigestMatcher.getDocumentName());
 			if (DigestMatcherType.MESSAGE_IMPRINT == xmlDigestMatcher.getType()) {
 				messageImprintCounter++;
 			} else if (DigestMatcherType.MANIFEST_ENTRY == xmlDigestMatcher.getType()) {

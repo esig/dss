@@ -41,16 +41,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESLevelLTADetachedDigestDocumentTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTADetachedDigestDocumentTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         DSSDocument originalDocument = new FileDocument("src/test/resources/sample.xml");
-        documentToSign = new DigestDocument(DigestAlgorithm.SHA256, originalDocument.getDigest(DigestAlgorithm.SHA256));
+        documentToSign = new DigestDocument(DigestAlgorithm.SHA512, originalDocument.getDigestValue(DigestAlgorithm.SHA512));
 
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());

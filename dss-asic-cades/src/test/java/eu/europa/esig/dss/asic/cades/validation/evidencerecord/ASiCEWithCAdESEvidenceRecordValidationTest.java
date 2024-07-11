@@ -24,7 +24,7 @@ import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithEvidenceRecordT
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCEWithCAdESEvidenceRecordValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESEvidenceRecordValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

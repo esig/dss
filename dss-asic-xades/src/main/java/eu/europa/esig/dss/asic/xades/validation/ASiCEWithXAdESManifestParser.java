@@ -109,7 +109,7 @@ public class ASiCEWithXAdESManifestParser {
 					Element fileEntryElement = (Element) nodeList.item(i);
 					String fullPathValue = fileEntryElement.getAttribute(ManifestPath.getFullPathAttribute(manifestNamespace));
 					if (!isFolder(fullPathValue)) {
-						manifestEntry.setFileName(fullPathValue);
+						manifestEntry.setUri(fullPathValue);
 						manifestEntry.setMimeType(getMimeType(fileEntryElement, manifestNamespace));
 						result.add(manifestEntry);
 					}

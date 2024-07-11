@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.cades.extension;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
@@ -163,7 +163,7 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 			assertNotNull(manifestFile.getSignatureFilename());
 			assertTrue(Utils.isCollectionNotEmpty(manifestFile.getEntries()));
 			for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-				assertNotNull(manifestEntry.getFileName());
+				assertNotNull(manifestEntry.getUri());
 				assertNotNull(manifestEntry.getDigest());
 				assertNotNull(manifestEntry.getMimeType());
 				assertTrue(Utils.isStringNotEmpty(manifestEntry.getMimeType().getMimeTypeString()));

@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -37,7 +29,15 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
 
-public class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -46,10 +46,11 @@ public class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 	
 	@Override
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
-		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
+		assertTrue(signature.isSignatureIntact());
+		assertTrue(signature.isSignatureValid());
+		assertTrue(signature.isBLevelTechnicallyValid());
 		
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertEquals(7, digestMatchers.size());
@@ -68,8 +69,8 @@ public class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 			}
 			assertTrue(digestMatcher.isDataFound());
 			assertTrue(digestMatcher.isDataIntact());
-			assertFalse(referenceNames.contains(digestMatcher.getName()));
-			referenceNames.add(digestMatcher.getName());
+			assertFalse(referenceNames.contains(digestMatcher.getUri()));
+			referenceNames.add(digestMatcher.getUri());
 		}
 		assertEquals(2, manifestCounter);
 		assertEquals(2, manifestEntryCounter);

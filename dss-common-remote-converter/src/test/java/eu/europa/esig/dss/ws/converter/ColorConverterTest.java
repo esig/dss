@@ -30,17 +30,17 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.ws.dto.RemoteColor;
 
-public class ColorConverterTest {
+class ColorConverterTest {
 
 	@Test
-	public void convert() {
+	void convert() {
 		RemoteColor remoteColor = ColorConverter.toRemoteColor(Color.WHITE);
 		Color color = ColorConverter.toColor(remoteColor);
 		assertEquals(Color.WHITE, color);
 	}
 
 	@Test
-	public void convertWithAlpha() {
+	void convertWithAlpha() {
 		Color original = new Color(10, 10, 10, 10);
 		RemoteColor remoteColor = ColorConverter.toRemoteColor(original);
 		Color color = ColorConverter.toColor(remoteColor);
@@ -48,14 +48,14 @@ public class ColorConverterTest {
 	}
 
 	@Test
-	public void convertNull() {
+	void convertNull() {
 		assertNull(ColorConverter.toColor(null));
 		assertNull(ColorConverter.toColor(new RemoteColor()));
 		assertNull(ColorConverter.toRemoteColor(null));
 	}
 
 	@Test
-	public void convertNotValid() {
+	void convertNotValid() {
 		RemoteColor remoteColor = new RemoteColor(-1, 10, 10);
 		assertThrows(IllegalArgumentException.class, () -> ColorConverter.toColor(remoteColor));
 

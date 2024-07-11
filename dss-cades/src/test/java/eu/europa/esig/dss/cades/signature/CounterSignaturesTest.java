@@ -32,7 +32,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
@@ -47,12 +47,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation {
+class CounterSignaturesTest extends AbstractPkiFactoryTestValidation {
 
 	private String signingAlias;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument doc = new InMemoryDocument("Hello".getBytes());
 
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());

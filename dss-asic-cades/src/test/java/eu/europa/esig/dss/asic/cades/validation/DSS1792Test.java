@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
+class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 	
 	private static final DSSDocument document = new FileDocument("src/test/resources/validation/dss1792.asice");
 
@@ -91,9 +91,9 @@ public class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 	}
 	
 	@Test
-	public void manifestExtractorTest() {
+	void manifestExtractorTest() {
 		
-        AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
+        DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(document);
         ASiCContent result = extractor.extract();
         
         List<DSSDocument> manifestFiles = result.getManifestDocuments();

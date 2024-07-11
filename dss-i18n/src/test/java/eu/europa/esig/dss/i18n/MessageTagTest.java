@@ -31,17 +31,17 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class MessageTagTest {
+class MessageTagTest {
 	
 	private static I18nProvider i18nProvider;
 	
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		i18nProvider = new I18nProvider();
 	}
 	
 	@Test
-	public void allMessagesPresent() {
+	void allMessagesPresent() {
 		MessageTag[] values = MessageTag.values();
 		assertNotNull(values);
 		assertTrue(values.length > 0);
@@ -53,7 +53,7 @@ public class MessageTagTest {
 	}
 	
 	@Test
-	public void allFRMessagesPresent() {
+	void allFRMessagesPresent() {
 		MessageTag[] values = MessageTag.values();
 		assertNotNull(values);
 		assertTrue(values.length > 0);
@@ -68,7 +68,7 @@ public class MessageTagTest {
 	}
 	
 	@Test
-	public void allMessageTagsPresent() {
+	void allMessageTagsPresent() {
 		ResourceBundle bundle = ResourceBundle.getBundle("dss-messages", Locale.getDefault());
 		Set<String> keySet = bundle.keySet();
 		assertNotNull(keySet);

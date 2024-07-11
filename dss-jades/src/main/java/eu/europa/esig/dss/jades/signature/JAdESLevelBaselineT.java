@@ -21,8 +21,7 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -30,8 +29,8 @@ import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSJsonSerializationGenerator;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.JsonObject;
-import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentValidator;
-import eu.europa.esig.dss.jades.validation.JAdESDocumentValidatorFactory;
+import eu.europa.esig.dss.jades.validation.AbstractJWSDocumentAnalyzer;
+import eu.europa.esig.dss.jades.validation.JWSDocumentAnalyzerFactory;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -41,9 +40,11 @@ import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +69,7 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 	/**
 	 * The cached instance of a document validator
 	 */
-	protected AbstractJWSDocumentValidator documentValidator;
+	protected AbstractJWSDocumentAnalyzer documentValidator;
 
 	/**
 	 * Internal variable: defines the current signing procedure (used in signature creation/extension)
@@ -103,10 +104,11 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(tspSource, "The TSPSource cannot be null");
 
-		JAdESDocumentValidatorFactory documentValidatorFactory = new JAdESDocumentValidatorFactory();
+		JWSDocumentAnalyzerFactory documentValidatorFactory = new JWSDocumentAnalyzerFactory();
 		documentValidator = documentValidatorFactory.create(document);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(params.getDetachedContents());
+		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 
 		JWSJsonSerializationObject jwsJsonSerializationObject = documentValidator.getJwsJsonSerializationObject();
 		assertJWSJsonSerializationObjectValid(jwsJsonSerializationObject);
@@ -136,21 +138,21 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 	 * @param params {@link JAdESSignatureParameters} the extension parameters
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters params) {
-		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
-				certificateVerifier, params);
+		final List<AdvancedSignature> signaturesToExtend = getExtendToTLevelSignatures(signatures, params);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
+			return;
+		}
 
-		for (AdvancedSignature signature : signatures) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(params);
+		signatureRequirementsChecker.assertExtendToTLevelPossible(signaturesToExtend);
+
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertSigningCertificateIsValid(signaturesToExtend);
+
+		for (AdvancedSignature signature : signaturesToExtend) {
 			JAdESSignature jadesSignature = (JAdESSignature) signature;
+
 			assertEtsiUComponentsConsistent(jadesSignature.getJws(), params.isBase64UrlEncodedEtsiUComponents());
-
-			// The timestamp must be added only if there is no one or the extension -T level is being created
-			if (!tLevelExtensionRequired(jadesSignature, params)) {
-				continue;
-			}
-
-			assertExtendSignatureToTPossible(jadesSignature, params);
-
-			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			JAdESTimestampParameters signatureTimestampParameters = params.getSignatureTimestampParameters();
 			DigestAlgorithm timestampDigestAlgorithm = signatureTimestampParameters.getDigestAlgorithm();
@@ -167,20 +169,28 @@ public class JAdESLevelBaselineT extends JAdESExtensionBuilder implements JAdESL
 		}
 	}
 
-	private boolean tLevelExtensionRequired(JAdESSignature jadesSignature, JAdESSignatureParameters parameters) {
-		return JAdES_BASELINE_T.equals(parameters.getSignatureLevel()) || !jadesSignature.hasTProfile();
+	/**
+	 * Instantiates a {@code SignatureRequirementsChecker}
+	 *
+	 * @param parameters {@link JAdESSignatureParameters}
+	 * @return {@link SignatureRequirementsChecker}
+	 */
+	protected SignatureRequirementsChecker getSignatureRequirementsChecker(JAdESSignatureParameters parameters) {
+		return new SignatureRequirementsChecker(certificateVerifier, parameters);
 	}
 
-	/**
-	 * Checks if the extension is possible.
-	 */
-	private void assertExtendSignatureToTPossible(JAdESSignature jadesSignature, JAdESSignatureParameters params) {
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (JAdES_BASELINE_T.equals(signatureLevel) && (jadesSignature.hasLTAProfile() ||
-				(jadesSignature.hasLTProfile() && !jadesSignature.areAllSelfSignedCertificates()) )) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
+	private List<AdvancedSignature> getExtendToTLevelSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters parameters) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			if (tLevelExtensionRequired(signature, parameters)) {
+				toBeExtended.add(signature);
+			}
 		}
+		return toBeExtended;
+	}
+
+	private boolean tLevelExtensionRequired(AdvancedSignature jadesSignature, JAdESSignatureParameters parameters) {
+		return JAdES_BASELINE_T.equals(parameters.getSignatureLevel()) || !jadesSignature.hasTProfile();
 	}
 
 }

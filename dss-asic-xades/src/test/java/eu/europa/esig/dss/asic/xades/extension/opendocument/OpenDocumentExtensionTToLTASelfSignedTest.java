@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.opendocument;
 
-public class OpenDocumentExtensionTToLTASelfSignedTest extends OpenDocumentExtensionTToLTATest {
+class OpenDocumentExtensionTToLTASelfSignedTest extends OpenDocumentExtensionTToLTATest {
 	
 	@Override
 	protected String getSigningAlias() {

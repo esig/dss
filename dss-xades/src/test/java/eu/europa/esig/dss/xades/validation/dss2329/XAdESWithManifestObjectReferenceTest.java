@@ -29,9 +29,10 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESWithManifestObjectReferenceTest extends AbstractXAdESTestValidation {
+class XAdESWithManifestObjectReferenceTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -40,9 +41,10 @@ public class XAdESWithManifestObjectReferenceTest extends AbstractXAdESTestValid
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        super.checkBLevelValid(diagnosticData);
-
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        assertTrue(signature.isSignatureIntact());
+        assertTrue(signature.isSignatureValid());
+        assertTrue(diagnosticData.isBLevelTechnicallyValid(signature.getId()));
 
         int manifestCounter = 0;
         int manifestRefCounter = 0;
@@ -50,10 +52,12 @@ public class XAdESWithManifestObjectReferenceTest extends AbstractXAdESTestValid
             assertTrue(digestMatcher.isDataFound());
             assertTrue(digestMatcher.isDataIntact());
             if (DigestMatcherType.MANIFEST.equals(digestMatcher.getType())) {
-                assertEquals("r-manifest", digestMatcher.getName());
+                assertEquals("r-manifest", digestMatcher.getId());
+                assertEquals("#manifest", digestMatcher.getUri());
                 ++manifestCounter;
             } else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
-                assertEquals("#o-id-1075588d58231c730f94fb897ed0d7a9-1", digestMatcher.getName());
+                assertNull(digestMatcher.getId());
+                assertEquals("#o-id-1075588d58231c730f94fb897ed0d7a9-1", digestMatcher.getUri());
                 ++manifestRefCounter;
             }
         }

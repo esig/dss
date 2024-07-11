@@ -23,7 +23,7 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
@@ -43,14 +43,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBB64UnencodedTest extends AbstractJAdESTestSignature {
+class JAdESLevelBB64UnencodedTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		documentToSign = new InMemoryDocument("Hello World!".getBytes());
 		signatureParameters = new JAdESSignatureParameters();
@@ -90,7 +90,7 @@ public class JAdESLevelBB64UnencodedTest extends AbstractJAdESTestSignature {
 	}
 	
 	@Test
-	public void unsupportedCharactersTest() {
+	void unsupportedCharactersTest() {
 		final DSSDocument nonAsciiDoc = new InMemoryDocument("Bye\nWorld!".getBytes());
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToSign(nonAsciiDoc, signatureParameters));
 		assertEquals("The payload contains not URL-safe characters! With Unencoded Payload ('b64' = false) " +

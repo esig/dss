@@ -42,14 +42,14 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPath2FilterTransform;
 
-public class XAdESLevelBWithXPathFilter2OnlyTest extends AbstractXAdESTestSignature {
+class XAdESLevelBWithXPathFilter2OnlyTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample-c14n-dss.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -65,7 +65,7 @@ public class XAdESLevelBWithXPathFilter2OnlyTest extends AbstractXAdESTestSignat
 		dssReference.setId("DSS-REF-1");
 		dssReference.setUri("sample-c14n-dss.xml");
 		dssReference.setContents(documentToSign);
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		DSSTransform transform = new XPath2FilterTransform("//*[@attr='Hello']", "intersect");
 		dssReference.setTransforms(Arrays.asList(transform));
 		references.add(dssReference);

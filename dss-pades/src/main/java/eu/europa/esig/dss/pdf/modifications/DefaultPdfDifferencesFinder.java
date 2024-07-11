@@ -180,13 +180,13 @@ public class DefaultPdfDifferencesFinder implements PdfDifferencesFinder {
 
     private List<PdfAnnotation> getUpdatedAnnotations(List<PdfAnnotation> signedAnnotations,
                                                       List<PdfAnnotation> finalAnnotations) {
-        List<PdfAnnotation> updatesAnnotations = new ArrayList<>();
+        final List<PdfAnnotation> updatedAnnotations = new ArrayList<>();
         for (PdfAnnotation annotationBox : finalAnnotations) {
             if (!signedAnnotations.contains(annotationBox)) {
-                updatesAnnotations.add(annotationBox);
+                updatedAnnotations.add(annotationBox);
             }
         }
-        return updatesAnnotations;
+        return updatedAnnotations;
     }
 
 }

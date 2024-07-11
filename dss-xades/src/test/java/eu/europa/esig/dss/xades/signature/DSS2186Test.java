@@ -42,7 +42,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class DSS2186Test extends AbstractXAdESTestValidation {
+class DSS2186Test extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

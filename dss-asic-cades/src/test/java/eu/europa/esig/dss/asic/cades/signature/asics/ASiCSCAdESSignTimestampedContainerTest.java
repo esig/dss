@@ -26,7 +26,7 @@ import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCSCAdESSignTimestampedContainerTest extends AbstractASiCSCAdESTestSignature {
+class ASiCSCAdESSignTimestampedContainerTest extends AbstractASiCSCAdESTestSignature {
 
     private static final DSSDocument originalDocument = new InMemoryDocument(
             "Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
@@ -46,7 +46,7 @@ public class ASiCSCAdESSignTimestampedContainerTest extends AbstractASiCSCAdESTe
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getAlternateGoodTsa());
 
@@ -58,7 +58,7 @@ public class ASiCSCAdESSignTimestampedContainerTest extends AbstractASiCSCAdESTe
     }
 
     @Test
-    public void test() {
+    void test() {
         ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();
         timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
         DSSDocument timestampedContainer = service.timestamp(originalDocument, timestampParameters);

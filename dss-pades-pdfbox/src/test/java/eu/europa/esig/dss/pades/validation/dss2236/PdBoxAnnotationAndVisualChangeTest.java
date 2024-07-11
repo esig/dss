@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PdBoxAnnotationAndVisualChangeTest extends AnnotationAndVisualChangeTest {
+class PdBoxAnnotationAndVisualChangeTest extends AnnotationAndVisualChangeTest {
 
     @Override
     protected void checkPdfRevision(DiagnosticData diagnosticData) {

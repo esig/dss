@@ -26,16 +26,19 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.service.OnlineSourceTest;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.alerts.DSSExternalResourceExceptionAlert;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.spi.x509.AlternateUrlsSourceAdapter;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -43,15 +46,20 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OnlineOCSPSourceTest {
+class OnlineOCSPSourceTest extends OnlineSourceTest {
+
+	private static final String CUSTOM_TIMEOUT_OCSP_URL = ONLINE_PKI_HOST + "/ocsp/timeout/%s/%s";
 
 	private static CertificateToken certificateToken;
 	private static CertificateToken rootToken;
@@ -61,23 +69,29 @@ public class OnlineOCSPSourceTest {
 	private static CertificateToken goodCa;
 	private static CertificateToken ed25519goodUser;
 	private static CertificateToken ed25519goodCa;
+
+	private static CertificateToken invalidSigGoodUser;
+	private static CertificateToken timeoutSigGoodUser;
 	
 	private static CertificateToken qtspUser;
 	private static CertificateToken qtspCa;
 	private static byte[] qtspOcsp;
 
 	@BeforeAll
-	public static void init() {
+	static void init() {
 		certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
 
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
-		goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user.crt"));
-		goodUserOCSPWithReqCertId = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user-ocsp-certid-digest.crt"));
-		goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
+		goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user.crt"));
+		goodUserOCSPWithReqCertId = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-ocsp-certid-digest.crt"));
+		goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-ca.crt"));
 
-		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-user.crt"));
-		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/Ed25519-good-ca.crt"));
+		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-user.crt"));
+		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-ca.crt"));
+
+		invalidSigGoodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-ocsp-invalid-sig.crt"));
+		timeoutSigGoodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-ocsp-timeout.crt"));
 
 		qtspUser = DSSUtils.loadCertificate(new File("src/test/resources/sk_user.cer"));
 		qtspCa = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
@@ -85,23 +99,25 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void testOCSPWithoutNonce() {
+	void testOCSPWithoutNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertTrue(ocspToken.isValid());
 	}
 
 	@Test
-	public void testOCSP() {
+	void testOCSP() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertTrue(ocspToken.isValid());
 	}
 	
 	@Test
-	public void testWithCustomDataLoaderConstructor() {
+	void testWithCustomDataLoaderConstructor() {
 		OCSPDataLoader ocspDataLoader = new OCSPDataLoader();
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource(ocspDataLoader);
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
@@ -110,7 +126,7 @@ public class OnlineOCSPSourceTest {
 	}
 	
 	@Test
-	public void testWithSetDataLoader() {
+	void testWithSetDataLoader() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(new OCSPDataLoader());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
@@ -119,7 +135,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void testOCSPEd25519() {
+	void testOCSPEd25519() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(ed25519goodUser, ed25519goodCa);
 		assertNotNull(ocspToken);
@@ -129,7 +145,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void testOCSPWithNonce() {
+	void testOCSPWithNonce() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
@@ -137,7 +153,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void noNonceResponderTest() {
+	void noNonceResponderTest() {
 		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(certificateToken, rootToken);
@@ -145,7 +161,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void noNonceResponderEnforceNonceTest() {
+	void noNonceResponderEnforceNonceTest() {
 		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		ocspSource.setAlertOnNonexistentNonce(new DSSExternalResourceExceptionAlert());
@@ -155,7 +171,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void noNonceResponderSilentOnStatusAlertTest() {
+	void noNonceResponderSilentOnStatusAlertTest() {
 		OnlineOCSPSource ocspSource = new NoNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		ocspSource.setAlertOnNonexistentNonce(new SilentOnStatusAlert());
@@ -164,7 +180,47 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void invalidNonceResponderTest() {
+	void getRevocationTokenInvalidSignatureTest() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		OCSPToken ocspToken = ocspSource.getRevocationToken(invalidSigGoodUser, goodCa);
+		assertNotNull(ocspToken);
+		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertFalse(ocspToken.isValid());
+	}
+
+	@Test
+	void getRevocationTokenTimeoutTest() {
+		OCSPDataLoader dataLoader = new OCSPDataLoader();
+		dataLoader.setTimeoutResponse(1000);
+
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource(dataLoader);
+
+		Exception exception = assertThrows(DSSExternalResourceException.class,
+				() -> ocspSource.getRevocationToken(timeoutSigGoodUser, goodCa));
+		assertTrue(exception.getMessage().contains("Unable to retrieve OCSP response for certificate with Id '" + timeoutSigGoodUser.getDSSIdAsString() + "'"));
+		assertTrue(exception.getMessage().contains("Read timed out"));
+
+		String alternativeUrl = String.format(CUSTOM_TIMEOUT_OCSP_URL, 1, DSSASN1Utils.getSubjectCommonName(goodCa));
+		AlternateUrlsSourceAdapter<OCSP> ocspAlternativeUrlSource = new AlternateUrlsSourceAdapter<>(ocspSource, Collections.singletonList(alternativeUrl));
+
+		RevocationToken<OCSP> revocationToken = ocspAlternativeUrlSource.getRevocationToken(timeoutSigGoodUser, goodCa);
+		assertInstanceOf(OCSPToken.class, revocationToken);
+
+		OCSPToken ocspToken = (OCSPToken) revocationToken;
+		assertNotNull(ocspToken);
+		assertNotNull(ocspToken.getBasicOCSPResp());
+		assertTrue(ocspToken.isValid());
+
+		alternativeUrl = String.format(CUSTOM_TIMEOUT_OCSP_URL, 2000, DSSASN1Utils.getSubjectCommonName(goodCa));
+		AlternateUrlsSourceAdapter<OCSP> ocspFailedAlternativeUrlSource = new AlternateUrlsSourceAdapter<>(ocspSource, Collections.singletonList(alternativeUrl));
+		exception = assertThrows(DSSExternalResourceException.class,
+				() -> ocspFailedAlternativeUrlSource.getRevocationToken(timeoutSigGoodUser, goodCa));
+		assertTrue(exception.getMessage().contains("Unable to retrieve OCSP response for certificate with Id '" + timeoutSigGoodUser.getDSSIdAsString() + "'"));
+		assertTrue(exception.getMessage().contains("Read timed out"));
+	}
+
+	@Test
+	void invalidNonceResponderTest() {
 		OnlineOCSPSource ocspSource = new InvalidNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		Exception exception = assertThrows(DSSExternalResourceException.class,
@@ -173,7 +229,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void invalidNonceResponderSilentOnStatusTest() {
+	void invalidNonceResponderSilentOnStatusTest() {
 		OnlineOCSPSource ocspSource = new InvalidNonceSubstituteOCSPSource();
 		ocspSource.setNonceSource(new SecureRandomNonceSource());
 		ocspSource.setAlertOnInvalidNonce(new SilentOnStatusAlert());
@@ -182,7 +238,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void noNextUpdateTest() {
+	void noNextUpdateTest() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
 		Exception exception = assertThrows(DSSExternalResourceException.class,
@@ -191,14 +247,14 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void validNextUpdateTest() {
+	void validNextUpdateTest() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
 		assertNotNull(ocspToken);
 	}
 
 	@Test
-	public void validNextUpdateEnforcedTest() {
+	void validNextUpdateEnforcedTest() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
 		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
@@ -206,14 +262,14 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void invalidNextUpdateTest() {
+	void invalidNextUpdateTest() {
 		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
 		OCSPToken ocspToken = ocspSource.getRevocationToken(qtspUser, qtspCa);
 		assertNotNull(ocspToken);
 	}
 
 	@Test
-	public void invalidNextUpdateEnforcedTest() {
+	void invalidNextUpdateEnforcedTest() {
 		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
 		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
 		Exception exception = assertThrows(DSSExternalResourceException.class,
@@ -222,7 +278,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void invalidNextUpdateWithLargeToleranceTest() {
+	void invalidNextUpdateWithLargeToleranceTest() {
 		OnlineOCSPSource ocspSource = new SubstituteOCSPSource(qtspOcsp);
 		ocspSource.setAlertOnInvalidUpdateTime(new DSSExternalResourceExceptionAlert());
 		ocspSource.setNextUpdateTolerancePeriod(1000L * 60 * 60 * 24 * 365 * 20); // 20 years
@@ -231,7 +287,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void testOCSPWithFileCache() {
+	void testOCSPWithFileCache() {
 		File cacheFolder = new File("target/ocsp-cache");
 
 		// clean cache if exists
@@ -293,7 +349,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void testInjectExternalUrls() {
+	void testInjectExternalUrls() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		List<String> alternativeOCSPUrls = new ArrayList<>();
 		alternativeOCSPUrls.add("http://wrong.url.com");
@@ -305,7 +361,7 @@ public class OnlineOCSPSourceTest {
 	}
 	
 	@Test
-	public void customCertIDDigestAlgorithmTest() {
+	void customCertIDDigestAlgorithmTest() {
 		OCSPDataLoader dataLoader = new OCSPDataLoader();
 		dataLoader.setTimeoutConnection(10000);
 		dataLoader.setTimeoutSocket(10000);
@@ -334,7 +390,7 @@ public class OnlineOCSPSourceTest {
 	}
 
 	@Test
-	public void testNullDataLoader() {
+	void testNullDataLoader() {
 		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
 		ocspSource.setDataLoader(null);
 

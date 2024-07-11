@@ -49,10 +49,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelBWrongDetachedContextTest extends PKIFactoryAccess {
+class CAdESLevelBWrongDetachedContextTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument documentToSign = new InMemoryDocument("Hello World".getBytes());
 		
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();

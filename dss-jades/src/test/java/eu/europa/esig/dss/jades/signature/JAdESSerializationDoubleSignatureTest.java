@@ -54,7 +54,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
-public class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestValidation {
+class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestValidation {
 	
 	@RepeatedTest(10)
 	@Override

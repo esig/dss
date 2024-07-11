@@ -44,14 +44,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ASiCECAdESLevelLTDoubleValidationTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
+class ASiCECAdESLevelLTDoubleValidationTest extends AbstractASiCEWithCAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithCAdESService service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentsToSign = new ArrayList<>();
 		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));
 		documentsToSign.add(new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT));

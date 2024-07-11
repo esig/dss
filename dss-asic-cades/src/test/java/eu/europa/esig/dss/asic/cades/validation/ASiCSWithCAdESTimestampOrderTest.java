@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSWithCAdESTimestampOrderTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCSWithCAdESTimestampOrderTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

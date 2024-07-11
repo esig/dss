@@ -27,10 +27,10 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.scope.ContainerContentSignatureScope;
-import eu.europa.esig.dss.validation.scope.ContainerSignatureScope;
-import eu.europa.esig.dss.validation.scope.DetachedTimestampScopeFinder;
-import eu.europa.esig.dss.validation.scope.ManifestSignatureScope;
+import eu.europa.esig.dss.spi.validation.scope.ContainerContentSignatureScope;
+import eu.europa.esig.dss.spi.validation.scope.ContainerSignatureScope;
+import eu.europa.esig.dss.spi.validation.scope.DetachedTimestampScopeFinder;
+import eu.europa.esig.dss.spi.validation.scope.ManifestSignatureScope;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,7 +107,7 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
                                                                             List<DSSDocument> rootLevelDocuments) {
         if (manifestEntry.isIntact()) {
             for (DSSDocument document : containerDocuments) {
-                if (Utils.areStringsEqual(manifestEntry.getFileName(), document.getName())) {
+                if (Utils.areStringsEqual(manifestEntry.getUri(), document.getName())) {
                     if (Utils.collectionSize(rootLevelDocuments) == 1 && isASiCSContainer(document)) {
                         return getTimestampSignatureScopeForZipPackage(document);
                     } else {

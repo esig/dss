@@ -289,14 +289,11 @@ public class JAXBCertEntity implements CertEntity {
      */
     @Override
     public List<CertificateToken> getCertificateChain() {
-        List<CertificateToken> certChain = new ArrayList<>();
+        final List<CertificateToken> certChain = new ArrayList<>();
         JAXBCertEntity entity = this;
-        while (entity != null) {
+        while (!certChain.contains(entity.getCertificateToken())) {
             JAXBCertEntity parent = entity.getIssuer();
             certChain.add(entity.getCertificateToken());
-            if (entity.getCertificateToken().equals(parent.getCertificateToken())) {
-                break;
-            }
             entity = parent;
         }
         return certChain;

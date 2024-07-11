@@ -31,7 +31,7 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +48,7 @@ public class PAdESTimestampWithAppNameTest extends AbstractPkiFactoryTestValidat
     private static final String DSS_APP_NAME = "DSS";
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         DSSDocument documentToTimestamp = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
 
         PAdESService service = new PAdESService(getOfflineCertificateVerifier());

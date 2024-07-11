@@ -43,7 +43,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
 @Tag("slow")
-public class XAdESLevelBWithDSATest extends AbstractXAdESTestSignature {
+class XAdESLevelBWithDSATest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -64,7 +64,7 @@ public class XAdESLevelBWithDSATest extends AbstractXAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} of DSA with digest algorithm {0}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo) {
+	void init(DigestAlgorithm digestAlgo) {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

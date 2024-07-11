@@ -21,9 +21,10 @@
 package eu.europa.esig.dss.xades.extension;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -41,10 +42,10 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
+class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
 	@Test
-	public void xmldsig() {
+	void xmldsig() {
 		DSSDocument doc = new FileDocument("src/test/resources/validation/xmldsig-only.xml");
 
 		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
@@ -54,12 +55,21 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, parameters));
+		assertEquals("Signing-certificate token was not found! Unable to verify its validity range. " +
+						"Provide signing-certificate or use method #setGenerateTBSWithoutCertificate(true) " +
+						"for signature creation without signing-certificate.",
+				exception.getMessage());
+
+		parameters.setGenerateTBSWithoutCertificate(true);
+		parameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+
+		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, parameters));
 		assertEquals("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.",
 				exception.getMessage());
 	}
 
 	@Test
-	public void notSigned() {
+	void notSigned() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.xml");
 
 		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
@@ -73,9 +83,9 @@ public class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void digestDocumentWithLTALevelTest() {
+	void digestDocumentWithLTALevelTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.xml");
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, doc)));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA512, doc)));
 
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

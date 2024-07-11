@@ -50,16 +50,17 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
+class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	
 	private static final DSSDocument document = new FileDocument("src/test/resources/sample-c14n.xml");
 	
 	@Test
-	public void canonicalizationTest() throws Exception {
+	void canonicalizationTest() throws Exception {
 		List<DSSReference> references = buildReferences(document, new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE));
 		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
@@ -70,12 +71,12 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		assertEquals(1, originalDocuments.size());
 		SignerDataWrapper originalDoc = originalDocuments.get(0);
 		
-		assertEquals(document.getDigest(originalDoc.getDigestAlgoAndValue().getDigestMethod()), 
-				Utils.toBase64(originalDoc.getDigestAlgoAndValue().getDigestValue()));
+		assertArrayEquals(document.getDigestValue(originalDoc.getDigestAlgoAndValue().getDigestMethod()),
+				originalDoc.getDigestAlgoAndValue().getDigestValue());
 	}
 	
 	@Test
-	public void xPathTest() throws Exception {
+	void xPathTest() throws Exception {
 		List<DSSReference> references = buildReferences(document, new XPathTransform("ancestor-or-self::*[@Id='dss1']"));
 		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
@@ -86,12 +87,12 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		assertEquals(1, originalDocuments.size());
 		SignerDataWrapper originalDoc = originalDocuments.get(0);
 
-		assertEquals(document.getDigest(originalDoc.getDigestAlgoAndValue().getDigestMethod()), 
-				Utils.toBase64(originalDoc.getDigestAlgoAndValue().getDigestValue()));
+		assertArrayEquals(document.getDigestValue(originalDoc.getDigestAlgoAndValue().getDigestMethod()),
+				originalDoc.getDigestAlgoAndValue().getDigestValue());
 	}
 	
 	@Test
-	public void base64Test() throws Exception {
+	void base64Test() throws Exception {
 		List<DSSReference> references = buildReferences(document, new Base64Transform());
 		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
 		
@@ -100,16 +101,15 @@ public class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 	}
 	
 	private List<DSSReference> buildReferences(DSSDocument document, DSSTransform... transforms) {
-		
-		List<DSSTransform> dssTransforms = new ArrayList<>();
-		dssTransforms.addAll(Arrays.asList(transforms));
+
+        List<DSSTransform> dssTransforms = new ArrayList<>(Arrays.asList(transforms));
 
 		DSSReference ref1 = new DSSReference();
 		ref1.setContents(document);
 		ref1.setId("r-" + document.getName());
 		ref1.setTransforms(dssTransforms);
 		ref1.setUri(document.getName());
-		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		ref1.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		
 		List<DSSReference> refs = new ArrayList<>();
 		refs.add(ref1);

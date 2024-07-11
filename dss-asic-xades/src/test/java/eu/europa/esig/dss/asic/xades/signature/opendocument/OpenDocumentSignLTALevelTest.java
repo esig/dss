@@ -39,7 +39,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureTest {
+class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureTest {
 
 	@Override
 	protected void onDocumentSigned(byte[] byteArray) {
@@ -51,8 +51,7 @@ public class OpenDocumentSignLTALevelTest extends OpenDocumentLevelLTASignatureT
 		signatureParameters.bLevel().setSigningDate(new Date());
 		
 		ToBeSigned dataToSign = service.getDataToSign(signedDocument, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument doubleSignedDocument = service.signDocument(signedDocument, signatureParameters, signatureValue);
 
 		Reports reports = verify(doubleSignedDocument);

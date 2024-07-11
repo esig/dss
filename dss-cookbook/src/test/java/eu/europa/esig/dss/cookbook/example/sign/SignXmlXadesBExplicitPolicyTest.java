@@ -35,7 +35,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
@@ -43,10 +43,10 @@ import org.junit.jupiter.api.Test;
 /**
  * How to set explicit policy.
  */
-public class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
+class SignXmlXadesBExplicitPolicyTest extends CookbookTools {
 
 	@Test
-	public void testWithExplicitPolicy() throws Exception {
+	void testWithExplicitPolicy() throws Exception {
 
 		prepareXmlDoc();
 

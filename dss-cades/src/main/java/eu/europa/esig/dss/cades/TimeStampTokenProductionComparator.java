@@ -50,24 +50,9 @@ public class TimeStampTokenProductionComparator implements Comparator<TimeStampT
 
 	@Override
 	public int compare(TimeStampToken timeStampTokenOne, TimeStampToken timeStampTokenTwo) {
-		
-		int result = DSSASN1Utils.getTimeStampTokenGenerationTime(timeStampTokenOne).compareTo(DSSASN1Utils.getTimeStampTokenGenerationTime(timeStampTokenTwo));
+		int result = compareByGenerationTime(timeStampTokenOne, timeStampTokenTwo);
 		if (result == 0) {			
-			
-			ASN1Sequence atsHashIndexOne = DSSASN1Utils.getAtsHashIndex(timeStampTokenOne.getUnsignedAttributes());
-			ASN1Sequence atsHashIndexTwo = DSSASN1Utils.getAtsHashIndex(timeStampTokenTwo.getUnsignedAttributes());
-
-			if (atsHashIndexOne != null && atsHashIndexTwo != null) {
-				
-				int hashTableSizeOne = getHashTableSize(atsHashIndexOne);
-				int hashTableSizeTwo = getHashTableSize(atsHashIndexTwo);
-				
-				if (hashTableSizeOne < hashTableSizeTwo) {
-					result = -1;
-				} else if (hashTableSizeOne > hashTableSizeTwo) {
-					result = 1;
-				}
-			}
+			result = compareByHashTableSize(timeStampTokenOne, timeStampTokenTwo);
 		}
 		return result;
 	}
@@ -79,9 +64,33 @@ public class TimeStampTokenProductionComparator implements Comparator<TimeStampT
 	 * @return TRUE if the first {@link TimeStampToken} has been created after the second timestamp, FALSE otherwise
 	 */
 	public boolean after(TimeStampToken timeStampTokenOne, TimeStampToken timeStampTokenTwo) {
-		return compare(timeStampTokenOne, timeStampTokenTwo) == 1;
+		return compare(timeStampTokenOne, timeStampTokenTwo) > 0;
 	}
 	
+	private int compareByGenerationTime(TimeStampToken tst1, TimeStampToken tst2) {
+		return DSSASN1Utils.getTimeStampTokenGenerationTime(tst1).compareTo(DSSASN1Utils.getTimeStampTokenGenerationTime(tst2));
+	}
+
+	private int compareByHashTableSize(TimeStampToken tst1, TimeStampToken tst2) {
+		ASN1Sequence atsHashIndexOne = CMSUtils.getAtsHashIndex(tst1.getUnsignedAttributes());
+		ASN1Sequence atsHashIndexTwo = CMSUtils.getAtsHashIndex(tst2.getUnsignedAttributes());
+
+		if (atsHashIndexOne != null && atsHashIndexTwo != null) {
+			int hashTableSizeOne = getHashTableSize(atsHashIndexOne);
+			int hashTableSizeTwo = getHashTableSize(atsHashIndexTwo);
+			if (hashTableSizeOne < hashTableSizeTwo) {
+				return -1;
+			} else if (hashTableSizeOne > hashTableSizeTwo) {
+				return 1;
+			}
+		} else if (atsHashIndexOne != null) {
+			return 1;
+		} else if (atsHashIndexTwo != null) {
+			return -1;
+		}
+		return 0;
+	}
+
 	private int getHashTableSize(ASN1Sequence derSequence) {
 		int recordsNumber = 0;
 		for (int ii = 0; ii < derSequence.size(); ii++) {

@@ -26,12 +26,12 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
 
-public class MRAWithCustomTrustServiceEquivalenceStatusStartingTimeTest extends AbstractMRALOTLTest {
+class MRAWithCustomTrustServiceEquivalenceStatusStartingTimeTest extends AbstractMRALOTLTest {
 
     private Date startingTime;
 
     @BeforeEach
-    public void initTime() {
+    void initTime() {
         startingTime = new Date();
     }
 

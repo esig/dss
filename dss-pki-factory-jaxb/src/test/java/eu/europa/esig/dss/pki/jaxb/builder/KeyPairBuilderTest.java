@@ -36,10 +36,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class KeyPairBuilderTest {
+class KeyPairBuilderTest {
 
     @Test
-    public void rsa1024(){
+    void rsa1024(){
         KeyPairBuilder builder = new KeyPairBuilder(EncryptionAlgorithm.RSA, 1024);
         KeyPair kp = builder.build();
         assertNotNull(kp);
@@ -54,7 +54,7 @@ public class KeyPairBuilderTest {
     }
 
     @Test
-    public void rsa2048() {
+    void rsa2048() {
         KeyPairBuilder builder = new KeyPairBuilder(EncryptionAlgorithm.RSA, 2048);
         KeyPair kp = builder.build();
         assertNotNull(kp);
@@ -69,7 +69,7 @@ public class KeyPairBuilderTest {
     }
 
     @Test
-    public void ecdsa() {
+    void ecdsa() {
         KeyPairBuilder builder = new KeyPairBuilder(EncryptionAlgorithm.ECDSA, 384);
         KeyPair kp = builder.build();
         assertNotNull(kp);
@@ -84,7 +84,7 @@ public class KeyPairBuilderTest {
     }
 
     @Test
-    public void ed25519() {
+    void ed25519() {
         KeyPairBuilder builder = new KeyPairBuilder(EncryptionAlgorithm.X25519, null);
         KeyPair kp = builder.build();
         assertNotNull(kp);
@@ -97,7 +97,7 @@ public class KeyPairBuilderTest {
     }
 
     @Test
-    public void ed448() {
+    void ed448() {
         KeyPairBuilder builder = new KeyPairBuilder(EncryptionAlgorithm.X448, null);
         KeyPair kp = builder.build();
         assertNotNull(kp);

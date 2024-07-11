@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecordValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
@@ -34,15 +35,15 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class EvidenceRecordValidatorTest {
+class EvidenceRecordValidatorTest {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         // tag::evidence-record-alone[]
         // import eu.europa.esig.dss.model.DSSDocument;
         // import eu.europa.esig.dss.model.FileDocument;
-        // import eu.europa.esig.dss.validation.CertificateVerifier;
-        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
         // import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
         // import eu.europa.esig.dss.validation.reports.Reports;
 
@@ -51,7 +52,7 @@ public class EvidenceRecordValidatorTest {
 
         // The method allows instantiation of a related evidence record validator for a provided document
         // independently on its format (the target evidence record validation module must be added as dependency)
-        EvidenceRecordValidator evidenceRecordValidator = EvidenceRecordValidator.fromDocument(evidenceRecordDocument);
+        EvidenceRecordValidator evidenceRecordValidator = DefaultEvidenceRecordValidator.fromDocument(evidenceRecordDocument);
 
         // Create a CertificateVerifies containing validation process configuration
         CertificateVerifier certificateVerifier = new CommonCertificateVerifier();

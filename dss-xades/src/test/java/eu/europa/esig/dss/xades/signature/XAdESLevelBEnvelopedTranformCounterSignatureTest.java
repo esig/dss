@@ -35,7 +35,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
@@ -43,7 +43,7 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
 
-public class XAdESLevelBEnvelopedTranformCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
+class XAdESLevelBEnvelopedTranformCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
 	private XAdESService service;
 	private DSSDocument documentToSign;
@@ -51,7 +51,7 @@ public class XAdESLevelBEnvelopedTranformCounterSignatureTest extends AbstractXA
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));

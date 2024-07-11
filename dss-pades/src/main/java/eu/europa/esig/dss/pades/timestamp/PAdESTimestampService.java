@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -73,6 +74,10 @@ public class PAdESTimestampService {
 	 * @return {@link DSSDocument} timestamped
 	 */
 	public DSSDocument timestampDocument(final DSSDocument document, final PAdESTimestampParameters params) {
+		Objects.requireNonNull(document, "DSSDocument shall be provided!");
+		Objects.requireNonNull(params, "PAdESTimestampParameters cannot be null!");
+		PAdESUtils.assertPdfDocument(document);
+
 		final DSSMessageDigest messageDigest = pdfSignatureService.messageDigest(document, params);
 		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(messageDigest.getAlgorithm(), messageDigest.getValue());
 		final byte[] encoded = DSSASN1Utils.getDEREncoded(timeStampToken);

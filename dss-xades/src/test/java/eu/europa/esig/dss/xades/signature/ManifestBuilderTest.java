@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,12 +40,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ManifestBuilderTest {
+class ManifestBuilderTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ManifestBuilderTest.class);
 
 	@Test
-	public void testBuildManifest() throws IOException {
+	void testBuildManifest() throws IOException {
 		List<DSSDocument> documents = new ArrayList<>();
 		FileDocument file1 = new FileDocument("src/test/resources/sample.png");
 		documents.add(file1);
@@ -57,10 +58,10 @@ public class ManifestBuilderTest {
 		assertEquals(MimeTypeEnum.XML, document.getMimeType());
 
 		try (InputStream is = document.openStream()) {
-			String xmlContent = new String(Utils.toByteArray(is), "UTF-8");
+			String xmlContent = new String(Utils.toByteArray(is), StandardCharsets.UTF_8);
 			assertTrue(xmlContent.contains(XMLDSigElement.MANIFEST.getTagName()));
 			assertTrue(xmlContent.contains(file1.getName()));
-			assertTrue(xmlContent.contains(file1.getDigest(DigestAlgorithm.SHA512)));
+			assertTrue(xmlContent.contains(Utils.toBase64(file1.getDigestValue(DigestAlgorithm.SHA512))));
 			LOG.info(xmlContent);
 		}
 	}

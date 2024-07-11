@@ -33,7 +33,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -53,14 +53,14 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.xades.definition.XAdESPath;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 
-public class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
+class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		/* Test that new TimeStampValidation data added instead of the old element */
 		
 		DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");

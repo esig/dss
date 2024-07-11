@@ -31,8 +31,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
+import eu.europa.esig.dss.spi.validation.TimestampTokenVerifier;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.slf4j.event.Level;
@@ -53,21 +54,29 @@ public abstract class AbstractDSS2058 extends AbstractPAdESTestValidation {
 	@BeforeEach
 	public void init() {
 		DSSDocument document = getDocumentToExtend();
-		
-		CertificateVerifier completeCertificateVerifier = getCompositeCertificateVerifier();
-		completeCertificateVerifier.setCheckRevocationForUntrustedChains(true);
-		completeCertificateVerifier.setExtractPOEFromUntrustedChains(true);
-		completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
-		completeCertificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.ERROR));
-		completeCertificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
 
-		PAdESService service = new PAdESService(completeCertificateVerifier);
+		PAdESService service = new PAdESService(getCompositeCertificateVerifier());
 		service.setTspSource(getCompositeTsa());
 		
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		
 		extendedDocument = service.extendDocument(document, signatureParameters);
+	}
+
+	@Override
+	protected CertificateVerifier getCompositeCertificateVerifier() {
+		CertificateVerifier completeCertificateVerifier = super.getCompositeCertificateVerifier();
+		completeCertificateVerifier.setCheckRevocationForUntrustedChains(true);
+		completeCertificateVerifier.setAlertOnMissingRevocationData(new LogOnStatusAlert(Level.WARN));
+		completeCertificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.ERROR));
+		completeCertificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert(Level.WARN));
+
+		TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
+		timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
+		completeCertificateVerifier.setTimestampTokenVerifier(timestampTokenVerifier);
+
+		return completeCertificateVerifier;
 	}
 
 	@Override

@@ -46,14 +46,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
+class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
@@ -70,7 +70,7 @@ public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends Abstract
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 
 		signatureParameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI_HASH);
-		signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
+		signatureParameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA512);
 
 		return signatureParameters;
 	}
@@ -78,8 +78,8 @@ public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends Abstract
 	@Override
 	protected DSSDocument getDocumentToSign() {
 		byte[] base64UrlEncodedDocument = DSSJsonUtils.toBase64Url(documentToSign).getBytes();
-		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, base64UrlEncodedDocument);
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, Utils.toBase64(digest));
+		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, base64UrlEncodedDocument);
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512, Utils.toBase64(digest));
 		digestDocument.setName(documentToSign.getName());
 		return digestDocument;
 	}
@@ -98,7 +98,7 @@ public class JAdESLevelBDetachedUriByHashWithDigestDocumentTest extends Abstract
 	}
 
 	@Test
-	public void createContentTstTest() {
+	void createContentTstTest() {
 		DSSDocument documentToSign = getDocumentToSign();
 		JAdESSignatureParameters signatureParameters = getSignatureParameters();
 		DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service = getService();

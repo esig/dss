@@ -25,15 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-public class DateUtilsTest {
+class DateUtilsTest {
 
 	@Test
-	public void test( ) {
+	void test( ) {
 		assertNotNull(DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "2020-02-22"));
 	}
 
 	@Test
-	public void testException() {
+	void testException() {
 		assertThrows(IllegalArgumentException.class, () -> DateUtils.parseDate(DateUtils.DEFAULT_DATE_FORMAT, "20-2020-02"));
 	}
 

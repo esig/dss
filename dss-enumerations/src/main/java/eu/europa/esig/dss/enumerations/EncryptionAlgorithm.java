@@ -32,6 +32,9 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 	/** RSA */
 	RSA("RSA", "1.2.840.113549.1.1.1", "RSA/ECB/PKCS1Padding"),
 
+	/** RSASSA-PSS */
+	RSASSA_PSS("RSASSA-PSS", "1.2.840.113549.1.1.10", "RSA/ECB/OAEPPadding"),
+
 	/** DSA */
 	DSA("DSA", "1.2.840.10040.4.1", "DSA"),
 
@@ -126,11 +129,6 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 			return EDDSA;
 		}
 
-		// org.bouncycastle.jcajce.provider.asymmetric.rsa.BCRSAPublicKey.getAlgorithm()
-		if ("RSASSA-PSS".equals(name)) {
-			return RSA;
-		}
-
 		for (EncryptionAlgorithm encryptionAlgo : values()) {
 			if (encryptionAlgo.getName().equals(name) || encryptionAlgo.name().equals(name)) {
 				return encryptionAlgo;
@@ -205,7 +203,13 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 	 * @return TRUE if the algorithms are equivalent, FALSE otherwise
 	 */
 	public boolean isEquivalent(EncryptionAlgorithm encryptionAlgorithm) {
+		if (encryptionAlgorithm == null) {
+			return false;
+		}
 		if (this == encryptionAlgorithm) {
+			return true;
+		}
+		if (this.isRSAFamily() && encryptionAlgorithm.isRSAFamily()) {
 			return true;
 		}
 		if (this.isEcDSAFamily() && encryptionAlgorithm.isEcDSAFamily()) {
@@ -215,6 +219,10 @@ public enum EncryptionAlgorithm implements OidBasedEnum {
 			return true;
 		}
 		return false;
+	}
+
+	private boolean isRSAFamily() {
+		return RSA == this || RSASSA_PSS == this;
 	}
 
 	private boolean isEcDSAFamily() {

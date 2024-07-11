@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSignature {
+class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSignature {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -66,7 +66,7 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		Policy signaturePolicy = new Policy();
@@ -183,7 +183,7 @@ public class XAdESLevelTWithSignaturePolicyStoreTest extends AbstractXAdESTestSi
 		assertEquals(policyDigestAlgoAndValue.getDigestMethod(), policyStoreDigestAlgoAndValue.getDigestMethod());
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 		
-		assertEquals(POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()), Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()), policyDigestAlgoAndValue.getDigestValue());
 	}
 
 	@Override

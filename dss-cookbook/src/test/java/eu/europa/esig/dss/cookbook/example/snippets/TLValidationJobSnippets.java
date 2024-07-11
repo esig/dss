@@ -25,17 +25,17 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
-import eu.europa.esig.dss.spi.tsl.PivotInfo;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.model.tsl.PivotInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
+import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -57,14 +57,15 @@ import eu.europa.esig.dss.tsl.function.TrustServiceProviderByTSPName;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
+import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.tsl.sync.ExpirationAndSignatureCheckStrategy;
 import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
@@ -81,8 +82,8 @@ public class TLValidationJobSnippets {
 	public void sample() throws IOException {
 
 		// tag::multi-trusted-certificate-sources[]
-		// import eu.europa.esig.dss.validation.CertificateVerifier;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
 		CertificateVerifier cv = new CommonCertificateVerifier();
 		cv.setTrustedCertSources(trustStoreSource(), trustedListSource());
@@ -150,11 +151,11 @@ public class TLValidationJobSnippets {
 	}
 
 	// tag::job-loaders[]
-	// import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+	// import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
 	// import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 	// import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 
-	public DSSFileLoader offlineLoader() {
+	public DSSCacheFileLoader offlineLoader() {
 		FileCacheDataLoader offlineFileLoader = new FileCacheDataLoader();
 		offlineFileLoader.setCacheExpirationTime(-1); // negative value means cache never expires
 		offlineFileLoader.setDataLoader(new IgnoreDataLoader()); // do not download from Internet
@@ -162,7 +163,7 @@ public class TLValidationJobSnippets {
 		return offlineFileLoader;
 	}
 
-	public DSSFileLoader onlineLoader() {
+	public DSSCacheFileLoader onlineLoader() {
 		FileCacheDataLoader onlineFileLoader = new FileCacheDataLoader();
 		onlineFileLoader.setCacheExpirationTime(0);
 		onlineFileLoader.setDataLoader(dataLoader()); // instance of DataLoader which can access to Internet (proxy,...)
@@ -560,6 +561,48 @@ public class TLValidationJobSnippets {
 		return cs;
 	}
 
+	private void sha2DataLoader() {
+        TLValidationJob tlValidationJob = new TLValidationJob();
+
+		// tag::sha2-loaders[]
+		// import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+		// import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
+		// import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
+
+		// Configure FileCacheDataLoader allowing to perform request to online sources.
+		// An instance of online FileCacheDataLoader from a sample above can be used.
+		DSSCacheFileLoader onlineLoader = new FileCacheDataLoader();
+		// ...
+
+		// Method #initSha2StrictDataLoader instantiates a Sha2FileCacheDataLoader,
+		// enforcing refresh of a Trusted List only when a new .sha2 document
+		// is obtained or NextUpdate has been reached;
+		Sha2FileCacheDataLoader sha2StrictDataLoader = Sha2FileCacheDataLoader.initSha2StrictDataLoader(onlineLoader);
+
+		// Method #initSha2DailyUpdateDataLoader instantiates a Sha2FileCacheDataLoader,
+		// enforcing refresh of a Trusted List when a new .sha2 document is obtained,
+		// NextUpdate has been reached or when the document has not been updated for
+		// at least 24 hours;
+		Sha2FileCacheDataLoader sha2DailyUpdateDataLoader = Sha2FileCacheDataLoader.initSha2DailyUpdateDataLoader(onlineLoader);
+
+		// Method #initSha2CustomExpirationDataLoader instantiates a Sha2FileCacheDataLoader,
+		// enforcing refresh of a Trusted List when a new .sha2 document is obtained,
+		// NextUpdate has been reached or when the document has not been updated for
+		// the indicated time period;
+		// NOTE : the method below sets the cache expiration to 6 hours
+		// (all Trusted Lists will be forcibly refreshed)
+		Sha2FileCacheDataLoader sha2CustomExpirationDataLoader = Sha2FileCacheDataLoader.initSha2CustomExpirationDataLoader(onlineLoader, 6 * 60 * 60 * 1000);
+
+		// Method #initSha2IgnoredDataLoader instantiates a Sha2FileCacheDataLoader,
+		// enforcing refresh of a Trusted List in all cases (i.e. default `FileCacheDataLoader` logic).
+		Sha2FileCacheDataLoader sha2IgnoredDataLoader = Sha2FileCacheDataLoader.initSha2IgnoredDataLoader(onlineLoader);
+
+		// The Sha2FileCacheDataLoader should be provided to a TLValidationJob
+		tlValidationJob.setOnlineDataLoader(sha2StrictDataLoader);
+		// end::sha2-loaders[]
+
+	}
+
 	// tag::trust-service-provider-custom-predicate[]
 	// import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 	// import eu.europa.esig.dss.utils.Utils;
@@ -604,4 +647,5 @@ public class TLValidationJobSnippets {
 		}
 
 	}
+
 }

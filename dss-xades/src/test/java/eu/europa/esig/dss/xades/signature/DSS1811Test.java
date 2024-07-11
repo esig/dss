@@ -42,22 +42,22 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1811Test extends PKIFactoryAccess {
+class DSS1811Test extends PKIFactoryAccess {
 
 	private static final String DOCUMENT_NAME = "test.text";
 	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA512;
 
 	@Test
-	public void testWithCompleteDocument() throws IOException {
+	void testWithCompleteDocument() throws IOException {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocument = getCompleteDocument();
 
-		assertNotEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
+		assertEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
 
 		ToBeSigned toBeSigned = service.getDataToSign(completeDocument, params);
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -72,12 +72,12 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testWithCompleteDocumentNoName() throws IOException {
+	void testWithCompleteDocumentNoName() throws IOException {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();
 
-		assertNotEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
+		assertEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
 
 		ToBeSigned toBeSigned = service.getDataToSign(completeDocumentNoName, params);
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -92,12 +92,12 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void testWithDigestDocument() {
+	void testWithDigestDocument() {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument digestDocument = getDigestDocument();
 
-		assertNotEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
+		assertEquals(params.getReferenceDigestAlgorithm(), params.getDigestAlgorithm());
 
 		ToBeSigned toBeSigned = service.getDataToSign(digestDocument, params);
 		SignatureValue signatureValue = getToken().sign(toBeSigned, params.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -112,7 +112,7 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void alteredDigestAlgo() {
+	void alteredDigestAlgo() {
 		// Changed digest algo for signed info
 		DSSDocument signedDoc = new FileDocument("src/test/resources/validation/dss1811-multi-algo.xml");
 
@@ -222,13 +222,11 @@ public class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	private DSSDocument getDigestDocument() {
-		DigestDocument digestDocument = new DigestDocument(USED_DIGEST, getCompleteDocument().getDigest(USED_DIGEST));
-		return digestDocument;
+		return new DigestDocument(USED_DIGEST, getCompleteDocument().getDigestValue(USED_DIGEST));
 	}
 	
 	private DSSDocument getDigestDocumentWrongDigestAlgo() {
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, getCompleteDocument().getDigest(DigestAlgorithm.SHA1));
-		return digestDocument;
+		return new DigestDocument(DigestAlgorithm.SHA1, getCompleteDocument().getDigestValue(DigestAlgorithm.SHA1));
 	}
 
 	private DSSDocument getWrongDocument() {

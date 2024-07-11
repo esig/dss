@@ -30,15 +30,15 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class ASiCSWithXAdESLevelBContainerMergerDifferentXAdESNamespaceTest extends AbstractWithXAdESTestMerge {
+class ASiCSWithXAdESLevelBContainerMergerDifferentXAdESNamespaceTest extends AbstractWithXAdESTestMerge {
 
     private DSSDocument documentToSign;
 
@@ -48,7 +48,7 @@ public class ASiCSWithXAdESLevelBContainerMergerDifferentXAdESNamespaceTest exte
     private ASiCWithXAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument("src/test/resources/signable/test.txt");
 
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());

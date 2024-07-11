@@ -28,7 +28,7 @@ import java.util.Date;
  * The usage of this interface permit the user to choose the underlying PDF
  * library use to created PDF signatures.
  */
-public interface PdfDict {
+public interface PdfDict extends PdfObject {
 
 	/**
 	 * Gets an embedded dictionary by name
@@ -95,12 +95,12 @@ public interface PdfDict {
 	Number getNumberValue(String name);
 
 	/**
-	 * Returns an object
+	 * Returns a PDF object
 	 *
 	 * @param name {@link String} property name
-	 * @return {@link Object} value
+	 * @return {@link PdfObject} value
 	 */
-	Object getObject(String name);
+	PdfObject getObject(String name);
 
 	/**
 	 * Returns a number of indirect reference to an object, when applicable
@@ -134,5 +134,54 @@ public interface PdfDict {
 	 * @throws IOException if a stream reading exception occurs
 	 */
 	long getRawStreamSize() throws IOException;
+
+	/**
+	 * Sets the Dictionary {@code pdfObject} with the given {@code key}
+	 *
+	 * @param key {@link String}
+	 * @param pdfObject {@link PdfObject}
+	 */
+	void setPdfObjectValue(String key, PdfObject pdfObject);
+
+	/**
+	 * Sets the Name {@code value} with the given {@code key}
+	 *
+	 * @param key {@link String}
+	 * @param value {@link String}
+	 */
+	void setNameValue(String key, String value);
+
+	/**
+	 * Sets the String {@code value} with the given {@code key}
+	 *
+	 * @param key {@link String}
+	 * @param value {@link String}
+	 */
+	void setStringValue(String key, String value);
+
+	/**
+	 * Sets the Integer {@code value} with the given {@code key}
+	 *
+	 * @param key {@link String}
+	 * @param value {@link Integer}
+	 */
+	void setIntegerValue(String key, Integer value);
+
+	/**
+	 * Sets whether the object shall be written directly to its parent
+	 *
+	 * @param direct whether the object shall be written directly
+	 */
+	void setDirect(boolean direct);
+
+	/**
+	 * This method verifies if the content of the {@code pdfDict} matches
+	 * the corresponding attributes of the current dictionary.
+	 * NOTE: this method is different from {@code #equals}, as it does not ensure full equality.
+	 *
+	 * @param pdfDict {@link PdfDict} to compare
+	 * @return TRUE if the content of pdfDict matches, FALSE otherwise
+	 */
+	boolean match(PdfDict pdfDict);
 
 }

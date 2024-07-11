@@ -36,13 +36,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CertificateSourceMultiThreadTest {
+class CertificateSourceMultiThreadTest {
 
 	public CertificateSourceMultiThreadTest() {
 	}
 
 	@RepeatedTest(5)
-	public void testMultiThreads() throws IOException {
+	void testMultiThreads() throws IOException {
 
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/extract-tls.p12"), "PKCS12", "ks-password".toCharArray());
 		List<CertificateToken> certificates = kscs.getCertificates();

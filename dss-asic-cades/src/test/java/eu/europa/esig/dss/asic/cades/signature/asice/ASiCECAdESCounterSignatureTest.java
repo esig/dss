@@ -48,7 +48,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESCounterSignatureTest extends AbstractASiCCAdESCounterSignatureTest {
+class ASiCECAdESCounterSignatureTest extends AbstractASiCCAdESCounterSignatureTest {
 
 	private ASiCWithCAdESService service;
 	private DSSDocument documentToSign;
@@ -56,7 +56,7 @@ public class ASiCECAdESCounterSignatureTest extends AbstractASiCCAdESCounterSign
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);

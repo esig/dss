@@ -35,14 +35,14 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 
-public class JAdESMultipleDocumentDetachedWithObjectByUriTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESMultipleDocumentDetachedWithObjectByUriTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private JAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 	private JAdESService jadesService;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.json"),
 				new FileDocument("src/test/resources/sample.png"),
 				new InMemoryDocument("Hello World!".getBytes(), "helloWorld"));

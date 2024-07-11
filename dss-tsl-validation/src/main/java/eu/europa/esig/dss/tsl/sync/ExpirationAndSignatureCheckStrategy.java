@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.tsl.sync;
 
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
 
 import java.util.Date;
 

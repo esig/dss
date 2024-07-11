@@ -32,17 +32,17 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignProtectedPdfPadesBLevelTest extends CookbookTools {
+class SignProtectedPdfPadesBLevelTest extends CookbookTools {
 
     @Test
-    public void signProtectedPdf() throws Exception {
+    void signProtectedPdf() throws Exception {
 
         // GET document to be signed -
         DSSDocument protectedDocument = new FileDocument("src/test/resources/snippets/open_protected.pdf");
@@ -74,7 +74,7 @@ public class SignProtectedPdfPadesBLevelTest extends CookbookTools {
 
             // tag::validate[]
             // import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
-            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
             // import eu.europa.esig.dss.validation.reports.Reports;
 
             // Prepare DocumentValidator

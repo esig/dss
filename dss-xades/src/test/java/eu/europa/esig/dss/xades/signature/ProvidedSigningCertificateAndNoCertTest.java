@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,14 +46,14 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSignature {
+class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.txt"));
 
 		signatureParameters = new XAdESSignatureParameters();

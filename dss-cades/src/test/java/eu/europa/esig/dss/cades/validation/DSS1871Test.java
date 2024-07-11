@@ -24,7 +24,7 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class DSS1871Test extends AbstractCAdESTestValidation {
+class DSS1871Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

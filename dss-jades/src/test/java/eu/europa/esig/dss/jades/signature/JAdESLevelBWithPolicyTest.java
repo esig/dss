@@ -34,9 +34,9 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBWithPolicyTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithPolicyTest extends AbstractJAdESTestSignature {
 
 	private static final DSSDocument SIGNATURE_POLICY_CONTENT = new InMemoryDocument("Hello world".getBytes());
 
@@ -64,7 +64,7 @@ public class JAdESLevelBWithPolicyTest extends AbstractJAdESTestSignature {
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		signatureParameters = new JAdESSignatureParameters();

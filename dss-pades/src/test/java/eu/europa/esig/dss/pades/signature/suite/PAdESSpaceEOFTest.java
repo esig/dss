@@ -37,7 +37,7 @@ public class PAdESSpaceEOFTest extends AbstractPAdESTestSignature {
 	private DSSDocument documentToSign;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 
 		documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample_end_space.pdf"), null, MimeTypeEnum.PDF);
 

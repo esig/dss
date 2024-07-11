@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.common.signature;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCTestUtils;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -50,7 +50,7 @@ public abstract class AbstractASiCMultipleDocumentsTestSignature<SP extends Seri
 		checkExtractedContent(asicContent);
 	}
 
-	protected abstract AbstractASiCContainerExtractor getContainerExtractor(DSSDocument document);
+	protected abstract DefaultASiCContainerExtractor getContainerExtractor(DSSDocument document);
 
 	protected void checkExtractedContent(ASiCContent asicContent) {
 		assertNotNull(asicContent);

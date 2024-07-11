@@ -20,11 +20,15 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,14 +37,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBSignWithNotYetValidSignCertTest extends AbstractXAdESTestSignature {
+class XAdESLevelBSignWithNotYetValidSignCertTest extends AbstractXAdESTestSignature {
 
+    private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         signatureParameters = new XAdESSignatureParameters();
@@ -49,20 +54,28 @@ public class XAdESLevelBSignWithNotYetValidSignCertTest extends AbstractXAdESTes
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 
-        service = new XAdESService(getOfflineCertificateVerifier());
+        certificateVerifier = getOfflineCertificateVerifier();
+        service = new XAdESService(certificateVerifier);
     }
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        certificateVerifier.setAlertOnNotYetValidCertificate(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+
+        Exception exception = assertThrows(AlertException.class, () -> super.sign());
+        assertTrue(exception.getMessage().contains("Error on signature creation"));
         assertTrue(exception.getMessage().contains("is not yet valid at signing time"));
 
-        signatureParameters.setSignWithExpiredCertificate(true);
-        exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+
+        exception = assertThrows(AlertException.class, () -> super.sign());
+        assertTrue(exception.getMessage().contains("Error on signature creation"));
         assertTrue(exception.getMessage().contains("is not yet valid at signing time"));
 
-        signatureParameters.setSignWithExpiredCertificate(false);
-        signatureParameters.setSignWithNotYetValidCertificate(true);
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
+
         DSSDocument signedDocument = super.sign();
         assertNotNull(signedDocument);
         return signedDocument;

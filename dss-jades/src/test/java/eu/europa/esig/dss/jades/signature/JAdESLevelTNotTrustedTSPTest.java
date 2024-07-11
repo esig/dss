@@ -30,21 +30,21 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JAdESLevelTNotTrustedTSPTest extends AbstractJAdESTestSignature {
+class JAdESLevelTNotTrustedTSPTest extends AbstractJAdESTestSignature {
 
     private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
     private DSSDocument documentToSign;
     private JAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
 
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
         signatureParameters = new JAdESSignatureParameters();

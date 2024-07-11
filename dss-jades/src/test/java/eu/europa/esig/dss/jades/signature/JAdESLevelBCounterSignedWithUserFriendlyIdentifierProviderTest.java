@@ -35,9 +35,9 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
-import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
+import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest extends AbstractJAdESCounterSignatureTest {
+class JAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest extends AbstractJAdESCounterSignatureTest {
 
     private JAdESService service;
     private DSSDocument documentToSign;
@@ -59,7 +59,7 @@ public class JAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest exte
     private Date signingDate;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = new FileDocument(new File("src/test/resources/sample.json"));

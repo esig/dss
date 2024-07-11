@@ -40,7 +40,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESLevelLTAEnvelopingCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
+class XAdESLevelLTAEnvelopingCounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
 	private XAdESService service;
 	private DSSDocument documentToSign;
@@ -48,7 +48,7 @@ public class XAdESLevelLTAEnvelopingCounterSignatureTest extends AbstractXAdESCo
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));

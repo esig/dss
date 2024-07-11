@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>4.3.3-TEST FILE.xml</DocumentName>
+    <ValidationDate>2022-05-25T08:43:12Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-926F0B34D8B43E1B052376B2DA1052B4C8A6443EC22E6F3D31028C0C32DE5BCC">
+            <DAIdentifier>id-c2d6907a19c8c7d0443b26ad2087b1f3</DAIdentifier>
+            <SignatureFilename>4.3.3-TEST FILE.xml</SignatureFilename>
+            <ClaimedSigningTime>2022-05-21T23:01:39Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="REFERENCE" id="r-id-c2d6907a19c8c7d0443b26ad2087b1f3-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>kfsK43NJaZNZwDUkwbME+Sn+ziU/Rl4K0N2bvfbuwvk=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-c2d6907a19c8c7d0443b26ad2087b1f3">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>QRGFKCCkcYi5GVEgim/46YELoOwyJjQCIQHRs/ixWas=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3A844E83DC699F0486AE583E4439B1BF964B6B4A424917FD76384B8384959517"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3A844E83DC699F0486AE583E4439B1BF964B6B4A424917FD76384B8384959517"/>
+                <ChainItem Certificate="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72"/>
+            </CertificateChain>
+            <MimeType>application/octet-stream</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-3A844E83DC699F0486AE583E4439B1BF964B6B4A424917FD76384B8384959517">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MFkwVKRSMFAxEjAQBgNVBAMMCVNESS00LjMuMzEVMBMGA1UECgwMVFNQLTQuMyBOYW1lMRYwFAYDVQQLDA1DRVJUIEZPUiBURVNUMQswCQYDVQQGEwJGUgIBGw==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA512</DigestMethod>
+                            <DigestValue>4eldGg0jY9xNxOhE63Uf31+Yjo9P4N5tWZThxnrxiQ9eS7w4D+bFKyG5UYDQ8SjGswv1EeaRTaDoOGUvzZ69Sw==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-BC6A14FD55E8C77B677C1984EE8044BA91D042D79C8B326C46965C5AF6F8F5AF">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath Filter 2.0 Transform (Filter: subtract; XPath: /descendant::ds:Signature)</Transformation>
+                        <Transformation>Exclusive Canonical XML (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>HRoyftQketghwcYi4LyXDo4Y2KguYy4X6Wzq8TZeCZk=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qXmAeW+l9zuCmtSxXMdKZhBLoIyRb3BHd0nYMIeD5Bo=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>FtBaj87Sqv/L6XsHyj723H69mXzmfjNGxYrFx+ZotsHxkrm9UaUFCClmWEmlU1YvJn9oBfA6VCRUJYTzxyxRDzvOWZUySAms3YqylUkujQa7TXxAcBGhVAyPgDAnPdCB65NppUzuDd+Vgp8amxR5x0z/b+yie8UwD7loRCqODze4L1/PQD0JgkJTHGOZEkAdHW+xcQTx+nehyoLQrQkDwoC3hdtoFOyT2R8AYoeBLX/oflFsQQPJyMuxiV5XQ/i4+5yga57pKRHk8Mvlgp/EpCvybSD2s8aMdDYxEPXskn6icEJr7YVvSmloz1+WumNcrX3ttOv1+x5N7tDLvjsl7w==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-3A844E83DC699F0486AE583E4439B1BF964B6B4A424917FD76384B8384959517">
+            <SubjectDistinguishedName Format="CANONICAL">c=fr,ou=cert for test,o=tl4 organization,cn=cert-test-4.3.3</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=FR,OU=CERT FOR TEST,O=TL4 Organization,CN=CERT-TEST-4.3.3</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=fr,ou=cert for test,o=tsp-4.3 name,cn=sdi-4.3.3</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=FR,OU=CERT FOR TEST,O=TSP-4.3 Name,CN=SDI-4.3.3</IssuerDistinguishedName>
+            <SerialNumber>27</SerialNumber>
+            <CommonName>CERT-TEST-4.3.3</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>TL4 Organization</OrganizationName>
+            <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2023-05-21T23:00:56Z</NotAfter>
+            <NotBefore>2021-05-21T23:00:56Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-885B0058C5078860FB44F274A96302ED77D96A521641C85ED13F3453858736B5</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://esignature.ec.europa.eu/efda/validation-tests/crt/SDI-4.3.3.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>https://esignature.ec.europa.eu/efda/validation-tests/crl/SDI-4.3.3.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="false"/>
+                    <QcSSCD present="true"/>
+                    <QcTypes/>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-9014F24EFCD15F53D6766AA96D54A2E000833EC8C30AEBB5EB0BDCDA03D0E430" LOTL="LOTL-C5EDE50B5C3D01D4FAD9A33A65F8D4E0AC142E323EB1C36585B58A91B14462AF">
+                    <TSPNames>
+                        <TSPName lang="en">TSP-4.3 Name</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">TSP-4.3 Trade name</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers/>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72">
+                            <ServiceNames>
+                                <ServiceName lang="en">TS-4.3.3 Name</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-7C11366B6A84C31D5236E5BF161763E91C43008AB8E15F2621FF24ED528EB8CB">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>OoROg9xpnwSGrlg+RDmxv5ZLa0pCSRf9djhLg4SVlRc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72">
+            <SubjectDistinguishedName Format="CANONICAL">c=fr,ou=cert for test,o=tsp-4.3 name,cn=sdi-4.3.3</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=FR,OU=CERT FOR TEST,O=TSP-4.3 Name,CN=SDI-4.3.3</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=fr,ou=cert for test,o=tsp-4.3 name,cn=sdi-4.3.3</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=FR,OU=CERT FOR TEST,O=TSP-4.3 Name,CN=SDI-4.3.3</IssuerDistinguishedName>
+            <SerialNumber>26</SerialNumber>
+            <CommonName>SDI-4.3.3</CommonName>
+            <CountryName>FR</CountryName>
+            <OrganizationName>TSP-4.3 Name</OrganizationName>
+            <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2023-05-21T23:00:56Z</NotAfter>
+            <NotBefore>2021-05-21T23:00:56Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-0FEE5BAC14701194B3B9A17325E8674A78C5EB43403C8BB04B7C60D810B276E8</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-9014F24EFCD15F53D6766AA96D54A2E000833EC8C30AEBB5EB0BDCDA03D0E430" LOTL="LOTL-C5EDE50B5C3D01D4FAD9A33A65F8D4E0AC142E323EB1C36585B58A91B14462AF">
+                    <TSPNames>
+                        <TSPName lang="en">TSP-4.3 Name</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">TSP-4.3 Trade name</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers/>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72">
+                            <ServiceNames>
+                                <ServiceName lang="en">TS-4.3.3 Name</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>aXlVG5h4tGLoXxSFBTIMgnO7sX3d9Jwie8cRL/RWC3I=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-7C11366B6A84C31D5236E5BF161763E91C43008AB8E15F2621FF24ED528EB8CB">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>https://esignature.ec.europa.eu/efda/validation-tests/crl/SDI-4.3.3.crl</SourceAddress>
+            <ProductionDate>2022-05-25T08:43:12Z</ProductionDate>
+            <ThisUpdate>2022-05-25T08:43:12Z</ThisUpdate>
+            <NextUpdate>2022-11-25T09:43:12Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-6979551B9878B462E85F148505320C8273BBB17DDDF49C227BC7112FF4560B72"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>fBE2a2qEwx1SNuW/Fhdj6RxDAIq44V8mIf8k7VKOuMs=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps/>
+    <OriginalDocuments>
+        <SignerData Id="D-BC6A14FD55E8C77B677C1984EE8044BA91D042D79C8B326C46965C5AF6F8F5AF">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vivWYLUeprAEzwlIgkMechircU5hHT0s4HCqzy9jHKg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-9014F24EFCD15F53D6766AA96D54A2E000833EC8C30AEBB5EB0BDCDA03D0E430">
+            <CountryCode>FR</CountryCode>
+            <Url>https://esignature.ec.europa.eu/efda/validation-tests/testcase/tl/TL-4.xml</Url>
+            <SequenceNumber>1</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2022-05-25T08:43:08Z</LastLoading>
+            <IssueDate>2022-05-20T23:00:00Z</IssueDate>
+            <NextUpdate>2022-06-21T23:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-C5EDE50B5C3D01D4FAD9A33A65F8D4E0AC142E323EB1C36585B58A91B14462AF" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://esignature.ec.europa.eu/efda/validation-tests/testcase/tl/force_download/LOTL-3</Url>
+            <SequenceNumber>1</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2022-05-25T08:43:08Z</LastLoading>
+            <IssueDate>2022-05-20T23:00:00Z</IssueDate>
+            <NextUpdate>2022-06-21T23:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

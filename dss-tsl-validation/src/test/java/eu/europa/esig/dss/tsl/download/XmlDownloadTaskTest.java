@@ -38,10 +38,10 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 
-public class XmlDownloadTaskTest {
+class XmlDownloadTaskTest {
 
 	@Test
-	public void nullResult() {
+	void nullResult() {
 		Map<String, byte[]> dataMap = new HashMap<>();
 		dataMap.put("null", null);
 		dataMap.put("empty-array", new byte[] {});
@@ -56,7 +56,7 @@ public class XmlDownloadTaskTest {
 	}
 
 	@Test
-	public void nonNullResults() {
+	void nonNullResults() {
 		Map<String, byte[]> dataMap = new HashMap<>();
 
 		byte[] sampleByteArray = DSSUtils.toByteArray(new FileDocument(new File("src/test/resources/sample.xml")));

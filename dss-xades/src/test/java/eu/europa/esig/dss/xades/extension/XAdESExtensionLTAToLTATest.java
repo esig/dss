@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.extension;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class XAdESExtensionLTAToLTATest extends AbstractXAdESTestExtension {
+class XAdESExtensionLTAToLTATest extends AbstractXAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

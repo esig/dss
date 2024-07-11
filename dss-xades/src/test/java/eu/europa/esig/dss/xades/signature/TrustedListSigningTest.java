@@ -59,7 +59,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TrustedListSigningTest extends AbstractXAdESTestSignature {
+class TrustedListSigningTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -68,7 +68,7 @@ public class TrustedListSigningTest extends AbstractXAdESTestSignature {
 	private static TrustedListUtils trustedListUtils = TrustedListUtils.getInstance();
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
 		service = new XAdESService(getOfflineCertificateVerifier());
 

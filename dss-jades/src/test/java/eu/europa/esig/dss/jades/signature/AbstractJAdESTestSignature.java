@@ -45,7 +45,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -55,6 +55,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.jwx.Headers;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -128,13 +130,16 @@ public abstract class AbstractJAdESTestSignature
 			}
 
 			Object crit = headers.getObjectHeaderValue(HeaderParameterNames.CRITICAL);
-			assertTrue(crit instanceof List<?>);
+			if (crit != null) {
+                assertInstanceOf(List.class, crit);
 
-			List<String> critArray = (List<String>) crit;
-			assertTrue(Utils.isCollectionNotEmpty(critArray));
-			for (String critItem : critArray) {
-				assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
-				assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
+				List<String> critArray = (List<String>) crit;
+				assertTrue(Utils.isCollectionNotEmpty(critArray));
+				for (String critItem : critArray) {
+					assertTrue(DSSJsonUtils.getSupportedProtectedCriticalHeaders().contains(critItem));
+					assertTrue(DSSJsonUtils.isRequiredCriticalHeader(critItem));
+					assertFalse(DSSJsonUtils.isCriticalHeaderException(critItem));
+				}
 			}
 		}
 	}
@@ -291,10 +296,10 @@ public abstract class AbstractJAdESTestSignature
 					}
 					
 				} else {
-					String originalDigest = original.getDigest(DigestAlgorithm.SHA256);
+					byte[] originalDigest = original.getDigestValue(DigestAlgorithm.SHA256);
 					for (DSSDocument retrieved : retrievedOriginalDocuments) {
-						String retrievedDigest = retrieved.getDigest(DigestAlgorithm.SHA256);
-						if (Utils.areStringsEqual(originalDigest, retrievedDigest)) {
+						byte[] retrievedDigest = retrieved.getDigestValue(DigestAlgorithm.SHA256);
+						if (Arrays.equals(originalDigest, retrievedDigest)) {
 							found = true;
 						}
 					}

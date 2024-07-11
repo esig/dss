@@ -24,6 +24,7 @@ import eu.europa.esig.dss.pades.signature.visible.suite.PAdESAddNewFieldRotatedD
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESExistingSignatureFieldTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESExternalCMSSignatureBLevelVisibleTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESFieldLevelBTest;
+import eu.europa.esig.dss.pades.signature.visible.suite.PAdESFieldMDPTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESMultipleVisibleSignaturesTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESNonLatinCharactersSignatureTest;
 import eu.europa.esig.dss.pades.signature.visible.suite.PAdESSignatureFieldTest;
@@ -54,7 +55,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESVisibleImageScalingTest.class, PAdESExistingSignatureFieldTest.class, PAdESTextWrappingTest.class,
 		PAdESVisibleSigOutsidePageTest.class, PAdESWithNullTextColorTest.class, PAdESVisibleSignRotatedDocumentTest.class,
 		PAdESWithFontSubsetWithAtomicMethodsTest.class, PAdESExternalCMSSignatureBLevelVisibleTest.class,
-		PAdESAddNewFieldRotatedDocumentTest.class })
-public class PdfBoxPAdESVisibleSignatureSuiteTest {
+		PAdESAddNewFieldRotatedDocumentTest.class, PAdESFieldMDPTest.class })
+class PdfBoxPAdESVisibleSignatureSuiteTest {
 
 }

@@ -42,7 +42,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSignature {
+class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSignature {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -71,7 +71,7 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
@@ -227,7 +227,7 @@ public class JAdESLevelTWithSignaturePolicyStoreTest extends AbstractJAdESTestSi
 		assertEquals(policyDigestAlgoAndValue.getDigestMethod(), policyStoreDigestAlgoAndValue.getDigestMethod());
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 		
-		assertEquals(SIGNATURE_POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()), Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(SIGNATURE_POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()), policyDigestAlgoAndValue.getDigestValue());
 	}
 
 	@Override

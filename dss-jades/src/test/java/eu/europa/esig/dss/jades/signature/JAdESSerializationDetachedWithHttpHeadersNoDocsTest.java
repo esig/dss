@@ -39,6 +39,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
@@ -53,14 +54,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class JAdESSerializationDetachedWithHttpHeadersNoDocsTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESSerializationDetachedWithHttpHeadersNoDocsTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private List<DSSDocument> documentsToSign;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		JAdESService jadesService = new JAdESService(getCompleteCertificateVerifier());
 		jadesService.setTspSource(getGoodTsa());
 		service = jadesService;
@@ -73,8 +74,8 @@ public class JAdESSerializationDetachedWithHttpHeadersNoDocsTest extends Abstrac
 		documentsToSign.add(new HTTPHeader("x-example", "Duplicated Header"));
 		
 		DSSDocument messageBodyDocument = new FileDocument("src/test/resources/sample.json");
-		String digest = messageBodyDocument.getDigest(DigestAlgorithm.SHA1);
-		documentsToSign.add(new HTTPHeader("Digest", "SHA="+digest));
+		byte[] digest = messageBodyDocument.getDigestValue(DigestAlgorithm.SHA1);
+		documentsToSign.add(new HTTPHeader("Digest", "SHA=" + Utils.toBase64(digest)));
 	}
 
 	@Override

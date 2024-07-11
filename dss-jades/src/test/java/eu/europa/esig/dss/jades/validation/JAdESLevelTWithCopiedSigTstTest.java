@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelTWithCopiedSigTstTest extends AbstractJAdESTestValidation {
+class JAdESLevelTWithCopiedSigTstTest extends AbstractJAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

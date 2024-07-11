@@ -23,7 +23,8 @@ package eu.europa.esig.dss.asic.cades.signature;
 import eu.europa.esig.dss.asic.cades.SimpleASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import org.junit.jupiter.api.Test;
 
@@ -32,10 +33,10 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class SimpleASiCWithCAdESFilenameFactoryTest {
+class SimpleASiCWithCAdESFilenameFactoryTest {
 
     @Test
-    public void getASiCSSignatureFilenameTest() {
+    void getASiCSSignatureFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -82,7 +83,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCESignatureFilenameTest() {
+    void getASiCESignatureFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -138,7 +139,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSTimestampFilenameTest() {
+    void getASiCSTimestampFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -185,7 +186,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCETimestampFilenameTest() {
+    void getASiCETimestampFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -235,7 +236,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEManifestFilenameTest() {
+    void getASiCEManifestFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -291,7 +292,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCEArchiveManifestFilenameTest() {
+    void getASiCEArchiveManifestFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -353,7 +354,7 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
     }
 
     @Test
-    public void getASiCSDataPackageFilenameTest() {
+    void getASiCSDataPackageFilenameTest() {
         SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
 
         ASiCContent asicContent = new ASiCContent();
@@ -378,6 +379,176 @@ public class SimpleASiCWithCAdESFilenameFactoryTest {
         exception = assertThrows(IllegalArgumentException.class, () ->
                 filenameFactory.getDataPackageFilename(asicContent));
         assertEquals("A data package filename within ASiC container shall ends with '.zip'!", exception.getMessage());
+    }
+
+    @Test
+    void getASiCSEvidenceRecordFilenameTest() {
+        SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+
+        ASiCContent asicContent = new ASiCContent();
+        asicContent.setContainerType(ASiCContainerType.ASiC_S);
+
+        Exception exception = assertThrows(NullPointerException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, null));
+        assertEquals("EvidenceRecordType shall be defined!", exception.getMessage());
+
+        assertEquals("META-INF/evidencerecord.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("evidencerecord001.xml");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+        assertEquals("An evidence record file within ASiC-S with CAdES container shall have name " +
+                "'META-INF/evidencerecord.ers' or 'META-INF/evidencerecord.xml'!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordFilename("evidencerecord.xml");
+        assertEquals("META-INF/evidencerecord.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("evidencerecord.ers");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+        assertEquals("An XMLERS evidence record file within ASiC container shall end with '.xml' extension!", exception.getMessage());
+
+        assertEquals("META-INF/evidencerecord.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename(null);
+        assertEquals("META-INF/evidencerecord.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("evidencerecord001.ers");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+        assertEquals("An evidence record file within ASiC-S with CAdES container shall have name " +
+                "'META-INF/evidencerecord.ers' or 'META-INF/evidencerecord.xml'!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordFilename("evidencerecord.xml");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+        assertEquals("An ERS evidence record file within ASiC container shall end with '.ers' extension!", exception.getMessage());
+    }
+
+    @Test
+    void getASiCEEvidenceRecordFilenameTest() {
+        SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+
+        ASiCContent asicContent = new ASiCContent();
+        asicContent.setContainerType(ASiCContainerType.ASiC_E);
+
+        Exception exception = assertThrows(NullPointerException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, null));
+        assertEquals("EvidenceRecordType shall be defined!", exception.getMessage());
+
+        assertEquals("META-INF/evidencerecord001.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+
+        asicContent.setEvidenceRecordDocuments(Collections.singletonList(new InMemoryDocument("er".getBytes(), "META-INF/evidencerecord001.xml")));
+        assertEquals("META-INF/evidencerecord002.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("AAAevidencerecordAAA.xml");
+        assertEquals("META-INF/AAAevidencerecordAAA.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("AAAevidencerecordAAA.ers");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+        assertEquals("An XMLERS evidence record file within ASiC container shall end with '.xml' extension!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordFilename("META-INF/AAAevidencerecordAAA.xml");
+        assertEquals("META-INF/AAAevidencerecordAAA.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+
+        asicContent.setEvidenceRecordDocuments(Collections.singletonList(new InMemoryDocument("er".getBytes(), "META-INF/AAAevidencerecordAAA.xml")));
+        exception = assertThrows(IllegalInputException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+        assertEquals("The filename 'META-INF/AAAevidencerecordAAA.xml' cannot be used, " +
+                "as a document of the same name is already present within the container!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordFilename("META-INF/BBBevidencerecordBBB.xml");
+        assertEquals("META-INF/BBBevidencerecordBBB.xml", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("META-INF/BBBevidenceBBBrecordBBB.xml");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD));
+        assertEquals("An evidence record file within ASiC-E with CAdES container shall match " +
+                "the template 'META-INF/*evidencerecord*(.ers||.xml)'!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordFilename(null);
+        assertEquals("META-INF/evidencerecord001.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+
+        asicContent.setEvidenceRecordDocuments(Collections.singletonList(new InMemoryDocument("er".getBytes(), "META-INF/evidencerecord001.ers")));
+        assertEquals("META-INF/evidencerecord002.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("AAAevidencerecordAAA.ers");
+        assertEquals("META-INF/AAAevidencerecordAAA.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("AAAevidencerecordAAA.xml");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+        assertEquals("An ERS evidence record file within ASiC container shall end with '.ers' extension!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordFilename("META-INF/AAAevidencerecordAAA.ers");
+        assertEquals("META-INF/AAAevidencerecordAAA.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+
+        asicContent.setEvidenceRecordDocuments(Collections.singletonList(new InMemoryDocument("er".getBytes(), "META-INF/AAAevidencerecordAAA.ers")));
+        exception = assertThrows(IllegalInputException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+        assertEquals("The filename 'META-INF/AAAevidencerecordAAA.ers' cannot be used, " +
+                "as a document of the same name is already present within the container!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordFilename("META-INF/BBBevidencerecordBBB.ers");
+        assertEquals("META-INF/BBBevidencerecordBBB.ers", filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+
+        filenameFactory.setEvidenceRecordFilename("META-INF/BBBevidenceBBBrecordBBB.ers");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordFilename(asicContent, EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD));
+        assertEquals("An evidence record file within ASiC-E with CAdES container shall match " +
+                "the template 'META-INF/*evidencerecord*(.ers||.xml)'!", exception.getMessage());
+    }
+
+    @Test
+    void getASiCSEvidenceRecordManifestFilenameTest() {
+        SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+
+        ASiCContent asicContent = new ASiCContent();
+        asicContent.setContainerType(ASiCContainerType.ASiC_S);
+
+        assertEquals("META-INF/ASiCEvidenceRecordManifest001.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        asicContent.setEvidenceRecordManifestDocuments(Collections.singletonList(new InMemoryDocument("manifest".getBytes(), "META-INF/ASiCEvidenceRecordManifest001.xml")));
+        assertEquals("META-INF/ASiCEvidenceRecordManifest002.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        filenameFactory.setEvidenceRecordManifestFilename("ASiCEvidenceRecordManifestAAA.xml");
+        assertEquals("META-INF/ASiCEvidenceRecordManifestAAA.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        filenameFactory.setEvidenceRecordManifestFilename("META-INF/ASiCEvidenceRecordManifestAAA.xml");
+        assertEquals("META-INF/ASiCEvidenceRecordManifestAAA.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        asicContent.setEvidenceRecordManifestDocuments(Collections.singletonList(new InMemoryDocument("manifest".getBytes(), "META-INF/ASiCEvidenceRecordManifestAAA.xml")));
+        Exception exception = assertThrows(IllegalInputException.class, () -> filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+        assertEquals("The filename 'META-INF/ASiCEvidenceRecordManifestAAA.xml' cannot be used, " +
+                "as a document of the same name is already present within the container!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordManifestFilename("META-INF/ASiCEvidenceRecordManifestBBB.xml");
+        assertEquals("META-INF/ASiCEvidenceRecordManifestBBB.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        filenameFactory.setEvidenceRecordManifestFilename("META-INF/001ASiCEvidenceRecordManifest001.xml");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+        assertEquals("ASiC evidence record manifest file within ASiC container shall match " +
+                "the template 'META-INF/ASiCEvidenceRecordManifest*.xml'!", exception.getMessage());
+    }
+
+    @Test
+    void getASiCEEvidenceRecordManifestFilenameTest() {
+        SimpleASiCWithCAdESFilenameFactory filenameFactory = new SimpleASiCWithCAdESFilenameFactory();
+
+        ASiCContent asicContent = new ASiCContent();
+        asicContent.setContainerType(ASiCContainerType.ASiC_E);
+
+        assertEquals("META-INF/ASiCEvidenceRecordManifest001.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        asicContent.setEvidenceRecordManifestDocuments(Collections.singletonList(new InMemoryDocument("manifest".getBytes(), "META-INF/ASiCEvidenceRecordManifest001.xml")));
+        assertEquals("META-INF/ASiCEvidenceRecordManifest002.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        filenameFactory.setEvidenceRecordManifestFilename("ASiCEvidenceRecordManifestAAA.xml");
+        assertEquals("META-INF/ASiCEvidenceRecordManifestAAA.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        filenameFactory.setEvidenceRecordManifestFilename("META-INF/ASiCEvidenceRecordManifestAAA.xml");
+
+        asicContent.setEvidenceRecordManifestDocuments(Collections.singletonList(new InMemoryDocument("manifest".getBytes(), "META-INF/ASiCEvidenceRecordManifestAAA.xml")));
+        Exception exception = assertThrows(IllegalInputException.class, () -> filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+        assertEquals("The filename 'META-INF/ASiCEvidenceRecordManifestAAA.xml' cannot be used, " +
+                "as a document of the same name is already present within the container!", exception.getMessage());
+
+        filenameFactory.setEvidenceRecordManifestFilename("META-INF/ASiCEvidenceRecordManifestBBB.xml");
+        assertEquals("META-INF/ASiCEvidenceRecordManifestBBB.xml", filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+
+        filenameFactory.setEvidenceRecordManifestFilename("META-INF/001ASiCEvidenceRecordManifest001.xml");
+        exception = assertThrows(IllegalArgumentException.class, () -> filenameFactory.getEvidenceRecordManifestFilename(asicContent));
+        assertEquals("ASiC evidence record manifest file within ASiC container shall match " +
+                "the template 'META-INF/ASiCEvidenceRecordManifest*.xml'!", exception.getMessage());
     }
 
 }

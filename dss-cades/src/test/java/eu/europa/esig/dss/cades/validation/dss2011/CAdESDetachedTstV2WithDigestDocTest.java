@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation.dss2011;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -37,7 +30,14 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
-public class CAdESDetachedTstV2WithDigestDocTest extends AbstractCAdESTestValidation {
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class CAdESDetachedTstV2WithDigestDocTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -47,8 +47,8 @@ public class CAdESDetachedTstV2WithDigestDocTest extends AbstractCAdESTestValida
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
 		DigestDocument digestDocument = new DigestDocument();
-		digestDocument.addDigest(DigestAlgorithm.SHA256, new InMemoryDocument("aaa".getBytes(), "data.txt").getDigest(DigestAlgorithm.SHA256));
-		return Arrays.asList(digestDocument);
+		digestDocument.addDigest(DigestAlgorithm.SHA256, new InMemoryDocument("aaa".getBytes(), "data.txt").getDigestValue(DigestAlgorithm.SHA256));
+		return Collections.singletonList(digestDocument);
 	}
 	
 	@Override

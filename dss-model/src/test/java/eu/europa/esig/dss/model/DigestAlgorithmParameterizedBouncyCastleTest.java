@@ -32,13 +32,13 @@ import org.junit.jupiter.params.provider.EnumSource;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
-public class DigestAlgorithmParameterizedBouncyCastleTest {
+class DigestAlgorithmParameterizedBouncyCastleTest {
 
 	private Provider provider = new BouncyCastleProvider();
 
 	@ParameterizedTest(name = "Digest {index} : {0}")
 	@EnumSource(DigestAlgorithm.class)
-	public void getMessageDigest(DigestAlgorithm digestAlgo) throws NoSuchAlgorithmException {
+	void getMessageDigest(DigestAlgorithm digestAlgo) throws NoSuchAlgorithmException {
 		
 		// Not registered
 		if (DigestAlgorithm.SHAKE128.equals(digestAlgo) ||DigestAlgorithm.SHAKE256.equals(digestAlgo)) {

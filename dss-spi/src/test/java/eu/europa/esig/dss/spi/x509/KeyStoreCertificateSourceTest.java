@@ -40,14 +40,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class KeyStoreCertificateSourceTest {
+class KeyStoreCertificateSourceTest {
 
 	private static final char[] KEYSTORE_PASSWORD = "dss-password".toCharArray();
 	private static final String KEYSTORE_TYPE = "JKS";
 	private static final String KEYSTORE_FILEPATH = "src/test/resources/keystore.jks";
 
 	@Test
-	public void testLoadAddAndDelete() throws IOException {
+	void testLoadAddAndDelete() throws IOException {
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File(KEYSTORE_FILEPATH), KEYSTORE_TYPE, KEYSTORE_PASSWORD);
 		assertNotNull(kscs);
 
@@ -98,7 +98,7 @@ public class KeyStoreCertificateSourceTest {
 	}
 
 	@Test
-	public void loadKeystoreAndTruststore() throws IOException {
+	void loadKeystoreAndTruststore() throws IOException {
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(new File("src/test/resources/good-user.p12"), "PKCS12", "ks-password".toCharArray());
 		assertTrue(kscs.getCertificates().size() > 0);
 
@@ -107,7 +107,7 @@ public class KeyStoreCertificateSourceTest {
 	}
 
 	@Test
-	public void testCreateNewKeystore() throws IOException {
+	void testCreateNewKeystore() throws IOException {
 		KeyStoreCertificateSource kscs = new KeyStoreCertificateSource(KEYSTORE_TYPE, KEYSTORE_PASSWORD);
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/test/resources/citizen_ca.cer"));
 		kscs.addCertificateToKeyStore(token);
@@ -119,13 +119,13 @@ public class KeyStoreCertificateSourceTest {
 	}
 
 	@Test
-	public void wrongPassword() {
+	void wrongPassword() {
 		File ksFile = new File(KEYSTORE_FILEPATH);
 		assertThrows(DSSException.class, () -> new KeyStoreCertificateSource(ksFile, KEYSTORE_TYPE, "wrong password".toCharArray()));
 	}
 
 	@Test
-	public void wrongFile() throws IOException {
+	void wrongFile() throws IOException {
 		File wrongFile = new File("src/test/resources/keystore.p13");
 		assertThrows(IOException.class,
 				() -> new KeyStoreCertificateSource(wrongFile, KEYSTORE_TYPE, KEYSTORE_PASSWORD));

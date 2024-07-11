@@ -23,7 +23,7 @@ package eu.europa.esig.dss.tsl.alerts;
 import eu.europa.esig.dss.alert.AbstractAlert;
 import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
 
 /**
  * The class to process events on TL

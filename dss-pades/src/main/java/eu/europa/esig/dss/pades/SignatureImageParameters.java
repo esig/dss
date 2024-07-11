@@ -23,8 +23,8 @@ package eu.europa.esig.dss.pades;
 import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
-import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.pdf.visible.DPIUtils;
 
 import java.awt.Color;
@@ -110,6 +110,9 @@ public class SignatureImageParameters implements Serializable {
 	 * @param image {@link DSSDocument}
 	 */
 	public void setImage(DSSDocument image) {
+		if (image instanceof DigestDocument) {
+			throw new IllegalArgumentException("DigestDocument cannot be used as an image!");
+		}
 		this.image = image;
 	}
 
@@ -201,34 +204,6 @@ public class SignatureImageParameters implements Serializable {
 	 */
 	public void setTextParameters(SignatureImageTextParameters textParameters) {
 		this.textParameters = textParameters;
-	}
-
-	/**
-	 * Returns rotation value for a signature field
-	 *
-	 * @return {@link VisualSignatureRotation}
-	 * @deprecated since DSS 5.13. Use {@code #SignatureFieldParameters.getRotation()}
-	 */
-	@Deprecated
-	public VisualSignatureRotation getRotation() {
-		return getFieldParameters().getRotation();
-	}
-
-	/**
-	 * Sets a rotation value for the signature field.
-	 *
-	 * @param rotation 
-	 *             {@link VisualSignatureRotation}. The following values can be used:
-	 *             NONE (DEFAULT value. No rotation is applied. The origin of coordinates begins from the top left corner of a page);
-	 *             AUTOMATIC (Rotates a signature field respectively to the page's rotation. Rotates the signature field on the same value as a defined in a PDF page);
-	 *             ROTATE_90 (Rotates a signature field for a 90° clockwise. Coordinates' origin begins from top right page corner);
-	 *             ROTATE_180 (Rotates a signature field for a 180° clockwise. Coordinates' origin begins from the bottom right page corner);
-	 *             ROTATE_270 (Rotates a signature field for a 270° clockwise. Coordinates' origin begins from the bottom left page corner).
-	 * @deprecated since DSS 5.13. Use {@code #SignatureFieldParameters.setRotation()}
-	 */
-	@Deprecated
-	public void setRotation(VisualSignatureRotation rotation) {
-		getFieldParameters().setRotation(rotation);
 	}
 
 	/**

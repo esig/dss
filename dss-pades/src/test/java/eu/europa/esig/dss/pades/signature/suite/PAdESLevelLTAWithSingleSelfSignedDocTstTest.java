@@ -20,25 +20,28 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -47,17 +50,19 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESLevelLTAWithSingleSelfSignedDocTstTest extends AbstractPAdESTestSignature {
 
+    private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -65,7 +70,8 @@ public class PAdESLevelLTAWithSingleSelfSignedDocTstTest extends AbstractPAdESTe
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-        service = new PAdESService(getOfflineCertificateVerifier());
+        certificateVerifier = getOfflineCertificateVerifier();
+        service = new PAdESService(certificateVerifier);
     }
 
     @Override
@@ -74,9 +80,9 @@ public class PAdESLevelLTAWithSingleSelfSignedDocTstTest extends AbstractPAdESTe
 
         PDFSignatureService pdfSignatureService = new ServiceLoaderPdfObjFactory().newPAdESSignatureService();
 
-        PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(signedDocument);
-        pdfDocumentValidator.setCertificateVerifier(getCompleteCertificateVerifier());
-        PdfValidationDataContainer validationData = pdfDocumentValidator.getValidationData(pdfDocumentValidator.getSignatures(), Collections.emptyList());
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(signedDocument);
+        pdfDocumentAnalyzer.setCertificateVerifier(getCompleteCertificateVerifier());
+        PdfValidationDataContainer validationData = pdfDocumentAnalyzer.getValidationData(pdfDocumentAnalyzer.getSignatures(), Collections.emptyList());
 
         signedDocument = pdfSignatureService.addDssDictionary(signedDocument, validationData);
         signedDocument = new PAdESTimestampService(getSelfSignedTsa()).timestampDocument(signedDocument, new PAdESTimestampParameters());
@@ -99,21 +105,37 @@ public class PAdESLevelLTAWithSingleSelfSignedDocTstTest extends AbstractPAdESTe
 
         service.setTspSource(getGoodTsa());
 
-        Exception exception = assertThrows(IllegalInputException.class, () ->
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        Exception exception = assertThrows(AlertException.class, () ->
                 service.extendDocument(signedDocument, signatureParameters));
-        assertEquals("Cannot extend signature to 'PAdES-BASELINE-T'. " +
-                "The signature is already extended with LTA level.", exception.getMessage());
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+        assertNotNull(extendedDocument);
 
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
 
-        exception = assertThrows(IllegalInputException.class, () ->
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        exception = assertThrows(AlertException.class, () ->
                 service.extendDocument(signedDocument, signatureParameters));
-        assertEquals("Cannot extend signature to 'PAdES-BASELINE-LT'. " +
-                "The signature is already extended with LTA level.", exception.getMessage());
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+        assertNotNull(extendedDocument);
 
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 
-        DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
+        extendedDocument = service.extendDocument(signedDocument, signatureParameters);
         SignedDocumentValidator validator = getValidator(extendedDocument);
         List<AdvancedSignature> signatures = validator.getSignatures();
         assertEquals(1, signatures.size());

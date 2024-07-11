@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asice;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -55,10 +55,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
+class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		
 		List<DSSDocument> documentsToSign = new ArrayList<>();
 		documentsToSign.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));
@@ -102,7 +102,7 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
 		assertArchiveTimestampFound(diagnosticData);
 		validateSignatures(diagnosticData.getSignatures());
 		
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleSignedDocument);
+		DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleSignedDocument);
         ASiCContent result = extractor.extract();
         
         assertEquals(11, result.getAllDocuments().size());
@@ -123,7 +123,7 @@ public class ASiCECAdESSignLTALevelTest extends PKIFactoryAccess {
         		assertEquals(8, manifestFile.getEntries().size());
         		ManifestEntry rootFile = manifestFile.getRootFile();
         		assertNotNull(rootFile);
-        		ManifestFile rootManifestFile = getManifestFileByName(rootFile.getFileName(), result.getArchiveManifestDocuments());
+        		ManifestFile rootManifestFile = getManifestFileByName(rootFile.getUri(), result.getArchiveManifestDocuments());
         		assertNull(rootManifestFile.getRootFile());
         	}
         }

@@ -31,7 +31,6 @@ import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -112,7 +111,7 @@ public abstract class SignatureScope implements IdentifierBasedObject, Serializa
 			if (document instanceof DigestDocument) {
 				return ((DigestDocument) document).getExistingDigest();
 			} else {
-				return new Digest(digestAlgorithm, Base64.getDecoder().decode(document.getDigest(digestAlgorithm)));
+				return new Digest(digestAlgorithm, document.getDigestValue(digestAlgorithm));
 			}
 		}
 		return null;

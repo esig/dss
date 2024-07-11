@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
  */
 public class RevocationRefOriginParser {
 
+	/**
+	 * Default constructor
+	 */
 	private RevocationRefOriginParser() {
+		// empty
 	}
 
 	/**

@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ASiCEWithXAdESLevelBContainerMergerDifferentMultipleDocumentsTest extends AbstractWithXAdESTestMerge {
+class ASiCEWithXAdESLevelBContainerMergerDifferentMultipleDocumentsTest extends AbstractWithXAdESTestMerge {
 
     private List<DSSDocument> documentsToSignOne;
     private List<DSSDocument> documentsToSignTwo;
@@ -48,7 +48,7 @@ public class ASiCEWithXAdESLevelBContainerMergerDifferentMultipleDocumentsTest e
     private ASiCWithXAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentsToSignOne = Arrays.asList(new FileDocument("src/test/resources/signable/test.txt"),
                 new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT));
 

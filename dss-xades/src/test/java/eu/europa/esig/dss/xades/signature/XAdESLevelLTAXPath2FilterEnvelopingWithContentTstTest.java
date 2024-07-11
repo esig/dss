@@ -39,14 +39,14 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
-public class XAdESLevelLTAXPath2FilterEnvelopingWithContentTstTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTAXPath2FilterEnvelopingWithContentTstTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample-c14n-dss.xml");
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -67,7 +67,7 @@ public class XAdESLevelLTAXPath2FilterEnvelopingWithContentTstTest extends Abstr
 		DSSReference dssReference = new DSSReference();
 		dssReference.setContents(documentToSign);
 		dssReference.setId("Canonicalization-Ref-Test");
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		dssReference.setUri("#document");
 		dssReference.setType(Reference.OBJECT_URI);
 		dssReference.setTransforms(Arrays.asList(new XPath2FilterTransform("//*[@Id='dss1']", "intersect")));

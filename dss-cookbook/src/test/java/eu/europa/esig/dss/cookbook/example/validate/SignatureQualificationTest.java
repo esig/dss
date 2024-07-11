@@ -38,8 +38,8 @@ import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.TLSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -48,10 +48,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SignatureQualificationTest {
+class SignatureQualificationTest {
 
     @Test
-    public void test() {
+    void test() {
 
         DSSDocument signedDocument = new FileDocument("src/test/resources/signature-pool/signedXmlXadesB.xml");
 
@@ -67,8 +67,8 @@ public class SignatureQualificationTest {
         // import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
         // import eu.europa.esig.dss.tsl.job.TLValidationJob;
         // import eu.europa.esig.dss.tsl.source.TLSource;
-        // import eu.europa.esig.dss.validation.CertificateVerifier;
-        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
         // import eu.europa.esig.dss.validation.DocumentValidator;
         // import eu.europa.esig.dss.validation.SignedDocumentValidator;
         // import eu.europa.esig.dss.validation.reports.Reports;

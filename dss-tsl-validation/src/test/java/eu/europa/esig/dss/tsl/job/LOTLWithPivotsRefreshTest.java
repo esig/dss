@@ -26,12 +26,12 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
-import eu.europa.esig.dss.spi.tsl.PivotInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
+import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.model.tsl.PivotInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
@@ -50,13 +50,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class LOTLWithPivotsRefreshTest {
+class LOTLWithPivotsRefreshTest {
 
 	@TempDir
 	File cacheDirectory;
 
 	@Test
-	public void test() {
+	void test() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -74,7 +74,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
-	public void testMissingPivots() {
+	void testMissingPivots() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(missingUrlMap());
 
@@ -97,7 +97,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
-	public void testMissingCert() {
+	void testMissingCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -117,7 +117,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
-	public void testNoCertSource() {
+	void testNoCertSource() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 
@@ -145,7 +145,7 @@ public class LOTLWithPivotsRefreshTest {
 	}
 
 	@Test
-	public void testWrongCert() {
+	void testWrongCert() {
 
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(correctUrlMap());
 

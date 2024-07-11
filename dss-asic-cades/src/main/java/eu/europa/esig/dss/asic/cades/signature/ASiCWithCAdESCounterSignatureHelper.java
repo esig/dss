@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
-import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 
 import java.util.Collections;
 import java.util.List;
@@ -49,13 +49,13 @@ public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	}
 
 	@Override
-	protected AbstractASiCContainerExtractor getASiCContainerExtractor() {
+	protected DefaultASiCContainerExtractor getASiCContainerExtractor() {
 		return new ASiCWithCAdESContainerExtractor(asicContainer);
 	}
 
 	@Override
-	protected DocumentValidator getDocumentValidator(DSSDocument signatureDocument) {
-		return new CMSDocumentValidator(signatureDocument);
+	protected DocumentAnalyzer getDocumentAnalyzer(DSSDocument signatureDocument) {
+		return new CMSDocumentAnalyzer(signatureDocument);
 	}
 
 	@Override

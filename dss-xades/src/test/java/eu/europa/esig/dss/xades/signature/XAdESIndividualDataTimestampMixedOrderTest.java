@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class XAdESIndividualDataTimestampMixedOrderTest extends AbstractXAdESMultipleDocumentsSignatureService {
+class XAdESIndividualDataTimestampMixedOrderTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
     private static final String FILE1 = "src/test/resources/sample.xml";
     private static final String FILE2 = "src/test/resources/sampleISO.xml";
@@ -49,7 +49,7 @@ public class XAdESIndividualDataTimestampMixedOrderTest extends AbstractXAdESMul
     private List<DSSDocument> documentsToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentsToSign = new ArrayList<>();
         DSSDocument firstFile = new FileDocument(FILE1);
         documentsToSign.add(firstFile);

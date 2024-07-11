@@ -26,7 +26,7 @@ import java.util.List;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class JWSSimpleDetachedTest extends AbstractJAdESTestValidation {
+class JWSSimpleDetachedTest extends AbstractJAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -37,7 +37,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1Object;
@@ -74,7 +74,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
+class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -85,7 +85,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();
@@ -115,7 +115,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 		super.onDocumentSigned(byteArray);
 
 		try {
-			CMSDocumentValidator cmsDocumentValidator = new CMSDocumentValidator(new InMemoryDocument(byteArray));
+			CMSDocumentAnalyzer cmsDocumentValidator = new CMSDocumentAnalyzer(new InMemoryDocument(byteArray));
 			List<AdvancedSignature> signatures = cmsDocumentValidator.getSignatures();
 			assertEquals(1, signatures.size());
 			assertTrue(signatures.get(0) instanceof CAdESSignature);
@@ -213,7 +213,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 			// assertEquals(1, seqDigest.size());
 
 			ASN1ObjectIdentifier oidDigestAlgo = ASN1ObjectIdentifier.getInstance(seqDigest.getObjectAt(0));
-			assertEquals(new ASN1ObjectIdentifier(DigestAlgorithm.SHA256.getOid()), oidDigestAlgo);
+			assertEquals(new ASN1ObjectIdentifier(DigestAlgorithm.SHA512.getOid()), oidDigestAlgo);
 
 			ASN1Sequence seqEncapsulatedInfo = ASN1Sequence.getInstance(seq.getObjectAt(2));
 			logger.info("ENCAPSULATED INFO : " + seqEncapsulatedInfo.toString());
@@ -228,7 +228,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 			assertEquals(HELLO_WORLD, content);
 			logger.info("CONTENT : " + content);
 
-			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, HELLO_WORLD.getBytes());
+			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, HELLO_WORLD.getBytes());
 			String encodeHexDigest = Hex.toHexString(digest);
 			logger.info("CONTENT DIGEST COMPUTED : " + encodeHexDigest);
 
@@ -273,7 +273,7 @@ public class CAdESLevelBETSITS101733Test extends AbstractCAdESTestSignature {
 			logger.info("Decrypted Base64 : " + decryptedDigestEncodeBase64);
 
 			byte[] encoded = signedInfo.getAuthenticatedAttributes().getEncoded();
-			MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA256.getName());
+			MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA512.getName());
 			byte[] digestOfAuthenticatedAttributes = messageDigest.digest(encoded);
 
 			String computedDigestEncodeBase64 = Utils.toBase64(digestOfAuthenticatedAttributes);

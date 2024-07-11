@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.jws;
 
-import org.json.JSONObject;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,17 +41,26 @@ public final class JWSUtils extends AbstractJWSUtils {
 	/** The RFC 7517 schema name URI */
 	private static final String RFC7517_SCHEMA_URI = "rfc7517.json";
 
+	/** The main JWS signature wrapper schema URI */
+	private static final String JWS_SCHEMA_URI = "rfc7515-jws.json";
+
 	/** The main JWS signature wrapper schema */
 	private static final String JWS_SCHEMA_LOCATION = "/schema/rfc7515-jws.json";
 
+	/** The protected header schema URI for a JWS signature */
+	private static final String JWS_PROTECTED_HEADER_SCHEMA_URI = "rfc7515-protected.json";
+
 	/** The protected header schema for a JWS signature */
 	private static final String JWS_PROTECTED_HEADER_SCHEMA_LOCATION = "/schema/rfc7515-protected.json";
+
+	/** The unprotected header schema URI for a JWS signature */
+	private static final String JWS_UNPROTECTED_HEADER_SCHEMA_URI = "rfc7515-unprotected.json";
 
 	/** The unprotected header schema for a JWS signature */
 	private static final String JWS_UNPROTECTED_HEADER_SCHEMA_LOCATION = "/schema/rfc7515-unprotected.json";
 
 	/** Map of used definition schemas */
-	private Map<URI, JSONObject> definitions;
+	private Map<URI, String> definitions;
 
 	private static JWSUtils singleton;
 
@@ -74,32 +81,32 @@ public final class JWSUtils extends AbstractJWSUtils {
 	}
 
 	@Override
-	public JSONObject getJWSSchemaJSON() {
-		return parseJson(AbstractJWSUtils.class.getResourceAsStream(JWS_SCHEMA_LOCATION));
+	public String getJWSSchemaJSON() {
+		return JWS_SCHEMA_URI;
 	}
 
 	@Override
-	public Map<URI, JSONObject> getJWSSchemaDefinitions() {
+	public Map<URI, String> getJWSSchemaDefinitions() {
 		return getRFCDefinitions();
 	}
 
 	@Override
-	public JSONObject getJWSProtectedHeaderSchemaJSON() {
-		return parseJson(JWSUtils.class.getResourceAsStream(JWS_PROTECTED_HEADER_SCHEMA_LOCATION));
+	public String getJWSProtectedHeaderSchemaJSON() {
+		return JWS_PROTECTED_HEADER_SCHEMA_URI;
 	}
 
 	@Override
-	public Map<URI, JSONObject> getJWSProtectedHeaderSchemaDefinitions() {
+	public Map<URI, String> getJWSProtectedHeaderSchemaDefinitions() {
 		return getRFCDefinitions();
 	}
 
 	@Override
-	public JSONObject getJWSUnprotectedHeaderSchemaJSON() {
-		return parseJson(JWSUtils.class.getResourceAsStream(JWS_UNPROTECTED_HEADER_SCHEMA_LOCATION));
+	public String getJWSUnprotectedHeaderSchemaJSON() {
+		return JWS_UNPROTECTED_HEADER_SCHEMA_URI;
 	}
 
 	@Override
-	public Map<URI, JSONObject> getJWSUnprotectedHeaderSchemaDefinitions() {
+	public Map<URI, String> getJWSUnprotectedHeaderSchemaDefinitions() {
 		return getRFCDefinitions();
 	}
 
@@ -108,13 +115,15 @@ public final class JWSUtils extends AbstractJWSUtils {
 	 * 
 	 * @return a map of definitions
 	 */
-	public Map<URI, JSONObject> getRFCDefinitions() {
+	public Map<URI, String> getRFCDefinitions() {
 		if (definitions == null) {
 			definitions = new HashMap<>();
-			definitions.put(URI.create(RFC7515_SCHEMA_URI),
-					parseJson(JWSUtils.class.getResourceAsStream(RFC7515_SCHEMA_LOCATION)));
-			definitions.put(URI.create(RFC7517_SCHEMA_URI),
-					parseJson(JWSUtils.class.getResourceAsStream(RFC7517_SCHEMA_LOCATION)));
+			definitions.putAll(getJSONSchemaDefinitions());
+			definitions.put(URI.create(RFC7515_SCHEMA_URI), RFC7515_SCHEMA_LOCATION);
+			definitions.put(URI.create(RFC7517_SCHEMA_URI), RFC7517_SCHEMA_LOCATION);
+			definitions.put(URI.create(JWS_SCHEMA_URI), JWS_SCHEMA_LOCATION);
+			definitions.put(URI.create(JWS_PROTECTED_HEADER_SCHEMA_URI), JWS_PROTECTED_HEADER_SCHEMA_LOCATION);
+			definitions.put(URI.create(JWS_UNPROTECTED_HEADER_SCHEMA_URI), JWS_UNPROTECTED_HEADER_SCHEMA_LOCATION);
 		}
 		return definitions;
 	}

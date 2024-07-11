@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -28,6 +29,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.bouncycastle.cms.SignerInformation;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,14 +40,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelTWithGeneralizedTimeTest extends AbstractCAdESTestSignature {
+class CAdESLevelTWithGeneralizedTimeTest extends AbstractCAdESTestSignature {
 
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
     private CAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello World".getBytes());
 
         signatureParameters = new CAdESSignatureParameters();
@@ -54,9 +56,10 @@ public class CAdESLevelTWithGeneralizedTimeTest extends AbstractCAdESTestSignatu
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-        signatureParameters.setSignWithExpiredCertificate(true);
 
-        service = new CAdESService(getOfflineCertificateVerifier());
+        CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+        service = new CAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
     }
 

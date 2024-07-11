@@ -42,12 +42,12 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 /*
  * see DSS-2010
  */
-public class XAdESAttrAuthoritiesValuesTest extends AbstractXAdESTestValidation {
+class XAdESAttrAuthoritiesValuesTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

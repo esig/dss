@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.TimestampedObjectType;
  */
 public final class TimestampedObjectTypeParser {
 
+	/**
+	 * Default constructor
+	 */
 	private TimestampedObjectTypeParser() {
+		// empty
 	}
 
 	/**

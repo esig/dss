@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -45,7 +45,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class XAdESInvalidEnvelopedSignatureCreationTest extends AbstractXAdESTestSignature {
+class XAdESInvalidEnvelopedSignatureCreationTest extends AbstractXAdESTestSignature {
 
     private static final DSSDocument ORIGINAL_DOCUMENT = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -54,7 +54,7 @@ public class XAdESInvalidEnvelopedSignatureCreationTest extends AbstractXAdESTes
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = ORIGINAL_DOCUMENT;
 
         signatureParameters = new XAdESSignatureParameters();

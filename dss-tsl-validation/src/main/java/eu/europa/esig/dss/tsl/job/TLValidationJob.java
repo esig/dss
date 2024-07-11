@@ -23,10 +23,10 @@ package eu.europa.esig.dss.tsl.job;
 import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
 import eu.europa.esig.dss.tsl.alerts.TLValidationJobAlerter;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
@@ -107,7 +107,7 @@ public class TLValidationJob {
 	/**
 	 * The certificate source to be synchronized
 	 */
-	private TrustedListsCertificateSource trustedListCertificateSource;
+	private TrustPropertiesCertificateSource trustPropertiesCertificateSource;
 
 	/**
 	 * The strategy to follow to synchronize the certificates.
@@ -196,12 +196,12 @@ public class TLValidationJob {
 	/**
 	 * Sets the TrustedListsCertificateSource to be filled with the job
 	 * 
-	 * @param trustedListCertificateSource
+	 * @param trustPropertiesCertificateSource
 	 *                                     the TrustedListsCertificateSource to fill
 	 *                                     with the job results
 	 */
-	public void setTrustedListCertificateSource(TrustedListsCertificateSource trustedListCertificateSource) {
-		this.trustedListCertificateSource = trustedListCertificateSource;
+	public void setTrustedListCertificateSource(TrustPropertiesCertificateSource trustPropertiesCertificateSource) {
+		this.trustPropertiesCertificateSource = trustPropertiesCertificateSource;
 	}
 
 	/**
@@ -392,13 +392,13 @@ public class TLValidationJob {
 	}
 
 	private void synchronizeTLCertificateSource() {
-		if (trustedListCertificateSource == null) {
+		if (trustPropertiesCertificateSource == null) {
 			LOG.warn("No TrustedListCertificateSource to be synchronized");
 			return;
 		}
 
 		TrustedListCertificateSourceSynchronizer synchronizer = new TrustedListCertificateSourceSynchronizer(trustedListSources, listOfTrustedListSources,
-				trustedListCertificateSource, synchronizationStrategy, cacheAccessFactory.getSynchronizerCacheAccess());
+				trustPropertiesCertificateSource, synchronizationStrategy, cacheAccessFactory.getSynchronizerCacheAccess());
 		synchronizer.sync();
 	}
 

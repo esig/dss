@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEXAdESWithPlusCharTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEXAdESWithPlusCharTest extends AbstractASiCWithXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

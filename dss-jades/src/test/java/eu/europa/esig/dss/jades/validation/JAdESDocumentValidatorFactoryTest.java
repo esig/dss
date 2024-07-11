@@ -31,12 +31,12 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.DocumentValidator;
 
-public class JAdESDocumentValidatorFactoryTest {
+class JAdESDocumentValidatorFactoryTest {
 
 	private JAdESDocumentValidatorFactory factory = new JAdESDocumentValidatorFactory();
 
 	@Test
-	public void compact() {
+	void compact() {
 		DSSDocument jws = new InMemoryDocument("eyJhbGciOiJIUzI1NiJ9.c2lnaA.2yUt5UtfsRK1pnN0KTTv7gzHTxwDqDz2OkFSqlbQ40A".getBytes());
 		assertTrue(factory.isSupported(jws));
 
@@ -46,7 +46,7 @@ public class JAdESDocumentValidatorFactoryTest {
 	}
 
 	@Test
-	public void serialization() {
+	void serialization() {
 		DSSDocument jws = new InMemoryDocument("{\"hello\":\"world\"}".getBytes());
 		assertTrue(factory.isSupported(jws));
 
@@ -56,7 +56,7 @@ public class JAdESDocumentValidatorFactoryTest {
 	}
 
 	@Test
-	public void unsupported() {
+	void unsupported() {
 		DSSDocument doc = new InMemoryDocument("AAA".getBytes());
 		assertFalse(factory.isSupported(doc));
 

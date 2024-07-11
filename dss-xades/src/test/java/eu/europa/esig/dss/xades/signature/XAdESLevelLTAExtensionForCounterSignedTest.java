@@ -30,13 +30,13 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTAExtensionForCounterSignedTest extends AbstractXAdESTestValidation {
+class XAdESLevelLTAExtensionForCounterSignedTest extends AbstractXAdESTestValidation {
 	
 	private XAdESService service;
 	private DSSDocument documentToSign;
@@ -67,7 +67,7 @@ public class XAdESLevelLTAExtensionForCounterSignedTest extends AbstractXAdESTes
 	private String signingAlias;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		
 		service = new XAdESService(getCompleteCertificateVerifier());
@@ -92,12 +92,11 @@ public class XAdESLevelLTAExtensionForCounterSignedTest extends AbstractXAdESTes
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		signingAlias = SELF_SIGNED_USER;
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		signingAlias = GOOD_USER;
@@ -108,8 +107,7 @@ public class XAdESLevelLTAExtensionForCounterSignedTest extends AbstractXAdESTes
 		counterSignatureParameters.setSignatureIdToCounterSign(validator.getSignatures().get(0).getId());
 		
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
 		validator = getValidator(counterSignedSignature);
@@ -168,8 +166,7 @@ public class XAdESLevelLTAExtensionForCounterSignedTest extends AbstractXAdESTes
 		// possible to counter sign the main signature again
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaXAdES, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		counterSignedSignature = service.counterSignSignature(ltaXAdES, counterSignatureParameters, signatureValue);
 		assertNotNull(counterSignedSignature);
 		

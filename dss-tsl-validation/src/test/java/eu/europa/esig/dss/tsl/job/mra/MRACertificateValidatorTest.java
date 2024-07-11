@@ -33,7 +33,7 @@ import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 
@@ -42,11 +42,11 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MRACertificateValidatorTest extends AbstractMRALOTLTest {
+class MRACertificateValidatorTest extends AbstractMRALOTLTest {
 
     @Test
     @Override
-    public void test() {
+    void test() {
         TLValidationJob tlValidationJob = new TLValidationJob();
 
         LOTLSource lotlSource = new LOTLSource();

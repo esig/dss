@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private MultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private JAdESSignatureParameters signatureParameters;
@@ -56,7 +56,7 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		JAdESService jadesService = new JAdESService(getCompleteCertificateVerifier());
 		jadesService.setTspSource(getGoodTsa());
 		service = jadesService;
@@ -71,8 +71,8 @@ public class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAd
 		documentsToSign.add(new HTTPHeader("x-example", "Duplicated Header"));     
 		
 		// build "Digest" header manually
-        String digest = originalDocument.getDigest(DigestAlgorithm.SHA1);
-        documentsToSign.add(new HTTPHeader("Digest", "SHA="+digest));
+        byte[] digest = originalDocument.getDigestValue(DigestAlgorithm.SHA1);
+        documentsToSign.add(new HTTPHeader("Digest", "SHA=" + Utils.toBase64(digest)));
 
 		signatureParameters = new JAdESSignatureParameters();
 

@@ -42,6 +42,7 @@
 	<xs:complexType name="Timestamp">
 		<xs:sequence>
 			<xs:element name="ValidationProcessBasicTimestamp" type="ValidationProcessBasicTimestamp" />
+			<xs:element name="EvidenceRecord" type="EvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="ValidationProcessArchivalDataTimestamp" type="ValidationProcessArchivalDataTimestamp" minOccurs="0" />
 			
 			<!-- eIDAS stuffs -->
@@ -422,6 +423,8 @@
 			<xs:enumeration value="VTS" />
 			<xs:enumeration value="TST_PSV" />
 			<xs:enumeration value="TST" />
+			<xs:enumeration value="LTV" />
+			<xs:enumeration value="LTA" />
 			<xs:enumeration value="ER" />
 		</xs:restriction>
 	</xs:simpleType>

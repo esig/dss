@@ -35,7 +35,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class MultipleCounterSignatureValidationTest extends AbstractCAdESTestValidation {
+class MultipleCounterSignatureValidationTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -23,7 +23,10 @@ package eu.europa.esig.dss.asic.cades;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.Objects;
 
 /**
  * This class provides a simple way to define custom names for file entries created within an ASiC with CAdES container,
@@ -49,11 +52,17 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
     /** Defines a name of a creating timestamp file (e.g. "timestamp001.tst") */
     private String timestampFilename;
 
+    /** Defines a name of a creating evidence record file (e.g. "evidencerecord001.ers" or "evidencerecord001.xml") */
+    private String evidenceRecordFilename;
+
     /** Defines a name of a creating manifest file (e.g. "ASiCManifest001.xml") */
     private String manifestFilename;
 
     /** Defines a new name for the last archive manifest file to be moved (e.g. "ASiCArchiveManifest001.xml") */
     private String archiveManifestFilename;
+
+    /** Defines a new name for the last evidence record manifest file to be created (e.g. "META-INF/ASiCEvidenceRecordManifest001.xml") */
+    private String evidenceRecordManifestFilename;
 
     /** Defines a name of a creating ZIP archive, containing multiple signer documents (in case of ASiC-S container) */
     private String dataPackageFilename;
@@ -110,6 +119,29 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
     }
 
     @Override
+    public String getEvidenceRecordFilename(ASiCContent asicContent, EvidenceRecordTypeEnum evidenceRecordType) {
+        Objects.requireNonNull(evidenceRecordType, "EvidenceRecordType shall be defined!");
+        if (Utils.isStringNotEmpty(evidenceRecordFilename)) {
+            return getValidEvidenceRecordFilename(evidenceRecordFilename, asicContent, evidenceRecordType);
+        }
+        return super.getEvidenceRecordFilename(asicContent, evidenceRecordType);
+    }
+
+    /**
+     * Sets a filename for a new evidence record document.
+     *
+     * NOTE: The name of the evidence record file shall be:
+     * - ASiC-S with CAdES : "META-INF/evidencerecord.xml" or "META-INF/evidencerecord.ers"
+     * - ASiC-E with CAdES : "META-INF/*evidencerecord*.xml" or "META-INF/*evidencerecord*.ers"
+     * "META-INF/" is optional.
+     *
+     * @param evidenceRecordFilename {@link String}
+     */
+    public void setEvidenceRecordFilename(String evidenceRecordFilename) {
+        this.evidenceRecordFilename = evidenceRecordFilename;
+    }
+
+    @Override
     public String getManifestFilename(ASiCContent asicContent) {
         if (Utils.isStringNotEmpty(manifestFilename)) {
             return getValidManifestFilename(manifestFilename, asicContent);
@@ -120,7 +152,7 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
     /**
      * Sets a filename for a new manifest document (when applicable).
      *
-     * NOTE: The name of the timestamp file shall be:
+     * NOTE: The name of the manifest file shall be:
      * - ASiC-E with CAdES : "META-INF/ASiCManifest*.xml".
      * "META-INF/" is optional.
      *
@@ -164,6 +196,25 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
         this.dataPackageFilename = dataPackageFilename;
     }
 
+
+
+    @Override
+    public String getEvidenceRecordManifestFilename(ASiCContent asicContent) {
+        if (Utils.isStringNotEmpty(evidenceRecordManifestFilename)) {
+            return getValidEvidenceRecordManifestFilename(evidenceRecordManifestFilename, asicContent);
+        }
+        return super.getEvidenceRecordManifestFilename(asicContent);
+    }
+
+    /**
+     * Sets a new filename for the ASiC evidence record manifest document (when applicable)
+     *
+     * @param evidenceRecordManifestFilename {@link String}
+     */
+    public void setEvidenceRecordManifestFilename(String evidenceRecordManifestFilename) {
+        this.evidenceRecordManifestFilename = evidenceRecordManifestFilename;
+    }
+
     /**
      * This method returns a valid signature filename
      *
@@ -186,6 +237,7 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
         }
         return signatureFilename;
     }
+
     /**
      * This method returns a valid timestamp filename
      *
@@ -208,6 +260,48 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
                     + ASiCUtils.TST_EXTENSION));
         }
         return timestampFilename;
+    }
+    /**
+     * This method returns a valid evidence record filename
+     *
+     * @param evidenceRecordFilename {@link String} defined evidence record filename
+     * @param asicContent {@link ASiCContent}
+     * @param  evidenceRecordType {@link EvidenceRecordTypeEnum}
+     * @return {@link String} evidence record filename
+     */
+    protected String getValidEvidenceRecordFilename(String evidenceRecordFilename, ASiCContent asicContent, EvidenceRecordTypeEnum evidenceRecordType) {
+        assertASiCContentIsValid(asicContent);
+        evidenceRecordFilename = getWithMetaInfFolder(evidenceRecordFilename);
+        assertFilenameValid(evidenceRecordFilename, asicContent.getEvidenceRecordDocuments());
+        switch (evidenceRecordType) {
+            case XML_EVIDENCE_RECORD:
+                if (!evidenceRecordFilename.endsWith(ASiCUtils.XML_EXTENSION)) {
+                    throw new IllegalArgumentException(String.format("An XMLERS evidence record file within " +
+                            "ASiC container shall end with '%s' extension!", ASiCUtils.XML_EXTENSION));
+                }
+                break;
+            case ASN1_EVIDENCE_RECORD:
+                if (!evidenceRecordFilename.endsWith(ASiCUtils.ER_ASN1_EXTENSION)) {
+                    throw new IllegalArgumentException(String.format("An ERS evidence record file within " +
+                            "ASiC container shall end with '%s' extension!", ASiCUtils.ER_ASN1_EXTENSION));
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException(
+                        String.format("The Evidence Record Type '%s' is not supported!", evidenceRecordType));
+        }
+        if (ASiCUtils.isASiCSContainer(asicContent) && Utils.isCollectionEmpty(asicContent.getEvidenceRecordDocuments()) &&
+                !(ASiCUtils.EVIDENCE_RECORD_ERS.equals(evidenceRecordFilename) || ASiCUtils.EVIDENCE_RECORD_XML.equals(evidenceRecordFilename) )) {
+            throw new IllegalArgumentException(String.format("An evidence record file within ASiC-S with CAdES container " +
+                    "shall have name '%s' or '%s'!", ASiCUtils.EVIDENCE_RECORD_ERS, ASiCUtils.EVIDENCE_RECORD_XML));
+
+        } else if (!evidenceRecordFilename.startsWith(ASiCUtils.META_INF_FOLDER) || !evidenceRecordFilename.contains(ASiCUtils.EVIDENCE_RECORD_FILENAME)) {
+            // ASiC-E
+            throw new IllegalArgumentException(String.format("An evidence record file within ASiC-E with CAdES container " +
+                    "shall match the template '%s'!", ASiCUtils.META_INF_FOLDER + "*" + ASiCUtils.EVIDENCE_RECORD_FILENAME + "*"
+                    + "(" + ASiCUtils.ER_ASN1_EXTENSION + "||" + ASiCUtils.XML_EXTENSION + ")"));
+        }
+        return evidenceRecordFilename;
     }
 
     /**
@@ -232,11 +326,11 @@ public class SimpleASiCWithCAdESFilenameFactory extends DefaultASiCWithCAdESFile
     /**
      * This method returns a valid archive manifest filename.
      *
-     * NOTE: The name of the timestamp file shall be:
+     * NOTE: The name of the archive manifest file shall be:
      * - ASiC-E with CAdES : "META-INF/ASiCArchiveManifest*.xml".
      * "META-INF/" is optional.
      *
-     * @param archiveManifestFilename {@link String} defined archive manifest filename
+     * @param archiveManifestFilename {@link String} defines archive manifest filename
      * @param asicContent {@link ASiCContent}
      * @return {@link String} archive manifest filename
      */

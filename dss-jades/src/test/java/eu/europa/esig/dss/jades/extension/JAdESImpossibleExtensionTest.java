@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -43,10 +43,10 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
+class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 
 	@Test
-	public void notSigned() {
+	void notSigned() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.json");
 
 		JAdESService service = new JAdESService(getOfflineCertificateVerifier());
@@ -61,10 +61,10 @@ public class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void digestDocumentWithLTALevelTest() {
+	void digestDocumentWithLTALevelTest() {
 		DSSDocument doc = new FileDocument("src/test/resources/sample.json");
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA256, 
-				Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, doc)), "sample");
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA512,
+				Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA512, doc)), "sample");
 
 		JAdESService service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());

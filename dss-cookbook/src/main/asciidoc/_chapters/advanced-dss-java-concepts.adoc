@@ -309,7 +309,7 @@ Since version 5.11, DSS provides a possibility to configure a way temporary obje
 
 `DSSResourcesHandler` is responsible for implementation of created temporary objects during the execution, e.g. in memory or in a temporary file.
 
-NOTE: `DSSResourcesHandler` is only supported in methods within `PAdESService` so far (i.e. signature creation, extension, screenshot generation, etc.).
+NOTE: `DSSResourcesHandler` is only supported in methods within `PAdESService` (i.e. signature creation, extension, screenshot generation, etc.) and `ZipUtils` (ASiC generation).
 
 The `DSSResourcesHandler` interface provides the following methods:
 
@@ -325,7 +325,7 @@ In order to create a `DSSResourcesHandler` an implementation of `DSSResourcesHan
 
 NOTE: `InMemoryResourcesHandlerBuilder` is used by default in DSS, working with data in memory.
 
-To define the resources handler, the corresponding `DSSResourcesHandlerBuilder` has to be provided to an instance of `IPdfObjFactory` used within a `PAdESService`. An example below demonstrates a signature creation using in temporary file processing:
+To define the resources handler for PAdES processing, the corresponding `DSSResourcesHandlerBuilder` has to be provided to an instance of `IPdfObjFactory` used within a `PAdESService`. An example below demonstrates a signature creation using in temporary file processing:
 
 [source,java,indent=0]
 .PAdES signing using temporary files
@@ -334,6 +334,15 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfWithTem
 ----
 
 WARNING: Based on the implementation, certain objects are still have to be processed in memory (e.g. with PdfBox or iText document readers).
+
+Since DSS `6.1` a `DSSResourcesHandler` may also be used for ASiC creation, allowing to configure direct ASiC creation within a FileSystem as below:
+
+[source,java,indent=0]
+.ASiC creation using temporary files
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignASiCEWithXAdESWithTempFileTest.java[tags=demo]
+----
+
 
 [[zipUtils]]
 === ZIP Utils

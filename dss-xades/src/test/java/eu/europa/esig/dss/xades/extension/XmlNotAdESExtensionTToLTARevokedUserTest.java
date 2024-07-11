@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -35,9 +36,9 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -51,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class XmlNotAdESExtensionTToLTARevokedUserTest extends AbstractXAdESTestExtension {
+class XmlNotAdESExtensionTToLTARevokedUserTest extends AbstractXAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {
@@ -65,6 +66,7 @@ public class XmlNotAdESExtensionTToLTARevokedUserTest extends AbstractXAdESTestE
         signatureParameters.setSignatureLevel(getOriginalSignatureLevel());
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         signatureParameters.setGenerateTBSWithoutCertificate(true);
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
         return signatureParameters;
     }
 

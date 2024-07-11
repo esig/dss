@@ -24,6 +24,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.AbstractEvidenceRecordTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -33,7 +34,7 @@ import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,9 +42,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlEvidenceRecordTimestampRenewalSameTstValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordTimestampRenewalSameTstValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -80,6 +82,10 @@ public class XmlEvidenceRecordTimestampRenewalSameTstValidationTest extends Abst
             boolean validTstFound = false;
             boolean invalidTstFound = false;
             for (TimestampToken timestampToken : timestamps) {
+                assertNotNull(timestampToken.getTimeStampType());
+                assertNotNull(timestampToken.getArchiveTimestampType());
+                assertNotNull(timestampToken.getEvidenceRecordTimestampType());
+
                 assertTrue(timestampToken.isProcessed());
                 assertTrue(timestampToken.isMessageImprintDataFound());
                 if (timestampToken.isMessageImprintDataIntact()) {
@@ -106,12 +112,11 @@ public class XmlEvidenceRecordTimestampRenewalSameTstValidationTest extends Abst
                         }
                     }
 
-                    if (tstReferenceValidationList.size() == 1) {
-                        assertTrue(archiveTstDigestFound);
-                    } else if (tstCoversOnlyCurrentHashTreeData()) {
-                        assertTrue(archiveTstSequenceDigestFound);
-                    }
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstDigestFound);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestampToken.getEvidenceRecordTimestampType(), archiveTstSequenceDigestFound);
 
+                } else {
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestampToken.getEvidenceRecordTimestampType());
                 }
 
                 ++tstCounter;

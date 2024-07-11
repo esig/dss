@@ -41,35 +41,42 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESXPath2FilterDoubleSignatureTest extends PKIFactoryAccess {
+class XAdESXPath2FilterDoubleSignatureTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 
+		Calendar calendar = Calendar.getInstance();
+
 		XAdESSignatureParameters params = new XAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(getSigningCert());
+		params.bLevel().setSigningDate(calendar.getTime());
 		setXPath2Transformation(toBeSigned, params, "REF1");
 
 		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
 		SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
 
+		calendar.add(Calendar.MILLISECOND, 1);
+
 		params = new XAdESSignatureParameters();
 		params.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
 		params.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		params.setSigningCertificate(getSigningCert());
+		params.bLevel().setSigningDate(calendar.getTime());
 		setXPath2Transformation(signedDocument, params, "REF2");
 
 		dataToSign = service.getDataToSign(signedDocument, params);
@@ -97,7 +104,7 @@ public class XAdESXPath2FilterDoubleSignatureTest extends PKIFactoryAccess {
 		DSSReference reference = new DSSReference();
 		reference.setContents(documentToSign);
 		reference.setId(id);
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference.setUri("");
 		List<DSSTransform> transforms1 = new ArrayList<>();
 		XPath2FilterEnvelopedSignatureTransform transform1 = new XPath2FilterEnvelopedSignatureTransform();

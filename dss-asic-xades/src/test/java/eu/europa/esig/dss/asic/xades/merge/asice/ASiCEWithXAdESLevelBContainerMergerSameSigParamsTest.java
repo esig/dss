@@ -35,7 +35,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class ASiCEWithXAdESLevelBContainerMergerSameSigParamsTest extends AbstractWithXAdESTestMerge {
+class ASiCEWithXAdESLevelBContainerMergerSameSigParamsTest extends AbstractWithXAdESTestMerge {
 
     private DSSDocument documentToSign;
 
@@ -45,7 +45,7 @@ public class ASiCEWithXAdESLevelBContainerMergerSameSigParamsTest extends Abstra
     private ASiCWithXAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument("src/test/resources/signable/test.txt");
 
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());

@@ -34,20 +34,21 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignaturePolicy;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithASN1PolicyWithDigPSpAndPolicyStoreTest extends AbstractJAdESTestSignature {
+class JAdESWithASN1PolicyWithDigPSpAndPolicyStoreTest extends AbstractJAdESTestSignature {
 
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -61,7 +62,7 @@ public class JAdESWithASN1PolicyWithDigPSpAndPolicyStoreTest extends AbstractJAd
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.json");
 
         Policy signaturePolicy = new Policy();
@@ -157,7 +158,7 @@ public class JAdESWithASN1PolicyWithDigPSpAndPolicyStoreTest extends AbstractJAd
         assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 
         // transforms are applied
-        assertNotEquals(POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()), Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+        assertFalse(Arrays.equals(POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()), policyDigestAlgoAndValue.getDigestValue()));
     }
 
     @Override

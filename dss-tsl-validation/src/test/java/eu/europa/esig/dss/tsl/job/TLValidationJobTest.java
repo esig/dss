@@ -24,22 +24,21 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
+import eu.europa.esig.dss.model.tsl.CertificatePivotStatus;
+import eu.europa.esig.dss.model.tsl.ConditionForQualifiers;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.PivotInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.TrustService;
+import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.CertificatePivotStatus;
-import eu.europa.esig.dss.spi.tsl.ConditionForQualifiers;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.PivotInfo;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustService;
-import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.tsl.ValidationInfoRecord;
-import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
-import eu.europa.esig.dss.spi.util.TimeDependentValues;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
@@ -63,21 +62,26 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static java.time.Duration.ofMillis;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TLValidationJobTest {
+class TLValidationJobTest {
 
 	private static TLValidationJob tlValidationJob;
 	private static CacheCleaner cacheCleaner;
@@ -99,7 +103,7 @@ public class TLValidationJobTest {
 	private static CertificateToken czSigningCertificate;
 	
 	@BeforeAll
-	public static void initBeforeAll() throws IOException {
+	static void initBeforeAll() throws IOException {
 		urlMap = new HashMap<>();
 		
 		cacheDirectory = new File("target/cache");
@@ -127,7 +131,7 @@ public class TLValidationJobTest {
 	}
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		populateMap();
 		
 		czSource = new TLSource();
@@ -212,7 +216,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void test() {
+	void test() {
 		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
 
 		TLValidationJob validationJob = getTLValidationJob();
@@ -253,7 +257,7 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		List<TrustServiceProvider> czTrustServiceProviders = czTL.getParsingCacheInfo().getTrustServiceProviders();
-		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider(new TrustServiceProviderBuilder());
+		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider();
 		assertThrows(UnsupportedOperationException.class, () -> czTrustServiceProviders.add(emptyTrustServiceProvider));
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		
@@ -301,7 +305,7 @@ public class TLValidationJobTest {
 	}
 
 	@Test
-	public void getSummaryFromCertificateSourceTest() {
+	void getSummaryFromCertificateSourceTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
 
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
@@ -352,7 +356,7 @@ public class TLValidationJobTest {
 		assertNotNull(czTL.getParsingCacheInfo().getTrustServiceProviders());
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 		List<TrustServiceProvider> czTrustServiceProviders = czTL.getParsingCacheInfo().getTrustServiceProviders();
-		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider(new TrustServiceProviderBuilder());
+		TrustServiceProvider emptyTrustServiceProvider = new TrustServiceProvider();
 		assertThrows(UnsupportedOperationException.class, () -> czTrustServiceProviders.add(emptyTrustServiceProvider));
 		assertEquals(6, czTL.getParsingCacheInfo().getTrustServiceProviders().size());
 
@@ -400,7 +404,7 @@ public class TLValidationJobTest {
 	}
 
 	@Test
-	public void testNoSynchronization() {
+	void testNoSynchronization() {
 		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
 
 		TLValidationJob tlValidationJob = new TLValidationJob();
@@ -429,7 +433,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void noTrustedListCertificateSourceTest() {
+	void noTrustedListCertificateSourceTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
 		
 		tlValidationJob = new TLValidationJob();
@@ -458,7 +462,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void emptyTLTest() {
+	void emptyTLTest() {
 		tlValidationJob = new TLValidationJob();
 		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
 		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
@@ -469,7 +473,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void lotlTest() {
+	void lotlTest() {
 		TLValidationJob validationJob = getLOTLValidationJob();
 		
 		TLValidationJobSummary summary = validationJob.getSummary();
@@ -557,7 +561,7 @@ public class TLValidationJobTest {
 	}
 
 	@Test
-	public void lotlGetSummaryFromCertificateSourceTest() {
+	void lotlGetSummaryFromCertificateSourceTest() {
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
 
 		TLValidationJob tlValidationJob = new TLValidationJob();
@@ -653,7 +657,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void emptyLOTLTest() {
+	void emptyLOTLTest() {
 		tlValidationJob = new TLValidationJob();
 		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
 		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
@@ -664,7 +668,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void lotlValidationSummaryExtractionTimeoutTest() {
+	void lotlValidationSummaryExtractionTimeoutTest() {
 		TLValidationJob validationJob = getLOTLValidationJob();
 		assertTimeout(ofMillis(50), () -> {
 			validationJob.getSummary();
@@ -672,7 +676,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void brokenSigTest() {
+	void brokenSigTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_broken-sig.xml");
 		
 		TLValidationJobSummary summary = getTLValidationJob().getSummary();
@@ -700,7 +704,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void tlEmptyTest() {
+	void tlEmptyTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_empty.xml");
 		
 		TLValidationJobSummary summary = getTLValidationJob().getSummary();
@@ -726,7 +730,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void tlNotParsableTest() {
+	void tlNotParsableTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_not-parsable.xml");
 		
 		TLValidationJobSummary summary = getTLValidationJob().getSummary();
@@ -752,7 +756,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void tlNotCompliantTest() {
+	void tlNotCompliantTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_not-compliant.xml");
 		
 		TLValidationJobSummary summary = getTLValidationJob().getSummary();
@@ -781,7 +785,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void tlTwoSignaturesTest() {
+	void tlTwoSignaturesTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_two-sigs.xml");
 		
 		TLValidationJobSummary summary = getTLValidationJob().getSummary();
@@ -810,7 +814,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void tlNoSignaturesTest() {
+	void tlNoSignaturesTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_no-sig.xml");
 		
 		TLValidationJobSummary summary = getTLValidationJob().getSummary();
@@ -839,7 +843,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void tlPdfTest() {
+	void tlPdfTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ.pdf");
 		
 		TLValidationJobSummary summary = getTLValidationJob().getSummary();
@@ -858,7 +862,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void lotlBrokenSigTest() {
+	void lotlBrokenSigTest() {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_broken-sig.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -882,7 +886,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void lotlNotParsableTest() {
+	void lotlNotParsableTest() {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_not-parsable.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -903,7 +907,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void lotlNonCompliantTest() {
+	void lotlNonCompliantTest() {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_non-compliant.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -924,7 +928,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void lotlXmlDeclarationRemovedTest() {
+	void lotlXmlDeclarationRemovedTest() {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_xml-directive-removed.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -950,7 +954,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void pivotTest() {
+	void pivotTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -1002,11 +1006,10 @@ public class TLValidationJobTest {
 		assertEquals(3, addedCerts);
 		assertEquals(1, staticCerts);
 		assertEquals(0, removedCerts);
-		
 	}
 	
 	@Test
-	public void pivotBrokenSigTest() {
+	void pivotBrokenSigTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_broken-sig.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -1050,7 +1053,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void intermediatePivotBrokenSigTest() {
+	void intermediatePivotBrokenSigTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
 		
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
@@ -1114,7 +1117,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void missingPivotTest() {
+	void missingPivotTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_missing-pivot.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -1151,7 +1154,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void pivotNoSigTest() {
+	void pivotNoSigTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_no-sig.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -1173,7 +1176,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void intermediatePivotNoSigTest() {
+	void intermediatePivotNoSigTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
 		
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
@@ -1230,7 +1233,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void pivotNotParsableTest() {
+	void pivotNotParsableTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_not-parsable.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -1251,7 +1254,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void intermediatePivotNotParsableTest() {
+	void intermediatePivotNotParsableTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
 		
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml", 
@@ -1308,7 +1311,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void pivotUTF8WithBomTest() {
+	void pivotUTF8WithBomTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-bom.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -1336,7 +1339,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void pivotWithSpacesTest() {
+	void pivotWithSpacesTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-spaces.xml");
 		
 		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
@@ -1364,7 +1367,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void wrongPivotKeystoreTest() throws IOException {
+	void wrongPivotKeystoreTest() throws IOException {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_with-spaces.xml");
 		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password".toCharArray()));
 		
@@ -1393,7 +1396,7 @@ public class TLValidationJobTest {
 	}
 
 	@Test
-	public void dss2911Test() {
+	void dss2911Test() {
 		Map<String, DSSDocument> map = new HashMap<>();
 		map.put(LOTL_URL, new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
 
@@ -1423,14 +1426,55 @@ public class TLValidationJobTest {
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
-		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+		LOTLInfo lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		Date lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		List<PivotInfo> pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+		List<Date> lastPivotUpdateTimes = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			lastPivotUpdateTimes.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+
+		// Wait
+		Calendar nextMilliSecond = Calendar.getInstance();
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
 
 		map.remove(LOTL_URL);
 		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
 		tlValidationJob.onlineRefresh();
 
 		summary = tlValidationJob.getSummary();
-		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertFalse(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		List<Date> lastPivotUpdateTimesNewList = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			assertTrue(lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime())); // pivots not updated (no LOTL)
+			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
 
 		map.put(LOTL_URL, new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
 		map.remove("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml");
@@ -1441,7 +1485,29 @@ public class TLValidationJobTest {
 		tlValidationJob.onlineRefresh();
 
 		summary = tlValidationJob.getSummary();
-		assertFalse(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertFalse(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		lastPivotUpdateTimesNewList = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			assertFalse(lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime()));
+			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
 
 		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml"));
@@ -1449,17 +1515,262 @@ public class TLValidationJobTest {
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_226_mp.xml"));
 		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp.xml"));
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertFalse(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
+		lastPivotUpdateTimesNewList = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertEquals("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-172-mp.xml".equals(pivotInfo.getUrl()),
+					pivotInfo.getValidationCacheInfo().isValid());
+			assertFalse(lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime()));
+			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		map.remove("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp.xml"));
 		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-172-mp.xml",
 				new FileDocument("src/test/resources/lotlCache/tl_pivot_172_mp.xml"));
 		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
 		tlValidationJob.onlineRefresh();
 
 		summary = tlValidationJob.getSummary();
-		assertTrue(summary.getLOTLInfos().get(0).getValidationCacheInfo().isValid());
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		lastPivotUpdateTimesNewList = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			assertNotEquals("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-172-mp.xml".equals(pivotInfo.getUrl()),
+					lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime()));
+			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
+		map.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-191-mp.xml",
+				new FileDocument("src/test/resources/lotlCache/tl_pivot_191_mp.xml"));
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		lastPivotUpdateTimesNewList = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			assertTrue(lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime()));
+			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			assertTrue(lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime()));
+		}
 	}
 
 	@Test
-	public void dss2968Test() {
+	void pivotDownloadFailTest() {
+		Map<String, DSSDocument> map = new HashMap<>();
+		map.put(LOTL_URL, new FileDocument("src/test/resources/lotlCache/eu-lotl-pivot-341.xml"));
+
+		map.put("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-282.xml",
+				new FileDocument("src/test/resources/lotlCache/eu-lotl-pivot-282.xml"));
+		map.put("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-300.xml",
+				new FileDocument("src/test/resources/lotlCache/eu-lotl-pivot-300.xml"));
+		map.put("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-335.xml",
+				new FileDocument("src/test/resources/lotlCache/eu-lotl-pivot-335.xml"));
+		map.put("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-341.xml",
+				new FileDocument("src/test/resources/lotlCache/eu-lotl-pivot-341.xml"));
+
+		CommonTrustedCertificateSource trustedCertificateSource = new CommonTrustedCertificateSource();
+		CertificateToken signingCertificate = DSSUtils.loadCertificateFromBase64EncodedString("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");
+		trustedCertificateSource.addCertificate(signingCertificate);
+		lotlSource.setCertificateSource(trustedCertificateSource);
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		LOTLInfo lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		Date lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		List<PivotInfo> pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+		List<Date> lastPivotUpdateTimes = new ArrayList<>();
+		List<Date> lastPivotUpdateTimesNewList = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			lastPivotUpdateTimes.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		// Wait
+		Calendar nextMilliSecond = Calendar.getInstance();
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
+		map.remove(LOTL_URL);
+		map.remove("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-282.xml");
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertFalse(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		lastPivotUpdateTimesNewList = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			assertFalse(lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime()));
+			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
+		map.put(LOTL_URL,
+				new FileDocument("src/test/resources/lotlCache/eu-lotl-pivot-341.xml"));
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		lastPivotUpdateTimesNewList = new ArrayList<>();
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			assertFalse(lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime()));
+			lastPivotUpdateTimesNewList.add(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		}
+		lastPivotUpdateTimes = lastPivotUpdateTimesNewList;
+
+		nextMilliSecond.setTime(new Date());
+		nextMilliSecond.add(Calendar.MILLISECOND, 1);
+		await().atMost(1, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextMilliSecond.getTime()) > 0);
+
+		map.remove("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-300.xml");
+		map.put("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-282.xml",
+				new FileDocument("src/test/resources/lotlCache/eu-lotl-pivot-282.xml"));
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(map));
+		tlValidationJob.onlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+		lotlInfo = summary.getLOTLInfos().get(0);
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+
+		assertNotEquals(lastDownloadAttemptTime, lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime());
+		lastDownloadAttemptTime = lotlInfo.getDownloadCacheInfo().getLastDownloadAttemptTime();
+		assertNotNull(lastDownloadAttemptTime);
+		pivotInfos = lotlInfo.getPivotInfos();
+		assertEquals(4, pivotInfos.size());
+
+		for (PivotInfo pivotInfo : pivotInfos) {
+			assertNotNull(pivotInfo.getDownloadCacheInfo());
+			assertTrue(pivotInfo.getValidationCacheInfo().isValid());
+			assertNotEquals("https://ec.europa.eu/tools/lotl/eu-lotl-pivot-282.xml".equals(pivotInfo.getUrl()),
+					lastPivotUpdateTimes.contains(pivotInfo.getDownloadCacheInfo().getLastDownloadAttemptTime()));
+		}
+	}
+
+	@Test
+	void dss2968Test() {
 		Map<String, DSSDocument> map = new HashMap<>();
 		map.put(LOTL_URL,new FileDocument("src/test/resources/lotlCache/tl_pivot_172_mp.xml"));
 
@@ -1499,7 +1810,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void lotlCorruptedKeystoreTest() throws IOException {
+	void lotlCorruptedKeystoreTest() throws IOException {
 		updateLOTLUrl("src/test/resources/lotlCache/eu-lotl_original.xml");
 		lotlSource.setCertificateSource(new KeyStoreCertificateSource(new File("src/test/resources/keystore_corrupted.p12"), "PKCS12", "dss-password".toCharArray()));
 		
@@ -1524,7 +1835,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void peruvianTSLTest() {
+	void peruvianTSLTest() {
 		LOTLSource peruvianLotlSource = getPeruvianLotlSource();
 		
 		tlValidationJob = new TLValidationJob();
@@ -1560,7 +1871,7 @@ public class TLValidationJobTest {
 	}
 	
 	@Test
-	public void twoLOTLTest() {
+	void twoLOTLTest() {
 		LOTLSource peruvianLotlSource = getPeruvianLotlSource();
 		
 		tlValidationJob = new TLValidationJob();
@@ -1587,7 +1898,7 @@ public class TLValidationJobTest {
 	}
 
 	@Test
-	public void ecdsaTLTest() {
+	void ecdsaTLTest() {
 		DSSDocument ecdsaTLDoc = new FileDocument("src/test/resources/tl-ecdsa-brainpool.xml");
 		Map<String, DSSDocument> map = new HashMap<>();
 		map.put("ecdsa-tl.xml", ecdsaTLDoc);
@@ -1672,7 +1983,7 @@ public class TLValidationJobTest {
 	}
 	
 	@AfterEach
-	public void clean() throws IOException {
+	void clean() throws IOException {
 		File cacheDirectory = new File("target/cache");
 		cacheDirectory.mkdirs();
 		Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);

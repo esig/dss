@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 
-public class KeyUsageBitParserTest {
+class KeyUsageBitParserTest {
 
 	@Test
-	public void testEnum() {
+	void testEnum() {
 		for (KeyUsageBit kub : KeyUsageBit.values()) {
 			String string = KeyUsageBitParser.print(kub);
 			assertNotNull(string);
@@ -41,7 +41,7 @@ public class KeyUsageBitParserTest {
 	}
 
 	@Test
-	public void parseUnknown() {
+	void parseUnknown() {
 		assertNull(KeyUsageBitParser.parse("bla"));
 	}
 

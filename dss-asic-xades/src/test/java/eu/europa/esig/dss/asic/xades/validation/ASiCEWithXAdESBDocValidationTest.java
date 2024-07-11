@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCEWithXAdESBDocValidationTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCEWithXAdESBDocValidationTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

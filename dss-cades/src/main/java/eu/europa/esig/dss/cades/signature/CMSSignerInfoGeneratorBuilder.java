@@ -21,11 +21,9 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -38,7 +36,6 @@ import org.bouncycastle.cms.SimpleAttributeTableGenerator;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 
 /**
  * This class is used to build an instance of {@code org.bouncycastle.cms.SignerInfoGenerator}
@@ -92,22 +89,6 @@ public class CMSSignerInfoGeneratorBuilder {
     }
 
     /**
-     * Returns a {@code DigestCalculatorProvider}
-     *
-     * @param toSignDocument {@link DSSDocument} to sign
-     * @param digestAlgorithm {@link DigestAlgorithm} to use
-     * @return {@link DigestCalculatorProvider}
-     */
-    private DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument, DigestAlgorithm digestAlgorithm) {
-        if (digestAlgorithm != null) {
-            return new CustomMessageDigestCalculatorProvider(digestAlgorithm, toSignDocument.getDigest(digestAlgorithm));
-        } else if (toSignDocument instanceof DigestDocument) {
-            return new PrecomputedDigestCalculatorProvider((DigestDocument) toSignDocument);
-        }
-        return new BcDigestCalculatorProvider();
-    }
-
-    /**
      * This method creates a builder of SignerInfoGenerator
      *
      * @param parameters
@@ -119,7 +100,8 @@ public class CMSSignerInfoGeneratorBuilder {
      */
     protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(
             CAdESSignatureParameters parameters, DSSDocument contentToSign) {
-        final DigestCalculatorProvider dcp = getDigestCalculatorProvider(contentToSign, parameters.getReferenceDigestAlgorithm());
+        final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(
+                contentToSign, parameters.getReferenceDigestAlgorithm());
 
         final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB(contentToSign);
         final AttributeTable signedAttributes = cadesProfile.getSignedAttributes(parameters);
@@ -145,11 +127,11 @@ public class CMSSignerInfoGeneratorBuilder {
     protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(
             DigestCalculatorProvider digestCalculatorProvider, AttributeTable signedAttributes, AttributeTable unsignedAttributes) {
 
-        if (DSSASN1Utils.isEmpty(signedAttributes)) {
+        if (CMSUtils.isEmpty(signedAttributes)) {
             signedAttributes = null;
         }
         final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
-        if (DSSASN1Utils.isEmpty(unsignedAttributes)) {
+        if (CMSUtils.isEmpty(unsignedAttributes)) {
             unsignedAttributes = null;
         }
         final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);

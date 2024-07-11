@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.test.signature;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -43,7 +43,6 @@ import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -67,18 +66,18 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
 import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SASignatureProductionPlaceType;
 import eu.europa.esig.validationreport.jaxb.SASignerRoleType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
+import jakarta.xml.bind.JAXBElement;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.xml.bind.JAXBElement;
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -113,12 +112,11 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		final DSSDocument signedDocument = sign();
 
 		assertNotNull(signedDocument.getName());
-		assertNotNull(DSSUtils.toByteArray(signedDocument));
 		assertNotNull(signedDocument.getMimeType());
 
 		// signedDocument.save("target/" + signedDocument.getName());
 
-		byte[] byteArray = DSSUtils.toByteArray(signedDocument);
+        byte[] byteArray = DSSUtils.toByteArray(signedDocument);
 		onDocumentSigned(byteArray);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug(new String(byteArray));
@@ -156,16 +154,6 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
 		super.checkDigestAlgorithm(diagnosticData);
 		assertEquals(getSignatureParameters().getDigestAlgorithm(), diagnosticData.getSignatureDigestAlgorithm(diagnosticData.getFirstSignatureId()));
-	}
-
-	@Override
-	protected void checkMaskGenerationFunction(DiagnosticData diagnosticData) {
-		super.checkMaskGenerationFunction(diagnosticData);
-		
-		MaskGenerationFunction maskGenerationFunction = getSignatureParameters().getMaskGenerationFunction();
-		if (maskGenerationFunction != null) {
-			assertEquals(maskGenerationFunction, diagnosticData.getSignatureMaskGenerationFunction(diagnosticData.getFirstSignatureId()));
-		}
 	}
 
 	@SuppressWarnings({ "unchecked" })
@@ -678,7 +666,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		List<DSSDocument> similarDocuments = buildCloseDocuments(originalDocument);
 		boolean equals = false;
 		for (DSSDocument documentToCompare : similarDocuments) {
-			if (documentToCompare.getDigest(digestAlgorithm).equals(Utils.toBase64(digestAlgoAndValue.getDigestValue()))) {
+			if (Arrays.equals(documentToCompare.getDigestValue(digestAlgorithm), digestAlgoAndValue.getDigestValue())) {
 				equals = true;
 				break;
 			}

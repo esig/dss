@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import org.jose4j.jws.JsonWebSignature;
@@ -199,6 +199,16 @@ public class JWS extends JsonWebSignature implements Serializable {
 	 */
 	public String getProtectedHeaderValueAsString(String key) {
 		return DSSJsonUtils.toString(getHeaders().getObjectHeaderValue(key), key);
+	}
+
+	/**
+	 * Returns a protected header value with the {@code key}
+	 *
+	 * @param key {@link String}
+	 * @return {@link Number} value if present, NULL otherwise
+	 */
+	public Number getProtectedHeaderValueAsNumber(String key) {
+		return DSSJsonUtils.toNumber(getHeaders().getObjectHeaderValue(key), key);
 	}
 
 	/**

@@ -46,14 +46,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelLTADetachedWithContentTstTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelLTADetachedWithContentTstTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private JAdESService service;
 	private List<DSSDocument> documentsToSign;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentsToSign = new ArrayList<>();

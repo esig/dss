@@ -23,6 +23,10 @@ package eu.europa.esig.dss.tsl.download;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.tsl.cache.CachedResult;
+import eu.europa.esig.dss.tsl.sha2.DocumentWithSha2;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Defines the download result
@@ -62,6 +66,18 @@ public class XmlDownloadResult implements CachedResult {
 	 */
 	public Digest getDigest() {
 		return digest;
+	}
+
+	/**
+	 * Returns error messages occurred during sha2 processing, if applicable
+	 *
+	 * @return a list of {@link String}s if errors occurred during sha2 processing, empty list otherwise
+	 */
+	public List<String> getSha2ErrorMessages() {
+		if (dssDocument instanceof DocumentWithSha2) {
+			return ((DocumentWithSha2) dssDocument).getErrors();
+		}
+		return Collections.emptyList();
 	}
 
 }

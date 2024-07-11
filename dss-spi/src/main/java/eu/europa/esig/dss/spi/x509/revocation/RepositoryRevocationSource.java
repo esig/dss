@@ -215,7 +215,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
                                                         final CertificateToken issuerCertificateToken, boolean forceRefresh) {
         if (certificateToken == null || issuerCertificateToken == null) {
             LOG.warn("Certificate token or issuer's certificate token is null. Cannot get a revocation token!");
-            return null;
+            return Collections.emptyList();
         }
 
         Collection<String> keys = initRevocationTokenKeys(certificateToken);
@@ -383,7 +383,7 @@ public abstract class RepositoryRevocationSource<R extends Revocation> implement
      * @param certificateTokenIssuer issuer of a CertificateToken to check the revocation for
      * @return TRUE if the token is still valid, FALSE otherwise
      */
-    private boolean isNotExpired(RevocationToken<R> revocationToken, CertificateToken certificateTokenIssuer) {
+    protected boolean isNotExpired(RevocationToken<R> revocationToken, CertificateToken certificateTokenIssuer) {
         Date validationDate = new Date();
 
         Date nextUpdate = revocationToken.getNextUpdate();

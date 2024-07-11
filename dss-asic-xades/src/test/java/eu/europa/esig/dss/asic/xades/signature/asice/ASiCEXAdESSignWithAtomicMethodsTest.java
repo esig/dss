@@ -30,8 +30,8 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestSignature {
 
     private static ASiCWithXAdESSignatureParameters signatureParameters;
     private static ASiCWithXAdESService service;
@@ -55,7 +55,7 @@ public class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestS
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new ASiCWithXAdESService(certificateVerifier);
     }
@@ -83,7 +83,7 @@ public class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestS
 
     @ParameterizedTest(name = "Sign XAdES {index} : {0} - {1} - {2}")
     @MethodSource("data")
-    public void init(SignatureLevel level, String signer, DSSDocument document) {
+    void init(SignatureLevel level, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 
@@ -112,8 +112,7 @@ public class ASiCEXAdESSignWithAtomicMethodsTest extends AbstractASiCEXAdESTestS
         ASiCWithXAdESSignatureParameters params = getSignatureParameters();
 
         ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
-        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(),
-                getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
 
         toBeSigned = createDocumentCopy(toBeSigned);

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.cades.signature.manifest;
 
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilter;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -35,30 +36,36 @@ public class ASiCWithCAdESSignatureManifestBuilder extends ASiCEWithCAdESManifes
     /**
      * The default constructor
      *
-     * @param asicContent     {@link ASiCContent} representing container's document structure
-     * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
-     * @param documentUri     {@link String} filename of the document associated with the manifest
+     * @param asicContent       {@link ASiCContent} representing container's document structure
+     * @param signatureFilename {@link String} filename of the signature associated with the manifest
+     * @param digestAlgorithm   {@link DigestAlgorithm} to use for reference digest computation
      */
-    public ASiCWithCAdESSignatureManifestBuilder(ASiCContent asicContent, DigestAlgorithm digestAlgorithm, String documentUri) {
-        super(asicContent, digestAlgorithm, documentUri);
+    public ASiCWithCAdESSignatureManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
+                                                 final String signatureFilename) {
+        super(asicContent, signatureFilename, digestAlgorithm);
     }
 
     /**
      * Constructor with filename factory
      *
      * @param asicContent {@link ASiCContent} representing container's document structure
+     * @param signatureFilename {@link String} filename of the signature associated with the manifest
      * @param digestAlgorithm {@link DigestAlgorithm} to use for reference digest computation
-     * @param documentUri {@link String} filename of the document associated with the manifest
      * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
      */
     public ASiCWithCAdESSignatureManifestBuilder(final ASiCContent asicContent, final DigestAlgorithm digestAlgorithm,
-                                            final String documentUri, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
-        super(asicContent, digestAlgorithm, documentUri, asicFilenameFactory);
+            final String signatureFilename, final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
+        super(asicContent, signatureFilename, digestAlgorithm, asicFilenameFactory);
     }
 
     @Override
     protected MimeType getSigReferenceMimeType() {
         return MimeTypeEnum.PKCS7;
+    }
+
+    @Override
+    public ASiCWithCAdESSignatureManifestBuilder setAsicContentDocumentFilter(ASiCContentDocumentFilter asicContentDocumentFilter) {
+        return (ASiCWithCAdESSignatureManifestBuilder) super.setAsicContentDocumentFilter(asicContentDocumentFilter);
     }
 
 }

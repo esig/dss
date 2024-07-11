@@ -56,7 +56,7 @@ public class XAdESLevelBTest extends AbstractXAdESTestSignature {
 	private TimestampToken contentTimestamp;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

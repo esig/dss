@@ -20,73 +20,36 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
-import eu.europa.esig.dss.exception.IllegalInputException;
-import eu.europa.esig.dss.jades.DSSJsonUtils;
-import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
-import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Validates a JWS Compact signature
+ * <p>
+ * In order to perform validation-process, please ensure the `dss-validation` module is loaded
+ * within the dependencies list of your project.
+ *
  */
 public class JWSCompactDocumentValidator extends AbstractJWSDocumentValidator {
 
-	/**
-	 * Empty constructor
-	 */
-	public JWSCompactDocumentValidator() {
-		// empty
-	}
+    /**
+     * Empty constructor
+     */
+    public JWSCompactDocumentValidator() {
+        super(new JWSCompactDocumentAnalyzer());
+    }
 
-	/**
-	 * Default constructor
-	 *
-	 * @param document {@link DSSDocument} to validate
-	 */
-	public JWSCompactDocumentValidator(DSSDocument document) {
-		super(document);
-	}
+    /**
+     * Default constructor
+     *
+     * @param document {@link DSSDocument} to validate
+     */
+    public JWSCompactDocumentValidator(DSSDocument document) {
+        super(new JWSCompactDocumentAnalyzer(document));
+    }
 
-	@Override
-	public boolean isSupported(DSSDocument dssDocument) {
-		JWSCompactSerializationParser parser = new JWSCompactSerializationParser(dssDocument);
-		return parser.isSupported();
-	}
-
-	@Override
-	protected List<AdvancedSignature> buildSignatures() {
-		JWSJsonSerializationObject jwsJsonSerializationObject = getJwsJsonSerializationObject();
-		List<JWS> foundSignatures = jwsJsonSerializationObject.getSignatures();
-		if (Utils.isCollectionEmpty(foundSignatures)) {
-			throw new DSSException("No signatures is present in the document!");
-		}
-		// only one signature is supported by compact serialization
-		JWS jws = foundSignatures.get(0);
-		JAdESSignature jadesSignature = new JAdESSignature(jws);
-		jadesSignature.setSignatureFilename(document.getName());
-		jadesSignature.setSigningCertificateSource(signingCertificateSource);
-		jadesSignature.setDetachedContents(detachedContents);
-		jadesSignature.prepareOfflineCertificateVerifier(certificateVerifier);
-		return Collections.singletonList(jadesSignature);
-	}
-
-	@Override
-	protected JWSJsonSerializationObject buildJwsJsonSerializationObject() {
-		JWSCompactSerializationParser jwsCompactSerializationParser = new JWSCompactSerializationParser(document);
-		if (jwsCompactSerializationParser.isSupported()) {
-			JWS jws = jwsCompactSerializationParser.parse();
-			JWSJsonSerializationObject jwsJsonSerializationObject = DSSJsonUtils.toJWSJsonSerializationObject(jws);
-			jwsJsonSerializationObject.setJWSSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
-			return jwsJsonSerializationObject;
-		}
-		throw new IllegalInputException("The given document is not supported by JWSCompactDocumentValidator!");
-	}
+    @Override
+    public JWSCompactDocumentAnalyzer getDocumentAnalyzer() {
+        return (JWSCompactDocumentAnalyzer) super.getDocumentAnalyzer();
+    }
 
 }

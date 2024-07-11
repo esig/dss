@@ -54,7 +54,7 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -68,7 +68,7 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
     }
 
     @Test
-    public void simpleImageTest() throws Exception {
+    void simpleImageTest() throws Exception {
         SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
         imageParameters.setImage(RED_CROSS_IMAGE);
 
@@ -76,7 +76,7 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
     }
 
     @Test
-    public void simpleImageCenterScalingTest() throws Exception {
+    void simpleImageCenterScalingTest() throws Exception {
         SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
         imageParameters.setImage(RED_CROSS_IMAGE);
         imageParameters.setImageScaling(ImageScaling.CENTER);
@@ -86,7 +86,7 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
     }
 
     @Test
-    public void textOnlyTest() throws IOException {
+    void textOnlyTest() throws IOException {
         SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
         SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
         textParameters.setText("Signature 1");
@@ -95,7 +95,7 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
     }
 
     @Test
-    public void zoomAndRotationTest() throws IOException {
+    void zoomAndRotationTest() throws IOException {
         SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
         imageParameters.setImage(PNG_IMAGE);
         imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER);
@@ -106,7 +106,7 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
     }
 
     @Test
-    public void autoFitTest() throws IOException {
+    void autoFitTest() throws IOException {
         SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
 
         SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
@@ -123,7 +123,7 @@ public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature 
     }
 
     @Test
-    public void autoFitAndLinebreakTest() throws IOException {
+    void autoFitAndLinebreakTest() throws IOException {
         SignatureImageParameters imageParameters = signatureParameters.getImageParameters();
 
         SignatureImageTextParameters textParameters = new SignatureImageTextParameters();

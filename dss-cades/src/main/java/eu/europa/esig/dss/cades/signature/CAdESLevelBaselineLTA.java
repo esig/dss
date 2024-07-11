@@ -23,15 +23,16 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.Attribute;
@@ -73,15 +74,22 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 
 		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 
-		CMSDocumentValidator documentValidator = getDocumentValidator(cmsSignedData, parameters);
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		CMSDocumentAnalyzer documentAnalyzer = getDocumentValidator(cmsSignedData, parameters);
+		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
+
+		final List<AdvancedSignature> signaturesToExtend = getExtendToLTLevelSignatures(signatures, signatureIdsToExtend);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
+			return cmsSignedData;
+		}
+
+		// signature validity is checked within -LT augmentation
 
 		for (AdvancedSignature signature : signatures) {
 			final CAdESSignature cadesSignature = (CAdESSignature) signature;
 			final SignerInformation signerInformation = cadesSignature.getSignerInformation();
 			SignerInformation newSignerInformation = signerInformation;
 
-			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
+			if (signaturesToExtend.contains(cadesSignature)) {
 				AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 				unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
 				newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);

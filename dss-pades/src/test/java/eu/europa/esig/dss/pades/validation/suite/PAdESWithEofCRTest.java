@@ -49,7 +49,7 @@ public class PAdESWithEofCRTest extends AbstractPAdESTestValidation {
         DSSDocument document = originalDocuments.get(0);
         byte[] bytes = DSSUtils.toByteArray(document);
         assertTrue(Utils.isArrayNotEmpty(bytes));
-        assertEquals("O3DoQCYo2l443ulByo4hwGuxzCZwiW0Vr7K9j56AYuM=", document.getDigest(DigestAlgorithm.SHA256));
+        assertEquals("O3DoQCYo2l443ulByo4hwGuxzCZwiW0Vr7K9j56AYuM=", Utils.toBase64(document.getDigestValue(DigestAlgorithm.SHA256)));
     }
 
 }

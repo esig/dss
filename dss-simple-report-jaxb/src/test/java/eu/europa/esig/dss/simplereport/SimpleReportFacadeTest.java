@@ -27,30 +27,30 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SimpleReportFacadeTest {
+class SimpleReportFacadeTest {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		createAndValidate("sr1.xml");
 	}
 
 	@Test
-	public void test2() throws Exception {
+	void test2() throws Exception {
 		createAndValidate("sr2.xml");
 	}
 
 	@Test
-	public void pdfaTest() throws Exception {
+	void pdfaTest() throws Exception {
 		createAndValidate("sr-pades.xml");
 	}
 
 	@Test
-	public void sigAndTstTest() throws Exception {
+	void sigAndTstTest() throws Exception {
 		createAndValidate("sr-sig-and-tst.xml");
 	}
 	
 	@Test
-	public void generateSemantics() throws Exception {
+	void generateSemantics() throws Exception {
 		createAndValidate("sr-semantics.xml");
 	}
 

@@ -29,7 +29,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCSWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
+class ASiCSWithXAdESCounterSignatureTest extends AbstractASiCWithXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

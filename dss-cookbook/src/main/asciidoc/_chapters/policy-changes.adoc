@@ -10,6 +10,158 @@
 This chapter covers the changes occurred between different versions of DSS within <<validationPolicy>>.
 
 [cols="2,5,5"]
+.Policy changes from version 5.13/6.0 to 6.1
+|===
+|Title                                |v6.0                           |v6.1
+|HashTree renewal time-stamp check    |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<EvidenceRecord>
+    ...
+    <HashTreeRenewal Level="FAIL" />
+    ...
+</EvidenceRecord>
+----
+
+|OCSP-no-check revocation skip    |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<Revocation>
+    ...
+    <BasicSignatureConstraints>
+        ...
+        <SigningCertificate>
+            ...
+            <RevocationDataSkip Level="IGNORE">
+                <CertificateExtensions>
+                    <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
+                </CertificateExtensions>
+            </RevocationDataSkip>
+            ...
+        </SigningCertificate>
+        ...
+    </BasicSignatureConstraints>
+    ...
+</Revocation>
+----
+
+|val-assured-ST-certs revocation skip    |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<SignatureConstraints>
+    ...
+    <BasicSignatureConstraints>
+        ...
+        <SigningCertificate>
+            ...
+            <RevocationDataSkip Level="INFORM">
+                <CertificateExtensions>
+						<Id>0.4.0.194121.2.1</Id> <!-- valassured-ST-certs -->
+                </CertificateExtensions>
+            </RevocationDataSkip>
+            ...
+        </SigningCertificate>
+        ...
+    </BasicSignatureConstraints>
+    ...
+</SignatureConstraints>
+----
+_(same for CounterSignatureConstraints)_
+
+|RSASSA-PSS encryption algorithm                                 a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AcceptableEncryptionAlgo>
+        ...
+        <Algo>RSA</Algo>
+        ...
+    </AcceptableEncryptionAlgo>
+    <MiniPublicKeySize>
+        ...
+        <Algo Size="1024">RSA</Algo>
+        ...
+    </MiniPublicKeySize>
+    <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
+        ...
+        <Algo Date="2009" Size="1024">RSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+        <Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
+        <Algo Date="2026" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+        <Algo Date="2029" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+                                                  a|[source,xml]
+----
+<Cryptographic Level="FAIL">
+    ...
+    <AcceptableEncryptionAlgo>
+        ...
+        <Algo>RSA</Algo>
+        <Algo>RSASSA-PSS</Algo>
+        ...
+    </AcceptableEncryptionAlgo>
+    <MiniPublicKeySize>
+        ...
+        <Algo Size="1024">RSA</Algo>
+        <Algo Size="1024">RSASSA-PSS</Algo>
+        ...
+    </MiniPublicKeySize>
+    <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
+        ...
+        <Algo Date="2009" Size="1024">RSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+        <Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
+        <Algo Date="2026" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+        <Algo Date="2029" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+        <Algo Date="2009" Size="1024">RSASSA-PSS</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
+        <Algo Date="2016" Size="1536">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.1.1 -->
+        <Algo Date="2026" Size="1900">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
+        <Algo Date="2029" Size="3000">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
+        ...
+    </AlgoExpirationDate>
+    ...
+</Cryptographic>
+----
+
+|Original document name validation                 a|
+A document with a different name than the reference's URI does not match
+                                                   a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <ReferenceDataNameMatch Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+|XML Manifest validation constraints               a|
+Aligned with reference data constraints
+a|[source,xml]
+----
+<BasicSignatureConstraints>
+    ...
+    <ManifestEntryObjectExistence Level="WARN" />
+    <ManifestEntryObjectGroup Level="WARN" />
+    <ManifestEntryObjectIntact Level="FAIL" />
+    <ManifestEntryNameMatch Level="WARN" />
+    ...
+</BasicSignatureConstraints>
+----
+
+|===
+
+[cols="2,5,5"]
 .Policy changes from version 5.12 to 5.13
 |===
 |Title                                |v5.12                           |v5.13
@@ -44,19 +196,6 @@ This chapter covers the changes occurred between different versions of DSS withi
         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Id>
         <Id>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn</Id>
     </TrustServiceStatus>
-    ...
-</BasicSignatureConstraints>
-----
-
-|PdfSignatureDictionary consistency check          |
-----
-not present
-----
-                                                  a|[source,xml]
-----
-<BasicSignatureConstraints>
-    ...
-    <PdfSignatureDictionary Level="FAIL" />
     ...
 </BasicSignatureConstraints>
 ----

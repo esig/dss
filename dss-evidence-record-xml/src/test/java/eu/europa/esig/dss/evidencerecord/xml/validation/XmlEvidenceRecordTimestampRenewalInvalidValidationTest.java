@@ -32,7 +32,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XmlEvidenceRecordTimestampRenewalInvalidValidationTest extends AbstractEvidenceRecordTestValidation {
+class XmlEvidenceRecordTimestampRenewalInvalidValidationTest extends AbstractEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

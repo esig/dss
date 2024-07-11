@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -40,7 +40,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JAdESCounterSignSignaturesConsequentlyTest extends AbstractJAdESCounterSignatureTest {
+class JAdESCounterSignSignaturesConsequentlyTest extends AbstractJAdESCounterSignatureTest {
 
     private final DSSDocument ORIGINAL_DOCUMENT = new FileDocument("src/test/resources/sample.json");
 
@@ -54,7 +54,7 @@ public class JAdESCounterSignSignaturesConsequentlyTest extends AbstractJAdESCou
     private JAdESCounterSignatureParameters counterSignatureParameters;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = ORIGINAL_DOCUMENT;

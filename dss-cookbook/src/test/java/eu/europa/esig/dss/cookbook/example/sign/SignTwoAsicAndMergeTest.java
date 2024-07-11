@@ -23,7 +23,7 @@ package eu.europa.esig.dss.cookbook.example.sign;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.merge.ASiCContainerMerger;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
@@ -38,7 +38,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -51,10 +51,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * This unit test displays a merging possibility of two ASiC-E with XAdES containers signing a different set of data.
  *
  */
-public class SignTwoAsicAndMergeTest extends CookbookTools {
+class SignTwoAsicAndMergeTest extends CookbookTools {
 
     @Test
-    public void signAndMergeContainersTest() throws Exception {
+    void signAndMergeContainersTest() throws Exception {
 
         // Prepare documents to be signed
         List<DSSDocument> documentsToBeSignedByFirstSignature = Arrays.asList(

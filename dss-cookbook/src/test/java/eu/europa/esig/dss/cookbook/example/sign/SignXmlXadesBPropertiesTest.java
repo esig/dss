@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
@@ -35,13 +34,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xades.XAdES319132Utils;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -56,10 +56,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * How to add signed properties to the signature.
  */
-public class SignXmlXadesBPropertiesTest extends CookbookTools {
+class SignXmlXadesBPropertiesTest extends CookbookTools {
 
 	@Test
-	public void testWithProperties() throws Exception {
+	void testWithProperties() throws Exception {
 
 		prepareXmlDoc();
 
@@ -78,7 +78,7 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			// import eu.europa.esig.dss.model.SignatureValue;
 			// import eu.europa.esig.dss.model.SignerLocation;
 			// import eu.europa.esig.dss.model.ToBeSigned;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 			// import eu.europa.esig.dss.validation.timestamp.TimestampToken;
 			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 			// import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -138,8 +138,8 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			// To use it, you need to have a custom implementation of the interface.
 			bLevelParameters.setCommitmentTypeIndications(commitmentTypeIndications);
 
-			CommonCertificateVerifier verifier = new CommonCertificateVerifier();
-			XAdESService service = new XAdESService(verifier);
+			CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+			XAdESService service = new XAdESService(certificateVerifier);
 			service.setTspSource(getTSPSource());
 
 			// Allows setting of content-timestamp (part of the signed attributes)
@@ -154,14 +154,6 @@ public class SignXmlXadesBPropertiesTest extends CookbookTools {
 			// end::demo[]
 
 			// tag::requirements[]
-
-			// This parameter defines whether a signature creation/extension with an expired certificate shall be allowed
-			// Default : false (signature creation with an expired certificate is not allowed)
-			xadesSignatureParameters.setSignWithExpiredCertificate(false);
-
-			// This parameter defines whether a signature creation/extension with a not yet valid certificate shall be allowed
-			// Default : false (signature creation with a not yet valid certificate is not allowed)
-			xadesSignatureParameters.setSignWithNotYetValidCertificate(false);
 
 			// This parameter defines whether a revocation check shall be performed on a signature creation/extension
 			// Default : false (revocation check is not performed)

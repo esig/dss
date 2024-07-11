@@ -38,14 +38,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class ASiCEXAdESLevelLTATest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESLevelLTATest extends AbstractASiCEXAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
 		signatureParameters = new ASiCWithXAdESSignatureParameters();

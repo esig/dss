@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import eu.europa.esig.dss.spi.tsl.TrustService;
-import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
-import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
+import eu.europa.esig.dss.model.tsl.TrustService;
+import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.tsl.sync.TrustServiceProviderBuilder;
 import eu.europa.esig.dss.tsl.function.OfficialRegistrationIdentifierPredicate;
 import eu.europa.esig.dss.tsl.function.TradeNamePredicate;
 import eu.europa.esig.dss.utils.Utils;
@@ -125,9 +125,7 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 			for (PostalAddressType postalAddress : postalAddressList.getPostalAddress()) {
 				String lang = postalAddress.getLang();
 				// Collect 1st / lang
-				if (result.get(lang) == null) {
-					result.put(lang, getPostalAddress(postalAddress));
-				}
+				result.computeIfAbsent(lang, k -> getPostalAddress(postalAddress));
 			}
 		}
 		return result;

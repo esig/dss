@@ -49,10 +49,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESDoubleSignatureTest extends PKIFactoryAccess {
+class XAdESDoubleSignatureTest extends PKIFactoryAccess {
 
 	@RepeatedTest(10)
-	public void testDoubleSignature() throws Exception {
+	void testDoubleSignature() throws Exception {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 

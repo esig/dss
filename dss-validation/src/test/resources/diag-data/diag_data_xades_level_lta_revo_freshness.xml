@@ -1,0 +1,796 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>before-signed-xades-baseline-lt.xml</DocumentName>
+    <ValidationDate>2022-01-17T14:50:50Z</ValidationDate>
+    <Signatures>
+        <Signature Id="S-5B824A0B3E8DE5ACC5975CCAC2D00440C2FFADEC107FDBEA74F8D90A14D0592C">
+            <DAIdentifier>id-9b3f525c88dcfd6c7c5658eeefe77700</DAIdentifier>
+            <SignatureFilename>before-signed-xades-baseline-lt.xml</SignatureFilename>
+            <ClaimedSigningTime>2022-01-17T14:48:53Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-LT</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="OBJECT" id="r-id-9b3f525c88dcfd6c7c5658eeefe77700-1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>oZIo1xwA4njIdtw1/8K9FFxPK3UhV+7aTzDt/5xdfag=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES" uri="#xades-id-9b3f525c88dcfd6c7c5658eeefe77700">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>NoMPb3MND9qBSKRamurS3Gsqw6d5KR+5V5Kxc4UzKIY=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-5D4429600FF1AC074926CDFFACCE4EA32D0BA48BC14577C02ADD6E7E9B8C0C38"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-5D4429600FF1AC074926CDFFACCE4EA32D0BA48BC14577C02ADD6E7E9B8C0C38"/>
+                <ChainItem Certificate="C-F4CB1A1308FF1F4D65916AED5F7442F4A7CCC69445614B8900F4E18F4A5F5309"/>
+                <ChainItem Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            </CertificateChain>
+            <MimeType>text/plain</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-F4CB1A1308FF1F4D65916AED5F7442F4A7CCC69445614B8900F4E18F4A5F5309">
+                    <Origin>KEY_INFO</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-5D4429600FF1AC074926CDFFACCE4EA32D0BA48BC14577C02ADD6E7E9B8C0C38">
+                    <Origin>KEY_INFO</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA512</DigestMethod>
+                            <DigestValue>8ReDD5rE+RsUxULzEL8iGnTxKcnBdmk9DJ+ABvjgAGfo36jwQ7X0bl/ylm7E+dtXdmQ7caPNx9cJfH7tzQn7wQ==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-C90966131340C4F99E9FEF6D52ABA96E3706A7EBA82D78D9DD325271D6906FE7">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-2681450CC1AAC14AB9DB63028D29B7E6F42F14F5442273D221D01D339BE31EB7">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-57475F6132204A3BE87E64F443CBDE8DFE69A965455D3B64FF8C28C928FE43A4">
+                    <Origin>CERTIFICATE_VALUES</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-80F9E9633B6342A66B072E8F163CE4293BB9D4D0209B8772956CD1AA12F7C730">
+                    <Type>CRL</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-AAC95B6D5F0DABE4A746027AFF9F38073E9AE6DCD25B808AAFF013697662B4C8">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-35EEDE23A4037BEE57D7877078BCA2F962F9A855F0C89B7A7B322E7AD6B4A6FE">
+                    <Type>OCSP</Type>
+                    <Origin>REVOCATION_VALUES</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-BE190976B3816A3CFB86C90B46B01A93E03BB30EF876EC317BD9B9C5374B70AC"/>
+            </FoundTimestamps>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-E6BDF57432F6F2180807F0C98A16558D143C9B46BBC544BCB9356210C09B3545">
+                    <Scope>PARTIAL</Scope>
+                    <Name>o-id-9b3f525c88dcfd6c7c5658eeefe77700-1</Name>
+                    <Description>The XML element with ID 'o-id-9b3f525c88dcfd6c7c5658eeefe77700-1' with transformations.</Description>
+                    <Transformations>
+                        <Transformation>Base64 Decoding</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <CanonicalizationMethod>http://www.w3.org/2001/10/xml-exc-c14n#</CanonicalizationMethod>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4URI69Z9fbyExHjxC5idHlQDIsbuHgLZWmIO3aQWYUs=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>z+HH15LAB0rT8TuMYpb+uFlvpYOtqhmw0GpCu7mTDPE=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>N9RhQMzncizl6IS170fnA5PspFTlxN6DD+3Gk8XqAQySCMw4T+H5tC4Zi+rmlIPinA04iw1aveUYBLUjLmK+0kFGJFNJWgafuwQDMHEKU70fnCMtTxLjwE+Q9CKSbBUbCCunHZ/hcYC4obXCRlBBmF5Bi9R3rcY8OnEM4b55q1MMB2k6XmG2SStK1BK4v2MrdYsdAZ+RWXSdwbK4HnYzXjtMxS5F3UBpSOuyoIMvFG9qv9X8r4/PVh2LuLkmXiqtopjBL3mV3NHQoAQEy5vnHWgICBNvW4+OAWDp29SSg7VIPOHWyC0NyOICGj/SLFe/9qWUTXX18l5XQxwOCvSAhQ==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ministero della difesa - time stamp authority eidas,2.5.4.5=#130b3937333535323430353837,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Ministero della Difesa - Time Stamp Authority eIDAS,2.5.4.5=#130b3937333535323430353837,OU=S.M.D. - C.do C4 Difesa,O=Ministero della Difesa,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ministero della difesa - time stamp authority eidas,2.5.4.5=#130b3937333535323430353837,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Ministero della Difesa - Time Stamp Authority eIDAS,2.5.4.5=#130b3937333535323430353837,OU=S.M.D. - C.do C4 Difesa,O=Ministero della Difesa,C=IT</IssuerDistinguishedName>
+            <SerialNumber>4636350456855148081</SerialNumber>
+            <SubjectSerialNumber>97355240587</SubjectSerialNumber>
+            <CommonName>Ministero della Difesa - Time Stamp Authority eIDAS</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>Ministero della Difesa</OrganizationName>
+            <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2047-04-14T07:47:26Z</NotAfter>
+            <NotBefore>2017-04-14T07:47:26Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-CBDF1A3694D6352C17481B7623A5654BD66F5FB25DA9A9E9D0D1EA92D8D26B0B</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Ministero della Difesa</TSPName>
+                        <TSPName lang="it">Ministero della Difesa</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Comando per le Operazioni in Rete - COR - Stato Maggiore della Difesa</TSPTradeName>
+                        <TSPTradeName lang="it">Comando per le Operazioni in Rete - COR - Stato Maggiore della Difesa</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT- 80425650589</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=Ministero della Difesa - Time Stamp Authority eIDAS SERIALNUMBER=97355240587 OU=S.M.D. - C.do C4 Difesa O=Ministero della Difesa C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-07-13T15:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>FtsTBJKyMLIJLkDdf1d+PLMFPWoQv74wL0XylXZ1teg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-2681450CC1AAC14AB9DB63028D29B7E6F42F14F5442273D221D01D339BE31EB7">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-responder</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=ocsp-responder</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>2</SerialNumber>
+            <CommonName>ocsp-responder</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2022-12-03T11:31:11Z</NotAfter>
+            <NotBefore>2020-12-03T11:31:11Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-7DB4D9B6563626B94F611C8F4F71E964099B9B0812D4391691D03A92F360A464</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>JoFFDMGqwUq522MCjSm35vQvFPVEInPSIdAdM5vjHrc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-57475F6132204A3BE87E64F443CBDE8DFE69A965455D3B64FF8C28C928FE43A4">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ministero della difesa - ocsp service ca tsa eidas 202103111129,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Ministero della Difesa - OCSP Service CA TSA eIDAS 202103111129,OU=S.M.D. - C.do C4 Difesa,O=Ministero della Difesa,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ministero della difesa - time stamp authority eidas,2.5.4.5=#130b3937333535323430353837,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Ministero della Difesa - Time Stamp Authority eIDAS,2.5.4.5=#130b3937333535323430353837,OU=S.M.D. - C.do C4 Difesa,O=Ministero della Difesa,C=IT</IssuerDistinguishedName>
+            <SerialNumber>1264209215088834015</SerialNumber>
+            <CommonName>Ministero della Difesa - OCSP Service CA TSA eIDAS 202103111129</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>Ministero della Difesa</OrganizationName>
+            <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2026-03-11T10:19:29Z</NotAfter>
+            <NotBefore>2021-03-11T10:19:29Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-D5085FA10E84D47538CEA83B563A522C963E9816340C20D705C1CA454D5A97CF</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck OID="1.3.6.1.5.5.7.48.1.5" critical="false" present="true" />
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=20Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Ministero della Difesa</TSPName>
+                        <TSPName lang="it">Ministero della Difesa</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Comando per le Operazioni in Rete - COR - Stato Maggiore della Difesa</TSPTradeName>
+                        <TSPTradeName lang="it">Comando per le Operazioni in Rete - COR - Stato Maggiore della Difesa</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT- 80425650589</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=Ministero della Difesa - Time Stamp Authority eIDAS SERIALNUMBER=97355240587 OU=S.M.D. - C.do C4 Difesa O=Ministero della Difesa C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-07-13T15:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>V0dfYTIgSjvofmT0Q8vejf5pqWVFXTtk/4woySj+Q6Q=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-5D4429600FF1AC074926CDFFACCE4EA32D0BA48BC14577C02ADD6E7E9B8C0C38">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-user</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-user</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca</IssuerDistinguishedName>
+            <SerialNumber>10</SerialNumber>
+            <CommonName>good-user</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2022-11-03T11:31:12Z</NotAfter>
+            <NotBefore>2021-01-03T11:31:12Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-218BC180C95208DF357A59E32173C8547C98A2398DC8DDBB1EBCD40775E5A763</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F4CB1A1308FF1F4D65916AED5F7442F4A7CCC69445614B8900F4E18F4A5F5309"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F4CB1A1308FF1F4D65916AED5F7442F4A7CCC69445614B8900F4E18F4A5F5309"/>
+                <ChainItem Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/good-ca.crt</caIssuersUrl>
+                    <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/good-ca</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-35EEDE23A4037BEE57D7877078BCA2F962F9A855F0C89B7A7B322E7AD6B4A6FE">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-F163CE4293BB9D4D0209B8772956CD1AA12F780F9E9633B6342A66B072E8C730">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>XUQpYA/xrAdJJs3/rM5Ooy0LpIvBRXfAKt1ufpuMDDg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C90966131340C4F99E9FEF6D52ABA96E3706A7EBA82D78D9DD325271D6906FE7">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ministero della difesa - time stamp unit eidas 202201170847,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=Ministero della Difesa - Time Stamp Unit eIDAS 202201170847,OU=S.M.D. - C.do C4 Difesa,O=Ministero della Difesa,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=ministero della difesa - time stamp authority eidas,2.5.4.5=#130b3937333535323430353837,ou=s.m.d. - c.do c4 difesa,o=ministero della difesa,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Ministero della Difesa - Time Stamp Authority eIDAS,2.5.4.5=#130b3937333535323430353837,OU=S.M.D. - C.do C4 Difesa,O=Ministero della Difesa,C=IT</IssuerDistinguishedName>
+            <SerialNumber>270356279363997727</SerialNumber>
+            <CommonName>Ministero della Difesa - Time Stamp Unit eIDAS 202201170847</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>Ministero della Difesa</OrganizationName>
+            <OrganizationalUnit>S.M.D. - C.do C4 Difesa</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2032-01-17T07:37:07Z</NotAfter>
+            <NotBefore>2022-01-17T07:37:07Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-E5CC872C367B54AB147DDA5C56C4FC42795CC22A0C04D2060BA7FF6A602A2595</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy cpsUrl="https://pki.difesa.it/tsp">1.3.6.1.4.1.14031.2.1.7.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.pki.difesa.it/timestampauthorityeidas.crl</crlUrl>
+                    <crlUrl>ldap://ldappkiff.difesa.it:389/CN=Ministero%20della%20Difesa%20-%20Time%20Stamp%20Authority%20eIDAS,OU=S.M.D.%20-%20C.do%20C4%20Difesa,O=Ministero%20della%20Difesa,C=IT</crlUrl>
+                </CRLDistributionPoints>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <ocspUrl>http://ocsppkiff.difesa.it/</ocspUrl>
+                </AuthorityInformationAccess>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">Ministero della Difesa</TSPName>
+                        <TSPName lang="it">Ministero della Difesa</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">Comando per le Operazioni in Rete - COR - Stato Maggiore della Difesa</TSPTradeName>
+                        <TSPTradeName lang="it">Comando per le Operazioni in Rete - COR - Stato Maggiore della Difesa</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT- 80425650589</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=Ministero della Difesa - Time Stamp Authority eIDAS SERIALNUMBER=97355240587 OU=S.M.D. - C.do C4 Difesa O=Ministero della Difesa C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-07-13T15:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-AAC95B6D5F0DABE4A746027AFF9F38073E9AE6DCD25B808AAFF013697662B4C8">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-CE4293BB9D4D0209B8772956C80F9E9633B6342A66B072E8F163D1AA12F7C730">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>yQlmExNAxPmen+9tUqupbjcGp+uoLXjZ3TJScdaQb+c=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>root-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>TRUSTED_STORE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2022-12-03T11:31:11Z</NotAfter>
+            <NotBefore>2020-12-03T11:31:11Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-80770A60366E500F828CFA3AD2B2B1F7CCCA4917E07DE3E6799EFD3459E197CC</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>3wQBlxl8in9tYSB8QvWAmOZzDzNXCMSue1p4VwsnOUo=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F4CB1A1308FF1F4D65916AED5F7442F4A7CCC69445614B8900F4E18F4A5F5309">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>4</SerialNumber>
+            <CommonName>good-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2022-11-03T11:31:12Z</NotAfter>
+            <NotBefore>2021-01-03T11:31:12Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-BA1454BAA06C0BD4EC28F7D97C78AB94BE08FDD1B1873C90D46225AB2272CFDE</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-80F9E9633B6342A66B072E8F163CE4293BB9D4D0209B8772956CD1AA12F7C730">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>9MsaEwj/H01lkWrtX3RC9KfMxpRFYUuJAPThj0pfUwk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-35EEDE23A4037BEE57D7877078BCA2F962F9A855F0C89B7A7B322E7AD6B4A6FE">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2022-01-17T14:48:57Z</ProductionDate>
+            <ThisUpdate>2022-01-17T14:48:57Z</ThisUpdate>
+            <NextUpdate>2022-01-17T16:48:57Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-2681450CC1AAC14AB9DB63028D29B7E6F42F14F5442273D221D01D339BE31EB7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-2681450CC1AAC14AB9DB63028D29B7E6F42F14F5442273D221D01D339BE31EB7"/>
+                <ChainItem Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-2681450CC1AAC14AB9DB63028D29B7E6F42F14F5442273D221D01D339BE31EB7">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>D9TrUrtLoicNcz1j8WYg3ZLyK7A=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Ne7eI6QDe+5X14dweLyi+WL5qFXwyJt6ezIueta0pv4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-F163CE4293BB9D4D0209B8772956CD1AA12F780F9E9633B6342A66B072E8C730">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2022-01-05T09:18:11Z</ProductionDate>
+            <ThisUpdate>2022-01-05T09:18:11Z</ThisUpdate>
+            <NextUpdate>2022-02-05T08:18:11Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-2681450CC1AAC14AB9DB63028D29B7E6F42F14F5442273D221D01D339BE31EB7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-2681450CC1AAC14AB9DB63028D29B7E6F42F14F5442273D221D01D339BE31EB7"/>
+                <ChainItem Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gPnpYztjQqZrBy6PFjzkKTu51NAgm4dylWzRqhL3xzA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-80F9E9633B6342A66B072E8F163CE4293BB9D4D0209B8772956CD1AA12F7C730">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2022-01-05T09:18:11Z</ProductionDate>
+            <ThisUpdate>2022-01-05T09:18:11Z</ThisUpdate>
+            <NextUpdate>2022-07-05T08:18:11Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-DF040197197C8A7F6D61207C42F58098E6730F335708C4AE7B5A78570B27394A"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gPnpYztjQqZrBy6PFjzkKTu51NAgm4dylWzRqhL3xzA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-AAC95B6D5F0DABE4A746027AFF9F38073E9AE6DCD25B808AAFF013697662B4C8">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2022-01-17T14:48:57Z</ProductionDate>
+            <ThisUpdate>2022-01-17T14:48:57Z</ThisUpdate>
+            <NextUpdate>2022-01-24T14:48:57Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-57475F6132204A3BE87E64F443CBDE8DFE69A965455D3B64FF8C28C928FE43A4"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-57475F6132204A3BE87E64F443CBDE8DFE69A965455D3B64FF8C28C928FE43A4"/>
+                <ChainItem Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-57475F6132204A3BE87E64F443CBDE8DFE69A965455D3B64FF8C28C928FE43A4">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>xB38B+L2jtlsGO6pzV0rB2vw+QQ=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qslbbV8Nq+SnRgJ6/584Bz6a5tzSW4CKr/ATaXZitMg=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-CE4293BB9D4D0209B8772956C80F9E9633B6342A66B072E8F163D1AA12F7C730">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2022-01-05T09:18:11Z</ProductionDate>
+            <ThisUpdate>2022-01-05T09:18:11Z</ThisUpdate>
+            <NextUpdate>2022-03-05T08:18:11Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>gPnpYztjQqZrBy6PFjzkKTu51NAgm4dylWzRqhL3xzA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-BE190976B3816A3CFB86C90B46B01A93E03BB30EF876EC317BD9B9C5374B70AC">
+            <ProductionTime>2022-01-17T14:48:57Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hOdIU94+IC1OaDWosrhrD3+lIYHizVTcDCPoY7+DIyw=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C90966131340C4F99E9FEF6D52ABA96E3706A7EBA82D78D9DD325271D6906FE7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C90966131340C4F99E9FEF6D52ABA96E3706A7EBA82D78D9DD325271D6906FE7"/>
+                <ChainItem Certificate="C-16DB130492B230B2092E40DD7F577E3CB3053D6A10BFBE302F45F2957675B5E8"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=Ministero della Difesa - Time Stamp Authority eIDAS, SERIALNUMBER=97355240587, OU=S.M.D. - C.do C4 Difesa, O=Ministero della Difesa, C=IT</IssuerName>
+                    <SerialNumber>270356279363997727</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-C90966131340C4F99E9FEF6D52ABA96E3706A7EBA82D78D9DD325271D6906FE7">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>yQlmExNAxPmen+9tUqupbjcGp+uoLXjZ3TJScdaQb+c=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-E6BDF57432F6F2180807F0C98A16558D143C9B46BBC544BCB9356210C09B3545" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-5B824A0B3E8DE5ACC5975CCAC2D00440C2FFADEC107FDBEA74F8D90A14D0592C" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-5D4429600FF1AC074926CDFFACCE4EA32D0BA48BC14577C02ADD6E7E9B8C0C38" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vhkJdrOBajz7hskLRrAak+A7sw74duwxe9m5xTdLcKw=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-E6BDF57432F6F2180807F0C98A16558D143C9B46BBC544BCB9356210C09B3545">
+            <ReferencedName>o-id-9b3f525c88dcfd6c7c5658eeefe77700-1</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>oZIo1xwA4njIdtw1/8K9FFxPK3UhV+7aTzDt/5xdfag=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1">
+            <CountryCode>IT</CountryCode>
+            <Url>https://eidas.agid.gov.it/TL/TSL-IT.xml</Url>
+            <SequenceNumber>184</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2022-01-17T14:27:55Z</LastLoading>
+            <IssueDate>2022-01-10T01:00:00Z</IssueDate>
+            <NextUpdate>2022-05-19T16:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <SequenceNumber>303</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2022-01-17T14:27:54Z</LastLoading>
+            <IssueDate>2021-12-21T08:00:27Z</IssueDate>
+            <NextUpdate>2022-06-20T07:00:27Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

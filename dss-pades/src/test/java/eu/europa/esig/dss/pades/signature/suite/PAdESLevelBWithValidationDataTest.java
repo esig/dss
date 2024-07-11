@@ -32,13 +32,13 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
 import eu.europa.esig.validationreport.jaxb.SAVRIType;
@@ -59,7 +59,7 @@ public class PAdESLevelBWithValidationDataTest extends AbstractPAdESTestSignatur
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -76,9 +76,9 @@ public class PAdESLevelBWithValidationDataTest extends AbstractPAdESTestSignatur
 
         PDFSignatureService pdfSignatureService = new ServiceLoaderPdfObjFactory().newPAdESSignatureService();
 
-        PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(signedDocument);
-        pdfDocumentValidator.setCertificateVerifier(getCompleteCertificateVerifier());
-        PdfValidationDataContainer validationData = pdfDocumentValidator.getValidationData(pdfDocumentValidator.getSignatures(), Collections.emptyList());
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(signedDocument);
+        pdfDocumentAnalyzer.setCertificateVerifier(getCompleteCertificateVerifier());
+        PdfValidationDataContainer validationData = pdfDocumentAnalyzer.getValidationData(pdfDocumentAnalyzer.getSignatures(), Collections.emptyList());
 
         signedDocument = pdfSignatureService.addDssDictionary(signedDocument, validationData);
 

@@ -29,14 +29,12 @@ import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.pki.exception.PKIException;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.model.CertEntityRepository;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -60,7 +58,7 @@ import java.util.Objects;
  * for certificate revocation checks. The CRLs are retrieved based on the CertEntity (certificate entity) and
  * optionally specified production and next update dates.
  */
-public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
+public class PKICRLSource implements CRLSource {
 
     private static final long serialVersionUID = 6912729291417315212L;
 
@@ -89,17 +87,12 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
     /**
      * The DigestAlgorithm to be used on CRL signing
      */
-    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
+    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA512;
 
     /**
      * Encryption algorithm of the signature of the CRL
      */
     private EncryptionAlgorithm encryptionAlgorithm;
-
-    /**
-     * Mask Generation Function of the signature of the CRL
-     */
-    private MaskGenerationFunction maskGenerationFunction;
 
     /**
      * Creates a PKICRLSource instance with a CRL issuer being the issuer certificate token provided on the CRL request
@@ -165,7 +158,7 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
 
     /**
      * Sets Digest Algorithm to be used on CRL request signature
-     * Default: SHA256 ({@code DigestAlgorithm.SHA256})
+     * Default: SHA512 ({@code DigestAlgorithm.SHA512})
      *
      * @param digestAlgorithm {@link DigestAlgorithm}
      */
@@ -189,9 +182,16 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
      * NOTE: The used encryption algorithm should support the given parameter.
      *
      * @param maskGenerationFunction {@link MaskGenerationFunction}
+     * @deprecated since DSS 6.1. Please use {@code setEncryptionAlgorithm} method
+     *             to specify RSA (none MGF) or RSASSA-PSS (MGF1) algorithm
      */
+    @Deprecated
     public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-        this.maskGenerationFunction = maskGenerationFunction;
+        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
+            setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+        } else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
+            setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+        }
     }
 
     /**
@@ -295,12 +295,12 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
 
         SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(crlIssuer);
 
-        Date thisUpdate = getThisUpdate();
-        X509v2CRLBuilder builder = new X509v2CRLBuilder(caCert.getSubject(), thisUpdate);
+        Date thisUpdateTime = getThisUpdate();
+        X509v2CRLBuilder builder = new X509v2CRLBuilder(caCert.getSubject(), thisUpdateTime);
 
-        Date nextUpdate = getNextUpdate();
-        if (nextUpdate != null) {
-            builder.setNextUpdate(nextUpdate);
+        Date nextUpdateTime = getNextUpdate();
+        if (nextUpdateTime != null) {
+            builder.setNextUpdate(nextUpdateTime);
         }
 
         addRevocationsToCRL(builder, revocationList);
@@ -319,17 +319,17 @@ public class PKICRLSource implements CRLSource, RevocationSource<CRL> {
      * @return {@link SignatureAlgorithm}
      */
     protected SignatureAlgorithm getSignatureAlgorithm(CertEntity crlIssuer) {
-        EncryptionAlgorithm encryptionAlgorithm = this.encryptionAlgorithm;
-        if (encryptionAlgorithm != null) {
-            if (!encryptionAlgorithm.isEquivalent(crlIssuer.getEncryptionAlgorithm())) {
+        EncryptionAlgorithm signatureEncryptionAlgorithm = this.encryptionAlgorithm;
+        if (signatureEncryptionAlgorithm != null) {
+            if (!signatureEncryptionAlgorithm.isEquivalent(crlIssuer.getEncryptionAlgorithm())) {
                 throw new IllegalArgumentException(String.format(
-                        "Defined EncryptionAlgorithm '%s' is not equivalent to the one returned by CRL Issuer '%s'", encryptionAlgorithm, crlIssuer.getEncryptionAlgorithm()));
+                        "Defined EncryptionAlgorithm '%s' is not equivalent to the one returned by CRL Issuer '%s'", signatureEncryptionAlgorithm, crlIssuer.getEncryptionAlgorithm()));
 
             }
         } else {
-            encryptionAlgorithm = crlIssuer.getEncryptionAlgorithm();
+            signatureEncryptionAlgorithm = crlIssuer.getEncryptionAlgorithm();
         }
-        return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+        return SignatureAlgorithm.getAlgorithm(signatureEncryptionAlgorithm, digestAlgorithm);
     }
 
     /**

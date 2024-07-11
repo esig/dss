@@ -36,13 +36,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MRALOTLEnactedWithHistoryEnactedAllInFutureTest extends MRALOTLTest {
+class MRALOTLEnactedWithHistoryEnactedAllInFutureTest extends MRALOTLTest {
 
     private Date startingDate;
     private Date historyStartingDate;
 
     @BeforeEach
-    public void initTime() {
+    void initTime() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.YEAR, 2);

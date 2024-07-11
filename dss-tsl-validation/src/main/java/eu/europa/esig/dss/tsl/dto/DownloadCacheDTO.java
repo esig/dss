@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.tsl.dto;
 
-import eu.europa.esig.dss.spi.tsl.DownloadInfoRecord;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,10 +36,17 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 
 	private static final long serialVersionUID = 514589372769360786L;
 
+	/** The downloaded document */
+	private DSSDocument document;
+
+	/** Error messages occurred during sha2 processing */
+	private List<String> sha2ErrorMessages;
+
 	/**
 	 * Empty constructor
 	 */
 	public DownloadCacheDTO() {
+		// empty
 	}
 
 	/**
@@ -67,4 +75,32 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 			throw new IllegalStateException("All dates are null");
 		}
 	}
+
+	@Override
+	public DSSDocument getDocument() {
+		return document;
+	}
+
+	public void setDocument(DSSDocument document) {
+		this.document = document;
+	}
+
+	/**
+	 * Gets error messages occurred during the sha2 processing
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getSha2ErrorMessages() {
+		return sha2ErrorMessages;
+	}
+
+	/**
+	 * Sets error messages occurred during sha2 file processing
+	 *
+	 * @param sha2ErrorMessages a list of {@link String}s
+	 */
+	public void setSha2ErrorMessages(List<String> sha2ErrorMessages) {
+		this.sha2ErrorMessages = sha2ErrorMessages;
+	}
+
 }

@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBCommitmentTypeQualifierTest extends AbstractXAdESTestSignature {
+class XAdESLevelBCommitmentTypeQualifierTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -56,7 +56,7 @@ public class XAdESLevelBCommitmentTypeQualifierTest extends AbstractXAdESTestSig
     private DSSDocument base64Document;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new XAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

@@ -51,14 +51,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
+class ASiCSCAdESLevelBMultiFilesTest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
 
 	private ASiCWithCAdESService service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentsToSign = new ArrayList<>();
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

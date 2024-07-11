@@ -22,10 +22,10 @@ package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.evidencerecord.common.validation.AbstractTestEvidenceRecordValidator;
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecordValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -34,10 +34,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XMLEvidenceRecordValidatorTest extends AbstractTestEvidenceRecordValidator {
+class XMLEvidenceRecordValidatorTest extends AbstractTestEvidenceRecordValidator {
 
     @Test
-    public void isSupported() {
+    void isSupported() {
         XMLEvidenceRecordValidator validator = new XMLEvidenceRecordValidator();
 
         byte[] wrongBytes = new byte[] { 1, 2 };
@@ -60,12 +60,12 @@ public class XMLEvidenceRecordValidatorTest extends AbstractTestEvidenceRecordVa
     }
 
     @Override
-    protected EvidenceRecordValidator initEmptyValidator() {
+    protected DefaultEvidenceRecordValidator initEmptyValidator() {
         return new XMLEvidenceRecordValidator();
     }
 
     @Override
-    protected EvidenceRecordValidator initValidator(DSSDocument document) {
+    protected DefaultEvidenceRecordValidator initValidator(DSSDocument document) {
         return new XMLEvidenceRecordValidator(document);
     }
 

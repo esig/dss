@@ -22,7 +22,7 @@ package eu.europa.esig.dss.jades.extension;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class JAdESExtensionBToLTATest extends AbstractJAdESTestExtension {
+class JAdESExtensionBToLTATest extends AbstractJAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

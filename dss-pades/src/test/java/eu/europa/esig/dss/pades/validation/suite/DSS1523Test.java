@@ -28,12 +28,12 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SADSSType;
 import eu.europa.esig.validationreport.jaxb.SAFilterType;
@@ -52,18 +52,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DSS1523Test extends AbstractPkiFactoryTestValidation {
 
 	@Test
-	public void validation() {
+	void validation() {
 		// <</Type /DSS/Certs [20 0 R]/CRLs [21 0 R]/OCSPs [22 0 R]>>
 		DSSDocument doc = new InMemoryDocument(DSS1523Test.class.getResourceAsStream("/validation/PAdES-LTA.pdf"), "PAdES-LTA.pdf", MimeTypeEnum.PDF);
 		
 		verify(doc);
 		
-		PDFDocumentValidator validator = new PDFDocumentValidator(doc);
-		validator.setCertificateVerifier(new CommonCertificateVerifier());
-		List<AdvancedSignature> signatures = validator.getSignatures();
+		PDFDocumentAnalyzer analyzer = new PDFDocumentAnalyzer(doc);
+		analyzer.setCertificateVerifier(new CommonCertificateVerifier());
+		List<AdvancedSignature> signatures = analyzer.getSignatures();
 		assertEquals(1, signatures.size());
 		
-		List<PdfDssDict> dssDictionaries = validator.getDssDictionaries();
+		List<PdfDssDict> dssDictionaries = analyzer.getDssDictionaries();
 		assertEquals(1, dssDictionaries.size());
 		PdfDssDict pdfDssDict = dssDictionaries.get(0);
 

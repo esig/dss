@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -40,21 +30,30 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPath2FilterEnvelopedSignatureTransform;
+import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
+import org.junit.jupiter.api.BeforeEach;
 
-public class XAdESLevelBEnvelopedWithXPath2FilterTest extends AbstractXAdESTestSignature {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+class XAdESLevelBEnvelopedWithXPath2FilterTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		SantuarioInitializer.init();
 
 		documentToSign = new FileDocument(new File("src/test/resources/sampleWithPlaceOfSignature.xml"));
@@ -71,7 +70,7 @@ public class XAdESLevelBEnvelopedWithXPath2FilterTest extends AbstractXAdESTestS
 		DSSReference reference = new DSSReference();
 		reference.setContents(documentToSign);
 		reference.setId("REF-ID1");
-		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference.setUri("");
 		List<DSSTransform> transforms1 = new ArrayList<>();
 		XPath2FilterEnvelopedSignatureTransform transform1 = new XPath2FilterEnvelopedSignatureTransform();

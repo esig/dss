@@ -29,8 +29,9 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESWithCritStringTypeTest extends AbstractJAdESTestValidation {
+class JAdESWithCritStringTypeTest extends AbstractJAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -47,7 +48,8 @@ public class JAdESWithCritStringTypeTest extends AbstractJAdESTestValidation {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertFalse(signature.isStructuralValidationValid());
         assertEquals(1, signature.getStructuralValidationMessages().size());
-        assertEquals("#/crit: expected type: JSONArray, found: String", signature.getStructuralValidationMessages().get(0));
+        assertTrue(signature.getStructuralValidationMessages().get(0).contains("expected type: array, actual: string"));
+        assertTrue(signature.getStructuralValidationMessages().get(0).contains("#/crit"));
     }
 
 }

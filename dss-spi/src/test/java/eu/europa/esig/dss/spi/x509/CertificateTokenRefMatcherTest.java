@@ -34,7 +34,7 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CertificateTokenRefMatcherTest {
+class CertificateTokenRefMatcherTest {
 
     private final CertificateTokenRefMatcher certificateTokenRefMatcher = new CertificateTokenRefMatcher();
 
@@ -47,7 +47,7 @@ public class CertificateTokenRefMatcherTest {
     }
 
     @Test
-    public void validCertRefTest() {
+    void validCertRefTest() {
         CertificateRef validCertificateRef = new CertificateRef();
         validCertificateRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, Utils.fromBase64("Mpwl3jOWWKPyZemwaU+5c/zYY2x1NBBaNU7Bo+BmmWU=")));
         validCertificateRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(DSSASN1Utils.getIssuerSerial(certificateToken)));
@@ -60,7 +60,7 @@ public class CertificateTokenRefMatcherTest {
     }
 
     @Test
-    public void invalidCertDigestTest() {
+    void invalidCertDigestTest() {
         CertificateRef validCertificateRef = new CertificateRef();
         validCertificateRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, Utils.fromBase64("Zr4xWKz9SDQi7WF6ZcoC2hThEwXd4XW31xLF3Ey+9GE=")));
         validCertificateRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(DSSASN1Utils.getIssuerSerial(certificateToken)));
@@ -73,7 +73,7 @@ public class CertificateTokenRefMatcherTest {
     }
 
     @Test
-    public void invalidSerialIssuerTest() {
+    void invalidSerialIssuerTest() {
         CertificateRef validCertificateRef = new CertificateRef();
         validCertificateRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, Utils.fromBase64("Mpwl3jOWWKPyZemwaU+5c/zYY2x1NBBaNU7Bo+BmmWU=")));
         validCertificateRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(DSSASN1Utils.getIssuerSerial(caCertificate)));
@@ -86,7 +86,7 @@ public class CertificateTokenRefMatcherTest {
     }
 
     @Test
-    public void invalidCertRefTest() {
+    void invalidCertRefTest() {
         CertificateRef validCertificateRef = new CertificateRef();
         validCertificateRef.setCertDigest(new Digest(DigestAlgorithm.SHA256, Utils.fromBase64("Zr4xWKz9SDQi7WF6ZcoC2hThEwXd4XW31xLF3Ey+9GE=")));
         validCertificateRef.setCertificateIdentifier(DSSASN1Utils.toSignerIdentifier(DSSASN1Utils.getIssuerSerial(caCertificate)));
@@ -99,7 +99,7 @@ public class CertificateTokenRefMatcherTest {
     }
 
     @Test
-    public void responderIdTest() {
+    void responderIdTest() {
         CertificateRef validCertificateRef = new CertificateRef();
         ResponderId responderId = new ResponderId(certificateToken.getSubject().getPrincipal(),
                 CertificateExtensionsUtils.getSubjectKeyIdentifier(certificateToken).getSki());
@@ -113,7 +113,7 @@ public class CertificateTokenRefMatcherTest {
     }
 
     @Test
-    public void invalidResponderIdTest() {
+    void invalidResponderIdTest() {
         CertificateRef validCertificateRef = new CertificateRef();
         ResponderId responderId = new ResponderId(caCertificate.getSubject().getPrincipal(),
                 CertificateExtensionsUtils.getSubjectKeyIdentifier(caCertificate).getSki());

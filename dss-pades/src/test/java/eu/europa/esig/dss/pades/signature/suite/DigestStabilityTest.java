@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
- * This class checks if the getDataToSign result is equals when passing the same
+ * This public class checks if the getDataToSign result is equals when passing the same
  * parameters
  *
  */
@@ -53,12 +53,12 @@ public class DigestStabilityTest extends PKIFactoryAccess {
 	private DSSPrivateKeyEntry privateKeyEntry;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		privateKeyEntry = getPrivateKeyEntry();
 	}
 
 	@Test
-	public void testTwiceGetDataToSignReturnsSameDigest() throws Exception {
+	void testTwiceGetDataToSignReturnsSameDigest() throws Exception {
 
 		DSSDocument toBeSigned = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
@@ -75,7 +75,7 @@ public class DigestStabilityTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void differentDocumentGetDifferentDigest() throws Exception {
+	void differentDocumentGetDifferentDigest() throws Exception {
 		DSSDocument toBeSigned1 = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 		DSSDocument toBeSigned2 = new InMemoryDocument(getClass().getResourceAsStream("/doc.pdf"), "doc.pdf", MimeTypeEnum.PDF);
 
@@ -92,7 +92,7 @@ public class DigestStabilityTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void differentSigningDateGetDifferentDigest() throws Exception {
+	void differentSigningDateGetDifferentDigest() throws Exception {
 		DSSDocument toBeSigned = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 		Calendar calendar = Calendar.getInstance();

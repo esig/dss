@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 
-public class CacheKeyTest {
+class CacheKeyTest {
 	
 	@Test
-	public void urlEncodingTest() {
+	void urlEncodingTest() {
 		assertEquals("https___ec_europa_eu_tools_lotl_eu_lotl_xml", new CacheKey("https://ec.europa.eu/tools/lotl/eu-lotl.xml").getKey());
 		assertEquals("https___ec_europa_eu_tools_lotl_eu_lotl_xml", new CacheKey("https___ec_europa_eu_tools_lotl_eu_lotl_xml").getKey());
 		assertEquals("https___ec_europa_eu_tools_lotl_eu_lotl_xml", new CacheKey("https://ec.europa.eu/tools/lotl/eu lotl.xml").getKey());
@@ -42,7 +42,7 @@ public class CacheKeyTest {
 	}
 	
 	@Test
-	public void comparisonTest() {
+	void comparisonTest() {
 		assertEquals(new CacheKey("https://ec.europa.eu/tools/lotl/eu-lotl.xml"), new CacheKey("https://ec.europa.eu/tools/lotl/eu-lotl.xml"));
 		assertEquals(new CacheKey("https://ec.europa.eu/tools/lotl/eu-lotl.xml"), new CacheKey("https://ec.europa.eu/tools/lotl/eu lotl.xml"));
 		assertEquals(new CacheKey("https://ec.europa.eu/tools/lotl/eu-lotl.xml"), new CacheKey("https://ec.europa.eu/tools/lotl/eu%20lotl.xml"));

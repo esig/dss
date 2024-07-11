@@ -29,7 +29,7 @@ import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PdfPermissionsChecker;
 import eu.europa.esig.dss.pdf.PdfSignatureFieldPositionChecker;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 public class PAdESWithIPdfObjFactoryConfiguration {

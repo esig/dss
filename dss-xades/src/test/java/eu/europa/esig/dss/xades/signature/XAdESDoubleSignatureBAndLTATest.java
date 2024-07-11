@@ -27,19 +27,20 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESDoubleSignatureBAndLTATest extends AbstractXAdESTestSignature {
+class XAdESDoubleSignatureBAndLTATest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private DSSDocument originalDocument;
@@ -50,7 +51,7 @@ public class XAdESDoubleSignatureBAndLTATest extends AbstractXAdESTestSignature 
     private String firstSignatureId;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 
@@ -70,7 +71,10 @@ public class XAdESDoubleSignatureBAndLTATest extends AbstractXAdESTestSignature 
         assertEquals(1, signatures.size());
         firstSignatureId = signatures.get(0).getDSSId().asXmlId();
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MILLISECOND, 1);
         signatureParameters = new XAdESSignatureParameters();
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         documentToSign = signedDocument;
         DSSDocument doubleSignedDocument = super.sign();

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -33,28 +33,30 @@ import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.signature.PrettyPrintTransformer;
+import eu.europa.esig.dss.xades.validation.DSSDocumentXMLSignatureInput;
+import eu.europa.esig.dss.xades.validation.DetachedSignatureResolver;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xades.definition.XAdESPath;
-import eu.europa.esig.xades.definition.xades111.XAdES111Path;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.ReferenceNotInitializedException;
+import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
 import org.apache.xml.security.utils.XMLUtils;
@@ -159,7 +161,7 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * This class is an utility class and cannot be instantiated.
+	 * This class is a utility class and cannot be instantiated.
 	 */
 	private DSSXMLUtils() {
 		// empty
@@ -174,19 +176,6 @@ public final class DSSXMLUtils {
 	 */
 	public static boolean registerTransform(final String transformURI) {
 		return transforms.add(transformURI);
-	}
-
-	/**
-	 * This method allows to register a canonicalizer.
-	 *
-	 * @param c14nAlgorithmURI
-	 *            the URI of canonicalization algorithm
-	 * @return true if this set did not already contain the specified element
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.CanonicalizationUtils.registerCanonicalizer(c14nAlgorithmURI)}
-	 */
-	@Deprecated
-	public static boolean registerCanonicalizer(final String c14nAlgorithmURI) {
-		return XMLCanonicalizer.registerCanonicalizer(c14nAlgorithmURI);
 	}
 
 	/**
@@ -432,84 +421,6 @@ public final class DSSXMLUtils {
 		return null;
 	}
 
-	// TODO : remove method later and re-use DomUtils.serializeNode(node)
-	/**
-	 * This method performs the serialization of the given node
-	 *
-	 * @param xmlNode
-	 *            The node to be serialized.
-	 * @return the serialized bytes
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.DomUtils.serializeNode(xmlNode)}
-	 */
-	@Deprecated
-	public static byte[] serializeNode(final Node xmlNode) {
-		return DomUtils.serializeNode(xmlNode);
-	}
-
-	/**
-	 * This method says if the framework can canonicalize an XML data with the provided method.
-	 *
-	 * @param canonicalizationMethod
-	 *            the canonicalization method to be checked
-	 * @return true if it is possible to canonicalize false otherwise
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.CanonicalizationUtils.canCanonicalize(canonicalizationMethod)}
-	 */
-	@Deprecated
-	public static boolean canCanonicalize(final String canonicalizationMethod) {
-		return XMLCanonicalizer.canCanonicalize(canonicalizationMethod);
-	}
-
-	/**
-	 * This method canonicalizes the given array of bytes using the {@code canonicalizationMethod} parameter.
-	 *
-	 * @param canonicalizationMethod
-	 *            canonicalization method
-	 * @param toCanonicalizeBytes
-	 *            array of bytes to canonicalize
-	 * @return array of canonicalized bytes
-	 * @throws DSSException
-	 *             if any error is encountered
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(toCanonicalizeBytes}
-	 */
-	@Deprecated
-	public static byte[] canonicalize(final String canonicalizationMethod, final byte[] toCanonicalizeBytes) throws DSSException {
-		return XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(toCanonicalizeBytes);
-	}
-
-	/**
-	 * This method canonicalizes the given {@code Node}.
-	 * If canonicalization method is not provided, the {@code DEFAULT_CANONICALIZATION_METHOD} is being used
-	 *
-	 * @param canonicalizationMethod
-	 *            canonicalization method (can be null)
-	 * @param node
-	 *            {@code Node} to canonicalize
-	 * @return array of canonicalized bytes
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node}}
-	 */
-	@Deprecated
-	public static byte[] canonicalizeSubtree(final String canonicalizationMethod, final Node node) {
-		return XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node);
-	}
-	
-	/**
-	 * Returns the {@code canonicalizationMethod} if provided, otherwise returns the DEFAULT_CANONICALIZATION_METHOD
-	 * 
-	 * @param canonicalizationMethod {@link String} canonicalization method (can be null)
-	 * @return canonicalizationMethod to be used
-	 * @deprecated since DSS 5.13. See {@code eu.europa.esig.dss.CanonicalizationUtils}
-	 */
-	@Deprecated
-	public static String getCanonicalizationMethod(String canonicalizationMethod) {
-		if (Utils.isStringEmpty(canonicalizationMethod)) {
-			// The INCLUSIVE canonicalization is used by default (See DSS-2208)
-			LOG.warn("Canonicalization method is not defined. "
-					+ "An inclusive canonicalization '{}' will be used (see XMLDSIG 4.4.3.2).", XMLCanonicalizer.DEFAULT_XMLDSIG_C14N_METHOD);
-			return XMLCanonicalizer.DEFAULT_XMLDSIG_C14N_METHOD;
-		}
-		return canonicalizationMethod;
-	}
-
 	/**
 	 * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by
 	 * the fact that the attribute does not have attached type of information. Another solution is to parse the XML
@@ -622,17 +533,6 @@ public final class DSSXMLUtils {
 	}
 	
 	/**
-	 * Returns bytes of the given {@code node}
-	 * @param node {@link Node} to get bytes for
-	 * @return byte array
-	 * @deprecated since DSS 5.13. Use {@code eu.europa.esig.dss.DomUtils.getNodeBytes(node)} instead
-	 */
-	@Deprecated
-	public static byte[] getNodeBytes(Node node) {
-		return DomUtils.getNodeBytes(node);
-	}
-	
-	/**
 	 * Returns bytes of the original referenced data
 	 * @param reference {@link Reference} to get bytes from
 	 * @return byte array containing original data
@@ -693,7 +593,7 @@ public final class DSSXMLUtils {
 			LOG.warn("Original data is not provided for the reference with id [{}]. Reason: [{}]", reference.getId(), e.getMessage());
 		} catch (IOException | CanonicalizationException e) {
 			// if exception occurs by another reason
-			LOG.error("Unable to retrieve the content of reference with id [{}].", reference.getId(), e);
+			LOG.warn("Unable to retrieve the content of reference with id [{}].", reference.getId(), e);
 		}
 		// in case of exceptions return null value
 		return null;
@@ -738,10 +638,10 @@ public final class DSSXMLUtils {
 	private static byte[] getDigestValue(String digestValueBase64) {
 		byte[] result = null;
 		if (Utils.isStringEmpty(digestValueBase64)) {
-			LOG.error("An empty DigestValue obtained!");
+			LOG.warn("An empty DigestValue obtained!");
 
 		} else if (!Utils.isBase64Encoded(digestValueBase64)) {
-			LOG.error("The DigestValue is not base64 encoded! Obtained string : {}", digestValueBase64);
+			LOG.warn("The DigestValue is not base64 encoded! Obtained string : {}", digestValueBase64);
 
 		} else {
 			result = Utils.fromBase64(digestValueBase64);
@@ -759,6 +659,22 @@ public final class DSSXMLUtils {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * This method checks if the reference element contain any transformation
+	 *
+	 * @param referenceElement the DOM element with the reference
+	 * @return true if the reference contain any transform
+	 */
+	public static boolean containsTransforms(Element referenceElement) {
+		try {
+			Element transforms = DomUtils.getElement(referenceElement, XMLDSigPath.TRANSFORMS_PATH);
+			return transforms != null;
+		} catch (Exception e) {
+			LOG.warn("Unable to detect Transforms", e);
+			return false;
+		}
 	}
 
 	/**
@@ -914,6 +830,34 @@ public final class DSSXMLUtils {
 	public static Manifest initManifest(Element manifestElement) throws XMLSecurityException {
 		return new Manifest(manifestElement, "");
 	}
+
+	/**
+	 * Initializes a Manifest object from the provided ds:Manifest element with a provided {@code detachedContents}
+	 *
+	 * @param manifestElement {@link Element} ds:Manifest element
+	 * @param detachedContents a list of {@link DSSDocument}s representing a detached content
+	 * @return {@link Manifest} object
+	 * @throws XMLSecurityException if en error occurs in an attempt to initialize the Manifest object
+	 */
+	public static Manifest initManifestWithDetachedContent(Element manifestElement, List<DSSDocument> detachedContents) throws XMLSecurityException {
+		final Manifest manifest = initManifest(manifestElement);
+		initManifestDetachedContent(manifest, detachedContents);
+		return manifest;
+	}
+
+	/**
+	 * Initializes detached content within the given {@code manifest}
+	 *
+	 * @param manifest {@link Manifest} to initialize detached content in
+	 * @param detachedContents a list of {@link DSSDocument}s
+	 */
+	public static void initManifestDetachedContent(Manifest manifest, List<DSSDocument> detachedContents) {
+		if (Utils.isCollectionNotEmpty(detachedContents)) {
+			for (DigestAlgorithm digestAlgorithm : getReferenceDigestAlgos(manifest.getElement())) {
+				manifest.addResourceResolver(new DetachedSignatureResolver(detachedContents, digestAlgorithm));
+			}
+		}
+	}
 	
 	/**
 	 * Extracts signing certificate's public key from KeyInfo element of a given signature if present
@@ -991,7 +935,7 @@ public final class DSSXMLUtils {
 	private static boolean isCounterSignature(final XAdESSignature xadesCounterSignature) {
 		final List<Reference> references = xadesCounterSignature.getReferences();
 		for (final Reference reference : references) {
-			if (DSSXMLUtils.isCounterSignature(reference, xadesCounterSignature.getXAdESPaths())) {
+			if (isCounterSignature(reference, xadesCounterSignature.getXAdESPaths())) {
 				return true;
 			}
 		}
@@ -1093,11 +1037,9 @@ public final class DSSXMLUtils {
 				DSSTransform transform = iterator.next();
 				output = transform.performTransform(output);
 				bytes = output.getBytes();
-				if (iterator.hasNext()) {
-					if (Utils.isArrayEmpty(bytes)) {
-						throw new IllegalInputException(String.format(
-								"Unable to perform the next transform. The %s produced an empty output!", transform));
-					}
+				if (iterator.hasNext() && Utils.isArrayEmpty(bytes)) {
+					throw new IllegalInputException(String.format(
+							"Unable to perform the next transform. The %s produced an empty output!", transform));
 				}
 			}
 
@@ -1135,14 +1077,14 @@ public final class DSSXMLUtils {
 	 * the provided {@code referenceContainer}
 	 *
 	 * @param referenceContainer {@link Element} containing the ds:Reference elements
-	 * @return a list of {@link DigestAlgorithm}s
+	 * @return a set of {@link DigestAlgorithm}s
 	 */
-	public static List<DigestAlgorithm> getReferenceDigestAlgos(Element referenceContainer) {
-		List<DigestAlgorithm> digestAlgorithms = new ArrayList<>();
+	public static Set<DigestAlgorithm> getReferenceDigestAlgos(Element referenceContainer) {
+		final Set<DigestAlgorithm> digestAlgorithms = new HashSet<>();
 		NodeList referenceNodeList = DomUtils.getNodeList(referenceContainer, XMLDSigPath.REFERENCE_PATH);
 		for (int ii = 0; ii < referenceNodeList.getLength(); ii++) {
 			Element referenceElement = (Element) referenceNodeList.item(ii);
-			Digest digest = DSSXMLUtils.getDigestAndValue(referenceElement);
+			Digest digest = getDigestAndValue(referenceElement);
 			if (digest != null) {
 				digestAlgorithms.add(digest.getAlgorithm());
 			}
@@ -1212,6 +1154,24 @@ public final class DSSXMLUtils {
 	}
 
 	/**
+	 * This method retrieves an Id attribute value of the given reference, when applicable
+	 *
+	 * NOTE: Method is used due to Apache Santuario Signature returning an empty string instead of null result.
+	 *
+	 * @param reference {@link Reference} to get value of Id attribute
+	 * @return {@link String} Id attribute value if available, NULL otherwise
+	 */
+	public static String getReferenceId(Reference reference) {
+		if (reference != null) {
+			Element element = reference.getElement();
+			if (element != null) {
+				return getAttribute(element, XMLDSigAttribute.ID.getAttributeName());
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * This method retrieves a URI attribute value of the given reference, when applicable
 	 *
 	 * NOTE: Method is used due to Apache Santuario Signature returning an empty string instead of null result.
@@ -1223,7 +1183,7 @@ public final class DSSXMLUtils {
 		if (reference != null) {
 			Element element = reference.getElement();
 			if (element != null) {
-				return DSSXMLUtils.getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
+				return getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
 			}
 		}
 		return null;
@@ -1233,20 +1193,10 @@ public final class DSSXMLUtils {
 	 * Checks if the original reference document content can be obtained (de-referenced)
 	 *
 	 * @param reference {@link Reference} to check
-	 * @return TRUE if the de-referencing is succeeds, FALSE otherwise
+	 * @return TRUE if the de-referencing is succeeding, FALSE otherwise
 	 */
 	public static boolean isAbleToDeReferenceContent(Reference reference) {
-		try {
-			return reference.getContentsBeforeTransformation() != null;
-
-		} catch (ReferenceNotInitializedException e) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug(String.format(
-						"Cannot get the pointed bytes by a reference with uri='%s'. Reason : [%s]",
-						reference.getURI(), e.getMessage()));
-			}
-			return false;
-		}
+		return getClosedContentsBeforeTransformation(reference) != null;
 	}
 
 	/**
@@ -1342,6 +1292,78 @@ public final class DSSXMLUtils {
 					"Define another algorithm within #setReferenceDigestAlgorithm method.", digestAlgorithm));
 		}
 		return digestAlgorithm;
+	}
+
+	/**
+     * This method produces a copy of the document and returns an element by the defined {@code xpathString}.
+     * This method can be used as a workaround for canonicalization, as namespaces are not added to canonicalizer
+     * for new created elements.
+     * The issue was reported on: <a href="https://issues.apache.org/jira/browse/SANTUARIO-139">SANTUARIO-139</a>
+     *
+     * @param document {@link Document}
+     * @param elementId {@link String} optional element Id to start XPath expression from
+     * @param xpathString {@link String} corresponding to an XPath of element to be returned
+     * @return {@link Element}
+     */
+	public static Element ensureNamespacesDefined(Document document, String elementId, String xpathString) {
+		final byte[] serializedDoc = DomUtils.serializeNode(document);
+		Document recreatedDocument = DomUtils.buildDOM(serializedDoc);
+		Element element = recreatedDocument.getDocumentElement();
+		if (Utils.isStringNotEmpty(elementId)) {
+			element = DomUtils.getElementById(recreatedDocument, elementId);
+		}
+		return DomUtils.getElement(element, xpathString);
+	}
+
+	/**
+	 * This method returns a name of the linked document to the reference (when applicable)
+	 *
+	 * @param reference {@link Reference} to get a name of the linked document for
+	 * @return {@link String} document name
+	 */
+	public static String getDocumentName(Reference reference) {
+		try {
+			XMLSignatureInput xmlSignatureInput = getClosedContentsBeforeTransformation(reference);
+			if (xmlSignatureInput instanceof DSSDocumentXMLSignatureInput) {
+				return ((DSSDocumentXMLSignatureInput) xmlSignatureInput).getDocumentName();
+			}
+		} catch (Exception e) {
+			String errorMessage = "Unable to verify matching document name for a reference with Id [{}] : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, reference.getId(), e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, reference.getId(), e.getMessage());
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * The close method is a workaround for the issue originating from
+	 * {@link <a href="https://issues.apache.org/jira/browse/SANTUARIO-622">SANTUARIO-622</a>},
+	 * as the {@code XMLSignatureInput} instantiated with an {@code InputStream}, does not close
+	 * the {@code InputStream}, unless it is consumed.
+	 *
+	 * @param reference {@link Reference}
+	 * @return {@link XMLSignatureInput}
+	 */
+	private static XMLSignatureInput getClosedContentsBeforeTransformation(Reference reference) {
+		try {
+			XMLSignatureInput xmlSignatureInput = reference.getContentsBeforeTransformation();
+			if (xmlSignatureInput != null) {
+				Utils.closeQuietly(xmlSignatureInput.getOctetStreamReal());
+			}
+			return xmlSignatureInput;
+
+		} catch (Exception e) {
+			String errorMessage = "Unable to get contents before transformation for a reference with Id '{}' : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, reference.getId(), e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, reference.getId(), e.getMessage());
+			}
+			return null;
+		}
 	}
 
 }

@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentDoubleSignatureBAndLTATest extends AbstractOpenDocumentSetTestSignature {
+class OpenDocumentDoubleSignatureBAndLTATest extends AbstractOpenDocumentSetTestSignature {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
@@ -49,7 +49,7 @@ public class OpenDocumentDoubleSignatureBAndLTATest extends AbstractOpenDocument
     private String firstSignatureId;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

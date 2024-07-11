@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class CAdESLevelBCounterSignatureDetachedTest extends AbstractCAdESCounterSignatureTest {
+class CAdESLevelBCounterSignatureDetachedTest extends AbstractCAdESCounterSignatureTest {
 
 	private CAdESService service;
 	private DSSDocument documentToSign;
@@ -44,7 +44,7 @@ public class CAdESLevelBCounterSignatureDetachedTest extends AbstractCAdESCounte
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new InMemoryDocument("Hello World".getBytes());

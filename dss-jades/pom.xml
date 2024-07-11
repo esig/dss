@@ -6,12 +6,12 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.0</version>
+		<version>6.1.RC1</version>
 	</parent>
 
 	<artifactId>dss-jades</artifactId>
 	<name>DSS JAdES</name>
-	<description>DSS JAdES contains the code for the creation and validation of JAdES signatures. (experimental)</description>
+	<description>DSS JAdES contains the code for the creation and validation of JAdES signatures.</description>
 
 	<properties>
 		<module-name>jpms_dss_jades</module-name>
@@ -25,6 +25,11 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-document</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
@@ -41,6 +46,11 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-evidence-record-xml</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-evidence-record-asn1</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

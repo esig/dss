@@ -28,12 +28,12 @@ import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
-public class SignatureValueTest {
+class SignatureValueTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignatureValueTest.class);
 
 	@Test
-	public void testToString() {
+	void testToString() {
 		SignatureValue sv = new SignatureValue();
 		LOG.info("{}", sv);
 		assertEquals("SignatureValue [algorithm=null, value=null]", sv.toString());

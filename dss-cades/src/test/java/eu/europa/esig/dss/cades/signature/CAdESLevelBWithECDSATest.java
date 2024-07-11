@@ -44,7 +44,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("slow")
-public class CAdESLevelBWithECDSATest extends AbstractCAdESTestSignature {
+class CAdESLevelBWithECDSATest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
@@ -74,7 +74,7 @@ public class CAdESLevelBWithECDSATest extends AbstractCAdESTestSignature {
 
 	@ParameterizedTest(name = "Combination {index} of ECDSA with {0} and message-digest algorithm {1}")
 	@MethodSource("data")
-	public void init(DigestAlgorithm digestAlgo, DigestAlgorithm messageDigestAlgo) {
+	void init(DigestAlgorithm digestAlgo, DigestAlgorithm messageDigestAlgo) {
 		documentToSign = new InMemoryDocument(HELLO_WORLD.getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();

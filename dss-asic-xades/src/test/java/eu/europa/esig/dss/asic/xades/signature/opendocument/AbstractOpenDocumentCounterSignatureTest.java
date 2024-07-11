@@ -20,8 +20,21 @@
  */
 package eu.europa.esig.dss.asic.xades.signature.opendocument;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.xades.signature.AbstractASiCXAdESCounterSignatureTest;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,21 +43,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerValidator;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
-import eu.europa.esig.dss.asic.xades.signature.AbstractASiCXAdESCounterSignatureTest;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractOpenDocumentCounterSignatureTest extends AbstractASiCXAdESCounterSignatureTest {
 	
@@ -65,7 +65,7 @@ public abstract class AbstractOpenDocumentCounterSignatureTest extends AbstractA
 	
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void test(DSSDocument fileToTest) {
+	void test(DSSDocument fileToTest) {
 		this.fileToTest = fileToTest;
 
 		super.signAndVerify();
@@ -100,11 +100,11 @@ public abstract class AbstractOpenDocumentCounterSignatureTest extends AbstractA
 		List<DSSDocument> signedDocuments = asicValidator.getSignedDocuments();
 		
 		List<String> fileNames = getSignedFilesNames(signedDocuments);		
-		List<String> fileDigests = getSignedFilesDigests(signedDocuments);
+		List<Digest> fileDigests = getSignedFilesDigests(signedDocuments);
 
 		for (DSSDocument doc : extractOriginal.getSignedDocuments()) {
 			assertTrue(fileNames.contains(doc.getName()));
-			assertTrue(fileDigests.contains(doc.getDigest(DigestAlgorithm.SHA256)));
+			assertTrue(fileDigests.contains(new Digest(DigestAlgorithm.SHA256, doc.getDigestValue(DigestAlgorithm.SHA256))));
 		}	
 		
 		verifySignatureFileName(asicValidator.getSignatureDocuments());
@@ -118,15 +118,15 @@ public abstract class AbstractOpenDocumentCounterSignatureTest extends AbstractA
 		return fileNames;
 	}
 	
-	private List<String> getSignedFilesDigests(List<DSSDocument> files) {
-		List<String> fileDigests = new ArrayList<>();
-		for(DSSDocument doc: files) {
-			fileDigests.add(doc.getDigest(DigestAlgorithm.SHA256));
+	private List<Digest> getSignedFilesDigests(List<DSSDocument> files) {
+		List<Digest> fileDigests = new ArrayList<>();
+		for (DSSDocument doc : files) {
+			fileDigests.add(new Digest(DigestAlgorithm.SHA256, doc.getDigestValue(DigestAlgorithm.SHA256)));
 		}
 		return fileDigests;
 	}
 	
-	public void verifySignatureFileName(List<DSSDocument> signatureFiles) {
+	void verifySignatureFileName(List<DSSDocument> signatureFiles) {
 		assertEquals(1, signatureFiles.size());
 		DSSDocument signature = signatureFiles.get(0);
 		assertEquals("META-INF/documentsignatures.xml", signature.getName());

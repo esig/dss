@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -44,6 +34,14 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
+
+import javax.xml.crypto.dsig.CanonicalizationMethod;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class XAdESLevelLTAInternallyDetachedTest extends AbstractXAdESTestSignature {
 
@@ -52,7 +50,7 @@ public class XAdESLevelLTAInternallyDetachedTest extends AbstractXAdESTestSignat
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

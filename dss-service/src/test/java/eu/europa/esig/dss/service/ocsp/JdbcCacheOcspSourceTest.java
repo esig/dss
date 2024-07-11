@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.extension.AuthorityInformationAccess;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.service.OnlineSourceTest;
 import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
@@ -56,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JdbcCacheOcspSourceTest {
+class JdbcCacheOcspSourceTest extends OnlineSourceTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JdbcCacheOcspSourceTest.class);
 	
@@ -68,7 +69,7 @@ public class JdbcCacheOcspSourceTest {
 	private Date requestTime = null;
 	
 	@BeforeEach
-	public void setUp() throws SQLException {
+	void setUp() throws SQLException {
 		dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
 		JdbcCacheConnector jdbcCacheConnector = new JdbcCacheConnector(dataSource);
 		ocspSource.setJdbcCacheConnector(jdbcCacheConnector);
@@ -78,7 +79,7 @@ public class JdbcCacheOcspSourceTest {
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		OCSPToken revocationToken;
 		
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
@@ -142,11 +143,11 @@ public class JdbcCacheOcspSourceTest {
 	}
 
 	@Test
-	public void testMultipleOCSPResponses() {
+	void testMultipleOCSPResponses() {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 
-		CertificateToken goodUser = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-user.crt"));
-		CertificateToken goodCa = DSSUtils.loadCertificate(dataLoader.get("http://dss.nowina.lu/pki-factory/crt/good-ca.crt"));
+		CertificateToken goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user.crt"));
+		CertificateToken goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-ca.crt"));
 
 		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource(new OCSPDataLoader());
 		OCSPToken firstOCSPToken = onlineOCSPSource.getRevocationToken(goodUser, goodCa);
@@ -193,7 +194,7 @@ public class JdbcCacheOcspSourceTest {
 	}
 	
 	@AfterEach
-	public void cleanUp() throws SQLException {
+	void cleanUp() throws SQLException {
 		ocspSource.destroyTable();
 		assertFalse(ocspSource.isTableExists());
 	}

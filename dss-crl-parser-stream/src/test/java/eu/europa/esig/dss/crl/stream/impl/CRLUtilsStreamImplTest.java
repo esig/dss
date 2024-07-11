@@ -22,6 +22,6 @@ package eu.europa.esig.dss.crl.stream.impl;
 
 import eu.europa.esig.dss.crl.AbstractTestCRLUtils;
 
-public class CRLUtilsStreamImplTest extends AbstractTestCRLUtils {
+class CRLUtilsStreamImplTest extends AbstractTestCRLUtils {
 
 }

@@ -91,6 +91,12 @@
 				printMethod="eu.europa.esig.dss.jaxb.parsers.ArchiveTimestampTypeParser.print" />
 		</jaxb:bindings>
 
+	  <jaxb:bindings node="//xs:simpleType[@name='EvidenceRecordTimestampType']">
+		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType"
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.EvidenceRecordTimestampTypeParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.EvidenceRecordTimestampTypeParser.print" />
+	  </jaxb:bindings>
+
   	<jaxb:bindings node="//xs:simpleType[@name='RevocationReason']">
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.RevocationReason"
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.RevocationReasonParser.parseShortName"
@@ -125,12 +131,6 @@
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.DigestAlgorithm"
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.parse"
 				printMethod="eu.europa.esig.dss.jaxb.parsers.DigestAlgorithmParser.print" />
-		</jaxb:bindings>
-
-  	<jaxb:bindings node="//xs:complexType[@name='BasicSignature']//xs:element[@name='MaskGenerationFunctionUsedToSignThisToken']">
-			<jaxb:javaType name="eu.europa.esig.dss.enumerations.MaskGenerationFunction"
-				parseMethod="eu.europa.esig.dss.jaxb.parsers.MaskGenerationFunctionParser.parse"
-				printMethod="eu.europa.esig.dss.jaxb.parsers.MaskGenerationFunctionParser.print" />
 		</jaxb:bindings>
 
   	<jaxb:bindings node="//xs:complexType[@name='Certificate']//xs:element[@name='PublicKeyEncryptionAlgo']">

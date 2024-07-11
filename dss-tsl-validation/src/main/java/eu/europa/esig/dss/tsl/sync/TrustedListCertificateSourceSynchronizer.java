@@ -21,18 +21,17 @@
 package eu.europa.esig.dss.tsl.sync;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.ParsingInfoRecord;
-import eu.europa.esig.dss.spi.tsl.PivotInfo;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustProperties;
-import eu.europa.esig.dss.spi.tsl.TrustService;
-import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.tsl.builder.TrustServiceProviderBuilder;
-import eu.europa.esig.dss.spi.util.TimeDependentValues;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
+import eu.europa.esig.dss.model.tsl.PivotInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.TrustProperties;
+import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
+import eu.europa.esig.dss.model.tsl.TrustService;
+import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.access.SynchronizerCacheAccess;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
@@ -73,7 +72,7 @@ public class TrustedListCertificateSourceSynchronizer {
 	/**
 	 * The certificate source to be synchronized
 	 */
-	private final TrustedListsCertificateSource certificateSource;
+	private final TrustPropertiesCertificateSource certificateSource;
 
 	/**
 	 * The cache access
@@ -85,12 +84,12 @@ public class TrustedListCertificateSourceSynchronizer {
 	 *
 	 * @param tlSources {@link TLSource}s
 	 * @param lotlSources {@link LOTLSource}s
-	 * @param certificateSource {@link TrustedListsCertificateSource}
+	 * @param certificateSource {@link TrustPropertiesCertificateSource}
 	 * @param synchronizationStrategy {@link SynchronizationStrategy}
 	 * @param cacheAccess {@link SynchronizerCacheAccess}
 	 */
 	public TrustedListCertificateSourceSynchronizer(TLSource[] tlSources, LOTLSource[] lotlSources,
-													TrustedListsCertificateSource certificateSource,
+													TrustPropertiesCertificateSource certificateSource,
 													SynchronizationStrategy synchronizationStrategy,
 													SynchronizerCacheAccess cacheAccess) {
 		this.tlSources = tlSources;

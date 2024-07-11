@@ -35,14 +35,14 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESLevelBDetachedSpecialCharTest extends AbstractXAdESTestSignature {
+class XAdESLevelBDetachedSpecialCharTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello world!".getBytes(), "test+file.txt");
 
 		signatureParameters = new XAdESSignatureParameters();

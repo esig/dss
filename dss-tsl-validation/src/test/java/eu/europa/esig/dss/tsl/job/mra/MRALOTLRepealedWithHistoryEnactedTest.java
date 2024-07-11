@@ -35,12 +35,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MRALOTLRepealedWithHistoryEnactedTest extends MRALOTLTest {
+class MRALOTLRepealedWithHistoryEnactedTest extends MRALOTLTest {
 
     private Date startingDate;
 
     @BeforeEach
-    public void initTime() {
+    void initTime() {
         this.startingDate = new Date();
     }
 

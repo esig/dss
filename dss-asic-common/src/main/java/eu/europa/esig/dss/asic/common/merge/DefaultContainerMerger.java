@@ -22,13 +22,13 @@ package eu.europa.esig.dss.asic.common.merge;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -97,9 +97,9 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
      * This method returns a relevant ASiC container extractor
      *
      * @param container {@link DSSDocument} representing a container to be extracted
-     * @return {@link AbstractASiCContainerExtractor}
+     * @return {@link DefaultASiCContainerExtractor}
      */
-    protected abstract AbstractASiCContainerExtractor getContainerExtractor(DSSDocument container);
+    protected abstract DefaultASiCContainerExtractor getContainerExtractor(DSSDocument container);
 
     /**
      * Gets the merged container result's creation time
@@ -311,7 +311,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
             if (currentMimeTypeDocument != null) {
                 if (mimeType == null) {
                     mimeType = currentMimeTypeDocument;
-                } else if (!mimeType.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(currentMimeTypeDocument.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
+                } else if (!Arrays.equals(mimeType.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentMimeTypeDocument.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                     throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
                             "Containers contain different mimetype documents!"));
                 }
@@ -331,7 +331,7 @@ public abstract class DefaultContainerMerger implements ASiCContainerMerger {
 
                 } else {
                     DSSDocument originalListDocument = DSSUtils.getDocumentWithName(result, document.getName());
-                    if (!originalListDocument.getDigest(DEFAULT_DIGEST_ALGORITHM).equals(document.getDigest(DEFAULT_DIGEST_ALGORITHM))) {
+                    if (!Arrays.equals(originalListDocument.getDigestValue(DEFAULT_DIGEST_ALGORITHM), document.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                         throw new UnsupportedOperationException(String.format("Unable to merge containers. " +
                                 "Containers contain different documents under the same name : %s!", document.getName()));
                     }

@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.FileDocument;
 /**
  * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-768
  */
-public class CAdESWithSpecialCharInFilenameTest extends AbstractCAdESTestValidation {
+class CAdESWithSpecialCharInFilenameTest extends AbstractCAdESTestValidation {
 
 	private static final String FILE_TO_TEST = "src/test/resources/validation/dss-768/FD1&FD2&FEA.pdf.p7m";
 

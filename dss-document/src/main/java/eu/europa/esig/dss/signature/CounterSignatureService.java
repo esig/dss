@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 import java.io.Serializable;
 
@@ -58,5 +59,13 @@ public interface CounterSignatureService<CSP extends SerializableCounterSignatur
 	 * @return {@link DSSDocument} the signature document enveloping a newly created counter-signature
 	 */
 	DSSDocument counterSignSignature(final DSSDocument signatureDocument, final CSP parameters, final SignatureValue signatureValue);
+
+	/**
+	 * This setter allows to define the TSP (timestamp provider) source.
+	 *
+	 * @param tspSource
+	 *            The time stamp source which is used when timestamping the signature.
+	 */
+	void setTspSource(final TSPSource tspSource);
 
 }

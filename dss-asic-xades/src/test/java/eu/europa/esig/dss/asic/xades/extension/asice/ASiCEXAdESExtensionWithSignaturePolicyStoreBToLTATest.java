@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.asic.xades.extension.asice;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.extension.AbstractASiCWithXAdESTestExtension;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -43,7 +37,13 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
-public class ASiCEXAdESExtensionWithSignaturePolicyStoreBToLTATest extends AbstractASiCWithXAdESTestExtension {
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ASiCEXAdESExtensionWithSignaturePolicyStoreBToLTATest extends AbstractASiCWithXAdESTestExtension {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -141,8 +141,8 @@ public class ASiCEXAdESExtensionWithSignaturePolicyStoreBToLTATest extends Abstr
 		assertEquals(policyDigestAlgoAndValue.getDigestMethod(), policyStoreDigestAlgoAndValue.getDigestMethod());
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 
-		assertEquals(POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()),
-				Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertArrayEquals(POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()),
+				policyDigestAlgoAndValue.getDigestValue());
 	}
 
 }

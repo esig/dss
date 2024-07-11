@@ -30,6 +30,7 @@ import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfAnnotation;
+import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
@@ -158,7 +159,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	@Override
 	public PdfDssDict getDSSDictionary() {
-		PdfDict catalog = new PdfBoxDict(pdDocument.getDocumentCatalog().getCOSObject(), pdDocument);
+		PdfDict catalog = getCatalogDictionary();
 		return SingleDssDict.extract(catalog);
 	}
 
@@ -294,6 +295,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 			}
 			PdfAnnotation pdfAnnotation = new PdfAnnotation(annotationBox);
 			pdfAnnotation.setName(getSignatureFieldName(pdAnnotation));
+			pdfAnnotation.setSigned(isSignedField(pdAnnotation));
 			return pdfAnnotation;
 		}
 		return null;
@@ -301,6 +303,10 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	private String getSignatureFieldName(PDAnnotation pdAnnotation) {
 		return pdAnnotation.getCOSObject().getString(COSName.T);
+	}
+
+	private boolean isSignedField(PDAnnotation pdAnnotation) {
+		return pdAnnotation.getCOSObject().getDictionaryObject(COSName.V) != null;
 	}
 
 	@Override
@@ -473,6 +479,31 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 			documentId += ((long) deterministicId.charAt(i) & 0xFF) << (8 * i);
 		}
 		return documentId;
+	}
+
+	@Override
+	public float getPdfHeaderVersion() {
+		return pdDocument.getDocument().getVersion();
+	}
+
+	@Override
+	public float getVersion() {
+		return pdDocument.getVersion();
+	}
+
+	@Override
+	public void setVersion(float version) {
+		pdDocument.getDocumentCatalog().setVersion(Float.toString(version));
+	}
+
+	@Override
+	public PdfDict createPdfDict() {
+		return new PdfBoxDict(pdDocument);
+	}
+
+	@Override
+	public PdfArray createPdfArray() {
+		return new PdfBoxArray(pdDocument);
 	}
 
 }

@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,13 +44,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OpenDocumentDoubleCounterSignTest extends AbstractOpenDocumentCounterSignatureTest {
+class OpenDocumentDoubleCounterSignTest extends AbstractOpenDocumentCounterSignatureTest {
 
 	private ASiCWithXAdESService service;
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		signingDate = new Date();

@@ -124,17 +124,12 @@ public class KeyEntityTSPSource implements TSPSource {
     /**
      * The Digest Algorithm of the signature of the created time-stamp token
      */
-    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
+    private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA512;
 
     /**
      * Encryption algorithm of the signature of the OCSP response
      */
     private EncryptionAlgorithm encryptionAlgorithm;
-
-    /**
-     * Mask Generation Function of the signature of the OCSP response
-     */
-    private MaskGenerationFunction maskGenerationFunction;
 
     /**
      * Default constructor instantiating empty configuration of the KeyEntityTSPSource
@@ -366,9 +361,16 @@ public class KeyEntityTSPSource implements TSPSource {
      * NOTE: the mask generation function should be compatible with the given encryption algorithm!
      *
      * @param maskGenerationFunction {@link MaskGenerationFunction}
+     * @deprecated since DSS 6.1. Please use {@code setEncryptionAlgorithm} method
+     *             to specify RSA (none MGF) or RSASSA-PSS (MGF1) algorithm
      */
+    @Deprecated
     public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-        this.maskGenerationFunction = maskGenerationFunction;
+        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
+            setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+        } else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
+            setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+        }
     }
 
     @Override
@@ -409,8 +411,8 @@ public class KeyEntityTSPSource implements TSPSource {
 
     private Set<ASN1ObjectIdentifier> getAcceptedDigestAlgorithmIdentifiers() {
         Set<ASN1ObjectIdentifier> result = new HashSet<>();
-        for (DigestAlgorithm digestAlgorithm : acceptedDigestAlgorithms) {
-            result.add(getASN1ObjectIdentifier(digestAlgorithm));
+        for (DigestAlgorithm acceptedDigestAlgorithm : acceptedDigestAlgorithms) {
+            result.add(getASN1ObjectIdentifier(acceptedDigestAlgorithm));
         }
         return result;
     }
@@ -437,7 +439,7 @@ public class KeyEntityTSPSource implements TSPSource {
             }
             keyAlgorithm = encryptionAlgorithm;
         }
-        return SignatureAlgorithm.getAlgorithm(keyAlgorithm, digestAlgorithm, maskGenerationFunction);
+        return SignatureAlgorithm.getAlgorithm(keyAlgorithm, digestAlgorithm);
     }
 
     /**
@@ -483,7 +485,7 @@ public class KeyEntityTSPSource implements TSPSource {
         } catch (CertificateEncodingException | OperatorCreationException | TSPException e) {
             throw new DSSException(String.format("Unable to generate a timestamp. Reason : %s", e.getMessage()), e);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DSSException(String.format("An error occurred on timestamp response generation: %s", e.getMessage()), e);
         }
     }
 

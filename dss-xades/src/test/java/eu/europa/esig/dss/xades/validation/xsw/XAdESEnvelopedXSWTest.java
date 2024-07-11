@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
-import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESEnvelopedXSWTest extends AbstractXAdESTestValidation {
+class XAdESEnvelopedXSWTest extends AbstractXAdESTestValidation {
 	
 	private static DSSDocument document = new FileDocument(new File("src/test/resources/validation/xsw/original.xml"));
 

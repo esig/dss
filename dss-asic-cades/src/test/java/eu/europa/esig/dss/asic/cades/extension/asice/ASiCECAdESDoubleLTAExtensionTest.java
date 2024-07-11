@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.extension.asice;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -54,10 +54,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
+class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		
 		List<DSSDocument> documentToSigns = new ArrayList<>();
 		documentToSigns.add(new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT));
@@ -116,7 +116,7 @@ public class ASiCECAdESDoubleLTAExtensionTest extends PKIFactoryAccess {
 		assertEquals(2, timestampList.get(1).getTimestampedRevocations().size());
 		assertEquals(3, timestampList.get(2).getTimestampedRevocations().size());
 		
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleLTADoc);
+		DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doubleLTADoc);
         ASiCContent result = extractor.extract();
         
         List<DSSDocument> manifestFiles = result.getManifestDocuments();

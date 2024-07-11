@@ -502,6 +502,11 @@
 							<xsd:documentation>Checks that only the hash values of the provided data objects are present in the first hash value list</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="HashTreeRenewal" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks that a HashTree renewal archive time-stamp covers all original documents found within the first archive time-stamp data group of the evidence record</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Group of cryptographic checks to operate on the certificate</xsd:documentation>
@@ -527,9 +532,29 @@
 					<xsd:documentation>Checks if the embedded digest match the signed data</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ReferenceDataNameMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the name of the detached document matches the reference URI</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="ManifestEntryObjectExistence" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the manifest entry was provided for the validation</xsd:documentation>
+					<xsd:documentation>Checks if at least one of the provided manifest entries is found in the manifest</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ManifestEntryObjectGroup" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if all XML Manifest entries have been found during the validation process</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ManifestEntryObjectIntact" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the digest match the manifest entry</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ManifestEntryNameMatch" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks that names of all provided documents match the manifest entry names</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SignatureIntact" type="LevelConstraint" minOccurs="0">
@@ -607,6 +632,16 @@
 					<xsd:documentation>Verifies validity of a signature against the lock dictionary /SigFieldLock, when present</xsd:documentation> <!-- PAdES only -->
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="FormFillChanges" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies whether the document does not contain changes concerning form filling or signing after the signature revision (corresponds to /DocMDP /P=2 level)</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="AnnotationChanges" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies whether the document does not contain changes concerning creation, modification or deletion of annotations after the signature revision (corresponds to /DocMDP /P=3 level)</xsd:documentation> <!-- PAdES only -->
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="UndefinedChanges" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Verifies whether the document does not contain undefined changes after the signature revision</xsd:documentation> <!-- PAdES only -->
@@ -663,6 +698,11 @@
 			<xsd:element name="AuthorityInfoAccessPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the AIA (issuer) in the certificate</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="RevocationDataSkip" type="CertificateValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Defines conditions to skip revocation check for a certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="RevocationInfoAccessPresent" type="LevelConstraint" minOccurs="0">
@@ -747,37 +787,62 @@
 			</xsd:element>
 			<xsd:element name="Surname" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's surname is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "surname" (OID "2.5.4.4") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="GivenName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's given name is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "givenName" (OID "2.5.4.42") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="CommonName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's common name is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "common name" (OID "2.5.4.3") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Pseudonym" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's pseudonym is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "pseudonym" (OID "2.5.4.65") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Title" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "title" (OID "2.5.4.12") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Email" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "emailAddress" (OID "1.2.840.113549.1.9.1") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="OrganizationIdentifier" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "organizationIdentifier" (OID "2.5.4.97") value unit is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="OrganizationUnit" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's organization unit is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "organizationalUnitName" (OID "2.5.4.11") value unit is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="OrganizationName" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's organization name is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "organizationName" (OID "2.5.4.10") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Country" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the certificate's country is in the acceptable values list</xsd:documentation>
+					<xsd:documentation>Checks if the certificate's attribute "countryName" (OID "2.5.4.6") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="Locality" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "localityName" (OID "2.5.4.7") value is in the acceptable values list</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="State" type="MultiValuesConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the certificate's attribute "stateOrProvinceName" (OID "2.5.4.8") value is in the acceptable values list</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SerialNumberPresent" type="LevelConstraint" minOccurs="0">
@@ -1043,6 +1108,20 @@
 			<xsd:extension base="LevelConstraint">
 				<xsd:sequence>
 					<xsd:element type="xsd:string" name="Id" maxOccurs="unbounded" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="CertificateValuesConstraint">
+		<xsd:annotation>
+			<xsd:documentation>Certificate check : follows the specified level behavior if the current certificate matches one if the conditions. '*' can be used and means any value.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="LevelConstraint">
+				<xsd:sequence>
+					<xsd:element type="MultiValuesConstraint" name="CertificateExtensions" minOccurs="0" />
+					<xsd:element type="MultiValuesConstraint" name="CertificatePolicies" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:extension>
 		</xsd:complexContent>

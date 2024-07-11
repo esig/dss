@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.SubIndication;
  */
 public final class SubIndicationParser {
 
+	/**
+	 * Default constructor
+	 */
 	private SubIndicationParser() {
+		// empty
 	}
 
 	/**

@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <ValidationDate>2024-05-24T13:52:29Z</ValidationDate>
+    <UsedCertificates>
+        <Certificate Id="C-908DF0B8225D90BCD7336F1A551017D03D2973737100C451A0C682239BDB34A9">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.42=#0c,2.5.4.4=#0c,cn=jochen zerhusen,2.5.4.46=#13,2.5.4.5=#13,c=de</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.42=#0c,2.5.4.4=#0c,CN=Jochen Zerhusen,2.5.4.46=#13,2.5.4.5=#13,C=DE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=infocert qualified electronic signature ca 3,2.5.4.97=#0c1156415449542d3037393435323131303036,ou=qualified trust service provider,o=infocert s.p.a.,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=InfoCert Qualified Electronic Signature CA 3,2.5.4.97=#0c1156415449542d3037393435323131303036,OU=Qualified Trust Service Provider,O=InfoCert S.p.A.,C=IT</IssuerDistinguishedName>
+            <SerialNumber>155</SerialNumber>
+            <SubjectSerialNumber>286486684</SubjectSerialNumber>
+            <CommonName>Unknown Not found</CommonName>
+            <CountryName>DE</CountryName>
+            <GivenName>UNKNOWN</GivenName>
+            <Surname>NOT FOUND</Surname>
+            <Sources>
+                <Source>UNKNOWN</Source>
+            </Sources>
+            <NotAfter>2026-11-05T00:00:00Z</NotAfter>
+            <NotBefore>2023-11-06T16:35:20Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-B60C470CC1880A3153EFAED537E2370B582A0204E2C237EC131F92EC420F6610</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>mzsbGGo+ogQD9NeZEM+XEUzxqt4=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>oiXxKuNjqiNO+JixRc+GU1xcznI=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                    <certificatePolicy cpsUrl="http://www.firma.infocert.it/documentazione/manuali.php">1.3.76.36.1.1.63</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://cert.infocert.it/ca3/qc/CA.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.qc.ca3.infocert.it/</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.infocert.it/ca3/qc/CRL33.crl</crlUrl>
+                    <crlUrl>ldap://ldap.infocert.it/cn%3DInfoCert%20Qualified%20Electronic%20Signature%20CA%203%20CRL33,ou%3DQualified%20Trust%20Service%20Provider,o%3DINFOCERT%20SPA,c%3DIT?certificateRevocationList</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcEuRetentionPeriod>20</QcEuRetentionPeriod>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">https://www.firma.infocert.it/pdf/PKI-DS.pdf</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">InfoCert S.p.A.</TSPName>
+                        <TSPName lang="it">Infocert S.p.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">INFOCERT SPA</TSPTradeName>
+                        <TSPTradeName lang="en">InfoCert SpA</TSPTradeName>
+                        <TSPTradeName lang="it">INFOCERT SPA</TSPTradeName>
+                        <TSPTradeName lang="it">InfoCert SpA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT-07945211006</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2024-02-14T15:03:15Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-09-26T12:59:38Z</StartDate>
+                            <EndDate>2024-02-14T15:03:15Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier critical="true">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-3C7E632EBC9D629598B1231A43FAD87F511A92D1A9407B0B9FAA2067B672232F">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>kI3wuCJdkLzXM28aVRAX0D0pc3NxAMRRoMaCI5vbNKk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-B148E7285B38BAFC86EB1528B541330A4C613768709C4940AADD75CB759FFA80">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp responder qes 3 2023,ou=trust service provider,o=infocert spa,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP Responder QES 3 2023,OU=Trust Service Provider,O=InfoCert SpA,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=infocert qualified electronic signature ca 3,2.5.4.97=#0c1156415449542d3037393435323131303036,ou=qualified trust service provider,o=infocert s.p.a.,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=InfoCert Qualified Electronic Signature CA 3,2.5.4.97=#0c1156415449542d3037393435323131303036,OU=Qualified Trust Service Provider,O=InfoCert S.p.A.,C=IT</IssuerDistinguishedName>
+            <SerialNumber>16496799</SerialNumber>
+            <CommonName>OCSP Responder QES 3 2023</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>InfoCert SpA</OrganizationName>
+            <OrganizationalUnit>Trust Service Provider</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2026-03-14T11:27:29Z</NotAfter>
+            <NotBefore>2023-03-14T11:27:29Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-06D82D362491234B78F208CF6DFECC9FA141DD9EA6C3D5CBE6A4C5A90065592E</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>mzsbGGo+ogQD9NeZEM+XEUzxqt4=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>yaGOHrw+YUFdsu1ceq44nbZFOjM=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">InfoCert S.p.A.</TSPName>
+                        <TSPName lang="it">Infocert S.p.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">INFOCERT SPA</TSPTradeName>
+                        <TSPTradeName lang="en">InfoCert SpA</TSPTradeName>
+                        <TSPTradeName lang="it">INFOCERT SPA</TSPTradeName>
+                        <TSPTradeName lang="it">InfoCert SpA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT-07945211006</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2024-02-14T15:03:15Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-09-26T12:59:38Z</StartDate>
+                            <EndDate>2024-02-14T15:03:15Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier critical="true">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-09-05T12:59:38Z</StartDate>
+                            <EndDate>2023-09-26T12:59:38Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-07-16T22:00:00Z</StartDate>
+                            <EndDate>2023-09-05T12:59:38Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2019-09-03T22:00:00Z</StartDate>
+                            <EndDate>2023-07-16T22:00:00Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>sUjnKFs4uvyG6xUotUEzCkxhN2hwnElAqt11y3Wf+oA=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+            <SubjectDistinguishedName Format="CANONICAL">cn=infocert qualified electronic signature ca 3,2.5.4.97=#0c1156415449542d3037393435323131303036,ou=qualified trust service provider,o=infocert s.p.a.,c=it</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=InfoCert Qualified Electronic Signature CA 3,2.5.4.97=#0c1156415449542d3037393435323131303036,OU=Qualified Trust Service Provider,O=InfoCert S.p.A.,C=IT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=infocert qualified electronic signature ca 3,2.5.4.97=#0c1156415449542d3037393435323131303036,ou=qualified trust service provider,o=infocert s.p.a.,c=it</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=InfoCert Qualified Electronic Signature CA 3,2.5.4.97=#0c1156415449542d3037393435323131303036,OU=Qualified Trust Service Provider,O=InfoCert S.p.A.,C=IT</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>InfoCert Qualified Electronic Signature CA 3</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationIdentifier>VATIT-07945211006</OrganizationIdentifier>
+            <OrganizationName>InfoCert S.p.A.</OrganizationName>
+            <OrganizationalUnit>Qualified Trust Service Provider</OrganizationalUnit>
+            <Sources>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2032-12-12T17:34:43Z</NotAfter>
+            <NotBefore>2016-12-12T16:34:43Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-2EEC72D746AF99E561E70972C6E5187F9329304B50966E3926FC80B573B3015E</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>mzsbGGo+ogQD9NeZEM+XEUzxqt4=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="http://www.firma.infocert.it/documentazione/manuali.php">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.infocert.it/ca3/qc/ARL.crl</crlUrl>
+                    <crlUrl>ldap://ldap.infocert.it/cn%3DInfoCert%20Qualified%20Electronic%20Signature%20CA%203,ou%3DQualified%20Trust%20Service%20Provider,o%3DINFOCERT%20SPA,c%3DIT?authorityRevocationList</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">InfoCert S.p.A.</TSPName>
+                        <TSPName lang="it">Infocert S.p.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">INFOCERT SPA</TSPTradeName>
+                        <TSPTradeName lang="en">InfoCert SpA</TSPTradeName>
+                        <TSPTradeName lang="it">INFOCERT SPA</TSPTradeName>
+                        <TSPTradeName lang="it">InfoCert SpA</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATIT-07945211006</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2024-02-14T15:03:15Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-09-26T12:59:38Z</StartDate>
+                            <EndDate>2024-02-14T15:03:15Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier critical="true">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForLegalPerson</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-09-05T12:59:38Z</StartDate>
+                            <EndDate>2023-09-26T12:59:38Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-07-16T22:00:00Z</StartDate>
+                            <EndDate>2023-09-05T12:59:38Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2019-09-03T22:00:00Z</StartDate>
+                            <EndDate>2023-07-16T22:00:00Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF">
+                            <ServiceNames>
+                                <ServiceName lang="en">CN=InfoCert Qualified Electronic Signature CA 3, OID.2.5.4.97=VATIT-07945211006, OU=Qualified Trust Service Provider, O=InfoCert S.p.A., C=IT</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-02-14T23:00:00Z</StartDate>
+                            <EndDate>2019-09-03T22:00:00Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ExpiredCertsRevocationInfo>2016-12-11T23:00:00Z</ExpiredCertsRevocationInfo>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>0FV7ZtNbNCoYbt+UZTY+9iAg+q2CR/S+hFzu2ylwlL8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-3C7E632EBC9D629598B1231A43FAD87F511A92D1A9407B0B9FAA2067B672232F">
+            <Origin>CACHED</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.qc.ca3.infocert.it/</SourceAddress>
+            <ProductionDate>2024-05-24T13:52:17Z</ProductionDate>
+            <ThisUpdate>2024-05-24T13:52:17Z</ThisUpdate>
+            <NextUpdate>2024-05-24T14:52:17Z</NextUpdate>
+            <ArchiveCutOff>2016-12-12T16:34:43Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-B148E7285B38BAFC86EB1528B541330A4C613768709C4940AADD75CB759FFA80"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-B148E7285B38BAFC86EB1528B541330A4C613768709C4940AADD75CB759FFA80"/>
+                <ChainItem Certificate="C-D0557B66D35B342A186EDF9465363EF62020FAAD8247F4BE845CEEDB297094BF"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-B148E7285B38BAFC86EB1528B541330A4C613768709C4940AADD75CB759FFA80">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=OCSP Responder QES 3 2023, OU=Trust Service Provider, O=InfoCert SpA, C=IT</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>PH5jLrydYpWYsSMaQ/rYf1EaktGpQHsLn6ogZ7ZyIy8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <TrustedLists>
+        <TrustedList Id="TL-716A43AE73126C30D04EFADFCDFBCD0542830FA604B0192756664DE72B204FA1" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>IT</CountryCode>
+            <Url>https://eidas.agid.gov.it/TL/TSL-IT.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>198</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-05-24T13:35:43Z</LastLoading>
+            <IssueDate>2024-04-17T01:00:00Z</IssueDate>
+            <NextUpdate>2024-10-17T00:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+            <SequenceNumber>340</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-05-24T13:35:31Z</LastLoading>
+            <IssueDate>2024-05-15T12:20:34Z</IssueDate>
+            <NextUpdate>2024-11-15T13:20:34Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

@@ -33,7 +33,7 @@ import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.timestamp.TimestampMessageDigestBuilder;
+import eu.europa.esig.dss.spi.validation.timestamp.TimestampMessageDigestBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -161,10 +161,12 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			// We don't include the outer SEQUENCE, only the attrType and
 			// attrValues as stated by the TS Â§6.3.5, NOTE 2
 
-			final Attribute attribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_signatureTimeStampToken);
-			if (attribute != null) {
-				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
-				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
+			final Attribute[] attributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_signatureTimeStampToken);
+			if (Utils.isArrayNotEmpty(attributes)) {
+				for (Attribute attribute : attributes) {
+					digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
+					digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
+				}
 			}
 			// Method is common to Type 1 and Type 2
 			writeTimestampX2MessageDigest(digestCalculator);
@@ -199,15 +201,19 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 	private void writeTimestampX2MessageDigest(DSSMessageDigestCalculator digestCalculator) {
 		// Those are common to Type 1 and Type 2
-		final Attribute certAttribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_certificateRefs);
-		final Attribute revAttribute = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_revocationRefs);
-		if (certAttribute != null) {
-			digestCalculator.update(DSSASN1Utils.getDEREncoded(certAttribute.getAttrType()));
-			digestCalculator.update(DSSASN1Utils.getDEREncoded(certAttribute.getAttrValues()));
+		final Attribute[] certAttributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_certificateRefs);
+		if (Utils.isArrayNotEmpty(certAttributes)) {
+			for (Attribute attribute : certAttributes) {
+				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
+				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
+			}
 		}
-		if (revAttribute != null) {
-			digestCalculator.update(DSSASN1Utils.getDEREncoded(revAttribute.getAttrType()));
-			digestCalculator.update(DSSASN1Utils.getDEREncoded(revAttribute.getAttrValues()));
+		final Attribute[] revAttributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_revocationRefs);
+		if (Utils.isArrayNotEmpty(revAttributes)) {
+			for (Attribute attribute : revAttributes) {
+				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
+				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
+			}
 		}
 	}
 
@@ -251,7 +257,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			return timestampExtractor.getArchiveTimestampV3MessageImprint(
 					signerInformation, atsHashIndexAttribute, originalDocument, digestAlgorithm);
 		} else {
-			LOG.error("The original document is not found for TimestampToken with Id '{}'! "
+			LOG.warn("The original document is not found for TimestampToken with Id '{}'! "
 					+ "Unable to compute message imprint.", timestampToken.getDSSIdAsString());
 			return DSSMessageDigest.createEmptyDigest();
 		}
@@ -260,10 +266,10 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private DSSMessageDigest getOriginalDocumentDigest() {
 		DSSDocument originalDocument = getOriginalDocument();
 		if (originalDocument != null) {
-			final byte[] digest = Utils.fromBase64(originalDocument.getDigest(digestAlgorithm));
+			final byte[] digest = originalDocument.getDigestValue(digestAlgorithm);
 			return new DSSMessageDigest(digestAlgorithm, digest);
 		} else {
-			LOG.error("The original document is not found for TimestampToken with Id '{}'! "
+			LOG.warn("The original document is not found for TimestampToken with Id '{}'! "
 					+ "Unable to compute message imprint.", timestampToken.getDSSIdAsString());
 			return DSSMessageDigest.createEmptyDigest();
 		}
@@ -325,7 +331,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
-			LOG.error("An error in computing of message-imprint for a TimestampToken with Id : {}. Reason : {}",
+			LOG.warn("An error in computing of message-imprint for a TimestampToken with Id : {}. Reason : {}",
 					timestampToken.getDSSIdAsString(), e.getMessage(), e);
 			return null;
 		}
@@ -430,7 +436,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			if (id_aa_ets_archiveTimestampV2.equals(attrType) || id_aa_ets_archiveTimestampV3.equals(attrType)) {
 				try {
 
-					TimeStampToken token = DSSASN1Utils.getTimeStampToken(attribute);
+					TimeStampToken token = CMSUtils.getTimeStampToken(attribute);
 					if (token == null || !token.getTimeStampInfo().getGenTime().before(timestampToken.getGenerationTime())) {
 						continue;
 					}
@@ -500,7 +506,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		try {
 			return CMSUtils.getOriginalDocument(cmsSignedData, detachedDocuments);
 		} catch (DSSException e) {
-			LOG.error("Cannot extract original document! Reason : {}", e.getMessage());
+			LOG.warn("Cannot extract original document! Reason : {}", e.getMessage());
 			return null;
 		}
 	}

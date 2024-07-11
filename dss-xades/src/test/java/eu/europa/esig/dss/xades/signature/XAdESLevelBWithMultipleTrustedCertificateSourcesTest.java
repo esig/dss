@@ -38,7 +38,7 @@ import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFactoryAccess {
+class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFactoryAccess {
 			
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
@@ -65,7 +65,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	private boolean trustedStoreExpectedResult;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new XAdESService(getOfflineCertificateVerifier());
 		
 		signatureParameters = new XAdESSignatureParameters();
@@ -79,7 +79,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 
 	@Test
-	public void validateWithValidTrustAnchorTest() {
+	void validateWithValidTrustAnchorTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		certificateVerifier.setTrustedCertSources(getGoodPKITrustAnchors());
@@ -89,7 +89,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 	
 	@Test
-	public void validateWithValidTrustAnchorAndAdjunctTest() {
+	void validateWithValidTrustAnchorAndAdjunctTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		certificateVerifier.setTrustedCertSources(getGoodPKITrustAnchors());
@@ -103,7 +103,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 	
 	@Test
-	public void validateWithInvalidTrustAnchorTest() {
+	void validateWithInvalidTrustAnchorTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		certificateVerifier.setTrustedCertSources(getSHA3PKITrustAnchors());
@@ -113,7 +113,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 	
 	@Test
-	public void validateWithBothTrustAnchorsTest() {
+	void validateWithBothTrustAnchorsTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		
@@ -136,7 +136,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 
 	@Test
-	public void validateWithArrayOfTrustAnchorsTest() {
+	void validateWithArrayOfTrustAnchorsTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		certificateVerifier.setTrustedCertSources(getSHA3PKITrustAnchors(), getGoodPKITrustAnchors());
@@ -146,7 +146,7 @@ public class XAdESLevelBWithMultipleTrustedCertificateSourcesTest extends PKIFac
 	}
 	
 	@Test
-	public void validateWithArrayOfDuplicateTrustAnchorsTest() {
+	void validateWithArrayOfDuplicateTrustAnchorsTest() {
 		DSSDocument signedDocument = sign();
 		certificateVerifier = getCertificateVerifierWithoutTrustSources();
 		CertificateSource trustedSource = getGoodPKITrustAnchors();

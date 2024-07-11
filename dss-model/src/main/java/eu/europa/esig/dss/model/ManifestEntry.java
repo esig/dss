@@ -31,14 +31,17 @@ public class ManifestEntry implements Serializable {
 
 	private static final long serialVersionUID = -7997341134695311883L;
 
-	/** The filename of the entry */
-	private String filename;
+	/** The reference URI */
+	private String uri;
 
 	/** The mimetype of the entry */
 	private MimeType mimeType;
 
 	/** The digest of the referenced entry */
 	private Digest digest;
+
+	/** Name of the matching document, when found */
+	private String documentName;
 
 	/**
 	 * Defines if the referenced data is found
@@ -66,18 +69,40 @@ public class ManifestEntry implements Serializable {
 	 * Gets the filename
 	 *
 	 * @return {@link String}
+	 * @deprecated since DSS 6.1. Please use {@code #getUri} method instead.
 	 */
+	@Deprecated
 	public String getFileName() {
-		return filename;
+		return uri;
 	}
 
 	/**
 	 * Sets the filename
 	 *
 	 * @param fileName {@link String}
+	 * @deprecated since DSS 6.1. Please use {@code #setUri} method instead.
 	 */
+	@Deprecated
 	public void setFileName(String fileName) {
-		this.filename = fileName;
+		this.uri = fileName;
+	}
+
+	/**
+	 * Gets the filename
+	 *
+	 * @return {@link String}
+	 */
+	public String getUri() {
+		return uri;
+	}
+
+	/**
+	 * Sets the filename
+	 *
+	 * @param uri {@link String}
+	 */
+	public void setUri(String uri) {
+		this.uri = uri;
 	}
 
 	/**
@@ -114,6 +139,24 @@ public class ManifestEntry implements Serializable {
 	 */
 	public void setDigest(Digest digest) {
 		this.digest = digest;
+	}
+
+	/**
+	 * Gets the name of the corresponding document
+	 *
+	 * @return {@link String}
+	 */
+	public String getDocumentName() {
+		return documentName;
+	}
+
+	/**
+	 * Sets the name of the corresponding document
+	 *
+	 * @param documentName {@link String}
+	 */
+	public void setDocumentName(String documentName) {
+		this.documentName = documentName;
 	}
 
 	/**

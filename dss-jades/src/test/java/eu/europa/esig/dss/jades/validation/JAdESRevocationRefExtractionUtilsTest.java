@@ -36,13 +36,13 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
 
-public class JAdESRevocationRefExtractionUtilsTest {
+class JAdESRevocationRefExtractionUtilsTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(JAdESRevocationRefExtractionUtilsTest.class);
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void getOCSPRef() {
+	void getOCSPRef() {
 
 		JSONObject ocspRefJson = new JSONObject();
 
@@ -71,7 +71,7 @@ public class JAdESRevocationRefExtractionUtilsTest {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void getCRLRef() {
+	void getCRLRef() {
 
 		JSONObject crlRefJson = new JSONObject();
 

@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 
@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEEmptyCertificateStoreTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCEEmptyCertificateStoreTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

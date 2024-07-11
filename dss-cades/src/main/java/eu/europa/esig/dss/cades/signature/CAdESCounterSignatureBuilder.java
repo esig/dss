@@ -23,9 +23,9 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestFile;
@@ -34,8 +34,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.DERSet;
@@ -249,7 +249,7 @@ public class CAdESCounterSignatureBuilder {
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The Id of a signature to be counter signed shall be defined! "
 				+ "Please use SerializableCounterSignatureParameters.setSignatureIdToCounterSign(signatureId) method.");
 
-		CMSDocumentValidator validator = new CMSDocumentValidator(signatureDocument);
+		CMSDocumentAnalyzer validator = new CMSDocumentAnalyzer(signatureDocument);
 		validator.setDetachedContents(parameters.getDetachedContents());
 		validator.setManifestFile(manifestFile);
 		

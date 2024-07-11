@@ -45,14 +45,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XAdESLevelBEnvelopedWithXPointerTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedWithXPointerTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         signatureParameters = new XAdESSignatureParameters();
@@ -66,7 +66,7 @@ public class XAdESLevelBEnvelopedWithXPointerTest extends AbstractXAdESTestSigna
         DSSReference reference = new DSSReference();
         reference.setContents(documentToSign);
         reference.setId("REF-ID1");
-        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
         reference.setUri("#xpointer(/)");
         List<DSSTransform> transforms = new ArrayList<>();
         DSSTransform transform = new XPath2FilterTransform("/*/ds:Signature", "subtract");

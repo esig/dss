@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -33,8 +33,8 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -49,14 +49,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBEnvelopedWithStylesheetTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedWithStylesheetTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample-xml-stylesheet-with-id.xml");
 
         signatureParameters = new XAdESSignatureParameters();

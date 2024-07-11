@@ -30,10 +30,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TokenExtractionStrategyTest {
+class TokenExtractionStrategyTest {
 
     @Test
-    public void valuesTest() {
+    void valuesTest() {
         List<TokenExtractionStrategy> strategies = new ArrayList<>();
         List<Boolean> possibleBooleans = Arrays.asList(Boolean.TRUE, Boolean.FALSE);
         for (boolean includeCertificates : possibleBooleans) {

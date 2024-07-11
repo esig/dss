@@ -37,7 +37,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCSCAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiCWithCAdESTestValidation {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -60,7 +60,7 @@ public class ASiCSCAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 	private String signingAlias = GOOD_USER;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
@@ -150,8 +150,7 @@ public class ASiCSCAdESMultipleSignatureWithPolicyStoreTest extends AbstractASiC
 
 	private DSSDocument sign(DSSDocument documentToSign, ASiCWithCAdESSignatureParameters signatureParameters) {
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 

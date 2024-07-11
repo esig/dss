@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.policy;
 
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
@@ -550,30 +551,8 @@ public interface ValidationPolicy {
 	 * @param context {@link Context}
 	 * @return {@code LevelConstraint} if trusted service type identifier for a given context element is present in
 	 *                                 the constraint file, null otherwise.
-	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceTypeIdentifierConstraint} method instead.
-	 */
-	@Deprecated
-	MultiValuesConstraint getTrustedServiceTypeIdentifierConstraint(Context context);
-
-	/**
-	 * Returns trusted service type identifier constraint
-	 *
-	 * @param context {@link Context}
-	 * @return {@code LevelConstraint} if trusted service type identifier for a given context element is present in
-	 *                                 the constraint file, null otherwise.
 	 */
 	MultiValuesConstraint getTrustServiceTypeIdentifierConstraint(Context context);
-
-	/**
-	 * Returns trusted service status constraint
-	 *
-	 * @param context {@link Context}
-	 * @return {@code LevelConstraint} if trusted service status for a given context element is present in
-	 *                                 the constraint file, null otherwise.
-	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceTypeIdentifierConstraint} method instead.
-	 */
-	@Deprecated
-	MultiValuesConstraint getTrustedServiceStatusConstraint(Context context);
 
 	/**
 	 * Returns trusted service status constraint
@@ -848,6 +827,15 @@ public interface ValidationPolicy {
 	LevelConstraint getReferenceDataIntactConstraint(Context context);
 
 	/**
+	 * Indicates if the referenced document names match the manifest entry references
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ReferenceDataNameMatch for a given context element is present in the
+	 *         constraint file, null otherwise.
+	 */
+	LevelConstraint getReferenceDataNameMatchConstraint(Context context);
+
+	/**
 	 * Indicates if the manifested document is found
 	 *
 	 * @param context {@link Context}
@@ -855,6 +843,33 @@ public interface ValidationPolicy {
 	 *         context element is present in the constraint file, null otherwise.
 	 */
 	LevelConstraint getManifestEntryObjectExistenceConstraint(Context context);
+
+	/**
+	 * Indicates if the manifested document is intact
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ManifestEntryObjectIntact for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryObjectIntactConstraint(Context context);
+
+	/**
+	 * Indicates if all manifest entries have been found
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ManifestEntryObjectGroup for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryObjectGroupConstraint(Context context);
+
+	/**
+	 * Indicates if names of all matching documents match to the manifest entry names
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if ManifestEntryNameMatch for a given
+	 *         context element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getManifestEntryNameMatchConstraint(Context context);
 
 	/**
 	 * Indicates if the signature is intact
@@ -982,6 +997,24 @@ public interface ValidationPolicy {
 	LevelConstraint getSigFieldLockConstraint(Context context);
 
 	/**
+	 * This constraint checks whether a PDF document contains form fill or signing modifications
+	 * after the current signature's revisions
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if FormFillChanges element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getFormFillChangesConstraint(Context context);
+
+	/**
+	 * This constraint checks whether a PDF document contains annotation creation, modification or deletion modifications
+	 * after the current signature's revisions
+	 *
+	 * @param context {@link Context}
+	 * @return {@code LevelConstraint} if AnnotationChanges element is present in the constraint file, null otherwise.
+	 */
+	LevelConstraint getAnnotationChangesConstraint(Context context);
+
+	/**
 	 * This constraint checks whether a PDF document contains undefined object modifications
 	 * after the current signature's revisions
 	 *
@@ -1093,6 +1126,13 @@ public interface ValidationPolicy {
 	LevelConstraint getEvidenceRecordDataObjectGroupConstraint();
 
 	/**
+	 * Returns HashTreeRenewal constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if HashTreeRenewal element is present
+	 */
+	LevelConstraint getEvidenceRecordHashTreeRenewalConstraint();
+
+	/**
 	 * Returns CounterSignature constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}DiagnosticDataFacade
@@ -1184,6 +1224,36 @@ public interface ValidationPolicy {
 	MultiValuesConstraint getCertificateCountryConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns CertificateLocality constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateLocality element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateLocalityConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns CertificateState constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateState element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateStateConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns CertificateOrganizationIdentifier constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateOrganizationIdentifier element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateOrganizationIdentifierConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns CertificateOrganizationName constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}
@@ -1254,6 +1324,26 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificatePseudoUsageConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns CertificateTitle constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateTitle element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateTitleConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns CertificateEmail constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code MultiValuesConstraint} if CertificateEmail element is present
+	 *                                       in the constraint file, null otherwise.
+	 */
+	MultiValuesConstraint getCertificateEmailConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns CertificateSerialNumber constraint if present in the policy, null otherwise
 	 *
 	 * @param context {@link Context}
@@ -1272,6 +1362,16 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getCertificateAuthorityInfoAccessPresentConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns RevocationDataSkip constraint if present in the policy, null otherwise
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if RevocationDataSkip element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	CertificateValuesConstraint getRevocationDataSkipConstraint(Context context, SubContext subContext);
 
 	/**
 	 * Returns CertificateRevocationInfoAccessPresent constraint if present in the policy, null otherwise

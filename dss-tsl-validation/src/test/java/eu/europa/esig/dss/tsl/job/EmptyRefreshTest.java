@@ -27,10 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 
-public class EmptyRefreshTest {
+class EmptyRefreshTest {
 
 	@Test
-	public void test() {
+	void test() {
 		TLValidationJob job = new TLValidationJob();
 		NullPointerException exception = assertThrows(NullPointerException.class, () -> job.offlineRefresh());
 		assertEquals("The offlineLoader must be defined!", exception.getMessage());

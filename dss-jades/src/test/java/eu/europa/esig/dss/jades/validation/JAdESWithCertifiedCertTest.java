@@ -34,7 +34,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-public class JAdESWithCertifiedCertTest extends AbstractJAdESTestValidation {
+class JAdESWithCertifiedCertTest extends AbstractJAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

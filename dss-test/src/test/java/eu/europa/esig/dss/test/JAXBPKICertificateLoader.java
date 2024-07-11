@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.test;
 
+import eu.europa.esig.dss.pki.jaxb.JAXBPKILoader;
 import eu.europa.esig.dss.pki.jaxb.PKIJaxbFacade;
 import eu.europa.esig.dss.pki.jaxb.XmlPki;
-import eu.europa.esig.dss.pki.jaxb.JAXBPKILoader;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntityRepository;
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;
+import jakarta.xml.bind.JAXBException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import jakarta.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,13 +61,13 @@ public class JAXBPKICertificateLoader {
 
     private String[] pkiFilenames;
 
-    private CommonTrustedCertificateSource trustedCertificateSource;
+    private TrustedCertificateSource trustedCertificateSource;
 
     public JAXBPKICertificateLoader(JAXBCertEntityRepository repository) {
         this.repository = repository;
     }
 
-    public void setCommonTrustedCertificateSource(CommonTrustedCertificateSource trustedCertificateSource) {
+    public void setTrustedCertificateSource(TrustedCertificateSource trustedCertificateSource) {
         this.trustedCertificateSource = trustedCertificateSource;
     }
 

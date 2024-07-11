@@ -2,9 +2,9 @@
 ----
 POST /services/rest/signature/trusted-list/signDocument HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
-Content-Type: application/json; charset=UTF-8
+Content-Type: application/json
 Host: localhost:8080
-Content-Length: 13963
+Content-Length: 13997
 
 {
   "trustedList" : {
@@ -18,13 +18,13 @@ Content-Length: 13963
     },
     "encryptionAlgorithm" : null,
     "digestAlgorithm" : null,
-    "maskGenerationFunction" : null,
     "referenceId" : "tl",
     "referenceDigestAlgorithm" : "SHA512",
     "blevelParameters" : {
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1633219200000,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,
@@ -38,11 +38,12 @@ Content-Length: 13963
       "signerLocationStateOrProvince" : null,
       "signerLocationCountry" : null,
       "signerLocationStreet" : null
-    }
+    },
+    "maskGenerationFunction" : null
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "lax15SqO3rOCeJrThb6XAGD1JHEtszFRNyADrNdp+jduHVKtfTnLcuB7ELcebkC+k21hljwPKTDCWrpsKAMKVU3RsP9Si0nmYt/6dWYmHpMoGQTaGReq7c9HJExbva58Wu0abABnDwmMH/xPwGBavHTbfToJfX73dWOqYxKpfyOP4QUFXsy5BFvEjZOkbGwmlOqkNJJp0RSLz/LpOpTMzfVlVuSSCsVcIgVO5L+SLCaqAzRMYaV0ZcGTwhnwEDjy9alcejaoUR35lAHXPrnw7YSUsFTUvF02l+MKZFarqgyg1hmTd4USNlAHgpvdrWQQ42JHQg0nqkMEHtdtWhUyTw=="
+    "value" : "btzr6mfY2GZo7Ydoj9lIhC1QCWz+PZ5+B1kAmejFU8soquVDaNN5vj6rCaChPxCcFNHlLSq49D+0xzBfhmffjUzaBI4g/p5eQTmfRPof9zumXPJYpODfC1SDZ42i34CrN5c9uZPbhzXhKog6+4GpxZsVtg2E7520+pNXId6MGYqXGyEmD5qjEEqdxdyEBqt5aPijmOPx4qnt2edva975AMm/kbwPfkCKa4uA9te/M1ZJS4eC/DFlisRebGI+PdRvHpVlWIlKrl+0d/e8hq5WhWOwWYd+FF1TUobITWf6PkskVjpQP+0vIBSnY3DDQQezLBzH3qQ8Z7fNZV/dK1gIyg=="
   }
 }
 ----

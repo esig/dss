@@ -30,11 +30,11 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
-import eu.europa.esig.dss.validation.RevocationDataLoadingStrategyFactory;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
+import eu.europa.esig.dss.spi.validation.RevocationDataLoadingStrategyFactory;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -57,14 +57,14 @@ import static org.junit.jupiter.api.Assertions.fail;
  * Test DSS with multi threads
  * 
  */
-public class ConcurrentValidationTest extends PKIFactoryAccess {
+class ConcurrentValidationTest extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConcurrentValidationTest.class);
 
 	private String signingAlias;
 
 	@Test
-	public void test() {
+	void test() {
 
 		ExecutorService executor = Executors.newFixedThreadPool(20);
 
@@ -109,7 +109,7 @@ public class ConcurrentValidationTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	public void onlineValidationTest() {
+	void onlineValidationTest() {
 		final DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 		final XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());

@@ -36,8 +36,8 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.Pkcs12SignatureToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ public class CertificateConflictTest {
 	private final PasswordProtection passwordProtection = new PasswordProtection("1qaz@WSX".toCharArray());
 
 	@Test
-	public void testPadesCaDuplicate() {
+	void testPadesCaDuplicate() {
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 		DSSDocument signedDocument = padesSign(doc);
 		assertEquals(MimeTypeEnum.PDF, signedDocument.getMimeType());

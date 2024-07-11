@@ -28,18 +28,17 @@ import eu.europa.esig.xades.XAdES111Utils;
 import eu.europa.esig.xades.XAdES122Utils;
 import eu.europa.esig.xades.XAdES319132Utils;
 import eu.europa.esig.xades.XAdESUtils;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xades.definition.xades111.XAdES111Attribute;
-import eu.europa.esig.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.xades.definition.xades122.XAdES122Attribute;
-import eu.europa.esig.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.xades.definition.xades141.XAdES141Attribute;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.xmldsig.XmlDSigUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,12 +50,12 @@ import java.io.InputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESEnumsTest {
+class XAdESEnumsTest {
 	
-	public static final DSSNamespace XSD_NS = new DSSNamespace("http://www.w3.org/2001/XMLSchema", "xsd");
+	static final DSSNamespace XSD_NS = new DSSNamespace("http://www.w3.org/2001/XMLSchema", "xsd");
 
 	@Test
-	public void getAllEments() throws Exception {
+	void getAllEments() throws Exception {
 		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XmlDSigUtils.XMLDSIG_SCHEMA_LOCATION)) {
@@ -98,7 +97,7 @@ public class XAdESEnumsTest {
 	}
 
 	@Test
-	public void getAllAttributes() throws Exception {
+	void getAllAttributes() throws Exception {
 		DomUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XmlDSigUtils.XMLDSIG_SCHEMA_LOCATION)) {

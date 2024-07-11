@@ -31,7 +31,8 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -47,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /*
  * In this unit test no revocation data shall be requested on validation
  */
-public class DSS2610Test extends AbstractXAdESTestSignature {
+class DSS2610Test extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -56,7 +57,7 @@ public class DSS2610Test extends AbstractXAdESTestSignature {
     private MockOnlineCRLSource mockOnlineCRLSource;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         Calendar calendar = Calendar.getInstance();
@@ -83,6 +84,12 @@ public class DSS2610Test extends AbstractXAdESTestSignature {
 
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setCrlSource(mockOnlineCRLSource);
+
+        // rollback behavior after DSS-3298
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        revocationDataVerifier.setTimestampMaximumRevocationFreshness(null); // disable tst revocation data update
+        certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
+
         validator.setCertificateVerifier(certificateVerifier);
 
         return validator;

@@ -127,6 +127,10 @@ public class CandidatesForSigningCertificate implements Serializable {
 		if (signerIdMatchCandidate != null) {
 			return signerIdMatchCandidate;
 		}
+
+		if (theCertificateValidity != null) {
+			return theCertificateValidity;
+		}
 		return firstCandidate;
 	}
 

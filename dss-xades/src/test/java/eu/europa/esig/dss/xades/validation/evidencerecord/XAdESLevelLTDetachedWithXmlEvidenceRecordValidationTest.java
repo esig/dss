@@ -29,7 +29,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import java.util.Collections;
 import java.util.List;
 
-public class XAdESLevelLTDetachedWithXmlEvidenceRecordValidationTest extends AbstractXAdESWithEvidenceRecordTestValidation {
+class XAdESLevelLTDetachedWithXmlEvidenceRecordValidationTest extends AbstractXAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

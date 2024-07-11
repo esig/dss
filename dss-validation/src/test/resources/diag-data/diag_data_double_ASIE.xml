@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>5.1.5-TEST FILE.xml</DocumentName>
+    <ValidationDate>2018-07-05T13:28:12Z</ValidationDate>
+    <Signatures>
+        <Signature Id="id-a2f4d9e240dd42ab5fc976cb8171bd7d">
+            <SignatureFilename>5.1.5-TEST FILE.xml</SignatureFilename>
+            <ClaimedSigningTime>2018-07-05T13:19:42Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true" />
+            <DigestMatchers>
+                <DigestMatcher type="REFERENCE" uri="old-simple-report.pdf" documentName="old-simple-report.pdf">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-3E75A50C854182576BECBE1128851364E0B0AC909EBED4ACA5B38A6FC14FC23D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-3E75A50C854182576BECBE1128851364E0B0AC909EBED4ACA5B38A6FC14FC23D"/>
+                <ChainItem Certificate="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619"/>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndications/>
+            
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-3E75A50C854182576BECBE1128851364E0B0AC909EBED4ACA5B38A6FC14FC23D">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>0/8FRvlEjbs32wHVVuCCdUOy97E=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-cd02937ccca6f12ae43fc1fa2c6819cd27300d03d7f7ebb5d1aad09478adfb66">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                        <Transformation>Exclusive Canonical XML (omits comments)</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>SN/lCLLRD/nvSlu2je5V2mvf1WFBDj4mSEK+JWyZtJc=</DigestValue>
+			</SignatureDigestReference>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-3E75A50C854182576BECBE1128851364E0B0AC909EBED4ACA5B38A6FC14FC23D">
+            <SubjectDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tl5 organization,cn=cert-test-5.1.5</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=IT,OU=CERT FOR TEST,O=TL5 Organization,CN=CERT-TEST-5.1.5</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tsp-5.1 name,cn=sdi-5.1.5</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=IT,OU=CERT FOR TEST,O=TSP-5.1 Name,CN=SDI-5.1.5</IssuerDistinguishedName>
+            <SerialNumber>11</SerialNumber>
+            <CommonName>CERT-TEST-5.1.5</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>TL5 Organization</OrganizationName>
+            <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2019-07-05T13:18:37Z</NotAfter>
+            <NotBefore>2017-07-05T13:18:37Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-3E75A50C854182576BECBE1128851364E0B0AC909EBED4ACA5B38A6FC14FC23D</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://localhost:8080/qes-validation-web/crt/SDI-5.1.5.crt</caIssuersUrl>
+                    <ocspUrl>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.5</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://localhost:8080/qes-validation-web/crl/SDI-5.1.5.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcTypes>
+                        <QcType Description="qc-type-eseal">0.4.0.1862.1.6.2</QcType>
+                    </QcTypes>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2043482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
+                            <ServiceNames><ServiceName lang="en">TS-5.1.5 Name</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-3e75a50c854182576becbe1128851364e0b0ac909ebed4aca5b38a6fc14fc23d69dd6a7f25f724833c0e8942f96610fe857c01e4cf52ee849c50277627d22b85">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>MIIEgjCCA2qgAwIBAgIBCzANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktNS4xLjUxFTATBgNVBAoMDFRTUC01LjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCSVQwHhcNMTcwNzA1MTMxODM3WhcNMTkwNzA1MTMxODM3WjBaMRgwFgYDVQQDDA9DRVJULVRFU1QtNS4xLjUxGTAXBgNVBAoMEFRMNSBPcmdhbml6YXRpb24xFjAUBgNVBAsMDUNFUlQgRk9SIFRFU1QxCzAJBgNVBAYTAklUMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvnJpTdN+ujyMa3OIHZqGhddGw8Ic7cVKiu4B53mG29kZYe7t4+Jac5+t2aoSd5M/rzSN+Ezs8XcxziVMod2hT1ak3HXvHCOpSg/jwiPp/7v73VVzIyMsH0h3Qvi5DyhNXZeMr6oCiKH1x1APziTPGY41uhV4JAaJMPs2obWRDUH1l4+tWe+SbN1p2ShuGEA47aybA8NBIUIdrQFu50842eJQ3QfMZTOGMjCF0AOlBQX6o/AvbVu0ihCAN3rwqB/U6LRcdjJT2QUf39DcGhNUuMIk3sUYqS9+Mw/r/t0fYIzv/ui3YX2qHTZgyPqb2G186NfKP6glTpC4MWsp0UEApQIDAQABo4IBWzCCAVcwDgYDVR0PAQH/BAQDAgZAMDkGCCsGAQUFBwEDAQH/BCowKDAIBgYEAI5GAQEwHAYGBACORgEGMBIGBwQAjkYBBgEGBwQAjkYBBgIwSwYDVR0fBEQwQjBAoD6gPIY6aHR0cDovL2xvY2FsaG9zdDo4MDgwL3Flcy12YWxpZGF0aW9uLXdlYi9jcmwvU0RJLTUuMS41LmNybDCBnQYIKwYBBQUHAQEEgZAwgY0wQwYIKwYBBQUHMAGGN2h0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9xZXMtdmFsaWRhdGlvbi13ZWIvb2NzcC9TREktNS4xLjUwRgYIKwYBBQUHMAKGOmh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9xZXMtdmFsaWRhdGlvbi13ZWIvY3J0L1NESS01LjEuNS5jcnQwHQYDVR0OBBYEFFhU/raMbDzhOOSBXzN9MyAe2bFLMA0GCSqGSIb3DQEBCwUAA4IBAQBKWdaAHbnviUHK8Y8yrO/IVq5VTpbaKoZ5ZTQHbct50Jp0UieN+1YZrUuqs15WYnHnl4400L7hgpj6RMM/3En/mmaPs93/wCe5id2Pb8Rr5OgxifJgQpLHgJ7jw1WQo0Tbc2G61JzldJluSNZW10VQMJ8YXQ7RJzj/NEVahu9BTRouu5jdJm/ctHeKIQoS7t/JN9mZ3b32g9ClU4fFG1aMv3uomZIqFZpMwLuXxaWHm7PsSTGB0LHS+qS9Hex0fQMwxdJUQHjFMoOMXUTWkx9Dk8WStYURqTM3DU0EpYCAIeDBc/X2Y1nKLjFafcXMlVKHyzB+c/zxfnxKJifw3vY7</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
+            <SubjectDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tsp-5.1 name,cn=sdi-5.1.5</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=IT,OU=CERT FOR TEST,O=TSP-5.1 Name,CN=SDI-5.1.5</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=it,ou=cert for test,o=tsp-5.1 name,cn=sdi-5.1.5</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=IT,OU=CERT FOR TEST,O=TSP-5.1 Name,CN=SDI-5.1.5</IssuerDistinguishedName>
+            <SerialNumber>10</SerialNumber>
+            <CommonName>SDI-5.1.5</CommonName>
+            <CountryName>IT</CountryName>
+            <OrganizationName>TSP-5.1 Name</OrganizationName>
+            <OrganizationalUnit>CERT FOR TEST</OrganizationalUnit>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2019-07-05T13:18:36Z</NotAfter>
+            <NotBefore>2017-07-05T13:18:36Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">TSP-5.1 Name</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-2043482260</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
+                            <ServiceNames><ServiceName lang="en">TS-5.1.5 Name</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIDZTCCAk2gAwIBAgIBCjANBgkqhkiG9w0BAQsFADBQMRIwEAYDVQQDDAlTREktNS4xLjUxFTATBgNVBAoMDFRTUC01LjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCSVQwHhcNMTcwNzA1MTMxODM2WhcNMTkwNzA1MTMxODM2WjBQMRIwEAYDVQQDDAlTREktNS4xLjUxFTATBgNVBAoMDFRTUC01LjEgTmFtZTEWMBQGA1UECwwNQ0VSVCBGT1IgVEVTVDELMAkGA1UEBhMCSVQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC61vI3gLoQYGtzqhduWIWoqFyvIACpxTTQP9+rwtYKQ/Wsi+nOkGTNvcA+S0joOSmRnS0kjsGEJsu6Kf6+NsQYzwU/WNIZMFmRM4znkGkTwTlwJJGfgYCy/Uzw+BRufhK6vK7e8+CzBbhqsShh+kFIcRycQdErcX9t+ywX3KnhSfkrsbSL+3P2E2VKYtz7l5kHRbGuZwq89lIXpRC2NzmNW82ft7dhq7oRF1XrlGmK9NygmY0i/a8yJ6hMP06JewOVawCZdcGnZuh1Z2ZqTsu5nIOl48H4bTbOd7RKalB5usVM3oQSBfoWK9T640oMZh66ZCZWpg37Z6zlyAVgkXxZAgMBAAGjSjBIMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMJMB0GA1UdDgQWBBTe8p0v22MlmEd/ypIT/QxIci0knTAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAqW5VU9RyY8Lq1rdS32eS6GL7/e96wO3i0VwFSlIsgIoxGOXHqNdVzjohya/Hr64W7rIcQAfBOrmz5Rhv0K73xD/In2rtdmS94tefw+KQVW0Y+FCElQI6o6FvyhcEId23+/hTpu42MTZszYHwQsYLxexHRC3fkRGcyfpb0sWsDo2E5VmW+Hj9J/nWOxtlws8GPISh3MwdSFztAcc2OaC9z8jbY+EtiVg0Nnmenpf9y1yLLMco4A42b1mlsCyZW9wSz3isegLJZs7buXAVLdFHtzXgHoKmvwhw94P/ugWfb4x+hhj9GMDoyrrU9vO4AVEGMgnHCwORo/1ovoXk0mDjU</Base64Encoded>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-3e75a50c854182576becbe1128851364e0b0ac909ebed4aca5b38a6fc14fc23d69dd6a7f25f724833c0e8942f96610fe857c01e4cf52ee849c50277627d22b85">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://localhost:8080/qes-validation-web/ocsp/SDI-5.1.5</SourceAddress>
+            <ProductionDate>2018-07-05T13:28:12Z</ProductionDate>
+            <ThisUpdate>2018-07-05T13:28:12Z</ThisUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-53763FCFD428B9878B97E4C1B9DE17E431842E2AF43B5A51BEEBE5B53F360619">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue>
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>jzy9OBVZFYPmNyX6M9r1ywGFLmz4LJ39TwkdFgNJxzM=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>054d8f0acff056584139cb04baf130c2227acafb</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+   	</UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-cd02937ccca6f12ae43fc1fa2c6819cd27300d03d7f7ebb5d1aad09478adfb66">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-DDB04A2C92BCE7C39A7611EA814F5CC1C6425BD6A5D979A57CBF58B14436FD5D">
+            <CountryCode>IT</CountryCode>
+            <Url>http://localhost:8080/qes-validation-web/tl/TL-5.xml</Url>
+            <SequenceNumber>1</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2018-07-05T13:28:11Z</LastLoading>
+            <IssueDate>2018-07-04T13:17:57Z</IssueDate>
+            <NextUpdate>2018-08-05T13:17:57Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>http://localhost:8080/qes-validation-web/tl/LOTL-3.xml</Url>
+	        <SequenceNumber>1</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2018-07-05T13:28:11Z</LastLoading>
+	        <IssueDate>2018-07-04T13:17:57Z</IssueDate>
+	        <NextUpdate>2018-08-05T13:17:57Z</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

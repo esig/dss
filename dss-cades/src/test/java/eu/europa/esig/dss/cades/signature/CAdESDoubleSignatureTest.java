@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author axel.abinet
  *
  */
-public class CAdESDoubleSignatureTest extends AbstractCAdESTestSignature {
+class CAdESDoubleSignatureTest extends AbstractCAdESTestSignature {
 
 	private static DSSDocument originalDocument;
 	private static Date date;
@@ -58,13 +58,13 @@ public class CAdESDoubleSignatureTest extends AbstractCAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeAll
-	public static void initBeforeAll() {
+	static void initBeforeAll() {
 		originalDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 		date = new Date();
 	}
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = originalDocument;
 
 		signatureParameters = new CAdESSignatureParameters();

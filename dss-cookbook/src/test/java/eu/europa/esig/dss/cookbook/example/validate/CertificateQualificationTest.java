@@ -40,8 +40,8 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.junit.jupiter.api.Test;
@@ -50,10 +50,10 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CertificateQualificationTest {
+class CertificateQualificationTest {
 
     @Test
-    public void test() {
+    void test() {
 
         CertificateToken certificate = DSSUtils.loadCertificate(new File("src/main/resources/keystore/ec.europa.eu.1.cer"));
 
@@ -72,8 +72,8 @@ public class CertificateQualificationTest {
         // import eu.europa.esig.dss.tsl.job.TLValidationJob;
         // import eu.europa.esig.dss.tsl.source.TLSource;
         // import eu.europa.esig.dss.validation.CertificateValidator;
-        // import eu.europa.esig.dss.validation.CertificateVerifier;
-        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
         // import eu.europa.esig.dss.validation.reports.CertificateReports;
         // import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 

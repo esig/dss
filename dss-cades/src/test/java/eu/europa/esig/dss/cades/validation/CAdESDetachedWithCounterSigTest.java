@@ -36,11 +36,11 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
-public class CAdESDetachedWithCounterSigTest extends AbstractCAdESTestValidation {
+class CAdESDetachedWithCounterSigTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

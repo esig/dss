@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -36,13 +36,13 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EmbeddedNotXmlSignatureExceptionTest extends AbstractXAdESTestSignature {
+class EmbeddedNotXmlSignatureExceptionTest extends AbstractXAdESTestSignature {
 
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.png"));
 
 		signatureParameters = new XAdESSignatureParameters();

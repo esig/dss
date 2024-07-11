@@ -25,22 +25,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
-public class OfficialRegistrationIdentifierPredicateTest {
+class OfficialRegistrationIdentifierPredicateTest {
 
 	private OfficialRegistrationIdentifierPredicate predicate = new OfficialRegistrationIdentifierPredicate();
 
 	@Test
-	public void testNull() {
+	void testNull() {
 		assertFalse(predicate.test(null));
 	}
 
 	@Test
-	public void testFalse() {
+	void testFalse() {
 		assertFalse(predicate.test("ABC12"));
 	}
 
 	@Test
-	public void testTrue() {
+	void testTrue() {
 		assertTrue(predicate.test("VAT123"));
 		assertTrue(predicate.test("TIN123"));
 	}

@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class XAdESSignedPropertiesCanonicalizationTest extends AbstractXAdESTestSignature {
+class XAdESSignedPropertiesCanonicalizationTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -70,7 +70,7 @@ public class XAdESSignedPropertiesCanonicalizationTest extends AbstractXAdESTest
 
     @ParameterizedTest(name = "Canonicalization {index} : {0} - {1}")
     @MethodSource("data")
-    public void test(String canonicalization, SignaturePackaging packaging) {
+    void test(String canonicalization, SignaturePackaging packaging) {
         documentToSign = new FileDocument(new File("src/test/resources/sample-c14n.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.requirements;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import javax.xml.xpath.XPathExpressionException;
@@ -30,11 +30,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESXLTest extends XAdESXTest {
+class XAdESXLTest extends XAdESXTest {
 
     @BeforeEach
     @Override
-    public void init() throws Exception {
+    void init() throws Exception {
         super.init();
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_XL);
     }
@@ -42,7 +42,7 @@ public class XAdESXLTest extends XAdESXTest {
     /**
      * Checks UnsignedSignatureProperties present for T/LT/LTA levels
      */
-    public void checkUnsignedProperties() throws XPathExpressionException {
+    protected void checkUnsignedProperties() throws XPathExpressionException {
         super.checkUnsignedProperties();
 
         checkCertificateValuesPresent();

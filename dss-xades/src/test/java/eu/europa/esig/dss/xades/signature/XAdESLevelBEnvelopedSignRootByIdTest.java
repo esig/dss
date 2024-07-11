@@ -22,7 +22,7 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -33,8 +33,8 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2919
-public class XAdESLevelBEnvelopedSignRootByIdTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedSignRootByIdTest extends AbstractXAdESTestSignature {
 
     private static final String ID_ELEMENT_TO_SIGN = "Element_0_ID";
 
@@ -65,7 +65,7 @@ public class XAdESLevelBEnvelopedSignRootByIdTest extends AbstractXAdESTestSigna
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/sample-xml-stylesheet-with-id.xml");
 
         signatureParameters = new XAdESSignatureParameters();

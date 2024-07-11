@@ -51,6 +51,9 @@ public class SimpleASiCWithXAdESFilenameFactory extends DefaultASiCWithXAdESFile
     /** Defines a name of a creating ZIP archive, containing multiple signer documents (in case of ASiC-S container) */
     private String dataPackageFilename;
 
+    /** Defines a new name for the last evidence record manifest file to be created (e.g. "META-INF/ASiCEvidenceRecordManifest001.xml") */
+    private String evidenceRecordManifestFilename;
+
     /**
      * Default constructor instantiating factory with null values
      */
@@ -120,6 +123,23 @@ public class SimpleASiCWithXAdESFilenameFactory extends DefaultASiCWithXAdESFile
      */
     public void setDataPackageFilename(String dataPackageFilename) {
         this.dataPackageFilename = dataPackageFilename;
+    }
+
+    @Override
+    public String getEvidenceRecordManifestFilename(ASiCContent asicContent) {
+        if (Utils.isStringNotEmpty(evidenceRecordManifestFilename)) {
+            return getValidEvidenceRecordManifestFilename(evidenceRecordManifestFilename, asicContent);
+        }
+        return super.getEvidenceRecordManifestFilename(asicContent);
+    }
+
+    /**
+     * Sets a new filename for the ASiC evidence record manifest document (when applicable)
+     *
+     * @param evidenceRecordManifestFilename {@link String}
+     */
+    public void setEvidenceRecordManifestFilename(String evidenceRecordManifestFilename) {
+        this.evidenceRecordManifestFilename = evidenceRecordManifestFilename;
     }
 
     /**

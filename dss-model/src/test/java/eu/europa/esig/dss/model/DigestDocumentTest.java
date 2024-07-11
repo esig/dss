@@ -29,47 +29,55 @@ import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Base64;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DigestDocumentTest {
+class DigestDocumentTest {
 
 	@Test
-	public void test() {
+	void testByteArray() {
+		byte[] digest = "aaa".getBytes();
+		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, digest);
+		assertArrayEquals(digest, doc.getDigestValue(DigestAlgorithm.SHA1));
+	}
+
+	@Test
+	void testString() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		assertEquals(base64EncodeDigest, doc.getDigest(DigestAlgorithm.SHA1));
+		assertArrayEquals(Base64.getDecoder().decode(base64EncodeDigest), doc.getDigestValue(DigestAlgorithm.SHA1));
 	}
 
 	@Test
-	public void testNullDigestAlgo() {
-		assertThrows(NullPointerException.class, () -> new DigestDocument(null, "aaaa"));
+	void testNullDigestAlgo() {
+		assertThrows(NullPointerException.class, () -> new DigestDocument(null, "aaaa".getBytes()));
 	}
 
 	@Test
-	public void testNullDigestAlgoValue() {
-		assertThrows(NullPointerException.class, () -> new DigestDocument(DigestAlgorithm.SHA1, null));
+	void testNullDigestAlgoValue() {
+		assertThrows(NullPointerException.class, () -> new DigestDocument(DigestAlgorithm.SHA1, (byte[]) null));
 	}
 
 	@Test
-	public void testUnknownDigest() {
+	void testUnknownDigest() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> doc.getDigest(DigestAlgorithm.SHA256));
+		Exception exception = assertThrows(IllegalArgumentException.class, () -> doc.getDigestValue(DigestAlgorithm.SHA256));
 		assertEquals("The digest document does not contain a digest value for the algorithm : SHA256", exception.getMessage());
 	}
 
 	@Test
-	public void testOpenStream() {
+	void testOpenStream() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
-		Exception exception = assertThrows(UnsupportedOperationException.class, () -> doc.openStream());
+		Exception exception = assertThrows(UnsupportedOperationException.class, doc::openStream);
 		assertEquals("Not possible with Digest document", exception.getMessage());
 	}
 
 	@Test
-	public void testSave() throws IOException {
+	void testSave() throws IOException {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> doc.save("target/test"));
@@ -77,7 +85,7 @@ public class DigestDocumentTest {
 	}
 
 	@Test
-	public void defaultConstructorTest() throws IOException, NoSuchAlgorithmException {
+	void defaultConstructorTest() throws IOException, NoSuchAlgorithmException {
 		Security.addProvider(new BouncyCastleProvider());
 		byte[] stringToEncode = "aaa".getBytes();
 		DigestDocument doc = new DigestDocument();
@@ -86,14 +94,14 @@ public class DigestDocumentTest {
 			if (DigestAlgorithm.SHAKE128.equals(digestAlgorithm) || DigestAlgorithm.SHAKE256.equals(digestAlgorithm)) {
 				continue;
 			}
-			doc.addDigest(digestAlgorithm, Base64.getEncoder().encodeToString(digestAlgorithm.getMessageDigest().digest(stringToEncode)));
+			doc.addDigest(digestAlgorithm, digestAlgorithm.getMessageDigest().digest(stringToEncode));
 		}
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
 			// Not registered
 			if (DigestAlgorithm.SHAKE128.equals(digestAlgorithm) || DigestAlgorithm.SHAKE256.equals(digestAlgorithm)) {
 				continue;
 			}
-			assertNotNull(doc.getDigest(digestAlgorithm));
+			assertNotNull(doc.getDigestValue(digestAlgorithm));
 		}
 		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
 	}

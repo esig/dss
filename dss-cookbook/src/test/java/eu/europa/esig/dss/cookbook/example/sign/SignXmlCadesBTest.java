@@ -33,15 +33,15 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
 /**
  * How to sign with CAdES-BASELINE-B enveloping signature.
  */
-public class SignXmlCadesBTest extends CookbookTools {
+class SignXmlCadesBTest extends CookbookTools {
 
 	@Test
-	public void signCAdESBaselineB() throws Exception {
+	void signCAdESBaselineB() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -67,7 +67,7 @@ public class SignXmlCadesBTest extends CookbookTools {
 			// import eu.europa.esig.dss.model.DSSDocument;
 			// import eu.europa.esig.dss.model.SignatureValue;
 			// import eu.europa.esig.dss.model.ToBeSigned;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 
 			// Preparing parameters for the CAdES signature
 			CAdESSignatureParameters parameters = new CAdESSignatureParameters();

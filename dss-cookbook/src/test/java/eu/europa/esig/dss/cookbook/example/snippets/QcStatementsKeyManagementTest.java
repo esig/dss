@@ -34,10 +34,10 @@ import java.security.KeyStore;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class QcStatementsKeyManagementTest {
+class QcStatementsKeyManagementTest {
 
     @Test
-    public void qscdTest() throws IOException {
+    void qscdTest() throws IOException {
 
         try (AbstractKeyStoreTokenConnection token = new Pkcs12SignatureToken("src/test/resources/john-doe.p12",
                 new KeyStore.PasswordProtection("ks-password".toCharArray()))) {
@@ -51,7 +51,7 @@ public class QcStatementsKeyManagementTest {
     }
 
     @Test
-    public void nonQscdTest() throws IOException {
+    void nonQscdTest() throws IOException {
 
         try (AbstractKeyStoreTokenConnection token = new Pkcs12SignatureToken("src/test/resources/bob-doe.p12",
                 new KeyStore.PasswordProtection("ks-password".toCharArray()))) {
@@ -68,7 +68,7 @@ public class QcStatementsKeyManagementTest {
     // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
     // import eu.europa.esig.dss.token.predicate.DSSKeyEntryPredicate;
 
-    public static class QcQSCDKeyEntryPredicate implements DSSKeyEntryPredicate {
+    static class QcQSCDKeyEntryPredicate implements DSSKeyEntryPredicate {
 
         @Override
         public boolean test(DSSPrivateKeyEntry dssPrivateKeyEntry) {

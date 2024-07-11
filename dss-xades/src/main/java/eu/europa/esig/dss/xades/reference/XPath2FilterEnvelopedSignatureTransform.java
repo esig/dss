@@ -21,10 +21,11 @@
 package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 
 /**
  * Enveloped signature transformation by Filter 2.0. Excludes all signatures from the XML.
+ *
  */
 public final class XPath2FilterEnvelopedSignatureTransform extends XPath2FilterTransform {
 
@@ -33,14 +34,17 @@ public final class XPath2FilterEnvelopedSignatureTransform extends XPath2FilterT
 	/** The subtract filter */
 	private static final String SUBTRACT_FILTER = "subtract";
 
-	/** All descendant ds:Signature elements */
-	private static final String DESCENDANT_SIGNATURE = "/descendant::ds:Signature";
+	/** All descendant ds:Signature elements prefix */
+	private static final String DESCENDANT_SIGNATURE_PREFIX = "/descendant::";
+
+	/** All descendant ds:Signature elements suffix */
+	private static final String DESCENDANT_SIGNATURE_SUFFIX = ":Signature";
 
 	/**
 	 * Default constructor
 	 */
 	public XPath2FilterEnvelopedSignatureTransform() {
-		super(XMLDSigNamespace.NS, DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
+		this(XMLDSigNamespace.NS);
 	}
 
 	/**
@@ -49,7 +53,7 @@ public final class XPath2FilterEnvelopedSignatureTransform extends XPath2FilterT
 	 * @param xmlDSigNamespace {@link DSSNamespace}
 	 */
 	public XPath2FilterEnvelopedSignatureTransform(DSSNamespace xmlDSigNamespace) {
-		super(xmlDSigNamespace, DESCENDANT_SIGNATURE, SUBTRACT_FILTER);
+		super(xmlDSigNamespace, DESCENDANT_SIGNATURE_PREFIX + xmlDSigNamespace.getPrefix() + DESCENDANT_SIGNATURE_SUFFIX, SUBTRACT_FILTER);
 	}
 
 }

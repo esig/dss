@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CommonsDataLoaderTest {
+class CommonsDataLoaderTest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoaderTest.class);
 
@@ -55,12 +55,12 @@ public class CommonsDataLoaderTest {
 	private CommonsDataLoader dataLoader;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		dataLoader = new CommonsDataLoader();
 	}
 
 	@Test
-	public void testGet() {
+	void testGet() {
 		byte[] bytesArray = dataLoader.get(URL_TO_LOAD);
 
 		NativeHTTPDataLoader dataLoader2 = new NativeHTTPDataLoader();
@@ -73,25 +73,25 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void ldapTest1() {
+	void ldapTest1() {
 		String url = "ldap://x500.gov.si/ou=sigen-ca,o=state-institutions,c=si?certificateRevocationList?base";
 		getDataAndAssertNotNull(url);
 	}
 
 	@Test
-	public void ldapTest2() {
+	void ldapTest2() {
 		String url = "ldap://postarca.posta.si/ou=POSTArCA,o=POSTA,c=SI?certificateRevocationList";
 		getDataAndAssertNotNull(url);
 	}
 
 	@Test
-	public void ldapTest3() {
+	void ldapTest3() {
 		String url = "ldap://acldap.nlb.si/o=ACNLB,c=SI?certificateRevocationList";
 		getDataAndAssertNotNull(url);
 	}
 
 	@Test
-	public void dss1583test() {
+	void dss1583test() {
 		String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de";
 		getDataAndAssertNotNull(url);
 		url = "ldap://pks-ldap.telesec.de/o=T-Systems%20International%20GmbH,c=de";
@@ -115,7 +115,7 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void dss1583WarningTest() {
+	void dss1583WarningTest() {
 		assertThrows(DSSException.class, () -> {
 			String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de%2";
 			dataLoader.get(url);
@@ -135,7 +135,7 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void timeoutTest() {
+	void timeoutTest() {
 		dataLoader.setTimeoutConnection(1);
 		DSSExternalResourceException exception = assertThrows(DSSExternalResourceException.class,
 				() -> dataLoader.get(URL_TO_LOAD));
@@ -148,7 +148,7 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void resourceDoesNotExistTest() {
+	void resourceDoesNotExistTest() {
 		dataLoader.setTimeoutConnection(1);
 		DSSExternalResourceException exception = assertThrows(DSSExternalResourceException.class,
 				() -> dataLoader.get("http://wrong.url"));
@@ -156,7 +156,7 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void multipleDataLoadTest() {
+	void multipleDataLoadTest() {
 		byte[] firstUrlData = dataLoader.get(URL_TO_LOAD);
 		DataAndUrl dataAndUrl = dataLoader.get(Arrays.asList(URL_TO_LOAD, "http://ncrl.ssc.lt/class3nqc/cacrl.crl",
 				"http://www.ssc.lt/cacert/ssc_class3nqc.crt"));
@@ -170,7 +170,7 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void multipleDataLoaderExceptionTest() {
+	void multipleDataLoaderExceptionTest() {
 		dataLoader.setTimeoutConnection(1);
 
 		List<String> urls = Arrays.asList("http://wrong.url", "does_not_exist", URL_TO_LOAD);
@@ -182,7 +182,7 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void negativeTimeoutTest() {
+	void negativeTimeoutTest() {
 		// negative values enforce to use system properties
 		dataLoader.setTimeoutConnection(-1);
 		dataLoader.setTimeoutConnectionRequest(-1);
@@ -195,7 +195,7 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void excludedHostsTest() {
+	void excludedHostsTest() {
 		ProxyProperties proxyProperties = new ProxyProperties();
 		proxyProperties.setHost("1.2.4.5.6");
 		proxyProperties.setPort(8080);
@@ -269,7 +269,7 @@ public class CommonsDataLoaderTest {
 	}
 
 	@Test
-	public void httpClientResponseHandlerTest() {
+	void httpClientResponseHandlerTest() {
 		CommonsHttpClientResponseHandler httpClientResponseHandler = new CommonsHttpClientResponseHandler();
 		dataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
 		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));

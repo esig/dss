@@ -20,26 +20,25 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import org.junit.jupiter.api.Test;
 
-public class XAdESExtensionNoDetachedFileBToATest extends PKIFactoryAccess {
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class XAdESExtensionNoDetachedFileBToATest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 
 		DSSDocument detachedFile = new FileDocument("src/test/resources/sample.xml");
 
@@ -60,8 +59,9 @@ public class XAdESExtensionNoDetachedFileBToATest extends PKIFactoryAccess {
 		XAdESSignatureParameters extensionParameters = new XAdESSignatureParameters();
 		extensionParameters.setSignatureLevel(SignatureLevel.XAdES_A);
 		
-		Exception exception = assertThrows(DSSException.class, () -> service.extendDocument(signedDocument, extensionParameters));
-		assertTrue(exception.getMessage().contains("Cryptographic signature verification has failed"));
+		Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, extensionParameters));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+		assertTrue(exception.getMessage().contains("ryptographic signature verification has failed / Best candidate validation failed"));
 		
 	}
 

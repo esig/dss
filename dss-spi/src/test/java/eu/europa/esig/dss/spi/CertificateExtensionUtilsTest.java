@@ -52,14 +52,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CertificateExtensionUtilsTest {
+class CertificateExtensionUtilsTest {
 
     private static CertificateToken certificateWithAIA;
 
     private static CertificateToken certificateOCSP;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         certificateWithAIA = DSSUtils.loadCertificate(new File("src/test/resources/TSP_Certificate_2014.crt"));
         assertNotNull(certificateWithAIA);
 
@@ -69,7 +69,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getCertificatePolicies() {
+    void getCertificatePolicies() {
         CertificatePolicies certificatePolicies = CertificateExtensionsUtils.getCertificatePolicies(certificateWithAIA);
         assertNotNull(certificatePolicies);
         List<CertificatePolicy> policyIdentifiers = certificatePolicies.getPolicyList();
@@ -84,7 +84,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getSKI() {
+    void getSKI() {
         SubjectKeyIdentifier subjectKeyIdentifier = CertificateExtensionsUtils.getSubjectKeyIdentifier(certificateWithAIA);
         assertNotNull(subjectKeyIdentifier);
         byte[] ski = subjectKeyIdentifier.getSki();
@@ -118,7 +118,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getAuthorityKeyIdentifier() {
+    void getAuthorityKeyIdentifier() {
         CertificateToken cert = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIICaDCCAdSgAwIBAgIDDIOqMAoGBiskAwMBAgUAMG8xCzAJBgNVBAYTAkRFMT0wOwYDVQQKFDRSZWd1bGllcnVuZ3NiZWjIb3JkZSBmyHVyIFRlbGVrb21tdW5pa2F0aW9uIHVuZCBQb3N0MSEwDAYHAoIGAQoHFBMBMTARBgNVBAMUCjVSLUNBIDE6UE4wIhgPMjAwMDAzMjIwODU1NTFaGA8yMDA1MDMyMjA4NTU1MVowbzELMAkGA1UEBhMCREUxPTA7BgNVBAoUNFJlZ3VsaWVydW5nc2JlaMhvcmRlIGbIdXIgVGVsZWtvbW11bmlrYXRpb24gdW5kIFBvc3QxITAMBgcCggYBCgcUEwExMBEGA1UEAxQKNVItQ0EgMTpQTjCBoTANBgkqhkiG9w0BAQEFAAOBjwAwgYsCgYEAih5BUycfBpqKhU8RDsaSvV5AtzWeXQRColL9CH3t0DKnhjKAlJ8iccFtJNv+d3bh8bb9sh0maRSo647xP7hsHTjKgTE4zM5BYNfXvST79OtcMgAzrnDiGjQIIWv8xbfV1MqxxdtZJygrwzRMb9jGCAGoJEymoyzAMNG7tSdBWnUCBQDAAAABoxIwEDAOBgNVHQ8BAf8EBAMCAQYwCgYGKyQDAwECBQADgYEAOaK8ihVSBUcL2IdVBxZYYUKwMz5m7H3zqhN8W9w+iafWudH6b+aahkbENEwzg3C3v5g8nze7v7ssacQze657LHjP+e7ksUDIgcS4R1pU2eN16bjSP/qGPF3rhrIEHoK5nJULkjkZYTtNiOvmQ/+G70TXDi3Os/TwLlWRvu+7YLM=");
         assertNull(CertificateExtensionsUtils.getAuthorityKeyIdentifier(cert));
@@ -135,7 +135,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getAccessLocation() {
+    void getAccessLocation() {
         CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
         AuthorityInformationAccess aia = CertificateExtensionsUtils.getAuthorityInformationAccess(certificate);
         assertNotNull(aia);
@@ -146,7 +146,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getCAAccessLocations() {
+    void getCAAccessLocations() {
         CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
         AuthorityInformationAccess aia = CertificateExtensionsUtils.getAuthorityInformationAccess(certificate);
         assertNotNull(aia);
@@ -157,7 +157,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getCrlUrls() {
+    void getCrlUrls() {
         CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
         CRLDistributionPoints crlDistributionPoints = CertificateExtensionsUtils.getCRLDistributionPoints(certificate);
         assertNotNull(crlDistributionPoints);
@@ -168,7 +168,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void isOCSPSigning() {
+    void isOCSPSigning() {
         ExtendedKeyUsages extendedKeyUsage = CertificateExtensionsUtils.getExtendedKeyUsage(certificateOCSP);
         assertNotNull(extendedKeyUsage);
         assertTrue(extendedKeyUsage.getOids().contains(ExtendedKeyUsage.OCSP_SIGNING.getOid()));
@@ -179,20 +179,20 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void hasIdPkixOcspNoCheckExtension() {
+    void hasIdPkixOcspNoCheckExtension() {
         assertTrue(CertificateExtensionsUtils.hasOcspNoCheckExtension(certificateOCSP));
         assertFalse(CertificateExtensionsUtils.hasOcspNoCheckExtension(certificateWithAIA));
     }
 
     @Test
-    public void hasValAssuredShortTermCertsExtension() {
+    void hasValAssuredShortTermCertsExtension() {
         CertificateToken shortTermCertificate = DSSUtils.loadCertificateFromBase64EncodedString("MIIDJjCCAg6gAwIBAgIIMMSTGSdLPxQwDQYJKoZIhvcNAQENBQAwKDEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczELMAkGA1UEBhMCTFUwHhcNMjEwNzAxMTAwMTI5WhcNMjEwNzAxMTAwNjI5WjA2MQwwCgYDVQQDDANBIGExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsW0yfJBqh9CtbfOtsZcEAEvzzfPusdhZNv0JSq8frKGMqJwTgjnkMJd9D3sEHUBJP0ryAmK9L5S+lWOGDhdYcE8K00k3hZSHyrOdRblB0SZhtXIgeGD7ESdTU9xPCf4Ze7xSI08zlk9NmTaj5Xqfyako8sxHAQapdXw8kfG0Ol6UhfMg7MjN8/wZrIVUYZzBQP3RFKHFQIms+pxfWxvETsynn/n2rOjuAsV0aTWGUAeWJRFJxKLSTrHQiQULVS1MHIIkdbQZxMA+Jn3dXwVdJLX/JRSvEOBqGRrvGQtYN2vNdrJlNHP0WGcSAddweWs7Ar+Pp7Qm/HEQF5+EOPUQDQIDAQABo0YwRDAOBgNVHQ8BAf8EBAMCBsAwIwYIKwYBBQUHAQMEFzAVMBMGBgQAjkYBBjAJBgcEAI5GAQYBMA0GBwQAi+xJAgEEAgUAMA0GCSqGSIb3DQEBDQUAA4IBAQBAYj8mdKsj/mMoM4HXL/w+xeK0iM55eGyBNprwxECoCH8ZCgVrVTb3eKttTXYrXjk3Yqpg3amkm7aV94iXJ0qLER/2C9lHLv6h1CoxYCdevAUSVOIzF0SJj54dxrwDQ7uTFXRe2etOg+hmEhj3OBpd/5vMfdIViYHtpPoCyZoQyGLztUt1k8/JvBe91UGAEnWx0nvokehkTgueq7dsTjBit4dlCmfmIzQUUWCgNpe1S1nEb0B/BCXaqPRhYx1//2T/5gR1lKe36HHp5rUURKT8NsS76lfxdor9Ag3mVmsw1NcVtDiFo0molO84+B53yqRP2wCU7MtfKfCX9CocgVNF");
         assertTrue(CertificateExtensionsUtils.hasValAssuredShortTermCertsExtension(shortTermCertificate));
         assertFalse(CertificateExtensionsUtils.hasValAssuredShortTermCertsExtension(certificateOCSP));
     }
 
     @Test
-    public void readOCSPAccessLocationsAndStopOnceLoopDetected() {
+    void readOCSPAccessLocationsAndStopOnceLoopDetected() {
         CertificateToken caTokenA = DSSUtils.loadCertificateFromBase64EncodedString("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");
         CertificateToken caTokenB = DSSUtils.loadCertificateFromBase64EncodedString("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");
         assertTrue(caTokenA.isSignedBy(caTokenB));
@@ -205,7 +205,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getSubjectAlternativeNames() {
+    void getSubjectAlternativeNames() {
         CertificateToken cert = DSSUtils.loadCertificateFromBase64EncodedString(
                 "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");
         assertNotNull(cert);
@@ -281,7 +281,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getPolicyConstraints() {
+    void getPolicyConstraints() {
         CertificateToken certificate = DSSUtils.loadCertificate(new File("src/test/resources/sk_ca.cer"));
         PolicyConstraints policyConstraints = CertificateExtensionsUtils.getPolicyConstraints(certificate);
         assertNotNull(policyConstraints);
@@ -296,7 +296,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getPolicyConstraintsTwo() {
+    void getPolicyConstraintsTwo() {
         CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIIClDCCAf2gAwIBAgIBNzANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
                 "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
@@ -317,7 +317,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getInhibitAnyPolicy() {
+    void getInhibitAnyPolicy() {
         CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIICmTCCAgKgAwIBAgIBOzANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
                 "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
@@ -342,7 +342,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getNameConstraintsPermittedSubtrees() {
+    void getNameConstraintsPermittedSubtrees() {
         CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIIC2TCCAkKgAwIBAgIBPjANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
                 "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
@@ -374,7 +374,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getNameConstraintsExcludedSubtrees() {
+    void getNameConstraintsExcludedSubtrees() {
         CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIIFpzCCA4+gAwIBAgIId8arl05fKxEwDQYJKoZIhvcNAQELBQAwSDELMAkGA1UEBhMCRVMxEjAQBgNV\n" +
                         "BAcTCUJhcmNlbG9uYTEMMAoGA1UEChMDVVBDMRcwFQYDVQQDDA40LjIuMS4xMF8xMl9DQTAeFw0yMzA0\n" +
@@ -418,7 +418,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getNameConstraintsPermittedSubtreeRFC822() {
+    void getNameConstraintsPermittedSubtreeRFC822() {
         CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIICqzCCAhSgAwIBAgIBQzANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
                         "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
@@ -449,7 +449,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getNameConstraintsPermittedSubtreeDNS() {
+    void getNameConstraintsPermittedSubtreeDNS() {
         CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIICpzCCAhCgAwIBAgIBRjANBgkqhkiG9w0BAQUFADBAMQswCQYDVQQGEwJVUzEaMBgGA1UEChMRVGVz\n" +
                         "dCBDZXJ0aWZpY2F0ZXMxFTATBgNVBAMTDFRydXN0IEFuY2hvcjAeFw0wMTA0MTkxNDU3MjBaFw0xMTA0\n" +
@@ -480,7 +480,7 @@ public class CertificateExtensionUtilsTest {
     }
 
     @Test
-    public void getNameConstraintsExcludeedSubtreeIPAddresses() {
+    void getNameConstraintsExcludeedSubtreeIPAddresses() {
         CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIIFojCCA4qgAwIBAgIJAOMWrsjU/s6/MA0GCSqGSIb3DQEBCwUAMD0xCzAJBgNVBAYTAkdCMQ8wDQYDVQQHDAZMb25kb24xEDAOBgNVBAoMB0RlbW8gQ0ExCzAJBgNVBAsMAklUMB4XDTE3MDUwNDE1NDQyM1oXDTM3MDQyOTE1NDQyM1owPTELMAkGA1UEBhMCR0IxDzANBgNVBAcMBkxvbmRvbjEQMA4GA1UECgwHRGVtbyBDQTELMAkGA1UECwwCSVQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCy6709MthSnIg6jl9+fgSdqdok56ElUVVaWiF0skZy17skS05zkdLXT15Su4Ffqs7kRawO4IHZvNVcoVGOkz4xnG4UT8w9dhtu10yUBbs/hi4/KWtdUFNvu2xU0vEzxuLjCZNyOmy5+rYBTfD6RIZ3eaElE5dZv0syZfG3WoVJMCYZt3KL7O0FtXSd6lCqUNE+bcbxEZ6Av4aJNMGMKK+3ML1lDwmyDalUnkOlcTkxlUt2mBt4MUHzc3fmjY4GgfjlyjKp1bzrBVU5sGrGGiZgH/kYvqABsUyaf3ejvg413YB66bAOr1sMvm1HGnqock8NpEYCJmWGDBox2s6o/nNO1i1+eE11Iyty24wx1Wwx1VMXd08CYDPpdhkkfN9LK+8yK7CpOViOy6/aXc2h7W0QHvWXCHGoEPDjGPKhSVzB2YR/+Nxlei9SjiI1cOE0ThTH1ikO3/3+S3yTKGZUJT8Mlra7IUBGfbwm63WRyEI9rlowhtGnA7bNtRPekiA95TqYmf5ZGYyksCsownYMU8Onm0JkDu5smeV+UGuqV5kXRiCOKoxdbGiJXWYZHNXEc1rnnDzN5TMJK3S2qLh0IpAJtQwhS++Oi0oTD3bjsyF9RPtDFnxYbxQJYGO/ig5WG1MQ97QMcUu94ll6vcjm8B14OUEkSzOVvxJtsaeldquRWQIDAQABo4GkMIGhMB0GA1UdDgQWBBQBMXxWPYExW1n/j0gJPuO7idEwQDAfBgNVHSMEGDAWgBQBMXxWPYExW1n/j0gJPuO7idEwQDAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBhjA+BgNVHR4BAf8ENDAyoTAwCocIAAAAAAAAAAAwIocgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwDQYJKoZIhvcNAQELBQADggIBAAxNFDaTK70DtoX5NkWpfiNau1yyFGryygqbcTQAwkm8U+qp3Ktwf59eQfCd6fwq0aZXHbF+oLTuJrF9SWrx7RG5maZjAHXQKC52x5c6jYoWxhBiWcBGf9nYMTs16PKi0gRr5MLWaGsDWG8hMxZPeDW7S7c8Z1UXEul36AyHKMON56lqB7i2/b1VB18eDW8g6Y7fyWvNhJBJx5tgAq+zgQNBaKfmmwP3XoRG2WZXN28+vX6rgpSG9oCei26A4/BYEp37tC2VMTaJ8rvAWaRr+B3jYes94a25E/q1Vp1/IZBY8nCMZgsz5tusROI+rQPdZPV8AJVSgQsfPZFmBY9V9vMYkuiuTTtnzNCovrVU5sQWau+oOKYz/nsip0A7Bq1ZKhcSs3Bzpn1sh870yLWL1ALOLQf2SGrK/lRK+jcPSifqcme7kUQqjX2+gSn9j0deM3UMoEEfVNt39jnzmDVlxyFzhszLCZFzE+X4sKuKSsrSCVZdzqC3SKgWrJLTEJajoI5I3pFf4hM9kuinlijOQXtQjPERWeBiUhEHBqFeLZOvDMcru4UPmaDe5G3J5vNDzk3jvNwc/w1hvESgb8/aiNZFYqNN0bL1RXAH7LknjK/MZvCZ+nBvjWQMfLhbn6TZqiRHSo55e3DCiCCtffEdGjiPOUdjWRPd97YEp0Oon62s");
         NameConstraints nameConstraints = CertificateExtensionsUtils.getNameConstraints(certificate);

@@ -32,10 +32,10 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UnsupportedOperationTimestampCAdESTest extends PKIFactoryAccess {
+class UnsupportedOperationTimestampCAdESTest extends PKIFactoryAccess {
 
 	@Test
-	public void unsupportedOperationException() throws IOException {
+	void unsupportedOperationException() throws IOException {
 		CAdESService service = new CAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 

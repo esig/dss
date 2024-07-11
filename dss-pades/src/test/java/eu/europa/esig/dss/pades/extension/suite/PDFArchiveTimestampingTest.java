@@ -30,7 +30,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
@@ -68,7 +68,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		DSSDocument doc = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
 		String originalDocDigestBase64 = Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, doc));

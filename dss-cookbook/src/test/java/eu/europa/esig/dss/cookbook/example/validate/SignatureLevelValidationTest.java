@@ -22,19 +22,19 @@ package eu.europa.esig.dss.cookbook.example.validate;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.crl.OnlineCRLSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.executor.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
@@ -42,10 +42,10 @@ import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SignatureLevelValidationTest {
+class SignatureLevelValidationTest {
 
     @Test
-    public void validateXAdESBLevel() throws Exception {
+    void validateXAdESBLevel() throws Exception {
 
         // See Trusted Lists loading
         CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password".toCharArray());
@@ -56,15 +56,15 @@ public class SignatureLevelValidationTest {
         trustedCertSource.importAsTrusted(keystoreCertSource);
 
         // tag::demo[]
+        // import eu.europa.esig.dss.enumerations.ValidationLevel;
         // import eu.europa.esig.dss.model.DSSDocument;
         // import eu.europa.esig.dss.model.FileDocument;
         // import eu.europa.esig.dss.service.crl.OnlineCRLSource;
         // import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
         // import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
-        // import eu.europa.esig.dss.validation.CertificateVerifier;
-        // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+        // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
         // import eu.europa.esig.dss.validation.SignedDocumentValidator;
-        // import eu.europa.esig.dss.validation.executor.ValidationLevel;
         // import eu.europa.esig.dss.validation.reports.Reports;
         // import java.io.File;
 
@@ -108,7 +108,7 @@ public class SignatureLevelValidationTest {
 
         // tag::demo-ltv[]
         // import eu.europa.esig.dss.validation.SignedDocumentValidator;
-        // import eu.europa.esig.dss.validation.executor.ValidationLevel;
+        // import eu.europa.esig.dss.enumerations.ValidationLevel;
 
         documentValidator = SignedDocumentValidator.fromDocument(document);
         // configure
@@ -119,7 +119,7 @@ public class SignatureLevelValidationTest {
 
         // tag::demo-lta[]
         // import eu.europa.esig.dss.validation.SignedDocumentValidator;
-        // import eu.europa.esig.dss.validation.executor.ValidationLevel;
+        // import eu.europa.esig.dss.enumerations.ValidationLevel;
 
         documentValidator = SignedDocumentValidator.fromDocument(document);
         // configure

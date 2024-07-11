@@ -26,36 +26,36 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class RemoteDocumentConverterTest {
+class RemoteDocumentConverterTest {
 	
 	@Test
-	public void toDSSDocumentTest() {
+	void toDSSDocumentTest() {
 		RemoteDocument remoteDocument = new RemoteDocument(new byte[] {'1','2','3'}, "remoteDocument");
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
-		assertEquals(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, remoteDocument.getBytes())), dssDocument.getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, remoteDocument.getBytes()), dssDocument.getDigestValue(DigestAlgorithm.SHA256));
 		assertEquals(remoteDocument.getName(), dssDocument.getName());
 	}
 	
 	@Test
-	public void toDSSDigestDocumentTest() {
+	void toDSSDigestDocumentTest() {
 		RemoteDocument remoteDocument = new RemoteDocument(new byte[] {'1','2','3'}, DigestAlgorithm.SHA256, "remoteDocument");
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
-		assertEquals(Utils.toBase64(remoteDocument.getBytes()), dssDocument.getDigest(remoteDocument.getDigestAlgorithm()));
+		assertArrayEquals(remoteDocument.getBytes(), dssDocument.getDigestValue(remoteDocument.getDigestAlgorithm()));
 		assertEquals(remoteDocument.getName(), dssDocument.getName());
 	}
 	
 	@Test
-	public void toDSSDocumentsTest() {
+	void toDSSDocumentsTest() {
 		List<RemoteDocument> remoteDocuments = new ArrayList<>();
 		remoteDocuments.add(new RemoteDocument(new byte[] {'1','2','3'}, "remoteDocument"));
 		remoteDocuments.add(new RemoteDocument(new byte[] {'4','5','6'}, "remoteDocument2"));
@@ -68,30 +68,30 @@ public class RemoteDocumentConverterTest {
 	}
 	
 	@Test
-	public void toRemoteDocumentTest() {
+	void toRemoteDocumentTest() {
 		DSSDocument dssDocument = new InMemoryDocument(new byte[] {'1','2','3'}, "dssDocument");
 		RemoteDocument remoteDocument = RemoteDocumentConverter.toRemoteDocument(dssDocument);
-		assertEquals(Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, remoteDocument.getBytes())), dssDocument.getDigest(DigestAlgorithm.SHA256));
+		assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, remoteDocument.getBytes()), dssDocument.getDigestValue(DigestAlgorithm.SHA256));
 		assertEquals(remoteDocument.getName(), dssDocument.getName());
 	}
 	
 	@Test
-	public void digestDocumentToRemoteDocumentTest() {
+	void digestDocumentToRemoteDocumentTest() {
 		DSSDocument dssDocument = new DigestDocument(DigestAlgorithm.SHA256, "332b7ce3b5e8f8c6132f0e09264db9da6d1c9fd6e37b73a35e68f78f4e590f90");
 		RemoteDocument remoteDocument = RemoteDocumentConverter.toRemoteDocument(dssDocument);
-		assertEquals(Utils.toBase64(remoteDocument.getBytes()), dssDocument.getDigest(remoteDocument.getDigestAlgorithm()));
+		assertArrayEquals(remoteDocument.getBytes(), dssDocument.getDigestValue(remoteDocument.getDigestAlgorithm()));
 		assertEquals(remoteDocument.getName(), dssDocument.getName());
 	}
 	
 	@Test
-	public void emptyDigestDocumentToRemoteDocumentTest() {
+	void emptyDigestDocumentToRemoteDocumentTest() {
 		DSSDocument dssDocument = new DigestDocument();
 		Exception exception = assertThrows(IllegalStateException.class, () -> RemoteDocumentConverter.toRemoteDocument(dssDocument));
 		assertEquals("The DigestDocument does not contain any digest! You must specify it by using addDigest() method.", exception.getMessage());
 	}
 	
 	@Test
-	public void toRemoteDocumentsTest() {
+	void toRemoteDocumentsTest() {
 		List<DSSDocument> dssDocuments = new ArrayList<>();
 		dssDocuments.add(new InMemoryDocument(new byte[] {'1','2','3'}, "inMemoryDocument", MimeTypeEnum.BINARY));
 		dssDocuments.add(new InMemoryDocument(new byte[] {'1','2','3'}, "inMemoryDocument2"));

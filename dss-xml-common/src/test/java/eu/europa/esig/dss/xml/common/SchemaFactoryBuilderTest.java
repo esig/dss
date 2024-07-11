@@ -31,17 +31,17 @@ import org.junit.jupiter.api.Test;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 
-public class SchemaFactoryBuilderTest {
+class SchemaFactoryBuilderTest {
 	
 	@Test
-	public void buildTest() {
+	void buildTest() {
 		SchemaFactoryBuilder schemaBuilder = SchemaFactoryBuilder.getSecureSchemaBuilder();
 		SchemaFactory schemaFactory = schemaBuilder.build();
 		assertNotNull(schemaFactory);
 	}
 	
 	@Test
-	public void exceptionAlertTest() {
+	void exceptionAlertTest() {
 		SchemaFactoryBuilder schemaBuilder = SchemaFactoryBuilder.getSecureSchemaBuilder();
 		
 		schemaBuilder.enableFeature("CUSTOM_FEATURE");

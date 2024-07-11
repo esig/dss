@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
+class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 
 	private final char[] correctProtectionPhrase = new char[]{ ' ' };
 
@@ -45,7 +45,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 
 	// TODO : OpenPdf does not keep the same identifier on protected documents signing
 	@Test
-	public void recreateParamsTest() throws Exception {
+	void recreateParamsTest() throws Exception {
 		Date date = new Date();
 		PAdESService padesService = new PAdESService(getCompleteCertificateVerifier());
 		padesService.setTspSource(getGoodTsa());
@@ -62,7 +62,7 @@ public class PdfBoxProtectedDocumentTest extends AbstractPAdESTestValidation {
 		parametersSignatureValue.setPasswordProtection(correctProtectionPhrase);
 		parametersSignatureValue.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		
-		SignatureValue signatureValue = getToken().sign(dataToSign, parametersSignatureValue.getDigestAlgorithm(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, parametersSignatureValue.getSignatureAlgorithm(), getPrivateKeyEntry());
 
 		PAdESSignatureParameters parametersSign = getParameters();
 		parametersSign.bLevel().setSigningDate(date);

@@ -24,22 +24,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
-public class DiagnosticDataXmlDefinerTest {
+class DiagnosticDataXmlDefinerTest {
 
 	@Test
-	public void getJAXBContext() throws Exception {
+	void getJAXBContext() throws Exception {
 		assertNotNull(DiagnosticDataXmlDefiner.getJAXBContext());
 		assertNotNull(DiagnosticDataXmlDefiner.getJAXBContext());
 	}
 
 	@Test
-	public void getSchema() throws Exception {
+	void getSchema() throws Exception {
 		assertNotNull(DiagnosticDataXmlDefiner.getSchema());
 		assertNotNull(DiagnosticDataXmlDefiner.getSchema());
 	}
 
 	@Test
-	public void getSvgTemplates() throws Exception {
+	void getSvgTemplates() throws Exception {
 		assertNotNull(DiagnosticDataXmlDefiner.getSvgTemplates());
 		assertNotNull(DiagnosticDataXmlDefiner.getSvgTemplates());
 	}

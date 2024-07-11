@@ -30,11 +30,11 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ObjectType;
 import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
@@ -56,10 +56,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Test
-	public void test() throws IOException {
+	void test() throws IOException {
 		ASiCWithCAdESService service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
@@ -123,7 +123,7 @@ public class ASiCSTimestampMultiFilesTest extends AbstractASiCWithCAdESTestValid
 				assertEquals(3, timestamp.getTimestampedSignedData().size());
 				firstTstFound = true;
 			} else if (timestamp.getDigestMatchers().size() == 3) {
-				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getName());
+				assertEquals("META-INF/ASiCArchiveManifest.xml", timestamp.getDigestMatchers().get(0).getDocumentName());
 				assertEquals(5, timestamp.getTimestampScopes().size());
 				assertEquals(4, timestamp.getTimestampedSignedData().size());
 				assertEquals(1, timestamp.getTimestampedTimestamps().size());

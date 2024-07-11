@@ -22,7 +22,7 @@ package eu.europa.esig.dss.jades.validation;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignatureAttributeIdentifier;
+import eu.europa.esig.dss.spi.validation.identifier.SignatureAttributeIdentifier;
 import org.jose4j.json.internal.json_simple.JSONValue;
 
 import java.io.ByteArrayOutputStream;

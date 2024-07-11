@@ -46,7 +46,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.jose4j.json.JsonUtil;
@@ -63,10 +63,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation {
+class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.json");
 
         JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();

@@ -37,7 +37,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class ASiCEWithCAdESLevelBContainerMergerMultipleDocumentsTest extends AbstractWithCAdESTestMerge {
+class ASiCEWithCAdESLevelBContainerMergerMultipleDocumentsTest extends AbstractWithCAdESTestMerge {
 
     private List<DSSDocument> documentsToSign;
 
@@ -47,7 +47,7 @@ public class ASiCEWithCAdESLevelBContainerMergerMultipleDocumentsTest extends Ab
     private ASiCWithCAdESSignatureParameters secondSignatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentsToSign = Arrays.asList(new FileDocument("src/test/resources/signable/test.txt"),
                 new InMemoryDocument("Hello World!".getBytes(), "hello.txt", MimeTypeEnum.TEXT));
 

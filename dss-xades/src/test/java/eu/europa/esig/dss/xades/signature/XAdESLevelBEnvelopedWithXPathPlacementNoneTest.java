@@ -39,7 +39,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 
-public class XAdESLevelBEnvelopedWithXPathPlacementNoneTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopedWithXPathPlacementNoneTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -47,7 +47,7 @@ public class XAdESLevelBEnvelopedWithXPathPlacementNoneTest extends AbstractXAdE
 	private final String XPATH = "//*[local-name() = 'tr']";
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();

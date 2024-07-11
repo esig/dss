@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.0</version>
+		<version>6.1.RC1</version>
 	</parent>
 	
 	<artifactId>dss-asic-cades</artifactId>
@@ -23,6 +23,11 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-cades</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-validation</artifactId>
+			<optional>true</optional>
+		</dependency>
 
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -38,7 +43,17 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>specs-asic-manifest</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-evidence-record-xml</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-evidence-record-asn1</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

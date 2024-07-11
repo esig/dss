@@ -32,10 +32,10 @@ import javax.xml.transform.TransformerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XMLSecuritiesConfigTest {
+class XMLSecuritiesConfigTest {
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		// tag::demo[]
 		// import eu.europa.esig.dss.alert.LogOnStatusAlert;

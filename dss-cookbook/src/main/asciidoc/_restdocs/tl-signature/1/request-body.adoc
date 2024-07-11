@@ -1,4 +1,4 @@
-[source,options="nowrap"]
+[source,json,options="nowrap"]
 ----
 {
   "trustedList" : {
@@ -12,13 +12,13 @@
     },
     "encryptionAlgorithm" : null,
     "digestAlgorithm" : null,
-    "maskGenerationFunction" : null,
     "referenceId" : "tl",
     "referenceDigestAlgorithm" : "SHA512",
     "blevelParameters" : {
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1633219200000,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,
@@ -32,7 +32,8 @@
       "signerLocationStateOrProvince" : null,
       "signerLocationCountry" : null,
       "signerLocationStreet" : null
-    }
+    },
+    "maskGenerationFunction" : null
   }
 }
 ----

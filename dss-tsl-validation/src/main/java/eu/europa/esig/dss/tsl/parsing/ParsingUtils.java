@@ -20,7 +20,10 @@
  */
 package eu.europa.esig.dss.tsl.parsing;
 
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -60,6 +63,20 @@ public class ParsingUtils {
 		}
 		LOG.warn("Unable to find the XML LOTL Pointer in the pivot (nb occurrences : {}). Must be one occurence!", nbLOTLPointersInPivot);
 		return null;
+	}
+
+	/**
+	 * This class extracts a SDIs present in a OtherTSLPointer to a {@code CertificateSource}
+	 *
+	 * @param currentLOTLPointer {@link OtherTSLPointer} to extract SDIs from
+	 * @return {@link CertificateSource}
+	 */
+	public static CertificateSource getLOTLAnnouncedCertificateSource(OtherTSLPointer currentLOTLPointer) {
+		CertificateSource certificateSource = new CommonCertificateSource();
+		for (CertificateToken certificate : currentLOTLPointer.getSdiCertificates()) {
+			certificateSource.addCertificate(certificate);
+		}
+		return certificateSource;
 	}
 
 }

@@ -28,14 +28,14 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
-import eu.europa.esig.dss.spi.tsl.TrustProperties;
-import eu.europa.esig.dss.spi.tsl.TrustServiceStatusAndInformationExtensions;
+import eu.europa.esig.dss.model.tsl.TrustProperties;
+import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.util.TimeDependentValues;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DuplicatedStatusInTLValidationJobTest {
+class DuplicatedStatusInTLValidationJobTest {
 
 	private static final String URL = "URL_TO_DL";
 
@@ -65,7 +65,7 @@ public class DuplicatedStatusInTLValidationJobTest {
 	File tempDir;
 
 	@Test
-	public void test() {
+	void test() {
 		TrustedListsCertificateSource trustedListCertificateSource = getSynchronizedTLSource();
 
 		assertNotEquals(C1, C2);
@@ -97,7 +97,7 @@ public class DuplicatedStatusInTLValidationJobTest {
 	}
 
 	@Test
-	public void certVal() {
+	void certVal() {
 		CertificateValidator certificateValidator = CertificateValidator.fromCertificate(C1);
 		CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
 		certificateVerifier.setTrustedCertSources(getSynchronizedTLSource());

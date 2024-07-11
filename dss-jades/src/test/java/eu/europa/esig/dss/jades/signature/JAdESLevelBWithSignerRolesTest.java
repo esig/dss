@@ -34,14 +34,14 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class JAdESLevelBWithSignerRolesTest extends AbstractJAdESTestSignature {
+class JAdESLevelBWithSignerRolesTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		signatureParameters = new JAdESSignatureParameters();

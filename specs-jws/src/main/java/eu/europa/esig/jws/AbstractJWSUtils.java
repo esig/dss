@@ -20,23 +20,40 @@
  */
 package eu.europa.esig.jws;
 
-import org.everit.json.schema.Schema;
-import org.everit.json.schema.ValidationException;
-import org.everit.json.schema.loader.SchemaLoader;
-import org.everit.json.schema.loader.SchemaLoader.SchemaLoaderBuilder;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import com.github.erosb.jsonsKema.IJsonValue;
+import com.github.erosb.jsonsKema.JsonObject;
+import com.github.erosb.jsonsKema.JsonParser;
+import com.github.erosb.jsonsKema.JsonValue;
+import com.github.erosb.jsonsKema.Schema;
+import com.github.erosb.jsonsKema.SchemaClient;
+import com.github.erosb.jsonsKema.SchemaLoader;
+import com.github.erosb.jsonsKema.SchemaLoaderConfig;
+import com.github.erosb.jsonsKema.ValidationFailure;
+import com.github.erosb.jsonsKema.Validator;
+import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class for JWS signature validation against JSON schemas
  */
 public abstract class AbstractJWSUtils {
+
+	/** The JSON Draft 07 schema of definitions */
+	private static final String JSON_DRAFT_07_SCHEMA_LOCATION = "/schema/json-schema-draft-07.json";
+
+	/** The JSON Draft 07 schema name URI */
+	private static final String JSON_DRAFT_07_SCHEMA_URI = "http://json-schema.org/draft-07/schema#";
 	
 	/**
 	 * JSON Schema for a root JWS element validation
@@ -52,6 +69,9 @@ public abstract class AbstractJWSUtils {
 	 * JSON Schema for a JWS Unprotected Header validation
 	 */
 	private Schema jwsUnprotectedHeaderSchema;
+
+	/** Map of used definition schemas */
+	private Map<URI, String> definitions;
 
 	/**
 	 * Default constructor instantiating the object with null values
@@ -101,44 +121,44 @@ public abstract class AbstractJWSUtils {
 	/**
 	 * Returns a JSON schema for a root JWS element validation
 	 * 
-	 * @return {@link JSONObject}
+	 * @return {@link String}
 	 */
-	public abstract JSONObject getJWSSchemaJSON();
+	public abstract String getJWSSchemaJSON();
 	
 	/**
 	 * Returns a map of definition objects used for JWS validation
 	 * 
 	 * @return JWS schema definitions map
 	 */
-	public abstract Map<URI, JSONObject> getJWSSchemaDefinitions();
+	public abstract Map<URI, String> getJWSSchemaDefinitions();
 
 	/**
 	 * Loads JSON schema for a JSON Protected Header validation
 	 * 
-	 * @return {@link JSONObject}
+	 * @return {@link String}
 	 */
-	public abstract JSONObject getJWSProtectedHeaderSchemaJSON();
+	public abstract String getJWSProtectedHeaderSchemaJSON();
 	
 	/**
 	 * Returns a map of definition objects used for JWS Protected Header validation
 	 * 
 	 * @return JWS Protected Header schema definitions map
 	 */
-	public abstract Map<URI, JSONObject> getJWSProtectedHeaderSchemaDefinitions();
+	public abstract Map<URI, String> getJWSProtectedHeaderSchemaDefinitions();
 
 	/**
 	 * Loads JSON schema for a JSON Unprotected Header validation
 	 * 
-	 * @return {@link JSONObject}
+	 * @return {@link String}
 	 */
-	public abstract JSONObject getJWSUnprotectedHeaderSchemaJSON();
+	public abstract String getJWSUnprotectedHeaderSchemaJSON();
 	
 	/**
 	 * Returns a map of definition objects used for JWS Unprotected Header validation
 	 * 
 	 * @return JWS Unprotected Header schema definitions map
 	 */
-	public abstract Map<URI, JSONObject> getJWSUnprotectedHeaderSchemaDefinitions();
+	public abstract Map<URI, String> getJWSUnprotectedHeaderSchemaDefinitions();
 
 	/**
 	 * Validates a JSON against JWS Schema according to RFC 7515
@@ -165,11 +185,11 @@ public abstract class AbstractJWSUtils {
 	/**
 	 * Validates a JSON against JWS Schema according to RFC 7515
 	 * 
-	 * @param json {@link JSONObject} representing a JSON to validate
+	 * @param json {@link JsonObject} representing a JSON to validate
 	 * @return a list of {@link String} messages containing errors occurred during
 	 *         the validation process, empty list when validation succeeds
 	 */
-	public List<String> validateAgainstJWSSchema(JSONObject json) {
+	public List<String> validateAgainstJWSSchema(JsonObject json) {
 		return validateAgainstSchema(json, getJWSSchema());
 	}
 	
@@ -198,11 +218,11 @@ public abstract class AbstractJWSUtils {
 	/**
 	 * Validates a "protected" header of a JWS
 	 * 
-	 * @param json {@link JSONObject} representing a protected header of a JWS
+	 * @param json {@link JsonObject} representing a protected header of a JWS
 	 * @return a list of {@link String} messages containing errors occurred during
 	 *         the validation process, empty list when validation succeeds
 	 */
-	public List<String> validateAgainstJWSProtectedHeaderSchema(JSONObject json) {
+	public List<String> validateAgainstJWSProtectedHeaderSchema(JsonObject json) {
 		return validateAgainstSchema(json, getJWSProtectedHeaderSchema());
 	}
 
@@ -231,74 +251,153 @@ public abstract class AbstractJWSUtils {
 	/**
 	 * Validates an unprotected "header" of a JWS
 	 * 
-	 * @param json {@link JSONObject} representing an unprotected header of a JWS
+	 * @param json {@link JsonValue} representing an unprotected header of a JWS
 	 * @return a list of {@link String} messages containing errors occurred during
 	 *         the validation process, empty list when validation succeeds
 	 */
-	public List<String> validateAgainstJWSUnprotectedHeaderSchema(JSONObject json) {
+	public List<String> validateAgainstJWSUnprotectedHeaderSchema(JsonValue json) {
 		return validateAgainstSchema(json, getJWSUnprotectedHeaderSchema());
 	}
 	
 	/**
 	 * Validates a {@code json} against the provided JSON {@code schema}
 	 * 
-	 * @param json   {@link JSONObject} to be validated against a schema
+	 * @param json   {@link JsonValue} to be validated against a schema
 	 * @param schema {@link Schema} schema to validate against
 	 * @return a list of {@link String} messages containing errors occurred during
 	 *         the validation process, empty list when validation succeeds
 	 */
-	public List<String> validateAgainstSchema(JSONObject json, Schema schema) {
-		try {
-			schema.validate(json);
-			
-		} catch (ValidationException e) {
-			return e.getAllMessages();
-			
-		} catch (Exception e) {
-			return Collections.singletonList(e.getMessage());
+	public List<String> validateAgainstSchema(JsonValue json, Schema schema) {
+		Validator validator = Validator.forSchema(schema);
+		ValidationFailure validationFailure = validator.validate(json);
+		if (validationFailure != null) {
+			Set<ValidationFailure> causes = validationFailure.getCauses();
+			return causes.stream().map(v -> new ValidationMessage(v).getMessage()).collect(Collectors.toList());
 		}
-		
 		return Collections.emptyList();
 	}
 
 	/**
-	 * Parses the JSON string and returns a {@code JSONObject}
-	 * 
-	 * @param json {@link String} to parse
-	 * @return {@link JSONObject}
+	 * Returns a list of RFC 7515 and RFC 7517 definitions
+	 *
+	 * @return a map of definitions
 	 */
-	public JSONObject parseJson(String json) {
-		return new JSONObject(new JSONTokener(json));
+	public Map<URI, String> getJSONSchemaDefinitions() {
+		if (definitions == null) {
+			definitions = new HashMap<>();
+			definitions.put(URI.create(JSON_DRAFT_07_SCHEMA_URI), JSON_DRAFT_07_SCHEMA_LOCATION);
+		}
+		return definitions;
 	}
 
 	/**
-	 * Parses the JSON InputStream and returns a {@code JSONObject}
+	 * Parses the JSON string and returns a {@code JsonObject}
+	 * 
+	 * @param json {@link String} to parse
+	 * @return {@link JsonObject}
+	 */
+	public JsonObject parseJson(String json) {
+		return parseJson(json, null);
+	}
+
+	/**
+	 * Parses the JSON string with the provided schema {@code uri} identifier, and returns a {@code JsonObject}.
+	 * This method is used for a schema parsing.
+	 *
+	 * @param json {@link String} to parse
+	 * @param uri {@link URI} of the schema
+	 * @return {@link JsonObject}
+	 */
+	public JsonObject parseJson(String json, URI uri) {
+		return (JsonObject) new JsonParser(json, uri).parse();
+	}
+
+	/**
+	 * Parses the JSON InputStream and returns a {@code JsonObject}
 	 * 
 	 * @param inputStream {@link InputStream} to parse
-	 * @return {@link JSONObject}
+	 * @return {@link JsonObject}
 	 */
-	public JSONObject parseJson(InputStream inputStream) {
-		return new JSONObject(new JSONTokener(inputStream));
+	public JsonObject parseJson(InputStream inputStream) {
+		return parseJson(inputStream, null);
+	}
+
+	/**
+	 * Parses the JSON InputStream with the provided schema {@code uri} identifier, and returns a {@code JsonObject}.
+	 * This method is used for a schema parsing.
+	 *
+	 * @param inputStream {@link InputStream} to parse
+	 * @param uri {@link URI} of the schema
+	 * @return {@link JsonObject}
+	 */
+	public JsonObject parseJson(InputStream inputStream, URI uri) {
+		try (InputStream is = inputStream) {
+			return parseJson(toString(is), uri);
+		} catch (IOException e) {
+			throw new IllegalStateException("Unable to read a scheme InputStream!");
+		}
+	}
+
+	private String toString(InputStream is) throws IOException {
+		ByteArrayOutputStream result = new ByteArrayOutputStream();
+		byte[] buffer = new byte[1024];
+		for (int length; (length = is.read(buffer)) != -1; ) {
+			result.write(buffer, 0, length);
+		}
+		return result.toString(StandardCharsets.UTF_8.name());
 	}
 	
 	/**
 	 * Loads schema with the given list of definitions (references)
 	 * 
-	 * @param schemaJSON  {@link JSONObject} the schema object
+	 * @param schemaJSON {@link JsonObject} the schema object URI
 	 * @param definitions a map containing definitions and their reference names
 	 * @return {@link Schema}
 	 */
-	public Schema loadSchema(JSONObject schemaJSON, Map<URI, JSONObject> definitions) {
-		SchemaLoaderBuilder builder = SchemaLoader.builder()
-				.schemaJson(schemaJSON)
-				.draftV7Support();
-		
-		for (Map.Entry<URI, JSONObject> definition : definitions.entrySet()) {
-			builder.registerSchemaByURI(definition.getKey(), definition.getValue());
+	public Schema loadSchema(String schemaJSON, Map<URI, String> definitions) {
+		ResourceSchemaClient schemaClient = new ResourceSchemaClient(definitions);
+		SchemaLoaderConfig schemaLoaderConfig = new SchemaLoaderConfig(schemaClient, "");
+
+		IJsonValue parsed = schemaClient.getParsed(URI.create(schemaJSON));
+		return new SchemaLoader(parsed, schemaLoaderConfig).load();
+	}
+
+	/**
+	 * This is a helper class to load a schema from resources by the given URI
+	 */
+	private class ResourceSchemaClient implements SchemaClient {
+
+		/** Map of schema URI identifiers and resources filename */
+		private final Map<URI, String> resources;
+
+		/**
+		 * Default constructor
+		 *
+		 * @param resources a map between schema URI and resources filename
+		 */
+		ResourceSchemaClient(Map<URI, String> resources) {
+			this.resources = resources;
 		}
-		
-		SchemaLoader loader = builder.build();
-		return loader.load().build();
+
+		@NotNull
+		@Override
+		public InputStream get(@NotNull URI uri) {
+			String schema = resources.get(uri);
+			if (schema != null) {
+				InputStream is = AbstractJWSUtils.class.getResourceAsStream(schema);
+				if (is != null) {
+					return is;
+				}
+			}
+			throw new IllegalStateException(String.format("Unable to load a schema for URI : %s", uri));
+		}
+
+		@NotNull
+		@Override
+		public IJsonValue getParsed(@NotNull URI uri) {
+			return parseJson(get(uri), uri);
+		}
+
 	}
 	
 }

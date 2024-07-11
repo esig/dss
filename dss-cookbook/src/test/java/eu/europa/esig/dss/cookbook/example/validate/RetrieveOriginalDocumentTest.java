@@ -22,8 +22,8 @@ package eu.europa.esig.dss.cookbook.example.validate;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -36,13 +36,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RetrieveOriginalDocumentTest {
+class RetrieveOriginalDocumentTest {
 
 	@TempDir
 	static Path targetFolder;
 
 	@Test
-	public void getOriginalDocument() throws IOException {
+	void getOriginalDocument() throws IOException {
 
 		Path path = targetFolder.resolve("original.xml");
 		String targetPath = path.toString();
@@ -51,7 +51,7 @@ public class RetrieveOriginalDocumentTest {
 		// import eu.europa.esig.dss.model.DSSDocument;
 		// import eu.europa.esig.dss.model.FileDocument;
 		// import eu.europa.esig.dss.validation.AdvancedSignature;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 		// We have our signed document, we want to retrieve the original/signed data

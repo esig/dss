@@ -30,13 +30,13 @@ import java.util.concurrent.Future;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CallableWithErrorTest extends AbstractTestRunnable {
+class CallableWithErrorTest extends AbstractTestRunnable {
 
     @Test
     void test() {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
 
-        PivotProcessing process = new PivotProcessing(null, null, null, null);
+        PivotProcessing process = new PivotProcessing(null, null, null, null, null);
         assertNotNull(process);
 
         Future<PivotProcessingResult> future = executorService.submit(process);

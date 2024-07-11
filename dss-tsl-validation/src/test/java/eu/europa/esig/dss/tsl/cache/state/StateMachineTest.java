@@ -35,10 +35,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class StateMachineTest {
+class StateMachineTest {
 
 	@Test
-	public void testEmpty() throws Exception {
+	void testEmpty() throws Exception {
 		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<>();
 		Date emptyStateDate = cachedEntry.getLastStateTransitionTime();
 		assertNotNull(emptyStateDate);
@@ -115,7 +115,7 @@ public class StateMachineTest {
 	}
 
 	@Test
-	public void testDesynchronize() {
+	void testDesynchronize() {
 		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<>(new MockCachedResult(8));
 		assertEquals(CacheStateEnum.DESYNCHRONIZED, cachedEntry.getCurrentState());
 		assertEquals(8, cachedEntry.getCachedResult().integer);
@@ -123,7 +123,7 @@ public class StateMachineTest {
 	}
 
 	@Test
-	public void testToBeDeletedNoSync() {
+	void testToBeDeletedNoSync() {
 		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<>();
 		assertTrue(cachedEntry.isRefreshNeeded());
 		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());

@@ -12,5 +12,5 @@ $ echo '{
   "tokenExtractionStrategy" : "NONE"
 }' | http POST 'http://localhost:8080/services/rest/certificate-validation/validateCertificate' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
-    'Content-Type:application/json; charset=UTF-8'
+    'Content-Type:application/json'
 ----

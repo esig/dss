@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -36,7 +37,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -51,6 +52,7 @@ public class DSS2821ExtensionToLTLevelTest extends AbstractPAdESTestValidation {
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
         certificateVerifier.setTrustedCertSources(getTrustedCertificateSource());
         certificateVerifier.setOcspSource(getOCSPSource());
+        certificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert());
 
         PAdESService service = new PAdESService(certificateVerifier);
         service.setTspSource(getSelfSignedTsa());

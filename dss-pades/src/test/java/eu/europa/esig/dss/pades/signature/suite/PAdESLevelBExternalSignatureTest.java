@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -61,13 +62,14 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(PAdESLevelBExternalSignatureTest.class.getResourceAsStream("/sample.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 		signatureParameters.setGenerateTBSWithoutCertificate(true);
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 		signatureParameters.setSignerName(GOOD_USER);
 
 		signingDate = new Date();
@@ -141,7 +143,7 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 			LOG.error("Error while simulating external PAdES signature", e);
 		}
 
-		SignatureValue signatureValue = getToken().sign(toBeSigned, digestAlgo, getSignatureParameters().getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(toBeSigned, digestAlgo, getPrivateKeyEntry());
 		assertTrue(service.isValidSignatureValue(toBeSigned, signatureValue, getSigningCert()));
 		externalSignatureResult.setSignatureValue(signatureValue);
 

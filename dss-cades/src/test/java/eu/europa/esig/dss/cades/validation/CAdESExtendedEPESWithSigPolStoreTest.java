@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class CAdESExtendedEPESWithSigPolStoreTest extends AbstractCAdESTestValidation {
+class CAdESExtendedEPESWithSigPolStoreTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

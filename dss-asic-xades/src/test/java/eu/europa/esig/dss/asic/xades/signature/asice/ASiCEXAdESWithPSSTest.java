@@ -22,10 +22,14 @@ package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.diagnostic.*;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -41,14 +45,14 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
         signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -58,9 +62,8 @@ public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        signatureParameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
-        service = new ASiCWithXAdESService(getCertificateVerifierWithMGF1());
+        service = new ASiCWithXAdESService(getCertificateVerifierWithPSS());
         service.setTspSource(getPSSGoodTsa());
     }
 
@@ -77,22 +80,22 @@ public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
 
         Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
         for (SignatureWrapper wrapper : allSignatures) {
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+            assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
         }
 
         List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
         for (CertificateWrapper wrapper : usedCertificates) {
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+            assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
         }
 
         Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
         for (RevocationWrapper wrapper : allRevocationData) {
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+            assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
         }
 
         List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
         for (TimestampWrapper wrapper : timestampList) {
-            assertEquals(MaskGenerationFunction.MGF1, wrapper.getMaskGenerationFunction());
+            assertEquals(EncryptionAlgorithm.RSASSA_PSS, wrapper.getEncryptionAlgorithm());
         }
     }
 
@@ -108,7 +111,7 @@ public class ASiCEXAdESWithPSSTest extends AbstractASiCEXAdESTestSignature {
 
     @Override
     protected String getSigningAlias() {
-        return PSS_GOOD_USER;
+        return RSASSA_PSS_GOOD_USER;
     }
 
     @Override

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.pades.extension.suite;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import org.junit.jupiter.api.Test;
@@ -42,11 +42,11 @@ public class PAdESExtensionNonPDFToLTLevelTest extends AbstractPAdESTestExtensio
     }
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         DSSDocument documentToExtend = new InMemoryDocument(
                 getClass().getResourceAsStream("/signature-image.png"), "toExtend");
         Exception exception = assertThrows(IllegalInputException.class, () -> extendSignature(documentToExtend));
-        assertEquals("Unable to extend the document with name 'toExtend'. PDF document is expected!",
+        assertEquals("The document with name 'toExtend' is not a PDF. PDF document is expected!",
                 exception.getMessage());
     }
 

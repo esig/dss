@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XSWProtectionDefaultBehaviorTest extends AbstractXAdESTestValidation {
+class XSWProtectionDefaultBehaviorTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

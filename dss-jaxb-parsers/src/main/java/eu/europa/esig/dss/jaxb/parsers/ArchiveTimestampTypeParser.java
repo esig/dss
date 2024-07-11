@@ -27,7 +27,11 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
  */
 public class ArchiveTimestampTypeParser {
 
+	/**
+	 * Default constructor
+	 */
 	private ArchiveTimestampTypeParser() {
+		// empty
 	}
 
 	/**

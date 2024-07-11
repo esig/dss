@@ -44,13 +44,13 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.SignatureProperties;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
-import eu.europa.esig.dss.validation.timestamp.SignatureTimestampIdentifierBuilder;
+import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -532,7 +532,10 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 
 	@Override
 	protected List<EvidenceRecord> makeEvidenceRecords(JAdESAttribute signatureAttribute, List<TimestampedReference> references) {
-		throw new UnsupportedOperationException("Embedded evidence records are not supported in JAdES!");
+		if (signatureAttribute != null) {
+			LOG.warn("Embedded evidence records are not supported within JAdES format! The unsigned attribute is skipped.");
+		}
+		return Collections.emptyList();
 	}
 
 }

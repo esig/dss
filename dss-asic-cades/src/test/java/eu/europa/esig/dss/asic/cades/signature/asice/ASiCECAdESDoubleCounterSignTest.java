@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -42,7 +42,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class ASiCECAdESDoubleCounterSignTest extends AbstractASiCCAdESCounterSignatureTest {
+class ASiCECAdESDoubleCounterSignTest extends AbstractASiCCAdESCounterSignatureTest {
 
 	private ASiCWithCAdESService service;
 	private DSSDocument documentToSign;
@@ -50,7 +50,7 @@ public class ASiCECAdESDoubleCounterSignTest extends AbstractASiCCAdESCounterSig
 	private Date signingDate;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);

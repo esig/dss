@@ -66,15 +66,21 @@ public class CompositeAIASource implements AIASource {
         for (Entry<String, AIASource> entry : aIASource.entrySet()) {
             String sourceKey = entry.getKey();
             AIASource source = entry.getValue();
-            LOG.debug("Trying to get timestamp with AIASource '{}'", sourceKey);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Trying to get certificates with AIASource '{}'", sourceKey);
+            }
             try {
                 Set<CertificateToken> certificateTokens = source.getCertificatesByAIA(certificateToken);
                 if (certificateTokens != null) {
-                    LOG.debug("Successfully retrieved certificateTokens with AiaSource Source '{}'", sourceKey);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Successfully retrieved certificateTokens with AiaSource Source '{}'", sourceKey);
+                    }
                     return certificateTokens;
                 }
             } catch (Exception e) {
-                LOG.debug("Unable to retrieve the certificateTokens with AIA Source '{}' : {}", sourceKey, e.getMessage());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Unable to retrieve the certificateTokens with AIA Source '{}' : {}", sourceKey, e.getMessage());
+                }
             }
         }
         throw new DSSExternalResourceException("Unable to retrieve the certificateTokens (" + aIASource.size() + " tries)");

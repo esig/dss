@@ -35,7 +35,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class ASiCSXAdESLevelLTADoubleSignatureTest extends AbstractASiCSXAdESTestSignature {
+class ASiCSXAdESLevelLTADoubleSignatureTest extends AbstractASiCSXAdESTestSignature {
 
     private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
@@ -61,7 +61,7 @@ public class ASiCSXAdESLevelLTADoubleSignatureTest extends AbstractASiCSXAdESTes
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getAlternateGoodTsa());
 

@@ -57,7 +57,7 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.setSigningCertificate(getSigningCert());
@@ -88,7 +88,7 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
 
     @ParameterizedTest(name = "Text visual signature for document and rotation {index} : {0} : {1}")
     @MethodSource("data")
-    public void textTest(DSSDocument document, VisualSignatureRotation rotation) {
+    void textTest(DSSDocument document, VisualSignatureRotation rotation) {
         this.documentToSign = document;
         String originalDocName = documentToSign.getName();
 
@@ -118,7 +118,7 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
 
     @ParameterizedTest(name = "Image visual signature for document and rotation {index} : {0} : {1}")
     @MethodSource("data")
-    public void imageTest(DSSDocument document, VisualSignatureRotation rotation) {
+    void imageTest(DSSDocument document, VisualSignatureRotation rotation) {
         this.documentToSign = document;
         String originalDocName = documentToSign.getName();
 

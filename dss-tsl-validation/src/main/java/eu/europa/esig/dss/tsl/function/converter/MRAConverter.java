@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.tsl.function.converter;
 
-import eu.europa.esig.dss.spi.tsl.MRA;
-import eu.europa.esig.dss.spi.tsl.ServiceEquivalence;
-import eu.europa.esig.dss.spi.util.MutableTimeDependentValues;
+import eu.europa.esig.dss.model.tsl.MRA;
+import eu.europa.esig.dss.model.tsl.ServiceEquivalence;
+import eu.europa.esig.dss.model.timedependent.MutableTimeDependentValues;
 import eu.europa.esig.trustedlist.jaxb.mra.MutualRecognitionAgreementInformationType;
 import eu.europa.esig.trustedlist.jaxb.mra.TrustServiceEquivalenceInformationType;
 

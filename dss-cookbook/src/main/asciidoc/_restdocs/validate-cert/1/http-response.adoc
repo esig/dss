@@ -1,9 +1,12 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Tue, 12 Dec 2023 15:35:11 GMT
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Date: Fri, 05 Jul 2024 13:40:42 GMT
 X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
+X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -14,12 +17,12 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 7703
+Content-Length: 7670
 
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2023-12-12T15:35:11Z",
+    "ValidationDate" : "2024-07-05T13:40:42Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
@@ -64,7 +67,6 @@ Content-Length: 7703
         "EncryptionAlgoUsedToSignThisToken" : "RSA",
         "KeyLengthUsedToSignThisToken" : "?",
         "DigestAlgoUsedToSignThisToken" : "SHA256",
-        "MaskGenerationFunctionUsedToSignThisToken" : null,
         "SignatureIntact" : false,
         "SignatureValid" : false
       },
@@ -88,7 +90,8 @@ Content-Length: 7703
         "DigestMethod" : "SHA256",
         "DigestValue" : "AvPrygFjJ0JTvICdJ0mN1BuwMW1+awZpYBFd4VVYnZw=",
         "match" : null
-      }
+      },
+      "Duplicated" : null
     } ],
     "Revocation" : [ ],
     "Timestamp" : null,
@@ -147,7 +150,7 @@ Content-Length: 7703
         "Info" : [ ]
       }
     } ],
-    "ValidationTime" : "2023-12-12T15:35:11Z"
+    "ValidationTime" : "2024-07-05T13:40:42Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrEvidenceRecord" : [ {

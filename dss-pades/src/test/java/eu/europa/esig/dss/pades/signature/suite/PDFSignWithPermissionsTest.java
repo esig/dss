@@ -44,7 +44,7 @@ public class PDFSignWithPermissionsTest extends AbstractPAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
@@ -54,7 +54,7 @@ public class PDFSignWithPermissionsTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void test() {
+    void test() {
         // /DocMDP /P=1
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-2554/certified-no-change-permitted.pdf"));
         Exception exception = assertThrows(ProtectedDocumentException.class, () -> sign());

@@ -38,6 +38,7 @@ import java.util.Objects;
 
 /**
  * Represents a {@code DigestCalculatorProvider} for a message-digest calculation
+ *
  */
 public class CustomMessageDigestCalculatorProvider implements DigestCalculatorProvider {
 
@@ -47,22 +48,37 @@ public class CustomMessageDigestCalculatorProvider implements DigestCalculatorPr
 	private final DigestAlgorithm messageDigestAlgo;
 
 	/** The message digest base64 encoded value */
-	private final String messageDigestValueBase64;
+	private final byte[] messageDigestValue;
 
 	/**
-	 * The default constructor
+	 * The default constructor to create an object with a message digest provided in a form of byte array
+	 *
+	 * @param messageDigestAlgo {@link DigestAlgorithm} that has been used to calculate the message-digest value
+	 * @param messageDigestValue byte array representing the message-digest value
+	 */
+	public CustomMessageDigestCalculatorProvider(DigestAlgorithm messageDigestAlgo, byte[] messageDigestValue) {
+		Objects.requireNonNull(messageDigestAlgo, "DigestAlgorithm shall be defined!");
+		Objects.requireNonNull(messageDigestValue, "Digest value shall be defined!");
+		this.messageDigestAlgo = messageDigestAlgo;
+		this.messageDigestValue = messageDigestValue;
+	}
+
+	/**
+	 * The default constructor to create an object with a message digest provided in a form of base64-encoded String
 	 *
 	 * @param messageDigestAlgo {@link DigestAlgorithm} that has been used to calculate the message-digest value
 	 * @param messageDigestValueBase64 {@link String} base64 encoded message-digest value
+	 * @deprecated since DSS 6.1. Please use instead
+	 * 			{@code new CustomMessageDigestCalculatorProvider(DigestAlgorithm messageDigestAlgo, byte[] messageDigestValue)}
 	 */
+	@Deprecated
 	public CustomMessageDigestCalculatorProvider(DigestAlgorithm messageDigestAlgo, String messageDigestValueBase64) {
-		Objects.requireNonNull(messageDigestAlgo, "DigestAlgorithm shall be defined!");
 		Objects.requireNonNull(messageDigestValueBase64, "Digest value shall be defined!");
 		if (!Utils.isBase64Encoded(messageDigestValueBase64)) {
 			throw new IllegalArgumentException("Digest value shall be represented by a base64-encoded String!");
 		}
 		this.messageDigestAlgo = messageDigestAlgo;
-		this.messageDigestValueBase64 = messageDigestValueBase64;
+		this.messageDigestValue = Utils.fromBase64(messageDigestValueBase64);
 	}
 
 	@Override
@@ -83,7 +99,7 @@ public class CustomMessageDigestCalculatorProvider implements DigestCalculatorPr
 
 			@Override
 			public byte[] getDigest() {
-				return Utils.fromBase64(messageDigestValueBase64);
+				return messageDigestValue;
 			}
 
 			@Override

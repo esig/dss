@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESWithNotBase64EncodedSignatureValueTest extends AbstractXAdESTestValidation {
+class XAdESWithNotBase64EncodedSignatureValueTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

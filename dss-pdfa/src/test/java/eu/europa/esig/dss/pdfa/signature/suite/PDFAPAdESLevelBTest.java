@@ -43,7 +43,7 @@ public class PDFAPAdESLevelBTest extends AbstractPDFATestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
 		signatureParameters = new PAdESSignatureParameters();

@@ -23,9 +23,9 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.test.validation.AbstractTestValidator;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.test.validation.AbstractTestDocumentValidator;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
@@ -39,12 +39,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CMSDocumentValidatorTest extends AbstractTestValidator {
+class CMSDocumentValidatorTest extends AbstractTestDocumentValidator {
 
 	private static final String PATH = "src/test/resources/validation/dss-768/FD1&FD2&FEA.pdf.p7m";
 
 	@Test
-	public void testCMSOnly() throws IOException, CMSException {
+	void testCMSOnly() throws IOException, CMSException {
 		CMSSignedData cmsSignedData = new CMSSignedData(new FileInputStream(PATH));
 		CMSDocumentValidator validator = new CMSDocumentValidator(cmsSignedData);
 		List<AdvancedSignature> signatures = validator.getSignatures();
@@ -52,14 +52,14 @@ public class CMSDocumentValidatorTest extends AbstractTestValidator {
 	}
 
 	@Test
-	public void testFileDocument() {
+	void testFileDocument() {
 		CMSDocumentValidator validator = new CMSDocumentValidator(new FileDocument(PATH));
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertTrue(Utils.isCollectionNotEmpty(signatures));
 	}
 
 	@Test
-	public void testInMemoryDocument() throws FileNotFoundException {
+	void testInMemoryDocument() throws FileNotFoundException {
 		CMSDocumentValidator validator = new CMSDocumentValidator(new InMemoryDocument(new FileInputStream(PATH)));
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertTrue(Utils.isCollectionNotEmpty(signatures));

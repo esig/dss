@@ -25,13 +25,13 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESExtensionTToLTANotTrustedTSPTest extends AbstractCAdESTestExtension {
+class CAdESExtensionTToLTANotTrustedTSPTest extends AbstractCAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

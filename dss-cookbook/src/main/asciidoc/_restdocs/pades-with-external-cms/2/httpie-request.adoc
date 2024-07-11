@@ -14,24 +14,26 @@ $ echo '{
     "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
-    "signatureAlgorithm" : "RSA_SHA256",
+    "base64UrlEncodedPayload" : true,
+    "base64UrlEncodedEtsiUComponents" : true,
+    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
-    "encryptionAlgorithm" : "RSA",
-    "referenceDigestAlgorithm" : null,
+    "encryptionAlgorithm" : null,
     "maskGenerationFunction" : null,
+    "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "signatureTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "archiveTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
@@ -43,6 +45,7 @@ $ echo '{
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1633219200000,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,
@@ -60,9 +63,9 @@ $ echo '{
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "x7Jt1Mo+nDags4083ToouLZlMPDHO6uV11DSNx7RcAY="
+    "value" : "NG1EDrr2hbqtEgoqZCvxIgEsWJWyTGq7rwgVdk2UTew="
   }
 }' | http POST 'http://localhost:8080/services/rest/signature/external-cms/getDataToSign' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
-    'Content-Type:application/json; charset=UTF-8'
+    'Content-Type:application/json'
 ----

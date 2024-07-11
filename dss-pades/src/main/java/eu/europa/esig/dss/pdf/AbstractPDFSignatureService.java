@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -53,7 +55,7 @@ import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,6 +186,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public DSSMessageDigest messageDigest(DSSDocument toSignDocument, PAdESCommonParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "DSSDocument shall be provided!");
+		Objects.requireNonNull(parameters, "PAdESCommonParameters cannot be null!");
+
 		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
 		if (pdfSignatureCache.getMessageDigest() == null) {
 			final DSSMessageDigest messageDigest = computeDigest(toSignDocument, parameters);
@@ -204,6 +209,10 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 
 	@Override
 	public DSSDocument sign(DSSDocument toSignDocument, byte[] cmsSignedData, PAdESCommonParameters parameters) {
+		Objects.requireNonNull(toSignDocument, "DSSDocument shall be provided!");
+		Objects.requireNonNull(cmsSignedData, "CMSSignedData cannot be null!");
+		Objects.requireNonNull(parameters, "PAdESCommonParameters cannot be null!");
+
 		final PdfSignatureCache pdfSignatureCache = parameters.getPdfSignatureCache();
 		DSSDocument signedDocument = null;
 		if (pdfSignatureCache.getToBeSignedDocument() != null) {
@@ -263,8 +272,255 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 		}
 	}
 
+	/**
+	 * This method ensures the PDF document structure is correct for inclusion of
+	 * specific digital signature's functionalities
+	 *
+	 * @param documentReader {@link PdfDocumentReader} to be extended
+	 * @param parameters {@link PAdESCommonParameters}
+	 */
+	protected void digitalSignatureEnhancement(PdfDocumentReader documentReader, PAdESCommonParameters parameters) {
+		if (isDocumentTimestampLayer()) {
+			ensureESICDeveloperExtension1(documentReader);
+		}
+		if (isCAdESDetached(parameters)) {
+			ensureESICDeveloperExtension2(documentReader);
+		}
+		if (isISO_32001(parameters)) {
+			ensureISO_32001DeveloperExtension(documentReader);
+		}
+		if (isISO_32002(parameters)) {
+			ensureISO_32002DeveloperExtension(documentReader);
+		}
+	}
+
+	/**
+	 * This method verifies presence of the ESIC developer extension with level 1 in the PDF document.
+	 * Creates one, when not present.
+	 *
+	 * @param documentReader {@link PdfDocumentReader}
+	 */
+	protected void ensureESICDeveloperExtension1(PdfDocumentReader documentReader) {
+		// standard says the /BaseVersion shall be less than or equal to both the document header and catalog version
+		// skip adding the extension when document's version is lower
+		if (documentReader.getPdfHeaderVersion() < 1.7f || documentReader.getVersion() < 1.7f) {
+			return;
+		}
+		// Skip inclusion of the dictionary, as the properties are already defined in PDF 2.0 (ISO 32000-2:2020)
+		if (documentReader.getVersion() >= 2.0f) {
+			return;
+		}
+		final PdfDict esicExtension = createDeveloperExtensionDict(documentReader,
+				"1.7", 1, null, null, null);
+		final PdfDict adbeExtension = createDeveloperExtensionDict(documentReader,
+				"1.7", 8, null, null, null);
+		if (!isDeveloperExtensionPresent(documentReader, "ESIC", esicExtension) &&
+				!isDeveloperExtensionPresent(documentReader, "ADBE", adbeExtension)) {
+			addDeveloperExtension(documentReader, "ADBE", adbeExtension);
+		}
+	}
+
+	/**
+	 * This method verifies presence of the ESIC developer extension with level 2 in the PDF document.
+	 * Creates one, when not present.
+	 *
+	 * @param documentReader {@link PdfDocumentReader}
+	 */
+	protected void ensureESICDeveloperExtension2(PdfDocumentReader documentReader) {
+		if (documentReader.getPdfHeaderVersion() < 1.7f || documentReader.getVersion() < 1.7f) {
+			return;
+		}
+		// Skip inclusion of the dictionary, as the properties are already defined in PDF 2.0 (ISO 32000-2:2020)
+		if (documentReader.getVersion() >= 2.0f) {
+			return;
+		}
+		final PdfDict esicExtension = createDeveloperExtensionDict(documentReader,
+				"1.7", 2, null, null, null);
+		final PdfDict adbeExtension = createDeveloperExtensionDict(documentReader,
+				"1.7", 8, null, null, null);
+		if (!isDeveloperExtensionPresent(documentReader, "ESIC", esicExtension) &&
+				!isDeveloperExtensionPresent(documentReader, "ADBE", adbeExtension)) {
+			addDeveloperExtension(documentReader, "ADBE", adbeExtension);
+		}
+	}
+
+	/**
+	 * This method verifies presence of the ISO 32001 developer extension in the PDF document.
+	 * Creates one, when not present.
+	 *
+	 * @param documentReader {@link PdfDocumentReader}
+	 */
+	protected void ensureISO_32001DeveloperExtension(PdfDocumentReader documentReader) {
+		if (documentReader.getPdfHeaderVersion() < 2.0f || documentReader.getVersion() < 2.0f) {
+			return;
+		}
+		final PdfDict developerExtension = createDeveloperExtensionDict(documentReader,
+				"2.0", 32001, ":2022", "DeveloperExtensions", "https://www.iso.org/standard/45874.html");
+		if (!isDeveloperExtensionPresent(documentReader, "ISO_", developerExtension)) {
+			addDeveloperExtension(documentReader, "ISO_", developerExtension);
+		}
+	}
+
+	/**
+	 * This method verifies presence of the ISO 32002 developer extension in the PDF document.
+	 * Creates one, when not present.
+	 *
+	 * @param documentReader {@link PdfDocumentReader}
+	 */
+	protected void ensureISO_32002DeveloperExtension(PdfDocumentReader documentReader) {
+		if (documentReader.getPdfHeaderVersion() < 2.0f || documentReader.getVersion() < 2.0f) {
+			return;
+		}
+		final PdfDict developerExtension = createDeveloperExtensionDict(documentReader,
+				"2.0", 32002, ":2022", "DeveloperExtensions", "https://www.iso.org/standard/45875.html");
+		if (!isDeveloperExtensionPresent(documentReader, "ISO_", developerExtension)) {
+			addDeveloperExtension(documentReader, "ISO_", developerExtension);
+		}
+	}
+
+	/**
+	 * Creates a new developer extension dictionary with the given configuration
+	 *
+	 * @param documentReader {@link PdfDocumentReader}
+	 * @param baseVersion {@link String}
+	 * @param extensionLevel {@link String}
+	 * @param extensionRevision {@link String}
+	 * @param type {@link String}
+	 * @param url {@link String}
+	 * @return {@link PdfDict}
+	 */
+	protected PdfDict createDeveloperExtensionDict(PdfDocumentReader documentReader, String baseVersion, Integer extensionLevel,
+												   String extensionRevision, String type, String url) {
+		final PdfDict pdfDict = documentReader.createPdfDict();
+		if (baseVersion != null) {
+			pdfDict.setNameValue(PAdESConstants.BASE_VERSION_NAME, baseVersion);
+		}
+		if (extensionLevel != null) {
+			pdfDict.setIntegerValue(PAdESConstants.EXTENSION_LEVEL_NAME, extensionLevel);
+		}
+		if (extensionRevision != null) {
+			pdfDict.setStringValue(PAdESConstants.EXTENSION_REVISION_NAME, extensionRevision);
+		}
+		if (type != null) {
+			pdfDict.setNameValue(PAdESConstants.TYPE_NAME, type);
+		}
+		if (url != null) {
+			pdfDict.setStringValue(PAdESConstants.URL_NAME, url);
+		}
+		return pdfDict;
+	}
+
+	/**
+	 * Verifies if the signature is created with a use of "ETSI.CAdES.detached" SubFilter
+	 *
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return TRUE if the "ETSI.CAdES.detached" SubFilter is used, FALSE otherwise
+	 */
+	protected boolean isCAdESDetached(PAdESCommonParameters parameters) {
+		return PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(parameters.getSubFilter());
+	}
+
+	/**
+	 * Verifies if the ISO_ profile for 32001 shall be activated
+	 *
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return TRUE if the ISO_ developer extension shall be included, FALSE otherwise
+	 */
+	protected boolean isISO_32001(PAdESCommonParameters parameters) {
+		return (PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(parameters.getSubFilter()) ||
+				PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(parameters.getSubFilter()) ||
+				PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(parameters.getSubFilter())) &&
+				(DigestAlgorithm.SHA3_256 == parameters.getDigestAlgorithm() || DigestAlgorithm.SHA3_384 == parameters.getDigestAlgorithm() ||
+				DigestAlgorithm.SHA3_512 == parameters.getDigestAlgorithm() || DigestAlgorithm.SHAKE256 == parameters.getDigestAlgorithm());
+	}
+
+	/**
+	 * Verifies if the ISO_ profile for 32002 shall be activated
+	 *
+	 * @param parameters {@link PAdESCommonParameters}
+	 * @return TRUE if the ISO_ developer extension shall be included, FALSE otherwise
+	 */
+	protected boolean isISO_32002(PAdESCommonParameters parameters) {
+		// TODO : add support of ECDSA elliptic curves
+		// Note: ISO 32002 mistakenly refers id-shake256 instead of id-shake256-len digest algorithm for Ed448 algorithm.
+		// See {@link https://github.com/pdf-association/pdf-issues/issues/404} for more information.
+		// However, the developer extension for id-shake256-len is not enforced in order to stay compliant with the current version of ISO 32002.
+		return (PAdESConstants.SIGNATURE_PKCS7_SUBFILTER.equals(parameters.getSubFilter()) ||
+				PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(parameters.getSubFilter()) ||
+				PAdESConstants.TIMESTAMP_DEFAULT_SUBFILTER.equals(parameters.getSubFilter())) &&
+				(EncryptionAlgorithm.EDDSA == parameters.getEncryptionAlgorithm() &&
+						(DigestAlgorithm.SHA512 == parameters.getDigestAlgorithm() || DigestAlgorithm.SHAKE256 == parameters.getDigestAlgorithm())
+				);
+	}
+
+	/**
+	 * Verifies whether the specified developer extension is present in the document's catalog.
+	 * The extension shall fully match the defined parameters.
+	 *
+	 * @param documentReader {@link PdfDocumentReader}
+	 * @param prefix {@link String}
+	 * @param developerExtension {@link PdfDict}
+	 * @return TRUE if the extension is present, FALSE otherwise
+	 */
+	protected boolean isDeveloperExtensionPresent(PdfDocumentReader documentReader, String prefix, PdfDict developerExtension) {
+		PdfDict catalogDict = documentReader.getCatalogDictionary();
+		PdfDict extensionsDict = catalogDict.getAsDict(PAdESConstants.EXTENSIONS_NAME);
+		if (extensionsDict != null) {
+			// can be array or dictionary
+			if (extensionsDict.getAsArray(prefix) != null) {
+				PdfArray extensionDictArray = extensionsDict.getAsArray(prefix);
+				for (int i = 0; i < extensionDictArray.size(); i++) {
+					PdfDict extensionDict = extensionDictArray.getAsDict(i);
+					if (extensionDict != null && extensionDict.match(developerExtension)) {
+						return true;
+					}
+				}
+
+			} else if (extensionsDict.getAsDict(prefix) != null && extensionsDict.getAsDict(prefix).match(developerExtension)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Adds a new developer extension defined in {@code developerExtension} dictionary
+	 *
+	 * @param documentReader {@link PdfDocumentReader}
+	 * @param prefix {@link String}
+	 * @param developerExtension {@link PdfDict}
+	 */
+	protected void addDeveloperExtension(PdfDocumentReader documentReader, String prefix, PdfDict developerExtension) {
+		final PdfDict catalogDict = documentReader.getCatalogDictionary();
+
+		PdfDict extensionsDict = catalogDict.getAsDict(PAdESConstants.EXTENSIONS_NAME);
+		if (extensionsDict == null) {
+			extensionsDict = documentReader.createPdfDict();
+			extensionsDict.setDirect(true);
+			catalogDict.setPdfObjectValue(PAdESConstants.EXTENSIONS_NAME, extensionsDict);
+		}
+
+		PdfArray extensionDictArray = extensionsDict.getAsArray(prefix);
+		PdfDict existingDictionary = extensionsDict.getAsDict(prefix);
+		if (existingDictionary != null) {
+			extensionDictArray = documentReader.createPdfArray();
+			existingDictionary.setDirect(false);
+			extensionDictArray.addObject(existingDictionary);
+			extensionsDict.setPdfObjectValue(prefix, extensionDictArray);
+		}
+		if (extensionDictArray != null) {
+			extensionDictArray.addObject(developerExtension);
+		} else {
+			// add directly to ensure better compatibility (PDF 1.7)
+			developerExtension.setDirect(true);
+			extensionsDict.setPdfObjectValue(prefix, developerExtension);
+		}
+	}
+
 	@Override
 	public List<PdfRevision> getRevisions(final DSSDocument document, final char[] pwd) {
+		Objects.requireNonNull(document, "DSSDocument shall be provided!");
+
 		final List<PdfRevision> revisions = new ArrayList<>();
 		final List<PdfByteRangeDocument> revisionDocuments = PAdESUtils.extractRevisions(document);
 
@@ -357,9 +613,9 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 				} catch (Exception e) {
 					String errorMessage = "Unable to parse signature {} . Reason : {}";
 					if (LOG.isDebugEnabled()) {
-						LOG.error(errorMessage, fieldNames, e.getMessage(), e);
+						LOG.warn(errorMessage, fieldNames, e.getMessage(), e);
 					} else {
-						LOG.error(errorMessage, fieldNames, e.getMessage());
+						LOG.warn(errorMessage, fieldNames, e.getMessage());
 					}
 
 				}

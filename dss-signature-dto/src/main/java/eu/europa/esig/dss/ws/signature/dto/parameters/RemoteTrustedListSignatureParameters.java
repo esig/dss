@@ -53,11 +53,6 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
     private DigestAlgorithm digestAlgorithm;
 
     /**
-     * The mask generation function used on signing
-     */
-    private MaskGenerationFunction maskGenerationFunction;
-
-    /**
      * The B-Level parameters
      */
     private RemoteBLevelParameters bLevelParameters = new RemoteBLevelParameters();
@@ -137,18 +132,32 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
      * Gets a mask generation function, if used
      *
      * @return {@link MaskGenerationFunction}
+     * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} method in order to distinguish
+     *             between mask generation functions (i.e. RSA for none MFG, RSASSA-PSS for MGF1)
      */
+    @Deprecated
     public MaskGenerationFunction getMaskGenerationFunction() {
-        return maskGenerationFunction;
+        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+            return MaskGenerationFunction.MGF1;
+        }
+        return null;
     }
 
     /**
      * Sets a mask generation function, if used
      *
      * @param maskGenerationFunction {@link MaskGenerationFunction}
+     * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method instead in order to provide
+     *             a correct mask generation function (use EncryptionAlgorithm.RSA for none MGF,
+     *             EncryptionAlgorithm.RSASSA_PSS for MGF1)
      */
+    @Deprecated
     public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-        this.maskGenerationFunction = maskGenerationFunction;
+        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
+            setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+        } else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
+            setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+        }
     }
 
     /**

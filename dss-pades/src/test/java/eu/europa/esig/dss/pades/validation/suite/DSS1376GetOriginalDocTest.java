@@ -24,13 +24,15 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
@@ -61,8 +63,8 @@ public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 		List<DSSDocument> originalDocuments = validator.getOriginalDocuments(firstSig.getId());
 		assertEquals(1, originalDocuments.size());
 		DSSDocument retrievedDoc = originalDocuments.get(0);
-		LOG.debug("{} : {}", retrievedDoc.getName(), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
-		assertEquals(rev_n_1.getDigest(DigestAlgorithm.SHA256), retrievedDoc.getDigest(DigestAlgorithm.SHA256));
+		LOG.debug("{} : {}", retrievedDoc.getName(), Utils.toBase64(retrievedDoc.getDigestValue(DigestAlgorithm.SHA256)));
+		assertArrayEquals(rev_n_1.getDigestValue(DigestAlgorithm.SHA256), retrievedDoc.getDigestValue(DigestAlgorithm.SHA256));
 
 		AdvancedSignature secondSig = signatures.get(0);
 

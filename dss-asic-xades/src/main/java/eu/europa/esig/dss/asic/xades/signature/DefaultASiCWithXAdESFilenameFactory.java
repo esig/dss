@@ -23,9 +23,11 @@ package eu.europa.esig.dss.asic.xades.signature;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.AbstractASiCFilenameFactory;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.spi.DSSUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class provides a default implementation of {@code ASiCWithXAdESFilenameFactory}
@@ -67,6 +69,30 @@ public class DefaultASiCWithXAdESFilenameFactory extends AbstractASiCFilenameFac
     @Override
     public String getDataPackageFilename(ASiCContent asicContent) {
         return ASiCUtils.PACKAGE_ZIP; // "package.zip"
+    }
+
+    @Override
+    public String getEvidenceRecordFilename(ASiCContent asicContent, EvidenceRecordTypeEnum evidenceRecordType) {
+        Objects.requireNonNull(evidenceRecordType, "EvidenceRecordType shall be defined!");
+        assertASiCContentIsValid(asicContent);
+        // Same name for both ASiC-S and ASiC-E
+        switch (evidenceRecordType) {
+            case XML_EVIDENCE_RECORD:
+                return ASiCUtils.EVIDENCE_RECORD_XML; // "META-INF/evidencerecord.xml"
+            case ASN1_EVIDENCE_RECORD:
+                return ASiCUtils.EVIDENCE_RECORD_ERS;
+            default:
+                throw new UnsupportedOperationException(
+                        String.format("The Evidence Record Type '%s' is not supported!", evidenceRecordType));
+        }
+    }
+
+    @Override
+    public String getEvidenceRecordManifestFilename(ASiCContent asicContent) {
+        assertASiCContentIsValid(asicContent);
+        List<String> existingManifestNames = DSSUtils.getDocumentNames(asicContent.getEvidenceRecordManifestDocuments());
+        // "META-INF/ASiCEvidenceRecordManifest*.xml"
+        return getNextAvailableDocumentName(ASiCUtils.ASICE_METAINF_EVIDENCE_RECORD_MANIFEST, existingManifestNames);
     }
 
 }

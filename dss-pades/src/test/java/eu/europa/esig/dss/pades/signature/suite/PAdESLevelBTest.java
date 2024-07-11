@@ -20,10 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -39,6 +35,9 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 
@@ -47,7 +46,7 @@ public class PAdESLevelBTest extends AbstractPAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 
 		documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
 

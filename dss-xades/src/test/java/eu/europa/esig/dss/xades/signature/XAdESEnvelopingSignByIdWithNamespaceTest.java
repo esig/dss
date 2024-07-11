@@ -38,14 +38,14 @@ import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.Collections;
 import java.util.Date;
 
-public class XAdESEnvelopingSignByIdWithNamespaceTest extends AbstractXAdESTestSignature {
+class XAdESEnvelopingSignByIdWithNamespaceTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument("src/test/resources/ns-prefixes-sample.xml");
 
         signatureParameters = new XAdESSignatureParameters();
@@ -57,7 +57,7 @@ public class XAdESEnvelopingSignByIdWithNamespaceTest extends AbstractXAdESTestS
 
         DSSReference reference = new DSSReference();
         reference.setId("REF-ID1");
-        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+        reference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
         reference.setUri("#signedData");
         reference.setTransforms(Collections.singletonList(new CanonicalizationTransform(CanonicalizationMethod.INCLUSIVE)));
         reference.setContents(documentToSign);

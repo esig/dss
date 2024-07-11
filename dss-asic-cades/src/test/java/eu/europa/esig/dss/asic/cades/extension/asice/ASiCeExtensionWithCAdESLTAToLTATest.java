@@ -44,7 +44,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.ArrayList;
@@ -53,13 +53,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // see DSS-1805
-public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTestExtension {
+class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTestExtension {
 
     private static Date currentDate = new Date();
 
@@ -140,7 +141,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         List<DSSDocument> signatures = asicValidator.getSignatureDocuments();
         assertTrue(Utils.isCollectionNotEmpty(signatures));
 
-        String signatureDigest = signatures.get(0).getDigest(DigestAlgorithm.SHA256);
+        byte[] signatureDigest = signatures.get(0).getDigestValue(DigestAlgorithm.SHA512);
 
         List<DSSDocument> archiveManifests = asicValidator.getArchiveManifestDocuments();
         assertTrue(Utils.isCollectionNotEmpty(archiveManifests));
@@ -148,7 +149,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
         for (DSSDocument archiveManifest : archiveManifests) {
             ManifestFile archiveManifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
             Digest archManifestSigDigest = getSignatureDigest(archiveManifestFile);
-            assertEquals(signatureDigest, Utils.toBase64(archManifestSigDigest.getValue()));
+            assertArrayEquals(signatureDigest, archManifestSigDigest.getValue());
         }
     }
 
@@ -175,7 +176,7 @@ public class ASiCeExtensionWithCAdESLTAToLTATest extends AbstractASiCWithCAdESTe
     private Digest getSignatureDigest(ManifestFile archiveManifestFile) {
         Digest digest = null;
         for (ManifestEntry entry : archiveManifestFile.getEntries()) {
-            if ("META-INF/signature001.p7s".equals(entry.getFileName())) {
+            if ("META-INF/signature001.p7s".equals(entry.getUri())) {
                 digest = entry.getDigest();
                 break;
             }

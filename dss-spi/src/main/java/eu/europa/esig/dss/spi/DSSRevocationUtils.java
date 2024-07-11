@@ -445,7 +445,12 @@ public final class DSSRevocationUtils {
 		try {
 			return basicResponse.getResponses();
 		} catch (Exception e) {
-			LOG.warn("Unable to extract SingleResp(s) : {}", e.getMessage());
+			String errorMessage = "Unable to extract SingleResp(s) : {}";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(errorMessage, e.getMessage(), e);
+			} else {
+				LOG.warn(errorMessage, e.getMessage());
+			}
 			return new SingleResp[] {};
 		}
 	}

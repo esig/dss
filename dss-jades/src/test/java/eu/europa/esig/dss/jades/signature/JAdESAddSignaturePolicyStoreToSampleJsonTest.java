@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -37,7 +37,7 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class JAdESAddSignaturePolicyStoreToSampleJsonTest extends AbstractJAdESTestSignature {
+class JAdESAddSignaturePolicyStoreToSampleJsonTest extends AbstractJAdESTestSignature {
 
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
     private static final String SIGNATURE_POLICY_DESCRIPTION = "Test description";
@@ -48,7 +48,7 @@ public class JAdESAddSignaturePolicyStoreToSampleJsonTest extends AbstractJAdEST
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() {
+    void init() {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 
@@ -56,7 +56,7 @@ public class JAdESAddSignaturePolicyStoreToSampleJsonTest extends AbstractJAdEST
     }
 
     @Test
-    public void test() {
+    void test() {
         SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
         signaturePolicyStore.setSignaturePolicyContent(SIGNATURE_POLICY_CONTENT);
         SpDocSpecification spDocSpec = new SpDocSpecification();

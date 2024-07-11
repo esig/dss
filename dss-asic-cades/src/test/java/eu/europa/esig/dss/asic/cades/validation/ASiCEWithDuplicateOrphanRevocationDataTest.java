@@ -39,7 +39,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class ASiCEWithDuplicateOrphanRevocationDataTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCEWithDuplicateOrphanRevocationDataTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

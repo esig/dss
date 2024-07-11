@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.xml.security.c14n.Canonicalizer;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -46,7 +33,7 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -54,8 +41,21 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPath2FilterTransform;
+import org.apache.xml.security.c14n.Canonicalizer;
+import org.junit.jupiter.api.BeforeEach;
 
-public class XAdESLevelBWithPolicyWithTransformsAndPolicyStoreTest extends AbstractXAdESTestSignature {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class XAdESLevelBWithPolicyWithTransformsAndPolicyStoreTest extends AbstractXAdESTestSignature {
 
 	private static final String SIGNATURE_POLICY_ID = "urn:sbr:signature-policy:xml:2.0";
 	private static final String SIGNATURE_POLICY_URL = "http://www.nltaxonomie.nl/sbr/signature_policy_schema/v2.0/SBR-signature-policy-v2.0.xml";
@@ -68,7 +68,7 @@ public class XAdESLevelBWithPolicyWithTransformsAndPolicyStoreTest extends Abstr
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -165,8 +165,8 @@ public class XAdESLevelBWithPolicyWithTransformsAndPolicyStoreTest extends Abstr
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 
 		// transforms applied
-		assertNotEquals(signaturePolicy.getDigest(policyDigestAlgoAndValue.getDigestMethod()),
-				Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertFalse(Arrays.equals(signaturePolicy.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()),
+				policyDigestAlgoAndValue.getDigestValue()));
 	}
 
 	@Override

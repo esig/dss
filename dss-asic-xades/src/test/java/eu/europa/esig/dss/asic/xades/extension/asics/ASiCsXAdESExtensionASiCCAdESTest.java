@@ -24,7 +24,7 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -35,10 +35,10 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ASiCsXAdESExtensionASiCCAdESTest extends PKIFactoryAccess {
+class ASiCsXAdESExtensionASiCCAdESTest extends PKIFactoryAccess {
 	
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument documentToExtend = new FileDocument("src/test/resources/signable/asic_cades.zip");
 
 		ASiCWithXAdESSignatureParameters signatureParameters = new ASiCWithXAdESSignatureParameters();

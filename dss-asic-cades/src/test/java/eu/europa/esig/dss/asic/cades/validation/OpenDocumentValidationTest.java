@@ -27,24 +27,24 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class OpenDocumentValidationTest {
+class OpenDocumentValidationTest {
 
 	@Test
-	public void odt() {
+	void odt() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/open-document-signed.odt");
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
 	@Test
-	public void odp() {
+	void odp() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/open-document-signed.odp");
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertEquals("Document format not recognized/handled", exception.getMessage());
 	}
 
 	@Test
-	public void odpNotSigned() {
+	void odpNotSigned() {
 		FileDocument doc = new FileDocument("src/test/resources/validation/open-document.odp");
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> SignedDocumentValidator.fromDocument(doc));
 		assertEquals("Document format not recognized/handled", exception.getMessage());

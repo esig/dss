@@ -24,16 +24,16 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
-import eu.europa.esig.dss.cades.validation.CMSDocumentValidator;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationData;
-import eu.europa.esig.dss.validation.ValidationDataContainer;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.DERSet;
@@ -73,22 +73,24 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 												List<String> signatureIdsToExtend) {
 		cmsSignedData = super.extendCMSSignatures(cmsSignedData, parameters, signatureIdsToExtend);
 
-		List<CAdESSignature> signaturesToExtend = new ArrayList<>();
+		CMSDocumentAnalyzer documentAnalyzer = getDocumentValidator(cmsSignedData, parameters);
+		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
 
-		CMSDocumentValidator documentValidator = getDocumentValidator(cmsSignedData, parameters);
-
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
-		for (AdvancedSignature signature : signatures) {
-			CAdESSignature cadesSignature = (CAdESSignature) signature;
-			if (signatureIdsToExtend.contains(cadesSignature.getId())) {
-				// check if the resulted signature can be extended
-				assertExtendSignatureLevelLTPossible(cadesSignature, parameters);
-				signaturesToExtend.add(cadesSignature);
-			}
+		final List<AdvancedSignature> signaturesToExtend = getExtendToLTLevelSignatures(signatures, signatureIdsToExtend);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
+			return cmsSignedData;
 		}
 
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
+		if (CAdES_BASELINE_LT.equals(parameters.getSignatureLevel())) {
+			signatureRequirementsChecker.assertExtendToLTLevelPossible(signaturesToExtend);
+		}
+
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertCertificateChainValidForLTLevel(signaturesToExtend);
+
 		// Perform signatures validation
-		ValidationDataContainer validationDataContainer = documentValidator.getValidationData(signaturesToExtend);
+		ValidationDataContainer validationDataContainer = documentAnalyzer.getValidationData(signaturesToExtend);
 
 		/*
 		 * ETSI EN 319 122-1 V1.1.1 (2016-04), chapter "5.5.3 The archive-time-stamp-v3 attribute":
@@ -111,7 +113,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 				final CAdESSignature cadesSignature = (CAdESSignature) signature;
 				final SignerInformation signerInformation = cadesSignature.getSignerInformation();
 				SignerInformation newSignerInformation = signerInformation;
-				if (signatureIdsToExtend.contains(cadesSignature.getId())) {
+				if (signaturesToExtend.contains(cadesSignature)) {
 					ValidationData validationData = validationDataContainer.getCompleteValidationDataForSignature(cadesSignature);
 					newSignerInformation = extendSignerInformation(signerInformation, validationData);
 				}
@@ -160,7 +162,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	private TimeStampToken getLastArchiveTimestamp(AttributeTable unsignedAttributes) {
 		TimeStampToken lastTimeStampToken = null;
 		TimeStampTokenProductionComparator comparator = new TimeStampTokenProductionComparator();
-		for (TimeStampToken timeStampToken : DSSASN1Utils.findArchiveTimeStampTokens(unsignedAttributes)) {
+		for (TimeStampToken timeStampToken : CMSUtils.findArchiveTimeStampTokens(unsignedAttributes)) {
 			if (lastTimeStampToken == null || comparator.after(timeStampToken, lastTimeStampToken)) {
 				lastTimeStampToken = timeStampToken;
 			}
@@ -182,11 +184,11 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		Attribute[] attributes = attributeTable.toASN1Structure().getAttributes();
 		for (Attribute attribute : attributes) {
 			Attribute newAttribute = attribute;
-			if (DSSASN1Utils.isArchiveTimeStampToken(attribute)) {
+			if (CMSUtils.isArchiveTimeStampToken(attribute)) {
 				try {
 					// ContentInfo binaries have to be compared, therefore CMSSignedData creation is required
-					CMSSignedData cmsSignedData = DSSASN1Utils.getCMSSignedData(attribute);
-					if (CMSUtils.isCMSSignedDataEqual(attributeToReplace, cmsSignedData)) {
+					CMSSignedData cmsSignedData = CMSUtils.getCMSSignedData(attribute);
+					if (cmsSignedData != null && CMSUtils.isCMSSignedDataEqual(attributeToReplace, cmsSignedData)) {
 						ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(attributeToAdd.getEncoded());
 						newAttribute = new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive));
 					}
@@ -214,18 +216,6 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		return cmsSignedDataBuilder.extendCMSSignedData(validationDataForInclusion.getCertificateTokens(),
 				validationDataForInclusion.getCrlTokens(), validationDataForInclusion.getOcspTokens());
 	}
-	
-	private void assertExtendSignatureLevelLTPossible(CAdESSignature cadesSignature, CAdESSignatureParameters parameters) {
-		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		if (CAdES_BASELINE_LT.equals(signatureLevel) && cadesSignature.hasLTAProfile()) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signedData is already extended with LTA level.", signatureLevel));
-		} else if (cadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
-			throw new IllegalInputException("Cannot extend signature. The signature does not contain certificates.");
-		} else if (cadesSignature.areAllSelfSignedCertificates()) {
-			throw new IllegalInputException("Cannot extend the signature. The signature contains only self-signed certificate chains!");
-		}
-	}
 
 	/**
 	 * Verifies if the CMSSignedData contains an ATSTv2
@@ -240,6 +230,23 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns a list of signatures to be extended according to th list of {@code signatureIdsToExtend}
+	 *
+	 * @param signatures a list of {@link AdvancedSignature}s
+	 * @param signatureIdsToExtend a list of {@link String} signature identifiers to be extended
+	 * @return a list of {@link AdvancedSignature}s
+	 */
+	protected List<AdvancedSignature> getExtendToLTLevelSignatures(List<AdvancedSignature> signatures, List<String> signatureIdsToExtend) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			if (signatureIdsToExtend.contains(signature.getId())) {
+				toBeExtended.add(signature);
+			}
+		}
+		return toBeExtended;
 	}
 
 }

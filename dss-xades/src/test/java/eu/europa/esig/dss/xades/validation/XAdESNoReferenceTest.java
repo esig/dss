@@ -26,6 +26,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -42,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class XAdESNoReferenceTest extends AbstractXAdESTestValidation {
+class XAdESNoReferenceTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -96,8 +97,10 @@ public class XAdESNoReferenceTest extends AbstractXAdESTestValidation {
 	protected void verifyDetailedReport(DetailedReport detailedReport) {
 		super.verifyDetailedReport(detailedReport);
 
+		assertEquals(Indication.INDETERMINATE,
+				detailedReport.getFinalIndication(detailedReport.getFirstSignatureId()));
 		assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND,
-				detailedReport.getBasicBuildingBlocksSubIndication(detailedReport.getFirstSignatureId()));
+				detailedReport.getFinalSubIndication(detailedReport.getFirstSignatureId()));
 	}
 	
 	@Override

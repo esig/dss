@@ -50,7 +50,7 @@ public class PAdESTwoSignersLTALevelTest extends PKIFactoryAccess {
 	private String signingAlias = GOOD_USER;
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 
 		DSSDocument toBeSigned = new InMemoryDocument(PAdESTwoSignersLTALevelTest.class.getResourceAsStream("/sample.pdf"));
 

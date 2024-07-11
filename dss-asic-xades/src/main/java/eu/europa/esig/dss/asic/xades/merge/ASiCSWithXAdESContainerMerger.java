@@ -25,15 +25,15 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import org.apache.xml.security.signature.Reference;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -96,22 +96,26 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
 
     @Override
     protected void ensureContainerContentAllowMerge() {
-        if (Arrays.stream(asicContents).allMatch(asicContent -> Utils.isCollectionEmpty(asicContent.getSignatureDocuments()))) {
-            return; // no signatures -> can merge
+        if (Arrays.stream(asicContents).allMatch(asicContent -> Utils.isCollectionEmpty(asicContent.getSignatureDocuments()) &&
+                Utils.isCollectionEmpty(asicContent.getEvidenceRecordDocuments()))) {
+            return; // no signatures and evidence records -> can merge
         }
 
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getSignatureDocuments()) > 1)) {
             throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
                     "One of the containers has more than one signature documents!");
         }
-        if (Arrays.stream(asicContents).anyMatch(asicContent -> asicContent.getSignatureDocuments().stream()
-                .anyMatch(document -> !ASiCUtils.SIGNATURES_XML.equals(document.getName())))) {
-            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
-                        "The signature document in one of the containers has invalid naming!");
-        }
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()))) {
             throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
                     "One of the containers contains a detached timestamp!");
+        }
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getEvidenceRecordDocuments()) > 1)) {
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
+                    "One of the containers has more than one evidence record documents!");
+        }
+        if (Arrays.stream(asicContents).filter(asicContent -> Utils.isCollectionNotEmpty(asicContent.getEvidenceRecordDocuments())).count() > 1) {
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
+                    "Evidence record containers cannot be merged with the given container type!");
         }
         if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.collectionSize(asicContent.getRootLevelSignedDocuments()) > 1)) {
             throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
@@ -120,6 +124,44 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         if (Utils.collectionSize(getSignerDocumentNameSet()) > 1) {
             throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
                     "Signer documents have different names!");
+        }
+        if (Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())) &&
+                Arrays.stream(asicContents).anyMatch(asicContent -> Utils.isCollectionNotEmpty(asicContent.getEvidenceRecordDocuments()))) {
+            throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
+                    "Only one type of a container is allowed (signature or evidence record)!");
+        }
+
+        Arrays.stream(asicContents).forEach(asicContent -> assertSignatureDocumentNameValid(asicContent.getSignatureDocuments()));
+        Arrays.stream(asicContents).forEach(asicContent -> assertEvidenceRecordDocumentNameValid(asicContent.getEvidenceRecordDocuments()));
+    }
+
+    private void assertSignatureDocumentNameValid(List<DSSDocument> signatureDocuments) {
+        if (Utils.isCollectionNotEmpty(signatureDocuments)) {
+            for (DSSDocument signatureDocument : signatureDocuments) {
+                if (!ASiCUtils.SIGNATURES_XML.equals(signatureDocument.getName()) ) {
+                    throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
+                            "The signature document in one of the containers has invalid naming!");
+                }
+            }
+        }
+    }
+
+    private void assertEvidenceRecordDocumentNameValid(List<DSSDocument> evidenceRecordDocuments) {
+        if (Utils.isCollectionNotEmpty(evidenceRecordDocuments)) {
+            String evidenceRecordDocumentName = null;
+            for (DSSDocument evidenceRecordDocument : evidenceRecordDocuments) {
+                if (!ASiCUtils.EVIDENCE_RECORD_XML.equals(evidenceRecordDocument.getName()) &&
+                        !ASiCUtils.EVIDENCE_RECORD_ERS.equals(evidenceRecordDocument.getName())) {
+                    throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
+                            "The evidence record document in one of the containers has invalid naming!");
+                }
+                if (evidenceRecordDocumentName == null) {
+                    evidenceRecordDocumentName = evidenceRecordDocument.getName();
+                } else if (!evidenceRecordDocumentName.equals(evidenceRecordDocument.getName())) {
+                    throw new UnsupportedOperationException("Unable to merge ASiC-S with XAdES containers. " +
+                            "The evidence record documents have conflicting names within containers!");
+                }
+            }
         }
     }
 
@@ -131,16 +173,34 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         return result;
     }
 
+    private Set<String> getEvidenceRecordDocumentNameSet() {
+        Set<String> result = new HashSet<>();
+        for (ASiCContent asicContent : asicContents) {
+            result.addAll(DSSUtils.getDocumentNames(asicContent.getEvidenceRecordDocuments()));
+        }
+        return result;
+    }
+
     @Override
     protected void ensureSignaturesAllowMerge() {
         if (Arrays.stream(asicContents).filter(asicContent ->
-                Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())).count() <= 1) {
-            // no signatures in all containers except maximum one. Can merge.
+                        Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()) ||
+                        Utils.isCollectionNotEmpty(asicContent.getEvidenceRecordDocuments()))
+                .count() <= 1) {
+            // no signatures or evidence records in all containers except maximum one. Can merge.
             return;
         }
 
-        List<XMLDocumentValidator> documentValidators = getAllDocumentValidators();
+        mergeSignatureDocuments();
+    }
+
+    private void mergeSignatureDocuments() {
+        List<XMLDocumentAnalyzer> documentValidators = getAllDocumentValidators();
         List<AdvancedSignature> allSignatures = getAllSignatures(documentValidators);
+        if (Utils.isCollectionEmpty(allSignatures)) {
+            return;
+        }
+
         if (!checkNoCommonIdsBetweenSignatures(allSignatures)) {
             throw new IllegalInputException("Signature documents contain signatures with the same identifiers!");
         }
@@ -158,19 +218,19 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         }
     }
 
-    private List<XMLDocumentValidator> getAllDocumentValidators() {
-        List<XMLDocumentValidator> validators = new ArrayList<>();
+    private List<XMLDocumentAnalyzer> getAllDocumentValidators() {
+        List<XMLDocumentAnalyzer> validators = new ArrayList<>();
         for (ASiCContent asicContent : asicContents) {
             for (DSSDocument signatureDocument : asicContent.getSignatureDocuments()) {
-                validators.add(new XMLDocumentValidator(signatureDocument));
+                validators.add(new XMLDocumentAnalyzer(signatureDocument));
             }
         }
         return validators;
     }
 
-    private List<AdvancedSignature> getAllSignatures(List<XMLDocumentValidator> validators) {
+    private List<AdvancedSignature> getAllSignatures(List<XMLDocumentAnalyzer> validators) {
         List<AdvancedSignature> signatures = new ArrayList<>();
-        for (XMLDocumentValidator validator : validators) {
+        for (XMLDocumentAnalyzer validator : validators) {
             signatures.addAll(validator.getSignatures());
         }
         return signatures;
@@ -235,9 +295,9 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         return false;
     }
 
-    private void assertSameRootElement(List<XMLDocumentValidator> documentValidators) {
+    private void assertSameRootElement(List<XMLDocumentAnalyzer> documentValidators) {
         Element rootElement = null;
-        for (XMLDocumentValidator documentValidator : documentValidators) {
+        for (XMLDocumentAnalyzer documentValidator : documentValidators) {
             Element currentRootElement = documentValidator.getRootElement().getDocumentElement();
             if (rootElement == null) {
                 rootElement = currentRootElement;
@@ -259,11 +319,11 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
 
     }
 
-    private DSSDocument getMergedSignaturesXml(List<XMLDocumentValidator> documentValidators) {
+    private DSSDocument getMergedSignaturesXml(List<XMLDocumentAnalyzer> documentValidators) {
         Document document = null;
         Element documentElement = null;
 
-        for (XMLDocumentValidator documentValidator : documentValidators) {
+        for (XMLDocumentAnalyzer documentValidator : documentValidators) {
             if (document == null) {
                 document = documentValidator.getRootElement();
                 documentElement = document.getDocumentElement();

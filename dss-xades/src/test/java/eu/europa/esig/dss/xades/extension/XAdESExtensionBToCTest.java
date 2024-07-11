@@ -22,11 +22,11 @@ package eu.europa.esig.dss.xades.extension;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 import java.util.List;
 
-public class XAdESExtensionBToCTest extends AbstractXAdESTestExtension {
+class XAdESExtensionBToCTest extends AbstractXAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

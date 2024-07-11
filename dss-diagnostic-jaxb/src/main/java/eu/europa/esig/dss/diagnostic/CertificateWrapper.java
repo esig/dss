@@ -154,6 +154,19 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	/**
+	 * Returns a list of all certificate extensions OIDs
+	 *
+	 * @return a list of {@link String} OIDs
+	 */
+	public List<String> getCertificateExtensionsOids() {
+		List<XmlCertificateExtension> certificateExtensions = getCertificateExtensions();
+		if (certificateExtensions != null && !certificateExtensions.isEmpty()) {
+			return getCertificateExtensions().stream().map(XmlCertificateExtension::getOID).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
+	/**
 	 * Returns subject alternative names
 	 *
 	 * @return a list of {@link String}s
@@ -574,31 +587,9 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * Returns a list of {@code XmlTrustServiceProvider}s
 	 *
 	 * @return a list of {@link XmlTrustServiceProvider}s
-	 * @deprecated since DSS 5.13. Use {@code #getTrustServiceProviders} method instead.
-	 */
-	@Deprecated
-	public List<XmlTrustServiceProvider> getTrustedServiceProviders() {
-		return getTrustServiceProviders();
-	}
-
-	/**
-	 * Returns a list of {@code XmlTrustServiceProvider}s
-	 *
-	 * @return a list of {@link XmlTrustServiceProvider}s
 	 */
 	public List<XmlTrustServiceProvider> getTrustServiceProviders() {
 		return certificate.getTrustServiceProviders();
-	}
-
-	/**
-	 * Returns a list of {@code TrustServiceWrapper}s
-	 *
-	 * @return a list of {@link TrustServiceWrapper}s
-	 * @deprecated since DSS 5.13. Use {@code #getTrustServices} method instead.
-	 */
-	@Deprecated
-	public List<TrustServiceWrapper> getTrustedServices() {
-		return getTrustServices();
 	}
 
 	/**
@@ -791,6 +782,19 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private XmlCertificatePolicies getXmlCertificatePolicies() {
 		return getCertificateExtensionForOid(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid(), XmlCertificatePolicies.class);
+	}
+
+	/**
+	 * Returns the certificate policies OIDs
+	 *
+	 * @return a list of {@link String} OIDs
+	 */
+	public List<String> getCertificatePoliciesOids() {
+		List<XmlCertificatePolicy> certificatePolicies = getCertificatePolicies();
+		if (certificatePolicies != null && !certificatePolicies.isEmpty()) {
+			return certificatePolicies.stream().map(XmlCertificatePolicy::getValue).collect(Collectors.toList());
+		}
+		return Collections.emptyList();
 	}
 
 	/**
@@ -1087,6 +1091,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		return "?";
 	}
 
+	@Override
 	public int hashCode() {
 		return super.hashCode();
 	}

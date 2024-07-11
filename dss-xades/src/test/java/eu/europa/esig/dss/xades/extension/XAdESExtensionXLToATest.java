@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESExtensionXLToATest extends AbstractXAdESTestExtension {
+class XAdESExtensionXLToATest extends AbstractXAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

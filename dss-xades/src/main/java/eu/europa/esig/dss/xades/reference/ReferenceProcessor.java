@@ -28,8 +28,8 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -190,7 +190,8 @@ public class ReferenceProcessor {
                 DSSXMLUtils.incorporateDigestMethod(referenceDom, dssReference.getDigestMethodAlgorithm(), namespace);
 
                 DSSDocument documentAfterTransforms = getReferenceOutput(dssReference);
-                String base64EncodedDigestBytes = documentAfterTransforms.getDigest(dssReference.getDigestMethodAlgorithm());
+                byte[] digestBytes = documentAfterTransforms.getDigestValue(dssReference.getDigestMethodAlgorithm());
+                String base64EncodedDigestBytes = Utils.toBase64(digestBytes);
                 DSSXMLUtils.incorporateDigestValue(referenceDom, base64EncodedDigestBytes, namespace);
             }
         }

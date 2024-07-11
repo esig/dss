@@ -71,6 +71,8 @@ public class JAXBCertEntityBuilder {
 
     /**
      * Instantiates the builder with a pre-created {@code JAXBCertEntity} instance, to be filled with data.
+     *
+     * @param certEntity {@link JAXBCertEntity}
      */
     public JAXBCertEntityBuilder(JAXBCertEntity certEntity) {
         this.certEntity = certEntity;
@@ -193,47 +195,47 @@ public class JAXBCertEntityBuilder {
      * @return {@link JAXBCertEntity}
      */
     public JAXBCertEntity build() {
-        final JAXBCertEntity certEntity = getCertEntity();
+        final JAXBCertEntity currentCertEntity = getCertEntity();
 
         final CertificateToken certificate;
-        if (certEntity.getCertificateToken() == null) {
+        if (currentCertEntity.getCertificateToken() == null) {
             Objects.requireNonNull(this.certificateToken, "CertificateToken shall be provided!");
             certificate = this.certificateToken;
-            certEntity.setCertificateToken(this.certificateToken);
+            currentCertEntity.setCertificateToken(this.certificateToken);
         } else {
-            certificate = certEntity.getCertificateToken();
+            certificate = currentCertEntity.getCertificateToken();
         }
 
-        if (certEntity.getSubject() == null) {
-            certEntity.setSubject(DSSASN1Utils.getSubjectCommonName(certificate));
+        if (currentCertEntity.getSubject() == null) {
+            currentCertEntity.setSubject(DSSASN1Utils.getSubjectCommonName(certificate));
         }
-        if (certEntity.getSerialNumber() == null) {
-            certEntity.setSerialNumber(certificate.getSerialNumber().longValue());
+        if (currentCertEntity.getSerialNumber() == null) {
+            currentCertEntity.setSerialNumber(certificate.getSerialNumber().longValue());
         }
-        if (certEntity.getPrivateKeyBinaries() == null) {
+        if (currentCertEntity.getPrivateKeyBinaries() == null) {
             Objects.requireNonNull(privateKey, "PrivateKey shall be provided!");
-            certEntity.setPrivateKeyBinaries(privateKey);
+            currentCertEntity.setPrivateKeyBinaries(privateKey);
         }
-        if (certEntity.getIssuer() == null) {
-            certEntity.setIssuer(issuer);
+        if (currentCertEntity.getIssuer() == null) {
+            currentCertEntity.setIssuer(issuer);
         }
-        if (certEntity.getRevocationDate() == null) {
-            certEntity.setRevocationDate(revocationDate);
+        if (currentCertEntity.getRevocationDate() == null) {
+            currentCertEntity.setRevocationDate(revocationDate);
         }
-        if (certEntity.getRevocationReason() == null) {
-            certEntity.setRevocationReason(revocationReason);
+        if (currentCertEntity.getRevocationReason() == null) {
+            currentCertEntity.setRevocationReason(revocationReason);
         }
-        if (certEntity.getOcspResponder() == null) {
-            certEntity.setOcspResponder(ocspResponder);
+        if (currentCertEntity.getOcspResponder() == null) {
+            currentCertEntity.setOcspResponder(ocspResponder);
         }
-        if (!certEntity.isTrustAnchor()) {
-            certEntity.setTrustAnchor(trustAnchor);
+        if (!currentCertEntity.isTrustAnchor()) {
+            currentCertEntity.setTrustAnchor(trustAnchor);
         }
-        if (certEntity.getPkiName() == null) {
-            certEntity.setPkiName(pkiName);
+        if (currentCertEntity.getPkiName() == null) {
+            currentCertEntity.setPkiName(pkiName);
         }
 
-        return certEntity;
+        return currentCertEntity;
     }
 
 }

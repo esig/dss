@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.validation.dss1987;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class DSS1987WithCTSTest extends AbstractDSS1987Test {
+class DSS1987WithCTSTest extends AbstractDSS1987Test {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

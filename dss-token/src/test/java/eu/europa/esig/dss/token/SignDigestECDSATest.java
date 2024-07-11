@@ -46,7 +46,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 
-public class SignDigestECDSATest {
+class SignDigestECDSATest {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SignDigestECDSATest.class);
 
@@ -62,7 +62,7 @@ public class SignDigestECDSATest {
 
 	@ParameterizedTest(name = "DigestAlgorithm {index} : {0}")
 	@MethodSource("data")
-	public void testPkcs12(DigestAlgorithm digestAlgo) throws IOException {
+	void testPkcs12(DigestAlgorithm digestAlgo) throws IOException {
 		try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/good-ecdsa-user.p12",
 				new PasswordProtection("ks-password".toCharArray()))) {
 

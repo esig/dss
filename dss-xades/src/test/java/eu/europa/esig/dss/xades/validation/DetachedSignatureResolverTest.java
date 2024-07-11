@@ -41,14 +41,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class DetachedSignatureResolverTest {
+class DetachedSignatureResolverTest {
 
 	static {
 		SantuarioInitializer.init();
 	}
 
 	@Test
-	public void nullAttribute() throws ResourceResolverException {
+	void nullAttribute() throws ResourceResolverException {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -65,7 +65,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void nullListAndNullAttribute() throws ResourceResolverException {
+	void nullListAndNullAttribute() throws ResourceResolverException {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(null, DigestAlgorithm.SHA256);
 
@@ -82,7 +82,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void nullAttributeOneDoc() throws ResourceResolverException {
+	void nullAttributeOneDoc() throws ResourceResolverException {
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 })),
 				DigestAlgorithm.SHA256);
 
@@ -95,7 +95,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void nullAttributeTwoDocs() throws ResourceResolverException {
+	void nullAttributeTwoDocs() throws ResourceResolverException {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 					Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }), new InMemoryDocument(new byte[] { 2, 3 })), DigestAlgorithm.SHA256);
@@ -112,7 +112,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void emptyAttribute() throws ResourceResolverException {
+	void emptyAttribute() throws ResourceResolverException {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -130,7 +130,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void attributeIsAnchor() {
+	void attributeIsAnchor() {
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
 		Attr attr = mock(Attr.class);
@@ -141,7 +141,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void documentNameWithEmptyList() throws ResourceResolverException {
+	void documentNameWithEmptyList() throws ResourceResolverException {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -159,7 +159,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void engineCanResolveURIWithWrongDocumentNameInList() throws ResourceResolverException {
+	void engineCanResolveURIWithWrongDocumentNameInList() throws ResourceResolverException {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 					Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeTypeEnum.XML)),
@@ -179,7 +179,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void engineCanResolveURIWithDocumentNoNameInList() throws ResourceResolverException {
+	void engineCanResolveURIWithDocumentNoNameInList() throws ResourceResolverException {
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 })),
 				DigestAlgorithm.SHA256);
 
@@ -194,7 +194,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void engineCanResolveURIWithDocumentNameInList() throws ResourceResolverException {
+	void engineCanResolveURIWithDocumentNameInList() throws ResourceResolverException {
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 				Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeTypeEnum.XML)),
 				DigestAlgorithm.SHA256);
@@ -209,7 +209,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void engineCanResolveURIWithDocumentNameInListOfMultiples() throws ResourceResolverException {
+	void engineCanResolveURIWithDocumentNameInListOfMultiples() throws ResourceResolverException {
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 				Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "sample.xml", MimeTypeEnum.XML),
 				new InMemoryDocument(new byte[] { 2, 3 }, "sample2.xml", MimeTypeEnum.XML)), DigestAlgorithm.SHA256);
@@ -224,7 +224,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void engineCanResolveURIWithDigestDocument() throws ResourceResolverException {
+	void engineCanResolveURIWithDigestDocument() throws ResourceResolverException {
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA256, "abcdef");
 		doc.setName("sample.xml");
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.asList(doc), DigestAlgorithm.SHA256);
@@ -239,7 +239,7 @@ public class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	public void engineCanResolveURIWithDigestDocumentNoName() throws ResourceResolverException {
+	void engineCanResolveURIWithDigestDocumentNoName() throws ResourceResolverException {
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA256, "abcdef");
 		// doc.setName("sample.xml");
 		DetachedSignatureResolver resolver = new DetachedSignatureResolver(Arrays.asList(doc), DigestAlgorithm.SHA256);

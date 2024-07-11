@@ -56,14 +56,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelLTAMultipleFilesDetachedByUriNoDataProvidedTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelLTAMultipleFilesDetachedByUriNoDataProvidedTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
     private JAdESService service;
     private JAdESSignatureParameters signatureParameters;
     private List<DSSDocument> documentsToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

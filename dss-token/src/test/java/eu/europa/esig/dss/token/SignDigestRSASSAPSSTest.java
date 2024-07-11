@@ -20,12 +20,23 @@
  */
 package eu.europa.esig.dss.token;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.DSSSecurityProvider;
+import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.crypto.Cipher;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore.PasswordProtection;
 import java.security.Security;
@@ -35,25 +46,12 @@ import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 
-import javax.crypto.Cipher;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.spi.DSSSecurityProvider;
-import eu.europa.esig.dss.spi.DSSUtils;
-
-public class SignDigestRSASSAPSSTest {
+class SignDigestRSASSAPSSTest {
 
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
@@ -64,7 +62,7 @@ public class SignDigestRSASSAPSSTest {
 	private static Collection<DigestAlgorithm> data() {
 		Collection<DigestAlgorithm> rsaCombinations = new ArrayList<>();
 		for (DigestAlgorithm digestAlgorithm : DigestAlgorithm.values()) {
-			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSA, digestAlgorithm, MaskGenerationFunction.MGF1) != null) {
+			if (SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, digestAlgorithm) != null) {
 				rsaCombinations.add(digestAlgorithm);
 			}
 		}
@@ -73,16 +71,17 @@ public class SignDigestRSASSAPSSTest {
 
 	@ParameterizedTest(name = "DigestAlgorithm {index} : {0}")
 	@MethodSource("data")
-	public void testPkcs12PSS(DigestAlgorithm digestAlgo) throws IOException {
+	void testPkcs12PSS(DigestAlgorithm digestAlgo) throws IOException {
 		try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/user_a_rsa.p12",
 				new PasswordProtection("password".toCharArray()))) {
 
 			List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
 			KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
 
-			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes("UTF-8"));
+			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
 
-			SignatureValue signValue = signatureToken.sign(toBeSigned, digestAlgo, MaskGenerationFunction.MGF1, entry);
+			SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.RSASSA_PSS, digestAlgo);
+			SignatureValue signValue = signatureToken.sign(toBeSigned, signatureAlgorithm, entry);
 			assertNotNull(signValue.getAlgorithm());
 			LOG.info("Sig value : {}", Base64.getEncoder().encodeToString(signValue.getValue()));
 			try {
@@ -107,7 +106,7 @@ public class SignDigestRSASSAPSSTest {
 			final byte[] digestBinaries = DSSUtils.digest(digestAlgo, toBeSigned.getBytes());
 			Digest digest = new Digest(digestAlgo, digestBinaries);
 
-			SignatureValue signDigestValue = signatureToken.signDigest(digest, MaskGenerationFunction.MGF1, entry);
+			SignatureValue signDigestValue = signatureToken.signDigest(digest, signatureAlgorithm, entry);
 			assertNotNull(signDigestValue.getAlgorithm());
 			assertEquals(signValue.getAlgorithm(), signDigestValue.getAlgorithm());
 			LOG.info("Sig value : {}", Base64.getEncoder().encodeToString(signDigestValue.getValue()));

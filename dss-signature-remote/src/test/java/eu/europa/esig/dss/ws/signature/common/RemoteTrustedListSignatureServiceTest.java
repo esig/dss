@@ -25,7 +25,6 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -51,14 +50,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
+class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
 
     private RemoteTrustedListSignatureServiceImpl tlSigningService;
 
     private Date signingTime;
 
     @BeforeEach
-    public void init() {
+    void init() {
         tlSigningService = new RemoteTrustedListSignatureServiceImpl();
         tlSigningService.setXadesService(getXAdESService());
 
@@ -66,7 +65,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
     }
 
     @Test
-    public void test() {
+    void test() {
         DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
         RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
 
@@ -78,7 +77,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         ToBeSignedDTO dataToSign = tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters);
         assertNotNull(dataToSign);
 
-        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
         RemoteDocument signedDocument = tlSigningService.signDocument(toSignDocument, tlSignatureParameters,
                 new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
         assertNotNull(signedDocument);
@@ -88,7 +87,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
     }
 
     @Test
-    public void testWithCustomParams() {
+    void testWithCustomParams() {
         DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
         RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
 
@@ -97,6 +96,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         RemoteTrustedListSignatureParameters parameters = new RemoteTrustedListSignatureParameters();
         parameters.setSigningCertificate(signingCertificate);
         parameters.setReferenceId("lotl");
+        parameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         parameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA512);
 
         RemoteBLevelParameters bLevelParams = new RemoteBLevelParameters();
@@ -120,7 +120,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         boolean lotlRefFound = false;
         List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
         for (XmlDigestMatcher digestMatcher : digestMatchers) {
-            if (digestMatcher.getName().equals("lotl")) {
+            if (digestMatcher.getId() != null && digestMatcher.getId().equals("lotl")) {
                 assertEquals(DigestAlgorithm.SHA512, digestMatcher.getDigestMethod());
                 lotlRefFound = true;
             }
@@ -129,7 +129,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
     }
 
     @Test
-    public void testWithCustomSignatureAlgorithmParams() {
+    void testWithCustomSignatureAlgorithmParams() {
         DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
         RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
 
@@ -140,9 +140,8 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         parameters.setReferenceId("lotl");
         parameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        parameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+        parameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
         parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
-        parameters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
 
         RemoteBLevelParameters bLevelParams = new RemoteBLevelParameters();
         bLevelParams.setSigningDate(signingTime);
@@ -151,7 +150,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         ToBeSignedDTO dataToSign = tlSigningService.getDataToSign(toSignDocument, parameters);
         assertNotNull(dataToSign);
 
-        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, MaskGenerationFunction.MGF1, getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, getPrivateKeyEntry());
         RemoteDocument signedDocument = tlSigningService.signDocument(toSignDocument, parameters,
                 new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
         assertNotNull(signedDocument);
@@ -165,7 +164,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         boolean lotlRefFound = false;
         List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
         for (XmlDigestMatcher digestMatcher : digestMatchers) {
-            if (digestMatcher.getName().equals("lotl")) {
+            if (digestMatcher.getId() != null && digestMatcher.getId().equals("lotl")) {
                 assertEquals(DigestAlgorithm.SHA256, digestMatcher.getDigestMethod());
                 lotlRefFound = true;
             }

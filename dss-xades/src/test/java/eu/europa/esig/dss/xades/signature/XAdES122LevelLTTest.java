@@ -42,17 +42,17 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.xades.XAdES111Utils;
 
-public class XAdES122LevelLTTest extends AbstractXAdESTestSignature {
+class XAdES122LevelLTTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello world".getBytes(), "test+file.txt");
 
 		signatureParameters = new XAdESSignatureParameters();

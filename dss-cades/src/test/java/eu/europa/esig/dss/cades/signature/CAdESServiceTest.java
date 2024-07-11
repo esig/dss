@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -27,7 +28,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -40,6 +41,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,20 +55,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESServiceTest extends PKIFactoryAccess {
+class CAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
+    private static CertificateVerifier certificateVerifier;
 	private static CAdESService service;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new InMemoryDocument("Hello world!".getBytes());
-        service = new CAdESService(getCompleteCertificateVerifier());
+        certificateVerifier = getCompleteCertificateVerifier();
+        service = new CAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
 	}
 	
 	@Test
-	public void signatureTest() throws Exception {
+	void signatureTest() throws Exception {
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		
         Exception exception = assertThrows(NullPointerException.class, () -> signAndValidate(null, signatureParameters));
@@ -83,7 +87,11 @@ public class CAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Unsupported signature packaging: null", exception.getMessage());
         signatureParameters.setGenerateTBSWithoutCertificate(false);
 
-        signatureParameters.setSignWithExpiredCertificate(true);
+        certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
+
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         
@@ -164,7 +172,7 @@ public class CAdESServiceTest extends PKIFactoryAccess {
     }
 
 	@Test
-	public void extensionTest() {
+	void extensionTest() {
 		CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -195,7 +203,7 @@ public class CAdESServiceTest extends PKIFactoryAccess {
 	}
 
     @Test
-    public void addSignaturePolicyStoreTest() {
+    void addSignaturePolicyStoreTest() {
         CAdESSignatureParameters signatureParameters = new CAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -205,7 +213,7 @@ public class CAdESServiceTest extends PKIFactoryAccess {
         Policy policy = new Policy();
         policy.setId("1.2.3.4.5");
         policy.setDigestAlgorithm(DigestAlgorithm.SHA256);
-        policy.setDigestValue(Utils.fromBase64(signaturePolicy.getDigest(DigestAlgorithm.SHA256)));
+        policy.setDigestValue(signaturePolicy.getDigestValue(DigestAlgorithm.SHA256));
         signatureParameters.bLevel().setSignaturePolicy(policy);
 
         DSSDocument signedDocument = sign(documentToSign, signatureParameters);

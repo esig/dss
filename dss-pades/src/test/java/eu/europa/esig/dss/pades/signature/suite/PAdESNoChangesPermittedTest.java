@@ -47,7 +47,7 @@ public class PAdESNoChangesPermittedTest extends AbstractPAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(
                 getClass().getResourceAsStream("/validation/dss-2554/certified-no-change-permitted.pdf"));
 

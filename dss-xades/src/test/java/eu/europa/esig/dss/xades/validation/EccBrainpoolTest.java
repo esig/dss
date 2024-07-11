@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EccBrainpoolTest extends AbstractXAdESTestValidation {
+class EccBrainpoolTest extends AbstractXAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

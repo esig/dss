@@ -58,14 +58,12 @@ public class CommonCertificateSource implements CertificateSource {
 
 	/**
 	 * Map of entries, the key is a hash of the public key.
-	 * 
 	 * All entries share the same key pair
 	 */
-	private Map<EntityIdentifier, CertificateSourceEntity> entriesByPublicKeyHash = new HashMap<>();
+	private Map<EntityIdentifier, EquivalentCertificatesEntity> entriesByPublicKeyHash = new HashMap<>();
 
 	/**
 	 * Map of tokens, the key is the properties map of SubjectX500Principal
-	 * 
 	 * For a same SubjectX500Principal, different key pairs (and certificates) are possible
 	 */
 	private Map<Map<String, String>, Set<CertificateToken>> tokensBySubject = new HashMap<>();
@@ -95,10 +93,10 @@ public class CommonCertificateSource implements CertificateSource {
 
 		synchronized (entriesByPublicKeyHash) {
 			final EntityIdentifier entityKey = certificateToAdd.getEntityKey();
-			CertificateSourceEntity poolEntity = entriesByPublicKeyHash.get(entityKey);
+			EquivalentCertificatesEntity poolEntity = entriesByPublicKeyHash.get(entityKey);
 			if (poolEntity == null) {
 				LOG.trace("Public key {} is not in the pool", entityKey);
-				poolEntity = new CertificateSourceEntity(certificateToAdd);
+				poolEntity = new EquivalentCertificatesEntity(certificateToAdd);
 				entriesByPublicKeyHash.put(entityKey, poolEntity);
 			} else {
 				LOG.trace("Public key {} is already in the pool", entityKey);
@@ -128,7 +126,7 @@ public class CommonCertificateSource implements CertificateSource {
 
 		synchronized (entriesByPublicKeyHash) {
 			final EntityIdentifier entityKey = certificateToRemove.getEntityKey();
-			CertificateSourceEntity poolEntity = entriesByPublicKeyHash.get(entityKey);
+			EquivalentCertificatesEntity poolEntity = entriesByPublicKeyHash.get(entityKey);
 			if (poolEntity == null) {
 				LOG.trace("Public key {} is not in the pool", entityKey);
 			} else {
@@ -168,7 +166,7 @@ public class CommonCertificateSource implements CertificateSource {
 
 	@Override
 	public boolean isKnown(CertificateToken token) {
-		final CertificateSourceEntity poolEntity = entriesByPublicKeyHash.get(token.getEntityKey());
+		final EquivalentCertificatesEntity poolEntity = entriesByPublicKeyHash.get(token.getEntityKey());
 		if (poolEntity != null) {
 			Set<CertificateToken> certsByPublicKey = poolEntity.getEquivalentCertificates();
 			Set<CertificateToken> certsBySubject = getBySubject(token.getSubject());
@@ -185,7 +183,7 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public List<CertificateToken> getCertificates() {
 		List<CertificateToken> allCertificates = new ArrayList<>();
-		for (CertificateSourceEntity entity : entriesByPublicKeyHash.values()) {
+		for (EquivalentCertificatesEntity entity : entriesByPublicKeyHash.values()) {
 			allCertificates.addAll(entity.getEquivalentCertificates());
 		}
 		return Collections.unmodifiableList(allCertificates);
@@ -205,7 +203,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public Set<CertificateToken> getByPublicKey(PublicKey publicKey) {
-		CertificateSourceEntity entity = entriesByPublicKeyHash.get(new EntityIdentifier(publicKey));
+		EquivalentCertificatesEntity entity = entriesByPublicKeyHash.get(new EntityIdentifier(publicKey));
 		if (entity != null) {
 			return entity.getEquivalentCertificates();
 		} else {
@@ -222,7 +220,7 @@ public class CommonCertificateSource implements CertificateSource {
 	 */
 	@Override
 	public Set<CertificateToken> getBySki(byte[] ski) {
-		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+		for (EquivalentCertificatesEntity entry : entriesByPublicKeyHash.values()) {
 			if (Arrays.equals(entry.getSki(), ski)) {
 				return entry.getEquivalentCertificates();
 			}
@@ -248,7 +246,7 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public Set<CertificateToken> getBySignerIdentifier(SignerIdentifier signerIdentifier) {
 		Set<CertificateToken> result = new HashSet<>();
-		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+		for (EquivalentCertificatesEntity entry : entriesByPublicKeyHash.values()) {
 			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
 				// run over all entries to compare with the SN too
 				if (signerIdentifier.isRelatedToCertificate(certificateToken)) {
@@ -262,7 +260,7 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public Set<CertificateToken> getByCertificateDigest(Digest digest) {
 		Set<CertificateToken> result = new HashSet<>();
-		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+		for (EquivalentCertificatesEntity entry : entriesByPublicKeyHash.values()) {
 			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
 				if (Arrays.equals(digest.getValue(), certificateToken.getDigest(digest.getAlgorithm()))) {
 					result.add(certificateToken);
@@ -275,7 +273,7 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public Set<CertificateToken> findTokensFromCertRef(CertificateRef certificateRef) {
 		Set<CertificateToken> result = new HashSet<>();
-		for (CertificateSourceEntity entry : entriesByPublicKeyHash.values()) {
+		for (EquivalentCertificatesEntity entry : entriesByPublicKeyHash.values()) {
 			for (CertificateToken certificateToken : entry.getEquivalentCertificates()) {
 				if (doesCertificateReferenceMatch(certificateToken, certificateRef)) {
 					result.add(certificateToken);

@@ -1,0 +1,71 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/services/rest/signature/multiple-documents/extendDocument' -i -X POST \
+    -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+  "toExtendDocument" : {
+    "bytes" : "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",
+    "digestAlgorithm" : null,
+    "name" : "container-signed-xades-baseline-b.sce"
+  },
+  "parameters" : {
+    "signingCertificate" : null,
+    "certificateChain" : [ ],
+    "detachedContents" : null,
+    "asicContainerType" : "ASiC_E",
+    "signatureLevel" : "XAdES_BASELINE_T",
+    "signaturePackaging" : null,
+    "embedXML" : false,
+    "manifestSignature" : false,
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
+    "base64UrlEncodedPayload" : true,
+    "base64UrlEncodedEtsiUComponents" : true,
+    "signatureAlgorithm" : null,
+    "digestAlgorithm" : null,
+    "encryptionAlgorithm" : null,
+    "maskGenerationFunction" : null,
+    "referenceDigestAlgorithm" : null,
+    "contentTimestamps" : null,
+    "contentTimestampParameters" : {
+      "digestAlgorithm" : "SHA512",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signatureTimestampParameters" : {
+      "digestAlgorithm" : "SHA512",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "archiveTimestampParameters" : {
+      "digestAlgorithm" : "SHA512",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signWithExpiredCertificate" : false,
+    "generateTBSWithoutCertificate" : false,
+    "imageParameters" : null,
+    "signatureIdToCounterSign" : null,
+    "blevelParams" : {
+      "trustAnchorBPPolicy" : true,
+      "signingDate" : 1720186839081,
+      "claimedSignerRoles" : null,
+      "signedAssertions" : null,
+      "policyId" : null,
+      "policyQualifier" : null,
+      "policyDescription" : null,
+      "policyDigestAlgorithm" : null,
+      "policyDigestValue" : null,
+      "policySpuri" : null,
+      "commitmentTypeIndications" : null,
+      "signerLocationPostalAddress" : [ ],
+      "signerLocationPostalCode" : null,
+      "signerLocationLocality" : null,
+      "signerLocationStateOrProvince" : null,
+      "signerLocationCountry" : null,
+      "signerLocationStreet" : null
+    }
+  }
+}'
+----

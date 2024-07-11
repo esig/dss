@@ -22,7 +22,6 @@ package eu.europa.esig.dss.xades.reference;
 
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import org.w3c.dom.Node;
 
 /**
  * This is a special transform to be used exclusively within a xades:SignaturePolicyId
@@ -51,13 +50,6 @@ public class SPDocDigestAsInSpecificationTransform extends AbstractTransform {
      */
     protected SPDocDigestAsInSpecificationTransform(DSSNamespace xmlDSigNamespace) {
         super(xmlDSigNamespace, ALGORITHM_URI);
-    }
-
-    @Override
-    @Deprecated
-    public byte[] getBytesAfterTransformation(Node node) {
-        throw new IllegalArgumentException(
-                "The transform SPDocDigestAsInSpecificationTransform cannot be used for reference processing!");
     }
 
     @Override

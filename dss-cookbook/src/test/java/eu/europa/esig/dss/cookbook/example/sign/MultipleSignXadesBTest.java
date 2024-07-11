@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -41,12 +41,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MultipleSignXadesBTest extends CookbookTools {
+class MultipleSignXadesBTest extends CookbookTools {
 
     private String signingAlias;
 
     @Test
-    public void signXAdESBaselineB() throws Exception {
+    void signXAdESBaselineB() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

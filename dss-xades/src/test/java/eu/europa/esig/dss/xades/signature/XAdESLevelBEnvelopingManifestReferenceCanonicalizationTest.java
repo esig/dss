@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class XAdESLevelBEnvelopingManifestReferenceCanonicalizationTest extends AbstractXAdESTestSignature {
+class XAdESLevelBEnvelopingManifestReferenceCanonicalizationTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -68,7 +68,7 @@ public class XAdESLevelBEnvelopingManifestReferenceCanonicalizationTest extends 
 
     @ParameterizedTest(name = "Canonicalization {index} : {0}")
     @MethodSource("data")
-    public void test(String canonicalization) {
+    void test(String canonicalization) {
         documentToSign = new FileDocument("src/test/resources/manifest-joue.xml");
 
         signatureParameters = new XAdESSignatureParameters();

@@ -30,12 +30,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-public class DateParserTest {
+class DateParserTest {
 
 	private final DateParser dateParser = new DateParser();
 
 	@Test
-	public void testValid() throws Exception {
+	void testValid() throws Exception {
 		String validDateString = "2015-07-05T22:00:00Z";
 		Date date = dateParser.unmarshal(validDateString);
 		assertNotNull(date);
@@ -47,13 +47,13 @@ public class DateParserTest {
 	}
 
 	@Test
-	public void testInvalid() {
+	void testInvalid() {
 		String invalidDateString = "aaa";
 		assertThrows(IllegalArgumentException.class, () -> dateParser.unmarshal(invalidDateString));
 	}
 
 	@Test
-	public void testNull() throws Exception {
+	void testNull() throws Exception {
 		assertNull(dateParser.marshal(null));
 		assertNull(dateParser.unmarshal(null));
 	}

@@ -36,20 +36,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class MaxSizeInputStreamTest {
+class MaxSizeInputStreamTest {
 
     private static final String HTTP_URL_TO_LOAD = "http://certs.eid.belgium.be/belgiumrs2.crt";
 
     private URLConnection urlConnection;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         urlConnection = new URL(HTTP_URL_TO_LOAD).openConnection();;
         urlConnection.setDoInput(true);
     }
 
     @Test
-    public void readByByteTest() throws IOException {
+    void readByByteTest() throws IOException {
         byte[] result;
         try (InputStream is = urlConnection.getInputStream();
              MaxSizeInputStream maxSizeInputStream = new MaxSizeInputStream(is, 1000000, HTTP_URL_TO_LOAD);
@@ -66,7 +66,7 @@ public class MaxSizeInputStreamTest {
     }
 
     @Test
-    public void readByByteWithLimitTest() {
+    void readByByteWithLimitTest() {
         boolean exceptionThrown = false;
         try (InputStream is = urlConnection.getInputStream();
              MaxSizeInputStream maxSizeInputStream = new MaxSizeInputStream(is, 10, HTTP_URL_TO_LOAD);
@@ -83,7 +83,7 @@ public class MaxSizeInputStreamTest {
     }
 
     @Test
-    public void readWithBufferArrayTest() throws IOException {
+    void readWithBufferArrayTest() throws IOException {
         byte[] result;
         try (InputStream is = urlConnection.getInputStream();
              MaxSizeInputStream maxSizeInputStream = new MaxSizeInputStream(is, 1000000, HTTP_URL_TO_LOAD);
@@ -101,7 +101,7 @@ public class MaxSizeInputStreamTest {
     }
 
     @Test
-    public void readWithBufferArrayWithLimitTest() {
+    void readWithBufferArrayWithLimitTest() {
         boolean exceptionThrown = false;
         try (InputStream is = urlConnection.getInputStream();
              MaxSizeInputStream maxSizeInputStream = new MaxSizeInputStream(is, 10, HTTP_URL_TO_LOAD);

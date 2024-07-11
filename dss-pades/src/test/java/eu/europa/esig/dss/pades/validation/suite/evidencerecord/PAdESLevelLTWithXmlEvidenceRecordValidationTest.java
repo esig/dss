@@ -50,4 +50,9 @@ public class PAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractPAd
         return trustedCertificateSource;
     }
 
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 1;
+    }
+
 }

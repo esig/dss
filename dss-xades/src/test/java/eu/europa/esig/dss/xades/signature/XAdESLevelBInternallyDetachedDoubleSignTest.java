@@ -36,11 +36,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESLevelBInternallyDetachedDoubleSignTest extends AbstractXAdESTestSignature {
+class XAdESLevelBInternallyDetachedDoubleSignTest extends AbstractXAdESTestSignature {
 
     private static final DSSDocument DOC = new FileDocument(new File("src/test/resources/sample-with-id.xml"));
 
@@ -49,7 +50,7 @@ public class XAdESLevelBInternallyDetachedDoubleSignTest extends AbstractXAdESTe
     private XAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = DOC;
         service = new XAdESService(getOfflineCertificateVerifier());
         signatureParameters = initSignatureParameters();
@@ -69,7 +70,10 @@ public class XAdESLevelBInternallyDetachedDoubleSignTest extends AbstractXAdESTe
     protected DSSDocument sign() {
         DSSDocument signedDocument = super.sign();
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MILLISECOND, 1);
         signatureParameters = initSignatureParameters();
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
         signatureParameters.setRootDocument(DomUtils.buildDOM(signedDocument));
 
         DSSDocument doubleSignedDoc = super.sign();

@@ -36,9 +36,9 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
-import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
+import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest extends AbstractASiCCAdESCounterSignatureTest {
+class ASiCECAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest extends AbstractASiCCAdESCounterSignatureTest {
 
     private ASiCWithCAdESService service;
     private DSSDocument documentToSign;
@@ -59,7 +59,7 @@ public class ASiCECAdESLevelBCounterSignedWithUserFriendlyIdentifierProviderTest
     private Date signingDate;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);

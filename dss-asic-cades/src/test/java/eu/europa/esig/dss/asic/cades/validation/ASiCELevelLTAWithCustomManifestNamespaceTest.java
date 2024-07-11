@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCELevelLTAWithCustomManifestNamespaceTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCELevelLTAWithCustomManifestNamespaceTest extends AbstractASiCWithCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

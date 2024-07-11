@@ -52,7 +52,7 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -66,7 +66,7 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         TimeZone.setDefault(DEFAULT_TIME_ZONE);
     }
 
@@ -97,7 +97,7 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void changeParametersTimeZoneTest() {
+    void changeParametersTimeZoneTest() {
         Date signingTime = new Date();
 
         PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
@@ -108,8 +108,7 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
         signatureParameters.setSigningTimeZone(TimeZone.getTimeZone("GMT+3"));
 
         ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-                signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
@@ -130,13 +129,12 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void changeSystemTimeZoneTest() {
+    void changeSystemTimeZoneTest() {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+3"));
         PAdESSignatureParameters signatureParameters = getSignatureParameters();
 
         ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-                signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+0"));
         DSSDocument signedDocument = service.signDocument(getDocumentToSign(), signatureParameters, signatureValue);
@@ -151,14 +149,13 @@ public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void defaultTimeZoneChangeSystemTimeZoneTest() {
+    void defaultTimeZoneChangeSystemTimeZoneTest() {
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+3"));
         PAdESSignatureParameters signatureParameters = getSignatureParameters();
         signatureParameters.setSigningTimeZone(DEFAULT_TIME_ZONE);
 
         ToBeSigned dataToSign = service.getDataToSign(getDocumentToSign(), signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-                signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 
         TimeZone.setDefault(TimeZone.getTimeZone("GMT+0"));
         DSSDocument signedDocument = service.signDocument(getDocumentToSign(), signatureParameters, signatureValue);

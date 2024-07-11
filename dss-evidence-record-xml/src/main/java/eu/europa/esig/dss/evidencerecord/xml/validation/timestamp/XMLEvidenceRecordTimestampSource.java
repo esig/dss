@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation.timestamp;
 
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.evidencerecord.xml.validation.XmlEvidenceRecord;
@@ -42,8 +43,8 @@ public class XMLEvidenceRecordTimestampSource extends EvidenceRecordTimestampSou
     }
 
     @Override
-    protected TimestampToken createTimestampToken(ArchiveTimeStampObject archiveTimeStamp) {
-        TimestampToken timestampToken = super.createTimestampToken(archiveTimeStamp);
+    protected TimestampToken createTimestampToken(ArchiveTimeStampObject archiveTimeStamp, EvidenceRecordTimestampType evidenceRecordTimestampType) {
+        TimestampToken timestampToken = super.createTimestampToken(archiveTimeStamp, evidenceRecordTimestampType);
         timestampToken.setArchiveTimestampType(ArchiveTimestampType.XML_EVIDENCE_RECORD);
         return timestampToken;
     }

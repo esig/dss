@@ -44,14 +44,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class JAdESSerializationLevelBDetachedTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESSerializationLevelBDetachedTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
 	private JAdESSignatureParameters signatureParameters;
 	private List<DSSDocument> documentToSigns;
 	private JAdESService jadesService;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSigns = Arrays.asList(new FileDocument("src/test/resources/sample.json"),
 				new FileDocument("src/test/resources/sample.png"),
 				new InMemoryDocument("Hello World!".getBytes(), "helloWorld"));

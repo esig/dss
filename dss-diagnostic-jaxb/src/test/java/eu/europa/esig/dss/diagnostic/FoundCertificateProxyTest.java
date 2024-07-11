@@ -39,10 +39,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
-public class FoundCertificateProxyTest {
+class FoundCertificateProxyTest {
 	
 	@Test
-	public void getRelatedCertificatesByRefOriginTest() {
+	void getRelatedCertificatesByRefOriginTest() {
 		XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 		XmlSignature xmlSignature = new XmlSignature();
 		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();
@@ -81,7 +81,7 @@ public class FoundCertificateProxyTest {
 	}
 	
 	@Test
-	public void getOrphanCertificatesByRefOriginTest() {
+	void getOrphanCertificatesByRefOriginTest() {
 		XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
 		XmlSignature xmlSignature = new XmlSignature();
 		XmlFoundCertificates xmlFoundCertificates = new XmlFoundCertificates();

@@ -39,14 +39,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class ASiCECAdESLevelBNullFilenameTest extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESLevelBNullFilenameTest extends AbstractASiCECAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
 	private ASiCWithCAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes());
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -77,7 +77,7 @@ public class ASiCECAdESLevelBNullFilenameTest extends AbstractASiCECAdESTestSign
 		assertEquals(1, manifestFile.getEntries().size());
 
 		ManifestEntry manifestEntry = manifestFile.getEntries().get(0);
-		assertNotNull(manifestEntry.getFileName());
+		assertNotNull(manifestEntry.getUri());
 		assertNotNull(manifestEntry.getDigest());
 		assertNull(manifestEntry.getMimeType());
 	}

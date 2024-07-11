@@ -176,7 +176,6 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			DSSDocument document = resourcesHandler.writeToDSSDocument();
 			try (InputStream is = document.openStream()) {
 				signatureOptions.setVisualSignature(is);
-				signatureOptions.setPage(pageNumber);
 			}
 
 		}

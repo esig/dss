@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades;
 
-import eu.europa.esig.dss.AbstractSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
@@ -100,7 +100,7 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * The DigestAlgorithm used to create a reference to a signing certificate,
 	 * namely 'x5t#256' for SHA256 or 'x5t#o' for other algorithms
 	 */
-	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA256;
+	private DigestAlgorithm signingCertificateDigestMethod = DigestAlgorithm.SHA512;
 	
 	/**
 	 * Defines a JWS signature type according to RFC 7515, 3. JSON Web Signature (JWS) Overview
@@ -113,6 +113,11 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 * Defines a used 'sigD' mechanism for a detached signature
 	 */
 	private SigDMechanism sigDMechanism;
+
+	/**
+	 * Identifies a type of claimed signing time header to be used on JAdES signature creation
+	 */
+	private JAdESSigningTimeType jadesSigningTimeType = JAdESSigningTimeType.IAT;
 
 	/**
 	 * Default constructor instantiating object with default parameters
@@ -295,6 +300,33 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 */
 	public void setSigDMechanism(SigDMechanism sigDMechanism) {
 		this.sigDMechanism = sigDMechanism;
+	}
+
+	/**
+	 * Returns the JAdES claimed signing-time header parameters to be used
+	 *
+	 * @return {@link JAdESSigningTimeType}
+	 */
+	public JAdESSigningTimeType getJadesSigningTimeType() {
+		return jadesSigningTimeType;
+	}
+
+	/**
+	 * Sets the claimed signing-time header parameters to be used.
+	 * <p>
+	 * Requirements ETSI TS 119 182-1, clause 6.3, for iat and sigT:
+	 * Before 2025-07-15T00:00:00Z the generator should include the iat header parameter
+	 * for indicating the claimed signing time in new JAdES signatures and should not include
+	 * the iat header parameter for indicating the claimed signing time in new JAdES signatures.
+	 * Starting at 2025-07-15T00:00:00Z the generator shall include the iat header parameter
+	 * for indicating the claimed signing time in new JAdES signatures.
+	 * <p>
+	 * Default : IAT ('iat' header parameter will be used)
+	 *
+	 * @param jadesSigningTimeType {@link JAdESSigningTimeType}
+	 */
+	public void setJadesSigningTimeType(JAdESSigningTimeType jadesSigningTimeType) {
+		this.jadesSigningTimeType = jadesSigningTimeType;
 	}
 
 	/**

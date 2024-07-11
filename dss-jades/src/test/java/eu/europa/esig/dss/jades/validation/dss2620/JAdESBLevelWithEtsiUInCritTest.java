@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JAdESBLevelWithEtsiUInCritTest extends AbstractJAdESTestValidation {
+class JAdESBLevelWithEtsiUInCritTest extends AbstractJAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

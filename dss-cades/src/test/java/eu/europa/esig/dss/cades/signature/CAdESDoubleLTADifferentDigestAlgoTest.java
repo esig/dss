@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;
@@ -38,7 +38,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSignature {
+class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSignature {
 
     private static final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World".getBytes());
 
@@ -47,7 +47,7 @@ public class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSign
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         signatureParameters = new CAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());

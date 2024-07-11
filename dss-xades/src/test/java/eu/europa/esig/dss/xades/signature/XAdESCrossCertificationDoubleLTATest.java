@@ -38,13 +38,13 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xml.common.definition.XPathExpressionBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import org.junit.jupiter.api.RepeatedTest;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -65,10 +65,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * See DSS-1806
  */
-public class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
+class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
 
     @RepeatedTest(10)
-    public void test() throws Exception {
+    void test() throws Exception {
 
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 

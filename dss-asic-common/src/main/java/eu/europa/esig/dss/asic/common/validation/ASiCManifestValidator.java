@@ -70,25 +70,27 @@ public class ASiCManifestValidator {
         }
         for (ManifestEntry entry : manifestEntries) {
             if (entry.getDigest() != null) {
-                DSSDocument signedDocument = DSSUtils.getDocumentWithName(signedDocuments, entry.getFileName());
+                // Use strict by name handling, as document names are predefined within an ASiC container
+                DSSDocument signedDocument = DSSUtils.getDocumentWithName(signedDocuments, entry.getUri());
                 if (signedDocument != null) {
                     entry.setFound(true);
-                    String computedDigest = signedDocument.getDigest(entry.getDigest().getAlgorithm());
-                    if (Arrays.equals(entry.getDigest().getValue(), Utils.fromBase64(computedDigest))) {
+                    entry.setDocumentName(signedDocument.getName());
+                    byte[] computedDigest = signedDocument.getDigestValue(entry.getDigest().getAlgorithm());
+                    if (Arrays.equals(entry.getDigest().getValue(), computedDigest)) {
                         entry.setIntact(true);
                     } else {
-                        LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getFileName());
+                        LOG.warn("Digest value doesn't match for signed data with name '{}'", entry.getUri());
                         LOG.warn("Expected : '{}'", Utils.toBase64(entry.getDigest().getValue()));
-                        LOG.warn("Computed : '{}'", computedDigest);
+                        LOG.warn("Computed : '{}'", Utils.toBase64(computedDigest));
                     }
                 }
 
             } else {
-                LOG.warn("Digest is not defined for signed data with name '{}'", entry.getFileName());
+                LOG.warn("Digest is not defined for signed data with name '{}'", entry.getUri());
             }
 
             if (!entry.isFound()) {
-                LOG.warn("Signed data with name '{}' not found", entry.getFileName());
+                LOG.warn("Signed data with name '{}' not found", entry.getUri());
             }
         }
 

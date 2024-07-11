@@ -42,14 +42,14 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPathTransform;
 
-public class XAdESLevelBWithXPathTransformOnlyTest extends AbstractXAdESTestSignature {
+class XAdESLevelBWithXPathTransformOnlyTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample-c14n-dss.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
@@ -66,7 +66,7 @@ public class XAdESLevelBWithXPathTransformOnlyTest extends AbstractXAdESTestSign
 		dssReference.setId("DSS-REF-1");
 		dssReference.setUri("");
 		dssReference.setContents(documentToSign);
-		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA256);
+		dssReference.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		DSSTransform xPathTransform = new XPathTransform("ancestor-or-self::*[@attr='Hello']");
 		dssReference.setTransforms(Arrays.asList(xPathTransform));
 		references.add(dssReference);

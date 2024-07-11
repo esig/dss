@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.asic.cades.signature.asics;
 
-import eu.europa.esig.dss.asic.cades.ASiCWithCAdESContainerExtractor;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -41,7 +41,7 @@ import java.io.UnsupportedEncodingException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSignature {
+class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSignature {
 
 	private static final String APPLICATION_VND_OASIS_OPENDOCUMENT_TEXT = "application/vnd.oasis.opendocument.text";
 	private DocumentSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters> service;
@@ -49,7 +49,7 @@ public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSign
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 
 		signatureParameters = new ASiCWithCAdESSignatureParameters();
@@ -68,7 +68,7 @@ public class ASiCSCAdESLevelBWithMimeTypeTest extends AbstractASiCSCAdESTestSign
 
 		InMemoryDocument doc = new InMemoryDocument(byteArray);
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);
+		DefaultASiCContainerExtractor extractor = new ASiCWithCAdESContainerExtractor(doc);
 		ASiCContent extract = extractor.extract();
 		DSSDocument mimeTypeDocument = extract.getMimeTypeDocument();
 		byte[] mimeTypeContent = DSSUtils.toByteArray(mimeTypeDocument);

@@ -31,8 +31,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -44,13 +43,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends AbstractXAdESTestExtension {
+class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends AbstractXAdESTestExtension {
 
     private CertificateVerifier certificateVerifier;
     private XAdESService service;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
 
@@ -62,14 +61,8 @@ public class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends Abstra
     protected CertificateVerifier getCompleteCertificateVerifier() {
         CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
         certificateVerifier.setRevocationFallback(true);
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         return certificateVerifier;
-    }
-
-    @Override
-    protected XAdESSignatureParameters getSignatureParameters() {
-        XAdESSignatureParameters signatureParameters = super.getSignatureParameters();
-        signatureParameters.setSignWithExpiredCertificate(true);
-        return signatureParameters;
     }
 
     @Override
@@ -79,13 +72,13 @@ public class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends Abstra
 
     @Override
     protected DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
-        certificateVerifier.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
         Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
         assertTrue(exception.getMessage().contains(
                 "The signing certificate has expired and there is no POE during its validity range"));
 
-        certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 
         return super.extendSignature(signedDocument);
     }

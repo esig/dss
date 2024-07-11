@@ -26,12 +26,17 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.BaselineRequirementsChecker;
-import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.signature.BaselineRequirementsChecker;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -40,6 +45,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
@@ -114,8 +120,9 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // signing-time (Cardinality == 1)
-        boolean signingTimePresent = CMSUtils.getSignedAttribute(
-                signerInformation, PKCSObjectIdentifiers.pkcs_9_at_signingTime) != null;
+        Attribute[] signingTimeAttrs = CMSUtils.getSignedAttributes(signerInformation,
+                PKCSObjectIdentifiers.pkcs_9_at_signingTime);
+        boolean signingTimePresent = Utils.arraySize(signingTimeAttrs) == 1;
         boolean cades = SignatureForm.CAdES.equals(signatureForm);
         if (signingTimePresent != cades) {
             if (cades) {
@@ -183,34 +190,53 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         }
         SignerInformation signerInformation = signature.getSignerInformation();
         // certificate-values (Cardinality == 0)
-        if (CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certValues) != null) {
+        if (Utils.isArrayNotEmpty(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certValues))) {
             LOG.warn("certificate-values attribute shall not be present " +
                     "for CAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
         // complete-certificate-references (Cardinality == 0)
-        if (CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certificateRefs) != null) {
+        if (Utils.isArrayNotEmpty(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certificateRefs))) {
             LOG.warn("complete-certificate-references attribute shall not be present " +
                     "for CAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
         // revocation-values (Cardinality == 0)
-        if (CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationValues) != null) {
+        if (Utils.isArrayNotEmpty(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationValues))) {
             LOG.warn("revocation-values attribute shall not be present " +
                     "for CAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
         // complete-revocation-references (Cardinality == 0)
-        if (CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationRefs) != null) {
+        if (Utils.isArrayNotEmpty(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationRefs))) {
             LOG.warn("complete-revocation-references attribute shall not be present " +
                     "for CAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
         }
         // time-stamped-certs-crls-references (Cardinality == 0)
-        if (CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp) != null) {
+        if (Utils.isArrayNotEmpty(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp))) {
             LOG.warn("time-stamped-certs-crls-references attribute shall not be present " +
                     "for CAdES-BASELINE-LT signature (cardinality == 0)!");
             return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected boolean containsLTLevelCertificates() {
+        CMSSignedData cmsSignedData = signature.getCmsSignedData();
+        List<CertificateToken> signedDataCertificates = cmsSignedData.getCertificates().getMatches(null)
+                .stream().map(DSSASN1Utils::getCertificate).collect(Collectors.toList());
+        ListCertificateSource timestampListCertificateSource = signature.getTimestampSource()
+                .getTimestampCertificateSourcesExceptLastArchiveTimestamp();
+        List<CertificateSource> timestampCertificateSources = timestampListCertificateSource.getSources();
+        if (Utils.isCollectionEmpty(timestampCertificateSources)) {
+            return false;
+        }
+        for (CertificateSource timestampCertificateSource : timestampCertificateSources) {
+            if (!Utils.containsAny(signedDataCertificates, timestampCertificateSource.getCertificates())) {
+                return false;
+            }
         }
         return true;
     }
@@ -241,11 +267,7 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-BES profile
-     *
-     * @return TRUE if the signature has a CAdES-BES profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedBESProfile() {
         SignerInformation signerInformation = signature.getSignerInformation();
         SignatureForm signatureForm = getBaselineSignatureForm();
@@ -264,6 +286,86 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("signing-certificate(-v2) attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
             return false;
         }
+        // signing-time (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_signingTime)) > 1) {
+            LOG.warn("signing-time attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // commitment-time-indication (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_commitmentType)) > 1) {
+            LOG.warn("commitment-time-indication attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // content-hints (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_contentHint)) > 1) {
+            LOG.warn("content-hints attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // mime-type (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, OID.id_aa_ets_mimeType)) > 1) {
+            LOG.warn("mime-type attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // signer-location (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerLocation)) > 1) {
+            LOG.warn("signer-location attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // signature-policy-identifier (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId)) > 1) {
+            LOG.warn("signature-policy-identifier attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // signature-policy-identifier (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId)) > 1) {
+            LOG.warn("signature-policy-identifier attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // signature-policy-store (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, OID.id_aa_ets_sigPolicyStore)) > 1) {
+            LOG.warn("signature-policy-store attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // content-reference (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_contentReference)) > 1) {
+            LOG.warn("content-reference attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // content-identifier (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_contentIdentifier)) > 1) {
+            LOG.warn("content-identifier attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // complete-certificate-references (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certificateRefs)) > 1) {
+            LOG.warn("complete-certificate-references attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // complete-revocation-references (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationRefs)) > 1) {
+            LOG.warn("complete-revocation-references attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // attribute-certificate-references (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, OID.attributeCertificateRefsOid)) > 1) {
+            LOG.warn("attribute-certificate-references attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // attribute-revocation-references (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, OID.attributeRevocationRefsOid)) > 1) {
+            LOG.warn("attribute-revocation-references attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // certificate-values (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certValues)) > 1) {
+            LOG.warn("certificate-values attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // revocation-values (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationValues)) > 1) {
+            LOG.warn("revocation-values attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
         // Additional requirement (h) and (i)
         if (!isSigningCertificateAttributeValid(signerInformation)) {
             LOG.warn("signing-certificate attribute shall be used for SHA1 hash algorithm " +
@@ -274,16 +376,14 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-EPES profile
-     *
-     * @return TRUE if the signature has a CAdES-EPES profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedEPESProfile() {
         SignerInformation signerInformation = signature.getSignerInformation();
         SignatureForm signatureForm = getBaselineSignatureForm();
         // signature-policy-identifier (Cardinality == 1)
-        if (CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId) == null) {
+        Attribute[] sigPolicyIdAttrs = CMSUtils.getSignedAttributes(signerInformation,
+                PKCSObjectIdentifiers.id_aa_ets_sigPolicyId);
+        if (Utils.arraySize(sigPolicyIdAttrs) == 0) {
             LOG.debug("signature-policy-identifier attribute shall be present for {}-EPES signature " +
                     "(cardinality == 1)!", signatureForm);
             return false;
@@ -297,11 +397,7 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-T profile
-     *
-     * @return TRUE if the signature has a CAdES-T profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedTProfile() {
         if (!minimalTRequirement()) {
             return false;
@@ -315,15 +411,11 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-C profile
-     *
-     * @return TRUE if the signature has a CAdES-C profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedCProfile() {
         SignerInformation signerInformation = signature.getSignerInformation();
         // complete-certificate-references
-        if (CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certificateRefs) == null) {
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_certificateRefs)) != 1) {
             LOG.debug("complete-certificate-references attribute shall be present for CAdES-C signature (cardinality == 1)!");
             return false;
         }
@@ -331,43 +423,35 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         ListCertificateSource certificateSources = getCertificateSourcesExceptLastArchiveTimestamp();
         boolean certificateFound = certificateSources.getNumberOfCertificates() > 0;
         boolean allSelfSigned = certificateFound && certificateSources.isAllSelfSigned();
-        if (!allSelfSigned &&
-                CMSUtils.getUnsignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationRefs) == null) {
+        Attribute[] revocationRefAttrs = CMSUtils.getUnsignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_revocationRefs);
+        if (Utils.arraySize(revocationRefAttrs) > 1) {
+            LOG.debug("complete-revocation-references attribute shall be present only once for CAdES-C signature (cardinality == 1)!");
+            return false;
+
+        } else if (!allSelfSigned && Utils.arraySize(revocationRefAttrs) != 1) {
             LOG.debug("complete-revocation-references attribute shall be present for CAdES-C signature (cardinality == 1)!");
             return false;
         }
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-X profile
-     *
-     * @return TRUE if the signature has a CAdES-X profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedXProfile() {
         SignerInformation signerInformation = signature.getSignerInformation();
-        if (CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_certCRLTimestamp) == null &&
-                CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_escTimeStamp) == null) {
+        if (Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_certCRLTimestamp)) +
+                Utils.arraySize(CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_escTimeStamp)) != 1) {
             LOG.debug("complete-revocation-references attribute shall be present for CAdES-C signature (cardinality == 1)!");
             return false;
         }
         return true;
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-XL profile
-     *
-     * @return TRUE if the signature has a CAdES-XL profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedXLProfile() {
         return minimalLTRequirement();
     }
 
-    /**
-     * Checks if the signature has a corresponding CAdES-A profile
-     *
-     * @return TRUE if the signature has a CAdES-A profile, FALSE otherwise
-     */
+    @Override
     public boolean hasExtendedAProfile() {
         List<TimestampToken> timestampTokens = new ArrayList<>();
         timestampTokens.addAll(signature.getArchiveTimestamps());
@@ -380,17 +464,25 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     private boolean isContentTypeValid(SignerInformation signerInformation) {
-        return signature.isCounterSignature() ||
-                CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_contentType) != null;
+        Attribute[] contentTypeAttrs = CMSUtils.getSignedAttributes(signerInformation,
+                PKCSObjectIdentifiers.pkcs_9_at_contentType);
+        int numberOfOccurrences = Utils.arraySize(contentTypeAttrs);
+        if (signature.isCounterSignature() && numberOfOccurrences == 0) {
+            return true;
+        }
+        return numberOfOccurrences == 1;
     }
 
     private boolean isMessageDigestPresent(SignerInformation signerInformation) {
-        return CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_messageDigest) != null;
+        Attribute[] messageDigestAttrs = CMSUtils.getSignedAttributes(signerInformation,
+                PKCSObjectIdentifiers.pkcs_9_at_messageDigest);
+        return Utils.arraySize(messageDigestAttrs) == 1;
     }
 
     private boolean isOneSigningCertificatePresent(SignerInformation signerInformation) {
-        return CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificate) != null ^
-                CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificateV2) != null;
+        Attribute[] signingCertAttrs = CMSUtils.getSignedAttributes(signerInformation, id_aa_signingCertificate);
+        Attribute[] signingCertV2Attrs = CMSUtils.getSignedAttributes(signerInformation, id_aa_signingCertificateV2);
+        return Utils.arraySize(signingCertAttrs) + Utils.arraySize(signingCertV2Attrs) == 1;
     }
 
     private boolean isSigningCertificateAttributeValid(SignerInformation signerInformation) {
@@ -401,11 +493,11 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             if (certDigest != null) {
                 DigestAlgorithm digestAlgorithm = certDigest.getAlgorithm();
                 if (DigestAlgorithm.SHA1.equals(digestAlgorithm)) {
-                    if (CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificate) == null) {
+                    if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, id_aa_signingCertificate)) == 0) {
                         return false;
                     }
                 } else {
-                    if (CMSUtils.getSignedAttribute(signerInformation, id_aa_signingCertificateV2) == null) {
+                    if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, id_aa_signingCertificateV2)) == 0) {
                         return false;
                     }
                 }

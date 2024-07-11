@@ -22,6 +22,6 @@ package eu.europa.esig.dss.utils.guava.impl;
 
 import eu.europa.esig.dss.utils.AbstractUtilsTest;
 
-public class GoogleGuavaUtilsTest extends AbstractUtilsTest {
+class GoogleGuavaUtilsTest extends AbstractUtilsTest {
 
 }

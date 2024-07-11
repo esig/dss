@@ -34,7 +34,7 @@ import eu.europa.esig.dss.pades.signature.PAdESWithExternalCMSService;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -43,10 +43,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignPdfWithExternalCmsTest extends CookbookTools {
+class SignPdfWithExternalCmsTest extends CookbookTools {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         preparePdfDoc();
 
         // tag::demo-pdf-sign[]

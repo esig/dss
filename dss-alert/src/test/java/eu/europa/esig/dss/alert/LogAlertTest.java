@@ -34,12 +34,12 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class LogAlertTest {
+class LogAlertTest {
 	
 	private static final String EXCEPTION_MESSAGE = "Bye World!";
 	
 	@Test
-	public void warnLogAlertTest() {
+	void warnLogAlertTest() {
 		MessageStatus status = new MessageStatus();
 		status.setMessage(EXCEPTION_MESSAGE);
 		
@@ -55,7 +55,7 @@ public class LogAlertTest {
 	}
 	
 	@Test
-	public void errorLogAlertTest() {
+	void errorLogAlertTest() {
 		MessageStatus status = new MessageStatus();
 		status.setMessage(EXCEPTION_MESSAGE);
 		
@@ -71,7 +71,7 @@ public class LogAlertTest {
 	}
 	
 	@Test
-	public void dssLogAlertTest() {
+	void dssLogAlertTest() {
 		MessageStatus status = new MessageStatus();
 		status.setMessage(EXCEPTION_MESSAGE);
 		
@@ -83,7 +83,7 @@ public class LogAlertTest {
 	}
 
 	@Test
-	public void logAlertWithSubMessageTest() {
+	void logAlertWithSubMessageTest() {
 		ObjectStatus status = new ObjectStatus();
 		status.setMessage(EXCEPTION_MESSAGE);
 

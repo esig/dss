@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.LogOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -33,17 +36,21 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESDoubleSignatureLTAAndLTTest extends AbstractPAdESTestSignature {
 
     private DSSDocument originalDocument;
 
+    private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
@@ -51,8 +58,9 @@ public class PAdESDoubleSignatureLTAAndLTTest extends AbstractPAdESTestSignature
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
-        service = new PAdESService(getCompleteCertificateVerifier());
+    void init() throws Exception {
+        certificateVerifier = getCompleteCertificateVerifier();
+        service = new PAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
 
         originalDocument = new InMemoryDocument(PAdESDoubleSignatureTest.class.getResourceAsStream("/sample.pdf"));
@@ -71,11 +79,33 @@ public class PAdESDoubleSignatureLTAAndLTTest extends AbstractPAdESTestSignature
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
         documentToSign = signedDocument;
         DSSDocument doubleSignedDocument = super.sign();
+        assertNotNull(doubleSignedDocument);
 
+        signatureParameters = new PAdESSignatureParameters();
+        signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
+        documentToSign = signedDocument;
+        doubleSignedDocument = super.sign();
+        assertNotNull(doubleSignedDocument);
+
+        signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
+
+        documentToSign = doubleSignedDocument;
+        Exception exception = assertThrows(AlertException.class, super::sign);
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new LogOnStatusAlert());
+
+        DSSDocument tripleSignedDocument = super.sign();
+        assertNotNull(tripleSignedDocument);
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+
         PAdESTimestampParameters timestampParameters = new PAdESTimestampParameters();
         PAdESTimestampService timestampService = new PAdESTimestampService(getGoodTsa());
 
+        // continue with a double-signed doc
         DSSDocument timestampedDocument = timestampService.timestampDocument(doubleSignedDocument, timestampParameters);
 
         PAdESExtensionService extensionService = new PAdESExtensionService(getCompleteCertificateVerifier());

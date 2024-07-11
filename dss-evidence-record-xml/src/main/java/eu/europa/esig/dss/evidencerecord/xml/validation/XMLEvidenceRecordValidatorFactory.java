@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
-
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidator;
-import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecordValidatorFactory;
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecordValidator;
+import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordValidatorFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**
@@ -45,7 +44,7 @@ public class XMLEvidenceRecordValidatorFactory implements EvidenceRecordValidato
     }
 
     @Override
-    public EvidenceRecordValidator create(DSSDocument document) {
+    public DefaultEvidenceRecordValidator create(DSSDocument document) {
         return new XMLEvidenceRecordValidator(document);
     }
 

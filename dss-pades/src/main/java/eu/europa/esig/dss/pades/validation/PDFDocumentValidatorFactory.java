@@ -29,22 +29,22 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
  */
 public class PDFDocumentValidatorFactory implements DocumentValidatorFactory {
 
-	/**
-	 * Default constructor
-	 */
-	public PDFDocumentValidatorFactory() {
-		// empty
-	}
+    /**
+     * Default constructor
+     */
+    public PDFDocumentValidatorFactory() {
+        // empty
+    }
 
-	@Override
-	public boolean isSupported(DSSDocument document) {
-		PDFDocumentValidator validator = new PDFDocumentValidator();
-		return validator.isSupported(document);
-	}
+    @Override
+    public boolean isSupported(DSSDocument document) {
+        PDFDocumentValidator validator = new PDFDocumentValidator();
+        return validator.isSupported(document);
+    }
 
-	@Override
-	public SignedDocumentValidator create(DSSDocument document) {
-		return new PDFDocumentValidator(document);
-	}
+    @Override
+    public SignedDocumentValidator create(DSSDocument document) {
+        return new PDFDocumentValidator(document);
+    }
 
 }

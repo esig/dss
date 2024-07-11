@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -30,7 +31,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -41,14 +42,14 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XmlNotAdESLevelTWithoutCertificatesTest extends AbstractXAdESTestSignature {
+class XmlNotAdESLevelTWithoutCertificatesTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         signatureParameters = new XAdESSignatureParameters();
@@ -56,6 +57,7 @@ public class XmlNotAdESLevelTWithoutCertificatesTest extends AbstractXAdESTestSi
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         signatureParameters.setGenerateTBSWithoutCertificate(true);
+        signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 
         service = new XAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());

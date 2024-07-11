@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2517DataObjectFormatNoObjectReferenceTest extends AbstractXAdESTestValidation {
+class DSS2517DataObjectFormatNoObjectReferenceTest extends AbstractXAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

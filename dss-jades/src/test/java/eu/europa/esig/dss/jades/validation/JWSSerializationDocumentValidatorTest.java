@@ -23,7 +23,7 @@ package eu.europa.esig.dss.jades.validation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.test.validation.AbstractTestValidator;
+import eu.europa.esig.dss.test.validation.AbstractTestDocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 
@@ -33,10 +33,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JWSSerializationDocumentValidatorTest extends AbstractTestValidator {
+class JWSSerializationDocumentValidatorTest extends AbstractTestDocumentValidator {
 
 	@Test
-	public void test() {
+	void test() {
 		JWSSerializationDocumentValidator validator = new JWSSerializationDocumentValidator();
 		assertFalse(validator.isSupported(new InMemoryDocument(new byte[] {})));
 		assertFalse(validator.isSupported(InMemoryDocument.createEmptyDocument()));

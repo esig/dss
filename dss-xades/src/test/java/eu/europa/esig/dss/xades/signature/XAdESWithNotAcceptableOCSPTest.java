@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // see DSS-2140
-public class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
+class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
@@ -57,7 +57,7 @@ public class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
 	private String signingAlias;
 
 	@BeforeEach
-	public void init() throws Exception {		
+	void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 
 		service = new XAdESService(getCompleteCertificateVerifier());
@@ -103,7 +103,7 @@ public class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
 	}
 	
 	@Test
-	public void ocspOnlyTest() {
+	void ocspOnlyTest() {
 		signingAlias = OCSP_SKIP_USER;
 		initSignatureParameters();
 		

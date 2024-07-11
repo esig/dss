@@ -73,7 +73,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 			MimeTypeEnum.PDF);
 
 	@Test
-	public void validateEmptyDocsCorrectPassword() {
+	void validateEmptyDocsCorrectPassword() {
 		assertNotNull(validateEmptyDocWithPassword(openProtected, correctProtectionPhrase));
 		assertNotNull(validateEmptyDocWithPassword(editionProtectedNone, correctProtectionPhrase));
 		assertNotNull(validateEmptyDocWithPassword(editionProtectedSigningAllowedNoField, correctProtectionPhrase));
@@ -81,7 +81,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	@Test
-	public void validateEmptyDocsWrongPassword() {
+	void validateEmptyDocsWrongPassword() {
 		Exception exception = assertThrows(InvalidPasswordException.class,
 				() -> validateEmptyDocWithPassword(openProtected, wrongProtectionPhrase));
 		assertTrue(exception.getMessage().contains("Encrypted document"));
@@ -100,7 +100,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	@Test
-	public void validateEmptyDocsNoPassword() {
+	void validateEmptyDocsNoPassword() {
 		Exception exception = assertThrows(InvalidPasswordException.class,
 				() -> validateEmptyDocWithPassword(openProtected, null));
 		assertTrue(exception.getMessage().contains("Encrypted document"));
@@ -118,7 +118,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	@Test
-	public void signatureOperationsCorrectPassword() throws Exception {
+	void signatureOperationsCorrectPassword() throws Exception {
 		DSSDocument document = sign(openProtected, correctProtectionPhrase);
 		verify(document);
 
@@ -133,7 +133,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	@Test
-	public void signatureOperationsNoPassword() {
+	void signatureOperationsNoPassword() {
 
 		DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service = new PAdESService(
 				getOfflineCertificateVerifier());
@@ -246,7 +246,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 	
 	@Test
-	public void signWithNoPassword() {
+	void signWithNoPassword() {
 		Exception exception = assertThrows(InvalidPasswordException.class, () -> sign(openProtected, null));
 		assertTrue(exception.getMessage().contains("Encrypted document"));
 
@@ -267,7 +267,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 	
 	@Test
-	public void signWithWrongPassword() {
+	void signWithWrongPassword() {
 		Exception exception = assertThrows(InvalidPasswordException.class, () -> sign(openProtected, wrongProtectionPhrase));
 		assertTrue(exception.getMessage().contains("Encrypted document"));
 
@@ -282,7 +282,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	@Test
-	public void extendOperationsCorrectPasswordTest() {
+	void extendOperationsCorrectPasswordTest() {
 		DSSDocument signedDoc = sign(openProtected, correctProtectionPhrase);
 
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
@@ -300,7 +300,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 	
 	@Test
-	public void extendOperationsInvalidPasswordTest() {
+	void extendOperationsInvalidPasswordTest() {
 		Exception exception = assertThrows(InvalidPasswordException.class, () -> extend(openProtected, null));
 		assertTrue(exception.getMessage().contains("Encrypted document"));
 
@@ -309,7 +309,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 	
 	@Test
-	public void readSignatureFieldsTest() {
+	void readSignatureFieldsTest() {
 		PAdESService padesService = new PAdESService(getOfflineCertificateVerifier());
 		List<String> availableSignatureFields = padesService.getAvailableSignatureFields(protectedWithEmptyFields, correctProtectionPhrase);
 		assertEquals(2, availableSignatureFields.size());
@@ -318,7 +318,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	@Test
-	public void ltaSigningTest() {
+	void ltaSigningTest() {
 		PAdESService padesService = new PAdESService(getCompleteCertificateVerifier());
 		padesService.setTspSource(getGoodTsa());
 
@@ -336,7 +336,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 	}
 
 	@Test
-	public void addSignatureFieldTest() throws Exception {
+	void addSignatureFieldTest() throws Exception {
 		PAdESService service = new PAdESService(getCompleteCertificateVerifier());
 
 		DSSDocument document = openProtected;
@@ -401,7 +401,7 @@ public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation
 
 	// TODO : OpenPdf does not keep the same identifier on protected documents signing
 	@Test
-	public void recreateParamsTest() throws Exception {
+	void recreateParamsTest() throws Exception {
 		Date date = new Date();
 		PAdESService padesService = new PAdESService(getCompleteCertificateVerifier());
 		padesService.setTspSource(getGoodTsa());

@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -39,12 +29,21 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
 
-public class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
+import java.io.File;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends AbstractXAdESMultipleDocumentsSignatureService {
 
 	private XAdESService service;
 	private List<DSSDocument> documentsToSign;
@@ -54,7 +53,7 @@ public class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends Abstr
 	private String signatureId;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new XAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 		
@@ -103,8 +102,7 @@ public class XAdESLevelLTAMultipleDocsDetachedCounterSignatureTest extends Abstr
 		counterSignatureParameters.setSignatureIdToCounterSign(signatureId);
 		
 		dataToSign = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToSign, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToSign, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		return service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 	}
 	

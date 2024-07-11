@@ -27,11 +27,11 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +49,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
         service = new PAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -63,7 +63,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void signBRevokedAndSignBGoodUserTest() {
+    void signBRevokedAndSignBGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -74,12 +74,12 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        PDFDocumentValidator validator = new PDFDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(doubleSigned);
+        assertEquals(2, pdfDocumentAnalyzer.getSignatures().size());
     }
 
     @Test
-    public void signBRevokedAndSignLTGoodUserTest() {
+    void signBRevokedAndSignLTGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -93,7 +93,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void signBGoodUserAndSignBRevokedTest() {
+    void signBGoodUserAndSignBRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -104,12 +104,12 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        PDFDocumentValidator validator = new PDFDocumentValidator(doubleSigned);
-        assertEquals(2, validator.getSignatures().size());
+        PDFDocumentAnalyzer pdfDocumentAnalyzer = new PDFDocumentAnalyzer(doubleSigned);
+        assertEquals(2, pdfDocumentAnalyzer.getSignatures().size());
     }
 
     @Test
-    public void signBGoodUserAndSignLTRevokedTest() {
+    void signBGoodUserAndSignLTRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -123,7 +123,7 @@ public class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
     }
 
     @Test
-    public void signBWithRevocationCheckEnabledTest() {
+    void signBWithRevocationCheckEnabledTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);

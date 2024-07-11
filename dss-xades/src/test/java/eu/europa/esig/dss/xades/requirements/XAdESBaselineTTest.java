@@ -30,11 +30,11 @@ import javax.xml.xpath.XPathExpressionException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class XAdESBaselineTTest extends XAdESBaselineBTest {
+class XAdESBaselineTTest extends XAdESBaselineBTest {
 
 	@BeforeEach
 	@Override
-	public void init() throws Exception {
+	void init() throws Exception {
 		super.init();
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 		service.setTspSource(getGoodTsa());
@@ -43,7 +43,7 @@ public class XAdESBaselineTTest extends XAdESBaselineBTest {
 	/**
 	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
 	 */
-	public void checkUnsignedProperties() throws XPathExpressionException {
+	protected void checkUnsignedProperties() throws XPathExpressionException {
 		super.checkUnsignedProperties();
 
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties");

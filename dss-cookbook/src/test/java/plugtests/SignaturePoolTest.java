@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESValidator;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -45,7 +46,10 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
@@ -56,9 +60,6 @@ import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
-import eu.europa.esig.dss.validation.SignaturePolicyProvider;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.ValidationReportUtils;
@@ -105,7 +106,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * This test is only to ensure that we don't have exception with valid? files
  */
-public class SignaturePoolTest extends AbstractDocumentTestValidation {
+class SignaturePoolTest extends AbstractDocumentTestValidation {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(SignaturePoolTest.class);
 
@@ -120,7 +121,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 	private static TrustedListsCertificateSource trustedCertSource;
 	
 	@BeforeAll
-	public static void init() throws Exception {
+	static void init() throws Exception {
 		// preload JAXB context before validation
 		ValidationReportUtils.getInstance().getJAXBContext();
 		
@@ -163,7 +164,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 		String signaturePoolFolder = System.getProperty("signature.pool.folder", "src/test/resources/signature-pool");
 		File folder = new File(signaturePoolFolder);
 		Collection<File> listFiles = Utils.listFiles(folder, new String[] { "asice", "asics", "bdoc", "csig", "ddoc",
-				"es3", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "sce", "scs", "xml", "xsig" }, true);
+				"ers", "es3", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "sce", "scs", "xml", "xsig" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
 			dataToRun.add(Arguments.of(file));
@@ -173,7 +174,7 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 
 	@ParameterizedTest(name = "Validation {index} : {0}")
 	@MethodSource("data")
-	public void testValidate(File fileToTest) {
+	void testValidate(File fileToTest) {
 		LOG.info("Begin : {}", fileToTest.getAbsolutePath());
 		document = new FileDocument(fileToTest);
 		try {
@@ -560,6 +561,15 @@ public class SignaturePoolTest extends AbstractDocumentTestValidation {
 	@Override
 	protected void checkDTBSR(DiagnosticData diagnosticData) {
 		// can be null
+	}
+
+	@Override
+	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			List<XmlDigestMatcher> digestMatchers = evidenceRecord.getDigestMatchers();
+			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
+		}
 	}
 
 	@Override

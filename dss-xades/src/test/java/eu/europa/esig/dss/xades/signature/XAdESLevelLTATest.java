@@ -26,22 +26,23 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.identifier.OriginalIdentifierProvider;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.OriginalIdentifierProvider;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,11 +65,12 @@ public class XAdESLevelLTATest extends AbstractXAdESTestSignature {
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
 		signatureParameters = new XAdESSignatureParameters();
 		signatureParameters.bLevel().setSigningDate(new Date());
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -150,6 +152,31 @@ public class XAdESLevelLTATest extends AbstractXAdESTestSignature {
 		}
 		assertTrue(sigTstFound);
 		assertTrue(arcTstFound);
+	}
+
+	@Override
+	protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
+		super.verifyDiagnosticData(diagnosticData);
+
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper wrapper: allSignatures) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
+
+		List<CertificateWrapper> usedCertificates = diagnosticData.getUsedCertificates();
+		for (CertificateWrapper wrapper: usedCertificates) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
+
+		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
+		for (RevocationWrapper wrapper : allRevocationData) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		for (TimestampWrapper wrapper : timestampList) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
 	}
 
 	@Override

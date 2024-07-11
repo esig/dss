@@ -152,4 +152,17 @@ public class OID {
 	 */
 	public static final ASN1ObjectIdentifier id_etsi_ext_valassured_ST_certs = new ASN1ObjectIdentifier("0.4.0.194121.2.1");
 
+	/**
+	 * ASN.1 Internal EvidenceRecord Attribute
+	 * id-aa-er-internal  OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+	 * us(840) rsadsi(113549) pkcs(1) pkcs9(9) smime(16) id-aa(2) 49 }
+	 */
+	public static final ASN1ObjectIdentifier id_aa_er_internal = new ASN1ObjectIdentifier("1.2.840.113549.1.9.16.2.49");
+	/**
+	 * ASN.1 External EvidenceRecord Attribute
+	 * id-aa-er-external  OBJECT IDENTIFIER ::= { iso(1) member-body(2)
+	 * us(840) rsadsi(113549) pkcs(1) pkcs9(9) smime(16) id-aa(2) 50 }
+	 */
+	public static final ASN1ObjectIdentifier id_aa_er_external = new ASN1ObjectIdentifier("1.2.840.113549.1.9.16.2.50");
+
 }

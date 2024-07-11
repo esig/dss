@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestSignature {
+class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -49,7 +49,7 @@ public class XAdESLevelLTWithExpiredOCSPResponderTest extends AbstractXAdESTestS
     private CommonTrustedCertificateSource trustedCertSource;
 
     @BeforeEach
-    public void init() {
+    void init() {
         documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
         signatureParameters = new XAdESSignatureParameters();

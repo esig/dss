@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -39,7 +39,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValidation {
+class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValidation {
 	
 	private JAdESService service;
 	private DSSDocument documentToSign;
@@ -68,7 +68,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 	private String signingAlias;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		
 		service = new JAdESService(getCompleteCertificateVerifier());
@@ -95,12 +95,11 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 	}
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		signingAlias = SELF_SIGNED_USER;
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		signingAlias = GOOD_USER;
@@ -111,8 +110,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 		
 		ToBeSigned dataToBeCounterSigned = service.getDataToBeCounterSigned(signedDocument, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument counterSignedSignature = service.counterSignSignature(signedDocument, counterSignatureParameters, signatureValue);
 		
 		validator = getValidator(counterSignedSignature);
@@ -157,7 +155,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		
 		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 		List<String> certificateValuesIds = foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)
-				.stream().map(c -> c.getId()).collect(Collectors.toList());
+				.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
 		for (CertificateWrapper certificateWrapper : counterSignature.getCertificateChain()) {
 			assertTrue(certificateValuesIds.contains(certificateWrapper.getId()));
 		}
@@ -169,8 +167,7 @@ public class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTes
 		// possible to counter sign the main signature again
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 		dataToBeCounterSigned = service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters);
-		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(),
-				counterSignatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		signatureValue = getToken().sign(dataToBeCounterSigned, counterSignatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		counterSignedSignature = service.counterSignSignature(ltaJAdES, counterSignatureParameters, signatureValue);
 		assertNotNull(counterSignedSignature);
 		

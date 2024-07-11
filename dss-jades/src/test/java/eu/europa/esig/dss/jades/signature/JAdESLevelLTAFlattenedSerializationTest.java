@@ -24,8 +24,10 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -38,10 +40,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
+import eu.europa.esig.dss.validation.timestamp.DetachedTimestampAnalyzer;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.validation.timestamp.DetachedTimestampValidator;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.lang.JoseException;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,25 +53,27 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSignature {
+class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		signatureParameters = new JAdESSignatureParameters();
+		signatureParameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
@@ -145,8 +150,8 @@ public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSi
 			assertNotNull(arcTstObject);
 			assertNotNull(arcTstValue);
 
-			SignedDocumentValidator tstValidator = DetachedTimestampValidator.fromDocument(new InMemoryDocument(Utils.fromBase64(arcTstValue)));
-			tstValidator.setCertificateVerifier(getOfflineCertificateVerifier());
+			DocumentAnalyzer tstAnalyzer = DetachedTimestampAnalyzer.fromDocument(new InMemoryDocument(Utils.fromBase64(arcTstValue)));
+			tstAnalyzer.setCertificateVerifier(getOfflineCertificateVerifier());
 
 			StringBuilder arcTstMessageImprintBuilder = new StringBuilder();
 			arcTstMessageImprintBuilder.append(payload);
@@ -161,18 +166,17 @@ public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSi
 				arcTstMessageImprintBuilder.append((String) etsiUMember);
 			}
 			String arcTstMessageImprint = arcTstMessageImprintBuilder.toString();
-			tstValidator.setDetachedContents(Arrays.asList(new InMemoryDocument(arcTstMessageImprint.getBytes())));
+			tstAnalyzer.setDetachedContents(Arrays.asList(new InMemoryDocument(arcTstMessageImprint.getBytes())));
 
-			Reports reports = tstValidator.validateDocument();
-			DiagnosticData diagnosticData = reports.getDiagnosticData();
-			assertEquals(0, diagnosticData.getSignatures().size());
-			assertEquals(1, diagnosticData.getTimestampList().size());
+			ValidationContext validationContext = tstAnalyzer.validate();
+			assertEquals(0, validationContext.getProcessedSignatures().size());
+			assertEquals(1, validationContext.getProcessedTimestamps().size());
 
-			TimestampWrapper timestampWrapper = diagnosticData.getTimestampList().get(0);
-			assertTrue(timestampWrapper.isMessageImprintDataFound());
-			assertTrue(timestampWrapper.isMessageImprintDataIntact());
-			assertTrue(timestampWrapper.isSignatureIntact());
-			assertTrue(timestampWrapper.isSignatureValid());
+			TimestampToken timestampToken = validationContext.getProcessedTimestamps().iterator().next();
+			assertTrue(timestampToken.isMessageImprintDataFound());
+			assertTrue(timestampToken.isMessageImprintDataIntact());
+			assertTrue(timestampToken.isSignatureIntact());
+			assertTrue(timestampToken.isValid());
 
 		} catch (JoseException e) {
 			fail("Unable to parse the signed file : " + e.getMessage());
@@ -202,6 +206,24 @@ public class JAdESLevelLTAFlattenedSerializationTest extends AbstractJAdESTestSi
 			assertTrue(found);
 		}
 
+		Set<SignatureWrapper> allSignatures = diagnosticData.getAllSignatures();
+		for (SignatureWrapper wrapper: allSignatures) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
+
+		for (CertificateWrapper wrapper: usedCertificates) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
+
+		Set<RevocationWrapper> allRevocationData = diagnosticData.getAllRevocationData();
+		for (RevocationWrapper wrapper : allRevocationData) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
+
+		List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
+		for (TimestampWrapper wrapper : timestampList) {
+			assertEquals(EncryptionAlgorithm.RSA, wrapper.getEncryptionAlgorithm());
+		}
 	}
 
 	@Override

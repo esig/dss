@@ -28,10 +28,10 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xmldsig.definition.XMLDSigNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 
-public class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExtension {
+class XAdESExtensionBToTCustomPrefixesTest extends AbstractXAdESTestExtension {
 	
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {

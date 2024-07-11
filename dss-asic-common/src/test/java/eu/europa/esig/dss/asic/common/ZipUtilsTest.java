@@ -34,10 +34,10 @@ import java.util.concurrent.Future;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ZipUtilsTest {
+class ZipUtilsTest {
 
     @Test
-    public void concurrencyTest() {
+    void concurrencyTest() {
         FileDocument asicContainer = new FileDocument("src/test/resources/multifiles-ok.asice");
 
         ExecutorService executor = Executors.newFixedThreadPool(200);

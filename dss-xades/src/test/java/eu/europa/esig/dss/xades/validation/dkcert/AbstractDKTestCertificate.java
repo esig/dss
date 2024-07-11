@@ -37,12 +37,12 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 
-public class AbstractDKTestCertificate extends AbstractXAdESTestValidation {
+class AbstractDKTestCertificate extends AbstractXAdESTestValidation {
 
 	private static final String DATE_STRING = "2019-08-05";
 	private static final String DATE_FORMAT = "yyyy-MM-dd";

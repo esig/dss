@@ -28,10 +28,10 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 
-public class SignatureQualificationParserTest {
+class SignatureQualificationParserTest {
 
 	@Test
-	public void testEnum() {
+	void testEnum() {
 		for (SignatureQualification sQual : SignatureQualification.values()) {
 			String string = SignatureQualificationParser.print(sQual);
 			assertNotNull(string);
@@ -41,7 +41,7 @@ public class SignatureQualificationParserTest {
 	}
 
 	@Test
-	public void parseUnknown() {
+	void parseUnknown() {
 		assertNull(SignatureQualificationParser.parse("non-value"));
 	}
 

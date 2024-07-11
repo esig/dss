@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.tsl.dto.builder;
 
 import eu.europa.esig.dss.enumerations.TSLType;
-import eu.europa.esig.dss.spi.tsl.OtherTSLPointer;
-import eu.europa.esig.dss.spi.tsl.TrustServiceProvider;
+import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
+import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.tsl.cache.state.CachedEntry;
 import eu.europa.esig.dss.tsl.dto.ParsingCacheDTO;
 import eu.europa.esig.dss.tsl.parsing.AbstractParsingResult;

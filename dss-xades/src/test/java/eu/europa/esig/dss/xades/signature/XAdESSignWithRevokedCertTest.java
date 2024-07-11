@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
 import eu.europa.esig.dss.test.pki.ocsp.UnknownPkiOCSPSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
+class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
@@ -50,7 +50,7 @@ public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
     private String signingAlias;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument(XAdESLevelBTest.class.getResourceAsStream("/sample.xml"));
         service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -65,7 +65,7 @@ public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
     }
 
     @Test
-    public void signBRevokedAndSignBGoodUserTest() {
+    void signBRevokedAndSignBGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -81,7 +81,7 @@ public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
     }
 
     @Test
-    public void signBRevokedAndSignLTGoodUserTest() {
+    void signBRevokedAndSignLTGoodUserTest() {
         signingAlias = REVOKED_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -98,7 +98,7 @@ public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
     }
 
     @Test
-    public void signBGoodUserAndSignBRevokedTest() {
+    void signBGoodUserAndSignBRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -114,7 +114,7 @@ public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
     }
 
     @Test
-    public void signBGoodUserAndSignLTRevokedTest() {
+    void signBGoodUserAndSignLTRevokedTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         documentToSign = sign();
@@ -128,7 +128,7 @@ public class XAdESSignWithRevokedCertTest extends AbstractXAdESTestSignature {
     }
 
     @Test
-    public void signBWithRevocationCheckEnabledTest() {
+    void signBWithRevocationCheckEnabledTest() {
         signingAlias = GOOD_USER;
         initSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(true);

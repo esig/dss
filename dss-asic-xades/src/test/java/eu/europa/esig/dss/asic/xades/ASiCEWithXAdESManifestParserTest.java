@@ -36,10 +36,10 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
 
-public class ASiCEWithXAdESManifestParserTest {
+class ASiCEWithXAdESManifestParserTest {
 
 	@Test
-	public void test() {
+	void test() {
 		DSSDocument signatureDoc = new InMemoryDocument("Hello".getBytes(), "test");
 		DSSDocument manifestDoc = new FileDocument(new File("src/test/resources/manifest-sample.xml"));
 		ASiCEWithXAdESManifestParser parser = new ASiCEWithXAdESManifestParser(signatureDoc, manifestDoc);
@@ -53,13 +53,13 @@ public class ASiCEWithXAdESManifestParserTest {
 		boolean containsTestTxt = false;
 		boolean containsTestDataFileBin = false;
 		for (ManifestEntry entry : entries) {
-			if ("test.txt".equals(entry.getFileName())) {
+			if ("test.txt".equals(entry.getUri())) {
 				containsTestTxt = true;
 			}
-			if ("test-data-file.bin".equals(entry.getFileName())) {
+			if ("test-data-file.bin".equals(entry.getUri())) {
 				containsTestDataFileBin = true;
 			}
-			assertNotNull(entry.getFileName());
+			assertNotNull(entry.getUri());
 			assertNotNull(entry.getMimeType());
 		}
 		assertTrue(containsTestTxt);

@@ -35,7 +35,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature {
+class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature {
 	
 	private DSSDocument documentToSign;
 	private CAdESSignatureParameters parameters;
@@ -60,7 +59,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 	private static DSSDocument original = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentToSign = original;
 		
         user = GOOD_USER;
@@ -80,11 +79,11 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 	}
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument signedDocument = sign();
 		Reports reports = verify(signedDocument);
 		
-        byte[] expectedDigest = Utils.fromBase64(documentToSign.getDigest(DigestAlgorithm.SHA256));
+        byte[] expectedDigest = documentToSign.getDigestValue(DigestAlgorithm.SHA512);
 		
 		documentToSign = signedDocument;
 		user = EE_GOOD_USER;
@@ -111,7 +110,7 @@ public class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature
 
 			XmlDigestMatcher xmlDigestMatcher = digestMatchers.get(0);
 			assertEquals(DigestMatcherType.MESSAGE_DIGEST, xmlDigestMatcher.getType());
-			assertEquals(DigestAlgorithm.SHA256, xmlDigestMatcher.getDigestMethod());
+			assertEquals(DigestAlgorithm.SHA512, xmlDigestMatcher.getDigestMethod());
 			assertArrayEquals(expectedDigest, xmlDigestMatcher.getDigestValue());
 		}
 

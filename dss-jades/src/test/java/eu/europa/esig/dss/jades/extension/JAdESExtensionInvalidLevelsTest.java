@@ -20,22 +20,36 @@
  */
 package eu.europa.esig.dss.jades.extension;
 
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension {
+class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension {
 
     private SignatureLevel originalSignatureLevel;
     private SignatureLevel finalSignatureLevel;
 
+    private CertificateVerifier certificateVerifier;
+
+    @BeforeEach
+    void init() {
+        certificateVerifier = getCompleteCertificateVerifier();
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
+    }
+
     @Test
-    public void tLevelExtensionTest() throws Exception {
+    void tLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.JAdES_BASELINE_T;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -54,7 +68,7 @@ public class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension 
     }
 
     @Test
-    public void ltLevelExtensionTest() throws Exception {
+    void ltLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.JAdES_BASELINE_LT;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -66,18 +80,27 @@ public class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension 
         assertEquals("Unsupported signature format 'JAdES-BASELINE-B' for extension.", exception.getMessage());
 
         finalSignatureLevel = SignatureLevel.JAdES_BASELINE_T;
-        exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
-        assertEquals("Cannot extend signature to 'JAdES-BASELINE-T'. The signature is already extended with LT level.", exception.getMessage());
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.JAdES_BASELINE_LT;
-        DSSDocument extendedSignature = extendSignature(signedDocument);
+        extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
         checkFinalLevel(reports.getDiagnosticData());
         assertEquals(1, reports.getDiagnosticData().getTimestampList().size());
     }
 
     @Test
-    public void ltaLevelExtensionTest() throws Exception {
+    void ltaLevelExtensionTest() throws Exception {
         originalSignatureLevel = SignatureLevel.JAdES_BASELINE_LTA;
         DSSDocument signedDocument = getSignedDocument(getOriginalDocument());
         Reports reports = verify(signedDocument);
@@ -89,18 +112,47 @@ public class JAdESExtensionInvalidLevelsTest extends AbstractJAdESTestExtension 
         assertEquals("Unsupported signature format 'JAdES-BASELINE-B' for extension.", exception.getMessage());
 
         finalSignatureLevel = SignatureLevel.JAdES_BASELINE_T;
-        exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
-        assertEquals("Cannot extend signature to 'JAdES-BASELINE-T'. The signature is already extended with LT level.", exception.getMessage());
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to T-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.JAdES_BASELINE_LT;
-        exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
-        assertEquals("Cannot extend signature to 'JAdES-BASELINE-LT'. The signature is already extended with LTA level.", exception.getMessage());
+        exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
+        assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.JAdES_BASELINE_LTA;
-        DSSDocument extendedSignature = extendSignature(signedDocument);
+        extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
         checkFinalLevel(reports.getDiagnosticData());
         assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+    }
+
+    @Override
+    protected JAdESService getSignatureServiceToExtend() {
+        JAdESService service = new JAdESService(getCertificateVerifier());
+        service.setTspSource(getUsedTSPSourceAtExtensionTime());
+        return service;
+    }
+
+    protected CertificateVerifier getCertificateVerifier() {
+        return certificateVerifier;
     }
 
     @Override

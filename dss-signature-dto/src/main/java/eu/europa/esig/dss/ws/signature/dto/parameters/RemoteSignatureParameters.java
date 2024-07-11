@@ -102,29 +102,45 @@ public class RemoteSignatureParameters implements Serializable {
 	private SigDMechanism sigDMechanism;
 
 	/**
-	 * XAdES: The ds:SignatureMethod indicates the algorithms used to sign ds:SignedInfo.
+	 * JAdES base64url encoded payload
 	 */
-	private SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RSA_SHA256;
+	private boolean base64UrlEncodedPayload = true;
 
 	/**
-	 * XAdES: The digest algorithm used to hash ds:SignedInfo.
+	 * JAdES base64url encoded etsiU components
 	 */
-	private DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
+	private boolean base64UrlEncodedEtsiUComponents = true;
+
+	/**
+	 * The signature algorithm used to create the signature
+	 *
+	 * @deprecated since DSS 6.1. Please use combination of {@code digestAlgorithm} and {@code encryptionAlgorithm}
+	 */
+	@Deprecated
+	private SignatureAlgorithm signatureAlgorithm;
+
+	/**
+	 * The digest algorithm used on signature creation.
+	 */
+	private DigestAlgorithm digestAlgorithm;
 
 	/**
 	 * The encryption algorithm shall be automatically extracted from the signing token.
 	 */
-	private EncryptionAlgorithm encryptionAlgorithm = signatureAlgorithm.getEncryptionAlgorithm();
+	private EncryptionAlgorithm encryptionAlgorithm;
+
+	/**
+	 * The mask generation function
+	 *
+	 * @deprecated since DSS 6.1. Please use {@code encryptionAlgorithm} to indicate MGF1 (use EncryptionAlgorithm.RSASSA_PSS)
+	 */
+	@Deprecated
+	private MaskGenerationFunction maskGenerationFunction;
 
 	/**
 	 * XAdES: The digest algorithm used to hash ds:Reference.
 	 */
 	private DigestAlgorithm referenceDigestAlgorithm;
-
-	/**
-	 * The mask generation function
-	 */
-	private MaskGenerationFunction maskGenerationFunction = signatureAlgorithm.getMaskGenerationFunction();
 	
 	/**
 	 * This object represents the list of content timestamps to be added into the signature.
@@ -148,7 +164,10 @@ public class RemoteSignatureParameters implements Serializable {
 
 	/**
 	 * This variable indicates if it is possible to sign with an expired certificate.
+	 *
+	 * @deprecated since DSS 6.1. Please see {@code CertificateVerifier#alertOnExpiredCertificate}
 	 */
+	@Deprecated
 	private boolean signWithExpiredCertificate = false;
 
 	/**
@@ -172,6 +191,7 @@ public class RemoteSignatureParameters implements Serializable {
 	 * Default constructor
 	 */
 	public RemoteSignatureParameters() {
+		// empty
 	}
 
 	/**
@@ -344,6 +364,46 @@ public class RemoteSignatureParameters implements Serializable {
 	}
 
 	/**
+	 * Gets whether a payload shall be base64url encoded
+	 * NOTE: used only for JAdES
+	 *
+	 * @return whether a JAdES payload shall be base64url encoded
+	 */
+	public boolean isBase64UrlEncodedPayload() {
+		return base64UrlEncodedPayload;
+	}
+
+	/**
+	 * Sets whether a payload shall be base64url encoded
+	 * NOTE: used only for JAdES
+	 *
+	 * @param base64UrlEncodedPayload  whether a JAdES payload shall be base64url encoded
+	 */
+	public void setBase64UrlEncodedPayload(boolean base64UrlEncodedPayload) {
+		this.base64UrlEncodedPayload = base64UrlEncodedPayload;
+	}
+
+	/**
+	 * Gets whether etsiU header components shall be base64url encoded
+	 * NOTE: used only for JAdES
+	 *
+	 * @return whether JAdES etsiU header components shall be base64url encoded
+	 */
+	public boolean isBase64UrlEncodedEtsiUComponents() {
+		return base64UrlEncodedEtsiUComponents;
+	}
+
+	/**
+	 * Sets whether etsiU header components shall be base64url encoded
+	 * NOTE: used only for JAdES
+	 *
+	 * @param base64UrlEncodedEtsiUComponents whether JAdES etsiU header components shall be base64url encoded
+	 */
+	public void setBase64UrlEncodedEtsiUComponents(boolean base64UrlEncodedEtsiUComponents) {
+		this.base64UrlEncodedEtsiUComponents = base64UrlEncodedEtsiUComponents;
+	}
+
+	/**
 	 * Get the digest algorithm for ds:Reference or message-digest attribute
 	 * 
 	 * @return the digest algorithm for ds:Reference or message-digest attribute
@@ -400,6 +460,28 @@ public class RemoteSignatureParameters implements Serializable {
 	}
 
 	/**
+	 * Gets the signature algorithm.
+	 *
+	 * @return the signature algorithm
+	 * @deprecated since DSS 6.1. Please use {@code SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm())}
+	 */
+	@Deprecated
+	public SignatureAlgorithm getSignatureAlgorithm() {
+		return signatureAlgorithm;
+	}
+
+	/**
+	 * Sets the signature algorithm
+	 *
+	 * @param signatureAlgorithm {@link SignatureAlgorithm}
+	 * @deprecated since DSS 6.1. Please use {@code #setDigestAlgorithm} and {@code #setEncryptionAlgorithm} methods
+	 */
+	@Deprecated
+	public void setSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm) {
+		this.signatureAlgorithm = signatureAlgorithm;
+	}
+
+	/**
 	 * Get the digest algorithm
 	 * 
 	 * @return the digest algorithm
@@ -416,9 +498,15 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	public void setDigestAlgorithm(final DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
-		}
+	}
+
+	/**
+	 * Get the encryption algorithm
+	 *
+	 * @return the encryption algorithm.
+	 */
+	public EncryptionAlgorithm getEncryptionAlgorithm() {
+		return encryptionAlgorithm;
 	}
 
 	/**
@@ -430,48 +518,30 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 		this.encryptionAlgorithm = encryptionAlgorithm;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
-		}
-	}
-
-	/**
-	 * Sets the mask generation function of the signature algorithm, when applicable
-	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 */
-	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		this.maskGenerationFunction = maskGenerationFunction;
-		if ((this.digestAlgorithm != null) && (this.encryptionAlgorithm != null)) {
-			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm, this.maskGenerationFunction);
-		}
-	}
-
-	/**
-	 * Get the encryption algorithm
-	 * 
-	 * @return the encryption algorithm.
-	 */
-	public EncryptionAlgorithm getEncryptionAlgorithm() {
-		return encryptionAlgorithm;
 	}
 	
 	/**
 	 * Get the mask generation function
 	 * 
 	 * @return the mask generation function.
+	 * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} to differentiate between
+	 *             MGF1 (EncryptionAlgorithm.RSASSA_PSS) and none MGF (any other result)
 	 */
+	@Deprecated
 	public MaskGenerationFunction getMaskGenerationFunction() {
 		return maskGenerationFunction;
 	}
 
 	/**
-	 * Gets the signature algorithm.
+	 * Sets the mask generation function of the signature algorithm, when applicable
 	 *
-	 * @return the signature algorithm
+	 * @param maskGenerationFunction {@link MaskGenerationFunction}
+	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method to specify mask generation
+	 *             function using EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1
 	 */
-	public SignatureAlgorithm getSignatureAlgorithm() {
-		return signatureAlgorithm;
+	@Deprecated
+	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
+		this.maskGenerationFunction = maskGenerationFunction;
 	}
 	
 	/**
@@ -561,7 +631,9 @@ public class RemoteSignatureParameters implements Serializable {
 	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
 	 *
 	 * @return true if signature with an expired certificate is allowed
+	 * @deprecated since DSS 6.1. See {@code CertificateVerifier#setAlertOnExpiredCertificate}
 	 */
+	@Deprecated
 	public boolean isSignWithExpiredCertificate() {
 		return signWithExpiredCertificate;
 	}
@@ -571,7 +643,9 @@ public class RemoteSignatureParameters implements Serializable {
 	 *
 	 * @param signWithExpiredCertificate
 	 *            true if signature with an expired certificate is allowed
+	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier#setAlertOnExpiredCertificate} method instead
 	 */
+	@Deprecated
 	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
 		this.signWithExpiredCertificate = signWithExpiredCertificate;
 	}
@@ -636,9 +710,9 @@ public class RemoteSignatureParameters implements Serializable {
 	@Override
 	public String toString() {
 		return "RemoteSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel + ", generateTBSWithoutCertificate="
-				+ generateTBSWithoutCertificate + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm=" + signatureAlgorithm + ", encryptionAlgorithm=" 
-				+ encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm=" + referenceDigestAlgorithm + ", maskGenerationFunction=" 
-				+ maskGenerationFunction + ", bLevelParams=" + bLevelParams + ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters=" 
+				+ generateTBSWithoutCertificate + ", signaturePackaging=" + signaturePackaging + ", encryptionAlgorithm=" + encryptionAlgorithm + ", digestAlgorithm="
+				+ digestAlgorithm + ", referenceDigestAlgorithm=" + referenceDigestAlgorithm + ", bLevelParams="
+				+ bLevelParams + ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters="
 				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + ", imageParameters=" + imageParameters  + "]";
 	}
 
@@ -660,10 +734,8 @@ public class RemoteSignatureParameters implements Serializable {
 		result = prime * result + (embedXML ? 1231 : 1237);
 		result = prime * result + (manifestSignature ? 1231 : 1237);
 		result = prime * result + ((jwsSerializationType == null) ? 0 : jwsSerializationType.hashCode());
-		result = prime * result + ((maskGenerationFunction == null) ? 0 : maskGenerationFunction.hashCode());
 		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
 		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
-		result = prime * result + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
 		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
 		result = prime * result + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
 		result = prime * result + ((signatureTimestampParameters == null) ? 0 : signatureTimestampParameters.hashCode());
@@ -725,16 +797,10 @@ public class RemoteSignatureParameters implements Serializable {
 		if (jwsSerializationType != other.jwsSerializationType) {
 			return false;
 		}
-		if (maskGenerationFunction != other.maskGenerationFunction) {
-			return false;
-		}
 		if (referenceDigestAlgorithm != other.referenceDigestAlgorithm) {
 			return false;
 		}
 		if (signWithExpiredCertificate != other.signWithExpiredCertificate) {
-			return false;
-		}
-		if (signatureAlgorithm != other.signatureAlgorithm) {
 			return false;
 		}
 		if (signatureLevel != other.signatureLevel) {

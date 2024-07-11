@@ -35,8 +35,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
@@ -51,13 +51,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DSS1443Test extends PKIFactoryAccess {
 
 	@Test
-	public void testSigWithAttached() {
+	void testSigWithAttached() {
 
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/DSS-1443.pdf"));
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(dssDocument);
 
 		CertificateVerifier certificateVerifier = getCertificateVerifier();
-		certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
+		certificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert(Level.WARN));
 
 		validator.setCertificateVerifier(certificateVerifier);
 		Reports reports = validator.validateDocument();
@@ -102,7 +102,7 @@ public class DSS1443Test extends PKIFactoryAccess {
 
 	private CertificateVerifier getCertificateVerifier() {
 		CommonCertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-		certificateVerifier.setAlertOnExpiredSignature(new LogOnStatusAlert(Level.WARN));
+		certificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert(Level.WARN));
 
 		certificateVerifier.setCrlSource(getCompositeCRLSource());
 

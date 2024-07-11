@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pki.jaxb;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pki.exception.PKIException;
@@ -35,12 +34,12 @@ import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntity;
 import eu.europa.esig.dss.pki.jaxb.model.JAXBCertEntityRepository;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.utils.Utils;
+import jakarta.xml.bind.JAXBException;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import jakarta.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
@@ -163,12 +162,7 @@ public class JAXBPKILoader {
         for (XmlCertificateType certificate : certificateTypeList) {
             EntityId entityId = getEntityId(certificate, certificateTypeList, entities, identifierMap);
 
-            JAXBCertEntity certEntity = entities.get(entityId);
-            if (certEntity == null) {
-                certEntity = instantiateCertEntity(certificate);
-                entities.put(entityId, certEntity);
-            }
-
+            entities.computeIfAbsent(entityId, k -> instantiateCertEntity(certificate));
             certificateTypeMap.put(entityId, certificate);
 
             buildKeyPair(certificate, entityId, keyPairs);
@@ -211,12 +205,7 @@ public class JAXBPKILoader {
             }
             EntityId entityId = getEntityId(issuerCandidate, certificateTypeList, entities, identifierMap);
             if (issuerId.equals(entityId)) {
-                JAXBCertEntity issuerCertEntity = entities.get(entityId);
-                if (issuerCertEntity == null) {
-                    issuerCertEntity = instantiateCertEntity(issuerCandidate);
-                    entities.put(entityId, issuerCertEntity);
-                }
-                return issuerCertEntity;
+                return entities.computeIfAbsent(entityId, k -> instantiateCertEntity(issuerCandidate));
             }
         }
         return null;
@@ -245,10 +234,10 @@ public class JAXBPKILoader {
                     .subject(subjectX500Name, BigInteger.valueOf(certificateType.getSerialNumber()), subjectKeyPair.getPublic());
 
             EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forKey(issuerKeyPair.getPrivate());
+            boolean pss = Utils.isTrue(issuerCertificateType.getKeyAlgo().isPss()); // TODO : deprecate ?
+            encryptionAlgorithm = pss && EncryptionAlgorithm.RSA == encryptionAlgorithm ? EncryptionAlgorithm.RSASSA_PSS : encryptionAlgorithm;
             DigestAlgorithm digestAlgo = issuerCertificateType.getDigestAlgo();
-            boolean pss = Utils.isTrue(issuerCertificateType.getKeyAlgo().isPss());
-            MaskGenerationFunction mgf = pss ? MaskGenerationFunction.MGF1 : null;
-            final SignatureAlgorithm signatureAlgo = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgo, mgf);
+            final SignatureAlgorithm signatureAlgo = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgo);
             if (signatureAlgo == null) {
                 throw new IllegalArgumentException(String.format("Unable to find a SignatureAlgorithm for combination of " +
                         "[EncryptionAlgo: %s, DigestAlgo: %s, Pss: %s]", EncryptionAlgorithm.forKey(issuerKeyPair.getPrivate()), digestAlgo, pss));

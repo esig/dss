@@ -23,7 +23,7 @@ package eu.europa.esig.dss.tsl.job.mra;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-public class MRAWithDuplicatedCertificateContentContextTest extends MRALOTLTest {
+class MRAWithDuplicatedCertificateContentContextTest extends MRALOTLTest {
 
     @Override
     protected DSSDocument getOriginalLOTL() {

@@ -35,10 +35,10 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class TLAnalysisErrorTest extends AbstractTestRunnable {
+class TLAnalysisErrorTest extends AbstractTestRunnable {
 
     @Test
-    public void test() throws Exception {
+    void test() throws Exception {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         CountDownLatch latch = new CountDownLatch(1);
 

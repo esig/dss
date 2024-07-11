@@ -40,7 +40,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -55,13 +55,13 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
+class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	
 	protected XAdESService service;
 	protected XAdESSignatureParameters signatureParameters;
 	
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		DSSDocument originalDocument = new FileDocument(new File("src/test/resources/sample.xml"));
 		DSSDocument signedDocument = getSignedDocument(originalDocument);
 		// signedDocument.save("target/signedDoc.xml");

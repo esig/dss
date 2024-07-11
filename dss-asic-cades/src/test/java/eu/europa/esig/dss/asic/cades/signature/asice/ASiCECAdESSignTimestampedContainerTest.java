@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCECAdESSignTimestampedContainerTest extends AbstractASiCECAdESTestSignature {
+class ASiCECAdESSignTimestampedContainerTest extends AbstractASiCECAdESTestSignature {
 
     private static final DSSDocument originalDocument = new InMemoryDocument(
             "Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
@@ -53,7 +53,7 @@ public class ASiCECAdESSignTimestampedContainerTest extends AbstractASiCECAdESTe
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getAlternateGoodTsa());
 
@@ -92,7 +92,7 @@ public class ASiCECAdESSignTimestampedContainerTest extends AbstractASiCECAdESTe
 
         boolean originalDocFound = false;
         for (XmlDigestMatcher digestMatcher : timestampWrapper.getDigestMatchers()) {
-            if (originalDocument.getName().equals(digestMatcher.getName())) {
+            if (originalDocument.getName().equals(digestMatcher.getDocumentName())) {
                 originalDocFound = true;
             }
         }

@@ -55,12 +55,12 @@ import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 /**
  * Unit test to fix issue https://esig-dss.atlassian.net/browse/DSS-646
  */
-public class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
+class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
 
 	private static final String SIGNED_DOC_PATH = "src/test/resources/validation/dss-646/CAdES_A_DETACHED.csig";
 	private static final String DETACHED_DOC_PATH = "src/test/resources/validation/dss-646/document.pdf";
@@ -99,7 +99,7 @@ public class ExtendToCAdESLtaTest extends AbstractCAdESTestValidation {
 	}
 
 	@Test
-	public void testExtend() throws Exception {
+	void testExtend() throws Exception {
 		CAdESService service = new CAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 

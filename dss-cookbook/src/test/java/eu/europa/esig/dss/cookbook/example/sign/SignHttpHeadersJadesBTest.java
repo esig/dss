@@ -35,7 +35,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -44,10 +44,10 @@ import java.util.List;
 /**
  * How to sign HTTP request with JAdES-BASELINE-B detached signature.
  */
-public class SignHttpHeadersJadesBTest extends CookbookTools {
+class SignHttpHeadersJadesBTest extends CookbookTools {
 
     @Test
-    public void signHttpHeadersJadesBaselineB() throws Exception {
+    void signHttpHeadersJadesBaselineB() throws Exception {
 
         // GET document to be signed -
         // Return DSSDocument toSignDocument

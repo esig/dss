@@ -24,8 +24,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
@@ -34,7 +34,7 @@ import java.text.ParseException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class DKPreviousSigCertTest extends AbstractDKTestCertificate {
+class DKPreviousSigCertTest extends AbstractDKTestCertificate {
 	
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {

@@ -26,7 +26,6 @@ import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.HTTPHeader;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
@@ -43,11 +42,12 @@ import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.jwx.HeaderParameterNames;
@@ -255,17 +255,14 @@ public class JAdESLevelBaselineB {
 	 */
 	protected void incorporateCritical() {
 		/*
-		 * RFC 7515 : "4.1.11.  "crit" (Critical) Header Parameter"
+		 * ETSI TS 119 182-1, 5.1.9	The crit (critical) header parameter
 		 * 
-		 * Producers MUST NOT include Header Parameter names defined by this specification
-		 * or [JWA] for use with JWS, duplicate names, or names that do not
-		 * occur as Header Parameter names within the JOSE Header in the "crit"
-		 * list. Producers MUST NOT use the empty list "[]" as the "crit" value.
+		 * If the JAdES signature includes the sigD header parameter,
+		 * the crit header parameter shall also be present and "sigD" shall be one of its JSON array elements.
 		 */
-		
 		List<String> criticalHeaderNames = new ArrayList<>();
 		for (String header : signedProperties.keySet()) {
-			if (!DSSJsonUtils.isCriticalHeaderException(header)) {
+			if (DSSJsonUtils.isRequiredCriticalHeader(header)) {
 				criticalHeaderNames.add(header);
 			}
 		}
@@ -353,13 +350,23 @@ public class JAdESLevelBaselineB {
 	}
 	
 	/**
-	 * Incorporates 5.2.1 The sigT (claimed signing time) header parameter
+	 * Incorporates 5.1.11 iat or 5.2.1 sigT (claimed signing time) header parameter
 	 */
 	protected void incorporateSigningTime() {
 		final Date signingDate = parameters.bLevel().getSigningDate();
-		final String stringSigningTime = DSSUtils.formatDateToRFC(signingDate);
-		
-		addHeader(JAdESHeaderParameterNames.SIG_T, stringSigningTime);
+		switch (parameters.getJadesSigningTimeType()) {
+			case IAT:
+				final long iatHeaderValue = signingDate.getTime();
+				addHeader(JAdESHeaderParameterNames.IAT, iatHeaderValue);
+				break;
+			case SIG_T:
+				final String stringSigningTime = DSSUtils.formatDateToRFC(signingDate);
+				addHeader(JAdESHeaderParameterNames.SIG_T, stringSigningTime);
+				break;
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The JAdESSigningTimeType '%s' is not supported!", parameters.getJadesSigningTimeType()));
+		}
 	}
 
 	/**
@@ -838,8 +845,7 @@ public class JAdESLevelBaselineB {
 			 * "false".
 			 */
 			if (!parameters.isBase64UrlEncodedPayload() || document instanceof DigestDocument) {
-				String base64Digest = document.getDigest(digestAlgorithm);
-				docDigest = Utils.fromBase64(base64Digest);
+				docDigest = document.getDigestValue(digestAlgorithm);
 			}
 			/*
 			 * 2) The base64url-encoded digest value of the base64url-encoded data object

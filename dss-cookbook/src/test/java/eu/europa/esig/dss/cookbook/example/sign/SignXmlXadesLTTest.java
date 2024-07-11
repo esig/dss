@@ -39,7 +39,7 @@ import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
@@ -49,10 +49,10 @@ import java.io.File;
 /**
  * How to sign with XAdES-BASELINE-LT
  */
-public class SignXmlXadesLTTest extends CookbookTools {
+class SignXmlXadesLTTest extends CookbookTools {
 
 	@Test
-	public void signXAdESBaselineLT() throws Exception {
+	void signXAdESBaselineLT() throws Exception {
 
 		// GET document to be signed -
 		// Return DSSDocument toSignDocument
@@ -85,7 +85,7 @@ public class SignXmlXadesLTTest extends CookbookTools {
 			// import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 			// import eu.europa.esig.dss.tsl.job.TLValidationJob;
 			// import eu.europa.esig.dss.tsl.source.LOTLSource;
-			// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+			// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 			// import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 			// import eu.europa.esig.dss.xades.signature.XAdESService;
 			// import java.io.File;

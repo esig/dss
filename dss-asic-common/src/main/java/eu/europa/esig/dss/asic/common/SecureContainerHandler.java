@@ -20,18 +20,18 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -86,13 +87,22 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * Internal variable used to calculate the extracted entries size
 	 * NOTE: shall be reset on every use
 	 */
-	private int byteCounter = 0;
+	private long byteCounter = 0;
 
 	/**
 	 * Internal variables used to count a number of malformed ZIP entries
 	 * NOTE: shall be reset on every use
 	 */
 	private int malformedFilesCounter = 0;
+
+	/**
+	 * The builder to be used to create a new {@code DSSResourcesHandler} for each internal call,
+	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
+	 * The resources are used on a document creation
+	 *
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}, working with data in memory
+	 */
+	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = ASiCUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
 
 	/**
 	 * Default constructor instantiating handler with default configuration
@@ -165,6 +175,19 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 */
 	public void setExtractComments(boolean extractComments) {
 		this.extractComments = extractComments;
+	}
+
+	/**
+	 * Sets {@code DSSResourcesFactoryBuilder} to be used for a {@code DSSResourcesHandler}
+	 * creation in internal methods.
+	 * {@code DSSResourcesHandler} defines a way to operate with OutputStreams and create {@code DSSDocument}s.
+	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}. Works with data in memory.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		Objects.requireNonNull(resourcesHandlerBuilder, "DSSResourcesHandlerBuilder cannot be null!");
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
 
 	@Override
@@ -261,7 +284,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 			while ((entry = getNextValidEntry(zis)) != null) {
 				result.add(entry);
 				assertCollectionSizeValid(result);
-				secureRead(zis, allowedSize); // read securely before accessing the next entry
+				secureSkip(zis, allowedSize); // read securely before accessing the next entry
 			}
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Unable to extract entries from zip archive", e);
@@ -292,29 +315,51 @@ public class SecureContainerHandler implements ZipContainerHandler {
 
 	@Override
 	public DSSDocument createZipArchive(List<DSSDocument> containerEntries, Date creationTime, String zipComment) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			 	ZipOutputStream zos = new ZipOutputStream(baos)) {
-
-			for (DSSDocument entry : containerEntries) {
-				final ZipEntry zipEntry = getZipEntry(entry, creationTime);
-				zos.putNextEntry(zipEntry);
-				try (InputStream entryIS = entry.openStream()) {
-					secureCopy(entryIS, zos, -1);
-				}
-			}
-			if (Utils.isStringNotEmpty(zipComment)) {
-				zos.setComment(zipComment);
-			}
-			zos.finish();
-
-			return new InMemoryDocument(baos.toByteArray());
-
+		try (DSSResourcesHandler dssResourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = dssResourcesHandler.createOutputStream(); ZipOutputStream zos = new ZipOutputStream(os)) {
+			buildZip(containerEntries, creationTime, zipComment, zos);
+			return dssResourcesHandler.writeToDSSDocument();
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to create an ASiC container. Reason : %s", e.getMessage()), e);
 		}
 	}
 
-	private ZipEntry getZipEntry(DSSDocument entry, Date creationTime) {
+	/**
+	 * This method instantiates a new {@code DSSResourcesFactory}
+	 *
+	 * @return {@link DSSResourcesHandler}
+	 * @throws IOException if an error occurs on DSSResourcesHandler instantiation
+	 */
+	protected DSSResourcesHandler instantiateResourcesHandler() throws IOException {
+		return resourcesHandlerBuilder.createResourcesHandler();
+	}
+
+	/**
+	 * This method stores all {@code containerEntries} in a given order to a {@code ZipOutputStream}
+	 * with the given parameters
+	 *
+	 * @param containerEntries a list of {@link DSSDocument}s to store
+	 * @param creationTime {@link Date} ZIP archive creation time
+	 * @param zipComment {@link String} zip comment (optional)
+	 * @param zos {@link ZipOutputStream} to consume the ZIP entries
+	 * @throws IOException in case an error occurs on {@code ZipOutputStream} update
+	 */
+	protected void buildZip(List<DSSDocument> containerEntries, Date creationTime, String zipComment,
+							ZipOutputStream zos) throws IOException {
+		for (DSSDocument entry : containerEntries) {
+			final ZipEntry zipEntry = getZipEntry(entry, creationTime);
+			zos.putNextEntry(zipEntry);
+			try (InputStream entryIS = entry.openStream()) {
+				secureCopy(entryIS, zos, -1);
+			}
+		}
+		if (Utils.isStringNotEmpty(zipComment)) {
+			zos.setComment(zipComment);
+		}
+		zos.finish();
+	}
+
+	protected ZipEntry getZipEntry(DSSDocument entry, Date creationTime) {
 		final DSSZipEntry zipEntryWrapper;
 		if (entry instanceof DSSZipEntryDocument) {
 			DSSZipEntryDocument dssZipEntry = (DSSZipEntryDocument) entry;
@@ -345,17 +390,30 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		 * because they must appear before the user data in the resulting zip file.
 		 */
 		if (ZipEntry.STORED == zipEntry.getMethod()) {
-			final byte[] byteArray = DSSUtils.toByteArray(content);
-			zipEntry.setSize(byteArray.length);
-			zipEntry.setCompressedSize(byteArray.length);
-			final CRC32 crc = new CRC32();
-			crc.update(byteArray, 0, byteArray.length);
-			zipEntry.setCrc(crc.getValue());
+			addStoredContent(zipEntry, content);
 		}
 		/*
 		 * The default is DEFLATED, which will cause the size, compressed size, and CRC
 		 * to be set automatically, and the entry's data to be compressed.
 		 */
+	}
+
+	private void addStoredContent(ZipEntry zipEntry, DSSDocument content)  {
+		long size = 0l;
+		final CRC32 crc = new CRC32();
+		try (InputStream is = content.openStream()) {
+			int nbRead;
+			byte[] buffer = new byte[8192];
+			while ((nbRead = is.read(buffer)) != -1) {
+				crc.update(buffer, 0, nbRead);
+				size += nbRead;
+			}
+		} catch (IOException e) {
+			LOG.warn("Unable to process CRC32 computation", e);
+		}
+		zipEntry.setSize(size);
+		zipEntry.setCompressedSize(size);
+		zipEntry.setCrc(crc.getValue());
 	}
 
 	private void ensureTime(ZipEntry zipEntry, Date creationTime) {
@@ -372,8 +430,8 @@ public class SecureContainerHandler implements ZipContainerHandler {
 
 	/**
 	 * Returns the next entry from the given ZipInputStream by skipping corrupted or
-	 * not accessible files NOTE: returns null only when the end of ZipInputStream
-	 * is reached
+	 * not accessible files
+	 * NOTE: returns null only when the end of ZipInputStream is reached
 	 * 
 	 * @param zis {@link ZipInputStream} to get next entry from
 	 * @return list of file name {@link String}s
@@ -417,11 +475,12 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 */
 	private DSSDocument getCurrentEntryDocument(ZipInputStream zis, ZipEntry entry, long containerSize) {
 		long allowedSize = containerSize * maxCompressionRatio;
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			secureCopy(zis, baos, allowedSize);
-			baos.flush();
+		try (DSSResourcesHandler dssResourcesHandler = instantiateResourcesHandler();
+			 OutputStream os = dssResourcesHandler.createOutputStream();) {
+			secureCopy(zis, os, allowedSize);
+			os.flush();
 
-			DSSDocument currentDocument = new InMemoryDocument(baos.toByteArray());
+			DSSDocument currentDocument = dssResourcesHandler.writeToDSSDocument();
 			String fileName = entry.getName();
 			currentDocument.setName(entry.getName());
 			currentDocument.setMimeType(MimeType.fromFileName(fileName));
@@ -445,8 +504,8 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 *                    -1 skips the validation
 	 * @throws IOException if an exception occurs
 	 */
-	private void secureCopy(InputStream is, OutputStream os, long allowedSize) throws IOException {
-		byte[] data = new byte[2048];
+	protected void secureCopy(InputStream is, OutputStream os, long allowedSize) throws IOException {
+		byte[] data = new byte[8192];
 		int nRead;
 		while ((nRead = is.read(data)) != -1) {
 			byteCounter += nRead;
@@ -456,16 +515,15 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	}
 
 	/**
-	 * This method allows reading securely InputStream without caching the content
+	 * This method allows skipping securely InputStream without caching the content
 	 *
-	 * @param is          {@link InputStream} to read
+	 * @param is          {@link InputStream} to skip
 	 * @param allowedSize the maximum allowed size of the extracted content
 	 * @throws IOException if an exception occurs
 	 */
-	private void secureRead(InputStream is, long allowedSize) throws IOException {
-		byte[] data = new byte[2048];
-		int nRead;
-		while ((nRead = is.read(data)) != -1) {
+	protected void secureSkip(InputStream is, long allowedSize) throws IOException {
+		long nRead;
+		while ((nRead = is.skip(8192)) > 0) {
 			byteCounter += nRead;
 			assertExtractEntryLengthValid(allowedSize);
 		}

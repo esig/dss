@@ -20,18 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
@@ -44,19 +32,30 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.BeforeEach;
 
-public class DSS920WithWrongDigestTest extends AbstractXAdESTestSignature {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class DSS920WithWrongDigestTest extends AbstractXAdESTestSignature {
 
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 
 		documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 
@@ -72,7 +71,7 @@ public class DSS920WithWrongDigestTest extends AbstractXAdESTestSignature {
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
 		List<DSSDocument> detachedContents = new ArrayList<>();
-		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, documentToSign.getDigest(DigestAlgorithm.SHA1));
+		DigestDocument digestDocument = new DigestDocument(DigestAlgorithm.SHA1, documentToSign.getDigestValue(DigestAlgorithm.SHA1));
 		digestDocument.setName("sample.xml");
 		detachedContents.add(digestDocument);
 		return detachedContents;
@@ -89,7 +88,7 @@ public class DSS920WithWrongDigestTest extends AbstractXAdESTestSignature {
 		boolean refToDigestDocumentCreated = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			if (DigestAlgorithm.SHA256.equals(digestMatcher.getDigestMethod()) &&
-					documentToSign.getDigest(DigestAlgorithm.SHA256).equals(Utils.toBase64(digestMatcher.getDigestValue()))) {
+					Arrays.equals(documentToSign.getDigestValue(DigestAlgorithm.SHA256), digestMatcher.getDigestValue())) {
 				refToDigestDocumentCreated = true;
 				assertFalse(digestMatcher.isDataFound());
 				assertFalse(digestMatcher.isDataIntact());
@@ -106,7 +105,8 @@ public class DSS920WithWrongDigestTest extends AbstractXAdESTestSignature {
 		List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 
-        assertArrayEquals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(), Utils.fromBase64(documentToSign.getDigest(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod())));
+        assertArrayEquals(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue(),
+				documentToSign.getDigestValue(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod()));
 	}
 	
 	@Override
@@ -118,7 +118,8 @@ public class DSS920WithWrongDigestTest extends AbstractXAdESTestSignature {
 		assertNotNull(originalDoc.getId());
 		assertNotNull(originalDoc.getDigestAlgoAndValue());
 		assertEquals(DigestAlgorithm.SHA256, originalDoc.getDigestAlgoAndValue().getDigestMethod());
-		assertEquals(documentToSign.getDigest(DigestAlgorithm.SHA256), Utils.toBase64(originalDoc.getDigestAlgoAndValue().getDigestValue()));
+		assertArrayEquals(documentToSign.getDigestValue(DigestAlgorithm.SHA256),
+				originalDoc.getDigestAlgoAndValue().getDigestValue());
 	}
 
 	@Override

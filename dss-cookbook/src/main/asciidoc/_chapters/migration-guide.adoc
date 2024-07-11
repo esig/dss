@@ -14,6 +14,394 @@ For changes within Diagnostic Data XSD please refer <<DiagnosticDataChanges>>.
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 6.0 to 6.1
+|===
+|Title                               |v6.0                            |v6.1
+|Include `dss-validation` module to perform validation           a|
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-xades</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+                                                                     a|
+`dss-validation` module is required to perform validation for every signature format
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-xades</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-validation</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
+|CertificateVerifier package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.validation.CertificateVerifier;
+...
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+...
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+
+|UserFriendlyIdentifierProvider package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.UserFriendlyIdentifierProvider;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
+
+|AdvancedSignature package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.AdvancedSignature;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+
+|TLValidationJobSummary package           a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+
+|ValidationLevel package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.executor.ValidationLevel;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.enumerations.ValidationLevel;
+
+|CMS attribute extraction           a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+...
+ASN1Encodable asn1Encodable = DSSASN1Utils.getAsn1Encodable(attributeTable, oid);
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+...
+Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(attributeTable, oid);
+ASN1Encodable asn1Encodable = attributes[0].getAttributeValues()[0]; // return value of the first attribute
+
+|PDF strict numeric object comparison           a|
+Strict comparison enforced by default
+a|[source,java]
+----
+IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
+
+DefaultPdfObjectModificationsFinder pdfObjectModificationsFinder = new DefaultPdfObjectModificationsFinder();
+pdfObjectModificationsFinder.setLaxNumericComparison(false); // by default is True
+pdfObjFactory.setPdfObjectModificationsFinder(pdfObjectModificationsFinder);
+
+PDFDocumentValidator validator = (PDFDocumentValidator) super.getValidator(signedDocument);
+validator.setPdfObjFactory(pdfObjFactory);
+----
+
+|EvidenceRecord package           a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.evidencerecord.EvidenceRecord;
+----
+                                                                     a|[source,java]
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+
+|Signing with expired/not yet valid certificate           a|
+[source,java]
+----
+signatureParameters.setSignWithExpiredCertificate(true);
+signatureParameters.setSignWithNotYetValidCertificate(true);
+----
+                                                                     a|[source,java]
+certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
+
+|Alerting on expired signature augmentation           a|
+[source,java]
+----
+certificateVerifier.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
+----
+                                                                     a|[source,java]
+certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+
+|CommonTrustedCertificateSource#getTrustServices           a|[source,java]
+----
+CommonTrustedCertificateSource trustedCertificateSource = ...
+List<TrustProperties> trustServices = trustedCertificateSource.getTrustServices(certificate);
+----
+                                                                     a|[source,java]
+TrustedListsCertificateSource trustedListCertificateSource = ...
+List<TrustProperties> trustServices = trustedListCertificateSource.getTrustServices(certificate);
+
+|CacheCleaner#setDataLoader           a|[source,java]
+----
+DSSFileLoader dataLoader = new FileCacheDataLoader();
+...
+CacheCleaner cacheCleaner = ...
+cacheCleaner.setDataLoader(dataLoader);
+----
+                                                                     a|[source,java]
+DSSCacheFileLoader dataLoader = new FileCacheDataLoader();
+...
+CacheCleaner cacheCleaner = ...
+cacheCleaner.setDataLoader(dataLoader);
+
+|Revocation update on validation          a|
+No revocation data update forced for time-stamp's certificates before its lowest POE
+a|
+To get back to previous behavior:
+[source,java]
+----
+SignedDocumentValidator validator = ...
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+...
+RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+revocationDataVerifier.setTimestampMaximumRevocationFreshness(null); // disable tst revocation data update
+certificateVerifier.setRevocationDataVerifier(revocationDataVerifier);
+
+validator.setCertificateVerifier(certificateVerifier);
+----
+
+|DSSDocument#getDigest          a|[source,java]
+----
+DSSDocument document = ...
+String base64EncodedDigest = document.getDigest(DigestAlgorithm.SHA256);
+----
+a|[source,java]
+----
+DSSDocument document = ...
+byte[] digest = document.getDigestValue(DigestAlgorithm.SHA256);
+String base64EncodedDigest = Utils.toBase64(digest);
+----
+
+|DSSASN1Utils CMS methods          a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.DSSASN1Utils;
+
+List<ASN1ObjectIdentifier> oids = DSSASN1Utils.getTimestampOids();
+boolean result = DSSASN1Utils.isArchiveTimeStampToken(attribute);
+...
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.cades.CMSUtils;
+
+List<ASN1ObjectIdentifier> oids = CMSUtils.getTimestampOids();
+boolean result = CMSUtils.isArchiveTimeStampToken(attribute);
+...
+----
+
+|MaskGenerationFunction deprecation          a|
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+signatureParmeters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+...
+----
+a|
+Use `EncryptionAlgorithm.RSASSA_PSS` instead to distinguish a use of mask generation function.
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+...
+----
+
+|`SHA512` as default digest algorithm          a|
+`SHA256` is default.
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setDigestAlgorithm(DigestAlgorithm.SHA512);
+...
+----
+a|
+`SHA512` is default. To get back to `SHA256` please use:
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setDigestAlgorithm(DigestAlgorithm.SHA256);
+...
+----
+
+|`RSASSA_PSS` as default encryption algorithm          a|
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+signatureParmeters.setMaskGenerationFunction(MaskGenerationFunction.MGF1);
+...
+----
+a|
+DSS will choose encryption algorithm based on the algorithm name in the signing-certificate key (i.e. `RSA`, `RSASSA_PSS` or other). When signing without certificate or in order to enforce target encryption algorithm, provide encryption algorithm explicitly.
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParmeters.setSigningCertificate(signingCertificate);
+...
+or
+...
+signatureParmeters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
+...
+----
+
+|JAdES claimed signing time header          a|
+Signature created with `sigT` (claimed signing time) header
+a|
+Signature created with `iat` by default (recommended).
+To return to the old behavior*, the code below can be used:
+[source,java]
+----
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+
+JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
+...
+signatureParameters.setJadesSigningTimeType(JAdESSigningTimeType.SIG_T);
+----
+{empty}* `sigT` is deprecated. The header shall not be used since `2025-05-15T00:00:00Z`.
+
+|XMLDSig definitions           a|
+[source,java]
+----
+import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
+import eu.europa.esig.xmldsig.definition.XMLDSigPath;
+...
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+...
+----
+
+|XAdES definitions           a|
+[source,java]
+----
+import eu.europa.esig.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xades.definition.xades132.XAdES132Path;
+...
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+...
+----
+
+|CertificateVerifier#setExtractPOEFromUntrustedChains deprecated     a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+certificateVerifier.setExtractPOEFromUntrustedChains(true);
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.spi.validation.TimestampTokenVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+
+TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
+timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
+certificateVerifier.setTimestampTokenVerifier(timestampTokenVerifier);
+----
+
+|Skip ValidationContext execution     a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.DocumentValidator;
+
+DocumentValidator documentValidator = ...
+documentValidator.setSkipValidationContextExecution(true);
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.validation.DocumentValidator;
+import eu.europa.esig.dss.validation.executor.context.SkipValidationContextExecutor;
+
+DocumentValidator documentValidator = ...
+documentValidator.setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE);
+----
+
+a|`ManifestEntry#getName` has been deprecated     a|
+[source,java]
+----
+import eu.europa.esig.dss.validation.ManifestEntry;
+
+ManifestEntry manifestEntry = ...
+String name = manifestEntry.getName();
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.model.ManifestEntry;
+
+ManifestEntry manifestEntry = ...
+String uri = manifestEntry.getUri();
+----
+or use _#getDocumentName_ for identified entries
+
+[source,java]
+----
+String documentName = manifestEntry.getDocumentName();
+----
+
+|===
+
+[cols="2,5,5"]
 .Code changes from version 5.13 to 6.0
 |===
 |Title                               |v5.13                            |v6.0
@@ -25,7 +413,6 @@ import javax.xml.bind.JAXBElement;
                                                                      a|[source,java]
 import jakarta.xml.bind.JAXBElement;
 ...
-
 
 |Javax version change        a|[source,xml]
 ----

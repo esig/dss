@@ -55,14 +55,22 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException {
-		return sign(toBeSigned, digestAlgorithm, null, keyEntry);
+		EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
+		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(encryptionAlgorithm, digestAlgorithm);
+		return sign(toBeSigned, signatureAlgorithm, keyEntry);
 	}
 
 	@Override
+	@Deprecated
 	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf,
 			DSSPrivateKeyEntry keyEntry) throws DSSException {
-		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(encryptionAlgorithm, digestAlgorithm, mgf);
+		EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
+			LOG.info("Usage of deprecated method with EncryptionAlgorithm '{}' and MaskGenerationFunction '{}'. " +
+							"The EncryptionAlgorithm is converted to '{}'", encryptionAlgorithm, mgf, EncryptionAlgorithm.RSASSA_PSS.getName());
+			encryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
+		}
+		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		return sign(toBeSigned, signatureAlgorithm, keyEntry);
 	}
 
@@ -74,7 +82,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
 		final byte[] bytes = toBeSigned.getBytes();
 		AlgorithmParameterSpec param = null;
-		if (signatureAlgorithm.getMaskGenerationFunction() != null) {
+		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
 			param = createPSSParam(signatureAlgorithm.getDigestAlgorithm());
 		}
 
@@ -91,14 +99,22 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 	@Override
 	public SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException {
-		return signDigest(digest, (MaskGenerationFunction) null, keyEntry);
+		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
+		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm);
+		return signDigest(digest, signatureAlgorithm, keyEntry);
 	}
 
 	@Override
+	@Deprecated
 	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
 			throws DSSException {
-		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm, mgf);
+		EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
+			LOG.info("Usage of deprecated method with EncryptionAlgorithm '{}' and MaskGenerationFunction '{}'. " +
+					"The EncryptionAlgorithm is converted to '{}'", encryptionAlgorithm, mgf, EncryptionAlgorithm.RSASSA_PSS.getName());
+			encryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
+		}
+		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm);
 		return signDigest(digest, signatureAlgorithm, keyEntry);
 	}
 
@@ -107,19 +123,17 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 			throws DSSException {
 		assertConfigurationValid(digest, signatureAlgorithm, keyEntry);
 
-		final String javaSignatureAlgorithm = getRawSignatureAlgorithm(
-				signatureAlgorithm.getEncryptionAlgorithm(), signatureAlgorithm.getMaskGenerationFunction()).getJCEId();
+		final String javaSignatureAlgorithm = getRawSignatureAlgorithm(signatureAlgorithm.getEncryptionAlgorithm()).getJCEId();
 		final byte[] digestedBytes = digest.getValue();
 		AlgorithmParameterSpec param = null;
-		if (signatureAlgorithm.getMaskGenerationFunction() != null) {
+		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
 			param = createPSSParam(digest.getAlgorithm());
 		}
 
 		try {
 			final byte[] signatureValue = sign(digestedBytes, javaSignatureAlgorithm, param, keyEntry);
 			SignatureValue value = new SignatureValue();
-			value.setAlgorithm(getSignatureAlgorithm(signatureAlgorithm.getEncryptionAlgorithm(), digest.getAlgorithm(),
-					signatureAlgorithm.getMaskGenerationFunction()));
+			value.setAlgorithm(getSignatureAlgorithm(signatureAlgorithm.getEncryptionAlgorithm(), digest.getAlgorithm()));
 			value.setValue(signatureValue);
 			return value;
 		} catch (Exception e) {
@@ -148,17 +162,14 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	 *
 	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
 	 * @param digestAlgorithm {@link DigestAlgorithm}
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
 	 * @return {@link SignatureAlgorithm}
 	 */
-	private SignatureAlgorithm getSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm, DigestAlgorithm digestAlgorithm,
-													 MaskGenerationFunction maskGenerationFunction) {
-		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
-				encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+	private SignatureAlgorithm getSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm, DigestAlgorithm digestAlgorithm) {
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		if (signatureAlgorithm == null) {
 			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm is not found for the given configuration " +
-					"[EncryptionAlgorithm: %s; DigestAlgorithm: %s; MaskGenerationFunction: %s]",
-					encryptionAlgorithm, digestAlgorithm, maskGenerationFunction));
+					"[EncryptionAlgorithm: %s; DigestAlgorithm: %s]",
+					encryptionAlgorithm, digestAlgorithm));
 		}
 		return signatureAlgorithm;
 	}
@@ -168,17 +179,14 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	 * because the data to be signed is already digested
 	 *
 	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
 	 * @return {@link SignatureAlgorithm}
 	 */
-	private SignatureAlgorithm getRawSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm,
-														MaskGenerationFunction maskGenerationFunction) {
-		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(
-				encryptionAlgorithm, null, maskGenerationFunction);
+	private SignatureAlgorithm getRawSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, null);
 		if (signatureAlgorithm == null) {
 			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm for digest signing is not found " +
-							"for the given configuration [EncryptionAlgorithm: %s; MaskGenerationFunction: %s]",
-					encryptionAlgorithm, maskGenerationFunction));
+							"for the given configuration [EncryptionAlgorithm: %s]",
+					encryptionAlgorithm));
 		}
 		return signatureAlgorithm;
 	}

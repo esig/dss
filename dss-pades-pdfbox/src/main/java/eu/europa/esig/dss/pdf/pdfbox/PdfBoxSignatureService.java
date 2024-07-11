@@ -51,8 +51,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.ValidationData;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
@@ -186,7 +186,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			@Override
 			public byte[] sign(InputStream content) throws IOException {
 
-				byte[] b = new byte[4096];
+				byte[] b = new byte[8192];
 				int count;
 				while ((count = content.read(b)) > 0) {
 					digest.update(b, 0, count);
@@ -200,9 +200,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		final PDSignature pdSignature = createSignatureDictionary(pdDocument, parameters);
 		final PDSignatureField pdSignatureField = findExistingSignatureField(pdDocument, fieldParameters);
 		if (pdSignatureField != null) {
-			setSignatureToField(pdSignatureField, pdSignature);
+			setSignatureToField(pdDocument, pdSignatureField, pdSignature);
 		}
-		
+
 		try (SignatureOptions options = new SignatureOptions()) {
 			options.setPreferredSignatureSize(parameters.getContentSize());
 
@@ -218,6 +218,9 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					// check signature field position only for new annotations
 					getVisibleSignatureFieldBoxPosition(signatureDrawer, documentReader, fieldParameters);
 				}
+
+				int page = fieldParameters.getPage();
+				options.setPage(page - ImageUtils.DEFAULT_FIRST_PAGE); // DSS-1138
 				
 				signatureDrawer.draw();
 			}
@@ -229,6 +232,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (pdDocument.getDocumentId() == null) {
 				pdDocument.setDocumentId(documentReader.generateDocumentId(parameters));
 			}
+			digitalSignatureEnhancement(documentReader, parameters);
+
 			checkEncryptedAndSaveIncrementally(pdDocument, outputStream, parameters);
 
 			return new DSSMessageDigest(digestAlgorithm, digest.digest());
@@ -240,7 +245,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	
 	private PDSignatureField findExistingSignatureField(final PDDocument pdDocument, final SignatureFieldParameters fieldParameters) {
 		String targetFieldId = fieldParameters.getFieldId();
-		if (!isDocumentTimestampLayer() && Utils.isStringNotEmpty(targetFieldId)) {
+		if (Utils.isStringNotEmpty(targetFieldId)) {
 			PDAcroForm acroForm = pdDocument.getDocumentCatalog().getAcroForm();
 			if (acroForm != null) {
 				PDField field = acroForm.getField(targetFieldId);
@@ -333,7 +338,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		return signature;
 	}
 
-	private void setSignatureToField(final PDSignatureField pdSignatureField, final  PDSignature pdSignature) {
+	private void setSignatureToField(final PDDocument pdDocument, final PDSignatureField pdSignatureField, final PDSignature pdSignature) {
+		setFieldMDP(pdDocument, pdSignatureField, pdSignature);
 		pdSignatureField.getCOSObject().setItem(COSName.V, pdSignature);
 	}
 
@@ -349,6 +355,34 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		} catch (IOException e) {
 			LOG.warn("Cannot read the existing signature(s)", e);
 			return false;
+		}
+	}
+
+	/**
+	 * Add FieldMDP TransformMethod if the signature field contains a Lock
+	 * See {@link <a href="https://github.com/mkl-public/testarea-pdfbox2/blob/master/src/test/java/mkl/testarea/pdfbox2/sign/CreateSignature.java#L348">link</a>}
+	 *
+	 * @param pdDocument the document
+	 * @param pdSignatureField the signature field
+	 * @param pdSignature the signature object
+	 */
+	private void setFieldMDP(PDDocument pdDocument, PDSignatureField pdSignatureField, PDSignature pdSignature) {
+		COSBase lock = pdSignatureField.getCOSObject().getDictionaryObject(COSName.getPDFName(PAdESConstants.LOCK_NAME));
+		if (lock instanceof COSDictionary) {
+			COSDictionary lockDict = (COSDictionary) lock;
+			COSDictionary transformParams = new COSDictionary(lockDict);
+			transformParams.setItem(COSName.TYPE, COSName.TRANSFORM_PARAMS);
+			transformParams.setName(COSName.V, PAdESConstants.VERSION_DEFAULT);
+			transformParams.setDirect(true);
+			COSDictionary sigRef = new COSDictionary();
+			sigRef.setItem(COSName.TYPE, COSName.SIG_REF);
+			sigRef.setItem(COSName.TRANSFORM_METHOD, COSName.getPDFName(PAdESConstants.FIELD_MDP_NAME));
+			sigRef.setItem(COSName.TRANSFORM_PARAMS, transformParams);
+			sigRef.setItem(COSName.getPDFName(PAdESConstants.DATA_NAME), pdDocument.getDocumentCatalog());
+			sigRef.setDirect(true);
+			COSArray referenceArray = new COSArray();
+			referenceArray.add(sigRef);
+			pdSignature.getCOSObject().setItem(COSName.REFERENCE, referenceArray);
 		}
 	}
 
@@ -440,7 +474,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
 			 InputStream is = document.openStream();
-			 PDDocument pdDocument = PDDocument.load(is, getPasswordString(pwd))) {
+			 PDDocument pdDocument = PDDocument.load(is, getPasswordString(pwd));
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(pdDocument)) {
 
 			if (!validationDataForInclusion.isEmpty()) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
@@ -448,6 +483,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 						buildDSSDictionary(pdDocument, validationDataForInclusion, includeVRIDict));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
+			ensureESICDeveloperExtension1(documentReader);
 			
 			// encryption is not required (no signature/timestamp is added on the step)
 			saveDocumentIncrementally(pdDocument, os);

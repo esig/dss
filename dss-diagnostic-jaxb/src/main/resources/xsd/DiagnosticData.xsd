@@ -136,6 +136,7 @@
 	
 	<xs:complexType name="AbstractToken" abstract="true">
 		<xs:attribute name="Id" type="xs:ID" use="required" />
+		<xs:attribute name="Duplicated" type="xs:boolean" use="optional" />
 	</xs:complexType>
 
 	<xs:complexType name="Signature">
@@ -179,21 +180,8 @@
 					<xs:element name="FoundCertificates" type="FoundCertificates" />
 					<xs:element name="FoundRevocations" type="FoundRevocations" />
 								
-					<xs:element name="FoundTimestamps">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
-
-					<xs:element name="FoundEvidenceRecords" minOccurs="0">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="FoundEvidenceRecord" type="FoundEvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
+					<xs:element name="FoundTimestamps" type="FoundTimestamps" />
+					<xs:element name="FoundEvidenceRecords" type="FoundEvidenceRecords" minOccurs="0" />
 					
 					<xs:element name="SignatureScopes">
 						<xs:complexType>
@@ -210,7 +198,6 @@
 				</xs:sequence>
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 				<xs:attribute name="Parent" type="xs:IDREF" use="optional" /> <!-- If is a counter-signature -->
-				<xs:attribute name="Duplicated" type="xs:boolean" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -890,7 +877,6 @@
 			<xs:element name="EncryptionAlgoUsedToSignThisToken" type="xs:string" minOccurs="0" />
 			<xs:element name="KeyLengthUsedToSignThisToken" type="xs:string" minOccurs="0" />
 			<xs:element name="DigestAlgoUsedToSignThisToken" type="xs:string" minOccurs="0" />
-			<xs:element name="MaskGenerationFunctionUsedToSignThisToken" type="xs:string" minOccurs="0" />
 			<xs:element name="SignatureIntact" type="xs:boolean" minOccurs="0" />
 			<xs:element name="SignatureValid" type="xs:boolean" minOccurs="0" />
 		</xs:sequence>
@@ -1017,7 +1003,9 @@
 					<xs:element name="DataIntact" type="xs:boolean" />
 				</xs:sequence>
 				<xs:attribute name="type" type="DigestMatcherType" use="required" />
-				<xs:attribute name="name" type="xs:string" use="optional"/>
+				<xs:attribute name="id" type="xs:string" use="optional"/>
+				<xs:attribute name="uri" type="xs:string" use="optional"/>
+				<xs:attribute name="documentName" type="xs:string" use="optional"/>
 				<xs:attribute name="duplicated" type="xs:boolean" use="optional" default="false" />
 			</xs:extension>
 		</xs:complexContent>
@@ -1171,6 +1159,7 @@
 				<xs:sequence>
 					<xs:element name="TimestampFilename" type="xs:string" minOccurs="0" /> <!-- In case of detached timestamps -->
 					<xs:element name="ArchiveTimestampType" type="ArchiveTimestampType" minOccurs="0" />
+					<xs:element name="EvidenceRecordTimestampType" type="EvidenceRecordTimestampType" minOccurs="0" />
 					<xs:element name="ProductionTime" type="xs:dateTime" />
 					<xs:element name="DigestMatcher" type="DigestMatcher" maxOccurs="unbounded" />
 					<xs:element name="BasicSignature" type="BasicSignature" />
@@ -1182,6 +1171,7 @@
 					
 					<xs:element name="FoundCertificates" type="FoundCertificates" />
 					<xs:element name="FoundRevocations" type="FoundRevocations" />
+					<xs:element name="FoundEvidenceRecords" type="FoundEvidenceRecords" minOccurs="0" />
 		
 					<xs:element name="TimestampedObjects" type="TimestampedObjects" />
 
@@ -1233,6 +1223,14 @@
 			<!-- Evidence record time-stamps -->
 			<xs:enumeration value="XML_EVIDENCE_RECORD" />
 			<xs:enumeration value="ASN1_EVIDENCE_RECORD" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EvidenceRecordTimestampType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
+			<xs:enumeration value="TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP" />
+			<xs:enumeration value="HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1315,6 +1313,18 @@
 		<xs:sequence>
 			<xs:element name="RelatedRevocation" type="RelatedRevocation" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="OrphanRevocation" type="OrphanRevocation" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="FoundTimestamps">
+		<xs:sequence>
+			<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="FoundEvidenceRecords">
+		<xs:sequence>
+			<xs:element name="FoundEvidenceRecord" type="FoundEvidenceRecord" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -1455,13 +1465,7 @@
 					<xs:element name="Type"	type="EvidenceRecordType" minOccurs="0" />
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					<xs:element name="DigestMatchers" type="DigestMatchers" />
-					<xs:element name="EvidenceRecordTimestamps">
-						<xs:complexType>
-							<xs:sequence>
-								<xs:element name="FoundTimestamp" type="FoundTimestamp" minOccurs="0" maxOccurs="unbounded" />
-							</xs:sequence>
-						</xs:complexType>
-					</xs:element>
+					<xs:element name="EvidenceRecordTimestamps" type="FoundTimestamps" />
 
 					<xs:element name="FoundCertificates" type="FoundCertificates" />
 					<xs:element name="FoundRevocations" type="FoundRevocations" />

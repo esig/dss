@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class ASiCEBrokenRefAndCorruptedManifestTest extends AbstractASiCWithCAdESTestValidation {
+class ASiCEBrokenRefAndCorruptedManifestTest extends AbstractASiCWithCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

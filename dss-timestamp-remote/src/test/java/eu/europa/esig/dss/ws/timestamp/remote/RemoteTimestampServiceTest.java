@@ -55,18 +55,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class RemoteTimestampServiceTest extends PKIFactoryAccess {
+class RemoteTimestampServiceTest extends PKIFactoryAccess {
 	
 	private RemoteTimestampService timestampService;
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		timestampService = new RemoteTimestampService();
 		timestampService.setTSPSource(getGoodTsa());
 	}
 	
 	@Test
-	public void simpleTest() {
+	void simpleTest() {
 		byte[] contentToBeTimestamped = "Hello World!".getBytes();
 		byte[] digestValue = DSSUtils.digest(DigestAlgorithm.SHA512, contentToBeTimestamped);
 		TimestampResponseDTO timestampResponse = timestampService.getTimestampResponse(DigestAlgorithm.SHA512, digestValue);
@@ -75,7 +75,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void signatureWithContentTimestamp() throws Exception {
+	void signatureWithContentTimestamp() throws Exception {
 		DSSDocument documentToSign = new FileDocument(new File("src/test/resources/sample.xml"));
 		
 		String canonicalizationAlgo = CanonicalizationMethod.EXCLUSIVE;
@@ -97,8 +97,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 		XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-				signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
@@ -119,7 +118,7 @@ public class RemoteTimestampServiceTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	public void noTSPSourceDefinedTest() {
+	void noTSPSourceDefinedTest() {
 		RemoteTimestampService remoteTimestampService = new RemoteTimestampService();
 		byte[] contentToBeTimestamped = "Hello World!".getBytes();
 		byte[] digestValue = DSSUtils.digest(DigestAlgorithm.SHA512, contentToBeTimestamped);

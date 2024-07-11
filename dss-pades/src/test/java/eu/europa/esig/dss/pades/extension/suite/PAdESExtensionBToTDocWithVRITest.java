@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -32,6 +33,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 
 import java.util.List;
 
@@ -43,14 +45,16 @@ public class PAdESExtensionBToTDocWithVRITest extends AbstractPAdESTestValidatio
 
     @Override
     protected DSSDocument getSignedDocument() {
-        PAdESService padesService = new PAdESService(getOfflineCertificateVerifier());
+        CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
+
+        PAdESService padesService = new PAdESService(certificateVerifier);
         padesService.setTspSource(getGoodTsa());
 
         DSSDocument originalDocument = new InMemoryDocument(getClass().getResourceAsStream("/validation/test-with-vri.pdf"));
 
         PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
-        signatureParameters.setSignWithExpiredCertificate(true);
 
         return padesService.extendDocument(originalDocument, signatureParameters);
     }

@@ -26,19 +26,19 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.signature.JAdESService;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESExtensionBToLTWithRevokedCertTest extends AbstractJAdESTestExtension {
+class JAdESExtensionBToLTWithRevokedCertTest extends AbstractJAdESTestExtension {
 
     private JAdESSignatureParameters signatureParameters;
     private JAdESSignatureParameters extensionParameters;
 
     @BeforeEach
-    public void init() {
+    void init() {
         signatureParameters = super.getSignatureParameters();
         signatureParameters.setCheckCertificateRevocation(false);
 

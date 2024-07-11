@@ -39,32 +39,34 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
+import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
 import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.DefaultAdvancedSignature;
-import eu.europa.esig.dss.model.ManifestEntry;
-import eu.europa.esig.dss.model.ReferenceValidation;
-import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.validation.SignatureCryptographicVerification;
-import eu.europa.esig.dss.validation.SignatureDigestReference;
-import eu.europa.esig.dss.validation.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.validation.SignaturePolicy;
-import eu.europa.esig.dss.validation.SignatureProductionPlace;
-import eu.europa.esig.dss.validation.SignerRole;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1IA5String;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -76,7 +78,6 @@ import org.bouncycastle.asn1.ASN1String;
 import org.bouncycastle.asn1.DERNull;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
 import org.bouncycastle.asn1.esf.OtherHashAlgAndValue;
 import org.bouncycastle.asn1.esf.SPUserNotice;
 import org.bouncycastle.asn1.esf.SigPolicyQualifierInfo;
@@ -311,8 +312,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	
 	@Override
 	public SignaturePolicyStore getSignaturePolicyStore() {
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
-		Attribute sigPolicyStore = unsignedAttributes.get(id_aa_ets_sigPolicyStore);
+		final Attribute sigPolicyStore = CMSUtils.getUnsignedAttribute(signerInformation, id_aa_ets_sigPolicyStore);
 		if (sigPolicyStore != null && sigPolicyStore.getAttrValues().size() > 0) {
 			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 			SpDocSpecification spDocSpecification = new SpDocSpecification();
@@ -429,14 +429,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	public List<eu.europa.esig.dss.validation.CommitmentTypeIndication> getCommitmentTypeIndications() {
+	public List<CommitmentTypeIndication> getCommitmentTypeIndications() {
 		final Attribute commitmentTypeIndicationAttribute = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_commitmentType);
 		if (commitmentTypeIndicationAttribute == null) {
 			return Collections.emptyList();
 		}
 
 		try {
-			List<eu.europa.esig.dss.validation.CommitmentTypeIndication> commitmentTypeIndications = null;
+			List<eu.europa.esig.dss.model.signature.CommitmentTypeIndication> commitmentTypeIndications = null;
 			final ASN1Set attrValues = commitmentTypeIndicationAttribute.getAttrValues();
 			final int size = attrValues.size();
 			if (size > 0) {
@@ -444,9 +444,10 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				for (int ii = 0; ii < size; ii++) {
 					if (attrValues.getObjectAt(ii) instanceof ASN1Sequence) {
 						final ASN1Sequence sequence = (ASN1Sequence) attrValues.getObjectAt(ii);
-						final CommitmentTypeIndication commitmentTypeIndication = CommitmentTypeIndication.getInstance(sequence);
+						final org.bouncycastle.asn1.esf.CommitmentTypeIndication commitmentTypeIndication =
+								org.bouncycastle.asn1.esf.CommitmentTypeIndication.getInstance(sequence);
 						final ASN1ObjectIdentifier commitmentTypeId = commitmentTypeIndication.getCommitmentTypeId();
-						commitmentTypeIndications.add(new eu.europa.esig.dss.validation.CommitmentTypeIndication(commitmentTypeId.getId()));
+						commitmentTypeIndications.add(new eu.europa.esig.dss.model.signature.CommitmentTypeIndication(commitmentTypeId.getId()));
 					} else {
 						LOG.warn("Unsupported type for CommitmentType : {}", attrValues.getObjectAt(ii).getClass());
 					}
@@ -624,7 +625,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.forOID(oid);
 			return signatureAlgorithm.getEncryptionAlgorithm();
 		} catch (IllegalArgumentException e) {
-			LOG.error("Unable to identify encryption algorithm for OID '{}'. Reason : {}", oid, e.getMessage());
+			LOG.warn("Unable to identify encryption algorithm for OID '{}'. Reason : {}", oid, e.getMessage());
 		}
 
 		return null;
@@ -634,7 +635,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	public DigestAlgorithm getDigestAlgorithm() {
 		final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
 		if (signatureAlgorithm != null) {
-			if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
+			if (EncryptionAlgorithm.RSASSA_PSS.equals(signatureAlgorithm.getEncryptionAlgorithm())) {
 				return getPSSHashAlgorithm();
 			}
 			return signatureAlgorithm.getDigestAlgorithm();
@@ -644,7 +645,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			try {
 				return DigestAlgorithm.forOID(digestAlgOID);
 			} catch (IllegalArgumentException e) {
-				LOG.error("Unable to identify DigestAlgorithm for OID '{}'. Reason : {}", digestAlgOID, e.getMessage());
+				LOG.warn("Unable to identify DigestAlgorithm for OID '{}'. Reason : {}", digestAlgOID, e.getMessage());
 				return null;
 			}
 		}
@@ -670,36 +671,24 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				return DigestAlgorithm.forOID(pssHashAlgo.getAlgorithm().getId());
 			}
 		} catch (IOException e) {
-			LOG.error("Unable to analyze EncryptionAlgParams", e);
-		}
-		return null;
-	}
-
-	@Override
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		try {
-			final SignatureAlgorithm signatureAlgorithm = getEncryptedDigestAlgo();
-			if (SignatureAlgorithm.RSA_SSA_PSS_SHA1_MGF1.equals(signatureAlgorithm)) {
-				byte[] encryptionAlgParams = signerInformation.getEncryptionAlgParams();
-				if (Utils.isArrayNotEmpty(encryptionAlgParams) && !Arrays.equals(DERNull.INSTANCE.getEncoded(), encryptionAlgParams)) {
-					RSASSAPSSparams param = RSASSAPSSparams.getInstance(encryptionAlgParams);
-					AlgorithmIdentifier maskGenAlgorithm = param.getMaskGenAlgorithm();
-					if (PKCSObjectIdentifiers.id_mgf1.equals(maskGenAlgorithm.getAlgorithm())) {
-						return MaskGenerationFunction.MGF1;
-					} else {
-						LOG.warn("Unsupported mask algorithm : {}", maskGenAlgorithm.getAlgorithm());
-					}
-				}
-			}
-		} catch (IOException e) {
 			LOG.warn("Unable to analyze EncryptionAlgParams", e);
 		}
 		return null;
 	}
 
 	@Override
+	@Deprecated
+	public MaskGenerationFunction getMaskGenerationFunction() {
+		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
+		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
+			return MaskGenerationFunction.MGF1;
+		}
+		return null;
+	}
+
+	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
-		return SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm(), getMaskGenerationFunction());
+		return SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm());
 	}
 
 	@Override
@@ -746,7 +735,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataIntact);
 			
 		} catch (CMSException | IOException e) {
-			LOG.error(e.getMessage(), e);
+			LOG.warn(e.getMessage(), e);
 			signatureCryptographicVerification.setErrorMessage(e.getMessage());
 		}
 		LOG.debug(" - RESULT: {}", signatureCryptographicVerification);
@@ -800,8 +789,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (Utils.isCollectionNotEmpty(messageDigestAlgorithms)) {
 			// try to match with found digest algorithm(s)
 			for (DigestAlgorithm digestAlgorithm : messageDigestAlgorithms) {
-				String base64Digest = originalDocument.getDigest(digestAlgorithm);
-				if (Arrays.equals(messageDigest.getValue(), Utils.fromBase64(base64Digest))) {
+				byte[] base64Digest = originalDocument.getDigestValue(digestAlgorithm);
+				if (Arrays.equals(messageDigest.getValue(), base64Digest)) {
 					messageDigest.setAlgorithm(digestAlgorithm);
 					return true;
 				}
@@ -824,7 +813,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		for (ManifestEntry entry : manifestFile.getEntries()) {
 			ReferenceValidation entryValidation = new ReferenceValidation();
 			entryValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
-			entryValidation.setName(entry.getFileName());
+			entryValidation.setUri(entry.getUri());
+			entryValidation.setDocumentName(entry.getDocumentName());
 			entryValidation.setDigest(entry.getDigest());
 			entryValidation.setFound(entry.isFound());
 			entryValidation.setIntact(entry.isIntact());
@@ -867,12 +857,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		}
 
 		if (originalDocument != null) {
+			messageDigestValidation.setDocumentName(originalDocument.getName());
 			messageDigestValidation.setFound(true);
 			messageDigestValidation.setIntact(verifyDigestAlgorithm(originalDocument, digestAlgorithmCandidates, messageDigest));
 
 			if (manifestFile != null && 
-					Utils.toBase64(messageDigest.getValue()).equals(manifestFile.getDigestBase64String(messageDigest.getAlgorithm()))) {
-				messageDigestValidation.setName(manifestFile.getFilename());
+					Arrays.equals(messageDigest.getValue(), manifestFile.getDigestValue(messageDigest.getAlgorithm()))) {
 				// get references to documents contained in the manifest file (for ASiC-E container)
 				messageDigestValidation.getDependentValidations()
 						.addAll(getManifestEntryValidation());
@@ -900,7 +890,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 				if (Utils.isArrayNotEmpty(contentDigest)) {
 					contentValidation.setFound(true);
 					contentValidation.setDigest(new Digest(digestAlgorithm, contentDigest));
-					if (Arrays.equals(contentDigest, Utils.fromBase64(originalDocument.getDigest(digestAlgorithm)))) {
+					if (Arrays.equals(contentDigest, originalDocument.getDigestValue(digestAlgorithm))) {
 						contentValidation.setIntact(true);
 					}
 				}
@@ -1224,72 +1214,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	protected CAdESBaselineRequirementsChecker createBaselineRequirementsChecker() {
-		return new CAdESBaselineRequirementsChecker(this, offlineCertificateVerifier);
-	}
-
-	/**
-	 * Checks the presence of signing certificate covered by the signature, what is the proof -BES profile existence
-	 *
-	 * @return true if BES Profile is detected
-	 */
-	public boolean hasBESProfile() {
-		return getBaselineRequirementsChecker().hasExtendedBESProfile();
-	}
-
-	/**
-	 * Checks the presence of signature-policy-identifier element in the signature,
-	 * what is the proof -EPES profile existence
-	 *
-	 * @return true if EPES Profile is detected
-	 */
-	public boolean hasEPESProfile() {
-		return getBaselineRequirementsChecker().hasExtendedEPESProfile();
-	}
-
-	/**
-	 * Checks the presence of signature-time-stamp element in the signature, what is the proof -T profile existence
-	 *
-	 * @return true if T Profile is detected
-	 */
-	public boolean hasExtendedTProfile() {
-		return getBaselineRequirementsChecker().hasExtendedTProfile();
-	}
-
-	/**
-	 * Checks if the signature has the 101733-C profile
-	 *
-	 * @return TRUE if the signature has a 101733-C profile, FALSE otherwise
-	 */
-	public boolean hasCProfile() {
-		return getBaselineRequirementsChecker().hasExtendedCProfile();
-	}
-
-	/**
-	 * Checks if the signature has the 101733-X profile
-	 *
-	 * @return TRUE if the signature has a 101733-X profile, FALSE otherwise
-	 */
-	public boolean hasXProfile() {
-		return getBaselineRequirementsChecker().hasExtendedXProfile();
-	}
-
-	/**
-	 * Checks if the signature has the 101733-XL profile
-	 *
-	 * @return TRUE if the signature has a 101733-XL profile, FALSE otherwise
-	 */
-	public boolean hasXLProfile() {
-		return getBaselineRequirementsChecker().hasExtendedXLProfile();
-	}
-
-	/**
-	 * Checks if the signature has the 101733-A profile
-	 *
-	 * @return TRUE if the signature has a 101733-A profile, FALSE otherwise
-	 */
-	public boolean hasAProfile() {
-		return getBaselineRequirementsChecker().hasExtendedAProfile();
+	protected CAdESBaselineRequirementsChecker createBaselineRequirementsChecker(CertificateVerifier certificateVerifier) {
+		return new CAdESBaselineRequirementsChecker(this, certificateVerifier);
 	}
 
 }

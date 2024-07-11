@@ -12,13 +12,13 @@ $ echo '{
     },
     "encryptionAlgorithm" : null,
     "digestAlgorithm" : null,
-    "maskGenerationFunction" : null,
     "referenceId" : "tl",
     "referenceDigestAlgorithm" : "SHA512",
     "blevelParameters" : {
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1633219200000,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,
@@ -32,9 +32,10 @@ $ echo '{
       "signerLocationStateOrProvince" : null,
       "signerLocationCountry" : null,
       "signerLocationStreet" : null
-    }
+    },
+    "maskGenerationFunction" : null
   }
 }' | http POST 'http://localhost:8080/services/rest/signature/trusted-list/getDataToSign' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
-    'Content-Type:application/json; charset=UTF-8'
+    'Content-Type:application/json'
 ----

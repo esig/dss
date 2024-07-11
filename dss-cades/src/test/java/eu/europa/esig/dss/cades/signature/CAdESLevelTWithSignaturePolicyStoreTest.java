@@ -38,7 +38,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -51,16 +51,17 @@ import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CAdESLevelTWithSignaturePolicyStoreTest extends AbstractCAdESTestSignature {
+class CAdESLevelTWithSignaturePolicyStoreTest extends AbstractCAdESTestSignature {
 
 	private static final String HTTP_SPURI_TEST = "http://spuri.test";
 	private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
@@ -72,7 +73,7 @@ public class CAdESLevelTWithSignaturePolicyStoreTest extends AbstractCAdESTestSi
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello world".getBytes());
 
 		Policy signaturePolicy = new Policy();
@@ -202,7 +203,7 @@ public class CAdESLevelTWithSignaturePolicyStoreTest extends AbstractCAdESTestSi
 		assertArrayEquals(policyDigestAlgoAndValue.getDigestValue(), policyStoreDigestAlgoAndValue.getDigestValue());
 		
 		// ASN.1 processing
-		assertNotEquals(POLICY_CONTENT.getDigest(policyDigestAlgoAndValue.getDigestMethod()), Utils.toBase64(policyDigestAlgoAndValue.getDigestValue()));
+		assertFalse(Arrays.equals(POLICY_CONTENT.getDigestValue(policyDigestAlgoAndValue.getDigestMethod()), policyDigestAlgoAndValue.getDigestValue()));
 	}
 
 	@Override

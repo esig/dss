@@ -37,14 +37,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCSCAdESMultiFilesLevelLTATest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
+class ASiCSCAdESMultiFilesLevelLTATest extends AbstractASiCSWithCAdESMultipleDocumentsTestSignature {
 
     private ASiCWithCAdESService service;
     private ASiCWithCAdESSignatureParameters signatureParameters;
     private List<DSSDocument> documentsToSigns = new ArrayList<>();
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

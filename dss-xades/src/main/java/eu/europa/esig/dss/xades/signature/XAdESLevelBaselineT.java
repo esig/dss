@@ -20,13 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xmldsig.definition.XMLDSigAttribute;
-import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
@@ -38,27 +33,33 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.ValidationData;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
-import eu.europa.esig.xades.definition.XAdESNamespace;
-import eu.europa.esig.xades.definition.xades111.XAdES111Attribute;
-import eu.europa.esig.xades.definition.xades111.XAdES111Element;
-import eu.europa.esig.xades.definition.xades122.XAdES122Attribute;
-import eu.europa.esig.xades.definition.xades122.XAdES122Element;
-import eu.europa.esig.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
+import eu.europa.esig.dss.xades.definition.xades122.XAdES122Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.validation.XAdESAttributeIdentifier;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
-import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -70,7 +71,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.XAdES_BASELINE_T;
 
@@ -114,13 +114,14 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			LOG.info("====> Extending: {}", (dssDocument.getName() == null ? "IN MEMORY DOCUMENT" : dssDocument.getName()));
 		}
 
-		documentValidator = new XMLDocumentValidator(dssDocument);
-		documentValidator.setCertificateVerifier(certificateVerifier);
-		documentValidator.setDetachedContents(params.getDetachedContents());
+		documentAnalyzer = new XMLDocumentAnalyzer(dssDocument);
+		documentAnalyzer.setCertificateVerifier(certificateVerifier);
+		documentAnalyzer.setDetachedContents(params.getDetachedContents());
+		documentAnalyzer.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 
-		documentDom = documentValidator.getRootElement();
+		documentDom = documentAnalyzer.getRootElement();
 
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
 		if (Utils.isCollectionEmpty(signatures)) {
 			throw new IllegalInputException("There is no signature to extend!");
 		}
@@ -191,20 +192,19 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * @param signatures a list of {@link AdvancedSignature}s to extend
 	 */
 	protected void extendSignatures(List<AdvancedSignature> signatures) {
-		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
-				certificateVerifier, params);
+		final List<AdvancedSignature> signaturesToExtend = getExtendToTLevelSignatures(signatures);
+		if (Utils.isCollectionEmpty(signaturesToExtend)) {
+			return;
+		}
 
-		for (AdvancedSignature signature : signatures) {
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		signatureRequirementsChecker.assertExtendToTLevelPossible(signatures);
+
+		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);
+		signatureRequirementsChecker.assertSigningCertificateIsValid(signaturesToExtend);
+
+		for (AdvancedSignature signature : signaturesToExtend) {
 			initializeSignatureBuilder((XAdESSignature) signature);
-
-			// The timestamp must be added only if there is no one or the extension -T level is being created
-			if (!tLevelExtensionRequired()) {
-				continue;
-			}
-
-			assertExtendSignatureToTPossible();
-			assertSignatureValid(xadesSignature);
-			signatureRequirementsChecker.assertSigningCertificateIsValid(signature);
 
 			Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
@@ -219,20 +219,27 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		}
 	}
 
-	private boolean tLevelExtensionRequired() {
-		return XAdES_BASELINE_T.equals(params.getSignatureLevel()) || !xadesSignature.hasTProfile();
+	/**
+	 * Instantiates a {@code SignatureRequirementsChecker}
+	 *
+	 * @return {@link SignatureRequirementsChecker}
+	 */
+	protected SignatureRequirementsChecker getSignatureRequirementsChecker() {
+		return new SignatureRequirementsChecker(certificateVerifier, params);
 	}
 
-	/**
-	 * Checks if the extension is possible.
-	 */
-	private void assertExtendSignatureToTPossible() {
-		final SignatureLevel signatureLevel = params.getSignatureLevel();
-		if (XAdES_BASELINE_T.equals(signatureLevel) && (xadesSignature.hasLTAProfile() ||
-				((xadesSignature.hasLTProfile() || xadesSignature.hasCProfile()) && !xadesSignature.areAllSelfSignedCertificates()) )) {
-			throw new IllegalInputException(String.format(
-					"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
+	private List<AdvancedSignature> getExtendToTLevelSignatures(List<AdvancedSignature> signatures) {
+		final List<AdvancedSignature> toBeExtended = new ArrayList<>();
+		for (AdvancedSignature signature : signatures) {
+			if (tLevelExtensionRequired(signature)) {
+				toBeExtended.add(signature);
+			}
 		}
+		return toBeExtended;
+	}
+
+	private boolean tLevelExtensionRequired(AdvancedSignature signature) {
+		return XAdES_BASELINE_T.equals(params.getSignatureLevel()) || !signature.hasTProfile();
 	}
 
 	/**
@@ -491,7 +498,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 				id = timestampToken.getDSSIdAsString();
 			}
 
-			timeStampValidationDataDom.setAttribute("Id", "id-" + id);
+			timeStampValidationDataDom.setAttribute("Id", ID_PREFIX + id);
 			if (params.isPrettyPrint()) {
 				DSSXMLUtils.indentAndReplace(documentDom, timeStampValidationDataDom);
 			}
@@ -576,20 +583,25 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		if (XAdESNamespace.XADES_122.isSameUri(getXadesNamespace().getUri())) {
 			incorporateXAdES122Include(timeStampDom);
 		}
-
-		final String timestampId = UUID.randomUUID().toString();
-		if (!XAdESNamespace.XADES_111.isSameUri(getXadesNamespace().getUri())) {
-			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "TS-" + timestampId);
+		if (XAdESNamespace.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			incorporateHashDataInfo(timeStampDom, timestampC14nMethod);
+		} else {
 			// <ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
 			incorporateC14nMethod(timeStampDom, timestampC14nMethod);
-		} else {
-			incorporateHashDataInfo(timeStampDom, timestampC14nMethod);
 		}
 		
 		// <xades:EncapsulatedTimeStamp Id="time-stamp-token-6a150419-caab-4615-9a0b-6e239596643a">MIAGCSqGSIb3DQEH
-		final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom, getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());
-		encapsulatedTimeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), "ETS-" + timestampId);
+		final Element encapsulatedTimeStampDom = DomUtils.addElement(documentDom, timeStampDom,
+                getXadesNamespace(), getCurrentXAdESElements().getElementEncapsulatedTimeStamp());
 		DomUtils.setTextNode(documentDom, encapsulatedTimeStampDom, base64EncodedTimeStampToken);
+
+		// Id="..." attribute is not allowed in XAdES 1.1.1
+		if (!XAdESNamespace.XADES_111.isSameUri(getXadesNamespace().getUri())) {
+			// Add Id after the element is constructed
+			final String timestampId = toXmlIdentifier(XAdESAttributeIdentifier.build(timeStampDom));
+			timeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), TIMESTAMP_PREFIX + timestampId);
+			encapsulatedTimeStampDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), ENCAPSULATED_TIMESTAMP_PREFIX + timestampId);
+		}
 	}
 
 	/**

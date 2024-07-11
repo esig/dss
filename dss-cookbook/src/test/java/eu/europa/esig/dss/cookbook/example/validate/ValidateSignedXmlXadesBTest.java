@@ -30,8 +30,8 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -45,10 +45,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * How to validate a XAdES-BASELINE-B signature.
  */
-public class ValidateSignedXmlXadesBTest {
+class ValidateSignedXmlXadesBTest {
 
 	@Test
-	public void validateXAdESBaselineB() throws Exception {
+	void validateXAdESBaselineB() throws Exception {
 
 		// See Trusted Lists loading
 		CertificateSource keystoreCertSource = new KeyStoreCertificateSource(new File("src/test/resources/self-signed-tsa.p12"), "PKCS12", "ks-password".toCharArray());
@@ -64,8 +64,8 @@ public class ValidateSignedXmlXadesBTest {
 		// import eu.europa.esig.dss.simplereport.SimpleReport;
 		// import eu.europa.esig.dss.spi.x509.CertificateSource;
 		// import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-		// import eu.europa.esig.dss.validation.CertificateVerifier;
-		// import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+		// import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 		// import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
 		// import eu.europa.esig.dss.validation.reports.Reports;

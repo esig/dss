@@ -38,14 +38,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelBDetachedEmptyDocTest extends AbstractCAdESTestSignature {
+class CAdESLevelBDetachedEmptyDocTest extends AbstractCAdESTestSignature {
 
 	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = InMemoryDocument.createEmptyDocument();
 
 		signatureParameters = new CAdESSignatureParameters();

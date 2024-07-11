@@ -20,41 +20,42 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import org.jose4j.json.JsonUtil;
-import org.jose4j.lang.JoseException;
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
+import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESSigningTimeType;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.jades.JWSConstants;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
+import org.jose4j.json.JsonUtil;
+import org.jose4j.lang.JoseException;
+import org.junit.jupiter.api.BeforeEach;
 
-public class JAdESLevelBSerializationTest extends AbstractJAdESTestSignature {
+import java.io.File;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+class JAdESLevelBSerializationTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		service = new JAdESService(getCompleteCertificateVerifier());
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		signatureParameters = new JAdESSignatureParameters();
@@ -65,6 +66,7 @@ public class JAdESLevelBSerializationTest extends AbstractJAdESTestSignature {
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
+		signatureParameters.setJadesSigningTimeType(JAdESSigningTimeType.IAT);
 	}
 	
 	@Override
@@ -86,7 +88,13 @@ public class JAdESLevelBSerializationTest extends AbstractJAdESTestSignature {
 			Map<String, Object> signature = signaturesList.get(0);
 			String header = (String) signature.get(JWSConstants.PROTECTED);
 			assertNotNull(header);
-			assertTrue(Utils.isArrayNotEmpty(DSSJsonUtils.fromBase64Url(header)));
+			byte[] bytes = DSSJsonUtils.fromBase64Url(header);
+			assertNotNull(bytes);
+			Map<String, Object> protectedHeaderMap = JsonUtil.parseJson(new String(bytes));
+			assertTrue(Utils.isMapNotEmpty(protectedHeaderMap));
+
+			Object iat = protectedHeaderMap.get(JAdESHeaderParameterNames.IAT);
+			assertNotNull(iat);
 			
 			String signatureValue = (String) signature.get(JWSConstants.SIGNATURE);
 			assertNotNull(signatureValue);

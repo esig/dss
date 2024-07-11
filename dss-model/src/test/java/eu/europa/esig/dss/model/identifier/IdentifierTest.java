@@ -25,10 +25,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class IdentifierTest {
+class IdentifierTest {
 
 	@Test
-	public void testEquals() {
+	void testEquals() {
 
 		byte[] bytes = new byte[] { 1, 2, 3, 4, 5, 6 };
 

@@ -39,9 +39,9 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.tsl.LOTLInfo;
-import eu.europa.esig.dss.spi.tsl.TLInfo;
-import eu.europa.esig.dss.spi.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
@@ -49,7 +49,7 @@ import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 
-public class LOTLChangesTest {
+class LOTLChangesTest {
 
 	// Diff LOTL 248 / 250
 	// URL change for SI
@@ -59,7 +59,7 @@ public class LOTLChangesTest {
 	File cacheDirectory;
 
 	@Test
-	public void test() {
+	void test() {
 		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(originalFiles());
 
 		TLValidationJob job = new TLValidationJob();

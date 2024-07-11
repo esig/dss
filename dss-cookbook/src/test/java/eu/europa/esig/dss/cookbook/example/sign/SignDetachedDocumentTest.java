@@ -36,7 +36,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -47,10 +47,10 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignDetachedDocumentTest extends CookbookTools {
+class SignDetachedDocumentTest extends CookbookTools {
 
     @Test
-    public void signWithDetachedDocTest() throws Exception {
+    void signWithDetachedDocTest() throws Exception {
 
         try (SignatureTokenConnection signingToken = getPkcs12Token()) {
 
@@ -65,14 +65,14 @@ public class SignDetachedDocumentTest extends CookbookTools {
             // import eu.europa.esig.dss.model.DigestDocument;
             // import eu.europa.esig.dss.model.SignatureValue;
             // import eu.europa.esig.dss.model.ToBeSigned;
-            // import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+            // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
             // import eu.europa.esig.dss.validation.DocumentValidator;
             // import eu.europa.esig.dss.validation.reports.Reports;
             // import java.util.Arrays;
 
             // Create a DigestDocument from original DSSDocument
             DigestDocument digestDocument = new DigestDocument();
-            digestDocument.addDigest(DigestAlgorithm.SHA256, originalDocument.getDigest(DigestAlgorithm.SHA256));
+            digestDocument.addDigest(DigestAlgorithm.SHA256, originalDocument.getDigestValue(DigestAlgorithm.SHA256));
 
             // Preparing parameters for a signature creation
             CAdESSignatureParameters parameters = new CAdESSignatureParameters();

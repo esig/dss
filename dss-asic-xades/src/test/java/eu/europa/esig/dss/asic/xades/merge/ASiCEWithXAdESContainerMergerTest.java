@@ -23,8 +23,8 @@ package eu.europa.esig.dss.asic.xades.merge;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
@@ -54,24 +54,26 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestValidation {
+class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestValidation {
 
     @Test
-    public void isSupportedTest() {
+    void isSupportedTest() {
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger();
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/validation/onefile-ok.asice")));
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asice")));
+        assertTrue(merger.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce")));
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/signable/test.zip"))); // simple container
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/signable/asic_xades.zip"))); // ASiC-E
         assertTrue(merger.isSupported(new FileDocument("src/test/resources/signable/open-document.odt")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/onefile-ok.asics")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asics")));
+        assertFalse(merger.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.scs")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/signable/asic_cades.zip")));
         assertFalse(merger.isSupported(new FileDocument("src/test/resources/signable/test.txt")));
     }
 
     @Test
-    public void createAndMergeTest() {
+    void createAndMergeTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithXAdESService service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 
@@ -111,7 +113,7 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeAsicWithZipTest() {
+    void mergeAsicWithZipTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithXAdESService service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 
@@ -156,7 +158,7 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeTwoNotSignedZipTest() {
+    void mergeTwoNotSignedZipTest() {
         DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
         DSSDocument secondContainer = new FileDocument("src/test/resources/signable/document.odt");
 
@@ -209,7 +211,7 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeWithTimestampsTest() {
+    void mergeWithTimestampsTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -225,27 +227,27 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeWithSignedManifestTest() {
+    void mergeWithSignedManifestTest() {
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(
                 new FileDocument("src/test/resources/validation/onefile-ok.asice"),
                 new FileDocument("src/test/resources/validation/asic-xades-lta-signed-manifest.sce"));
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
         assertEquals("Unable to merge ASiC-E with XAdES containers. " +
-                "manifest.xml is signed and the signer data does not match between containers!", exception.getMessage());
+                "manifest.xml is signed or covered and the signer data does not match between containers!", exception.getMessage());
     }
 
     @Test
-    public void mergeWithSignedSignatureFileTest() {
+    void mergeWithSignedSignatureFileTest() {
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(
                 new FileDocument("src/test/resources/validation/onefile-ok.asice"),
                 new FileDocument("src/test/resources/validation/asic-xades-signed-signature.sce"));
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
         assertEquals("Unable to merge ASiC-E with XAdES containers. " +
-                "A signature covers another signature file, while having same signature names in both containers!", exception.getMessage());
+                "A signature is covered by another document, while having same signature names in both containers!", exception.getMessage());
     }
 
     @Test
-    public void mergeMultipleContainersTest() {
+    void mergeMultipleContainersTest() {
         DSSDocument toSignDocument = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
         ASiCWithXAdESService service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 
@@ -292,7 +294,7 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeZeroFilesTest() {
+    void mergeZeroFilesTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCEWithXAdESContainerMerger(new DSSDocument[]{}));
         assertEquals("At least one document shall be provided!", exception.getMessage());
@@ -307,7 +309,7 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeNullFileTest() {
+    void mergeNullFileTest() {
         Exception exception = assertThrows(NullPointerException.class, () ->
                 new ASiCEWithXAdESContainerMerger(new DSSDocument[]{ null }));
         assertEquals("DSSDocument cannot be null!", exception.getMessage());
@@ -326,7 +328,7 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeOneFileTest() {
+    void mergeOneFileTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/onefile-ok.asice");
 
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(document);
@@ -375,7 +377,7 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
     }
 
     @Test
-    public void mergeWithDifferentZipCommentTest() {
+    void mergeWithDifferentZipCommentTest() {
         ASiCContent firstASiCContent = new ASiCContent();
         ASiCContent secondASiCContent = new ASiCContent();
 
@@ -385,6 +387,93 @@ public class ASiCEWithXAdESContainerMergerTest extends AbstractPkiFactoryTestVal
         ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstASiCContent, secondASiCContent);
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
         assertTrue(exception.getMessage().contains("Unable to merge containers. Containers contain different zip comments"));
+    }
+
+    @Test
+    void mergeWithEvidenceRecordContainerTest() {
+        DSSDocument firstContainer = new FileDocument("src/test/resources/validation/onefile-ok.asice");
+        DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce");
+
+        ASiCContent firstAsicContent = new ASiCWithXAdESContainerExtractor(firstContainer).extract();
+        ASiCContent secondAsicContent = new ASiCWithXAdESContainerExtractor(secondContainer).extract();
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstContainer, secondContainer);
+        DSSDocument mergedContainer = merger.merge();
+
+        ASiCContent mergedAsicContent = new ASiCWithXAdESContainerExtractor(mergedContainer).extract();
+        List<String> allDocumentNames = DSSUtils.getDocumentNames(mergedAsicContent.getAllDocuments());
+        for (DSSDocument document : firstAsicContent.getAllDocuments()) {
+            assertTrue(allDocumentNames.contains(document.getName()));
+        }
+        for (DSSDocument document : secondAsicContent.getAllDocuments()) {
+            assertTrue(allDocumentNames.contains(document.getName()));
+        }
+    }
+
+    @Test
+    void mergeEvidenceRecordContainerWithNoSignatureContainerTest() {
+        DSSDocument firstContainer = new FileDocument("src/test/resources/signable/test.zip");
+        DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce");
+
+        ASiCContent firstAsicContent = new ASiCWithXAdESContainerExtractor(firstContainer).extract();
+        ASiCContent secondAsicContent = new ASiCWithXAdESContainerExtractor(secondContainer).extract();
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstContainer, secondContainer);
+        DSSDocument mergedContainer = merger.merge();
+
+        ASiCContent mergedAsicContent = new ASiCWithXAdESContainerExtractor(mergedContainer).extract();
+        List<String> allDocumentNames = DSSUtils.getDocumentNames(mergedAsicContent.getAllDocuments());
+        for (DSSDocument document : firstAsicContent.getAllDocuments()) {
+            assertTrue(allDocumentNames.contains(document.getName()));
+        }
+        for (DSSDocument document : secondAsicContent.getAllDocuments()) {
+            assertTrue(allDocumentNames.contains(document.getName()));
+        }
+    }
+
+    @Test
+    void mergeDifferentEvidenceRecordTypeContainersTest() {
+        DSSDocument firstContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-full-renewal.asice");
+        DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce");
+
+        ASiCContent firstAsicContent = new ASiCWithXAdESContainerExtractor(firstContainer).extract();
+        ASiCContent secondAsicContent = new ASiCWithXAdESContainerExtractor(secondContainer).extract();
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstContainer, secondContainer);
+        DSSDocument mergedContainer = merger.merge();
+
+        ASiCContent mergedAsicContent = new ASiCWithXAdESContainerExtractor(mergedContainer).extract();
+        List<String> allDocumentNames = DSSUtils.getDocumentNames(mergedAsicContent.getAllDocuments());
+        for (DSSDocument document : firstAsicContent.getAllDocuments()) {
+            assertTrue(allDocumentNames.contains(document.getName()));
+        }
+        for (DSSDocument document : secondAsicContent.getAllDocuments()) {
+            assertTrue(allDocumentNames.contains(document.getName()));
+        }
+    }
+
+    @Test
+    void mergeDifferentEvidenceRecordTypeSameSignedFileNameContainersTest() {
+        DSSDocument firstContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file.asice");
+        DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce");
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstContainer, secondContainer);
+
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        assertEquals("Unable to merge containers. " +
+                "Containers contain different documents under the same name : test.txt!", exception.getMessage());
+    }
+
+    @Test
+    void mergeSameEvidenceRecordTypeContainersTest() {
+        DSSDocument firstContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file.asice");
+        DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-full-renewal.asice");
+
+        ASiCEWithXAdESContainerMerger merger = new ASiCEWithXAdESContainerMerger(firstContainer, secondContainer);
+
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        assertEquals("Unable to merge containers. " +
+                "Containers contain different documents under the same name : META-INF/evidencerecord.ers!", exception.getMessage());
     }
 
     @Override

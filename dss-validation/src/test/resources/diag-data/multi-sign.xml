@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>more_then_one_signature.xml</DocumentName>
+    <ValidationDate>2017-08-04T05:39:29Z</ValidationDate>
+    <Signatures>
+        <Signature Id="Signature-86c36a4a-5882-4984-848a-5febacfed192">
+            <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
+            <ClaimedSigningTime>2017-04-27T10:25:52Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true" />
+	        <DigestMatchers>
+                <DigestMatcher type="REFERENCE" id="ref1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D"/>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerRole Category="claimed">
+            	<Role>KalańskiMichał660426140762688287kalanskimkalanskim4</Role>
+            </SignerRole>
+            <Policy>
+                <Id>IMPLICIT_POLICY</Id>
+                <Identified>false</Identified>
+                <Asn1Processable>false</Asn1Processable>
+                <ProcessingError></ProcessingError>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
+            </Policy>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>1luhGr3AFQ2HuDXvNThcAMGbLBQ=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-6a0d92f704f2ba58dc672bcb1caa13dd60bdede21b940e89e371ed6c7e8a2db2">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>AjM7oRhYCD0tYws8Blk1sTBuqP4GCNNyPsTKMZIEgd4=</DigestValue>
+			</SignatureDigestReference>
+        </Signature>
+        <Signature Id="Signature-52abf6c0-67ec-40d4-b73d-08ab4f6691d0">
+            <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
+            <ClaimedSigningTime>2016-10-10T12:13:46Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true" />
+	        <DigestMatchers>
+                <DigestMatcher type="REFERENCE" id="ref1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D"/>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerRole Category="claimed">
+            	<Role>KalańskiMichał660426140761013074kalanskimkalanskim1</Role>
+            </SignerRole>
+            <Policy>
+                <Id>IMPLICIT_POLICY</Id>
+                <Identified>false</Identified>
+                <Asn1Processable>false</Asn1Processable>
+                <ProcessingError></ProcessingError>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
+            </Policy>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>1luhGr3AFQ2HuDXvNThcAMGbLBQ=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-6eb0a17f99eaca6d2fab9c5e5978d17358d6b8e6223ee0f7505f9b7ee9340909">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>IL44vjwY5FE/jgOj7znIhF7I8bGzitanbwUbPA2kLT8=</DigestValue>
+			</SignatureDigestReference>
+        </Signature>
+        <Signature Id="ID-8b009720-f82c-11e6-ae9c-0050569a5ac0">
+            <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
+            <ClaimedSigningTime>2017-02-21T12:11:37Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true" />
+	        <DigestMatchers>
+                <DigestMatcher type="REFERENCE" id="ref1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8"/>
+                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndications/>
+            <Policy>
+                <Id>IMPLICIT_POLICY</Id>
+                <Identified>false</Identified>
+                <Asn1Processable>false</Asn1Processable>
+                <ProcessingError></ProcessingError>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
+            </Policy>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>b+BG1sVEoYGI2swsDr/3YkALOV4=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-2a439fffb825da1ec3372e646972c8f713bd257789a7476c4978d49508f8f551">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>E86f+AGGkx5ayPpPeRqabutB5SzRpBpl1G7gxtWIkSc=</DigestValue>
+			</SignatureDigestReference>
+        </Signature>
+        <Signature Id="ID-e5b77ba0-1b6a-11e7-a15a-0050569a0676">
+            <SignatureFilename>more_then_one_signature.xml</SignatureFilename>
+            <ClaimedSigningTime>2017-04-07T08:19:49Z</ClaimedSigningTime>
+            <SignatureFormat>XAdES-BASELINE-B</SignatureFormat>
+            <StructuralValidation valid="true" />
+	        <DigestMatchers>
+                <DigestMatcher type="REFERENCE" id="ref1">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>cfwwLPkuUbNIkqCbkrUSfxL8DcfxtNE2fgUuZUTPuLg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="SIGNED_PROPERTIES">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>4i0ZtDT4YCQ3WIecGOhrNaW9M/op3rC/V+1hpDTW+Kk=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8"/>
+                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
+            </CertificateChain>
+            <ContentType>text/xml</ContentType>
+            <CommitmentTypeIndications/>
+            <Policy>
+                <Id>IMPLICIT_POLICY</Id>
+                <Identified>false</Identified>
+                <Asn1Processable>false</Asn1Processable>
+                <ProcessingError></ProcessingError>
+                <DigestAlgoAndValue digestAlgorithmsEqual="false" match="false" />
+            </Policy>
+            <FoundCertificates>
+            	<RelatedCertificate Certificate="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">
+                	<CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                        	<DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>b+BG1sVEoYGI2swsDr/3YkALOV4=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundTimestamps/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-6555d90214394e526083b50eac4503b05396588f351d062a28b0ea20fa1f7202">
+                    <Scope>FULL</Scope>
+                    <Name>Full XML File</Name>
+                    <Description>The full XML file with transformations.</Description>
+                    <Transformations>
+                        <Transformation>XPath filtering</Transformation>
+                    </Transformations>
+                </SignatureScope>
+            </SignatureScopes>
+			<SignatureDigestReference>
+			    <DigestMethod>SHA256</DigestMethod>
+			    <DigestValue>P8NPS4IdxCSXTDmEVo1eATd8CWtZbsiNR+P2jr8Ojh8=</DigestValue>
+			</SignatureDigestReference>
+        </Signature>
+    </Signatures>
+    <UsedCertificates>
+        <Certificate Id="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+            <SubjectDistinguishedName Format="CANONICAL">cn=pwpw - kwalifikowany ca,2.5.4.5=#130b4e722077706973753a2033,o=polska wytwórnia papierów wartościowych s.a.,c=pl</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PWPW - kwalifikowany CA,2.5.4.5=#130b4e722077706973753a2033,O=Polska Wytwórnia Papierów Wartościowych S.A.,C=PL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=narodowe centrum certyfikacji (nccert),o=minister wlasciwy do spraw gospodarki,c=pl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=Narodowe Centrum Certyfikacji (NCCert),O=Minister wlasciwy do spraw gospodarki,C=PL</IssuerDistinguishedName>
+            <SerialNumber>307649304868288271433683646241838606053694323344</SerialNumber>
+            <CommonName>PWPW - kwalifikowany CA</CommonName>
+            <CountryName>PL</CountryName>
+            <OrganizationName>Polska Wytwórnia Papierów Wartościowych S.A.</OrganizationName>
+            <Sources>
+            	<Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2020-05-08T23:59:59Z</NotAfter>
+            <NotBefore>2015-05-08T07:01:06Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                    		<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://193.178.164.4/repozytorium/ca1_2015.crl</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                            <ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2015-05-08T07:01:06Z</StartDate>
+                            <EndDate>2016-07-01T00:00:00Z</EndDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <Base64Encoded>MIIEojCCA4qgAwIBAgIUNeN40cSHa36BsyxjuXatrlDVOpAwDQYJKoZIhvcNAQEFBQAwbjELMAkGA1UEBhMCUEwxLjAsBgNVBAoMJU1pbmlzdGVyIHdsYXNjaXd5IGRvIHNwcmF3IGdvc3BvZGFya2kxLzAtBgNVBAMMJk5hcm9kb3dlIENlbnRydW0gQ2VydHlmaWthY2ppIChOQ0NlcnQpMB4XDTE1MDUwODA3MDEwNloXDTIwMDUwODIzNTk1OVowfzELMAkGA1UEBhMCUEwxODA2BgNVBAoML1BvbHNrYSBXeXR3w7NybmlhIFBhcGllcsOzdyBXYXJ0b8WbY2lvd3ljaCBTLkEuMRQwEgYDVQQFEwtOciB3cGlzdTogMzEgMB4GA1UEAwwXUFdQVyAtIGt3YWxpZmlrb3dhbnkgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQColDaw623BwvbfqxECbWaywZ4ZMr1BzU47+HBdmOlJUXpe2NscwluNBUhjgcoPJ6vkNBpXujVOV7veSWHT+hmnMeN1yS6LmiUfzIeYT8SDVtrwt7B3IHAiwvpcQV2FoKggFf3D1r3Xao5WCCD/1ki3KiSJIWuUs2MYWhcJ3YOcmAMIhXbjkKWv7tUSehu7aeRtiNqF0jHH5CP9WmJOmJVQQEYNQzXsZEtBarnRdTV/NRn6pqlS6uSJEdkdzCnawpEG+aYOHi060HKTzdCqmY5MsclBIGUBRynqMcZaVC7KPkSaGobdU5tgYHkWzJw6Cl+MI+r0nS2cSavJtPC+lQdNAgMBAAGjggElMIIBITAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zCBqwYDVR0jBIGjMIGggBRZNAz7fedFAW/JcJbCTgb4D4FD9qFypHAwbjELMAkGA1UEBhMCUEwxLjAsBgNVBAoMJU1pbmlzdGVyIHdsYXNjaXd5IGRvIHNwcmF3IGdvc3BvZGFya2kxLzAtBgNVBAMMJk5hcm9kb3dlIENlbnRydW0gQ2VydHlmaWthY2ppIChOQ0NlcnQpghRipw0EwyS41CdWzD+Ba/LrMu8HGTAxBgNVHSABAf8EJzAlMCMGBFUdIAAwGzAZBggrBgEFBQcCARYNd3d3Lm5jY2VydC5wbDAdBgNVHQ4EFgQU5wDTZ3UiQ8Ix89pK830vlFReKVswDQYJKoZIhvcNAQEFBQADggEBAM5HiL3//znlj4nBXyDSrzshltn+7VURAo9DRqUTPjtDvhfw5mQG/68MYVyaRG7x/x4SnzeICJW5oJdNnUKl7LbWeC34Axzh2nS46SnwkTOm+/xKmmffTqD5A5qlnrYRio4f5xjQrqHJEqel26hMAEilyaT9HIF62fhPZU0mSfWfhBHB+rJdgYHmLqZRDCO1+GF866D5MMpu7SbWXcJUUp+6AlJoxGcvdZIAUGScxvgZyD0uV7oe+SUqOYSdMXdjfa566fca0VY3M+oRZplbAJ2bigKNX63GJMcOXHAU6nKzsubzysinbUFDcGyoNaHiXnRPwW3v+ChKmJA6XHBr/LI=</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D">
+            <SubjectDistinguishedName Format="CANONICAL">cn=pz3,o=ministerstwo cyfryzacji,c=pl</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=PZ3,O=Ministerstwo Cyfryzacji,C=PL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=cencert centrum certyfikatów firmowych,o=enigma soi sp. z o.o.,c=pl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=CenCert Centrum Certyfikatów Firmowych,O=ENIGMA SOI Sp. z o.o.,C=PL</IssuerDistinguishedName>
+            <SerialNumber>366798654026451873</SerialNumber>
+            <CommonName>PZ3</CommonName>
+            <CountryName>PL</CountryName>
+            <OrganizationName>Ministerstwo Cyfryzacji</OrganizationName>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2018-08-24T14:47:04Z</NotAfter>
+            <NotBefore>2016-08-24T14:47:04Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-EAD587EB5F0C2793681D964A296BA4CB97B56651AD18813A44C06C4C59BF383D</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>false</SignatureIntact>
+                <SignatureValid>false</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.cencert.pl/crl/CCfirmowy.crl</crlUrl>
+                </CRLDistributionPoints>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations/>
+            <Base64Encoded>MIIDujCCAqKgAwIBAgIIBRchbrVWi6EwDQYJKoZIhvcNAQELBQAwXzELMAkGA1UEBhMCUEwxHjAcBgNVBAoMFUVOSUdNQSBTT0kgU3AuIHogby5vLjEwMC4GA1UEAwwnQ2VuQ2VydCBDZW50cnVtIENlcnR5ZmlrYXTDs3cgRmlybW93eWNoMB4XDTE2MDgyNDE0NDcwNFoXDTE4MDgyNDE0NDcwNFowPTELMAkGA1UEBhMCUEwxIDAeBgNVBAoMF01pbmlzdGVyc3R3byBDeWZyeXphY2ppMQwwCgYDVQQDDANQWjMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDV2Mt1nzPu8W2eN6eT2GVWh3HPXCqopQJVag+3nN0H8TOQCg8s6sVlHnqA117e/xUiOd1c8jgKOsDYixKb7eO3S2Bm+UyBX5jh1K5pGw362VVEfDs0kpQ5DRTm/eBGsT+98CGS9sIrvZujg9iRLVmyOWbx7Mj3iPAsfDqwnJAUQe3SURkN2uVq/OFCCem5SQEkl5sXLunPLmsZAlQmIvjo1e2sArw3XOL07TzEGD9Wgmg+uh+CXLwLPAbdIPuoEGx9pmVFeoMmDhSN1QwwiV3kZM57BvufmntWhXEbbUXX8DN6JzVTk7SC1+lR9be8opa2JwzyugrgZDu8qPmsj/QFAgMBAAGjgZswgZgwDgYDVR0PAQH/BAQDAgZAMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUbXBJHtX51FFd7dGblde1mdERGjswHQYDVR0OBBYEFMG6bAQisupd5Zp8LubkPlZ4he9qMDgGA1UdHwQxMC8wLaAroCmGJ2h0dHA6Ly93d3cuY2VuY2VydC5wbC9jcmwvQ0NmaXJtb3d5LmNybDANBgkqhkiG9w0BAQsFAAOCAQEAbUq6RgY3//2ozVKQ6J1yE05z6E2gvw7QSvwI002Ee6Np7pGvwkR4kSd4yJzSFuFv5zUYq9zaFGCYpCvIpTwHGJpoa9oxvYe8KNxaDiGkqiVU2SVEXX2GrVF/qqJmqMre4NxBr04fhWCKro135fESmv0kvjDYNWzDqUgy9AbIC4VQ46KOwuxBDlnj1KbYn4EJoQG+2ZhQMcuUbM1qY3/FlY+M/60c2FQvgIo6u9J5/Ew7YFPpczWjLetK9PKLvfQfPQBU/sszQ6rXRKxyoaEwbzQjhQ8W5SlyUwePay1lAtlzJIo5x7NN/NB1+S/vr71HLq3/mFoOgCNdFDVdGD8XUw==</Base64Encoded>
+        </Certificate>
+        <Certificate Id="C-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.65=#0c066d696b616c61,2.5.4.16=#301c0c094f776f636f776120310c0f34302d313538204b61746f77696365,cn=mikala,2.5.4.5=#1312504553454c3a203636303432363134303736,2.5.4.42=#0c074d69636861c582,2.5.4.4=#0c094b616c61c584736b69,o=zakład elektronicznej techniki obliczeniowej w katowicach sp z o.o.,l=katowice,st=śląskie,c=pl</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.65=#0c066d696b616c61,2.5.4.16=#301c0c094f776f636f776120310c0f34302d313538204b61746f77696365,CN=mikala,2.5.4.5=#1312504553454c3a203636303432363134303736,2.5.4.42=#0c074d69636861c582,2.5.4.4=#0c094b616c61c584736b69,O=Zakład Elektronicznej Techniki Obliczeniowej w Katowicach Sp z o.o.,L=Katowice,ST=śląskie,C=PL</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=pwpw - kwalifikowany ca,2.5.4.5=#130b4e722077706973753a2033,o=polska wytwórnia papierów wartościowych s.a.,c=pl</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=PWPW - kwalifikowany CA,2.5.4.5=#130b4e722077706973753a2033,O=Polska Wytwórnia Papierów Wartościowych S.A.,C=PL</IssuerDistinguishedName>
+            <SerialNumber>6934838070625914798</SerialNumber>
+            <CommonName>mikala</CommonName>
+            <CountryName>PL</CountryName>
+            <OrganizationName>Zakład Elektronicznej Techniki Obliczeniowej w Katowicach Sp z o.o.</OrganizationName>
+            <GivenName>Michał</GivenName>
+            <Surname>Kalański</Surname>
+            <Pseudonym>mikala</Pseudonym>
+            <Sources>
+            	<Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2017-11-02T23:00:00Z</NotAfter>
+            <NotBefore>2015-11-03T23:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-D30FA7D4FA90904884DDEED35B989DA84D82D742580E2625D56625C07C572FF8</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="true">
+                    <certificatePolicy>1.2.616.1.113560.10.1.1.0</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C" LOTL="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E">
+                    <TSPNames><TSPName lang="en">Polish Security Printing Works</TSPName></TSPNames>
+                    <TSPRegistrationIdentifiers><TSPRegistrationIdentifier>VATDE-226080243</TSPRegistrationIdentifier></TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                        	<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-07-01T00:00:00Z</StartDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCForESig</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://193.178.164.4/repozytorium/ca1_2015.crl</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86">
+                        	<ServiceNames><ServiceName lang="en">Certification authority issuing qualified certificates</ServiceName></ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2015-05-08T07:01:06Z</StartDate>
+                            <EndDate>2016-07-01T00:00:00Z</EndDate>
+                            <CapturedQualifiers>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCWithQSCD</Qualifier>
+                                <Qualifier>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/QCStatement</Qualifier>
+                            </CapturedQualifiers>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-d30fa7d4fa90904884ddeed35b989da84d82d742580e2625d56625c07c572ff8c3e145f6a7765097e9f92aaff292e4f09bad7e2613dc2b6448f607c03e5ada91">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <Base64Encoded>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</Base64Encoded>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-d30fa7d4fa90904884ddeed35b989da84d82d742580e2625d56625c07c572ff8c3e145f6a7765097e9f92aaff292e4f09bad7e2613dc2b6448f607c03e5ada91">
+            <Origin>EXTERNAL</Origin>
+            <Type>CRL</Type>
+            <SourceAddress>http://193.178.164.4/repozytorium/ca1_2015.crl</SourceAddress>
+            <ProductionDate>2017-08-03T19:39:30Z</ProductionDate>
+            <ThisUpdate>2017-08-03T19:39:30Z</ThisUpdate>
+            <NextUpdate>2017-08-04T07:39:30Z</NextUpdate>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA1</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-08DA906198FCD5C6A242B2A6BFFF0B5A445655D76BBC65BFCBDD13186C2C6A86"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+            	<DigestMethod>SHA1</DigestMethod>
+            	<DigestValue>59fc2c64e979d7b6d4f463a787c5e0be32c37e64</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <OriginalDocuments>
+        <SignerData Id="D-6a0d92f704f2ba58dc672bcb1caa13dd60bdede21b940e89e371ed6c7e8a2db2">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ag2S9wTyuljcZyvLHKoT3WC97eIblA6J43HtbH6KLbI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-6eb0a17f99eaca6d2fab9c5e5978d17358d6b8e6223ee0f7505f9b7ee9340909">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>brChf5nqym0vq5xeWXjRc1jWuOYiPuD3UF+bfuk0CQk=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-2a439fffb825da1ec3372e646972c8f713bd257789a7476c4978d49508f8f551">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>KkOf/7gl2h7DNy5kaXLI9xO9JXeJp0dsSXjUlQj49VE=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-6555d90214394e526083b50eac4503b05396588f351d062a28b0ea20fa1f7202">
+            <ReferencedName>Full XML File</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ZVXZAhQ5TlJgg7UOrEUDsFOWWI81HQYqKLDqIPofcgI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-B1FD94CECADE070554A93C3AC56FC591B535B75BFFD69B882E3FAF1CAEF89E3C">
+            <CountryCode>PL</CountryCode>
+            <Url>https://www.nccert.pl/tsl/PL_TSL.xml</Url>
+            <SequenceNumber>87</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2017-08-04T05:39:18Z</LastLoading>
+            <IssueDate>2017-07-27T01:00:00Z</IssueDate>
+            <NextUpdate>2018-01-27T00:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    	<TrustedList Id="LOTL-5593FFFD1C67322CB1EDD3E26916E1487F630F7FA22644ADA5B90DA7F1C9E05E" LOTL="true">
+	        <CountryCode>EU</CountryCode>
+	        <Url>https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-mp.xml</Url>
+	        <SequenceNumber>172</SequenceNumber>
+	        <Version>5</Version>
+	        <LastLoading>2017-08-04T05:39:13Z</LastLoading>
+	        <IssueDate>2017-05-16T04:00:00Z</IssueDate>
+	        <NextUpdate>2017-11-15T00:00:00Z</NextUpdate>
+	        <WellSigned>true</WellSigned>
+	    </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.cache;
 
-import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
 import eu.europa.esig.dss.tsl.cache.access.CacheAccessByKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class CacheCleaner {
 	/**
 	 * The {@code DSSFileLoader} used to remove files from the File System
 	 */
-	private DSSFileLoader dssFileLoader;
+	private DSSCacheFileLoader dssFileLoader;
 
 	/**
 	 * Default constructor instantiating object with default configuration and null file loader
@@ -81,9 +81,10 @@ public class CacheCleaner {
 	
 	/**
 	 * Sets the DSSFileLoader that will be used for file removing
-	 * @param dssFileLoader {@link DSSFileLoader}
+	 *
+	 * @param dssFileLoader {@link DSSCacheFileLoader}
 	 */
-	public void setDSSFileLoader(final DSSFileLoader dssFileLoader) {
+	public void setDSSFileLoader(final DSSCacheFileLoader dssFileLoader) {
 		this.dssFileLoader = dssFileLoader;
 	}
 	

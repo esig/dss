@@ -47,7 +47,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 
-public class JAdESDoubleSignatureWithDetachedTest extends AbstractJAdESTestValidation {
+class JAdESDoubleSignatureWithDetachedTest extends AbstractJAdESTestValidation {
 	
 	private List<DSSDocument> documentsToSign;
 	private JAdESService service;
@@ -56,7 +56,7 @@ public class JAdESDoubleSignatureWithDetachedTest extends AbstractJAdESTestValid
 	private Calendar calendar;
 
 	@BeforeEach
-	public void init() {
+	void init() {
 		documentsToSign = Arrays.asList(new FileDocument("src/test/resources/sample.json"), new FileDocument("src/test/resources/sample.png"),
 				new InMemoryDocument("Hello World!".getBytes(), "helloWorld")) ;
 		

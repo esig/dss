@@ -32,10 +32,10 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.validation.CRLFirstRevocationDataLoadingStrategyFactory;
-import eu.europa.esig.dss.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CRLFirstRevocationDataLoadingStrategyFactory;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
-import eu.europa.esig.dss.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
+import eu.europa.esig.dss.spi.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -48,10 +48,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESOCSPVsCRLValidationTest extends PKIFactoryAccess {
+class XAdESOCSPVsCRLValidationTest extends PKIFactoryAccess {
 
     @Test
-    public void test() {
+    void test() {
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
@@ -64,8 +64,7 @@ public class XAdESOCSPVsCRLValidationTest extends PKIFactoryAccess {
         XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 
         ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
-        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(),
-                signatureParameters.getMaskGenerationFunction(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
         DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
 

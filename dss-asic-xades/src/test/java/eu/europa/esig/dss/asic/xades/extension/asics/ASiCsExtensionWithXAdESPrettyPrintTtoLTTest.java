@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 
-public class ASiCsExtensionWithXAdESPrettyPrintTtoLTTest extends ASiCsExtensionWithXAdESTToLTTest {
+class ASiCsExtensionWithXAdESPrettyPrintTtoLTTest extends ASiCsExtensionWithXAdESTToLTTest {
 
 	@Override
 	protected DSSDocument getSignedDocument(DSSDocument doc) {

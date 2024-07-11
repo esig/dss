@@ -142,12 +142,12 @@ Other revocation sources find the status of a certificate either from a list sto
 [[RevocationLoadingStrategy]]
 === Revocation data loading strategy
 
-Since version 5.9, DSS allows the use of a `RevocationDataLoadingStrategy`. The latter defines logic for loading OCSP or CRL data. Two strategies are available in the core package of DSS:
+Since version `5.9`, DSS allows the use of a `RevocationDataLoadingStrategy`. The latter defines logic for loading OCSP or CRL data. Two strategies are available in the core package of DSS:
 
 * `OCSPFirstRevocationDataLoadingStrategy`: loads OCSP first, if not available or the response is invalid, then tries to load CRL and returns the first succeeded result. This strategy is used by default for revocation retrieving.
 * `CRLFirstRevocationDataLoadingStrategy`: fetches firstly CRL response, if not available, tries OCSP and returns the first succeeded result.
 
-NOTE: Since DSS 5.11 in order to avoid concurrency issues, the `RevocationDataLoadingStrategy` shall be configured within a `CertificateVerifier` using the new `RevocationDataLoadingStrategyFactory` class.
+NOTE: Since DSS `5.11` in order to avoid concurrency issues, the `RevocationDataLoadingStrategy` shall be configured within a `CertificateVerifier` using the new `RevocationDataLoadingStrategyFactory` class.
 
 See section <<certificateVerifier>> for an example of how to customize a used `RevocationDataLoadingStrategy` with a builder.
 
@@ -160,7 +160,7 @@ Using an OCSP first (i.e. `OCSPFirstRevocationDataLoadingStrategy`) has some adv
 [[RevocationFallback]]
 ==== Revocation fallback
 
-Since version 5.11, DSS performs a validation of revocation data obtained from online sources (on signature extension and validation included) through <<RevocationDataVerifier>>. Revocation data loading strategy runs the revocation verification process for each obtained revocation token (i.e. OCSP or CRL) until receiving the first successful result. In case none of the fetched revocation tokens are good to continue the validation process (i.e. verification has failed), then the strategy decides whether any results must be returned based on the "revocation fallback" property. The revocation fallback has two possible values:
+Since version `5.11`, DSS performs a validation of revocation data obtained from online sources (on signature extension and validation included) through <<RevocationDataVerifier>>. Revocation data loading strategy runs the revocation verification process for each obtained revocation token (i.e. OCSP or CRL) until receiving the first successful result. In case none of the fetched revocation tokens are good to continue the validation process (i.e. verification has failed), then the strategy decides whether any results must be returned based on the "revocation fallback" property. The revocation fallback has two possible values:
 
  * `FALSE` (by default) - does not return any revocation token in case none of the obtained revocation tokens have passed the verification process; and
  * `TRUE` - returns the first obtained revocation token when verification of all tokens has failed.
@@ -172,7 +172,7 @@ To configure the revocation fallback behavior, the property should be configured
 [[RevocationDataVerifier]]
 === Revocation data verifier
 
-Since version 5.11, DSS provides a way to configure a revocation data checking algorithm within `SignatureValidationContext` in order to define whether the available revocation data is good and sufficient and if a new revocation data should be loaded, as well as the acceptance of a freshly fetched revocation data itself.
+Since version `5.11`, DSS provides a way to configure a revocation data checking algorithm within `SignatureValidationContext` in order to define whether the available revocation data is good and sufficient and if a new revocation data should be loaded, as well as the acceptance of a freshly fetched revocation data itself.
 
 `RevocationDataVerifier` must be provided within the used `CertificateVerifier` in order to configure the revocation data checking behaviour. See section <<certificateVerifier>> for an example of how to provide a custom `RevocationDataVerifier` to a `CertificateVerifier`.
 
@@ -184,4 +184,19 @@ An example of `RevocationDataVerifier` please see below:
 .RevocationDataVerifier usage
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CertificateVerifierSnippet.java[tags=rev-data-verifier]
+----
+
+[[TimestampTokenVerifier]]
+=== Timestamp token verifier
+
+Since version `6.1`, DSS provides a way to configure the process for accepting of embedded timestamps in order to extract the corresponding POEs during the validation process.
+
+`TimestampTokenVerifier` must be provided within the used `CertificateVerifier` in order to configure the revocation data checking behaviour. See section <<certificateVerifier>> for an example of how to provide a custom `TimestampTokenVerifier` to a `CertificateVerifier`.
+
+An example of `TimestampTokenVerifier` configuration please see below:
+
+[source,java,indent=0]
+.TimestampTokenVerifier usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CertificateVerifierSnippet.java[tags=tst-token-verifier]
 ----

@@ -20,30 +20,26 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.timestamp.PAdESTimestampService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
-import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Objects;
 
-import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_LT;
 import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_T;
 
 /**
@@ -51,8 +47,6 @@ import static eu.europa.esig.dss.enumerations.SignatureLevel.PAdES_BASELINE_T;
  *
  */
 class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBaselineT.class);
 
 	/** The TSPSource to obtain a timestamp */
 	private final TSPSource tspSource;
@@ -81,9 +75,10 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 
 	@Override
 	public DSSDocument extendSignatures(final DSSDocument document, final PAdESSignatureParameters params) {
-		assertExtensionPossible(document);
+		Objects.requireNonNull(document, "DSSDocument cannot be null!");
+		Objects.requireNonNull(params, "SignatureParameters cannot be null!");
 		// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
-		PDFDocumentValidator pdfDocumentValidator = getPDFDocumentValidator(document, params);
+		PDFDocumentAnalyzer pdfDocumentValidator = getPDFDocumentValidator(document, params);
 		return extendSignatures(document, pdfDocumentValidator, params);
 	}
 
@@ -91,33 +86,30 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 * This method performs a document extension
 	 *
 	 * @param document {@link DSSDocument}
-	 * @param documentValidator {@link PDFDocumentValidator}
+	 * @param pdfDocumentAnalyzer {@link PDFDocumentAnalyzer}
 	 * @param parameters {@link PAdESSignatureParameters}
 	 * @return {@link DSSDocument} extended document
 	 */
-	protected DSSDocument extendSignatures(final DSSDocument document, final PDFDocumentValidator documentValidator,
+	protected DSSDocument extendSignatures(final DSSDocument document, final PDFDocumentAnalyzer pdfDocumentAnalyzer,
 										   final PAdESSignatureParameters parameters) {
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		List<AdvancedSignature> signatures = pdfDocumentAnalyzer.getSignatures();
 		if (Utils.isCollectionEmpty(signatures)) {
 			throw new IllegalInputException("No signatures found to be extended!");
 		}
 
-		boolean tLevelExtensionRequired = false;
-		final SignatureRequirementsChecker signatureRequirementsChecker = new SignatureRequirementsChecker(
-				certificateVerifier, parameters);
-		for (AdvancedSignature signature : signatures) {
-			PAdESSignature padesSignature = (PAdESSignature) signature;
-			if (requiresDocumentTimestamp(padesSignature, parameters)) {
-				assertExtendSignatureToTPossible(padesSignature, parameters);
-				signatureRequirementsChecker.assertSigningCertificateIsValid(padesSignature);
-				tLevelExtensionRequired = true;
-			}
-		}
-
-		if (tLevelExtensionRequired) {
+		if (isTLevelExtensionRequired(parameters, signatures)) {
+			final SignatureRequirementsChecker signatureRequirementsChecker =
+					new PAdESSignatureRequirementsChecker(certificateVerifier, parameters);
+			
+			signatureRequirementsChecker.assertExtendToTLevelPossible(signatures);
+			
+			signatureRequirementsChecker.assertSignaturesValid(signatures);
+			signatureRequirementsChecker.assertSigningCertificateIsValid(signatures);
+			
 			// Will add a DocumentTimeStamp. signature-timestamp (CMS) is impossible to add while extending
 			return timestampDocument(document, parameters.getSignatureTimestampParameters(),
 					parameters.getPasswordProtection(), getSignatureTimestampService());
+
 		} else {
 			return document;
 		}
@@ -154,51 +146,30 @@ class PAdESLevelBaselineT implements SignatureExtension<PAdESSignatureParameters
 	 *
 	 * @param document {@link DSSDocument} document to be validated
 	 * @param parameters {@link PAdESSignatureParameters} used to create/extend the signature(s)
-	 * @return {@link PDFDocumentValidator}
+	 * @return {@link PDFDocumentAnalyzer}
 	 */
-	protected PDFDocumentValidator getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {
-		PDFDocumentValidator pdfDocumentValidator = new PDFDocumentValidator(document);
+	protected PDFDocumentAnalyzer getPDFDocumentValidator(DSSDocument document, PAdESSignatureParameters parameters) {
+		PDFDocumentAnalyzer pdfDocumentValidator = new PDFDocumentAnalyzer(document);
 		pdfDocumentValidator.setCertificateVerifier(certificateVerifier);
+		pdfDocumentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
 		pdfDocumentValidator.setPasswordProtection(parameters.getPasswordProtection());
 		pdfDocumentValidator.setPdfObjFactory(pdfObjectFactory);
 		return pdfDocumentValidator;
 	}
 
-	/**
-	 * Checks if the document can be extended
-	 *
-	 * @param document {@link DSSDocument}
-	 */
-	protected void assertExtensionPossible(DSSDocument document) {
-		if (!PAdESUtils.isPDFDocument(document)) {
-			throw new IllegalInputException(String.format("Unable to extend the document with name '%s'. " +
-					"PDF document is expected!", document.getName()));
+	private boolean isTLevelExtensionRequired(PAdESSignatureParameters parameters, List<AdvancedSignature> signatures) {
+		boolean tLevelExtensionRequired = false;
+		for (AdvancedSignature signature : signatures) {
+			PAdESSignature padesSignature = (PAdESSignature) signature;
+			if (requiresDocumentTimestamp(padesSignature, parameters)) {
+				tLevelExtensionRequired = true;
+			}
 		}
+		return tLevelExtensionRequired;
 	}
 
 	private boolean requiresDocumentTimestamp(PAdESSignature signature, PAdESSignatureParameters signatureParameters) {
 		return PAdES_BASELINE_T.equals(signatureParameters.getSignatureLevel()) || !signature.hasTProfile();
-	}
-
-	private void assertExtendSignatureToTPossible(PAdESSignature signature, PAdESSignatureParameters parameters) {
-		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		// ensure both levels are checked for optimization purposes
-		if (PAdES_BASELINE_T.equals(signatureLevel) || PAdES_BASELINE_LT.equals(signatureLevel)) {
-			if (signature.hasLTAProfile()) {
-				throw new IllegalInputException(String.format(
-						"Cannot extend signature to '%s'. The signature is already extended with LTA level.", signatureLevel));
-
-			} else if (signature.hasLTProfile() && !signature.areAllSelfSignedCertificates()) {
-				if (signature.hasTProfile()) {
-					throw new IllegalInputException(String.format(
-							"Cannot extend signature to '%s'. The signature is already extended with LT level.", signatureLevel));
-				}
-				// NOTE: Otherwise allow extension, as it may be required to provide a best-signature-time
-				// to ensure the best practice of fresh revocation data incorporation
-				LOG.info("Signature contains a DSS dictionary, but no associated timestamp. " +
-						"Extension may lead to LTA-level.");
-			}
-		}
 	}
 
 }

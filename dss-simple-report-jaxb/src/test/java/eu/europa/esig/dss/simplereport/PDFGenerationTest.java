@@ -38,13 +38,13 @@ import java.io.FileOutputStream;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PDFGenerationTest {
+class PDFGenerationTest {
 
 	private static FopFactory fopFactory;
 	private static FOUserAgent foUserAgent;
 
 	@BeforeAll
-	public static void init() throws Exception {
+	static void init() throws Exception {
 		FopFactoryBuilder builder = new FopFactoryBuilder(new File(".").toURI());
 		builder.setAccessibility(true);
 
@@ -56,37 +56,42 @@ public class PDFGenerationTest {
 	}
 
 	@Test
-	public void generateSimpleReport() throws Exception {
+	void generateSimpleReport() throws Exception {
 		createAndValidate("sr1.xml");
 	}
 
 	@Test
-	public void generateSimpleReport2() throws Exception {
+	void generateSimpleReport2() throws Exception {
 		createAndValidate("sr2.xml");
 	}
 
 	@Test
-	public void generatePdfaSimpleReport() throws Exception {
+	void generatePdfaSimpleReport() throws Exception {
 		createAndValidate("sr-pades.xml");
 	}
 
 	@Test
-	public void generateSigAndTstSimpleReport() throws Exception {
+	void generateSigAndTstSimpleReport() throws Exception {
 		createAndValidate("sr-sig-and-tst.xml");
 	}
 
 	@Test
-	public void generateSigAndErSimpleReport() throws Exception {
+	void generateSigAndErSimpleReport() throws Exception {
 		createAndValidate("sr-sig-lt-and-er.xml");
 	}
 
 	@Test
-	public void generateErSimpleReport() throws Exception {
+	void generateErSimpleReport() throws Exception {
 		createAndValidate("sr-er.xml");
 	}
 
 	@Test
-	public void generateSemantics() throws Exception {
+	void generateTstAndErSimpleReport() throws Exception {
+		createAndValidate("tst-and-er.xml");
+	}
+
+	@Test
+	void generateSemantics() throws Exception {
 		createAndValidate("sr-semantics.xml");
 	}
 	

@@ -23,8 +23,8 @@ package eu.europa.esig.dss.pades.validation.scope;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.validation.AdvancedSignature;
-import eu.europa.esig.dss.validation.scope.TimestampScopeFinder;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.scope.TimestampScopeFinder;
 
 import java.util.Collections;
 import java.util.List;

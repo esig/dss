@@ -27,8 +27,8 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.CertificateVerifier;
-import eu.europa.esig.dss.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class ASiCSXAdESSignDocumentsConsequentlyTest extends AbstractASiCSXAdESTestSignature {
+class ASiCSXAdESSignDocumentsConsequentlyTest extends AbstractASiCSXAdESTestSignature {
 
     private static ASiCWithXAdESSignatureParameters signatureParameters;
     private static DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
@@ -52,7 +52,7 @@ public class ASiCSXAdESSignDocumentsConsequentlyTest extends AbstractASiCSXAdEST
     private DSSDocument documentToSign;
 
     @BeforeAll
-    public static void initAll() {
+    static void initAll() {
         certificateVerifier = new CommonCertificateVerifier();
         service = new ASiCWithXAdESService(certificateVerifier);
 
@@ -84,7 +84,7 @@ public class ASiCSXAdESSignDocumentsConsequentlyTest extends AbstractASiCSXAdEST
 
     @ParameterizedTest(name = "Sign XAdES {index} : {0} - {1} - {2}")
     @MethodSource("data")
-    public void init(SignatureLevel level, String signer, DSSDocument document) {
+    void init(SignatureLevel level, String signer, DSSDocument document) {
         documentToSign = document;
         signingAlias = signer;
 

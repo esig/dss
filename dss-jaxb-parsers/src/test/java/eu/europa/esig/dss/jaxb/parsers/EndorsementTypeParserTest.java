@@ -27,17 +27,17 @@ import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.enumerations.EndorsementType;
 
-public class EndorsementTypeParserTest {
+class EndorsementTypeParserTest {
 
 	@Test
-	public void printAndParse() {
+	void printAndParse() {
 		for (EndorsementType type : EndorsementType.values()) {
 			assertEquals(type, EndorsementTypeParser.parse(EndorsementTypeParser.print(type)));
 		}
 	}
 
 	@Test
-	public void unknow() {
+	void unknow() {
 		assertNull(EndorsementTypeParser.parse("bla"));
 		assertNull(EndorsementTypeParser.print(null));
 	}

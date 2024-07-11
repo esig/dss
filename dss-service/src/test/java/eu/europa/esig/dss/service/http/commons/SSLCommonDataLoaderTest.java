@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SSLCommonDataLoaderTest {
+class SSLCommonDataLoaderTest {
 
 	private static final String URL = "https://github.com/esig/dss";
 
@@ -55,7 +55,7 @@ public class SSLCommonDataLoaderTest {
 	private static DSSDocument wrongKeyStore;
 
 	@BeforeAll
-	public static void initKS() {
+	static void initKS() {
 		// load signing certificate automatically, in order to resolve SSL cert update issue
 		SSLCertificateLoader sslCertificateDataLoader = new SSLCertificateLoader();
 		List<CertificateToken> certificateTokens = sslCertificateDataLoader.getCertificates(URL);
@@ -87,7 +87,7 @@ public class SSLCommonDataLoaderTest {
 	}
 
 	@Test
-	public void testDefault() {
+	void testDefault() {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		byte[] binaries = dataLoader.get(URL);
 		assertNotNull(binaries);
@@ -95,7 +95,7 @@ public class SSLCommonDataLoaderTest {
 	}
 
 	@Test
-	public void testTrustStore() throws GeneralSecurityException, IOException {
+	void testTrustStore() throws GeneralSecurityException, IOException {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setSslTruststore(correctKeyStore);
 		dataLoader.setSslTruststoreType(KS_TYPE);
@@ -108,7 +108,7 @@ public class SSLCommonDataLoaderTest {
 
 	@Test
 	// TODO check root cause SSLHandshakeException
-	public void testWrongTrustStore() throws GeneralSecurityException, IOException {
+	void testWrongTrustStore() throws GeneralSecurityException, IOException {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setSslTruststore(wrongKeyStore);
 		dataLoader.setSslTruststoreType(KS_TYPE);

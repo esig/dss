@@ -2,9 +2,9 @@
 ----
 POST /services/rest/signature/one-document/signDocument HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
-Content-Type: application/json; charset=UTF-8
+Content-Type: application/json
 Host: localhost:8080
-Content-Length: 4644
+Content-Length: 4755
 
 {
   "parameters" : {
@@ -22,24 +22,26 @@ Content-Length: 4644
     "manifestSignature" : false,
     "jwsSerializationType" : null,
     "sigDMechanism" : null,
-    "signatureAlgorithm" : "RSA_SHA256",
+    "base64UrlEncodedPayload" : true,
+    "base64UrlEncodedEtsiUComponents" : true,
+    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
-    "encryptionAlgorithm" : "RSA",
-    "referenceDigestAlgorithm" : null,
+    "encryptionAlgorithm" : null,
     "maskGenerationFunction" : null,
+    "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "signatureTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
     "archiveTimestampParameters" : {
-      "digestAlgorithm" : "SHA256",
+      "digestAlgorithm" : "SHA512",
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
@@ -49,8 +51,9 @@ Content-Length: 4644
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395304096,
+      "signingDate" : 1720186840975,
       "claimedSignerRoles" : null,
+      "signedAssertions" : null,
       "policyId" : null,
       "policyQualifier" : null,
       "policyDescription" : null,
@@ -68,7 +71,7 @@ Content-Length: 4644
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "pth+Bytbt0kTlqDHGR58aXh8X+9Tt/h2PC7Yr0gRbTDisd4gMbDKYgAS0x032jhpAhwQtXER91XYr+VsWQ1GCaxx9augEBeKkbVWq1+H5U25FlPRctoGGbXefvBQzVeyHbSS5XgNTh4wqu7g31qg+opZTMoEanNyrfoMItKboUJnqe2rs4jgs42Fqr6JdR8LFQd/RxKnhaFpdqkkj0Y783ctUbpQ3FOa8xxIKv632udCkrZ7FscXMKCZFKzdghXsTdeLvqsPaRNZ8DPRfMLelqIahOVbPwWCFq3aS5wNn+lG8ozN2QeQ5bEHRX5WZWojvyti4akK6y0DwaTJjH3a1g=="
+    "value" : "JXFYM5P8Qcfr5Nh+HHNjeu0rfnUJr7TuqzkgfxJVTt+IpH/zTcUs/3SeCr2KMSr1+8iR5e97YoLfLWtAS1VvjJ21jfS6pH6R7kdmuD9OADOaqLOXnt0GQXbrG8Y7wnzzEBne7rS24xlytvdiwj+nSPpeoNaZN3VvimB2+Zk1P9Xrgy3NUwYMGooOhwHRLi2e+styoHEYSot+2iqoe9cUbMVDe8tfLaBM8CA0ccYVsQIpCHdZ8/glrbG+BEHRjYcfCSMBN/eSeEMsCpyiiCZN7tmO1QXJt4iLUUK6YdWBg6E/9IVxUELsqMNVQ5MDznzBeJBH/BVVLdtzhtfE6jP3sQ=="
   },
   "toSignDocument" : {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",

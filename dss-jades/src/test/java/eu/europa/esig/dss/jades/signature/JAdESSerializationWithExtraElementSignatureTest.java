@@ -23,7 +23,7 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -38,14 +38,14 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESSerializationWithExtraElementSignatureTest extends AbstractJAdESTestSignature {
+class JAdESSerializationWithExtraElementSignatureTest extends AbstractJAdESTestSignature {
 
 	private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
 	private DSSDocument documentToSign;
 	private JAdESSignatureParameters signatureParameters;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new FileDocument(new File("src/test/resources/validation/serialization-extra-element.json"));
 		
 		service = new JAdESService(getCompleteCertificateVerifier());
@@ -65,7 +65,7 @@ public class JAdESSerializationWithExtraElementSignatureTest extends AbstractJAd
 	public void signAndVerify() {
 		Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
 		assertTrue(exception.getMessage().contains("Parallel signing is not supported for invalid RFC 7515 signatures."));
-		assertTrue(exception.getMessage().contains("extraneous key [evil] is not permitted"));
+		assertTrue(exception.getMessage().contains("evil"));
 	}
 
 	@Override

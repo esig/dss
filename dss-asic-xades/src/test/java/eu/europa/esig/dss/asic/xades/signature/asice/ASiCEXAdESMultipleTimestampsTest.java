@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.asic.xades.signature.asice;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
-import eu.europa.esig.dss.asic.common.AbstractASiCContainerExtractor;
-import eu.europa.esig.dss.asic.xades.ASiCWithXAdESContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -54,10 +54,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCEXAdESMultipleTimestampsTest extends PKIFactoryAccess {
+class ASiCEXAdESMultipleTimestampsTest extends PKIFactoryAccess {
 
 	@Test
-	public void test() throws Exception {
+	void test() throws Exception {
 		ASiCWithXAdESService service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getGoodTsa());
 
@@ -105,7 +105,7 @@ public class ASiCEXAdESMultipleTimestampsTest extends PKIFactoryAccess {
 			assertTrue(timestampWrapper.isMessageImprintDataIntact());
 		}
 
-		AbstractASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(extendDocument);
+		DefaultASiCContainerExtractor extractor = new ASiCWithXAdESContainerExtractor(extendDocument);
 		ASiCContent result = extractor.extract();
 
 		assertEquals(0, result.getUnsupportedDocuments().size());
