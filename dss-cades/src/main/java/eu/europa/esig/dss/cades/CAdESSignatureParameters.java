@@ -30,7 +30,7 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 
 	private static final long serialVersionUID = 9035260907528290973L;
 
-	/** Defines if the signature shall be created according ti ETSI EN 319 122 */
+	/** Defines if the signature shall be created according to ETSI EN 319 122 */
 	private boolean en319122 = true;
 
 	/** Content Hints type */
@@ -44,6 +44,9 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 
 	/** Content identifier suffix */
 	private String contentIdentifierSuffix;
+
+	/** Defines if a parallel signature should be created when a CMS signature is provided as a signed document */
+	private boolean parallelSignature = true;
 
 	/**
 	 * Default constructor instantiating object with null values
@@ -171,6 +174,33 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 	 */
 	public void setContentIdentifierPrefix(String contentIdentifierPrefix) {
 		this.contentIdentifierPrefix = contentIdentifierPrefix;
+	}
+
+	/**
+	 * Returns whether a parallel signature should be created when an original document is
+	 * represented by a CMSSignedData (i.e. another CMS signature document)
+	 *
+	 * @return whether a parallel signing is expected
+	 */
+	public boolean isParallelSignature() {
+		return parallelSignature;
+	}
+
+	/**
+	 * Sets whether a parallel signature should be created in case the provided documentToSign is represented
+	 * by a CMSSignedData (i.e. another CMS signature document).
+	 * When enabled, the created produced document will be build based on the original CMSSignedData content,
+	 * and the new signature will be included inside the CMSSignedData as a parallel signature, next to existing signatures.
+	 * When disabled, the new signature will cover the binaries of the original CMSSignedData,
+	 * as in case of a not-signed original document. This allows creation of nested CMS signatures.
+	 * When a non CMSSignedData document is provided, the parameter does not impact the processing.
+	 * Default : TRUE (creates a parallel signature, when applicable)
+	 *
+	 * @param parallelSignature whether a parallel signature should be created in case the provided documentToSign
+	 *                          is represented by a CMSSignedData
+	 */
+	public void setParallelSignature(boolean parallelSignature) {
+		this.parallelSignature = parallelSignature;
 	}
 
 	@Override

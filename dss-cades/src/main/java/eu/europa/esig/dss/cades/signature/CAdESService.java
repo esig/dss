@@ -275,7 +275,8 @@ public class CAdESService extends
 	 */
 	private CMSSignedData getCmsSignedData(final DSSDocument dssDocument, final CAdESSignatureParameters parameters) {
 		CMSSignedData cmsSignedData = null;
-		if (!(dssDocument instanceof DigestDocument) && DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
+		if (parameters.isParallelSignature() && !(dssDocument instanceof DigestDocument)
+				&& DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
 			try {
 				cmsSignedData = DSSUtils.toCMSSignedData(dssDocument);
 				if (SignaturePackaging.ENVELOPING == parameters.getSignaturePackaging() && cmsSignedData.getSignedContent().getContent() == null) {
