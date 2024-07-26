@@ -187,8 +187,16 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
     private void compareObjectsRecursively(Set<ObjectModification> modifications, Set<String> processedObjects,
                                                   PdfObjectTree objectTree, String key, PdfObject signedObject, PdfObject finalObject) {
         if (maximumObjectVerificationDeepness < objectTree.getChainDeepness()) {
-            LOG.warn("Maximum objects verification deepness has been reached : {}. " +
-                    "Chain of objects is skipped.", maximumObjectVerificationDeepness);
+            String errorMessage = "Maximum objects verification deepness has been reached : {}. Chain of objects is skipped.";
+            if (maximumObjectVerificationDeepness == 0) {
+                // Skip is expected, do not return WARN message
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(errorMessage, maximumObjectVerificationDeepness);
+                }
+            } else {
+                LOG.warn("Maximum objects verification deepness has been reached : {}. " +
+                        "Chain of objects is skipped.", maximumObjectVerificationDeepness);
+            }
             return;
         }
 
