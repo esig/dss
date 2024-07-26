@@ -1724,8 +1724,8 @@ public abstract class DiagnosticDataBuilder {
 	private XmlAuthorityInformationAccess getXmlAuthorityInformationAccess(AuthorityInformationAccess aia) {
 		final XmlAuthorityInformationAccess xmlAuthorityInformationAccess = new XmlAuthorityInformationAccess();
 		fillXmlCertificateExtension(xmlAuthorityInformationAccess, aia);
-		xmlAuthorityInformationAccess.getCaIssuersUrls().addAll(aia.getCaIssuers());
-		xmlAuthorityInformationAccess.getOcspUrls().addAll(aia.getOcsp());
+		xmlAuthorityInformationAccess.getCaIssuersUrls().addAll(getCleanedUrls(aia.getCaIssuers()));
+		xmlAuthorityInformationAccess.getOcspUrls().addAll(getCleanedUrls(aia.getOcsp()));
 		return xmlAuthorityInformationAccess;
 	}
 
