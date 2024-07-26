@@ -124,8 +124,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				.build(asicContent, parameters);
 		assertSignaturePossible(asicContent.getTimestampDocuments(), parameters.aSiC());
 
-		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
+		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters, dataToSignHelper);
 
 		DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
 		return getCAdESService().getDataToSign(toBeSigned, cadesParameters);
@@ -147,8 +146,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		ASiCParameters asicParameters = parameters.aSiC();
 		assertSignaturePossible(asicContent.getTimestampDocuments(), asicParameters);
 
-		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
+		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters, dataToSignHelper);
 
 		// Archive Timestamp in case of ASiC-E is not embedded into the CAdES signature
 		boolean addASiCArchiveManifest = isAddASiCEArchiveManifest(parameters.getSignatureLevel(), parameters.aSiC().getContainerType());
@@ -317,6 +315,22 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		parameters.getContext().setDetachedContents(null);
 		return parameters;
+	}
+
+	/**
+	 * Returns {@code CAdESSignatureParameters} from the given {@code ASiCWithCAdESSignatureParameters} and {@code GetDataToSignASiCWithCAdESHelper}
+	 *
+	 * @param parameters {@link ASiCWithCAdESSignatureParameters}
+	 * @param dataToSignHelper {@link GetDataToSignASiCWithCAdESHelper}
+	 * @return {@link CAdESSignatureParameters}
+	 */
+	protected CAdESSignatureParameters getCAdESParameters(ASiCWithCAdESSignatureParameters parameters,
+														  GetDataToSignASiCWithCAdESHelper dataToSignHelper) {
+		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
+		cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
+		// no detached content is used in case of file signing
+		cadesParameters.setParallelSignature(Utils.isCollectionNotEmpty(dataToSignHelper.getDetachedContents()));
+		return cadesParameters;
 	}
 
 	private boolean isAddASiCEArchiveManifest(SignatureLevel signatureLevel, ASiCContainerType containerType) {
