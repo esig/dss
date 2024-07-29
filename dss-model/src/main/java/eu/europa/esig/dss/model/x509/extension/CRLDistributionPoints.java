@@ -25,11 +25,12 @@ import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import java.util.List;
 
 /**
- *
- * 4.2.1.13.  CRL Distribution Points
+ * 4.2.1.13. CRL Distribution Points
+ * <p>
  * The CRL distribution points extension identifies how CRL information
  * is obtained. The extension SHOULD be non-critical, but this profile
  * RECOMMENDS support for this extension by CAs and applications.
+ *
  */
 public class CRLDistributionPoints extends CertificateExtension {
 

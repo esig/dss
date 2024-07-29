@@ -39,6 +39,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
+import org.bouncycastle.asn1.x509.Extension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +93,9 @@ public class RevocationDataVerifier {
         DEFAULT_ENCRYPTION_ALGORITHMS_KEY_LENGTH_MAP.put(EncryptionAlgorithm.PLAIN_ECDSA, 256);
 
         DEFAULT_REVOCATION_SKIP_CERTIFICATE_EXTENSIONS = Arrays.asList(
-                OID.id_etsi_ext_valassured_ST_certs.getId(), OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId());
+                OID.id_etsi_ext_valassured_ST_certs.getId(), OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId(),
+                Extension.noRevAvail.getId()
+        );
     }
 
     /**

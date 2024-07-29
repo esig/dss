@@ -59,12 +59,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFreshestCRL;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNoRevAvail;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -199,6 +201,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -794,39 +797,39 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				}
 
 				if (CertificateExtensionEnum.AUTHORITY_KEY_IDENTIFIER.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlAuthorityKeyIdentifier);
+                    assertInstanceOf(XmlAuthorityKeyIdentifier.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlAuthorityKeyIdentifier xmlAuthorityKeyIdentifier = (XmlAuthorityKeyIdentifier) xmlCertificateExtension;
 					assertTrue(Utils.isArrayNotEmpty(xmlAuthorityKeyIdentifier.getKeyIdentifier()) ||
 							Utils.isArrayNotEmpty(xmlAuthorityKeyIdentifier.getAuthorityCertIssuerSerial()));
 				} else if (CertificateExtensionEnum.SUBJECT_KEY_IDENTIFIER.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlSubjectKeyIdentifier);
+                    assertInstanceOf(XmlSubjectKeyIdentifier.class, xmlCertificateExtension);
 					assertFalse(xmlCertificateExtension.isCritical());
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlSubjectKeyIdentifier xmlSubjectKeyIdentifier = (XmlSubjectKeyIdentifier) xmlCertificateExtension;
 					assertTrue(Utils.isArrayNotEmpty(xmlSubjectKeyIdentifier.getSki()));
 				} else if (CertificateExtensionEnum.BASIC_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlBasicConstraints);
+                    assertInstanceOf(XmlBasicConstraints.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 				} else if (CertificateExtensionEnum.POLICY_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlPolicyConstraints);
+                    assertInstanceOf(XmlPolicyConstraints.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlPolicyConstraints xmlPolicyConstraints = (XmlPolicyConstraints) xmlCertificateExtension;
 					assertTrue(xmlPolicyConstraints.getRequireExplicitPolicy() != null ||
 							xmlPolicyConstraints.getInhibitPolicyMapping() != null);
 				} else if (CertificateExtensionEnum.INHIBIT_ANY_POLICY.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlInhibitAnyPolicy);
+                    assertInstanceOf(XmlInhibitAnyPolicy.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlInhibitAnyPolicy xmlInhibitAnyPolicy = (XmlInhibitAnyPolicy) xmlCertificateExtension;
 					assertNotNull(xmlInhibitAnyPolicy.getValue());
 					assertNotEquals(-1, xmlInhibitAnyPolicy.getValue().intValue());
 				} else if (CertificateExtensionEnum.KEY_USAGE.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlKeyUsages);
+                    assertInstanceOf(XmlKeyUsages.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlKeyUsages xmlKeyUsages = (XmlKeyUsages) xmlCertificateExtension;
 					assertTrue(Utils.isCollectionNotEmpty(xmlKeyUsages.getKeyUsageBit()));
 				} else if (CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlCertificatePolicies);
+                    assertInstanceOf(XmlCertificatePolicies.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlCertificatePolicies xmlCertificatePolicies = (XmlCertificatePolicies) xmlCertificateExtension;
 					assertTrue(Utils.isCollectionNotEmpty(xmlCertificatePolicies.getCertificatePolicy()));
@@ -839,7 +842,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 						}
 					}
 				} else if (CertificateExtensionEnum.NAME_CONSTRAINTS.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlNameConstraints);
+                    assertInstanceOf(XmlNameConstraints.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlNameConstraints xmlNameConstraints = (XmlNameConstraints) xmlCertificateExtension;
 					assertTrue(Utils.isCollectionNotEmpty(xmlNameConstraints.getPermittedSubtrees()) ||
@@ -857,7 +860,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 						assertNull(xmlGeneralSubtree.getMaximum());
 					}
 				} else if (CertificateExtensionEnum.SUBJECT_ALTERNATIVE_NAME.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlSubjectAlternativeNames);
+                    assertInstanceOf(XmlSubjectAlternativeNames.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlSubjectAlternativeNames xmlSubjectAlternativeNames = (XmlSubjectAlternativeNames) xmlCertificateExtension;
 					for (XmlGeneralName xmlGeneralName : xmlSubjectAlternativeNames.getSubjectAlternativeName()) {
@@ -865,28 +868,34 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 						assertNotNull(xmlGeneralName.getValue());
 					}
 				} else if (CertificateExtensionEnum.EXTENDED_KEY_USAGE.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlExtendedKeyUsages);
+                    assertInstanceOf(XmlExtendedKeyUsages.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlExtendedKeyUsages xmlExtendedKeyUsages = (XmlExtendedKeyUsages) xmlCertificateExtension;
 					assertTrue(Utils.isCollectionNotEmpty(xmlExtendedKeyUsages.getExtendedKeyUsageOid()));
 				} else if (CertificateExtensionEnum.AUTHORITY_INFORMATION_ACCESS.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlAuthorityInformationAccess);
+                    assertInstanceOf(XmlAuthorityInformationAccess.class, xmlCertificateExtension);
 					assertFalse(xmlCertificateExtension.isCritical());
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 					XmlAuthorityInformationAccess xmlAuthorityInformationAccess = (XmlAuthorityInformationAccess) xmlCertificateExtension;
 					assertTrue(Utils.isCollectionNotEmpty(xmlAuthorityInformationAccess.getCaIssuersUrls()) ||
 							Utils.isCollectionNotEmpty(xmlAuthorityInformationAccess.getOcspUrls()));
 				} else if (CertificateExtensionEnum.CRL_DISTRIBUTION_POINTS.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlCRLDistributionPoints);
+                    assertInstanceOf(XmlCRLDistributionPoints.class, xmlCertificateExtension);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				} else if (CertificateExtensionEnum.FRESHEST_CRL.getOid().equals(xmlCertificateExtension.getOID())) {
+                    assertInstanceOf(XmlFreshestCRL.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 				} else if (CertificateExtensionEnum.OCSP_NOCHECK.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlIdPkixOcspNoCheck);
+                    assertInstanceOf(XmlIdPkixOcspNoCheck.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 				} else if (CertificateExtensionEnum.VALIDITY_ASSURED_SHORT_TERM.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlValAssuredShortTermCertificate);
+                    assertInstanceOf(XmlValAssuredShortTermCertificate.class, xmlCertificateExtension);
+					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
+				} else if (CertificateExtensionEnum.NO_REVOCATION_AVAILABLE.getOid().equals(xmlCertificateExtension.getOID())) {
+                    assertInstanceOf(XmlNoRevAvail.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 				} else if (CertificateExtensionEnum.QC_STATEMENTS.getOid().equals(xmlCertificateExtension.getOID())) {
-					assertTrue(xmlCertificateExtension instanceof XmlQcStatements);
+                    assertInstanceOf(XmlQcStatements.class, xmlCertificateExtension);
 					assertFalse(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
 				} else {
 					assertTrue(Utils.isArrayNotEmpty(xmlCertificateExtension.getOctets()));
@@ -1893,22 +1902,22 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					SARevIDListType revIdList = (SARevIDListType) value;
 					validateETSIRevIDListType(revIdList);
 				} else if ("CertificateValues".equals(signatureAttributeObj.getName().getLocalPart())) {
-					assertTrue(value instanceof AttributeBaseType);
+                    assertInstanceOf(AttributeBaseType.class, value);
 					validateETSICertificateValues((AttributeBaseType) value);
 				} else if ("RevocationValues".equals(signatureAttributeObj.getName().getLocalPart())) {
-					assertTrue(value instanceof AttributeBaseType);
+                    assertInstanceOf(AttributeBaseType.class, value);
 					validateETSIRevocationValues((AttributeBaseType) value);
 				} else if ("AttrAuthoritiesCertValues".equals(signatureAttributeObj.getName().getLocalPart())) {
-					assertTrue(value instanceof AttributeBaseType);
+                    assertInstanceOf(AttributeBaseType.class, value);
 					validateETSIAttrAuthoritiesCertValues((AttributeBaseType) value);
 				} else if ("AttributeRevocationValues".equals(signatureAttributeObj.getName().getLocalPart())) {
-					assertTrue(value instanceof AttributeBaseType);
+                    assertInstanceOf(AttributeBaseType.class, value);
 					validateETSIAttributeRevocationValues((AttributeBaseType) value);
 				} else if ("TimeStampValidationData".equals(signatureAttributeObj.getName().getLocalPart())) {
-					assertTrue(value instanceof AttributeBaseType);
+                    assertInstanceOf(AttributeBaseType.class, value);
 					validateETSITimeStampValidationData((AttributeBaseType) value);
 				} else if ("ByteRange".equals(signatureAttributeObj.getName().getLocalPart())) {
-					assertTrue(value instanceof List<?>);
+                    assertInstanceOf(List.class, value);
 					validateETSIByteArray((List<?>) value);
 				} else {
 					fail(String.format("Not tested! Name : %s, class : %s",
@@ -2029,7 +2038,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void validateETSIByteArray(List<?> byteArray) {
 		assertEquals(4, byteArray.size());
 		for (Object obj : byteArray) {
-			assertTrue(obj instanceof BigInteger);
+            assertInstanceOf(BigInteger.class, obj);
 		}
 		assertEquals(0, ((BigInteger)byteArray.get(0)).intValue());
 		assertTrue(((BigInteger)byteArray.get(0)).compareTo((BigInteger)byteArray.get(1)) < 0);
@@ -2076,7 +2085,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				assertNotNull(voReferences);
 				signerDocumentFound = true;
 				for (Object object : voReferences) {
-					assertTrue(object instanceof ValidationObjectType);
+                    assertInstanceOf(ValidationObjectType.class, object);
 				}
 			}
 		}
@@ -2113,7 +2122,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				
 				SignersDocumentType signersDocument = signatureValidationReport.getSignersDocument();
 				List<XmlSignatureScope> signatureScopes = signature.getSignatureScopes();
-				if (signatureScopes != null && signatureScopes.size() > 0) {
+				if (signatureScopes != null && !signatureScopes.isEmpty()) {
 					assertNotNull(signersDocument);
 
 					List<ValidationObjectType> validationObjects = getValidationObjects(signersDocument);
@@ -2132,7 +2141,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 								List<Object> validationObjectRepresentationList = validationObjectRepresentationType.getDirectOrBase64OrDigestAlgAndValue();
 								assertEquals(1, validationObjectRepresentationList.size());
 								Object validationObjectRepresentation = validationObjectRepresentationList.get(0);
-								assertTrue(validationObjectRepresentation instanceof DigestAlgAndValueType);
+                                assertInstanceOf(DigestAlgAndValueType.class, validationObjectRepresentation);
 								DigestAlgAndValueType digestAlgAndValue = (DigestAlgAndValueType) validationObjectRepresentation;
 								assertNotNull(digestAlgAndValue);
 								assertEquals(xmlDigestAlgoAndValue.getDigestMethod(), DigestAlgorithm.forXML(digestAlgAndValue.getDigestMethod().getAlgorithm()));
@@ -2161,7 +2170,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 						assertEquals(1, certificateChain.getSigningCertificate().getVOReference().size());
 
 						Object signingCertificate = certificateChain.getSigningCertificate().getVOReference().get(0);
-						assertTrue(signingCertificate instanceof ValidationObjectType);
+                        assertInstanceOf(ValidationObjectType.class, signingCertificate);
 						ValidationObjectType validationObjectType = (ValidationObjectType) signingCertificate;
 						assertEquals(ObjectType.CERTIFICATE, validationObjectType.getObjectType());
 						assertEquals(signature.getSigningCertificate().getId(), validationObjectType.getId());
@@ -2180,7 +2189,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 							List<String> infoMessages = new ArrayList<>();
 							for (TypedDataType typedData : reportData) {
 								assertNotNull(typedData.getType());
-								assertTrue(typedData.getValue() instanceof String);
+                                assertInstanceOf(String.class, typedData.getValue());
 								if (MessageType.ERROR.getUri().equals(typedData.getType())) {
 									errorMessages.add((String) typedData.getValue());
 								} else if (MessageType.WARN.getUri().equals(typedData.getType())) {
@@ -2357,7 +2366,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					List<String> infoMessages = new ArrayList<>();
 					for (TypedDataType typedData : reportData) {
 						assertNotNull(typedData.getType());
-						assertTrue(typedData.getValue() instanceof String);
+                        assertInstanceOf(String.class, typedData.getValue());
 						if (MessageType.ERROR.getUri().equals(typedData.getType())) {
 							errorMessages.add((String) typedData.getValue());
 						} else if (MessageType.WARN.getUri().equals(typedData.getType())) {
@@ -2408,7 +2417,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				List<Object> voReferences = voReferenceType.getVOReference();
 				assertNotNull(voReferences);
 				for (Object object : voReferences) {
-					assertTrue(object instanceof ValidationObjectType);
+                    assertInstanceOf(ValidationObjectType.class, object);
 					ValidationObjectType validationObjectType = (ValidationObjectType) object;
 					validationObjects.add(validationObjectType);
 				}
@@ -2491,7 +2500,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 						List<String> infoMessages = new ArrayList<>();
 						for (TypedDataType typedData : reportData) {
 							assertNotNull(typedData.getType());
-							assertTrue(typedData.getValue() instanceof String);
+                            assertInstanceOf(String.class, typedData.getValue());
 							if (MessageType.ERROR.getUri().equals(typedData.getType())) {
 								errorMessages.add((String) typedData.getValue());
 							} else if (MessageType.WARN.getUri().equals(typedData.getType())) {
@@ -2613,7 +2622,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 							.equals(element.getName().getLocalPart())) {
 						VOReferenceType references = (VOReferenceType) element.getValue();
 						for (Object object : references.getVOReference()) {
-							assertTrue(object instanceof ValidationObjectType);
+                            assertInstanceOf(ValidationObjectType.class, object);
 							ValidationObjectType validationObject = (ValidationObjectType) object;
 							etsiVrSignatureScopeIds.add(validationObject.getId());
 						}

@@ -465,11 +465,13 @@
 				<xs:element name="InhibitAnyPolicy" type="InhibitAnyPolicy" />
 				<xs:element name="NameConstraints" type="NameConstraints" />
 				<xs:element name="CRLDistributionPoints" type="CRLDistributionPoints" />
+				<xs:element name="FreshestCRL" type="FreshestCRL" />
 				<xs:element name="AuthorityKeyIdentifier" type="AuthorityKeyIdentifier" />
 				<xs:element name="SubjectKeyIdentifier" type="SubjectKeyIdentifier" />
 				<xs:element name="AuthorityInformationAccess" type="AuthorityInformationAccess" />
 				<xs:element name="IdPkixOcspNoCheck" type="IdPkixOcspNoCheck" />
 				<xs:element name="ValAssuredShortTermCertificate" type="ValAssuredShortTermCertificate" />
+				<xs:element name="NoRevAvail" type="NoRevAvail" />
 				<xs:element name="QcStatements" type="QcStatements" />
 				<xs:element name="OtherExtension" type="CertificateExtension" />
 			</xs:choice>
@@ -603,6 +605,12 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="FreshestCRL">
+		<xs:complexContent>
+			<xs:extension base="CRLDistributionPoints" />
+		</xs:complexContent>
+	</xs:complexType>
+
 	<xs:complexType name="AuthorityInformationAccess">
 		<xs:complexContent>
 			<xs:extension base="CertificateExtension">
@@ -644,6 +652,14 @@
 	</xs:complexType>
 
 	<xs:complexType name="ValAssuredShortTermCertificate">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:attribute name="present" type="xs:boolean" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NoRevAvail">
 		<xs:complexContent>
 			<xs:extension base="CertificateExtension">
 				<xs:attribute name="present" type="xs:boolean" />

@@ -10,6 +10,47 @@
 This chapter covers the changes occurred between different versions of DSS within <<validationPolicy>>.
 
 [cols="2,5,5"]
+.Policy changes from version 6.1 to 6.2
+|===
+|Title                                |v6.1                           |v6.2
+|NoRevAvail certificate extension     |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<SignatureConstraints>
+    ...
+    <BasicSignatureConstraints>
+        ...
+        <SigningCertificate>
+            ...
+            <RevocationDataSkip Level="INFORM">
+                <CertificateExtensions>
+                    ...
+                    <Id>2.5.29.56</Id> <!-- noRevAvail -->
+                </CertificateExtensions>
+            </RevocationDataSkip>
+            ...
+            <NoRevAvail Level="WARN" />
+            ...
+        </SigningCertificate>
+        <CACertificate>
+            ...
+            <ForbiddenExtensions Level="FAIL">
+                ...
+                <Id>2.5.29.56</Id> <!-- noRevAvail -->
+            </ForbiddenExtensions>
+            ...
+        </CACertificate>
+    </BasicSignatureConstraints>
+    ...
+</SignatureConstraints>
+----
+
+|===
+
+[cols="2,5,5"]
 .Policy changes from version 5.13/6.0 to 6.1
 |===
 |Title                                |v6.0                           |v6.1

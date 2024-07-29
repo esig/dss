@@ -38,6 +38,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFreshestCRL;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
@@ -45,6 +46,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNoRevAvail;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
@@ -97,11 +99,13 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.FreshestCRL;
 import eu.europa.esig.dss.model.x509.extension.GeneralName;
 import eu.europa.esig.dss.model.x509.extension.GeneralSubtree;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
 import eu.europa.esig.dss.model.x509.extension.NameConstraints;
+import eu.europa.esig.dss.model.x509.extension.NoRevAvail;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
@@ -1568,11 +1572,17 @@ public abstract class DiagnosticDataBuilder {
 		if (certificateExtensions.getCRLDistributionPoints() != null) {
 			xmlCertificateExtensions.add(getXmlCRLDistributionPoints(certificateExtensions.getCRLDistributionPoints()));
 		}
+		if (certificateExtensions.getFreshestCRL() != null) {
+			xmlCertificateExtensions.add(getXmlFreshestCRL(certificateExtensions.getFreshestCRL()));
+		}
 		if (certificateExtensions.getOcspNoCheck() != null) {
 			xmlCertificateExtensions.add(getXmlIdPkixOcspNoCheck(certificateExtensions.getOcspNoCheck()));
 		}
 		if (certificateExtensions.getValidityAssuredShortTerm() != null) {
 			xmlCertificateExtensions.add(getXmlValAssuredShortTermCertificate(certificateExtensions.getValidityAssuredShortTerm()));
+		}
+		if (certificateExtensions.getNoRevAvail() != null) {
+			xmlCertificateExtensions.add(getXmlNoRevAvail(certificateExtensions.getNoRevAvail()));
 		}
 		if (certificateExtensions.getQcStatements() != null) {
 			xmlCertificateExtensions.add(new XmlQcStatementsBuilder().build(certificateExtensions.getQcStatements()));
@@ -1706,6 +1716,13 @@ public abstract class DiagnosticDataBuilder {
 		return xmlCRLDistributionPoints;
 	}
 
+	private XmlCRLDistributionPoints getXmlFreshestCRL(FreshestCRL freshestCRL) {
+		final XmlFreshestCRL xmlFreshestCRL = new XmlFreshestCRL();
+		fillXmlCertificateExtension(xmlFreshestCRL, freshestCRL);
+		xmlFreshestCRL.getCrlUrl().addAll(getCleanedUrls(freshestCRL.getCrlUrls()));
+		return xmlFreshestCRL;
+	}
+
 	private XmlAuthorityKeyIdentifier getXmlAuthorityKeyIdentifier(AuthorityKeyIdentifier aki) {
 		final XmlAuthorityKeyIdentifier xmlAuthorityKeyIdentifier = new XmlAuthorityKeyIdentifier();
 		fillXmlCertificateExtension(xmlAuthorityKeyIdentifier, aki);
@@ -1741,6 +1758,13 @@ public abstract class DiagnosticDataBuilder {
 		fillXmlCertificateExtension(xmlValAssuredShortTermCertificate, valAssuredST);
 		xmlValAssuredShortTermCertificate.setPresent(valAssuredST.isValAssuredSTCerts());
 		return xmlValAssuredShortTermCertificate;
+	}
+
+	private XmlNoRevAvail getXmlNoRevAvail(NoRevAvail noRevAvail) {
+		final XmlNoRevAvail xmlNoRevAvail = new XmlNoRevAvail();
+		fillXmlCertificateExtension(xmlNoRevAvail, noRevAvail);
+		xmlNoRevAvail.setPresent(noRevAvail.isNoRevAvail());
+		return xmlNoRevAvail;
 	}
 
 	private List<XmlCertificateExtension> getXmlOtherCertificateExtensions(List<CertificateExtension> otherCertificateExtensions) {

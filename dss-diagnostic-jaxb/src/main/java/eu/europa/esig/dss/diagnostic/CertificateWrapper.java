@@ -33,6 +33,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFreshestCRL;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNoRevAvail;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustServiceMapping;
@@ -361,6 +363,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		}
 		return false;
 	}
+
 	/**
 	 * Returns if the certificate contains id-etsi-ext-valassured-ST-certs extension,
 	 * as defined in ETSI EN 319 412-1 "5.2 Certificate Extensions regarding Validity Assured Certificate"
@@ -374,6 +377,21 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private XmlValAssuredShortTermCertificate getXmlValAssuredShortTermCertificate() {
 		return getCertificateExtensionForOid(CertificateExtensionEnum.VALIDITY_ASSURED_SHORT_TERM.getOid(), XmlValAssuredShortTermCertificate.class);
+	}
+
+	/**
+	 * Returns if the certificate contains noRevAvail extension,
+	 * as defined in RFC 9608 "No Revocation Available for X.509 Public Key Certificates"
+	 *
+	 * @return TRUE if the certificate contains no revocation available certificate extension, FALSE otherwise
+	 */
+	public boolean isNoRevAvail() {
+		XmlNoRevAvail noRevAvail = getXmlNoRevAvail();
+		return noRevAvail != null && noRevAvail.isPresent();
+	}
+
+	private XmlNoRevAvail getXmlNoRevAvail() {
+		return getCertificateExtensionForOid(CertificateExtensionEnum.NO_REVOCATION_AVAILABLE.getOid(), XmlNoRevAvail.class);
 	}
 
 	/**
@@ -685,6 +703,23 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private XmlCRLDistributionPoints getXmlCRLDistributionPoints() {
 		return getCertificateExtensionForOid(CertificateExtensionEnum.CRL_DISTRIBUTION_POINTS.getOid(), XmlCRLDistributionPoints.class);
+	}
+
+	/**
+	 * Returns the Freshest CRL URLs
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getFreshestCRLUrls() {
+		XmlCRLDistributionPoints freshestCRL = getXmlFreshestCRL();
+		if (freshestCRL != null) {
+			return freshestCRL.getCrlUrl();
+		}
+		return Collections.emptyList();
+	}
+
+	private XmlFreshestCRL getXmlFreshestCRL() {
+		return getCertificateExtensionForOid(CertificateExtensionEnum.FRESHEST_CRL.getOid(), XmlFreshestCRL.class);
 	}
 
 	/**

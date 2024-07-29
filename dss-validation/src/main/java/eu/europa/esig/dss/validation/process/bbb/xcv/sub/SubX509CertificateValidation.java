@@ -45,6 +45,7 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.NoRevAvailCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.BasicConstraintsCACheck;
@@ -248,6 +249,10 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 		item = item.setNextItem(nameConstraints(currentCertificate, subContext));
 
+		if (currentCertificate.isNoRevAvail()) {
+			item = item.setNextItem(noRevAvail(currentCertificate, subContext));
+		}
+
 		item = item.setNextItem(supportedCriticalCertificateExtensions(currentCertificate, subContext));
 
 		item = item.setNextItem(forbiddenCertificateExtensions(currentCertificate, subContext));
@@ -386,6 +391,11 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 	private ChainItem<XmlSubXCV> nameConstraints(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateNameConstraintsConstraint(context, subContext);
 		return new CertificateNameConstraintsCheck(i18nProvider, result, certificate, constraint);
+	}
+
+	private ChainItem<XmlSubXCV> noRevAvail(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateNoRevAvailConstraint(context, subContext);
+		return new NoRevAvailCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> supportedCriticalCertificateExtensions(CertificateWrapper certificate, SubContext subContext) {

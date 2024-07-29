@@ -1048,6 +1048,20 @@ NOTE: DSS supports processing of the name constraints that are imposed only on t
 </SigningCertificate>
 ----
 
+* `NoRevAvail` - this constraint is used to perform validation of certificate's conformance to the RFC 9608 standard (cf. <<R29>>), when `noRevAvail` (OID: 2.5.29.56) certificate extension is present. If the certificate having `noRevAvail` certificate extension does not satisfy the rules defined within RFC 9608, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of NoRevAvail usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <NoRevAvail Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
 * `SupportedCriticalExtensions` - this constraint is used to define a list of certificate critical extensions supported and processed by this application. If the certificate contains one or more critical certificate extension(s) not defined in the list, the check will fail.
 
 NOTE: Verifies only critical certificate extensions. The non-critical certificate extensions are ignored when not understood.
@@ -2732,12 +2746,13 @@ This table defines the correspondence between the enforced validation policy con
                                   |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyTree                      |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |NameConstraints                 |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |NoRevAvail                      |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SupportedCriticalExtensions     |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ForbiddenExtensions             |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints       |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.13+|CertificateConstraints       |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Title                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Email                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |OrganizationIdentifier          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE

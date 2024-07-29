@@ -60,6 +60,7 @@
 				<RevocationDataSkip Level="INFORM">
 					<CertificateExtensions>
 						<Id>0.4.0.194121.2.1</Id> <!-- valassured-ST-certs -->
+						<Id>2.5.29.56</Id> <!-- noRevAvail -->
 					</CertificateExtensions>
 				</RevocationDataSkip>
 				<RevocationInfoAccessPresent Level="WARN" />
@@ -71,6 +72,7 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<NoRevAvail Level="WARN" />
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
@@ -151,6 +153,7 @@
 				<RevocationDataSkip Level="INFORM">
 					<CertificateExtensions>
 						<Id>0.4.0.194121.2.1</Id> <!-- valassured-ST-certs -->
+						<Id>2.5.29.56</Id> <!-- noRevAvail -->
 					</CertificateExtensions>
 				</RevocationDataSkip>
 				<RevocationInfoAccessPresent Level="WARN" />
@@ -162,6 +165,7 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<NoRevAvail Level="WARN" />
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>

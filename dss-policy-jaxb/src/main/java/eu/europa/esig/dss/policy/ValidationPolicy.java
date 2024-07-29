@@ -352,6 +352,16 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateNameConstraintsConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns certificate NoRevAvail constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if NoRevAvail for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateNoRevAvailConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns certificate supported critical extensions constraint
 	 *
 	 * @param context {@link Context}

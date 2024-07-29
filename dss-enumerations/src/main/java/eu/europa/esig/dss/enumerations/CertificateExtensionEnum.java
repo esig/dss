@@ -191,7 +191,14 @@ public enum CertificateExtensionEnum implements OidDescription {
      * id-pe-qcStatements OBJECT IDENTIFIER ::= { id-pe 3 }
      * QCStatements ::= SEQUENCE OF QCStatement
      */
-    QC_STATEMENTS("QCStatements", "1.3.6.1.5.5.7.1.3");
+    QC_STATEMENTS("QCStatements", "1.3.6.1.5.5.7.1.3"),
+
+    /**
+     * RFC 9608. 2. The noRevAvail Certificate Extension
+     * id-ce-noRevAvail OBJECT IDENTIFIER ::=  { id-ce 56 }
+     * noRevAvail EXTENSION ::= { SYNTAX NULL IDENTIFIED BY id-ce-noRevAvail }
+     */
+    NO_REVOCATION_AVAILABLE("noRevAvail", "2.5.29.56");
 
     private final String description;
     private final String oid;
