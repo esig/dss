@@ -134,10 +134,10 @@ _(same for CounterSignatureConstraints)_
     </MiniPublicKeySize>
     <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
         ...
-        <Algo Date="2009" Size="1024">RSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-        <Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
-        <Algo Date="2026" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
-        <Algo Date="2029" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
+        <Algo Date="2009" Size="1024">RSA</Algo>
+        <Algo Date="2016" Size="1536">RSA</Algo>
+        <Algo Date="2026" Size="1900">RSA</Algo>
+        <Algo Date="2029" Size="3000">RSA</Algo>
         ...
     </AlgoExpirationDate>
     ...
@@ -161,14 +161,14 @@ _(same for CounterSignatureConstraints)_
     </MiniPublicKeySize>
     <AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
         ...
-        <Algo Date="2009" Size="1024">RSA</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-        <Algo Date="2016" Size="1536">RSA</Algo> <!-- ETSI 119 312 V1.1.1 -->
-        <Algo Date="2026" Size="1900">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
-        <Algo Date="2029" Size="3000">RSA</Algo> <!-- ETSI 119 312 V1.4.2 -->
-        <Algo Date="2009" Size="1024">RSASSA-PSS</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.0.0 -->
-        <Algo Date="2016" Size="1536">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.1.1 -->
-        <Algo Date="2026" Size="1900">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
-        <Algo Date="2029" Size="3000">RSASSA-PSS</Algo> <!-- ETSI 119 312 V1.4.2 -->
+        <Algo Date="2009" Size="1024">RSA</Algo>
+        <Algo Date="2016" Size="1536">RSA</Algo
+        <Algo Date="2026" Size="1900">RSA</Algo>
+        <Algo Date="2029" Size="3000">RSA</Algo>
+        <Algo Date="2009" Size="1024">RSASSA-PSS</Algo>
+        <Algo Date="2016" Size="1536">RSASSA-PSS</Algo>
+        <Algo Date="2026" Size="1900">RSASSA-PSS</Algo>
+        <Algo Date="2029" Size="3000">RSASSA-PSS</Algo>
         ...
     </AlgoExpirationDate>
     ...
