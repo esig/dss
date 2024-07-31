@@ -853,6 +853,9 @@
 			<xs:enumeration value="CAdES-BASELINE-T" />
 			<xs:enumeration value="CAdES-BASELINE-B" />
 			<xs:enumeration value="PDF-NOT-ETSI" />
+			<xs:enumeration value="PAdES-BES" />
+			<xs:enumeration value="PAdES-EPES" />
+			<xs:enumeration value="PAdES-LTV" />
 			<xs:enumeration value="PAdES-BASELINE-LTA" />
 			<xs:enumeration value="PAdES-BASELINE-LT" />
 			<xs:enumeration value="PAdES-BASELINE-T" />

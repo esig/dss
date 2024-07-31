@@ -30,7 +30,7 @@ public enum SignatureLevel {
 
 	CMS_NOT_ETSI, CAdES_BES, CAdES_EPES, CAdES_T, CAdES_LT, CAdES_C, CAdES_X, CAdES_XL, CAdES_A, CAdES_BASELINE_B, CAdES_BASELINE_T, CAdES_BASELINE_LT, CAdES_BASELINE_LTA,
 
-	PDF_NOT_ETSI, PKCS7_B, PKCS7_T, PKCS7_LT, PKCS7_LTA, PAdES_BASELINE_B, PAdES_BASELINE_T, PAdES_BASELINE_LT, PAdES_BASELINE_LTA,
+	PDF_NOT_ETSI, PKCS7_B, PKCS7_T, PKCS7_LT, PKCS7_LTA, PAdES_BES, PAdES_EPES, PAdES_LTV, PAdES_BASELINE_B, PAdES_BASELINE_T, PAdES_BASELINE_LT, PAdES_BASELINE_LTA,
 	
 	JSON_NOT_ETSI, JAdES_BASELINE_B, JAdES_BASELINE_T, JAdES_BASELINE_LT, JAdES_BASELINE_LTA,
 	
@@ -94,6 +94,9 @@ public enum SignatureLevel {
 			case JAdES_BASELINE_LTA:
 				return SignatureForm.JAdES;
 			case PDF_NOT_ETSI:
+			case PAdES_BES:
+			case PAdES_EPES:
+			case PAdES_LTV:
 			case PAdES_BASELINE_B:
 			case PAdES_BASELINE_T:
 			case PAdES_BASELINE_LT:
@@ -104,6 +107,7 @@ public enum SignatureLevel {
 			case PKCS7_LT:
 			case PKCS7_LTA:
 				return SignatureForm.PKCS7;
+			case UNKNOWN:
 			default:
 				throw new UnsupportedOperationException(String.format("The signature level '%s' is not supported!", this));
 		}

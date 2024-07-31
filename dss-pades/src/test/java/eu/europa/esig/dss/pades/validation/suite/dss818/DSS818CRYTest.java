@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.validation.suite.dss818;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
@@ -39,6 +40,12 @@ public class DSS818CRYTest extends AbstractDSS818Test {
 		assertEquals(0, diagnosticData.getAllOrphanCertificateReferences().size());
 		assertEquals(1, diagnosticData.getAllOrphanRevocationObjects().size());
 		assertEquals(0, diagnosticData.getAllOrphanRevocationReferences().size());
+	}
+
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+		assertEquals(SignatureLevel.PAdES_BES, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 }

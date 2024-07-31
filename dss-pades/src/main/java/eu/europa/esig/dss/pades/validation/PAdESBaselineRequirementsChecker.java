@@ -30,17 +30,20 @@ import eu.europa.esig.dss.pades.validation.timestamp.PdfTimestampToken;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDocTimestampRevision;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
 import eu.europa.esig.dss.spi.validation.ValidationContext;
 import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
+import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
+import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -117,10 +120,10 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
                     "for PAdES-BASELINE-B signature (cardinality == 1)!");
             return false;
         }
-        // SPO: entry with the key Cert in the Signature Dictionary (Cardinality == 0) (not supported)
+        // SPO: entry with the key Cert in the Signature Dictionary (Cardinality == 0) // TODO : (not supported)
         // Additional requirement (c)
         if (!CONTENT_TYPE_ID_DATA.equals(padesSignature.getContentType())) {
-            LOG.warn("content-type attribute shall have value id-data for PAdES-BASELINE-B signature! (requirement (c))");
+            LOG.warn("content-type attribute shall have value 'id-data' for PAdES-BASELINE-B signature! (requirement (c))");
             return false;
         }
         // Additional requirement (d)
@@ -132,7 +135,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
         }
         // Additional requirement (l)
         if (!PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(pdfSignatureDictionary.getSubFilter())) {
-            LOG.warn("Entry with a key SubFilter shall contain a value ETSI.CAdES.detached " +
+            LOG.warn("Entry with a key SubFilter shall contain a value 'ETSI.CAdES.detached' " +
                     "for PAdES-BASELINE-B signature! (requirement (l))");
             return false;
         }
@@ -141,10 +144,6 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
                 padesSignature.getSignaturePolicy() != null) && Utils.isStringNotEmpty(pdfSignatureDictionary.getReason())) {
             LOG.warn("Entry with a key Reason shall not be used when commitment-type-attribute or " +
                     "signature-policy-identifier is present in the CMS signature for PAdES-BASELINE-B signature! (requirement (m))");
-            return false;
-        }
-        if (!padesSignature.getCmsSignedData().isDetachedSignature()) {
-            LOG.warn("No data shall be encapsulated in the PKCS#7 SignedData field for PAdES-BASELINE-B signature!");
             return false;
         }
         return true;
@@ -194,14 +193,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
     @Override
     public boolean hasBaselineLTAProfile() {
         // Additional requirement (y)
-        boolean ltaTimestampFound = false;
-        for (TimestampToken timestampToken : signature.getDocumentTimestamps()) {
-            if (isBaselineLTATimestamp(timestampToken)) {
-                ltaTimestampFound = true;
-                break;
-            }
-        }
-        if (!ltaTimestampFound) {
+        if (!isBaselineLTATimestampPresent()) {
             LOG.debug("document-time-stamp covering LT-level and containing a key SubFilter with value ETSI.RFC3161 " +
                     "shall be present for PAdES-BASELINE-LTA signature! (cardinality >= 1, requirement (y))");
             return false;
@@ -209,8 +201,140 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
         return true;
     }
 
+    private boolean isBaselineLTATimestampPresent() {
+        for (TimestampToken timestampToken : signature.getDocumentTimestamps()) {
+            if (isBaselineLTATimestamp(timestampToken)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean isBaselineLTATimestamp(TimestampToken timestampToken) {
         return containsRFC3161SubFilter(timestampToken) && coversLTLevelData(timestampToken);
+    }
+
+    @Override
+    public boolean hasExtendedBESProfile() {
+        if (!cmsExtendedBESRequirements()) {
+            return false;
+        }
+        PAdESSignature padesSignature = (PAdESSignature) signature;
+        CMSSignedData cmsSignedData = padesSignature.getCmsSignedData();
+        PdfSignatureDictionary pdfSignatureDictionary = padesSignature.getPdfSignatureDictionary();
+        // PAdES Part 1 : a DER-encoded SignedData object as specified in ETSI EN 319 122-1 [2] shall be included
+        if (cmsSignedData == null) {
+            LOG.warn("DER-encoded SignedData object shall be included as the PDF signature in the entry with " +
+                    "the key Contents of the Signature Dictionary for PAdES-BES signature (PAdES Part 1, requirement (a))!");
+            return false;
+        }
+        // PAdES Part 1 : There shall only be a single signer in any PDF Signature
+        if (cmsSignedData.getSignerInfos().size() != 1) {
+            LOG.warn("There shall be a single signer for any PAdES-BES signature (PAdES Part 1, requirement (a))!");
+            return false;
+        }
+        // PAdES Part 1 : "No data shall be encapsulated in the PKCS#7 SignedData field
+        if (!padesSignature.getCmsSignedData().isDetachedSignature()) {
+            LOG.warn("No data shall be encapsulated in the PKCS#7 SignedData field for PAdES-BES signature " +
+                    "(PAdES Part 1, requirement (b))!");
+            return false;
+        }
+        // SPO: entry with the key Filter in the Signature Dictionary (Cardinality == 1)
+        if (Utils.isStringEmpty(pdfSignatureDictionary.getFilter())) {
+            LOG.warn("Entry with the key Filter in the Signature Dictionary shall be present " +
+                    "for PAdES-BES signature (cardinality == 1)!");
+            return false;
+        }
+        // SPO: entry with the key ByteRange in the Signature Dictionary (Cardinality == 1)
+        if (pdfSignatureDictionary.getByteRange() == null) {
+            LOG.warn("Entry with the key ByteRange in the Signature Dictionary shall be present " +
+                    "for PAdES-BES signature (cardinality == 1)!");
+            return false;
+        }
+        // SPO: entry with the key SubFilter in the Signature Dictionary (Cardinality == 1)
+        if (Utils.isStringEmpty(pdfSignatureDictionary.getSubFilter())) {
+            LOG.warn("Entry with the key SubFilter in the Signature Dictionary shall be present " +
+                    "for PAdES-BES signature (cardinality == 1)!");
+            return false;
+        }
+        // SPO: entry with the key Contents in the Signature Dictionary (Cardinality == 1)
+        if (Utils.isArrayEmpty(pdfSignatureDictionary.getContents())) {
+            LOG.warn("Entry with the key Contents in the Signature Dictionary shall be present " +
+                    "for PAdES-BES signature (cardinality == 1)!");
+            return false;
+        }
+        // SPO: entry with the key Cert in the Signature Dictionary (Cardinality == 0) // TODO : (not supported)
+        // Additional requirement (a)
+        if (!CONTENT_TYPE_ID_DATA.equals(padesSignature.getContentType())) {
+            LOG.warn("content-type attribute shall have value 'id-data' for PAdES-BES signature! (requirement (a))");
+            return false;
+        }
+        // Additional requirement (e)
+        if (Utils.isStringNotEmpty(pdfSignatureDictionary.getReason()) &&
+                Utils.isCollectionNotEmpty(padesSignature.getCommitmentTypeIndications())) {
+            LOG.warn("commitment-type-indication attribute shall not be incorporated in the CMS signature " +
+                    "when entry with a key Reason is used for PAdES-BES signature! (requirement (e))");
+            return false;
+        }
+        // Additional requirement (j)
+        if (!PAdESConstants.SIGNATURE_DEFAULT_SUBFILTER.equals(pdfSignatureDictionary.getSubFilter())) {
+            LOG.warn("Entry with a key SubFilter shall contain a value 'ETSI.CAdES.detached' " +
+                    "for PAdES-BES signature! (requirement (j))");
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean hasExtendedEPESProfile() {
+        PAdESSignature padesSignature = (PAdESSignature) signature;
+        SignerInformation signerInformation = padesSignature.getSignerInformation();
+        PdfSignatureDictionary pdfSignatureDictionary = padesSignature.getPdfSignatureDictionary();
+        // signature-policy-identifier (Cardinality == 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId)) == 0) {
+            LOG.debug("signature-policy-identifier attribute shall be present for PAdES-EPES signature (cardinality == 1)!");
+            return false;
+        }
+        // SPO: entry with the key Reason in the Signature Dictionary (Cardinality == 0)
+        if (Utils.isStringNotEmpty(pdfSignatureDictionary.getReason())) {
+            LOG.warn("Entry with the key Reason in the Signature Dictionary shall not be present " +
+                    "for PAdES-EPES signature (cardinality == 0)!");
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the signature has a corresponding PAdES-E-LTV profile
+     *
+     * @return TRUE if the signature has a PAdES-E-LTV profile, FALSE otherwise
+     */
+    public boolean hasExtendedLTVProfile() {
+        // a) Validation data check
+        if (!minimalLTRequirement()) {
+            return false;
+        }
+        PAdESSignature padesSignature = (PAdESSignature) signature;
+        boolean allSelfSigned = getCertificateSourcesExceptLastArchiveTimestamp().isAllSelfSigned();
+        // Validation data shall be carried by values within the DSS.
+        if (!allSelfSigned && padesSignature.getDssDictionary() == null) {
+            LOG.debug("DSS dictionary shall be present for PAdES-LTV signature!");
+            return false;
+        }
+        if (!isLTVTimestampPresent()) {
+            LOG.debug("document-time-stamp covering validation data shall be present for PAdES-LTV signature!");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isLTVTimestampPresent() {
+        for (TimestampToken timestampToken : signature.getDocumentTimestamps()) {
+            if (coversLTLevelData(timestampToken)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean coversLTLevelData(TimestampToken timestampToken) {

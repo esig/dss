@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation.suite.dss1420;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
@@ -61,6 +62,7 @@ public class DSS1420Test extends AbstractPAdESTestValidation {
 	
 	@Override
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		assertEquals(SignatureLevel.PAdES_BES, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 		assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 

@@ -81,6 +81,7 @@ public class DSS818SKTest extends AbstractDSS818Test {
 	
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+		// commitment-type-indication + /Reason
 		assertEquals(SignatureLevel.PDF_NOT_ETSI, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 

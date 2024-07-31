@@ -20,14 +20,24 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.dss818;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DSS818ADOTest extends AbstractDSS818Test {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-818/Signature-P-IT_ADO-1 (HASH_FAILURE) (ECDSA).pdf"));
+	}
+
+	@Override
+	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+		assertEquals(SignatureLevel.PAdES_BES, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 }

@@ -49,8 +49,22 @@ public class CMSForPAdESBaselineRequirementsChecker extends CAdESBaselineRequire
      * @return TRUE if the CMS signature is conformant to PAdES-BASELINE format, FALSE otherwise
      */
     public boolean isValidForPAdESBaselineBProfile() {
+        // PAdES Part 1 : a DER-encoded SignedData object as specified in ETSI EN 319 122-1 [2] shall be included
+        if (signature.getCmsSignedData() == null) {
+            LOG.warn("DER-encoded SignedData object shall be included as the PDF signature in the entry with " +
+                    "the key Contents of the Signature Dictionary for {}-BASELINE-B signature (General requirement (a))!", getBaselineSignatureForm());
+            return false;
+        }
+        // PAdES Part 1 : There shall only be a single signer in any PDF Signature
         if (signature.getCmsSignedData().getSignerInfos().size() != 1) {
-            LOG.warn("SignedData.signerInfos shall contain one and only one signerInfo for {}-BASELINE-B signature (cardinality == 1)!", getBaselineSignatureForm());
+            LOG.warn("SignedData.signerInfos shall contain one and only one signerInfo for {}-BASELINE-B signature " +
+                    "(General requirement (a))!", getBaselineSignatureForm());
+            return false;
+        }
+        // PAdES Part 1 : "No data shall be encapsulated in the PKCS#7 SignedData field
+        if (!signature.getCmsSignedData().isDetachedSignature()) {
+            LOG.warn("No data shall be encapsulated in the PKCS#7 SignedData field for {}-BASELINE-B signature " +
+                    "(General requirement (b))!", getBaselineSignatureForm());
             return false;
         }
         return cmsBaselineBRequirements();

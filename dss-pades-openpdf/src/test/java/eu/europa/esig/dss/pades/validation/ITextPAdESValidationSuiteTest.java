@@ -47,11 +47,18 @@ import eu.europa.esig.dss.pades.validation.suite.DSS3226StrictNumberComparisonTe
 import eu.europa.esig.dss.pades.validation.suite.DSS3226Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS3239Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS3298Test;
+import eu.europa.esig.dss.pades.validation.suite.PAdESBESNoCertificatesValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESBESValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESBESWithSigPolicyIdentifierValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESEPESValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEndEntityCertIssuedByNotCACertTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEnvelopingOtherPdfTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESExtendedToTLevelTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInvalidDigestAlgorithmTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESLTVBasedOnEPESValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESLTVValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESLTVWithReasonValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESLevelLTAWithCopiedDocTstTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESLevelTWithDuplicatedDocTstTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESLevelTWithDuplicatedSigTstTest;
@@ -80,6 +87,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESWithSpoofingAttackTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithUnsupportedSignatureAlgorithmTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithVRITimeStampTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithVRITimeTest;
+import eu.europa.esig.dss.pades.validation.suite.PDFWithMultipleSignerInfoValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7SubFilterValidAndInvalidTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
@@ -137,7 +145,10 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelTWithDuplicatedSigTstTest.class, PAdESLevelTWithDuplicatedDocTstTest.class, PAdESLevelLTAWithCopiedDocTstTest.class,
 		PAdESTwoSigWithCopiedTstTest.class, PAdESTimestampedExistingFieldsTest.class, DSS3226Test.class, DSS3226StrictNumberComparisonTest.class,
 		PAdESLevelBWithAsn1EvidenceRecordValidationTest.class, PAdESWithDetachedTstWithAsn1EvidenceRecordValidationTest.class, DSS3239Test.class,
-		PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest.class, DSS3298Test.class })
+		PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest.class, DSS3298Test.class, PAdESBESValidationTest.class,
+		PAdESEPESValidationTest.class, PAdESBESNoCertificatesValidationTest.class, PAdESBESWithSigPolicyIdentifierValidationTest.class,
+		PAdESLTVValidationTest.class, PAdESLTVWithReasonValidationTest.class, PAdESLTVBasedOnEPESValidationTest.class,
+		PDFWithMultipleSignerInfoValidationTest.class })
 class ITextPAdESValidationSuiteTest {
 
 }

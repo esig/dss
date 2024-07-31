@@ -46,6 +46,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -135,6 +136,17 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
 
         assertTrue(service.isValidPAdESBaselineCMSSignedData(messageDigest, cmsSignature));
 
+        cadesParameters = new CAdESSignatureParameters();
+        cadesParameters.setSigningCertificate(getSigningCert());
+        cadesParameters.setCertificateChain(getCertificateChain());
+        cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
+        cadesParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+        cadesParameters.setDetachedContents(Collections.singletonList(new DigestDocument(messageDigest.getAlgorithm(), messageDigest.getValue())));
+
+        dataToSign = cadesService.getDataToSign(cmsSignature, cadesParameters);
+        signatureValue = getToken().sign(dataToSign, messageDigest.getAlgorithm(), getPrivateKeyEntry());
+        DSSDocument doubleSignedCms = cadesService.signDocument(cmsSignature, cadesParameters, signatureValue);
+        assertFalse(service.isValidCMSSignedData(messageDigest, doubleSignedCms));
 
         exception = assertThrows(NullPointerException.class, () ->
                 service.signDocument(null, null, null));

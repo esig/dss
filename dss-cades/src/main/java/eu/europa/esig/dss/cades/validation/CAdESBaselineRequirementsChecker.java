@@ -132,6 +132,17 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             }
             return false;
         }
+        // signer-attributes (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerAttr)) +
+                Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, OID.id_aa_ets_signerAttrV2)) > 1) {
+            LOG.warn("signer-attributes(-v2) attribute shall not be present multiple times for {}-BASELINE-B signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
+        // signature-policy-identifier (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId)) > 1) {
+            LOG.warn("signature-policy-identifier attribute shall not be present multiple times for {}-BASELINE-B signature (cardinality == 0 or 1)!", signatureForm);
+            return false;
+        }
         // Additional requirement (a)
         if (!containsSigningCertificate(signature.getCertificateSource().getSignedDataCertificates())) {
             LOG.warn("Signing certificate shall be present in SignedData.certificates " +
@@ -269,23 +280,11 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     public boolean hasExtendedBESProfile() {
+        if (!cmsExtendedBESRequirements()) {
+            return false;
+        }
         SignerInformation signerInformation = signature.getSignerInformation();
         SignatureForm signatureForm = getBaselineSignatureForm();
-        // content-type (Cardinality == 1)
-        if (!isContentTypeValid(signerInformation)) {
-            LOG.warn("content-type attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
-            return false;
-        }
-        // message-digest (Cardinality == 1)
-        if (!isMessageDigestPresent(signerInformation)) {
-            LOG.warn("message-digest attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
-            return false;
-        }
-        // signing-certificate/signing-certificate-v2 (Cardinality == 1)
-        if (!isOneSigningCertificatePresent(signerInformation)) {
-            LOG.warn("signing-certificate(-v2) attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
-            return false;
-        }
         // signing-time (Cardinality == 0 or 1)
         if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.pkcs_9_at_signingTime)) > 1) {
             LOG.warn("signing-time attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
@@ -371,6 +370,38 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             LOG.warn("signing-certificate attribute shall be used for SHA1 hash algorithm " +
                     "and signing-certificate-v2 for other hash algorithms for {}-BES signature " +
                     "(requirements (a) and (b) 319 122-2)!", signatureForm);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * This method verifies whether CMS is conformant to the E-BES profile
+     *
+     * @return TRUE if the CMS signature is conformant to the E-BES profile, FALSE otherwise
+     */
+    protected boolean cmsExtendedBESRequirements() {
+        SignerInformation signerInformation = signature.getSignerInformation();
+        SignatureForm signatureForm = getBaselineSignatureForm();
+        // content-type (Cardinality == 1)
+        if (!isContentTypeValid(signerInformation)) {
+            LOG.warn("content-type attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
+            return false;
+        }
+        // message-digest (Cardinality == 1)
+        if (!isMessageDigestPresent(signerInformation)) {
+            LOG.warn("message-digest attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
+            return false;
+        }
+        // signing-certificate/signing-certificate-v2 (Cardinality == 1)
+        if (!isOneSigningCertificatePresent(signerInformation)) {
+            LOG.warn("signing-certificate(-v2) attribute shall be present for {}-BES signature (cardinality == 1)!", signatureForm);
+            return false;
+        }
+        // signer-attributes (Cardinality == 0 or 1)
+        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerAttr)) +
+                Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, OID.id_aa_ets_signerAttrV2)) > 1) {
+            LOG.warn("signer-attributes(-v2) attribute shall not be present multiple times for {}-BES signature (cardinality == 0 or 1)!", signatureForm);
             return false;
         }
         return true;
@@ -463,6 +494,12 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
+    /**
+     * Verifies whether the presence of content-type attribute is conformant to the given signature type
+     *
+     * @param signerInformation {@link SignerInformation}
+     * @return TRUE if the content-type attribute is valid, FALSE otherwise
+     */
     private boolean isContentTypeValid(SignerInformation signerInformation) {
         Attribute[] contentTypeAttrs = CMSUtils.getSignedAttributes(signerInformation,
                 PKCSObjectIdentifiers.pkcs_9_at_contentType);
@@ -473,6 +510,12 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return numberOfOccurrences == 1;
     }
 
+    /**
+     * Verifies the presence of a message-digest attribute
+     *
+     * @param signerInformation {@link SignerInformation}
+     * @return TRUE if the message-digest attribute is conformant, FALSE otherwise
+     */
     private boolean isMessageDigestPresent(SignerInformation signerInformation) {
         Attribute[] messageDigestAttrs = CMSUtils.getSignedAttributes(signerInformation,
                 PKCSObjectIdentifiers.pkcs_9_at_messageDigest);

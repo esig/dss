@@ -269,10 +269,28 @@ public class PAdESSignature extends CAdESSignature {
 		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));
 	}
 
+	/**
+	 * Checks if the LTV-level is present in the signature
+	 *
+	 * @return TRUE if the LTV-level is present, FALSE otherwise
+	 */
+	public boolean hasLTVProfile() {
+		return getBaselineRequirementsChecker().hasExtendedLTVProfile();
+	}
+
 	@Override
 	public SignatureLevel getDataFoundUpToLevel() {
 		SignatureForm signatureForm = getSignatureForm();
-		if (SignatureForm.PAdES.equals(signatureForm) && hasBProfile()) {
+		if (SignatureForm.PAdES.equals(signatureForm) && hasBESProfile()) {
+			if (!hasBProfile()) {
+				if (hasLTVProfile()) {
+					return SignatureLevel.PAdES_LTV;
+				}
+				if (hasEPESProfile()) {
+					return SignatureLevel.PAdES_EPES;
+				}
+				return SignatureLevel.PAdES_BES;
+			}
 			if (!hasTProfile()) {
 				return SignatureLevel.PAdES_BASELINE_B;
 			}

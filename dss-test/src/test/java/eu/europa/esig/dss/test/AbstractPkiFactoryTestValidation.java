@@ -705,6 +705,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			case CAdES_A:
 			case JAdES_BASELINE_LTA:
 			case PAdES_BASELINE_LTA:
+			case PAdES_LTV:
 				return true;
 			default:
 				return false;
