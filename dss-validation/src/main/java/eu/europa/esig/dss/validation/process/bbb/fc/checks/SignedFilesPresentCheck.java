@@ -42,12 +42,6 @@ public class SignedFilesPresentCheck extends ChainItem<XmlFC> {
 	/** ASiC Container info */
 	private final XmlContainerInfo containerInfo;
 
-	/** The constraint message */
-	private MessageTag message;
-
-	/** The error message */
-	private MessageTag error;
-
 	/**
 	 * Default constructor
 	 *
@@ -64,18 +58,18 @@ public class SignedFilesPresentCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected boolean process() {
-		if (ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType())) {
+		if (isASiCS()) {
 			// ASiC-S one signed file in the root directory
-			message = MessageTag.BBB_FC_ISFP_ASICS;
-			error = MessageTag.BBB_FC_ISFP_ASICS_ANS;
 			List<String> rootLevelFiles = getRootLevelFiles(containerInfo.getContentFiles());
 			return Utils.isCollectionNotEmpty(rootLevelFiles) && rootLevelFiles.size() == 1;
 		} else {
 			// ASiC-E one or more signed files outside META-INF
-			message = MessageTag.BBB_FC_ISFP_ASICE;
-			error = MessageTag.BBB_FC_ISFP_ASICE_ANS;
 			return Utils.isCollectionNotEmpty(containerInfo.getContentFiles());
 		}
+	}
+
+	private boolean isASiCS() {
+		return ASiCContainerType.ASiC_S.equals(containerInfo.getContainerType());
 	}
 
 	private List<String> getRootLevelFiles(List<String> fileNames) {
@@ -94,12 +88,20 @@ public class SignedFilesPresentCheck extends ChainItem<XmlFC> {
 
 	@Override
 	protected MessageTag getMessageTag() {
-		return message;
+		if (isASiCS()) {
+			return MessageTag.BBB_FC_ISFP_ASICS;
+		} else {
+			return MessageTag.BBB_FC_ISFP_ASICE;
+		}
 	}
 
 	@Override
 	protected MessageTag getErrorMessageTag() {
-		return error;
+		if (isASiCS()) {
+			return MessageTag.BBB_FC_ISFP_ASICS_ANS;
+		} else {
+			return MessageTag.BBB_FC_ISFP_ASICE_ANS;
+		}
 	}
 
 	@Override
