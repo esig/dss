@@ -657,7 +657,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	 */
 	private ChainItem<XmlValidationProcessLongTermData> certificateChainReliableAtTime(
 			ChainItem<XmlValidationProcessLongTermData> item, TokenProxy token, Date validationTime, Context context) {
-		if (token.getSigningCertificate() == null || token.getSigningCertificate().isTrusted()) {
+		if (token.getSigningCertificate() == null || token.getSigningCertificate().isTrusted() || Utils.isCollectionEmpty(token.getCertificateChain())) {
 			return item;
 		}
 
