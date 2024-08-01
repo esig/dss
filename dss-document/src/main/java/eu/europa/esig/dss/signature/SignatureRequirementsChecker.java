@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class is used to verify if the signature can be created according to the provided requirements
- * in a signature parameters instance
+ * in a {@code CertificateVerifier} instance
  *
  */
 public class SignatureRequirementsChecker {
@@ -135,11 +135,6 @@ public class SignatureRequirementsChecker {
         if (Utils.isCollectionEmpty(certificateTokens)) {
             return;
         }
-        if (signatureParameters.isSignWithNotYetValidCertificate()) {
-            LOG.warn("Use of a deprecated parameter #signWithNotYetValidCertificate. " +
-                    "Please configure instead #alertOnNotYetValidCertificate within CertificateVerifier.");
-            return;
-        }
 
         final TokenStatus status = new TokenStatus();
         for (CertificateToken certificateToken : certificateTokens) {
@@ -194,11 +189,6 @@ public class SignatureRequirementsChecker {
      */
     private void assertCertificatesAreNotExpired(final Collection<CertificateToken> certificateTokens, boolean signing) {
         if (Utils.isCollectionEmpty(certificateTokens)) {
-            return;
-        }
-        if (signatureParameters.isSignWithExpiredCertificate()) {
-            LOG.warn("Use of a deprecated parameter #signWithNotYetValidCertificate. " +
-                    "Please configure instead #alertOnExpiredCertificate within CertificateVerifier.");
             return;
         }
 

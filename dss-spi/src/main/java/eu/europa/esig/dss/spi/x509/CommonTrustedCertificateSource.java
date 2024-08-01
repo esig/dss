@@ -60,20 +60,6 @@ public class CommonTrustedCertificateSource extends CommonCertificateSource impl
 		}
 	}
 
-	/**
-	 * Returns TrustProperties for the given certificate, when applicable
-	 *
-	 * @param token {@link CertificateToken}
-	 * @return a list of {@link TrustProperties}
-	 * @deprecated since DSS 6.1. To be removed. Please use implementation of
-	 *         {@code eu.europa.esig.dss.spi.tsl.TrustPropertiesCertificateSource}, or
-	 *         {@code eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource} class in order to provide trust services
-	 */
-	@Deprecated
-	public List<TrustProperties> getTrustServices(CertificateToken token) {
-		return Collections.emptyList();
-	}
-
 	@Override
 	public List<String> getAlternativeOCSPUrls(CertificateToken trustAnchor) {
 		return Collections.emptyList();

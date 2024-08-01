@@ -22,7 +22,6 @@ package eu.europa.esig.dss.spi.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -159,16 +158,6 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * @return {@code DigestAlgorithm}
 	 */
 	DigestAlgorithm getDigestAlgorithm();
-
-	/**
-	 * Retrieves the mask generation function used for generating the signature.
-	 *
-	 * @return {@code MaskGenerationFunction}
-	 * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} method instead in order to determine
-	 *             mask generation function (i.e. EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1)
-	 */
-	@Deprecated
-	MaskGenerationFunction getMaskGenerationFunction();
 
 	/**
 	 * Returns the signing time included within the signature.

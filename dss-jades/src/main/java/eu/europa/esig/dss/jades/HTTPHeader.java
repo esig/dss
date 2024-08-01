@@ -21,8 +21,9 @@
 package eu.europa.esig.dss.jades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,8 +114,7 @@ public class HTTPHeader implements DSSDocument {
 	}
 
 	@Override
-	@Deprecated
-	public String getDigest(DigestAlgorithm digestAlgorithm) {
+	public Digest getDigest(DigestAlgorithm digestAlgorithm) {
 		throw new UnsupportedOperationException("The getDigest(digestAlgorithm) method is not supported for HTTPHeaderDocument.");
 	}
 

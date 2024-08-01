@@ -895,26 +895,6 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     }
 
     /**
-     * For given encryption algorithm and digest algorithm this function returns the signature algorithm.
-     *
-     * @param encryptionAlgorithm the encryption algorithm
-     * @param digestAlgorithm     the digest algorithm
-     * @param mgf                 the mask generation function
-     * @return the corresponding combination of both algorithms
-     * @deprecated since DSS 6.1. Please use {@code #getAlgorithm(encryptionAlgorithm, digestAlgorithm)} method instead.
-     *             Use {@code EncryptionAlgorithm.RSA} or {@code EncryptionAlgorithm.RSASSA_PSS} to differentiate between MGF use.
-     */
-    @Deprecated
-    public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
-                                                  final MaskGenerationFunction mgf) {
-        EncryptionAlgorithm targetEncryptionAlgorithm = encryptionAlgorithm;
-        if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
-            targetEncryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
-        }
-        return getAlgorithm(targetEncryptionAlgorithm, digestAlgorithm);
-    }
-
-    /**
      * The default constructor.
      *
      * @param encryptionAlgorithm the encryption algorithm
@@ -941,21 +921,6 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
      */
     public DigestAlgorithm getDigestAlgorithm() {
         return digestAlgo;
-    }
-
-    /**
-     * This method returns the mask generation function.
-     *
-     * @return the mask generation function
-     * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} in order to differentiate between 
-     *             MGF values (use RSA for none MGF, RSASSA_PSS for MGF1)
-     */
-    @Deprecated
-    public MaskGenerationFunction getMaskGenerationFunction() {
-        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgo) {
-            return MaskGenerationFunction.MGF1;
-        }
-        return null;
     }
 
     /**

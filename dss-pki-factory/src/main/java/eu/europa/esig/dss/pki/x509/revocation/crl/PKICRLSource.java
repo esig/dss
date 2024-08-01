@@ -25,7 +25,6 @@ import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -175,23 +174,6 @@ public class PKICRLSource implements CRLSource {
      */
     public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
         this.encryptionAlgorithm = encryptionAlgorithm;
-    }
-
-    /**
-     * Sets mask generation function to be used on CRL signature generation
-     * NOTE: The used encryption algorithm should support the given parameter.
-     *
-     * @param maskGenerationFunction {@link MaskGenerationFunction}
-     * @deprecated since DSS 6.1. Please use {@code setEncryptionAlgorithm} method
-     *             to specify RSA (none MGF) or RSASSA-PSS (MGF1) algorithm
-     */
-    @Deprecated
-    public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
-            setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
-        } else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
-            setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
-        }
     }
 
     /**

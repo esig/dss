@@ -22,12 +22,9 @@ package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -38,22 +35,6 @@ import java.util.Objects;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractSerializableSignatureParameters<TP extends SerializableTimestampParameters> implements SerializableSignatureParameters {
-
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractSerializableSignatureParameters.class);
-
-	/**
-	 * This variable indicates if it is possible to sign with an expired certificate.
-	 *
-	 * Default : false
-	 */
-	private boolean signWithExpiredCertificate = false;
-
-	/**
-	 * This variable indicates if it is possible to sign with a not yet valid certificate.
-	 *
-	 * Default : false
-	 */
-	private boolean signWithNotYetValidCertificate = false;
 
 	/**
 	 * This variable indicates whether a signing certificate revocation shall be checked.
@@ -128,48 +109,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	@Override
-	@Deprecated
-	public boolean isSignWithExpiredCertificate() {
-		return signWithExpiredCertificate;
-	}
-
-	/**
-	 * Allows to change the default behavior regarding the use of an expired certificate
-	 * on signature creation or T-level extension.
-	 *
-	 * Default : false (forbid signing with an expired signing certificate)
-	 *
-	 * @param signWithExpiredCertificate
-	 *            true if signature with an expired certificate is allowed
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.setSignatureAlertOnExpiredCertificate} method instead
-	 */
-	@Deprecated
-	public void setSignWithExpiredCertificate(boolean signWithExpiredCertificate) {
-		this.signWithExpiredCertificate = signWithExpiredCertificate;
-	}
-
-	@Override
-	@Deprecated
-	public boolean isSignWithNotYetValidCertificate() {
-		return signWithNotYetValidCertificate;
-	}
-
-	/**
-	 * Allows to change the default behavior regarding the use of a not yet valid certificate
-	 * on signature creation or T-level extension.
-	 *
-	 * Default : false (forbid signing with a not yet valid signing certificate)
-	 *
-	 * @param signWithNotYetValidCertificate
-	 *            true if signature with a not yet valid certificate is allowed
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getSignatureAlertOnNotYetValidCertificate} method instead
-	 */
-	@Deprecated
-	public void setSignWithNotYetValidCertificate(boolean signWithNotYetValidCertificate) {
-		this.signWithNotYetValidCertificate = signWithNotYetValidCertificate;
-	}
-
-	@Override
 	public boolean isCheckCertificateRevocation() {
 		return checkCertificateRevocation;
 	}
@@ -177,10 +116,10 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	/**
 	 * Allows setting whether a revocation status for a signing certificate should be checked
 	 * on signature creation or T-level extension.
-	 *
+	 * <p>
 	 * NOTE: in order to specify a behavior for this check, the relevant alerts should be specified within
 	 * a {@code CertificateVerifier} instance, used in a service for signing/extension
-	 *
+	 * <p>
 	 * Default : false (do not perform revocation data check on signature creation/T-level extension)
 	 *
 	 * @param checkCertificateRevocation indicated if a certificate revocation check shall be performed
@@ -269,42 +208,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		if (this.encryptionAlgorithm != null) {
 			signatureAlgorithm = SignatureAlgorithm.getAlgorithm(this.encryptionAlgorithm, this.digestAlgorithm);
 		}
-	}
-
-	/**
-	 * Sets the mask generation function if used with the given SignatureAlgorithm
-	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method with
-	 *             value EncryptionAlgorithm.RSASSA_PSS in order to set MGF1, or
-	 *             value EncryptionAlgorithm.RSA to reset mask generation function
-	 */
-	@Deprecated
-	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		LOG.warn("Use of deprecated method #setMaskGenerationFunction! " +
-				"Please use #setEncryptionAlgorithm with EncryptionAlgorithm.RSASSA_PSS value to enable MGF1, " +
-				"or EncryptionAlgorithm.RSA to disable.");
-		if (MaskGenerationFunction.MGF1 == maskGenerationFunction && EncryptionAlgorithm.RSA == encryptionAlgorithm) {
-			LOG.info("MaskGenerationFunction '{}' has been provided. The EncryptionAlgorithm changed to '{}'.",
-					maskGenerationFunction, EncryptionAlgorithm.RSASSA_PSS);
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
-		} else if (maskGenerationFunction == null && EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			LOG.info("MaskGenerationFunction '{}' has been provided. The EncryptionAlgorithm changed to '{}'.",
-					maskGenerationFunction, EncryptionAlgorithm.RSA);
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
-		} else if (!EncryptionAlgorithm.RSA.isEquivalent(encryptionAlgorithm)) {
-			LOG.info("Not allowed combination of MaskGenerationFunction '{}' and EncryptionAlgorithm '{}'. The value is skipped.",
-					maskGenerationFunction, encryptionAlgorithm);
-		}
-	}
-
-	@Override
-	@Deprecated
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			return MaskGenerationFunction.MGF1;
-		}
-		return null;
 	}
 
 	@Override
@@ -432,99 +335,57 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 
 	@Override
 	public String toString() {
-		return "AbstractSerializableSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", generateTBSWithoutCertificate="
-				+ generateTBSWithoutCertificate + ", signatureLevel=" + signatureLevel + ", signaturePackaging=" + signaturePackaging + ", signatureAlgorithm="
-				+ signatureAlgorithm + ", encryptionAlgorithm=" + encryptionAlgorithm + ", digestAlgorithm=" + digestAlgorithm + ", referenceDigestAlgorithm="
-				+ referenceDigestAlgorithm + ", bLevelParams=" + bLevelParams + ", contentTimestampParameters="
-				+ contentTimestampParameters + ", signatureTimestampParameters=" + signatureTimestampParameters + ", archiveTimestampParameters="
-				+ archiveTimestampParameters + "]";
+		return "AbstractSerializableSignatureParameters [" +
+				"checkCertificateRevocation=" + checkCertificateRevocation +
+				", generateTBSWithoutCertificate=" + generateTBSWithoutCertificate +
+				", signatureLevel=" + signatureLevel +
+				", signaturePackaging=" + signaturePackaging +
+				", signatureAlgorithm=" + signatureAlgorithm +
+				", encryptionAlgorithm=" + encryptionAlgorithm +
+				", digestAlgorithm=" + digestAlgorithm +
+				", referenceDigestAlgorithm=" + referenceDigestAlgorithm +
+				", bLevelParams=" + bLevelParams +
+				", contentTimestampParameters=" + contentTimestampParameters +
+				", signatureTimestampParameters=" + signatureTimestampParameters +
+				", archiveTimestampParameters=" + archiveTimestampParameters +
+				']';
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((archiveTimestampParameters == null) ? 0 : archiveTimestampParameters.hashCode());
-		result = prime * result + ((bLevelParams == null) ? 0 : bLevelParams.hashCode());
-		result = prime * result + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
-		result = prime * result + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
-		result = prime * result + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
-		result = prime * result + (generateTBSWithoutCertificate ? 1231 : 1237);
-		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
-		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
-		result = prime * result + ((signatureAlgorithm == null) ? 0 : signatureAlgorithm.hashCode());
-		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
-		result = prime * result + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
-		result = prime * result + ((signatureTimestampParameters == null) ? 0 : signatureTimestampParameters.hashCode());
+		int result = Boolean.hashCode(checkCertificateRevocation);
+		result = 31 * result + Boolean.hashCode(generateTBSWithoutCertificate);
+		result = 31 * result + Objects.hashCode(signatureLevel);
+		result = 31 * result + Objects.hashCode(signaturePackaging);
+		result = 31 * result + Objects.hashCode(signatureAlgorithm);
+		result = 31 * result + Objects.hashCode(encryptionAlgorithm);
+		result = 31 * result + Objects.hashCode(digestAlgorithm);
+		result = 31 * result + Objects.hashCode(referenceDigestAlgorithm);
+		result = 31 * result + Objects.hashCode(bLevelParams);
+		result = 31 * result + Objects.hashCode(contentTimestampParameters);
+		result = 31 * result + Objects.hashCode(signatureTimestampParameters);
+		result = 31 * result + Objects.hashCode(archiveTimestampParameters);
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		AbstractSerializableSignatureParameters<TP> other = (AbstractSerializableSignatureParameters<TP>) obj;
-		if (archiveTimestampParameters == null) {
-			if (other.archiveTimestampParameters != null) {
-				return false;
-			}
-		} else if (!archiveTimestampParameters.equals(other.archiveTimestampParameters)) {
-			return false;
-		}
-		if (bLevelParams == null) {
-			if (other.bLevelParams != null) {
-				return false;
-			}
-		} else if (!bLevelParams.equals(other.bLevelParams)) {
-			return false;
-		}
-		if (contentTimestampParameters == null) {
-			if (other.contentTimestampParameters != null) {
-				return false;
-			}
-		} else if (!contentTimestampParameters.equals(other.contentTimestampParameters)) {
-			return false;
-		}
-		if (digestAlgorithm != other.digestAlgorithm) {
-			return false;
-		}
-		if (encryptionAlgorithm != other.encryptionAlgorithm) {
-			return false;
-		}
-		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
-			return false;
-		}
-		if (referenceDigestAlgorithm != other.referenceDigestAlgorithm) {
-			return false;
-		}
-		if (signWithExpiredCertificate != other.signWithExpiredCertificate) {
-			return false;
-		}
-		if (signatureAlgorithm != other.signatureAlgorithm) {
-			return false;
-		}
-		if (signatureLevel != other.signatureLevel) {
-			return false;
-		}
-		if (signaturePackaging != other.signaturePackaging) {
-			return false;
-		}
-		if (signatureTimestampParameters == null) {
-			if (other.signatureTimestampParameters != null) {
-				return false;
-			}
-		} else if (!signatureTimestampParameters.equals(other.signatureTimestampParameters)) {
-			return false;
-		}
-		return true;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		AbstractSerializableSignatureParameters<?> that = (AbstractSerializableSignatureParameters<?>) o;
+		return checkCertificateRevocation == that.checkCertificateRevocation
+				&& generateTBSWithoutCertificate == that.generateTBSWithoutCertificate
+				&& signatureLevel == that.signatureLevel
+				&& signaturePackaging == that.signaturePackaging
+				&& signatureAlgorithm == that.signatureAlgorithm
+				&& encryptionAlgorithm == that.encryptionAlgorithm
+				&& digestAlgorithm == that.digestAlgorithm
+				&& referenceDigestAlgorithm == that.referenceDigestAlgorithm
+				&& Objects.equals(bLevelParams, that.bLevelParams)
+				&& Objects.equals(contentTimestampParameters, that.contentTimestampParameters)
+				&& Objects.equals(signatureTimestampParameters, that.signatureTimestampParameters)
+				&& Objects.equals(archiveTimestampParameters, that.archiveTimestampParameters);
 	}
 
 }

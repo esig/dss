@@ -22,7 +22,6 @@ package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -61,20 +60,6 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	}
 
 	@Override
-	@Deprecated
-	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf,
-			DSSPrivateKeyEntry keyEntry) throws DSSException {
-		EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
-			LOG.info("Usage of deprecated method with EncryptionAlgorithm '{}' and MaskGenerationFunction '{}'. " +
-							"The EncryptionAlgorithm is converted to '{}'", encryptionAlgorithm, mgf, EncryptionAlgorithm.RSASSA_PSS.getName());
-			encryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
-		}
-		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(encryptionAlgorithm, digestAlgorithm);
-		return sign(toBeSigned, signatureAlgorithm, keyEntry);
-	}
-
-	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry)
 			throws DSSException {
 		assertEncryptionAlgorithmValid(signatureAlgorithm, keyEntry);
@@ -100,20 +85,6 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	@Override
 	public SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException {
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm);
-		return signDigest(digest, signatureAlgorithm, keyEntry);
-	}
-
-	@Override
-	@Deprecated
-	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
-			throws DSSException {
-		EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
-			LOG.info("Usage of deprecated method with EncryptionAlgorithm '{}' and MaskGenerationFunction '{}'. " +
-					"The EncryptionAlgorithm is converted to '{}'", encryptionAlgorithm, mgf, EncryptionAlgorithm.RSASSA_PSS.getName());
-			encryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
-		}
 		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm);
 		return signDigest(digest, signatureAlgorithm, keyEntry);
 	}

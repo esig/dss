@@ -222,10 +222,6 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		if (remoteParameters.getEncryptionAlgorithm() != null) {
 			parameters.setEncryptionAlgorithm(remoteParameters.getEncryptionAlgorithm());
 		}
-		// TODO : To be removed in DSS 6.2
-		if (remoteParameters.getMaskGenerationFunction() != null) {
-			parameters.setMaskGenerationFunction(remoteParameters.getMaskGenerationFunction());
-		}
 		if (remoteParameters.getReferenceDigestAlgorithm() != null) {
 			parameters.setReferenceDigestAlgorithm(remoteParameters.getReferenceDigestAlgorithm());
 		}
@@ -241,7 +237,6 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 				remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType()));
 		parameters.setContentTimestampParameters(toTimestampParameters(remoteParameters.getContentTimestampParameters(), 
 				remoteParameters.getSignatureLevel().getSignatureForm(), remoteParameters.getAsicContainerType()));
-		parameters.setSignWithExpiredCertificate(remoteParameters.isSignWithExpiredCertificate()); // TODO : To be removed in DSS 6.2
 		parameters.setGenerateTBSWithoutCertificate(remoteParameters.isGenerateTBSWithoutCertificate());
 	}
 

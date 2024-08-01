@@ -100,19 +100,6 @@ public class ManifestFile implements Serializable {
 	}
 
 	/**
-	 * Gets base64 encoded digest string of the manifest document for the given {@code digestAlgorithm}
-	 *
-	 * @param digestAlgorithm {@link DigestAlgorithm} to compute digest
-	 * @return {@link String} base64-encoded digest value
-	 * @deprecated since DSS 6.1. Please use {@code #getDigestValue} method instead
-	 */
-	@Deprecated
-	public String getDigestBase64String(DigestAlgorithm digestAlgorithm) {
-		byte[] digestValue = getDigestValue(digestAlgorithm);
-		return Base64.getEncoder().encodeToString(digestValue);
-	}
-
-	/**
 	 * Gets digest value of the manifest document for the given {@code digestAlgorithm}
 	 *
 	 * @param digestAlgorithm {@link DigestAlgorithm} to compute digest

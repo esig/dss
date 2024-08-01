@@ -69,17 +69,6 @@ public class XAdESReferenceValidation extends ReferenceValidation {
 	}
 
 	@Override
-	@Deprecated
-	public String getName() {
-		if (Utils.isStringNotBlank(getId())) {
-			return getId();
-		} else if (Utils.isStringNotBlank(getUri())) {
-			return getUri();
-		}
-		return Utils.EMPTY_STRING;
-	}
-
-	@Override
 	public List<String> getTransformationNames() {
 		if (transforms == null) {
 			transforms = new ArrayList<>();

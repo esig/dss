@@ -69,28 +69,6 @@ public class ManifestEntry implements Serializable {
 	 * Gets the filename
 	 *
 	 * @return {@link String}
-	 * @deprecated since DSS 6.1. Please use {@code #getUri} method instead.
-	 */
-	@Deprecated
-	public String getFileName() {
-		return uri;
-	}
-
-	/**
-	 * Sets the filename
-	 *
-	 * @param fileName {@link String}
-	 * @deprecated since DSS 6.1. Please use {@code #setUri} method instead.
-	 */
-	@Deprecated
-	public void setFileName(String fileName) {
-		this.uri = fileName;
-	}
-
-	/**
-	 * Gets the filename
-	 *
-	 * @return {@link String}
 	 */
 	public String getUri() {
 		return uri;

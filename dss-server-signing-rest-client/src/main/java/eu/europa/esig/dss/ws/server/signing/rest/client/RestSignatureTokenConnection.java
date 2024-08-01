@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.ws.server.signing.rest.client;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
@@ -86,29 +85,6 @@ public interface RestSignatureTokenConnection extends Serializable {
 
 	/**
 	 * This method signs the {@code toBeSigned} data with the digest
-	 * {@code digestAlgorithm}, the mask {@code mgf} and the given {@code alias}.
-	 * 
-	 * @param toBeSigned
-	 *                        The data that need to be signed
-	 * @param digestAlgorithm
-	 *                        The digest algorithm to be used before signing
-	 * @param mgf
-	 *                        the mask generation function
-	 * @param alias
-	 *                        The key alias to be used
-	 * @return The array of bytes representing the signature value
-	 * @deprecated since DSS 6.1. Please use {@code #sign(toBeSigned, signatureAlgorithm, alias)} method instead.
-	 *             Specify the use of mask generation function with a signature parameter,
-	 *             using RSA for none MGF or RSASSA-PSS for MGF1.
-	 */
-	@POST
-	@Path("sign/{alias}/{digest-algo}/{mask}")
-	@Deprecated
-	SignatureValueDTO sign(ToBeSignedDTO toBeSigned, @PathParam("digest-algo") DigestAlgorithm digestAlgorithm, @PathParam("mask") MaskGenerationFunction mgf,
-			@PathParam("alias") String alias);
-
-	/**
-	 * This method signs the {@code toBeSigned} data with the digest
 	 * {@code digestAlgorithm} and the given {@code alias}.
 	 *
 	 * @param toBeSigned
@@ -138,27 +114,6 @@ public interface RestSignatureTokenConnection extends Serializable {
 	@POST
 	@Path("sign-digest/{alias}")
 	SignatureValueDTO signDigest(DigestDTO digest, @PathParam("alias") String alias);
-
-	/**
-	 * This method signs the {@code digest} data with a mask {@code mgf} and the
-	 * given {@code alias}.
-	 * 
-	 * @param digest
-	 *               The digested data that need to be signed
-	 * @param mgf
-	 *               the mask generation function
-	 * @param alias
-	 *               The key alias to be used
-	 * @return the signature value representation with the used algorithm and the
-	 *         binary value
-	 * @deprecated since DSS 6.1. Please use {@code #signDigest(digest, signatureAlgorithm, alias)} method instead.
-	 *             Specify the use of mask generation function with a signature parameter,
-	 *             using RSA for none MGF or RSASSA-PSS for MGF1.
-	 */
-	@POST
-	@Path("sign-digest/{alias}/{mask}")
-	@Deprecated
-	SignatureValueDTO signDigest(DigestDTO digest, @PathParam("mask") MaskGenerationFunction mgf, @PathParam("alias") String alias);
 
 	/**
 	 * This method signs the {@code digest} data with a mask {@code mgf} and the

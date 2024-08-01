@@ -47,7 +47,6 @@ public class CertificateVerifierBuilder {
 	public CertificateVerifier buildCompleteCopy() {
 		CertificateVerifier copy = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {
-			copy.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 			copy.setAIASource(certificateVerifier.getAIASource());
 			copy.setCrlSource(certificateVerifier.getCrlSource());
 			copy.setOcspSource(certificateVerifier.getOcspSource());
@@ -56,7 +55,6 @@ public class CertificateVerifierBuilder {
 			copy.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			copy.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
-			copy.setExtractPOEFromUntrustedChains(certificateVerifier.isExtractPOEFromUntrustedChains());
 			copy.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			copy.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 
@@ -66,7 +64,6 @@ public class CertificateVerifierBuilder {
 			copy.setAlertOnNoRevocationAfterBestSignatureTime(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime());
 			copy.setAlertOnRevokedCertificate(certificateVerifier.getAlertOnRevokedCertificate());
 			copy.setAlertOnUncoveredPOE(certificateVerifier.getAlertOnUncoveredPOE());
-			copy.setAlertOnExpiredSignature(certificateVerifier.getAlertOnExpiredSignature());
 			copy.setAlertOnExpiredCertificate(certificateVerifier.getAlertOnExpiredCertificate());
 			copy.setAlertOnNotYetValidCertificate(certificateVerifier.getAlertOnNotYetValidCertificate());
 			copy.setAugmentationAlertOnSignatureWithoutCertificates(certificateVerifier.getAugmentationAlertOnSignatureWithoutCertificates());
@@ -84,12 +81,10 @@ public class CertificateVerifierBuilder {
 	public CertificateVerifier buildOfflineAndSilentCopy() {
 		CertificateVerifier offlineCertificateVerifier = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {
-			offlineCertificateVerifier.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 			offlineCertificateVerifier.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 			offlineCertificateVerifier.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			offlineCertificateVerifier.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
-			offlineCertificateVerifier.setExtractPOEFromUntrustedChains(certificateVerifier.isExtractPOEFromUntrustedChains());
 		}
 		// disable alerting
 		offlineCertificateVerifier.setAlertOnInvalidSignature(new SilentOnStatusAlert());
@@ -98,7 +93,6 @@ public class CertificateVerifierBuilder {
 		offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(new SilentOnStatusAlert());

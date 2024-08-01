@@ -50,14 +50,6 @@ public class ReferenceValidation implements Serializable {
 	/** The digest value embedded in reference element */
 	private Digest digest;
 
-	/**
-	 * Name of the reference
-	 *
-	 * @deprecated since DSS 6.1. Please see {@code id} and {@code uri}
-	 */
-	@Deprecated
-	private String name;
-
 	/** The unique identifier of the reference. (E.g. for XAdES : reference Id attribute value) */
 	private String id;
 
@@ -156,28 +148,6 @@ public class ReferenceValidation implements Serializable {
 	 */
 	public void setDigest(Digest digest) {
 		this.digest = digest;
-	}
-
-	/**
-	 * Gets name of the reference
-	 *
-	 * @return {@link String}
-	 * @deprecated since DSS 6.1. Please see {@code #getId} and {@code #getUri} methods
-	 */
-	@Deprecated
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets name of the reference
-	 *
-	 * @param name {@link String}
-	 * @deprecated since DSS 6.1. Please see {@code #setId} and {@code #setUri} methods
-	 */
-	@Deprecated
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**

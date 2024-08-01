@@ -24,9 +24,7 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
-import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
@@ -112,14 +110,6 @@ public class RemoteSignatureParameters implements Serializable {
 	private boolean base64UrlEncodedEtsiUComponents = true;
 
 	/**
-	 * The signature algorithm used to create the signature
-	 *
-	 * @deprecated since DSS 6.1. Please use combination of {@code digestAlgorithm} and {@code encryptionAlgorithm}
-	 */
-	@Deprecated
-	private SignatureAlgorithm signatureAlgorithm;
-
-	/**
 	 * The digest algorithm used on signature creation.
 	 */
 	private DigestAlgorithm digestAlgorithm;
@@ -128,14 +118,6 @@ public class RemoteSignatureParameters implements Serializable {
 	 * The encryption algorithm shall be automatically extracted from the signing token.
 	 */
 	private EncryptionAlgorithm encryptionAlgorithm;
-
-	/**
-	 * The mask generation function
-	 *
-	 * @deprecated since DSS 6.1. Please use {@code encryptionAlgorithm} to indicate MGF1 (use EncryptionAlgorithm.RSASSA_PSS)
-	 */
-	@Deprecated
-	private MaskGenerationFunction maskGenerationFunction;
 
 	/**
 	 * XAdES: The digest algorithm used to hash ds:Reference.
@@ -161,14 +143,6 @@ public class RemoteSignatureParameters implements Serializable {
 	 * The object represents the parameters related to the archive timestamp (Baseline-LTA)
 	 */
 	private RemoteTimestampParameters archiveTimestampParameters;
-
-	/**
-	 * This variable indicates if it is possible to sign with an expired certificate.
-	 *
-	 * @deprecated since DSS 6.1. Please see {@code CertificateVerifier#alertOnExpiredCertificate}
-	 */
-	@Deprecated
-	private boolean signWithExpiredCertificate = false;
 
 	/**
 	 * This variable indicates if it is possible to generate ToBeSigned data without
@@ -460,28 +434,6 @@ public class RemoteSignatureParameters implements Serializable {
 	}
 
 	/**
-	 * Gets the signature algorithm.
-	 *
-	 * @return the signature algorithm
-	 * @deprecated since DSS 6.1. Please use {@code SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm())}
-	 */
-	@Deprecated
-	public SignatureAlgorithm getSignatureAlgorithm() {
-		return signatureAlgorithm;
-	}
-
-	/**
-	 * Sets the signature algorithm
-	 *
-	 * @param signatureAlgorithm {@link SignatureAlgorithm}
-	 * @deprecated since DSS 6.1. Please use {@code #setDigestAlgorithm} and {@code #setEncryptionAlgorithm} methods
-	 */
-	@Deprecated
-	public void setSignatureAlgorithm(SignatureAlgorithm signatureAlgorithm) {
-		this.signatureAlgorithm = signatureAlgorithm;
-	}
-
-	/**
 	 * Get the digest algorithm
 	 * 
 	 * @return the digest algorithm
@@ -518,30 +470,6 @@ public class RemoteSignatureParameters implements Serializable {
 	 */
 	public void setEncryptionAlgorithm(final EncryptionAlgorithm encryptionAlgorithm) {
 		this.encryptionAlgorithm = encryptionAlgorithm;
-	}
-	
-	/**
-	 * Get the mask generation function
-	 * 
-	 * @return the mask generation function.
-	 * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} to differentiate between
-	 *             MGF1 (EncryptionAlgorithm.RSASSA_PSS) and none MGF (any other result)
-	 */
-	@Deprecated
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		return maskGenerationFunction;
-	}
-
-	/**
-	 * Sets the mask generation function of the signature algorithm, when applicable
-	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method to specify mask generation
-	 *             function using EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1
-	 */
-	@Deprecated
-	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		this.maskGenerationFunction = maskGenerationFunction;
 	}
 	
 	/**
@@ -628,29 +556,6 @@ public class RemoteSignatureParameters implements Serializable {
 	}
 
 	/**
-	 * Indicates if it is possible to sign with an expired certificate. The default value is false.
-	 *
-	 * @return true if signature with an expired certificate is allowed
-	 * @deprecated since DSS 6.1. See {@code CertificateVerifier#setAlertOnExpiredCertificate}
-	 */
-	@Deprecated
-	public boolean isSignWithExpiredCertificate() {
-		return signWithExpiredCertificate;
-	}
-
-	/**
-	 * Allows to change the default behavior regarding the use of an expired certificate.
-	 *
-	 * @param signWithExpiredCertificate
-	 *            true if signature with an expired certificate is allowed
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier#setAlertOnExpiredCertificate} method instead
-	 */
-	@Deprecated
-	public void setSignWithExpiredCertificate(final boolean signWithExpiredCertificate) {
-		this.signWithExpiredCertificate = signWithExpiredCertificate;
-	}
-
-	/**
 	 * Indicates if it is possible to generate ToBeSigned data without the signing certificate.
 	 * The default values is false.
 	 *
@@ -709,113 +614,89 @@ public class RemoteSignatureParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "RemoteSignatureParameters [signWithExpiredCertificate=" + signWithExpiredCertificate + ", signatureLevel=" + signatureLevel + ", generateTBSWithoutCertificate="
-				+ generateTBSWithoutCertificate + ", signaturePackaging=" + signaturePackaging + ", encryptionAlgorithm=" + encryptionAlgorithm + ", digestAlgorithm="
-				+ digestAlgorithm + ", referenceDigestAlgorithm=" + referenceDigestAlgorithm + ", bLevelParams="
-				+ bLevelParams + ", contentTimestampParameters=" + contentTimestampParameters + ", signatureTimestampParameters="
-				+ signatureTimestampParameters + ", archiveTimestampParameters=" + archiveTimestampParameters + ", imageParameters=" + imageParameters  + "]";
+		return "RemoteSignatureParameters{" +
+				"signingCertificate=" + signingCertificate +
+				", certificateChain=" + certificateChain +
+				", detachedContents=" + detachedContents +
+				", asicContainerType=" + asicContainerType +
+				", signatureLevel=" + signatureLevel +
+				", bLevelParams=" + bLevelParams +
+				", signaturePackaging=" + signaturePackaging +
+				", embedXML=" + embedXML +
+				", manifestSignature=" + manifestSignature +
+				", jwsSerializationType=" + jwsSerializationType +
+				", sigDMechanism=" + sigDMechanism +
+				", base64UrlEncodedPayload=" + base64UrlEncodedPayload +
+				", base64UrlEncodedEtsiUComponents=" + base64UrlEncodedEtsiUComponents +
+				", digestAlgorithm=" + digestAlgorithm +
+				", encryptionAlgorithm=" + encryptionAlgorithm +
+				", referenceDigestAlgorithm=" + referenceDigestAlgorithm +
+				", contentTimestamps=" + contentTimestamps +
+				", contentTimestampParameters=" + contentTimestampParameters +
+				", signatureTimestampParameters=" + signatureTimestampParameters +
+				", archiveTimestampParameters=" + archiveTimestampParameters +
+				", generateTBSWithoutCertificate=" + generateTBSWithoutCertificate +
+				", imageParameters=" + imageParameters +
+				", signatureIdToCounterSign='" + signatureIdToCounterSign + '\'' +
+				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		RemoteSignatureParameters that = (RemoteSignatureParameters) o;
+		return embedXML == that.embedXML && manifestSignature == that.manifestSignature
+				&& base64UrlEncodedPayload == that.base64UrlEncodedPayload
+				&& base64UrlEncodedEtsiUComponents == that.base64UrlEncodedEtsiUComponents
+				&& generateTBSWithoutCertificate == that.generateTBSWithoutCertificate
+				&& Objects.equals(signingCertificate, that.signingCertificate)
+				&& Objects.equals(certificateChain, that.certificateChain)
+				&& Objects.equals(detachedContents, that.detachedContents)
+				&& asicContainerType == that.asicContainerType
+				&& signatureLevel == that.signatureLevel
+				&& Objects.equals(bLevelParams, that.bLevelParams)
+				&& signaturePackaging == that.signaturePackaging
+				&& jwsSerializationType == that.jwsSerializationType
+				&& sigDMechanism == that.sigDMechanism
+				&& digestAlgorithm == that.digestAlgorithm
+				&& encryptionAlgorithm == that.encryptionAlgorithm
+				&& referenceDigestAlgorithm == that.referenceDigestAlgorithm
+				&& Objects.equals(contentTimestamps, that.contentTimestamps)
+				&& Objects.equals(contentTimestampParameters, that.contentTimestampParameters)
+				&& Objects.equals(signatureTimestampParameters, that.signatureTimestampParameters)
+				&& Objects.equals(archiveTimestampParameters, that.archiveTimestampParameters)
+				&& Objects.equals(imageParameters, that.imageParameters)
+				&& Objects.equals(signatureIdToCounterSign, that.signatureIdToCounterSign);
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((archiveTimestampParameters == null) ? 0 : archiveTimestampParameters.hashCode());
-		result = prime * result + ((asicContainerType == null) ? 0 : asicContainerType.hashCode());
-		result = prime * result + ((bLevelParams == null) ? 0 : bLevelParams.hashCode());
-		result = prime * result + ((certificateChain == null) ? 0 : certificateChain.hashCode());
-		result = prime * result + ((contentTimestampParameters == null) ? 0 : contentTimestampParameters.hashCode());
-		result = prime * result + ((contentTimestamps == null) ? 0 : contentTimestamps.hashCode());
-		result = prime * result + ((detachedContents == null) ? 0 : detachedContents.hashCode());
-		result = prime * result + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
-		result = prime * result + ((encryptionAlgorithm == null) ? 0 : encryptionAlgorithm.hashCode());
-		result = prime * result + (generateTBSWithoutCertificate ? 1231 : 1237);
-		result = prime * result + ((imageParameters == null) ? 0 : imageParameters.hashCode());
-		result = prime * result + (embedXML ? 1231 : 1237);
-		result = prime * result + (manifestSignature ? 1231 : 1237);
-		result = prime * result + ((jwsSerializationType == null) ? 0 : jwsSerializationType.hashCode());
-		result = prime * result + ((referenceDigestAlgorithm == null) ? 0 : referenceDigestAlgorithm.hashCode());
-		result = prime * result + (signWithExpiredCertificate ? 1231 : 1237);
-		result = prime * result + ((signatureLevel == null) ? 0 : signatureLevel.hashCode());
-		result = prime * result + ((signaturePackaging == null) ? 0 : signaturePackaging.hashCode());
-		result = prime * result + ((signatureTimestampParameters == null) ? 0 : signatureTimestampParameters.hashCode());
-		result = prime * result + ((signingCertificate == null) ? 0 : signingCertificate.hashCode());
+		int result = Objects.hashCode(signingCertificate);
+		result = 31 * result + Objects.hashCode(certificateChain);
+		result = 31 * result + Objects.hashCode(detachedContents);
+		result = 31 * result + Objects.hashCode(asicContainerType);
+		result = 31 * result + Objects.hashCode(signatureLevel);
+		result = 31 * result + Objects.hashCode(bLevelParams);
+		result = 31 * result + Objects.hashCode(signaturePackaging);
+		result = 31 * result + Boolean.hashCode(embedXML);
+		result = 31 * result + Boolean.hashCode(manifestSignature);
+		result = 31 * result + Objects.hashCode(jwsSerializationType);
+		result = 31 * result + Objects.hashCode(sigDMechanism);
+		result = 31 * result + Boolean.hashCode(base64UrlEncodedPayload);
+		result = 31 * result + Boolean.hashCode(base64UrlEncodedEtsiUComponents);
+		result = 31 * result + Objects.hashCode(digestAlgorithm);
+		result = 31 * result + Objects.hashCode(encryptionAlgorithm);
+		result = 31 * result + Objects.hashCode(referenceDigestAlgorithm);
+		result = 31 * result + Objects.hashCode(contentTimestamps);
+		result = 31 * result + Objects.hashCode(contentTimestampParameters);
+		result = 31 * result + Objects.hashCode(signatureTimestampParameters);
+		result = 31 * result + Objects.hashCode(archiveTimestampParameters);
+		result = 31 * result + Boolean.hashCode(generateTBSWithoutCertificate);
+		result = 31 * result + Objects.hashCode(imageParameters);
+		result = 31 * result + Objects.hashCode(signatureIdToCounterSign);
 		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		RemoteSignatureParameters other = (RemoteSignatureParameters) obj;
-		if (!Objects.equals(archiveTimestampParameters, other.archiveTimestampParameters)) {
-			return false;
-		}
-		if (asicContainerType != other.asicContainerType) {
-			return false;
-		}
-		if (!Objects.equals(bLevelParams, other.bLevelParams)) {
-			return false;
-		}
-		if (!Objects.equals(certificateChain, other.certificateChain)) {
-			return false;
-		}
-		if (!Objects.equals(contentTimestampParameters, other.contentTimestampParameters)) {
-			return false;
-		}
-		if (!Objects.equals(contentTimestamps, other.contentTimestamps)) {
-			return false;
-		}
-		if (!Objects.equals(detachedContents, other.detachedContents)) {
-			return false;
-		}
-		if (digestAlgorithm != other.digestAlgorithm) {
-			return false;
-		}
-		if (encryptionAlgorithm != other.encryptionAlgorithm) {
-			return false;
-		}
-		if (generateTBSWithoutCertificate != other.generateTBSWithoutCertificate) {
-			return false;
-		}
-		if (!Objects.equals(imageParameters, other.imageParameters)) {
-			return false;
-		}
-		if (embedXML != other.embedXML) {
-			return false;
-		}
-		if (manifestSignature != other.manifestSignature) {
-			return false;
-		}
-		if (jwsSerializationType != other.jwsSerializationType) {
-			return false;
-		}
-		if (referenceDigestAlgorithm != other.referenceDigestAlgorithm) {
-			return false;
-		}
-		if (signWithExpiredCertificate != other.signWithExpiredCertificate) {
-			return false;
-		}
-		if (signatureLevel != other.signatureLevel) {
-			return false;
-		}
-		if (signaturePackaging != other.signaturePackaging) {
-			return false;
-		}
-		if (!Objects.equals(signatureTimestampParameters, other.signatureTimestampParameters)) {
-			return false;
-		}
-		if (!Objects.equals(signingCertificate, other.signingCertificate)) {
-			return false;
-		}
-		return true;
 	}
 
 }

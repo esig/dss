@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.ws.server.signing.soap.client;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
@@ -81,29 +80,6 @@ public interface SoapSignatureTokenConnection extends Serializable {
 			@WebParam(name = "alias") String alias);
 
 	/**
-	 * This method signs the {@code toBeSigned} data with the digest
-	 * {@code digestAlgorithm}, the mask {@code mgf} and the given {@code alias}.
-	 * 
-	 * @param toBeSigned
-	 *                        The data that need to be signed
-	 * @param digestAlgorithm
-	 *                        The digest algorithm to be used before signing
-	 * @param mgf
-	 *                        the mask generation function
-	 * @param alias
-	 *                        The key alias to be used
-	 * @return The array of bytes representing the signature value
-	 * @deprecated since DSS 6.1. Please use {@code #sign(toBeSigned, signatureAlgorithm, alias)} method instead.
-	 *             Specify the use of mask generation function with a signature parameter,
-	 *             using RSA for none MGF or RSASSA-PSS for MGF1.
-	 */
-	@WebMethod(operationName = "signWithMask")
-	@WebResult(name = "response")
-	@Deprecated
-	SignatureValueDTO sign(@WebParam(name = "toBeSigned") ToBeSignedDTO toBeSigned, @WebParam(name = "digestAlgorithm") DigestAlgorithm digestAlgorithm,
-			@WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf, @WebParam(name = "alias") String alias);
-
-	/**
 	 * This method signs the {@code toBeSigned} data with the
 	 * {@code signatureAlgorithm} and the given {@code alias}.
 	 *
@@ -135,29 +111,6 @@ public interface SoapSignatureTokenConnection extends Serializable {
 	@WebMethod(operationName = "signDigest")
 	@WebResult(name = "response")
 	SignatureValueDTO signDigest(@WebParam(name = "digest") DigestDTO digest, @WebParam(name = "alias") String alias);
-
-	/**
-	 * 
-	 * This method signs the {@code digest} data with a mask {@code mgf} and the
-	 * given {@code alias}.
-	 * 
-	 * @param digest
-	 *               The digested data that need to be signed
-	 * @param mgf
-	 *               the mask generation function
-	 * @param alias
-	 *               The key alias to be used
-	 * @return the signature value representation with the used algorithm and the
-	 *         binary value
-	 * @deprecated since DSS 6.1. Please use {@code #signDigest(digest, signatureAlgorithm, alias)} method instead.
-	 *             Specify the use of mask generation function with a signature parameter,
-	 *             using RSA for none MGF or RSASSA-PSS for MGF1.
-	 */
-	@WebMethod(operationName = "signDigestWithMask")
-	@WebResult(name = "response")
-	@Deprecated
-	SignatureValueDTO signDigest(@WebParam(name = "digest") DigestDTO digest, @WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf,
-			@WebParam(name = "alias") String alias);
 
 	/**
 	 *

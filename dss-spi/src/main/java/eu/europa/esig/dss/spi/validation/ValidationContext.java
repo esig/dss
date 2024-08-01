@@ -50,16 +50,6 @@ public interface ValidationContext {
 	void initialize(final CertificateVerifier certificateVerifier);
 
 	/**
-	 * This function sets the validation time.
-	 *
-	 * @param currentTime
-	 *            the current {@code Date}
-	 * @deprecated since DSS 6.1. Please use constructor {@code new SignatureValidationContext(validationTime)} instead
-	 */
-	@Deprecated
-	void setCurrentTime(final Date currentTime);
-
-	/**
 	 * Gets the current validation time.
 	 *
 	 * @return {@link Date}
@@ -202,19 +192,6 @@ public interface ValidationContext {
 	boolean checkCertificateNotRevoked(CertificateToken certificateToken);
 
 	/**
-	 * This method allows to verify if signature certificates are not revoked
-	 *
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
-	 *
-	 * @param signature {@code AdvancedSignature} signature to be checked
-	 * @return true if all certificates are valid
-	 * @deprecated since DSS 6.1. Please use {@code #checkAllSignatureCertificatesNotRevoked} instead.
-	 */
-	@Deprecated
-	boolean checkCertificatesNotRevoked(AdvancedSignature signature);
-
-	/**
 	 * This method validates recursively whether none of the signature's certificate chain certificates are not revoked
 	 * <p>
 	 * Additionally, an alert can be handled
@@ -223,21 +200,6 @@ public interface ValidationContext {
 	 * @return true if all certificates are valid
 	 */
 	boolean checkAllSignatureCertificatesNotRevoked();
-
-	/**
-	 * This method allows to verify if there is at least one revocation data present
-	 * after the earliest available timestamp token producing time
-	 * 
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnNoRevocationAfterBestSignatureTime(eu.europa.esig.dss.alert.StatusAlert)}
-	 * 
-	 * @param signature {@code AdvancedSignature} signature to be checked
-	 * @return true if the signing certificate is covered with a updated revocation
-	 *         data (after signature-timestamp production time)
-	 * @deprecated since DSS 6.1. Please use {@code #checkAllSignatureCertificateHaveFreshRevocationData} method instead
-	 */
-	@Deprecated
-	boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature);
 
 	/**
 	 * This method verifies whether for all signature's certificate chain certificates there is a fresh revocation data,
@@ -250,19 +212,6 @@ public interface ValidationContext {
 	 *         (after signature-time-stamp production time)
 	 */
 	boolean checkAllSignatureCertificateHaveFreshRevocationData();
-
-	/**
-	 * This method verifies if the signing certificate has not been expired yet or has a still valid timestamp
-	 *
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnExpiredCertificate(eu.europa.esig.dss.alert.StatusAlert)}
-	 *
-	 * @param signature {@code AdvancedSignature} signature to be verified
-	 * @return true if the signing certificate or its POE(s) not yet expired, false otherwise
-	 * @deprecated since DSS 6.1. Please use {@code #checkAllSignaturesNotExpired} method instead
-	 */
-	@Deprecated
-	boolean checkSignatureNotExpired(AdvancedSignature signature);
 
 	/**
 	 * This method verifies whether all signatures added to the ValidationContext are not yet expired

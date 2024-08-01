@@ -39,7 +39,6 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -228,24 +227,6 @@ public class DiagnosticData {
 	public EncryptionAlgorithm getSignatureEncryptionAlgorithm(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
 		return signature.getEncryptionAlgorithm();
-	}
-
-	/**
-	 * This method returns the {@code MaskGenerationFunction} for the given signature.
-	 *
-	 * @param signatureId
-	 *            The identifier of the signature, for which the algorithm is sought.
-	 * @return The {@code MaskGenerationFunction} for the given signature
-	 * @deprecated since DSS 6.1. Please use {@code #getSignatureEncryptionAlgorithm} method to determine
-	 *             the mask generation function (i.e. RSA for none MGF, RSASSA-PSS for MGF1)
-	 */
-	@Deprecated
-	public MaskGenerationFunction getSignatureMaskGenerationFunction(String signatureId) {
-		EncryptionAlgorithm encryptionAlgorithm = getSignatureEncryptionAlgorithm(signatureId);
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			return MaskGenerationFunction.MGF1;
-		}
-		return null;
 	}
 
 	/**

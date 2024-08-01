@@ -180,15 +180,6 @@ public class SignatureValidationContext implements ValidationContext {
 	private boolean checkRevocationForUntrustedChains;
 
 	/**
-	 * This variable indicates whether a POE should be extracted from timestamps
-	 * with certificate chains from untrusted sources.
-	 *
-	 * @deprecated since DSS 6.1. To be removed.
-	 */
-	@Deprecated
-	private boolean extractPOEFromUntrustedChains;
-
-	/**
 	 * This is the time at what the validation is carried out.
 	 */
 	protected Date currentTime;
@@ -224,7 +215,6 @@ public class SignatureValidationContext implements ValidationContext {
 		this.adjunctCertSources = certificateVerifier.getAdjunctCertSources();
 		this.trustedCertSources = certificateVerifier.getTrustedCertSources();
 		this.checkRevocationForUntrustedChains = certificateVerifier.isCheckRevocationForUntrustedChains();
-		this.extractPOEFromUntrustedChains = certificateVerifier.isExtractPOEFromUntrustedChains();
 		this.revocationDataLoadingStrategyFactory = certificateVerifier.getRevocationDataLoadingStrategyFactory();
 		this.revocationDataVerifier = certificateVerifier.getRevocationDataVerifier();
 		this.revocationFallback = certificateVerifier.isRevocationFallback();
@@ -250,7 +240,6 @@ public class SignatureValidationContext implements ValidationContext {
 	private TimestampTokenVerifier getTimestampTokenVerifier() {
 		if (timestampTokenVerifier == null) {
 			timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
-			timestampTokenVerifier.setAcceptUntrustedCertificateChains(extractPOEFromUntrustedChains);
 		}
 		if (timestampTokenVerifier.getTrustedCertificateSource() == null) {
 			timestampTokenVerifier.setTrustedCertificateSource(trustedCertSources);
@@ -404,13 +393,6 @@ public class SignatureValidationContext implements ValidationContext {
 	@Override
 	public Date getCurrentTime() {
 		return currentTime;
-	}
-
-	@Override
-	@Deprecated
-	public void setCurrentTime(final Date currentTime) {
-		Objects.requireNonNull(currentTime);
-		this.currentTime = currentTime;
 	}
 
 	/**
@@ -1040,6 +1022,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean checkAllRequiredRevocationDataPresent() {
+		if (certificateVerifier.getAlertOnMissingRevocationData() == null) {
+			LOG.debug("No alertOnMissingRevocationData is defined. Skip the check and return a success indication.");
+			return true;
+		}
+
 		TokenStatus status = new TokenStatus();
 		Map<CertificateToken, List<CertificateToken>> orderedCertificateChains = getOrderedCertificateChains();
 		for (List<CertificateToken> orderedCertChain : orderedCertificateChains.values()) {
@@ -1138,6 +1125,11 @@ public class SignatureValidationContext implements ValidationContext {
 
 	@Override
 	public boolean checkAllTimestampsValid() {
+		if (certificateVerifier.getAlertOnInvalidTimestamp() == null) {
+			LOG.debug("No alertOnInvalidTimestamp is defined. Skip the check and return a success indication.");
+			return true;
+		}
+
 		TokenStatus status = new TokenStatus();
 		for (TimestampToken timestampToken : processedTimestamps) {
 			if (!timestampToken.isSignatureIntact() || !timestampToken.isMessageImprintDataFound() ||
@@ -1158,18 +1150,6 @@ public class SignatureValidationContext implements ValidationContext {
 		TokenStatus status = new TokenStatus();
 		checkCertificateIsNotRevokedRecursively(certificateToken, poeTimes.get(certificateToken.getDSSIdAsString()), status);
 		boolean success = status.isEmpty();
-		if (!success) {
-			status.setMessage("Revoked/Suspended certificate(s) detected.");
-			certificateVerifier.getAlertOnRevokedCertificate().alert(status);
-		}
-		return success;
-	}
-
-	@Override
-	@Deprecated
-	public boolean checkCertificatesNotRevoked(AdvancedSignature signature) {
-		TokenStatus status = new TokenStatus();
-		boolean success = checkSignatureCertificatesNotRevoked(signature, status);
 		if (!success) {
 			status.setMessage("Revoked/Suspended certificate(s) detected.");
 			certificateVerifier.getAlertOnRevokedCertificate().alert(status);
@@ -1388,18 +1368,6 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	@Override
-	@Deprecated
-	public boolean checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(AdvancedSignature signature) {
-		RevocationFreshnessStatus status = new RevocationFreshnessStatus();
-		boolean success = checkAtLeastOneRevocationDataPresentAfterBestSignatureTime(signature, status);
-		if (!success) {
-			status.setMessage("Fresh revocation data is missing for one or more certificate(s).");
-			certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime().alert(status);
-		}
-		return success;
-	}
-
-	@Override
 	public boolean checkAllSignatureCertificateHaveFreshRevocationData() {
 		if (Utils.isCollectionEmpty(processedSignatures)) {
 			return true;
@@ -1440,18 +1408,6 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		return earliestDate;
-	}
-
-	@Override
-	@Deprecated
-	public boolean checkSignatureNotExpired(AdvancedSignature signature) {
-		SignatureStatus status = new SignatureStatus();
-		boolean success = checkSignatureNotExpired(signature, status);
-		if (!success) {
-			status.setMessage("Expired signature found.");
-			certificateVerifier.getAlertOnExpiredCertificate().alert(status);
-		}
-		return success;
 	}
 
 	@Override

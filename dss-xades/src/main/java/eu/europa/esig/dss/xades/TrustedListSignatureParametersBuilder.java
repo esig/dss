@@ -23,7 +23,6 @@ package eu.europa.esig.dss.xades;
 import eu.europa.esig.dss.signature.AbstractSignatureParametersBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
@@ -114,12 +113,6 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	@Override
 	public TrustedListSignatureParametersBuilder setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
 		return (TrustedListSignatureParametersBuilder) super.setEncryptionAlgorithm(encryptionAlgorithm);
-	}
-
-	@Override
-	@Deprecated
-	public TrustedListSignatureParametersBuilder setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		return (TrustedListSignatureParametersBuilder) super.setMaskGenerationFunction(maskGenerationFunction);
 	}
 
 	@Override

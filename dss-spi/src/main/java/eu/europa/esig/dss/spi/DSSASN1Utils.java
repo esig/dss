@@ -72,13 +72,11 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.OCSPException;
 import org.bouncycastle.cert.ocsp.OCSPResp;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.crypto.signers.PlainDSAEncoding;
 import org.bouncycastle.crypto.signers.StandardDSAEncoding;
-import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.BigIntegers;
 import org.slf4j.Logger;
@@ -100,19 +98,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
-import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_contentTimestamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_escTimeStamp;
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTimeStampToken;
 
 /**
  * Utility class that contains some ASN1 related method.
@@ -122,24 +113,8 @@ public final class DSSASN1Utils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSSASN1Utils.class);
 
-	/**
-	 * Contains a list of all CAdES timestamp OIDs
-	 *
-	 * @deprecated since DSS 6.1. Please see {@code CMSUtils#timestampOids} instead
-	 */
-	@Deprecated
-	private static List<ASN1ObjectIdentifier> timestampOids; // TODO : to be removed from DSSASN1Utils in 6.2
-
 	static {
 		Security.addProvider(DSSSecurityProvider.getSecurityProvider());
-
-		timestampOids = new ArrayList<>();
-		timestampOids.add(id_aa_ets_contentTimestamp);
-		timestampOids.add(id_aa_ets_archiveTimestampV2);
-		timestampOids.add(id_aa_ets_archiveTimestampV3);
-		timestampOids.add(id_aa_ets_certCRLTimestamp);
-		timestampOids.add(id_aa_ets_escTimeStamp);
-		timestampOids.add(id_aa_signatureTimeStampToken);
 	}
 
 	/**
@@ -463,63 +438,6 @@ public final class DSSASN1Utils {
 		 */
 		final ASN1ObjectIdentifier asn1ObjectIdentifier = new ASN1ObjectIdentifier(digestAlgorithm.getOid());
 		return new AlgorithmIdentifier(asn1ObjectIdentifier, DERNull.INSTANCE);
-	}
-
-	/**
-	 * Extract the Unsigned Attribute Archive Timestamp Cert Hash Index from a timestampToken
-	 *
-	 * @param atsHashIndexValue {@link ASN1Sequence}
-	 * @return {@link ASN1Sequence}
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getCertificatesHashIndex} method instead
-	 */
-	@Deprecated
-	public static ASN1Sequence getCertificatesHashIndex(final ASN1Sequence atsHashIndexValue) {
-		if (atsHashIndexValue != null) {
-			int certificateIndex = 0;
-			if (atsHashIndexValue.size() > 3) {
-				certificateIndex++;
-			}
-			return (ASN1Sequence) atsHashIndexValue.getObjectAt(certificateIndex).toASN1Primitive();
-		}
-		return null;
-	}
-
-	/**
-	 * Extract the Unsigned Attribute Archive Timestamp Crl Hash Index from a timestampToken
-	 *
-	 * @param atsHashIndexValue {@link ASN1Sequence}
-	 * @return {@link ASN1Sequence}
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getCRLHashIndex} method instead
-	 */
-	@Deprecated
-	public static ASN1Sequence getCRLHashIndex(final ASN1Sequence atsHashIndexValue) {
-		if (atsHashIndexValue != null) {
-			int crlIndex = 1;
-			if (atsHashIndexValue.size() > 3) {
-				crlIndex++;
-			}
-			return (ASN1Sequence) atsHashIndexValue.getObjectAt(crlIndex).toASN1Primitive();
-		}
-		return null;
-	}
-
-	/**
-	 * Extract the Unsigned Attribute Archive Timestamp Attribute Hash Index from a timestampToken
-	 *
-	 * @param atsHashIndexValue {@link ASN1Sequence}
-	 * @return {@link ASN1Sequence}
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getUnsignedAttributesHashIndex} method instead
-	 */
-	@Deprecated
-	public static ASN1Sequence getUnsignedAttributesHashIndex(final ASN1Sequence atsHashIndexValue) {
-		if (atsHashIndexValue != null) {
-			int unsignedAttributesIndex = 2;
-			if (atsHashIndexValue.size() > 3) {
-				unsignedAttributesIndex++;
-			}
-			return (ASN1Sequence) atsHashIndexValue.getObjectAt(unsignedAttributesIndex).toASN1Primitive();
-		}
-		return null;
 	}
 
 	/**
@@ -862,33 +780,6 @@ public final class DSSASN1Utils {
 	}
 
 	/**
-	 * Checks if the {@code attributeTable} is empty
-	 *
-	 * @param attributeTable {@link AttributeTable}
-	 * @return TRUE if the attribute table is empty, FALSE otherwise
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#isEmpty} method instead
-	 */
-	@Deprecated
-	public static boolean isEmpty(AttributeTable attributeTable) {
-		return (attributeTable == null) || (attributeTable.size() == 0);
-	}
-
-	/**
-	 * Returns the current {@code originalAttributeTable} if instantiated, an empty {@code AttributeTable} if null
-	 *
-	 * @param originalAttributeTable {@link AttributeTable}
-	 * @return {@link AttributeTable}
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#emptyIfNull} method instead
-	 */
-	@Deprecated
-	public static AttributeTable emptyIfNull(AttributeTable originalAttributeTable) {
-		if (originalAttributeTable != null) {
-			return originalAttributeTable;
-		}
-		return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
-	}
-
-	/**
 	 * Extracts all extended key usages for the certificate token
 	 *
 	 * @param certToken {@link CertificateToken}
@@ -953,154 +844,6 @@ public final class DSSASN1Utils {
 			return null;
 		}
 	}
-
-	/**
-	 * Returns ats-hash-index table, with a related version present in from timestamp's unsigned properties
-	 * 
-	 * @param timestampUnsignedAttributes {@link AttributeTable} unsigned properties of the timestamp
-	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute with a present version
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getAtsHashIndex} method instead
-	 */
-	@Deprecated
-	public static ASN1Sequence getAtsHashIndex(AttributeTable timestampUnsignedAttributes) {
-		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = getAtsHashIndexVersionIdentifier(timestampUnsignedAttributes);
-		return getAtsHashIndexByVersion(timestampUnsignedAttributes, atsHashIndexVersionIdentifier);
-	}
-
-	/**
-	 * Returns ats-hash-index table, with a specified version present in from timestamp's unsigned properties
-	 * 
-	 * @param timestampUnsignedAttributes {@link AttributeTable} unsigned properties of the timestamp
-	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} identifier of ats-hash-index table to get
-	 * @return the content of SignedAttribute: ATS-hash-index unsigned attribute with a requested version if present
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getAtsHashIndexByVersion} method instead
-	 */
-	@Deprecated
-	public static ASN1Sequence getAtsHashIndexByVersion(AttributeTable timestampUnsignedAttributes, 
-			ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
-		if (timestampUnsignedAttributes != null && atsHashIndexVersionIdentifier != null) {
-			final Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(timestampUnsignedAttributes, atsHashIndexVersionIdentifier);
-			if (Utils.arraySize(attributes) == 1) {
-				final Attribute atsHashIndexAttribute = attributes[0];
-				if (atsHashIndexAttribute != null) {
-					final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
-					if (attrValues != null && attrValues.size() == 1) {
-						return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
-					}
-				}
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns {@code ASN1ObjectIdentifier} of the found AtsHashIndex
-	 * @param timestampUnsignedAttributes {@link AttributeTable} of the timestamp's unsignedAttributes
-	 * @return {@link ASN1ObjectIdentifier} of the AtsHashIndex element version
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getAtsHashIndexVersionIdentifier} method instead
-	 */
-	@Deprecated
-	public static ASN1ObjectIdentifier getAtsHashIndexVersionIdentifier(AttributeTable timestampUnsignedAttributes) {
-		if (timestampUnsignedAttributes != null) {
-			Attributes attributes = timestampUnsignedAttributes.toASN1Structure();
-			for (Attribute attribute : attributes.getAttributes()) {
-				ASN1ObjectIdentifier attrType = attribute.getAttrType();
-				if (id_aa_ATSHashIndex.equals(attrType) || id_aa_ATSHashIndexV2.equals(attrType) || id_aa_ATSHashIndexV3.equals(attrType)) {
-					LOG.debug("Unsigned attribute of type [{}] found in the timestamp.", attrType);
-					return attrType;
-				}
-			}
-			LOG.warn("The timestamp unsignedAttributes does not contain ATSHashIndex!");
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns octets from the given attribute by defined atsh-hash-index type
-	 * 
-	 * @param attribute                     {@link Attribute} to get byte array from
-	 * @param atsHashIndexVersionIdentifier {@link ASN1ObjectIdentifier} to specify
-	 *                                      rules
-	 * @return byte array
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getOctetStringForAtsHashIndex} method instead
-	 */
-	@Deprecated
-	public static List<byte[]> getOctetStringForAtsHashIndex(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier) {
-		/*
-		 *  id_aa_ATSHashIndexV3 (EN 319 122-1 v1.1.1) -> Each one shall contain the hash
-		 *  value of the octets resulting from concatenating the Attribute.attrType field and one of the instances of
-		 *  AttributeValue within the Attribute.attrValues within the unsignedAttrs field. One concatenation
-		 *  operation shall be performed as indicated above, and the hash value of the obtained result included in
-		 *  unsignedAttrsHashIndex
-		 */
-		if (id_aa_ATSHashIndexV3.equals(atsHashIndexVersionIdentifier)) {
-			return getATSHashIndexV3OctetString(attribute.getAttrType(), attribute.getAttrValues());
-		} else {
-			/*
-			 * id_aa_ATSHashIndex (TS 101 733 v2.2.1) and id_aa_ATSHashIndexV2 (EN 319 122-1 v1.0.0) ->
-			 * The field unsignedAttrsHashIndex shall be a sequence of octet strings. Each one shall contain the hash value of
-			 * one instance of Attribute within the unsignedAttrs field of the SignerInfo.
-			 */
-			return Collections.singletonList(getDEREncoded(attribute));
-		}
-	}
-
-	/**
-	 * Returns octets from the given attribute for ATS-Hash-Index-v3 table
-	 * 
-	 * @param attributeIdentifier {@link ASN1ObjectIdentifier} of the corresponding
-	 *                            Attribute
-	 * @param attributeValues     {@link ASN1Set} of the corresponding Attribute
-	 * @return byte array representing an octet string
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getATSHashIndexV3OctetString} method instead
-	 */
-	@Deprecated
-	public static List<byte[]> getATSHashIndexV3OctetString(ASN1ObjectIdentifier attributeIdentifier,
-			ASN1Set attributeValues) {
-		List<byte[]> octets = new ArrayList<>();
-		byte[] attrType = getDEREncoded(attributeIdentifier);
-		for (ASN1Encodable asn1Encodable : attributeValues.toArray()) {
-			octets.add(Utils.concat(attrType, getDEREncoded(asn1Encodable)));
-		}
-		return octets;
-	}
-	
-	/**
-	 * Returns {@link ASN1Encodable} for a given {@code oid} found in the {@code unsignedAttributes}
-	 *
-	 * @param attributeTable {@link AttributeTable}
-	 * @param oid target {@link ASN1ObjectIdentifier}
-	 * @return {@link ASN1Encodable}
-	 * @deprecated since DSS 6.1. Please use {@code DSSASN1Utils.getAsn1Attributes(attributeTable, oid)}
-	 */
-	@Deprecated
-	public static ASN1Encodable getAsn1Encodable(AttributeTable attributeTable, ASN1ObjectIdentifier oid) {
-		Attribute[] attributes = getAsn1Attributes(attributeTable, oid);
-		if (Utils.isArrayNotEmpty(attributes)) {
-			ASN1Encodable[] attributeValues = attributes[0].getAttributeValues();
-			if (Utils.isArrayNotEmpty(attributeValues)) {
-				return attributeValues[0];
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns an Attribute values for a given {@code oid} found in the {@code unsignedAttributes}
-	 *
-	 * @param attributeTable {@link AttributeTable}
-	 * @param oid target {@link ASN1ObjectIdentifier}
-	 * @return {@link ASN1Set}
-	 * @deprecated since DSS 6.1. Please use {@code DSSASN1Utils.getAsn1Attributes(attributeTable, oid)}
-	 */
-	@Deprecated
-	public static ASN1Set getAsn1AttributeSet(AttributeTable attributeTable, ASN1ObjectIdentifier oid) {
-		Attribute[] attributes = getAsn1Attributes(attributeTable, oid);
-		if (Utils.isArrayNotEmpty(attributes)) {
-			return attributes[0].getAttrValues();
-		}
-		return null;
-	}
 	
 	/**
 	 * Returns an array of {@link Attribute}s for a given {@code oid} found in the {@code attributeTable}
@@ -1116,122 +859,6 @@ public final class DSSASN1Utils {
 		}
 		Attributes attributes = new Attributes(encodableVector);
 		return attributes.getAttributes();
-	}
-	
-	/**
-	 * Finds archive {@link TimeStampToken}s
-	 *
-	 * @param unsignedAttributes {@link AttributeTable} to obtain timestamps from
-	 * @return a list of {@link TimeStampToken}s
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#findArchiveTimeStampTokens} method instead
-	 */
-	@Deprecated
-	public static List<TimeStampToken> findArchiveTimeStampTokens(AttributeTable unsignedAttributes) {
-		List<TimeStampToken> timeStamps = new ArrayList<>();
-		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
-		for (final Attribute attribute : attributes) {
-			if (isArchiveTimeStampToken(attribute)) {
-				TimeStampToken timeStampToken = getTimeStampToken(attribute);
-				if (timeStampToken != null) {
-					timeStamps.add(timeStampToken);
-				}
-			}
-		}
-		return timeStamps;
-	}
-	
-	/**
-	 * Returns a list of all CMS timestamp identifiers
-	 * 
-	 * @return a list of {@link ASN1ObjectIdentifier}s
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getTimestampOids} method instead
-	 */
-	@Deprecated
-	public static List<ASN1ObjectIdentifier> getTimestampOids() {
-		return timestampOids;
-	}
-
-	/**
-	 * Checks if the attribute is of an allowed archive timestamp type
-	 * 
-	 * @param attribute {@link Attribute} to check
-	 * @return true if the attribute represents an archive timestamp element, false
-	 *         otherwise
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#isArchiveTimeStampToken} method instead
-	 */
-	@Deprecated
-	public static boolean isArchiveTimeStampToken(Attribute attribute) {
-		return isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV2) || isAttributeOfType(attribute, OID.id_aa_ets_archiveTimestampV3);
-	}
-	
-	/**
-	 * Checks if the given attribute is an instance of the expected asn1ObjectIdentifier type
-	 * 
-	 * @param attribute {@link Attribute} to check
-	 * @param asn1ObjectIdentifier {@link ASN1ObjectIdentifier} type to check against
-	 * @return TRUE if the attribute is of type asn1ObjectIdentifier, FALSE otherwise
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#isAttributeOfType} method instead
-	 */
-	@Deprecated
-	public static boolean isAttributeOfType(Attribute attribute, ASN1ObjectIdentifier asn1ObjectIdentifier) {
-		if (attribute == null) {
-			return false;
-		}
-		ASN1ObjectIdentifier objectIdentifier = attribute.getAttrType();
-		return asn1ObjectIdentifier.equals(objectIdentifier);
-	}
-	
-	/**
-	 * Creates a TimeStampToken from the provided {@code attribute}
-	 *
-	 * @param attribute {@link Attribute} to generate {@link TimeStampToken} from
-	 * @return {@link TimeStampToken}
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getTimeStampToken} method instead
-	 */
-	@Deprecated
-	public static TimeStampToken getTimeStampToken(Attribute attribute) {
-		try {
-			CMSSignedData signedData = getCMSSignedData(attribute);
-			if (signedData != null) {
-				return new TimeStampToken(signedData);
-			}
-		} catch (IOException | CMSException | TSPException e) {
-			LOG.warn("The given TimeStampToken cannot be created! Reason: [{}]", e.getMessage());
-		}
-		return null;
-	}
-
-	/**
-	 * Creates a CMSSignedData from the provided {@code attribute}
-	 *
-	 * @param attribute {@link Attribute} to generate {@link CMSSignedData} from
-	 * @return {@link CMSSignedData}
-	 * @throws IOException in case of encoding exception
-	 * @throws CMSException in case if the provided {@code attribute} cannot be converted to {@link CMSSignedData}
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getCMSSignedData} method instead
-	 */
-	@Deprecated
-	public static CMSSignedData getCMSSignedData(Attribute attribute) throws CMSException, IOException {
-		ASN1Encodable value = getAsn1Encodable(attribute);
-		if (value instanceof DEROctetString) {
-			LOG.warn("Illegal content for CMSSignedData (OID : {}) : OCTET STRING is not allowed !", attribute.getAttrType());
-		} else {
-			ASN1Primitive asn1Primitive = value.toASN1Primitive();
-			return new CMSSignedData(asn1Primitive.getEncoded());
-		}
-		return null;
-	}
-	
-	/**
-	 * Returns {@code ASN1Encodable} of the {@code attribute}
-	 *
-	 * @param attribute {@link Attribute}
-	 * @return {@link ASN1Encodable}
-	 * @deprecated since DSS 6.1. Please use {@code CMSUtils#getAsn1Encodable} method instead
-	 */
-	@Deprecated
-	public static ASN1Encodable getAsn1Encodable(Attribute attribute) {
-		return attribute.getAttrValues().getObjectAt(0);
 	}
 	
 	/**

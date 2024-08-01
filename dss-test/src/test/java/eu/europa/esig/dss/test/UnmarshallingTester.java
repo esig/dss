@@ -304,7 +304,6 @@ public class UnmarshallingTester {
 			assertEquals(unmarshalledSig.getSignatureInformationStore().size(), originalSignature.getSignatureInformationStore().size());
 			assertEquals(unmarshalledSig.getDigestAlgorithm(), originalSignature.getDigestAlgorithm());
 			assertEquals(unmarshalledSig.getEncryptionAlgorithm(), originalSignature.getEncryptionAlgorithm());
-			assertEquals(unmarshalledSig.getMaskGenerationFunction(), originalSignature.getMaskGenerationFunction());
 
 			compareUnmarshalledCertificates(original, unmarshalledSig.getCertificateChain());
 			compareUnmarshalledTimestamps(original, unmarshalledSig.getTimestampList());

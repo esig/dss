@@ -43,7 +43,6 @@ import eu.europa.esig.dss.spi.validation.ValidationContext;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.spi.validation.analyzer.DefaultDocumentAnalyzer;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
-import eu.europa.esig.dss.spi.validation.executor.SkipValidationContextExecutor;
 import eu.europa.esig.dss.spi.validation.executor.ValidationContextExecutor;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
@@ -233,22 +232,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public void setValidationTime(Date validationTime) {
 		documentAnalyzer.setValidationTime(validationTime);
-	}
-
-	/**
-	 * Sets if the validation context execution shall be skipped
-	 * (skips certificate chain building, revocation requests, ...)
-	 *
-	 * @param skipValidationContextExecution if the context validation shall be skipped
-	 * @deprecated since DSS 6.1. Please use
-	 *             {@code #setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE)} method instead
-	 */
-	@Deprecated
-	public void setSkipValidationContextExecution(boolean skipValidationContextExecution) {
-		if (skipValidationContextExecution) {
-			LOG.warn("Use of deprecated method #setSkipValidationContextExecution. SkipValidationContextExecutor is instantiated.");
-			documentAnalyzer.setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE);
-		}
 	}
 
 	@Override

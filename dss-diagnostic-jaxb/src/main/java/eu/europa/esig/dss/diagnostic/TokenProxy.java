@@ -23,7 +23,6 @@ package eu.europa.esig.dss.diagnostic;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 import java.util.List;
@@ -75,16 +74,6 @@ public interface TokenProxy {
 	 * @return {@link EncryptionAlgorithm}
 	 */
 	EncryptionAlgorithm getEncryptionAlgorithm();
-
-	/**
-	 * Returns the MaskGenerationFunction if has been used on signature creation
-	 *
-	 * @return {@link MaskGenerationFunction}
-	 * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} method instead to differentiate
-	 *             between mask generation function use (i.e. RSA for none MGF, RSASSA-PSS for MGF1)
-	 */
-	@Deprecated
-	MaskGenerationFunction getMaskGenerationFunction();
 
 	/**
 	 * Returns the length of the private key used to create the signatureValue of the token

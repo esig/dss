@@ -22,7 +22,6 @@ package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.SignatureParametersBuilder;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -109,24 +108,6 @@ public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSign
 	 */
 	public AbstractSignatureParametersBuilder setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
-		return this;
-	}
-
-	/**
-	 * Sets a mask generation function, when required
-	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 * @return this {@link AbstractSignatureParametersBuilder}
-	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} specifying correct algorithm
-	 *             (i.e. EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1)
-	 */
-	@Deprecated
-	public AbstractSignatureParametersBuilder setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
-		} else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
-		}
 		return this;
 	}
 

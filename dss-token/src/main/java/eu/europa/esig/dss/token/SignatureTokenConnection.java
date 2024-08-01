@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
@@ -66,27 +65,6 @@ public interface SignatureTokenConnection extends AutoCloseable {
 	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 	/**
-	 * This method signs the {@code toBeSigned} data with the digest {@code digestAlgorithm}, the mask {@code mgf} and
-	 * the given {@code keyEntry}.
-	 * 
-	 * @param toBeSigned
-	 *            The data that need to be signed
-	 * @param digestAlgorithm
-	 *            The digest algorithm to be used before signing
-	 * @param mgf
-	 *            the mask generation function
-	 * @param keyEntry
-	 *            The private key to be used
-	 * @return the signature value representation with the used algorithm and the binary value
-	 * @throws DSSException
-	 *             If there is any problem during the signature process
-	 * @deprecated since DSS 6.1. Please use {@code #sign(toBeSigned, signatureAlgorithm, keyEntry)}
-	 *             in order to specify an algorithm with a used MGF
-	 */
-	@Deprecated
-	SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
-
-	/**
 	 * This method signs the {@code toBeSigned} data with the pre-defined signature algorithm {@code signatureAlgorithm},
 	 * and the given {@code keyEntry}.
 	 *
@@ -116,26 +94,6 @@ public interface SignatureTokenConnection extends AutoCloseable {
 	 *                      If there is any problem during the signature process
 	 */
 	SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException;
-	
-	/**
-	 * 
-	 * This method signs the {@code digest} data with the given {@code keyEntry}.
-	 * 
-	 * @param digest
-	 *                 The digested data that need to be signed
-	 * @param mgf
-	 *            the mask generation function
-	 * @param keyEntry
-	 *                 The private key to be used
-	 * @return the signature value representation with the used algorithm and the
-	 *         binary value
-	 * @throws DSSException
-	 *                      If there is any problem during the signature process
-	 * @deprecated since DSS 6.1. Please use {@code signDigest(digest, signatureAlgorithm, keyEntry)} method
-	 *             in order to specify an algorithm with an expected mask generation function
-	 */
-	@Deprecated
-	SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry) throws DSSException;
 
 	/**
 	 *

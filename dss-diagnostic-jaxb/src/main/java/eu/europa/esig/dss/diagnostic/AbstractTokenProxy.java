@@ -28,7 +28,6 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 import java.util.ArrayList;
@@ -142,19 +141,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		if (basicSignature != null) {
 			return basicSignature.getDigestAlgoUsedToSignThisToken();
-		}
-		return null;
-	}
-
-	@Override
-	@Deprecated
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		if (basicSignature != null) {
-			EncryptionAlgorithm encryptionAlgorithm = basicSignature.getEncryptionAlgoUsedToSignThisToken();
-			if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-				return MaskGenerationFunction.MGF1;
-			}
 		}
 		return null;
 	}

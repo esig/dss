@@ -23,7 +23,6 @@ package eu.europa.esig.dss.spi.validation;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -103,13 +102,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private AIASource aiaSource;
 
 	/**
-	 * This variable set the default Digest Algorithm what will be used for calculation
-	 * of digests for validation tokens and signed data
-	 * Default: SHA256
-	 */
-	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
-
-	/**
 	 * This variable set the behavior to follow in case of invalid signature
 	 * (augmentation process).
 	 *
@@ -156,14 +148,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * Default : LogOnStatusAlert - log a warning message
 	 */
 	private StatusAlert alertOnUncoveredPOE = new LogOnStatusAlert(Level.WARN);
-
-	/**
-	 * This variable set the behavior to follow in case of an expired signature.
-	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
-	 */
-	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
-
 
 	/**
 	 * Defines a behavior on signature creation with an expired signing-certificate
@@ -446,17 +430,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
-	public StatusAlert getAlertOnExpiredSignature() {
-		return alertOnExpiredSignature;
-	}
-
-	@Override
-	public void setAlertOnExpiredSignature(StatusAlert alertOnExpiredSignature) {
-		Objects.requireNonNull(alertOnExpiredSignature);
-		this.alertOnExpiredSignature = alertOnExpiredSignature;
-	}
-
-	@Override
 	public StatusAlert getAlertOnExpiredCertificate() {
 		return alertOnExpiredCertificate;
 	}
@@ -519,31 +492,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setCheckRevocationForUntrustedChains(boolean checkRevocationForUntrustedChains) {
 		this.checkRevocationForUntrustedChains = checkRevocationForUntrustedChains;
-	}
-
-	@Override
-	@Deprecated
-	public boolean isExtractPOEFromUntrustedChains() {
-		return extractPOEFromUntrustedChains;
-	}
-
-	@Override
-	@Deprecated
-	public void setExtractPOEFromUntrustedChains(boolean extractPOEFromUntrustedChains) {
-		this.extractPOEFromUntrustedChains = extractPOEFromUntrustedChains;
-	}
-
-	@Override
-	@Deprecated
-	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
-		Objects.requireNonNull(digestAlgorithm, "Default DigestAlgorithm cannot be nulL!");
-		this.defaultDigestAlgorithm = digestAlgorithm;
-	}
-	
-	@Override
-	@Deprecated
-	public DigestAlgorithm getDefaultDigestAlgorithm() {
-		return defaultDigestAlgorithm;
 	}
 
 }

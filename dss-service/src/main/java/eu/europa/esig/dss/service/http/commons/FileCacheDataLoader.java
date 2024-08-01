@@ -343,24 +343,6 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 		return file;
 	}
 
-	/**
-	 * Allows to load the file for a given file name from the cache folder.
-	 *
-	 * @param urlString {@link String} url
-	 * @return the content of the file or {@code null} if the file does not exist
-	 * @throws DSSException in case if the file does not exist in the cache
-	 * @deprecated since DSS 6.1. Please use {@code #getDocumentFromCache} method instead
-	 */
-	@Deprecated
-	public byte[] loadFileFromCache(final String urlString) throws DSSException {
-		final String fileName = DSSUtils.getNormalizedString(urlString);
-		final File file = getCacheFile(fileName);
-		if (file.exists()) {
-			return DSSUtils.toByteArray(file);
-		}
-		throw new DSSExternalResourceException(String.format("The file with URL [%s] does not exist in the cache!", urlString));
-	}
-
 	@Override
 	public DSSDocument getDocumentFromCache(String url) {
 		final String fileName = DSSUtils.getNormalizedString(url);

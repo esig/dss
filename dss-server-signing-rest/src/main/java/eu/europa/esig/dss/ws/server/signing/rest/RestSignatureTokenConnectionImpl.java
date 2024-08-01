@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.ws.server.signing.rest;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
@@ -74,12 +73,6 @@ public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConne
 	}
 
 	@Override
-	@Deprecated
-	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf, String alias) throws DSSException {
-		return token.sign(toBeSigned, digestAlgorithm, mgf, alias);
-	}
-
-	@Override
 	public SignatureValueDTO sign(ToBeSignedDTO toBeSigned, SignatureAlgorithm signatureAlgorithm, String alias) {
 		return token.sign(toBeSigned, signatureAlgorithm, alias);
 	}
@@ -87,12 +80,6 @@ public class RestSignatureTokenConnectionImpl implements RestSignatureTokenConne
 	@Override
 	public SignatureValueDTO signDigest(DigestDTO digest, String alias) throws DSSException {
 		return token.signDigest(digest, alias);
-	}
-
-	@Override
-	@Deprecated
-	public SignatureValueDTO signDigest(DigestDTO digest, MaskGenerationFunction mgf, String alias) throws DSSException {
-		return token.signDigest(digest, mgf, alias);
 	}
 
 	@Override

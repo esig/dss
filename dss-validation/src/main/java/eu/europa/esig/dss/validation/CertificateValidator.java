@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.OriginalIdentifierProvider;
@@ -85,6 +86,13 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 
 	/** The CertificateProcessExecutor */
 	private CertificateProcessExecutor processExecutor;
+
+	/**
+	 * This variable set the default Digest Algorithm what will be used for calculation
+	 * of digests for validation tokens and signed data
+	 * Default: SHA256
+	 */
+	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
 	 * The default constructor
@@ -171,6 +179,17 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	public void setValidationContextExecutor(ValidationContextExecutor validationContextExecutor) {
 		Objects.requireNonNull(validationContextExecutor);
 		this.validationContextExecutor = validationContextExecutor;
+	}
+
+	/**
+	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
+	 * Default : {@code DigestAlgorithm.SHA256}
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to use
+	 */
+	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+		Objects.requireNonNull(digestAlgorithm, "Default DigestAlgorithm cannot be nulL!");
+		this.defaultDigestAlgorithm = digestAlgorithm;
 	}
 
 	/**
@@ -305,7 +324,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 				.usedCertificates(validationContext.getProcessedCertificates())
 				.usedRevocations(validationContext.getProcessedRevocations())
 				.allCertificateSources(validationContext.getAllCertificateSources())
-				.defaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm())
+				.defaultDigestAlgorithm(defaultDigestAlgorithm)
 				.tokenExtractionStrategy(tokenExtractionStrategy)
 				.tokenIdentifierProvider(identifierProvider)
 				.validationDate(getValidationTime());

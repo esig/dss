@@ -93,18 +93,14 @@ public interface DSSDocument extends Serializable {
 	 */
 	void save(final String filePath) throws IOException;
 
-	// TODO: to be replaced with "eu.europa.esig.dss.model.Digest getDigest(final DigestAlgorithm digestAlgorithm);" method in 6.2
 	/**
-	 * This method returns the encoded digest value of the current {@code DSSDocument} using the base64 algorithm.
+	 * This method returns the digest value of the current {@code DSSDocument} using the base64 algorithm.
 	 *
 	 * @param digestAlgorithm
 	 *            {@code DigestAlgorithm}
-	 * @return base64 encoded {@code String}
-	 * @deprecated since DSS 6.1. Please use {@code #getDigestValue} instead.
-	 *             To obtain base64-encoded value you may use {@code eu.europa.esig.dss.utils.Utils#toBase64(digestValue)}.
+	 * @return {@link Digest}
 	 */
-	@Deprecated
-	String getDigest(final DigestAlgorithm digestAlgorithm);
+	Digest getDigest(final DigestAlgorithm digestAlgorithm);
 
 	/**
 	 * This method returns digest value of the current document's content using the provided {@code digestAlgorithm}

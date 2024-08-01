@@ -22,7 +22,6 @@ package eu.europa.esig.dss.ws.signature.dto.parameters;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 
 import java.io.Serializable;
@@ -126,38 +125,6 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
      */
     public void setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
         this.digestAlgorithm = digestAlgorithm;
-    }
-
-    /**
-     * Gets a mask generation function, if used
-     *
-     * @return {@link MaskGenerationFunction}
-     * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} method in order to distinguish
-     *             between mask generation functions (i.e. RSA for none MFG, RSASSA-PSS for MGF1)
-     */
-    @Deprecated
-    public MaskGenerationFunction getMaskGenerationFunction() {
-        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-            return MaskGenerationFunction.MGF1;
-        }
-        return null;
-    }
-
-    /**
-     * Sets a mask generation function, if used
-     *
-     * @param maskGenerationFunction {@link MaskGenerationFunction}
-     * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method instead in order to provide
-     *             a correct mask generation function (use EncryptionAlgorithm.RSA for none MGF,
-     *             EncryptionAlgorithm.RSASSA_PSS for MGF1)
-     */
-    @Deprecated
-    public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
-            setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
-        } else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
-            setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
-        }
     }
 
     /**
