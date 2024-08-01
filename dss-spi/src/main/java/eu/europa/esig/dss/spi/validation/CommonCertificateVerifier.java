@@ -106,7 +106,9 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * This variable set the default Digest Algorithm what will be used for calculation
 	 * of digests for validation tokens and signed data
 	 * Default: SHA256
+	 * @deprecated since DSS 6.1. See {@code DocumentValidator#defaultDigestAlgorithm} instead
 	 */
+	@Deprecated
 	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
@@ -161,9 +163,10 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * This variable set the behavior to follow in case of an expired signature.
 	 *
 	 * Default : ExceptionOnStatusAlert - throw the exception
+	 * @deprecated since DSS 6.1. Please use {@code alertOnExpiredCertificate} instead.
 	 */
+	@Deprecated
 	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
-
 
 	/**
 	 * Defines a behavior on signature creation with an expired signing-certificate
@@ -446,11 +449,13 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	@Deprecated
 	public StatusAlert getAlertOnExpiredSignature() {
 		return alertOnExpiredSignature;
 	}
 
 	@Override
+	@Deprecated
 	public void setAlertOnExpiredSignature(StatusAlert alertOnExpiredSignature) {
 		Objects.requireNonNull(alertOnExpiredSignature);
 		this.alertOnExpiredSignature = alertOnExpiredSignature;
