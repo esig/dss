@@ -22,6 +22,7 @@ package eu.europa.esig.dss.spi.tsl;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.tsl.CertificateTrustTime;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustProperties;
 import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +53,9 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	/** The map of trust properties by EntityIdentifier (public keys) */
 	private Map<EntityIdentifier, List<TrustProperties>> trustPropertiesByEntity = new HashMap<>();
+
+	/** The map of trust time periods by EntityIdentifier */
+	private Map<EntityIdentifier, List<CertificateTrustTime>> trustTimeByEntity = new HashMap<>();
 
 	/**
 	 * The default constructor.
@@ -122,6 +127,52 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		} else {
 			return Collections.emptyList();
 		}
+	}
+
+	@Override
+	public synchronized void setTrustTimeByCertificates(Map<CertificateToken, List<CertificateTrustTime>> trustTimeByCertificate) {
+		this.trustTimeByEntity = new HashMap<>(); // reinit the map
+		trustTimeByCertificate.forEach(this::addCertificateTrustTimes);
+	}
+
+	private void addCertificateTrustTimes(CertificateToken certificateToken, List<CertificateTrustTime> certificateTrustTimes) {
+		super.addCertificate(certificateToken);
+
+		EntityIdentifier entityKey = certificateToken.getEntityKey();
+		List<CertificateTrustTime> list = trustTimeByEntity.computeIfAbsent(entityKey, k -> new ArrayList<>());
+		for (CertificateTrustTime trustTime : certificateTrustTimes) {
+			if (!list.contains(trustTime)) {
+				list.add(trustTime);
+			}
+		}
+	}
+
+	@Override
+	public synchronized CertificateTrustTime getTrustTime(CertificateToken token) {
+		List<CertificateTrustTime> trustTimes = trustTimeByEntity.get(token.getEntityKey());
+		if (Utils.isCollectionNotEmpty(trustTimes)) {
+			CertificateTrustTime certificateTrustTime = null;
+			for (CertificateTrustTime trustTime : trustTimes) {
+				if (certificateTrustTime == null) {
+					certificateTrustTime = trustTime;
+				} else {
+					certificateTrustTime = certificateTrustTime.getJointTrustTime(trustTime.getStartDate(), trustTime.getEndDate());
+				}
+			}
+			return certificateTrustTime;
+		} else {
+			return new CertificateTrustTime(); // no trust anchor expiration time defined
+		}
+	}
+
+	@Override
+	public boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime) {
+		EntityIdentifier entityKey = certificateToken.getEntityKey();
+		List<CertificateTrustTime> certificateTrustTimeList = trustTimeByEntity.get(entityKey);
+		if (Utils.isCollectionNotEmpty(certificateTrustTimeList)) {
+			return certificateTrustTimeList.stream().anyMatch(t -> t.isTrustedAtTime(controlTime));
+		}
+		return false;
 	}
 
 	@Override

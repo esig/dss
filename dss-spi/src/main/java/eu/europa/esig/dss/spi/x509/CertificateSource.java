@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
 import java.io.Serializable;
 import java.security.PublicKey;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -68,6 +69,15 @@ public interface CertificateSource extends Serializable {
 	 * @return true if the certificate is trusted
 	 */
 	boolean isTrusted(CertificateToken certificateToken);
+
+	/**
+	 * This method checks if a given certificate is trusted at the {@code controlTime}
+	 *
+	 * @param certificateToken the certificate to be tested
+	 * @param controlTime {@link Date}
+	 * @return true if the certificate is trusted
+	 */
+	boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime);
 
 	/**
 	 * This method checks if a given certificate is known in the current source

@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.tsl.sync;
 
-import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
+import eu.europa.esig.dss.model.tsl.CertificateTrustTime;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
@@ -31,7 +32,7 @@ import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
 import eu.europa.esig.dss.model.tsl.TrustService;
 import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.dss.tsl.cache.access.SynchronizerCacheAccess;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
@@ -46,6 +47,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.function.Predicate;
 
 /**
  * Loads trusted certificate source
@@ -70,6 +72,11 @@ public class TrustedListCertificateSourceSynchronizer {
 	private final SynchronizationStrategy synchronizationStrategy;
 
 	/**
+	 * Defines whether an SDI can be considred as a trust anchor during the given period of time
+	 */
+	private final Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate;
+
+	/**
 	 * The certificate source to be synchronized
 	 */
 	private final TrustPropertiesCertificateSource certificateSource;
@@ -86,15 +93,17 @@ public class TrustedListCertificateSourceSynchronizer {
 	 * @param lotlSources {@link LOTLSource}s
 	 * @param certificateSource {@link TrustPropertiesCertificateSource}
 	 * @param synchronizationStrategy {@link SynchronizationStrategy}
+	 * @param trustAnchorValidityPredicate predicate to filter trust anchor validity periods
 	 * @param cacheAccess {@link SynchronizerCacheAccess}
 	 */
 	public TrustedListCertificateSourceSynchronizer(TLSource[] tlSources, LOTLSource[] lotlSources,
-													TrustPropertiesCertificateSource certificateSource,
-													SynchronizationStrategy synchronizationStrategy,
-													SynchronizerCacheAccess cacheAccess) {
+			TrustPropertiesCertificateSource certificateSource, SynchronizationStrategy synchronizationStrategy,
+			Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate,
+			SynchronizerCacheAccess cacheAccess) {
 		this.tlSources = tlSources;
 		this.lotlSources = lotlSources;
 		this.synchronizationStrategy = synchronizationStrategy;
+		this.trustAnchorValidityPredicate = trustAnchorValidityPredicate;
 		this.certificateSource = certificateSource;
 		this.cacheAccess = cacheAccess;
 	}
@@ -142,19 +151,22 @@ public class TrustedListCertificateSourceSynchronizer {
 
 	private void synchronizeCertificates(TLValidationJobSummary summary) {
 		final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts = new WeakHashMap<>();
+		final Map<CertificateToken, List<CertificateTrustTime>> trustTimeByCerts = new WeakHashMap<>();
 		for (LOTLInfo lotlInfo : summary.getLOTLInfos()) {
 			if (synchronizationStrategy.canBeSynchronized(lotlInfo)) {
-				addCertificatesFromTLs(trustPropertiesByCerts, lotlInfo.getTLInfos(), lotlInfo);
+				addCertificatesFromTLs(trustPropertiesByCerts, trustTimeByCerts, lotlInfo.getTLInfos(), lotlInfo);
 			} else {
 				LOG.warn("Certificate synchronization is skipped for LOTL '{}' and its TLs", lotlInfo.getUrl());
 			}
 		}
-		addCertificatesFromTLs(trustPropertiesByCerts, summary.getOtherTLInfos(), null);
+		addCertificatesFromTLs(trustPropertiesByCerts, trustTimeByCerts, summary.getOtherTLInfos(), null);
 		certificateSource.setTrustPropertiesByCertificates(trustPropertiesByCerts);
+		certificateSource.setTrustTimeByCertificates(trustTimeByCerts);
 	}
 
-	private void addCertificatesFromTLs(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts, final List<TLInfo> tlInfos,
-			final LOTLInfo relatedLOTL) {
+	private void addCertificatesFromTLs(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts,
+										final Map<CertificateToken, List<CertificateTrustTime>> trustTimeByCerts,
+										final List<TLInfo> tlInfos, final LOTLInfo relatedLOTL) {
 
 		for (final TLInfo tlInfo : tlInfos) {
 			if (synchronizationStrategy.canBeSynchronized(tlInfo)) {
@@ -167,12 +179,13 @@ public class TrustedListCertificateSourceSynchronizer {
 						for (TrustServiceProvider original : trustServiceProviders) {
 							TrustServiceProvider detached = getDetached(original);
 							for (TrustService trustService : original.getServices()) {
-								TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions = trustService
-										.getStatusAndInformationExtensions();
+								TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions =
+										trustService.getStatusAndInformationExtensions();
 								TrustProperties trustProperties = getTrustProperties(
 										relatedLOTL, tlInfo, detached, statusAndInformationExtensions);
+								List<CertificateTrustTime> certificateTrustTimes = getCertificateTrustTimes(statusAndInformationExtensions);
 								for (CertificateToken certificate : trustService.getCertificates()) {
-									addCertificate(trustPropertiesByCerts, certificate, trustProperties);
+									addCertificate(trustPropertiesByCerts, trustTimeByCerts, certificate, trustProperties, certificateTrustTimes);
 								}
 							}
 						}
@@ -184,11 +197,18 @@ public class TrustedListCertificateSourceSynchronizer {
 		}
 	}
 
-	private void addCertificate(Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts, CertificateToken certificate,
-			TrustProperties trustProperties) {
-		List<TrustProperties> list = trustPropertiesByCerts.computeIfAbsent(certificate, k -> new ArrayList<>());
-		if (!list.contains(trustProperties)) {
-			list.add(trustProperties);
+	private void addCertificate(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts,
+								final Map<CertificateToken, List<CertificateTrustTime>> trustTimeByCerts,
+								CertificateToken certificate, TrustProperties trustProperties, List<CertificateTrustTime> certificateTrustTimes) {
+		List<TrustProperties> trustPropertiesList = trustPropertiesByCerts.computeIfAbsent(certificate, k -> new ArrayList<>());
+		if (!trustPropertiesList.contains(trustProperties)) {
+			trustPropertiesList.add(trustProperties);
+		}
+		List<CertificateTrustTime> certificateTrustTimeList = trustTimeByCerts.computeIfAbsent(certificate, k -> new ArrayList<>());
+		for (CertificateTrustTime certificateTrustTime : certificateTrustTimes) {
+			if (!certificateTrustTimeList.contains(certificateTrustTime)) {
+				certificateTrustTimeList.add(certificateTrustTime);
+			}
 		}
 	}
 
@@ -225,6 +245,22 @@ public class TrustedListCertificateSourceSynchronizer {
 			return new TrustProperties(tlInfo, detached, statusAndInformationExtensions);
 		}
 		return new TrustProperties(relatedLOTL, tlInfo, detached, statusAndInformationExtensions);
+	}
+
+	private List<CertificateTrustTime> getCertificateTrustTimes(TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions) {
+		if (trustAnchorValidityPredicate == null) {
+			// return empty instance (always valid), when no predicate is defined
+			return Collections.singletonList(new CertificateTrustTime());
+		}
+
+		final List<CertificateTrustTime> result = new ArrayList<>();
+        for (TrustServiceStatusAndInformationExtensions trustServiceStatusAndInformation : statusAndInformationExtensions) {
+            // TODO : add handling of MRA
+            if (trustAnchorValidityPredicate.test(trustServiceStatusAndInformation)) {
+				result.add(new CertificateTrustTime(trustServiceStatusAndInformation.getStartDate(), trustServiceStatusAndInformation.getEndDate()));
+            }
+        }
+		return result;
 	}
 
 }

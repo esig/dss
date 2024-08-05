@@ -34,6 +34,7 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -321,6 +322,11 @@ public class CommonCertificateSource implements CertificateSource {
 	@Override
 	public boolean isTrusted(CertificateToken certificateToken) {
 		return false;
+	}
+
+	@Override
+	public boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime) {
+		return isTrusted(certificateToken);
 	}
 
 	@Override

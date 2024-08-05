@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.model.timedependent;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * The default implementation of a time dependent interval
@@ -66,6 +67,22 @@ public class BaseTimeDependent implements TimeDependent {
 	@Override
 	public String toString() {
 		return "[startDate=" + startDate + ", endDate=" + endDate + "]";
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		BaseTimeDependent that = (BaseTimeDependent) o;
+		return Objects.equals(startDate, that.startDate) && Objects.equals(endDate, that.endDate);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(startDate);
+		result = 31 * result + Objects.hashCode(endDate);
+		return result;
 	}
 
 }

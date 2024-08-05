@@ -28,6 +28,7 @@ import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -183,6 +184,16 @@ public class ListCertificateSource implements CertificateSource {
 	public boolean isTrusted(CertificateToken certificateToken) {
 		for (CertificateSource source : sources) {
 			if (source.isTrusted(certificateToken)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime) {
+		for (CertificateSource source : sources) {
+			if (source.isTrustedAtTime(certificateToken, controlTime)) {
 				return true;
 			}
 		}
