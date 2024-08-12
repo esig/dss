@@ -690,7 +690,7 @@
 
 		        </div>
 		        
-		       	<xsl:if test="name() != 'SubXCV' or @TrustAnchor != 'true'">
+		       	<xsl:if test="name() != 'SubXCV' or dss:Constraint">
 		    		<div>
 		    			<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
 			        	<xsl:attribute name="id"><xsl:value-of select="concat('collapse-', name(..), '-', $currentId)"/></xsl:attribute>

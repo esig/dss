@@ -423,7 +423,7 @@
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 
-					<xs:element name="Trusted" type="xs:boolean" />
+					<xs:element name="Trusted" type="Trusted" />
 					<xs:element name="SelfSigned" type="xs:boolean" />
 
 					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
@@ -451,6 +451,15 @@
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Trusted">
+		<xs:simpleContent>
+			<xs:extension base="xs:boolean">
+				<xs:attribute name="startDate" type="xs:dateTime" use="optional" />
+				<xs:attribute name="sunsetDate" type="xs:dateTime" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:complexType name="CertificateExtensions">

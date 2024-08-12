@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.spi.validation;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,14 +40,14 @@ public class TimestampTokenVerifier {
     private static final Logger LOG = LoggerFactory.getLogger(TimestampTokenVerifier.class);
 
     /**
-     * The trusted certificate source is used to accept trusted timestamp certificate chains
+     * Verifies whether a given certificate token is a trust anchor at the control time
      */
-    private CertificateSource trustedCertificateSource;
+    private TrustAnchorVerifier trustAnchorVerifier;
 
     /**
-     * This variable indicates whether timestamps created only with trusted certificate chains shall be accepted
+     * Verifies validity of the certificate's revocation data for timestamps's certificate chain
      */
-    private boolean acceptUntrustedCertificateChains;
+    private RevocationDataVerifier revocationDataVerifier;
 
     /**
      * Default constructor
@@ -72,7 +73,7 @@ public class TimestampTokenVerifier {
      */
     public static TimestampTokenVerifier createDefaultTimestampTokenVerifier() {
         final TimestampTokenVerifier timestampTokenVerifier = new TimestampTokenVerifier();
-        timestampTokenVerifier.setAcceptUntrustedCertificateChains(false);
+        // no configuration available
         return timestampTokenVerifier;
     }
 
@@ -80,9 +81,11 @@ public class TimestampTokenVerifier {
      * Gets trusted certificate source, when present
      *
      * @return {@link CertificateSource}
+     * @deprecated since DSS 6.2. Please use {@code #getTrustAnchorVerifier#getTrustedCertificateSource} method instead
      */
+    @Deprecated
     public CertificateSource getTrustedCertificateSource() {
-        return trustedCertificateSource;
+        return getTrustAnchorVerifier().getTrustedCertificateSource();
     }
 
     /**
@@ -92,9 +95,18 @@ public class TimestampTokenVerifier {
      *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
      *
      * @param trustedCertificateSource {@link CertificateSource}
+     * @deprecated since DSS 6.2. Please provide trusted certificate source within
+     *             {@code TrustAnchorVerifier#setTrustedCertificateSource}, which can be set using
+     *             {@code #setTrustAnchorVerifier} method
      */
+    @Deprecated
     protected void setTrustedCertificateSource(CertificateSource trustedCertificateSource) {
-        this.trustedCertificateSource = trustedCertificateSource;
+        TrustAnchorVerifier currentTrustAnchorVerifier = getTrustAnchorVerifier();
+        if (currentTrustAnchorVerifier == null) {
+            throw new NullPointerException("TrustAnchorVerifier is not defined! " +
+                    "Please set TrustAnchorVerifier in order to provide a trustedCertificateSource.");
+        }
+        currentTrustAnchorVerifier.setTrustedCertificateSource(trustedCertificateSource);
     }
 
     /**
@@ -102,13 +114,70 @@ public class TimestampTokenVerifier {
      * Default: TRUE (only timestamps created with trusted CAs are considered as valid, untrusted timestamps are ignored)
      *
      * @param acceptUntrustedCertificateChains whether only trusted timestamps are considered as valid
+     * @deprecated since DSS 6.2. Please provide constraint within {@code TrustAnchorVerifier#setTrustedCertificateSource},
+     *             which can be set using {@code #setAcceptTimestampUntrustedCertificateChains} method
      */
+    @Deprecated
     public void setAcceptUntrustedCertificateChains(boolean acceptUntrustedCertificateChains) {
-        this.acceptUntrustedCertificateChains = acceptUntrustedCertificateChains;
+        TrustAnchorVerifier currentTrustAnchorVerifier = getTrustAnchorVerifier();
+        if (currentTrustAnchorVerifier == null) {
+            throw new NullPointerException("TrustAnchorVerifier is not defined! " +
+                    "Please set TrustAnchorVerifier in order to provide an acceptUntrustedCertificateChains constraint.");
+        }
+        currentTrustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(acceptUntrustedCertificateChains);
     }
 
     /**
-     * This method verifies whether the given {@code timestampToken} is valid and acceptable,
+     * Gets a trust anchor verifier.
+     * This method is used internally within {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     * to identify whether the configuration is already present and a {@code trustAnchorVerifier} should be set.
+     *
+     * @return {@link TrustAnchorVerifier}
+     */
+    public TrustAnchorVerifier getTrustAnchorVerifier() {
+        return trustAnchorVerifier;
+    }
+
+    /**
+     * Sets whether a certificate token can be considered as a trust anchor at the given control time
+     * Note : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     *        initialization, when not defined explicitly, in order to provide the same configuration as the one used within
+     *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
+     *
+     * @param trustAnchorVerifier {@link TrustAnchorVerifier}
+     */
+    public void setTrustAnchorVerifier(TrustAnchorVerifier trustAnchorVerifier) {
+        this.trustAnchorVerifier = trustAnchorVerifier;
+    }
+
+    /**
+     * Gets a revocation data verifier.
+     * This method is used internally within {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     * to identify whether the configuration is already present and a {@code trustAnchorVerifier} should be set.
+     *
+     * @return {@link TrustAnchorVerifier}
+     */
+    public RevocationDataVerifier getRevocationDataVerifier() {
+        if (revocationDataVerifier != null && revocationDataVerifier.getTrustAnchorVerifier() == null) {
+            revocationDataVerifier.setTrustAnchorVerifier(getTrustAnchorVerifier());
+        }
+        return revocationDataVerifier;
+    }
+
+    /**
+     * Sets a revocation data verifier for validation of timestamp's certificate chain revocation data validity
+     * Note : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
+     *        initialization, when not defined explicitly, in order to provide the same configuration as the one used within
+     *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
+     *
+     * @param revocationDataVerifier {@link RevocationDataVerifier}
+     */
+    public void setRevocationDataVerifier(RevocationDataVerifier revocationDataVerifier) {
+        this.revocationDataVerifier = revocationDataVerifier;
+    }
+
+    /**
+     * This method verifies whether the given {@code timestampToken} is valid and acceptable at the current time,
      * and its POE can be extracted to the validation process.
      * NOTE: The method does not accept certificate chain, thus validity of the timestamp's certificate chain is not verified.
      * To successfully, execute this method, the parameter {@code acceptOnlyTrustedCertificateChains} shall be set to FALSE.
@@ -118,11 +187,26 @@ public class TimestampTokenVerifier {
      * @return TRUE if the timestampToken is valid and acceptable, FALSE otherwise
      */
     public boolean isAcceptable(TimestampToken timestampToken) {
-        return isAcceptable(timestampToken, Collections.emptyList());
+        return isAcceptable(timestampToken, new Date());
     }
 
     /**
-     * This method verifies whether the given {@code timestampToken} is valid and acceptable,
+     * This method verifies whether the given {@code timestampToken} is valid and acceptable at the given control time,
+     * and its POE can be extracted to the validation process.
+     * NOTE: The method does not accept certificate chain, thus validity of the timestamp's certificate chain is not verified.
+     * To successfully, execute this method, the parameter {@code acceptOnlyTrustedCertificateChains} shall be set to FALSE.
+     * For validation with a certificate chain, please use {@code #isAcceptable(timestampToken, certificateChain)} method.
+     *
+     * @param timestampToken {@link TimestampToken} to be validated
+     * @param controlTime {@link Date} the validation time
+     * @return TRUE if the timestampToken is valid and acceptable, FALSE otherwise
+     */
+    public boolean isAcceptable(TimestampToken timestampToken, Date controlTime) {
+        return isAcceptable(timestampToken, Collections.emptyList(), controlTime);
+    }
+
+    /**
+     * This method verifies whether the given {@code timestampToken} is valid and acceptable at the current time,
      * and its POE can be extracted to the validation process
      *
      * @param timestampToken {@link TimestampToken} to be validated
@@ -130,7 +214,21 @@ public class TimestampTokenVerifier {
      * @return TRUE if the timestampToken is valid and acceptable, FALSE otherwise
      */
     public boolean isAcceptable(TimestampToken timestampToken, List<CertificateToken> certificateChain) {
-        return isTrustedTimestampToken(timestampToken, certificateChain) && isCryptographicallyValid(timestampToken);
+        return isAcceptable(timestampToken, certificateChain, new Date());
+    }
+
+    /**
+     * This method verifies whether the given {@code timestampToken} is valid and acceptable at the given control time,
+     * and its POE can be extracted to the validation process
+     *
+     * @param timestampToken {@link TimestampToken} to be validated
+     * @param certificateChain a list of {@link CertificateToken}s representing the certificate chain of the timestamp
+     * @param controlTime {@link Date} the validation time
+     * @return TRUE if the timestampToken is valid and acceptable, FALSE otherwise
+     */
+    public boolean isAcceptable(TimestampToken timestampToken, List<CertificateToken> certificateChain, Date controlTime) {
+        return isTrustedTimestampToken(timestampToken, certificateChain, controlTime) && isCryptographicallyValid(timestampToken)
+                && isCertificateChainValid(certificateChain, controlTime);
     }
 
     /**
@@ -141,28 +239,46 @@ public class TimestampTokenVerifier {
      * @param timestampToken {@link TimestampToken} to be validated
      * @param certificateChain a list of {@link CertificateToken}s representing the certificate chain of the timestamp
      * @return TRUE of the timestamp token is trusted, FALSE otherwise
+     * @deprecated since DSS 6.2. Please use {@code #isTrustedTimestampToken(timestampToken, certificateChain, controlTime)}
+     *             method instead
      */
+    @Deprecated
     protected boolean isTrustedTimestampToken(TimestampToken timestampToken, List<CertificateToken> certificateChain) {
-        if (!acceptUntrustedCertificateChains && !containsTrustAnchor(certificateChain)) {
-            LOG.warn("POE extraction is skipped for untrusted timestamp : {}.", timestampToken.getDSSIdAsString());
-            return false;
-        }
-        return true;
+        return isTrustedTimestampToken(timestampToken, certificateChain, new Date());
     }
 
-    private boolean containsTrustAnchor(List<CertificateToken> certChain) {
-        if (Utils.isCollectionNotEmpty(certChain)) {
-            for (CertificateToken token : certChain) {
-                if (isTrusted(token)) {
-                    return true;
-                }
-            }
+    /**
+     * This method verifies whether the {@code timestampToken} is trusted to continue the process at the control time.
+     * The method expects the certificate chain of the timestamp to reach a {@code trustedCertificateSource} or
+     * to have {@code acceptOnlyTrustedCertificateChains} constraint to accept untrusted certificate chains as well.
+     *
+     * @param timestampToken {@link TimestampToken} to be validated
+     * @param certificateChain a list of {@link CertificateToken}s representing the certificate chain of the timestamp
+     * @param controlTime {@link Date} to verify the trust anchor's validity period
+     * @return TRUE of the timestamp token is trusted, FALSE otherwise
+     */
+    protected boolean isTrustedTimestampToken(TimestampToken timestampToken, List<CertificateToken> certificateChain, Date controlTime) {
+        if (containsTrustAnchor(certificateChain, controlTime)) {
+            return true;
         }
+        LOG.warn("POE extraction is skipped for untrusted timestamp : {}.", timestampToken.getDSSIdAsString());
         return false;
     }
 
-    private boolean isTrusted(CertificateToken certificateToken) {
-        return trustedCertificateSource != null && trustedCertificateSource.isTrusted(certificateToken);
+    /**
+     * This method verifies whether the certificate chain is trusted at the given time
+     *
+     * @param certChain a list of {@link CertificateToken}s representing a certificate chain to validate
+     * @param controlTime {@link Date} validation time
+     * @return TRUE if the certificate chain is trusted, FALSE otherwise
+     */
+    protected boolean containsTrustAnchor(List<CertificateToken> certChain, Date controlTime) {
+        final TrustAnchorVerifier currentTrustAnchorVerifier = getTrustAnchorVerifier();
+        if (currentTrustAnchorVerifier == null) {
+            LOG.debug("TrustAnchorVerifier is not defined! None of the certificates will be considered as a trust anchor.");
+            return false;
+        }
+        return currentTrustAnchorVerifier.isTrustedCertificateChain(certChain, controlTime, Context.TIMESTAMP);
     }
 
     /**
@@ -184,6 +300,22 @@ public class TimestampTokenVerifier {
             return false;
         }
         return true;
+    }
+
+    /**
+     * This method verifies certificate chain and presence of a valid revocation data for certificates
+     *
+     * @param certificateChain a list of {@link CertificateToken}s
+     * @param controlTime {@link Date} validation time
+     * @return TRUE if the certificate chain is valid, FALSE otherwise
+     */
+    protected boolean isCertificateChainValid(List<CertificateToken> certificateChain, Date controlTime) {
+        RevocationDataVerifier currentRevocationDataVerifier = getRevocationDataVerifier();
+        if (revocationDataVerifier == null) {
+            LOG.warn("No RevocationDataVerifier is provided! Revocation check is skipped.");
+            return true;
+        }
+        return currentRevocationDataVerifier.isCertificateChainValid(certificateChain, controlTime, Context.TIMESTAMP);
     }
 
 }

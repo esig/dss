@@ -61,6 +61,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
@@ -78,6 +79,7 @@ import eu.europa.esig.dss.model.OidRepository;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.identifier.OriginalIdentifierProvider;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.tsl.CertificateTrustTime;
 import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
@@ -85,6 +87,7 @@ import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustProperties;
 import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
+import eu.europa.esig.dss.model.tsl.TrustedCertificateSourceWithTime;
 import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -1520,7 +1523,7 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setCertificateExtensions(getXmlCertificateExtensions(certToken));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
-		xmlCert.setTrusted(allCertificateSources.isTrusted(certToken));
+		xmlCert.setTrusted(getXmlTrusted(certToken));
 
 		if (tokenExtractionStrategy.isCertificate()) {
 			xmlCert.setBase64Encoded(certToken.getEncoded());
@@ -1782,6 +1785,41 @@ public abstract class DiagnosticDataBuilder {
 		xmlCertificateExtension.setOID(certificateExtension.getOid());
 		xmlCertificateExtension.setDescription(certificateExtension.getDescription());
 		xmlCertificateExtension.setCritical(certificateExtension.isCritical());
+	}
+
+	private XmlTrusted getXmlTrusted(CertificateToken certificateToken) {
+		XmlTrusted xmlTrusted = new XmlTrusted();
+		if (allCertificateSources.isTrusted(certificateToken)) {
+			CertificateTrustTime certificateTrustTime = getCertificateTrustTime(certificateToken);
+			if (certificateTrustTime != null) {
+				xmlTrusted.setValue(certificateTrustTime.isTrusted());
+				xmlTrusted.setStartDate(certificateTrustTime.getStartDate());
+				xmlTrusted.setSunsetDate(certificateTrustTime.getEndDate());
+			} else {
+				xmlTrusted.setValue(true);
+			}
+		}
+		return xmlTrusted;
+	}
+
+	private CertificateTrustTime getCertificateTrustTime(CertificateToken certificateToken) {
+		CertificateTrustTime certificateTrustTime = null;
+		for (CertificateSource trustedSource : allCertificateSources.getSources()) {
+			if (trustedSource.isTrusted(certificateToken)) {
+				if (trustedSource instanceof TrustedCertificateSourceWithTime) {
+					TrustedCertificateSourceWithTime trustedSourceWithTime = (TrustedCertificateSourceWithTime) trustedSource;
+					CertificateTrustTime trustTime = trustedSourceWithTime.getTrustTime(certificateToken);
+					if (certificateTrustTime == null || !certificateTrustTime.isTrusted()) {
+						certificateTrustTime = trustTime;
+					} else if (trustTime != null && trustTime.isTrusted()) {
+						certificateTrustTime = certificateTrustTime.getJointTrustTime(trustTime.getStartDate(), trustTime.getEndDate());
+					}
+				} else {
+					certificateTrustTime = new CertificateTrustTime(true);
+				}
+			}
+		}
+		return certificateTrustTime;
 	}
 
 	private List<CertificateSourceType> getXmlCertificateSources(final CertificateToken token) {

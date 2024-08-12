@@ -28,7 +28,10 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractCertificateCheckItem;
+
+import java.util.Date;
 
 /**
  * This class is used to verify whether the revocation data check shall be skipped for the given certificate
@@ -41,6 +44,12 @@ public class RevocationDataRequiredCheck<T extends XmlConstraintsConclusion> ext
     /** Certificate to check */
     private final CertificateWrapper certificate;
 
+    /** The validation time */
+    private final Date currentTime;
+
+    /** The certificate's sunset date constraint */
+    private final LevelConstraint certificateSunsetDateConstraint;
+
     /**
      * Default constructor
      *
@@ -50,14 +59,20 @@ public class RevocationDataRequiredCheck<T extends XmlConstraintsConclusion> ext
      * @param constraint {@link LevelConstraint}
      */
     public RevocationDataRequiredCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
-                                       CertificateValuesConstraint constraint) {
+                                       Date currentTime, LevelConstraint certificateSunsetDateConstraint, CertificateValuesConstraint constraint) {
         super(i18nProvider, result, certificate, constraint);
         this.certificate = certificate;
+        this.currentTime = currentTime;
+        this.certificateSunsetDateConstraint = certificateSunsetDateConstraint;
     }
 
     @Override
     public boolean process() {
-        return !certificate.isTrusted() && !certificate.isSelfSigned() && !processCertificateCheck(certificate);
+        return !isTrustAnchor(certificate) && !certificate.isSelfSigned() && !processCertificateCheck(certificate);
+    }
+
+    private boolean isTrustAnchor(CertificateWrapper certificate) {
+        return ValidationProcessUtils.isTrustAnchor(certificate, currentTime, certificateSunsetDateConstraint);
     }
 
     @Override

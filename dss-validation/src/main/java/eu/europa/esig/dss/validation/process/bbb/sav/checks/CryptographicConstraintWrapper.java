@@ -323,17 +323,6 @@ public class CryptographicConstraintWrapper {
 					result.add(algo);
 				}
 			}
-			// TODO : temporary handling to ensure smooth migration in 6.1. To be removed in 6.2.
-			if (Utils.isCollectionEmpty(result) && EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-				for (Algo algo : listAlgo.getAlgos()) {
-					if (EncryptionAlgorithm.RSA.getName().equals(algo.getValue())) {
-						LOG.warn("No '{}' algorithm is defined within validation policy! Temporary handling '{}' == '{}' is added. " +
-										"Please set the constraint explicitly. To be required since DSS 6.2.",
-								encryptionAlgorithm.getName(), algo.getValue(), encryptionAlgorithm.getName());
-						result.add(algo);
-					}
-				}
-			}
 		}
 		return result;
 	}

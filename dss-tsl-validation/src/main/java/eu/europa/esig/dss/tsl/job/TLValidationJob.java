@@ -22,12 +22,11 @@ package eu.europa.esig.dss.tsl.job;
 
 import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
+import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.alerts.TLValidationJobAlerter;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
@@ -58,7 +57,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -117,11 +115,6 @@ public class TLValidationJob {
 	 * Default : all trusted lists and LOTLs are synchronized
 	 */
 	private SynchronizationStrategy synchronizationStrategy = new AcceptAllStrategy();
-
-	/**
-	 * Defines whether an SDI can be considred as a trust anchor during the given period of time
-	 */
-	private Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate;
 
 	/**
 	 * This property allows to print the cache content before and after the
@@ -221,18 +214,6 @@ public class TLValidationJob {
 	public void setSynchronizationStrategy(SynchronizationStrategy synchronizationStrategy) {
 		Objects.requireNonNull(synchronizationStrategy, "The SynchronizationStrategy cannot be null");
 		this.synchronizationStrategy = synchronizationStrategy;
-	}
-
-	/**
-	 * Sets a predicate allowing to filter {@code TrustServiceStatusAndInformationExtensions} in order to define
-	 * an acceptability period of a corresponding SDI as a trust anchor.
-	 * If the predicate is defined and condition fails, the SDI will not be treated as a trust anchor
-	 * during the validation process.
-	 *
-	 * @param trustAnchorValidityPredicate trust anchor validity predicate
-	 */
-	public void setTrustAnchorValidityPredicate(Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate) {
-		this.trustAnchorValidityPredicate = trustAnchorValidityPredicate;
 	}
 
 	/**
@@ -418,7 +399,7 @@ public class TLValidationJob {
 
 		TrustedListCertificateSourceSynchronizer synchronizer = new TrustedListCertificateSourceSynchronizer(
 				trustedListSources, listOfTrustedListSources, trustPropertiesCertificateSource, synchronizationStrategy,
-				trustAnchorValidityPredicate, cacheAccessFactory.getSynchronizerCacheAccess());
+				cacheAccessFactory.getSynchronizerCacheAccess());
 		synchronizer.sync();
 	}
 

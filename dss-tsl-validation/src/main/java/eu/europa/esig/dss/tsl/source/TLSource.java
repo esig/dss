@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.source;
 
+import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
@@ -56,6 +57,11 @@ public class TLSource {
 	 * Default : all trust services are selected
 	 */
 	private Predicate<TSPServiceType> trustServicePredicate;
+
+	/**
+	 * Defines whether an SDI can be considered as a trust anchor during the given period of time
+	 */
+	private Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate;
 	
 	/**
 	 * The cached CacheKey value (the key is computed from url parameter)
@@ -141,6 +147,28 @@ public class TLSource {
 	 */
 	public void setTrustServicePredicate(Predicate<TSPServiceType> trustServicePredicate) {
 		this.trustServicePredicate = trustServicePredicate;
+	}
+
+	/**
+	 * Gets a predicate for filtering {@code TrustServiceStatusAndInformationExtensions} in order to define
+	 * an acceptability period of a corresponding SDI as a trust anchor.
+	 *
+	 * @return trust anchor validity predicate
+	 */
+	public Predicate<TrustServiceStatusAndInformationExtensions> getTrustAnchorValidityPredicate() {
+		return trustAnchorValidityPredicate;
+	}
+
+	/**
+	 * Sets a predicate allowing to filter {@code TrustServiceStatusAndInformationExtensions} in order to define
+	 * an acceptability period of a corresponding SDI as a trust anchor.
+	 * If the predicate is defined and condition fails, the SDI will not be treated as a trust anchor
+	 * during the validation process.
+	 *
+	 * @param trustAnchorValidityPredicate trust anchor validity predicate
+	 */
+	public void setTrustAnchorValidityPredicate(Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate) {
+		this.trustAnchorValidityPredicate = trustAnchorValidityPredicate;
 	}
 
 	/**

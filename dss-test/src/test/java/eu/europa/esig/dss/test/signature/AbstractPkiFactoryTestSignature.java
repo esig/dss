@@ -206,7 +206,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
 		super.checkCertificateChain(diagnosticData);
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertTrue(Utils.isCollectionNotEmpty(signatureCertificateChain));
 		// upper certificate than trust anchors are ignored
 		assertTrue(getCertificateChain().length >= signatureCertificateChain.size());

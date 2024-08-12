@@ -54,6 +54,7 @@ public class CertificateVerifierBuilder {
 			copy.setRevocationFallback(certificateVerifier.isRevocationFallback());
 			copy.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			copy.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
+			copy.setTrustAnchorVerifier(certificateVerifier.getTrustAnchorVerifier());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
 			copy.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			copy.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
@@ -85,6 +86,7 @@ public class CertificateVerifierBuilder {
 			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 			offlineCertificateVerifier.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			offlineCertificateVerifier.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
+			offlineCertificateVerifier.setTrustAnchorVerifier(certificateVerifier.getTrustAnchorVerifier());
 		}
 		// disable alerting
 		offlineCertificateVerifier.setAlertOnInvalidSignature(new SilentOnStatusAlert());

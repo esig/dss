@@ -37,6 +37,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactWithIdCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
@@ -136,8 +137,10 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 		item = item.setNextItem(prospectiveCertificateChain(revocationData.getSigningCertificate()));
 		
 		for (CertificateWrapper revocationCertificate : revocationData.getCertificateChain()) {
+			SubContext subContext = revocationData.getSigningCertificate().getId().equals(revocationCertificate.getId()) ?
+					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
 			
-			if (revocationCertificate.isTrusted()) {
+			if (isTrustAnchor(revocationCertificate, subContext)) {
 				break;
 			}
 			
@@ -150,9 +153,6 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 			if (revocationCertificate.isSelfSigned()) {
 				item = item.setNextItem(selfSigned(revocationCertificate));
 			}
-
-			SubContext subContext = revocationData.getSigningCertificate().getId().equals(revocationCertificate.getId()) ?
-					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
 
 			RevocationDataRequiredCheck<XmlRAC> revocationDataRequired = revocationDataRequired(revocationCertificate, subContext);
 			if (revocationDataRequired.process()) {
@@ -243,7 +243,13 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 
 	private RevocationDataRequiredCheck<XmlRAC> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
 		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(Context.REVOCATION, subContext);
-		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint);
+		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, controlTime, sunsetDateConstraint, constraint);
+	}
+
+	private boolean isTrustAnchor(CertificateWrapper certificateWrapper, SubContext subContext) {
+		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, subContext);
+		return ValidationProcessUtils.isTrustAnchor(certificateWrapper, controlTime, sunsetDateConstraint);
 	}
 
 	@Override

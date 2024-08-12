@@ -159,6 +159,28 @@ public enum TrustServiceStatus {
 	}
 
 	/**
+	 * Gets whether the given {@code status} is set by national law after eIDAS
+	 *
+	 * @param uri {@link String} identifying the trust service status
+	 * @return TRUE if the status is set by national law after eIDAS, FALSE otherwise
+	 */
+	public static boolean isSetByNationalLawAfterEIDAS(String uri) {
+		TrustServiceStatus tss = fromUri(uri);
+		return TrustServiceStatus.SET_BY_NATIONAL_LAW == tss;
+	}
+
+	/**
+	 * Gets whether the given {@code status} is recognized at national level after eIDAS
+	 *
+	 * @param uri {@link String} identifying the trust service status
+	 * @return TRUE if the status is recognized at national level after eIDAS, FALSE otherwise
+	 */
+	public static boolean isRecognizedAtNationalLevelAfterEIDAS(String uri) {
+		TrustServiceStatus tss = fromUri(uri);
+		return TrustServiceStatus.RECONIZED_AT_NATIONAL_LEVEL == tss;
+	}
+
+	/**
 	 * This method returns a corresponding {@code TrustServiceStatus} by the given {@code uri}
 	 *
 	 * @param uri {@link String} to get {@code TrustServiceStatus} for

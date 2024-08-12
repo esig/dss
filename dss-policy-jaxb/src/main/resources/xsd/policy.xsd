@@ -695,6 +695,11 @@
 					<xsd:documentation>Checks if the validation time is in the validity range of the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SunsetDate" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>If a sunset date is associated with the that trust anchor, checks whether the validation is before the certificate's trust sunset date.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="AuthorityInfoAccessPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the AIA (issuer) in the certificate</xsd:documentation>

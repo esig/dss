@@ -392,6 +392,16 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns certificate's sunset date constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if SunsetDate constraint for a given certificate context is present
+	 * 			in the constraint file, null otherwise.
+	 */
+	LevelConstraint getCertificateSunsetDateConstraint(Context context, SubContext subContext);
+
+	/**
 	 * This constraint requests the presence of the trust anchor in the certificate chain.
 	 *
 	 * @param context {@link Context}

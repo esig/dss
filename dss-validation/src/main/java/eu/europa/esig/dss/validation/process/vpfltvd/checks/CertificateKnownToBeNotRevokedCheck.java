@@ -53,6 +53,11 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
     private final CertificateRevocationWrapper revocationData;
 
     /**
+     * Defines whether a revocation data issuer is trusted
+     */
+    private boolean isRevocationDataIssuerTrusted;
+
+    /**
      * Validation time
      */
     private final Date currentTime;
@@ -69,16 +74,19 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
      * @param result {@link XmlConstraintsConclusion}
      * @param certificate {@link CertificateWrapper}
      * @param revocationData {@link CertificateRevocationWrapper}
+     * @param isRevocationDataIssuerTrusted whether the revocation issuer is trusted
      * @param currentTime {@link Date}
      * @param bsConclusion {@link XmlConclusion}
      * @param constraint {@link LevelConstraint}
      */
     public CertificateKnownToBeNotRevokedCheck(I18nProvider i18nProvider, T result,
                                                CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
-                                               Date currentTime, XmlConclusion bsConclusion, LevelConstraint constraint) {
+                                               boolean isRevocationDataIssuerTrusted, Date currentTime, XmlConclusion bsConclusion,
+                                               LevelConstraint constraint) {
         super(i18nProvider, result, constraint, certificate.getId());
         this.certificate = certificate;
         this.revocationData = revocationData;
+        this.isRevocationDataIssuerTrusted = isRevocationDataIssuerTrusted;
         this.currentTime = currentTime;
         this.bsConclusion = bsConclusion;
     }
@@ -95,8 +103,7 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
     }
 
     private boolean isRevocationIssuerValid(CertificateWrapper revocationDataIssuer) {
-        return revocationDataIssuer.isTrusted() ||
-                isInValidityRange(revocationData.getSigningCertificate());
+        return isRevocationDataIssuerTrusted || isInValidityRange(revocationDataIssuer);
     }
 
     @Override

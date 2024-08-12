@@ -56,6 +56,7 @@ class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isCheckRevocationForUntrustedChains(), copy.isCheckRevocationForUntrustedChains());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
+        assertEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertEquals(certificateVerifier.getAlertOnInvalidSignature(), copy.getAlertOnInvalidSignature());
@@ -84,6 +85,7 @@ class CertificateVerifierBuilderTest {
 
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
+        assertEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertNull(copy.getAIASource());
@@ -115,6 +117,7 @@ class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isCheckRevocationForUntrustedChains(), copy.isCheckRevocationForUntrustedChains());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
+        assertEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertEquals(certificateVerifier.getAlertOnInvalidTimestamp(), copy.getAlertOnInvalidTimestamp());

@@ -941,12 +941,10 @@ class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraint
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_DAA_ANS, false);
 
 		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_RSASSA_PSS, 0);
-		assertEquals(Indication.TOTAL_PASSED, result); // TODO : temp processing in 6.1 (accepts RSA)
+		assertEquals(Indication.INDETERMINATE, result);
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		// TODO : temp handling (see above)
-		// checkWarningMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_EAA_ANS, EncryptionAlgorithm.RSASSA_PSS.getName(), MessageTag.ACCM_POS_SIG_SIG));
 
 		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_DSA, 0); // some other algorithm is not defined
 		assertEquals(Indication.TOTAL_PASSED, result);

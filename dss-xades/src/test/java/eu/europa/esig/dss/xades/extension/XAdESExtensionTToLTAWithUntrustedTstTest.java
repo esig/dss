@@ -25,7 +25,7 @@ import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.validation.TimestampTokenVerifier;
+import eu.europa.esig.dss.spi.validation.TrustAnchorVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.signature.XAdESService;
@@ -70,16 +70,16 @@ class XAdESExtensionTToLTAWithUntrustedTstTest extends AbstractXAdESTestExtensio
     protected DSSDocument extendSignature(DSSDocument signedDocument) throws Exception {
         certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
-        TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
-        certificateVerifier.setTimestampTokenVerifier(timestampTokenVerifier);
+        TrustAnchorVerifier trustAnchorVerifier = TrustAnchorVerifier.createDefaultTrustAnchorVerifier();
+        certificateVerifier.setTrustAnchorVerifier(trustAnchorVerifier);
 
-        timestampTokenVerifier.setAcceptUntrustedCertificateChains(false);
+        trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(false);
 
         Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
         assertTrue(exception.getMessage().contains(
                 "The signing certificate has expired and there is no POE during its validity range"));
 
-        timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
+        trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(true);
 
         return super.extendSignature(signedDocument);
     }

@@ -78,7 +78,12 @@ class RevocationDataLoadingStrategyFactoryTest {
         RevocationDataLoadingStrategy revocationDataLoadingStrategy = new OCSPFirstRevocationDataLoadingStrategyFactory().create();
         revocationDataLoadingStrategy.setOcspSource(ocspSource);
         revocationDataLoadingStrategy.setCrlSource(crlSource);
-        revocationDataLoadingStrategy.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
+
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        TrustAnchorVerifier trustAnchorVerifier = TrustAnchorVerifier.createDefaultTrustAnchorVerifier();
+        trustAnchorVerifier.setAcceptRevocationUntrustedCertificateChains(true);
+        revocationDataVerifier.setTrustAnchorVerifier(trustAnchorVerifier);
+        revocationDataLoadingStrategy.setRevocationDataVerifier(revocationDataVerifier);
 
         RevocationToken<?> revocationToken = revocationDataLoadingStrategy.getRevocationToken(CERTIFICATE, ISSUER);
         assertNotNull(revocationToken);
@@ -99,7 +104,12 @@ class RevocationDataLoadingStrategyFactoryTest {
         RevocationDataLoadingStrategy revocationDataLoadingStrategy = new CRLFirstRevocationDataLoadingStrategyFactory().create();
         revocationDataLoadingStrategy.setOcspSource(ocspSource);
         revocationDataLoadingStrategy.setCrlSource(crlSource);
-        revocationDataLoadingStrategy.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
+
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        TrustAnchorVerifier trustAnchorVerifier = TrustAnchorVerifier.createDefaultTrustAnchorVerifier();
+        trustAnchorVerifier.setAcceptRevocationUntrustedCertificateChains(true);
+        revocationDataVerifier.setTrustAnchorVerifier(trustAnchorVerifier);
+        revocationDataLoadingStrategy.setRevocationDataVerifier(revocationDataVerifier);
 
         RevocationToken<?> revocationToken = revocationDataLoadingStrategy.getRevocationToken(CERTIFICATE, ISSUER);
         assertNotNull(revocationToken);

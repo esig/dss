@@ -10,7 +10,9 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 public interface TrustedCertificateSourceWithTime {
 
     /**
-     * Returns trust time period for the given certificate, when the certificate is considered as a trust anchor
+     * Returns trust time period for the given certificate, when the certificate is considered as a trust anchor.
+     * For an unbounded period of trust time, returns a {@code CertificateTrustTime} with empty values.
+     * When the certificate is not trusted at any time, returns not trusted {@code CertificateTrustTime} entry.
      *
      * @param token {@link CertificateToken}
      * @return {@link CertificateTrustTime}

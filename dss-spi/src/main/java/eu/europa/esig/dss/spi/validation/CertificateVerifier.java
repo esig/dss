@@ -150,6 +150,28 @@ public interface CertificateVerifier {
 	void setTimestampTokenVerifier(final TimestampTokenVerifier timestampTokenVerifier);
 
 	/**
+	 * Returns a {@code TrustAnchorVerifier} associated with this verifier.
+	 *
+	 * @return {@link TrustAnchorVerifier}
+	 */
+	TrustAnchorVerifier getTrustAnchorVerifier();
+
+	/**
+	 * Sets {@code TrustAnchorVerifier} used to validate acceptance of
+	 * the trust anchors
+	 * <p>
+	 * NOTE: This object is not synchronized by default with the used XML Validation Policy.
+	 * 	     The trusted certificate source set within CertificateVerifier is synchronized automatically
+	 * 	     unless explicitly defined within TrustAnchorVerifier.
+	 *       Please configure the object yourself in case a customized behavior is expected for acceptance
+	 *       of trust anchors.
+	 *
+	 * @param trustAnchorVerifier
+	 *                    {@link TrustAnchorVerifier}
+	 */
+	void setTrustAnchorVerifier(final TrustAnchorVerifier trustAnchorVerifier);
+
+	/**
 	 * Returns the trusted certificate sources associated with this verifier. These
 	 * sources are used to identify the trusted anchors.
 	 *

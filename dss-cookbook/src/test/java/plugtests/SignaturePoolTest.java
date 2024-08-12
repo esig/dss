@@ -56,6 +56,7 @@ import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
+import eu.europa.esig.dss.tsl.function.GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
@@ -135,6 +136,7 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 		lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
 		lotlSource.setCertificateSource(ojContentKeyStore());
 		lotlSource.setPivotSupport(true);
+		lotlSource.setTrustAnchorValidityPredicate(new GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate());
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		
 		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();

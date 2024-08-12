@@ -1588,8 +1588,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();
 		for (XmlCertificate xmlCertificate : usedCertificates) {
 			assertTrue(xmlCertificate.getBase64Encoded() != null || xmlCertificate.getDigestAlgoAndValue() != null);
-			
-			if (!xmlCertificate.isTrusted() && !hasOcspNoCheck(xmlCertificate) && !xmlCertificate.isSelfSigned()) {
+
+			assertNotNull(xmlCertificate.getTrusted());
+			if (xmlCertificate.getTrusted() != null && !xmlCertificate.getTrusted().isValue() && !hasOcspNoCheck(xmlCertificate) && !xmlCertificate.isSelfSigned()) {
 				List<XmlCertificateRevocation> revocations = xmlCertificate.getRevocations();
 				for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
 					List<XmlRevocation> xmlRevocations = diagnosticDataJaxb.getUsedRevocations();

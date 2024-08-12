@@ -28,6 +28,9 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+
+import java.util.Date;
 
 /**
  * This class checks if the provided certificate token is trusted
@@ -40,23 +43,34 @@ public class RevocationIssuerTrustedCheck<T extends XmlConstraintsConclusion> ex
     /** Certificate to check */
     private final CertificateWrapper certificate;
 
+    /** The validation time */
+    private final Date currentTime;
+
+    /** Identifies the constraint for the revocation data issuer sunset date */
+    private final LevelConstraint revocationIssuerSunsetDateConstraint;
+
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlConstraintsConclusion}
      * @param certificate {@link CertificateWrapper} to check
+     * @param currentTime {@link Date}
+     * @param revocationIssuerSunsetDateConstraint {@link LevelConstraint}
      * @param constraint {@link LevelConstraint}
      */
     public RevocationIssuerTrustedCheck(I18nProvider i18nProvider, T result,
-                                                        CertificateWrapper certificate, LevelConstraint constraint) {
+                                        CertificateWrapper certificate, Date currentTime,
+                                        LevelConstraint revocationIssuerSunsetDateConstraint, LevelConstraint constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
+        this.currentTime = currentTime;
+        this.revocationIssuerSunsetDateConstraint = revocationIssuerSunsetDateConstraint;
     }
 
     @Override
     protected boolean process() {
-        return certificate != null && certificate.isTrusted();
+        return certificate != null && ValidationProcessUtils.isTrustAnchor(certificate, currentTime, revocationIssuerSunsetDateConstraint);
     }
 
     @Override

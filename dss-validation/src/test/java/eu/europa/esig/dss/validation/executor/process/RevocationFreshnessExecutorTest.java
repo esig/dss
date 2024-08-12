@@ -15,6 +15,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
@@ -253,7 +254,9 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
         assertNotNull(caCertificate);
 
-        caCertificate.getCertificate().setTrusted(true);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(true);
+        caCertificate.getCertificate().setTrusted(xmlTrusted);
 
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
@@ -309,7 +312,9 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
         assertNotNull(caCertificate);
 
-        caCertificate.getCertificate().setTrusted(true);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(true);
+        caCertificate.getCertificate().setTrusted(xmlTrusted);
 
         List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
         assertEquals(1, usedTimestamps.size());
@@ -317,7 +322,9 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         XmlSigningCertificate signTstCertificate = xmlTimestamp.getSigningCertificate();
         assertNotNull(signTstCertificate);
 
-        signTstCertificate.getCertificate().setTrusted(true);
+        xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(true);
+        signTstCertificate.getCertificate().setTrusted(xmlTrusted);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
@@ -438,7 +445,9 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         XmlSigningCertificate caCertificate = signingCertificate.getCertificate().getSigningCertificate();
         assertNotNull(caCertificate);
 
-        caCertificate.getCertificate().setTrusted(true);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(true);
+        caCertificate.getCertificate().setTrusted(xmlTrusted);
 
         List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
         assertEquals(1, usedTimestamps.size());

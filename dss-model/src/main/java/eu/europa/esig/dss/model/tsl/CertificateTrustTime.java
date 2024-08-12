@@ -11,11 +11,16 @@ import java.util.Objects;
  */
 public class CertificateTrustTime extends BaseTimeDependent {
 
+    /** Defines whether the current object identifies a trusted certificate */
+    private final boolean trusted;
+
     /**
-     * Empty constructor
+     * Constructor to create either a not trusted or indefinitely trusted entry
+     *
+     * @param trusted whether the object corresponds to a trusted certificate token
      */
-    public CertificateTrustTime() {
-        super();
+    public CertificateTrustTime(final boolean trusted) {
+        this.trusted = trusted;
     }
 
     /**
@@ -26,6 +31,16 @@ public class CertificateTrustTime extends BaseTimeDependent {
      */
     public CertificateTrustTime(final Date startDate, final Date endDate) {
         super(startDate, endDate);
+        this.trusted = true;
+    }
+
+    /**
+     * Returns whether the corresponding certificate has a trusted period
+     *
+     * @return TRUE if the certificate has a trusted period, FALSE otherwise
+     */
+    public boolean isTrusted() {
+        return trusted;
     }
 
     /**
@@ -35,7 +50,7 @@ public class CertificateTrustTime extends BaseTimeDependent {
      * @return TRUE if the certificate is trusted during the {@code controlTime}, FALSE otherwise
      */
     public boolean isTrustedAtTime(Date controlTime) {
-        return Objects.equals(getDateBefore(getStartDate(), controlTime), getStartDate()) &&
+        return isTrusted() && Objects.equals(getDateBefore(getStartDate(), controlTime), getStartDate()) &&
                 Objects.equals(getDateAfter(getEndDate(), controlTime), getEndDate());
     }
 

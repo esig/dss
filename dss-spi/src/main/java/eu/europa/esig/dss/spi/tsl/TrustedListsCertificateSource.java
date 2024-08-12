@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class allows injection of trusted certificates from Trusted Lists
@@ -102,6 +103,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	@Override
 	public synchronized void setTrustPropertiesByCertificates(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts) {
+		Objects.requireNonNull(trustPropertiesByCerts, "TrustPropertiesByCerts cannot be null!");
 		this.trustPropertiesByEntity = new HashMap<>(); // reinit the map
 		super.reset();
 		trustPropertiesByCerts.forEach(this::addCertificate);
@@ -109,6 +111,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	
 	private void addCertificate(CertificateToken certificateToken, List<TrustProperties> trustPropertiesList) {
 		super.addCertificate(certificateToken);
+		Objects.requireNonNull(trustPropertiesList, "TrustPropertiesList must be filled");
 		
 		EntityIdentifier entityKey = certificateToken.getEntityKey();
 		List<TrustProperties> list = trustPropertiesByEntity.computeIfAbsent(entityKey, k -> new ArrayList<>());
@@ -131,12 +134,14 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	@Override
 	public synchronized void setTrustTimeByCertificates(Map<CertificateToken, List<CertificateTrustTime>> trustTimeByCertificate) {
+		Objects.requireNonNull(trustTimeByCertificate, "trustTimeByCertificate cannot be null!");
 		this.trustTimeByEntity = new HashMap<>(); // reinit the map
 		trustTimeByCertificate.forEach(this::addCertificateTrustTimes);
 	}
 
 	private void addCertificateTrustTimes(CertificateToken certificateToken, List<CertificateTrustTime> certificateTrustTimes) {
 		super.addCertificate(certificateToken);
+		Objects.requireNonNull(certificateTrustTimes, "CertificateTrustTimes must be filled");
 
 		EntityIdentifier entityKey = certificateToken.getEntityKey();
 		List<CertificateTrustTime> list = trustTimeByEntity.computeIfAbsent(entityKey, k -> new ArrayList<>());
@@ -149,30 +154,29 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	@Override
 	public synchronized CertificateTrustTime getTrustTime(CertificateToken token) {
+		if (!super.isTrusted(token)) {
+			return new CertificateTrustTime(false);
+		}
 		List<CertificateTrustTime> trustTimes = trustTimeByEntity.get(token.getEntityKey());
 		if (Utils.isCollectionNotEmpty(trustTimes)) {
 			CertificateTrustTime certificateTrustTime = null;
 			for (CertificateTrustTime trustTime : trustTimes) {
-				if (certificateTrustTime == null) {
+				if (certificateTrustTime == null || !certificateTrustTime.isTrusted()) {
 					certificateTrustTime = trustTime;
-				} else {
+				} else if (trustTime != null && trustTime.isTrusted()) {
 					certificateTrustTime = certificateTrustTime.getJointTrustTime(trustTime.getStartDate(), trustTime.getEndDate());
 				}
 			}
 			return certificateTrustTime;
 		} else {
-			return new CertificateTrustTime(); // no trust anchor expiration time defined
+			return new CertificateTrustTime(true); // no trust anchor expiration time defined
 		}
 	}
 
 	@Override
 	public boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime) {
-		EntityIdentifier entityKey = certificateToken.getEntityKey();
-		List<CertificateTrustTime> certificateTrustTimeList = trustTimeByEntity.get(entityKey);
-		if (Utils.isCollectionNotEmpty(certificateTrustTimeList)) {
-			return certificateTrustTimeList.stream().anyMatch(t -> t.isTrustedAtTime(controlTime));
-		}
-		return false;
+		CertificateTrustTime trustTime = getTrustTime(certificateToken);
+		return trustTime.isTrustedAtTime(controlTime);
 	}
 
 	@Override
@@ -204,6 +208,12 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 			}
 		}
 		return urls;
+	}
+
+	@Override
+	public boolean isTrusted(CertificateToken certificateToken) {
+		CertificateTrustTime trustTime = getTrustTime(certificateToken);
+		return super.isTrusted(certificateToken) && (trustTime == null || trustTime.isTrusted());
 	}
 
 	/**

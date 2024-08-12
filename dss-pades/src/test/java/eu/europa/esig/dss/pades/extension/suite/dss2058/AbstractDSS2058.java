@@ -31,9 +31,9 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
-import eu.europa.esig.dss.spi.validation.TimestampTokenVerifier;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.TrustAnchorVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.slf4j.event.Level;
@@ -72,9 +72,9 @@ public abstract class AbstractDSS2058 extends AbstractPAdESTestValidation {
 		completeCertificateVerifier.setAlertOnRevokedCertificate(new LogOnStatusAlert(Level.ERROR));
 		completeCertificateVerifier.setAlertOnExpiredCertificate(new LogOnStatusAlert(Level.WARN));
 
-		TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
-		timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
-		completeCertificateVerifier.setTimestampTokenVerifier(timestampTokenVerifier);
+		TrustAnchorVerifier trustAnchorVerifier = TrustAnchorVerifier.createDefaultTrustAnchorVerifier();
+		trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(true);
+		completeCertificateVerifier.setTrustAnchorVerifier(trustAnchorVerifier);
 
 		return completeCertificateVerifier;
 	}

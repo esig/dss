@@ -72,11 +72,6 @@ public class TrustedListCertificateSourceSynchronizer {
 	private final SynchronizationStrategy synchronizationStrategy;
 
 	/**
-	 * Defines whether an SDI can be considred as a trust anchor during the given period of time
-	 */
-	private final Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate;
-
-	/**
 	 * The certificate source to be synchronized
 	 */
 	private final TrustPropertiesCertificateSource certificateSource;
@@ -93,17 +88,14 @@ public class TrustedListCertificateSourceSynchronizer {
 	 * @param lotlSources {@link LOTLSource}s
 	 * @param certificateSource {@link TrustPropertiesCertificateSource}
 	 * @param synchronizationStrategy {@link SynchronizationStrategy}
-	 * @param trustAnchorValidityPredicate predicate to filter trust anchor validity periods
 	 * @param cacheAccess {@link SynchronizerCacheAccess}
 	 */
 	public TrustedListCertificateSourceSynchronizer(TLSource[] tlSources, LOTLSource[] lotlSources,
 			TrustPropertiesCertificateSource certificateSource, SynchronizationStrategy synchronizationStrategy,
-			Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate,
 			SynchronizerCacheAccess cacheAccess) {
 		this.tlSources = tlSources;
 		this.lotlSources = lotlSources;
 		this.synchronizationStrategy = synchronizationStrategy;
-		this.trustAnchorValidityPredicate = trustAnchorValidityPredicate;
 		this.certificateSource = certificateSource;
 		this.cacheAccess = cacheAccess;
 	}
@@ -176,6 +168,8 @@ public class TrustedListCertificateSourceSynchronizer {
 				} else {
 					final List<TrustServiceProvider> trustServiceProviders = parsingCacheInfo.getTrustServiceProviders();
 					if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
+						final Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate =
+								getTrustAnchorValidityPredicate(tlInfo, relatedLOTL);
 						for (TrustServiceProvider original : trustServiceProviders) {
 							TrustServiceProvider detached = getDetached(original);
 							for (TrustService trustService : original.getServices()) {
@@ -183,7 +177,7 @@ public class TrustedListCertificateSourceSynchronizer {
 										trustService.getStatusAndInformationExtensions();
 								TrustProperties trustProperties = getTrustProperties(
 										relatedLOTL, tlInfo, detached, statusAndInformationExtensions);
-								List<CertificateTrustTime> certificateTrustTimes = getCertificateTrustTimes(statusAndInformationExtensions);
+								List<CertificateTrustTime> certificateTrustTimes = getCertificateTrustTimes(statusAndInformationExtensions, trustAnchorValidityPredicate);
 								for (CertificateToken certificate : trustService.getCertificates()) {
 									addCertificate(trustPropertiesByCerts, trustTimeByCerts, certificate, trustProperties, certificateTrustTimes);
 								}
@@ -247,20 +241,48 @@ public class TrustedListCertificateSourceSynchronizer {
 		return new TrustProperties(relatedLOTL, tlInfo, detached, statusAndInformationExtensions);
 	}
 
-	private List<CertificateTrustTime> getCertificateTrustTimes(TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions) {
+	private List<CertificateTrustTime> getCertificateTrustTimes(
+			TimeDependentValues<TrustServiceStatusAndInformationExtensions> statusAndInformationExtensions,
+			Predicate<TrustServiceStatusAndInformationExtensions> trustAnchorValidityPredicate) {
 		if (trustAnchorValidityPredicate == null) {
 			// return empty instance (always valid), when no predicate is defined
-			return Collections.singletonList(new CertificateTrustTime());
+			return Collections.singletonList(new CertificateTrustTime(true));
 		}
 
 		final List<CertificateTrustTime> result = new ArrayList<>();
         for (TrustServiceStatusAndInformationExtensions trustServiceStatusAndInformation : statusAndInformationExtensions) {
-            // TODO : add handling of MRA
+            // TODO : add handling of MRA ?
             if (trustAnchorValidityPredicate.test(trustServiceStatusAndInformation)) {
 				result.add(new CertificateTrustTime(trustServiceStatusAndInformation.getStartDate(), trustServiceStatusAndInformation.getEndDate()));
-            }
+            } else {
+				result.add(new CertificateTrustTime(false)); // not trusted
+			}
         }
 		return result;
+	}
+
+	private Predicate<TrustServiceStatusAndInformationExtensions> getTrustAnchorValidityPredicate(TLInfo tlInfo, LOTLInfo relatedLOTLInfo) {
+		TLSource tlSource = getRelatedTLSource(tlInfo, relatedLOTLInfo);
+		if (tlSource != null) {
+			return tlSource.getTrustAnchorValidityPredicate();
+		}
+		return null;
+	}
+
+	private TLSource getRelatedTLSource(TLInfo tlInfo, LOTLInfo relatedLOTLInfo) {
+		if (relatedLOTLInfo != null) {
+			for (LOTLSource lotlSource : lotlSources) {
+				if (lotlSource.getUrl().equals(relatedLOTLInfo.getUrl())) {
+					return lotlSource;
+				}
+			}
+		}
+		for (TLSource tlSource : tlSources) {
+			if (tlSource.getUrl().equals(tlInfo.getUrl())) {
+				return tlSource;
+			}
+		}
+		return null;
 	}
 
 }

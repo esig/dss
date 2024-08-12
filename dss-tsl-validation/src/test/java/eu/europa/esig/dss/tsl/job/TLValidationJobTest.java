@@ -26,6 +26,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.model.tsl.CertificatePivotStatus;
+import eu.europa.esig.dss.model.tsl.CertificateTrustTime;
 import eu.europa.esig.dss.model.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
@@ -45,6 +46,8 @@ import eu.europa.esig.dss.spi.x509.KeyStoreCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
+import eu.europa.esig.dss.tsl.function.GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate;
+import eu.europa.esig.dss.tsl.function.GrantedTrustAnchorPeriodPredicate;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
@@ -401,6 +404,168 @@ class TLValidationJobTest {
 		assertNotNull(czTL.getValidationCacheInfo().getSigningTime());
 		assertNotNull(czTL.getValidationCacheInfo().getSigningCertificate());
 		assertEquals(czSigningCertificate, czTL.getValidationCacheInfo().getSigningCertificate());
+	}
+
+	@Test
+	void trustTimeExtractAllTest() {
+		updateTLUrl("src/test/resources/lotlCache/SK.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.offlineRefresh();
+
+		assertEquals(143, trustedListsCertificateSource.getCertificates().size());
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2024, Calendar.JANUARY, 1, 0, 0, 0);
+		Date controlTime = calendar.getTime();
+
+		int validCertsCounter = 0;
+		int invalidCertsCounter = 0;
+		for (CertificateToken certificateToken : trustedListsCertificateSource.getCertificates()) {
+			assertTrue(trustedListsCertificateSource.isTrusted(certificateToken));
+
+			CertificateTrustTime trustTime = trustedListsCertificateSource.getTrustTime(certificateToken);
+			assertNotNull(trustTime);
+			assertTrue(trustTime.isTrusted());
+
+			if (trustedListsCertificateSource.isTrustedAtTime(certificateToken, controlTime)) {
+				assertTrue(trustTime.isTrusted());
+				assertTrue(trustTime.isTrustedAtTime(controlTime));
+				assertNull(trustTime.getStartDate());
+				assertNull(trustTime.getEndDate());
+				++validCertsCounter;
+			} else {
+				++invalidCertsCounter;
+			}
+		}
+		assertEquals(143, validCertsCounter);
+		assertEquals(0, invalidCertsCounter);
+		assertEquals(143, validCertsCounter + invalidCertsCounter);
+	}
+
+	@Test
+	void trustTimeExtractGrantedTest() {
+		updateTLUrl("src/test/resources/lotlCache/SK.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+		czSource.setTrustAnchorValidityPredicate(new GrantedTrustAnchorPeriodPredicate());
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.offlineRefresh();
+
+		assertEquals(143, trustedListsCertificateSource.getCertificates().size());
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2024, Calendar.JANUARY, 1, 0, 0, 0);
+		Date controlTime = calendar.getTime();
+
+		int validCertsCounter = 0;
+		int expiredCertsCounter = 0;
+		int invalidCertsCounter = 0;
+		for (CertificateToken certificateToken : trustedListsCertificateSource.getCertificates()) {
+			CertificateTrustTime trustTime = trustedListsCertificateSource.getTrustTime(certificateToken);
+			assertNotNull(trustTime);
+
+			if (trustedListsCertificateSource.isTrusted(certificateToken)) {
+				assertTrue(trustTime.isTrusted());
+
+				if (trustedListsCertificateSource.isTrustedAtTime(certificateToken, controlTime)) {
+					assertTrue(trustTime.isTrustedAtTime(controlTime));
+					assertNotNull(trustTime.getStartDate());
+					assertFalse(controlTime.before(trustTime.getStartDate()));
+					assertTrue(trustTime.getEndDate() == null || controlTime.after(trustTime.getEndDate()));
+					++validCertsCounter;
+				} else {
+					assertFalse(trustTime.isTrustedAtTime(controlTime));
+					assertNotNull(trustTime.getStartDate());
+					assertNotNull(trustTime.getEndDate());
+					assertTrue(controlTime.after(trustTime.getEndDate()));
+					++expiredCertsCounter;
+				}
+
+			} else {
+				assertFalse(trustTime.isTrusted());
+				assertFalse(trustTime.isTrustedAtTime(controlTime));
+				assertFalse(trustedListsCertificateSource.isTrustedAtTime(certificateToken, controlTime));
+				++invalidCertsCounter;
+			}
+
+		}
+		assertEquals(135, validCertsCounter);
+		assertEquals(3, expiredCertsCounter);
+		assertEquals(5, invalidCertsCounter);
+		assertEquals(143, validCertsCounter + expiredCertsCounter + invalidCertsCounter);
+	}
+
+	@Test
+	void trustTimeExtractGrantedOrRecognizedAtNationalLevelTest() {
+		updateTLUrl("src/test/resources/lotlCache/SK.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+		czSource.setTrustAnchorValidityPredicate(new GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate());
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.offlineRefresh();
+
+		assertEquals(143, trustedListsCertificateSource.getCertificates().size());
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2024, Calendar.JANUARY, 1, 0, 0, 0);
+		Date controlTime = calendar.getTime();
+
+		int validCertsCounter = 0;
+		int expiredCertsCounter = 0;
+		int invalidCertsCounter = 0;
+		for (CertificateToken certificateToken : trustedListsCertificateSource.getCertificates()) {
+			CertificateTrustTime trustTime = trustedListsCertificateSource.getTrustTime(certificateToken);
+			assertNotNull(trustTime);
+
+			if (trustedListsCertificateSource.isTrusted(certificateToken)) {
+				assertTrue(trustTime.isTrusted());
+
+				if (trustedListsCertificateSource.isTrustedAtTime(certificateToken, controlTime)) {
+					assertTrue(trustTime.isTrustedAtTime(controlTime));
+					assertNotNull(trustTime.getStartDate());
+					assertFalse(controlTime.before(trustTime.getStartDate()));
+					assertTrue(trustTime.getEndDate() == null || controlTime.after(trustTime.getEndDate()));
+					++validCertsCounter;
+				} else {
+					assertFalse(trustTime.isTrustedAtTime(controlTime));
+					assertNotNull(trustTime.getStartDate());
+					assertNotNull(trustTime.getEndDate());
+					assertTrue(controlTime.after(trustTime.getEndDate()));
+					++expiredCertsCounter;
+				}
+
+			} else {
+				assertFalse(trustTime.isTrusted());
+				assertFalse(trustTime.isTrustedAtTime(controlTime));
+				assertFalse(trustedListsCertificateSource.isTrustedAtTime(certificateToken, controlTime));
+				++invalidCertsCounter;
+			}
+
+		}
+		assertEquals(140, validCertsCounter);
+		assertEquals(3, expiredCertsCounter);
+		assertEquals(0, invalidCertsCounter);
+		assertEquals(143, validCertsCounter + expiredCertsCounter + invalidCertsCounter);
 	}
 
 	@Test

@@ -208,6 +208,27 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		Date bestSignatureTime = poe.getLowestPOETime(token.getId());
 
 		/*
+		 * - If current time indication/sub indication is INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND_NO_POE:
+		 */
+		if (poeExists && Indication.INDETERMINATE.equals(currentConclusion.getIndication())
+				&& SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE.equals(currentConclusion.getSubIndication())) {
+			/*
+			 * a) If best-signature-time is before the issuance date of the signing certificate (notBefore field), the
+			 *    building block shall return the indication FAILED with the sub-indication NOT_YET_VALID.
+			 * b) If best-signature-time is after the expiration date of the signing certificate, the building block shall
+			 *    return the indication INDETERMINATE with the sub-indication OUT_OF_BOUNDS_NO_POE.
+			 * c) Else the building block shall go to step 7).
+			 */
+
+			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime, signingCertificate));
+
+			item = item.setNextItem(bestSignatureTimeAfterCertificateIssuanceAndBeforeCertificateExpiration(
+					bestSignatureTime, signingCertificate, SubIndication.OUT_OF_BOUNDS_NO_POE));
+
+		}
+
+
+		/*
 		 * - If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE,
 		 *   INDETERMINATE/REVOCATION_OUT_OF_BOUNDS_NO_POE or INDETERMINATE/TRY_LATER
 		 *   because the certificate has been found to be suspended, then:
@@ -356,7 +377,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 	private boolean isRevocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
 		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
-		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint).process();
+		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, currentTime, sunsetDateConstraint, constraint).process();
 	}
 
 	private ChainItem<XmlPSV> checkCertificateRevocationSelectorResult(XmlCRS crsResult) {
@@ -428,20 +450,20 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	private ChainItem<XmlPSV> certificateChainReliableAtPoeTime(ChainItem<XmlPSV> item, List<CertificateWrapper> certificateChain,
 			List<CertificateRevocationWrapper> signingCertificateRevocations, Context context, List<String> checkedTokens) {
 		for (CertificateWrapper certificate : certificateChain) {
-			if (certificate.isTrusted()) {
+			final SubContext subContext = token.getSigningCertificate().getId().equals(certificate.getId()) ?
+					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+			final Date certificatePoeTime = getLowestPoeTime(certificate);
+			if (isTrustAnchor(certificate, certificatePoeTime, context, subContext)) {
 				break;
 			}
 			if (checkedTokens.contains(certificate.getId())) {
 				continue;
 			}
 			checkedTokens.add(certificate.getId());
-			
-			final SubContext subContext = token.getSigningCertificate().getId().equals(certificate.getId()) ?
-					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+
 			final List<CertificateRevocationWrapper> revocationData = SubContext.SIGNING_CERT.equals(subContext) ?
 					signingCertificateRevocations : certificate.getCertificateRevocationData();
 
-			Date certificatePoeTime = getLowestPoeTime(certificate);
 
 			item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtPoeTime(certificate, certificatePoeTime,
 					ValidationProcessUtils.getCertificateChainCryptoPosition(context), policy.getCertificateCryptographicConstraint(context, subContext)));
@@ -464,6 +486,11 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			
 		}
 		return item;
+	}
+
+	private boolean isTrustAnchor(CertificateWrapper certificateWrapper, Date controlTime, Context context, SubContext subContext) {
+		LevelConstraint constraint = policy.getCertificateSunsetDateConstraint(context, subContext);
+		return ValidationProcessUtils.isTrustAnchor(certificateWrapper, controlTime, constraint);
 	}
 
 	private ChainItem<XmlPSV> revocationIsFresh(ChainItem<XmlPSV> item, Date bestSignatureTime) {
@@ -511,7 +538,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 	private boolean isCertificateSuspended() {
 		for (CertificateWrapper certificate : token.getCertificateChain()) {
-			if (certificate.isTrusted()) {
+			final SubContext subContext = token.getSigningCertificate().getId().equals(certificate.getId()) ?
+					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+			if (isTrustAnchor(certificate, currentTime, context, subContext)) {
 				break;
 			}
 			List<CertificateRevocationWrapper> revocationData = certificate.getCertificateRevocationData();

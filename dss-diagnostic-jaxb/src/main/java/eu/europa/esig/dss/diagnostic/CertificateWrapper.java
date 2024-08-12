@@ -114,7 +114,27 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the certificate is trusted, FALSE otherwise
 	 */
 	public boolean isTrusted() {
-		return certificate.isTrusted();
+		return certificate.getTrusted() != null && certificate.getTrusted().isValue();
+	}
+
+	/**
+	 * Returns a certificate's trust start date, when available. If null is returned and the certificate is trusted,
+	 * the certificate is considered indefinitely trusted.
+	 *
+	 * @return {@link Date} trust start date
+	 */
+	public Date getTrustStartDate() {
+		return certificate.getTrusted() != null ? certificate.getTrusted().getStartDate() : null;
+	}
+
+	/**
+	 * Returns a certificate's trust end date, when available. If null is returned and the certificate is trusted,
+	 * the certificate is considered indefinitely trusted.
+	 *
+	 * @return {@link Date} trust end date
+	 */
+	public Date getTrustSunsetDate() {
+		return certificate.getTrusted() != null ? certificate.getTrusted().getSunsetDate() : null;
 	}
 
 	/**

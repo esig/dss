@@ -80,7 +80,7 @@ public class PDFNotAdESLevelTWithoutCertificatesTest extends AbstractPAdESTestSi
     @Override
     protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
         assertNotNull(diagnosticData.getSigningCertificateId(diagnosticData.getFirstSignatureId()));
-        assertEquals(3, diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId()).size());
+        assertEquals(3, diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId()).size());
     }
 
     @Override

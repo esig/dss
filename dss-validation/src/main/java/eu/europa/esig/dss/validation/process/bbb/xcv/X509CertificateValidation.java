@@ -36,6 +36,7 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CheckSubXCVResult;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustServiceStatusCheck;
@@ -126,7 +127,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 			item = item.setNextItem(checkSubXCVResult(subXCV));
 
-			boolean trustAnchorReached = currentCertificate.isTrusted();
+			boolean trustAnchorReached = isTrustAnchorReached(currentCertificate, SubContext.SIGNING_CERT);
 
 			final Model model = validationPolicy.getValidationModel();
 
@@ -143,7 +144,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 						item = item.setNextItem(checkSubXCVResult(subXCV));
 
-						trustAnchorReached = certificate.isTrusted();
+						trustAnchorReached = isTrustAnchorReached(certificate, SubContext.CA_CERTIFICATE);
 						lastDate = Model.HYBRID.equals(model) ? lastDate : (Model.SHELL.equals(model) ? currentTime : certificate.getNotBefore());
 					}
 				}
@@ -174,6 +175,12 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	private boolean prospectiveCertificateChainCheckEnforced() {
 		LevelConstraint constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
 		return constraint != null && Level.FAIL == constraint.getLevel();
+	}
+
+	private boolean isTrustAnchorReached(CertificateWrapper certificateWrapper, SubContext subContext) {
+		LevelConstraint sunsetDateConstraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
+		return ValidationProcessUtils.isTrustAnchor(certificateWrapper, currentTime, sunsetDateConstraint)
+				|| (certificateWrapper.isTrusted() && !certificateWrapper.isTrustedChain()); // second part is to filter only prospective certificate chains
 	}
 
 	@Override

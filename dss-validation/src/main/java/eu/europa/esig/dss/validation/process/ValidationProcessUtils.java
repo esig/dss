@@ -42,6 +42,8 @@ import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
@@ -182,14 +184,17 @@ public class ValidationProcessUtils {
 	 *
 	 * @param token {@link TokenProxy} used in the validation process
 	 * @param certificate {@link CertificateWrapper} to get acceptable revocation data for
+	 * @param currentTime {@link Date}
 	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
 	 * @param poe {@link POEExtraction}
+	 * @param revocationIssuerSunsetDateConstraint {@link LevelConstraint}
 	 * @return a list of {@link CertificateRevocationWrapper}s
 	 */
 	public static List<CertificateRevocationWrapper> getAcceptableRevocationDataForPSVIfExistOrReturnAll(
-			TokenProxy token, CertificateWrapper certificate, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
+			TokenProxy token, CertificateWrapper certificate, Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs,
+			POEExtraction poe, LevelConstraint revocationIssuerSunsetDateConstraint) {
 		List<CertificateRevocationWrapper> revocationWrappers =
-				filterRevocationDataForPastSignatureValidation(token, certificate, bbbs, poe);
+				filterRevocationDataForPastSignatureValidation(token, certificate, currentTime, bbbs, poe, revocationIssuerSunsetDateConstraint);
 		if (Utils.isCollectionNotEmpty(revocationWrappers)) {
 			return revocationWrappers;
 		} else {
@@ -202,12 +207,15 @@ public class ValidationProcessUtils {
 	 *
 	 * @param token {@link TokenProxy} used in the validation process
 	 * @param certificate {@link CertificateWrapper} to get acceptable revocation data for
+	 * @param currentTime {@link Date}
 	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
 	 * @param poe {@link POEExtraction}
+	 * @param revocationIssuerSunsetDateConstraint {@link LevelConstraint}
 	 * @return a list of {@link CertificateRevocationWrapper}s
 	 */
 	private static List<CertificateRevocationWrapper> filterRevocationDataForPastSignatureValidation(
-			TokenProxy token, CertificateWrapper certificate, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
+			TokenProxy token, CertificateWrapper certificate, Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs,
+			POEExtraction poe, LevelConstraint revocationIssuerSunsetDateConstraint) {
 		final List<CertificateRevocationWrapper> certificateRevocations = new ArrayList<>();
 
 		for (CertificateRevocationWrapper certificateRevocation : certificate.getCertificateRevocationData()) {
@@ -216,12 +224,32 @@ public class ValidationProcessUtils {
 
 			if (ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())
 					&& ValidationProcessUtils.isRevocationDataAcceptable(bbbs.get(token.getId()), certificate, certificateRevocation)
-					&& revocationIssuer != null && (revocationIssuer.isTrusted() || poe.isPOEExistInRange(revocationIssuer.getId(),
-					revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter()))) {
+					&& revocationIssuer != null && (isTrustAnchor(revocationIssuer, currentTime, revocationIssuerSunsetDateConstraint)
+						|| poe.isPOEExistInRange(revocationIssuer.getId(), revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter()))) {
 				certificateRevocations.add(certificateRevocation);
 			}
 		}
 		return certificateRevocations;
+	}
+
+	/**
+	 * This method verifies whether the given {@code certificateWrapper} can be considered as a trust anchor
+	 * at the {@code currentTime}
+	 *
+	 * @param certificateWrapper {@link CertificateWrapper} trust anchor candidate
+	 * @param currentTime {@link Date} to verify certificate's sunset date, when applicable
+	 * @param certificateSunsetDateConstraint {@link LevelConstraint}
+	 * @return TRUE if the certificate is a trust anchor at the given time, FALSE otherwise
+	 */
+	public static boolean isTrustAnchor(CertificateWrapper certificateWrapper, Date currentTime,
+										LevelConstraint certificateSunsetDateConstraint) {
+		return certificateWrapper.isTrusted() &&
+				(certificateWrapper.getTrustSunsetDate() == null || currentTime.before(certificateWrapper.getTrustSunsetDate()) ||
+						!certificateSunsetDateCheckEnforced(certificateSunsetDateConstraint));
+	}
+
+	private static boolean certificateSunsetDateCheckEnforced(LevelConstraint constraint) {
+		return constraint != null && Level.FAIL == constraint.getLevel();
 	}
 
 	/**
