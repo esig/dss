@@ -504,8 +504,18 @@
 															<xsl:value-of select="dss:QualifiedName" />
 														</fo:inline>
 														<fo:inline>
-															<xsl:if test="@trusted = 'true' and not(dss:TrustAnchors)"> (Trust anchor)</xsl:if>
-															<xsl:apply-templates select="dss:TrustAnchors"/>
+															<xsl:if test="@trusted = 'true'">
+																<xsl:if test="not(dss:TrustAnchors)">
+																	(Trust anchor<xsl:if test="@sunsetDate">, sunset at
+																	<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@sunsetDate"/></xsl:call-template></xsl:if>)
+																</xsl:if>
+																<xsl:if test="dss:TrustAnchors">
+																	<xsl:apply-templates select="dss:TrustAnchors"/>
+																	<xsl:if test="@sunsetDate">
+																		(Sunset at <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@sunsetDate"/></xsl:call-template>)
+																	</xsl:if>
+																</xsl:if>
+															</xsl:if>
 														</fo:inline>
 													</fo:block>
 

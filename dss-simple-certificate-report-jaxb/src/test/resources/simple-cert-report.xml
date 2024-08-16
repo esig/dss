@@ -18,8 +18,8 @@
                 <country>DE</country>
             </subject>
             <issuerId>C-A3EDFADFCBE288E5688051D3AD081A0CA09633E52E3E9C9A6E2C436657B2D1A9</issuerId>
-            <notBefore>2011-11-17T13:17:27</notBefore>
-            <notAfter>2015-11-27T13:17:27</notAfter>
+            <notBefore>2011-11-17T13:17:27Z</notBefore>
+            <notAfter>2015-11-27T13:17:27Z</notAfter>
             <keyUsages>
                 <keyUsage>nonRepudiation</keyUsage>
             </keyUsages>
@@ -33,8 +33,8 @@
             <qualificationAtIssuance>QC for eSig with QSCD</qualificationAtIssuance>
             <qualificationAtValidation>QC for eSig with QSCD</qualificationAtValidation>
             <revocation>
-                <thisUpdate>2018-02-09T07:03:45</thisUpdate>
-                <revocationDate>2014-12-30T13:28:24</revocationDate>
+                <thisUpdate>2018-02-09T07:03:45Z</thisUpdate>
+                <revocationDate>2014-12-30T13:28:24Z</revocationDate>
                 <revocationReason>unspecified</revocationReason>
             </revocation>
             <Indication>INDETERMINATE</Indication>
@@ -50,8 +50,8 @@
                 <organizationName>D-Trust GmbH</organizationName>
                 <country>DE</country>
             </subject>
-            <notBefore>2008-07-24T16:54:11</notBefore>
-            <notAfter>2013-07-24T15:30:00</notAfter>
+            <notBefore>2008-07-24T16:54:11Z</notBefore>
+            <notAfter>2013-07-24T15:30:00Z</notAfter>
             <keyUsages>
                 <keyUsage>keyCertSign</keyUsage>
                 <keyUsage>crlSign</keyUsage>
@@ -73,6 +73,8 @@
                     <trustServiceName>D-TRUST Qualified CA 1 2008:PN</trustServiceName>
                 </trustAnchor>
             </trustAnchors>
+            <trustStartDate>2008-07-24T16:54:11Z</trustStartDate>
+            <trustSunsetDate>2018-01-01T15:30:00Z</trustSunsetDate>
             <Indication>PASSED</Indication>
         </ChainItem>
     </Chain>

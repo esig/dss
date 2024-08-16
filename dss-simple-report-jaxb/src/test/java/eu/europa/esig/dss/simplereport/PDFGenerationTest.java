@@ -87,7 +87,12 @@ class PDFGenerationTest {
 
 	@Test
 	void generateTstAndErSimpleReport() throws Exception {
-		createAndValidate("tst-and-er.xml");
+		createAndValidate("sr-tst-and-er.xml");
+	}
+
+	@Test
+	void generateSunsetSimpleReport() throws Exception {
+		createAndValidate("sr-sunset.xml");
 	}
 
 	@Test
