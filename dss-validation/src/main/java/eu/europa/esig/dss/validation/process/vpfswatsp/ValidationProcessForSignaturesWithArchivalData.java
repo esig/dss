@@ -246,7 +246,6 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 			}
 
 		}
-
 		
 		/*
 		 * 4) The process shall initialize best-signature-time to the best-signature-time returned in step 3)

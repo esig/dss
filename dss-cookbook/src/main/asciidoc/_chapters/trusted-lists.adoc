@@ -183,7 +183,7 @@ The TSP Service predicates are not enforced by default, therefore in a plain con
 
 Within the framework the following `TrustServicePredicate` is provided:
 
-* `GrantedTrustService` - this predicate is meant to filter trusted services containing an acceptable (i.e. accredited or granted) status with despite it was defined before or after eIDAS regulation.
+* `GrantedTrustService` - this predicate is meant to filter trusted services containing an acceptable (i.e. accredited or granted) status despite it was defined before or after eIDAS regulation.
 
 Below you may find an example of `TrustServicePredicate` configuration:
 
@@ -191,6 +191,35 @@ Below you may find an example of `TrustServicePredicate` configuration:
 .Examples of Trust Service Predicate configuration
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=trust-service-predicate]
+----
+
+[[TrustAnchorValidityPredicate]]
+==== Trust anchor validity predicate
+
+Since version `6.2` DSS provides an option to configure a validity period of trust anchors extracted from a Trusted List, in order to support an introduction of a sunset date for trust anchors in ETSI EN 319 102-1 within version 1.4.1 (cf. <<R09>>).
+
+When a `TrustAnchorValidityPredicate` is configured, the trust time of an extracted SDI from a Trusted List will correspond to a range of history instances from a corresponding Trust Service for which the `TrustAnchorValidityPredicate` condition satisfies.
+
+In case all the history instances (when present) and the current status match the condition of the predicate, the extracted SDI trust anchor will be threaded as indefinitely valid during the validation process.
+
+If none of the history instances match, the Trust Service information will be extracted, but the SDI will not be considered as a trust anchor during the validation process.
+
+NOTE: If no `TrustAnchorValidityPredicate` is configured, the old behavior is applied with a trust anchor being valid for an indefinite period of time (i.e. trust anchors never expire).
+
+DSS provides the following `TrustAnchorValidityPredicate` implementations in its default configuration:
+
+* `GrantedTrustAnchorPeriodPredicate` - this predicate is meant to filter trusted service's history instances containing an acceptable eIDAS status (i.e. accredited or granted) despite it was defined before or after eIDAS regulation.
+
+* `GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate` - this predicate is meant to filter trusted service's history instances containing an acceptable eIDAS status (i.e. accredited or granted) despite it was defined before or after eIDAS regulation or trust services set by national law or recognized at national level.
+
+NOTE: When a `TrustAnchorValidityPredicate` is defined within a `LOTLSource`, the predicate will be applied for all Trusted Lists fetched from the current List of Trusted Lists.
+
+Below you may find an example of `TrustAnchorValidityPredicate` configuration:
+
+[source,java,indent=0]
+.Examples of Trust Anchor Validity Predicate configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=trust-anchor-validity-predicate]
 ----
 
 ==== Executor Service
