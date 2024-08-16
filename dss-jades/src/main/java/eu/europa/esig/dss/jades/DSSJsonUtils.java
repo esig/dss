@@ -48,6 +48,7 @@ import org.jose4j.base64url.Base64Url;
 import org.jose4j.json.JsonUtil;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONValue;
+import org.jose4j.jwt.NumericDate;
 import org.jose4j.jwx.CompactSerializer;
 import org.jose4j.lang.JoseException;
 import org.jose4j.lang.StringUtil;
@@ -1336,6 +1337,26 @@ public class DSSJsonUtils {
 			return DSSJsonUtils.MIME_TYPE_APPLICATION_PREFIX + mimeType;
 		}
 		return mimeType;
+	}
+
+	/**
+	 * This method cleans millis from the given time
+	 *
+	 * @param timeInMillis time with millis
+	 * @return time without millis
+	 */
+	public static long getTimeValueInSeconds(long timeInMillis) {
+		return NumericDate.fromMilliseconds(timeInMillis).getValue();
+	}
+
+	/**
+	 * This method adds millis to the given time in seconds
+	 *
+	 * @param timeWithoutMillis time without millis
+	 * @return time with millis
+	 */
+	public static long getTimeValueInMilliseconds(long timeWithoutMillis) {
+		return NumericDate.fromSeconds(timeWithoutMillis).getValueInMillis();
 	}
 
 }
