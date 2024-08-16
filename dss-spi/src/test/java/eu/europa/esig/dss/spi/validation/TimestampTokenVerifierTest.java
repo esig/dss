@@ -198,6 +198,10 @@ class TimestampTokenVerifierTest {
         Date futureDate = calendar.getTime();
 
         assertTrue(timestampTokenVerifier.isAcceptable(timestampToken, certificateChain, new Date()));
+        assertTrue(timestampTokenVerifier.isAcceptable(timestampToken, certificateChain, futureDate));
+
+        trustAnchorVerifier.setUseSunsetDate(true);
+        assertTrue(timestampTokenVerifier.isAcceptable(timestampToken, certificateChain, new Date()));
         assertFalse(timestampTokenVerifier.isAcceptable(timestampToken, certificateChain, futureDate));
     }
 

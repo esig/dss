@@ -368,7 +368,7 @@
             <CertificateChain>
                 <ChainItem Certificate="C-5454A5036E584DDA98B55AE89C34BA27571302F176C3034DAE254C34363AE8F3"/>
             </CertificateChain>
-            <Trusted>false</Trusted>
+            <Trusted>true</Trusted>
             <SelfSigned>false</SelfSigned>
             <CertificateExtensions>
                 <BasicConstraints OID="2.5.29.19" critical="true" CA="true" />

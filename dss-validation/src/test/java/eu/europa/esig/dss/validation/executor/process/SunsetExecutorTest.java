@@ -5,9 +5,12 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
@@ -20,11 +23,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
+import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -3904,6 +3910,255 @@ public class SunsetExecutorTest extends AbstractProcessExecutorTest {
 
         validateBestSigningTimes(reports);
         checkReports(reports);
+    }
+
+    @Test
+    void qualWithdrawnService() throws Exception {
+        XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_sunset_withdrawn.xml"));
+        assertNotNull(xmlDiagnosticData);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(xmlDiagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+
+        XmlValidationSignatureQualification validationSignatureQualification = xmlSignature.getValidationSignatureQualification();
+        assertNotNull(validationSignatureQualification);
+        assertEquals(SignatureQualification.INDETERMINATE_ADESIG, validationSignatureQualification.getSignatureQualification());
+
+        boolean adesValidationCheckFound = false;
+        boolean trustedListReached = false;
+        for (XmlConstraint constraint : validationSignatureQualification.getConstraint()) {
+            if (MessageTag.QUAL_IS_ADES.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.WARNING, constraint.getStatus());
+                assertEquals(MessageTag.QUAL_IS_ADES_IND.getId(), constraint.getWarning().getKey());
+                adesValidationCheckFound = true;
+            } else if (MessageTag.QUAL_CERT_TRUSTED_LIST_REACHED.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                trustedListReached = true;
+            }
+        }
+        assertTrue(adesValidationCheckFound);
+        assertTrue(trustedListReached);
+
+        List<XmlValidationCertificateQualification> validationCertificateQualification = validationSignatureQualification
+                .getValidationCertificateQualification();
+        assertEquals(2, validationCertificateQualification.size());
+
+        boolean qualAtCertIssuanceTimeFound = false;
+        boolean qualAtBSTFound = false;
+        for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
+            if (ValidationTime.CERTIFICATE_ISSUANCE_TIME == certificateQualification.getValidationTime()) {
+                qualAtCertIssuanceTimeFound = true;
+            } else if (ValidationTime.BEST_SIGNATURE_TIME == certificateQualification.getValidationTime()) {
+                qualAtBSTFound = true;
+            }
+            assertEquals(CertificateQualification.CERT_FOR_ESIG, certificateQualification.getCertificateQualification());
+        }
+        assertTrue(qualAtCertIssuanceTimeFound);
+        assertTrue(qualAtBSTFound);
+    }
+
+    @Test
+    void qualWithdrawnServiceTrusted() throws Exception {
+        XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_sunset_withdrawn.xml"));
+        assertNotNull(xmlDiagnosticData);
+
+        XmlCertificate caCertificate = xmlDiagnosticData.getSignatures().get(0).getCertificateChain().get(1).getCertificate();
+        caCertificate.getTrusted().setValue(true);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(xmlDiagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+
+        XmlValidationSignatureQualification validationSignatureQualification = xmlSignature.getValidationSignatureQualification();
+        assertNotNull(validationSignatureQualification);
+        assertEquals(SignatureQualification.ADESIG, validationSignatureQualification.getSignatureQualification());
+
+        boolean adesValidationCheckFound = false;
+        boolean trustedListReached = false;
+        for (XmlConstraint constraint : validationSignatureQualification.getConstraint()) {
+            if (MessageTag.QUAL_IS_ADES.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                adesValidationCheckFound = true;
+            } else if (MessageTag.QUAL_CERT_TRUSTED_LIST_REACHED.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                trustedListReached = true;
+            }
+        }
+        assertTrue(adesValidationCheckFound);
+        assertTrue(trustedListReached);
+
+        List<XmlValidationCertificateQualification> validationCertificateQualification = validationSignatureQualification
+                .getValidationCertificateQualification();
+        assertEquals(2, validationCertificateQualification.size());
+
+        boolean qualAtCertIssuanceTimeFound = false;
+        boolean qualAtBSTFound = false;
+        for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
+            if (ValidationTime.CERTIFICATE_ISSUANCE_TIME == certificateQualification.getValidationTime()) {
+                qualAtCertIssuanceTimeFound = true;
+            } else if (ValidationTime.BEST_SIGNATURE_TIME == certificateQualification.getValidationTime()) {
+                qualAtBSTFound = true;
+            }
+            assertEquals(CertificateQualification.CERT_FOR_ESIG, certificateQualification.getCertificateQualification());
+        }
+        assertTrue(qualAtCertIssuanceTimeFound);
+        assertTrue(qualAtBSTFound);
+    }
+
+    @Test
+    void qualWithdrawnServiceTrustedWithSunset() throws Exception {
+        XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_sunset_withdrawn.xml"));
+        assertNotNull(xmlDiagnosticData);
+
+        XmlCertificate caCertificate = xmlDiagnosticData.getSignatures().get(0).getCertificateChain().get(1).getCertificate();
+        caCertificate.getTrusted().setValue(true);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2025, Calendar.JANUARY, 1 , 0, 0, 0);
+        caCertificate.getTrusted().setSunsetDate(calendar.getTime());
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(xmlDiagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SignatureQualification.ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+
+        XmlValidationSignatureQualification validationSignatureQualification = xmlSignature.getValidationSignatureQualification();
+        assertNotNull(validationSignatureQualification);
+        assertEquals(SignatureQualification.ADESIG, validationSignatureQualification.getSignatureQualification());
+
+        boolean adesValidationCheckFound = false;
+        boolean trustedListReached = false;
+        for (XmlConstraint constraint : validationSignatureQualification.getConstraint()) {
+            if (MessageTag.QUAL_IS_ADES.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                adesValidationCheckFound = true;
+            } else if (MessageTag.QUAL_CERT_TRUSTED_LIST_REACHED.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                trustedListReached = true;
+            }
+        }
+        assertTrue(adesValidationCheckFound);
+        assertTrue(trustedListReached);
+
+        List<XmlValidationCertificateQualification> validationCertificateQualification = validationSignatureQualification
+                .getValidationCertificateQualification();
+        assertEquals(2, validationCertificateQualification.size());
+
+        boolean qualAtCertIssuanceTimeFound = false;
+        boolean qualAtBSTFound = false;
+        for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
+            if (ValidationTime.CERTIFICATE_ISSUANCE_TIME == certificateQualification.getValidationTime()) {
+                qualAtCertIssuanceTimeFound = true;
+            } else if (ValidationTime.BEST_SIGNATURE_TIME == certificateQualification.getValidationTime()) {
+                qualAtBSTFound = true;
+            }
+            assertEquals(CertificateQualification.CERT_FOR_ESIG, certificateQualification.getCertificateQualification());
+        }
+        assertTrue(qualAtCertIssuanceTimeFound);
+        assertTrue(qualAtBSTFound);
+    }
+
+    @Test
+    void qualWithdrawnServiceTrustedWithSunsetExpired() throws Exception {
+        XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_sunset_withdrawn.xml"));
+        assertNotNull(xmlDiagnosticData);
+
+        XmlCertificate caCertificate = xmlDiagnosticData.getSignatures().get(0).getCertificateChain().get(1).getCertificate();
+        caCertificate.getTrusted().setValue(true);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2024, Calendar.JANUARY, 1 , 0, 0, 0);
+        caCertificate.getTrusted().setSunsetDate(calendar.getTime());
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(xmlDiagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        assertNotNull(reports);
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SignatureQualification.INDETERMINATE_ADESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlSignature xmlSignature = detailedReport.getSignatures().get(0);
+
+        XmlValidationSignatureQualification validationSignatureQualification = xmlSignature.getValidationSignatureQualification();
+        assertNotNull(validationSignatureQualification);
+        assertEquals(SignatureQualification.INDETERMINATE_ADESIG, validationSignatureQualification.getSignatureQualification());
+
+        boolean adesValidationCheckFound = false;
+        boolean trustedListReached = false;
+        for (XmlConstraint constraint : validationSignatureQualification.getConstraint()) {
+            if (MessageTag.QUAL_IS_ADES.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.WARNING, constraint.getStatus());
+                assertEquals(MessageTag.QUAL_IS_ADES_IND.getId(), constraint.getWarning().getKey());
+                adesValidationCheckFound = true;
+            } else if (MessageTag.QUAL_CERT_TRUSTED_LIST_REACHED.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                trustedListReached = true;
+            }
+        }
+        assertTrue(adesValidationCheckFound);
+        assertTrue(trustedListReached);
+
+        List<XmlValidationCertificateQualification> validationCertificateQualification = validationSignatureQualification
+                .getValidationCertificateQualification();
+        assertEquals(2, validationCertificateQualification.size());
+
+        boolean qualAtCertIssuanceTimeFound = false;
+        boolean qualAtBSTFound = false;
+        for (XmlValidationCertificateQualification certificateQualification : validationCertificateQualification) {
+            if (ValidationTime.CERTIFICATE_ISSUANCE_TIME == certificateQualification.getValidationTime()) {
+                qualAtCertIssuanceTimeFound = true;
+            } else if (ValidationTime.BEST_SIGNATURE_TIME == certificateQualification.getValidationTime()) {
+                qualAtBSTFound = true;
+            }
+            assertEquals(CertificateQualification.CERT_FOR_ESIG, certificateQualification.getCertificateQualification());
+        }
+        assertTrue(qualAtCertIssuanceTimeFound);
+        assertTrue(qualAtBSTFound);
     }
 
 }

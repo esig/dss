@@ -87,6 +87,7 @@ class CertificateChainValidationExecutorTest extends AbstractProcessExecutorTest
 
         for (XmlCertificate certificate : xmlDiagnosticData.getUsedCertificates()) {
             certificate.getSources().remove(CertificateSourceType.TRUSTED_STORE);
+            certificate.getTrusted().setValue(false);
         }
 
         ValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -137,6 +138,7 @@ class CertificateChainValidationExecutorTest extends AbstractProcessExecutorTest
 
         for (XmlCertificate certificate : xmlDiagnosticData.getUsedCertificates()) {
             certificate.getSources().remove(CertificateSourceType.TRUSTED_STORE);
+            certificate.getTrusted().setValue(false);
         }
 
         ValidationPolicy validationPolicy = loadDefaultPolicy();

@@ -6,6 +6,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -29,6 +30,9 @@ class OtherTrustAnchorExistsCheckTest extends AbstractTestCheck {
 
         XmlCertificate ca = new XmlCertificate();
         ca.getSources().add(CertificateSourceType.TRUSTED_STORE);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(true);
+        ca.setTrusted(xmlTrusted);
 
         XmlChainItem xmlChainItem = new XmlChainItem();
         xmlChainItem.setCertificate(ca);
@@ -52,6 +56,9 @@ class OtherTrustAnchorExistsCheckTest extends AbstractTestCheck {
 
         XmlCertificate ca = new XmlCertificate();
         ca.getSources().add(CertificateSourceType.TRUSTED_LIST);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(true);
+        ca.setTrusted(xmlTrusted);
 
         XmlChainItem xmlChainItem = new XmlChainItem();
         xmlChainItem.setCertificate(ca);
@@ -75,6 +82,9 @@ class OtherTrustAnchorExistsCheckTest extends AbstractTestCheck {
 
         XmlCertificate ca = new XmlCertificate();
         ca.getSources().add(CertificateSourceType.SIGNATURE);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(false);
+        ca.setTrusted(xmlTrusted);
 
         XmlChainItem xmlChainItem = new XmlChainItem();
         xmlChainItem.setCertificate(ca);
@@ -96,6 +106,9 @@ class OtherTrustAnchorExistsCheckTest extends AbstractTestCheck {
 
         XmlCertificate xc = new XmlCertificate();
         xc.getSources().add(CertificateSourceType.TRUSTED_STORE);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(false);
+        xc.setTrusted(xmlTrusted);
 
         XmlSubXCV result = new XmlSubXCV();
         OtherTrustAnchorExistsCheck otsc = new OtherTrustAnchorExistsCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);

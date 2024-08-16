@@ -782,6 +782,7 @@ public class RevocationDataVerifier {
                 break;
             }
             if (!certificateToken.isValid()) {
+                LOG.warn("The certificate '{}' is cryptographically invalid!", certificateToken.getDSSIdAsString());
                 return false;
             }
             if (!isCertificateValid(certificateToken, controlTime)) {
@@ -836,7 +837,7 @@ public class RevocationDataVerifier {
                 }
             }
         }
-
+        LOG.warn("The certificate '{}' is not known to be not revoked!", certificateToken.getDSSIdAsString());
         return false;
     }
 

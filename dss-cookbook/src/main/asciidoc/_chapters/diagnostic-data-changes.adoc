@@ -10,6 +10,22 @@
 This chapter covers the changes occurred between different versions of DSS within Diagnostic Data XSD.
 
 [cols="2,5,5"]
+.Diagnostic Data changes from version 6.1 to 6.2
+|===
+|Title                                |v6.1                           |v6.2
+|Trust anchor validity            a|[source,xml]
+----
+<Trusted>true</Trusted>
+----
+                                                                      a|[source,xml]
+----
+<Trusted startDate="2020-04-22T15:29:47Z" sunsetDate="2023-12-13T16:03:43Z">true</Trusted>
+----
+See <<TrustAnchorValidityPredicate>> for more detail.
+
+|===
+
+[cols="2,5,5"]
 .Diagnostic Data changes from version 6.0 to 6.1
 |===
 |Title                                |v6.0                           |v6.1
