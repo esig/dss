@@ -219,6 +219,7 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="trusted" type="xs:boolean" default="false" />
+		<xs:attribute name="sunsetDate" type="xs:dateTime" />
 	</xs:complexType>
 
 	<xs:complexType name="TrustAnchors">

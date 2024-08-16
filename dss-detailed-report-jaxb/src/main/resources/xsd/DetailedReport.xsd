@@ -416,6 +416,7 @@
 			<xs:enumeration value="RAC" />
 			<xs:enumeration value="RFC" />
 			<xs:enumeration value="SUB_XCV" />
+			<xs:enumeration value="SUB_XCV_TA" />
 			<xs:enumeration value="REV_CC" />
 			<xs:enumeration value="ER" />
 			<xs:enumeration value="PSV" />

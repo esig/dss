@@ -78,7 +78,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfS
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedCriticalExtensionsCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateValidationBeforeSunsetDateCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateValidationBeforeSunsetDateCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateValidityRangeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
@@ -91,7 +91,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.NoRevAvailCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.ProspectiveCertificateChainAtValidationTimeCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OtherTrustAnchorExistsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
@@ -171,8 +171,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 				item = firstItem = validationBeforeSunsetDate(currentCertificate, subContext, currentTime);
 
-				if (!currentCertificate.isTrustedChain()) {
-					item = item.setNextItem(prospectiveCertificateChainValidAtValidationTime(currentCertificate, subContext, currentTime));
+				if (!ValidationProcessUtils.isTrustAnchor(currentCertificate, currentTime, getFailLevelConstraint())) {
+					item = item.setNextItem(otherTrustAnchorAvailable(currentCertificate, subContext));
 				}
 
 			}
@@ -362,12 +362,13 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> validationBeforeSunsetDate(CertificateWrapper certificate, SubContext subContext, Date validationTime) {
 		LevelConstraint constraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
-		return new CertificateValidationBeforeSunsetDateCheck(i18nProvider, result, certificate, validationTime, getWarnConstraintOrMaxLevel(constraint));
+		return new CertificateValidationBeforeSunsetDateCheck<>(i18nProvider, result, certificate, validationTime,
+				ValidationProcessUtils.getConstraintOrMaxLevel(constraint, Level.WARN));
 	}
 
-	private ChainItem<XmlSubXCV> prospectiveCertificateChainValidAtValidationTime(CertificateWrapper certificate, SubContext subContext, Date validationTime) {
+	private ChainItem<XmlSubXCV> otherTrustAnchorAvailable(CertificateWrapper certificate, SubContext subContext) {
 		LevelConstraint constraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
-		return new ProspectiveCertificateChainAtValidationTimeCheck(i18nProvider, result, certificate, validationTime, constraint);
+		return new OtherTrustAnchorExistsCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> certificateValidityRange(CertificateWrapper certificate, CertificateRevocationWrapper usedCertificateRevocation,
@@ -659,30 +660,6 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
 		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
 		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, cryptographicConstraint);
-	}
-
-	private LevelConstraint getWarnConstraintOrMaxLevel(LevelConstraint maxLevelConstraint) {
-		if (maxLevelConstraint == null) {
-			return null;
-		}
-		final LevelConstraint levelConstraint = new LevelConstraint();
-		Level level;
-		switch (maxLevelConstraint.getLevel()) {
-			case FAIL:
-			case WARN:
-				level = Level.WARN;
-				break;
-			case INFORM:
-				level = Level.INFORM;
-				break;
-			case IGNORE:
-				level = Level.IGNORE;
-				break;
-			default:
-				throw new IllegalArgumentException(String.format("The support of Level '%s' is not implemented!", maxLevelConstraint.getLevel()));
-		}
-		levelConstraint.setLevel(level);
-		return levelConstraint;
 	}
 
 	private boolean isTrustAnchorReached(CertificateWrapper certificateWrapper, SubContext subContext) {

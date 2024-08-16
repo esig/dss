@@ -1,6 +1,7 @@
-package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
+package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -16,7 +17,7 @@ import java.util.Date;
  * This class verifies whether a validation time is before certificate's trust sunset date
  *
  */
-public class CertificateValidationBeforeSunsetDateCheck extends ChainItem<XmlSubXCV> {
+public class CertificateValidationBeforeSunsetDateCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** Certificate to check */
     private final CertificateWrapper certificate;
@@ -33,11 +34,16 @@ public class CertificateValidationBeforeSunsetDateCheck extends ChainItem<XmlSub
      * @param controlTime {@link Date}
      * @param constraint {@link LevelConstraint}
      */
-    public CertificateValidationBeforeSunsetDateCheck(I18nProvider i18nProvider, XmlSubXCV result,
+    public CertificateValidationBeforeSunsetDateCheck(I18nProvider i18nProvider, T result,
                                                       CertificateWrapper certificate, Date controlTime, LevelConstraint constraint) {
-        super(i18nProvider, result, constraint);
+        super(i18nProvider, result, constraint, certificate.getId());
         this.certificate = certificate;
         this.controlTime = controlTime;
+    }
+
+    @Override
+    protected XmlBlockType getBlockType() {
+        return XmlBlockType.SUB_XCV_TA;
     }
 
     @Override

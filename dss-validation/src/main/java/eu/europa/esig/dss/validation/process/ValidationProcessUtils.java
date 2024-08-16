@@ -84,7 +84,7 @@ public class ValidationProcessUtils {
 	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
 	 */
 	public static boolean isAllowedBasicSignatureValidation(XmlConclusion conclusion) {
-		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+		return conclusion != null && Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
 				&& (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication()) 
 						|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
@@ -107,7 +107,8 @@ public class ValidationProcessUtils {
 				|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 				|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 				|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-				|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication()))));
+				|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+				|| SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE.equals(conclusion.getSubIndication()))));
 	}
 
 	/**
@@ -124,7 +125,8 @@ public class ValidationProcessUtils {
 						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 						|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
+						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE.equals(conclusion.getSubIndication())));
 	}
 
 	/**
@@ -135,13 +137,14 @@ public class ValidationProcessUtils {
 	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
 	 */
 	public static boolean isAllowedValidationWithLongTermData(XmlConclusion conclusion) {
-		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+		return conclusion != null && Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
 				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 					|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.SIG_CONSTRAINTS_FAILURE.equals(conclusion.getSubIndication())
 				    || SubIndication.TRY_LATER.equals(conclusion.getSubIndication())));
 	}
@@ -659,6 +662,49 @@ public class ValidationProcessUtils {
 		} else {
 			return Utils.isCollectionEmpty(expectedValues);
 		}
+	}
+
+	/**
+	 * This method is used to return the current level with a max limit of the {@code maxLevel}
+	 *
+	 * @param constraint {@link LevelConstraint} to check
+	 * @param maxLevel {@link Level}
+	 * @return {@link LevelConstraint}
+	 */
+	public static LevelConstraint getConstraintOrMaxLevel(LevelConstraint constraint, Level maxLevel) {
+		if (constraint == null || maxLevel == null) {
+			return null;
+		}
+		final LevelConstraint newConstraint = new LevelConstraint();
+		Level level;
+		switch (constraint.getLevel()) {
+			case FAIL:
+				if (Level.FAIL == maxLevel) {
+					level = Level.FAIL;
+					break;
+				}
+			case WARN:
+				if (Level.WARN == maxLevel) {
+					level = Level.WARN;
+					break;
+				}
+			case INFORM:
+				if (Level.INFORM == maxLevel) {
+					level = Level.INFORM;
+					break;
+				}
+			case IGNORE:
+				if (Level.IGNORE == maxLevel) {
+					level = Level.IGNORE;
+					break;
+				}
+				level = constraint.getLevel();
+				break;
+			default:
+				throw new IllegalArgumentException(String.format("The support of Level '%s' is not implemented!", constraint.getLevel()));
+		}
+		newConstraint.setLevel(level);
+		return newConstraint;
 	}
 
 }

@@ -176,6 +176,8 @@ public class SimpleReportForCertificateBuilder {
 				}
 			}
 			item.setTrustAnchors(trustAnchors);
+			item.setTrustStartDate(certificate.getTrustStartDate());
+			item.setTrustSunsetDate(certificate.getTrustSunsetDate());
 		} else {
 			item.setTrustAnchors(null);
 		}

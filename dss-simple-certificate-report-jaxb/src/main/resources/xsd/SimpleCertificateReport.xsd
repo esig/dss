@@ -80,6 +80,8 @@
 			<xs:element name="enactedMRA" type="xs:boolean" minOccurs="0" />
 			<xs:element name="revocation" type="Revocation" minOccurs="0" />
 			<xs:element name="trustAnchors" type="TrustAnchors" minOccurs="0" />
+			<xs:element name="trustStartDate" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="trustSunsetDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="Indication" type="Indication" />
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
 			<xs:element name="X509ValidationDetails" type="Details" minOccurs="0" />

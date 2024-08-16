@@ -451,6 +451,8 @@ public enum MessageTag {
 	BBB_XCV_ISCGEKU_ANS_CERT,
 	BBB_XCV_ICSI,
 	BBB_XCV_ICSI_ANS,
+	BBB_XCV_IOTAA,
+	BBB_XCV_IOTAA_ANS,
 	BBB_XCV_HPCCVVT,
 	BBB_XCV_HPCCVVT_ANS,
 	BBB_XCV_PSEUDO_USE,
@@ -845,6 +847,8 @@ public enum MessageTag {
 	TRUSTED_SERVICE_TYPE,
 
 	TRUSTED_LIST,
+
+	VALIDATION_TIME,
 	
 	/* BasicBuildingBlocks titles */
 

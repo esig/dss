@@ -227,13 +227,12 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 		}
 
-
 		/*
 		 * - If current time indication/sub-indication is INDETERMINATE/REVOKED_NO_POE,
 		 *   INDETERMINATE/REVOCATION_OUT_OF_BOUNDS_NO_POE or INDETERMINATE/TRY_LATER
 		 *   because the certificate has been found to be suspended, then:
 		 */
-		if (poeExists && Indication.INDETERMINATE.equals(currentConclusion.getIndication())
+		else if (poeExists && Indication.INDETERMINATE.equals(currentConclusion.getIndication())
 				&& (SubIndication.REVOKED_NO_POE.equals(currentConclusion.getSubIndication())
 						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(currentConclusion.getSubIndication())
 						|| (SubIndication.TRY_LATER.equals(currentConclusion.getSubIndication()) && isCertificateSuspended()))) {

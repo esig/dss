@@ -402,12 +402,21 @@ public class SimpleReportBuilder {
 				certificate.setQualifiedName(getReadableCertificateName(certId));
 				if (isTrustAnchor(certId)) {
 					certificate.setTrusted(true);
+					certificate.setSunsetDate(getCertificateSunsetDate(certId));
 					certificate.setTrustAnchors(getXmlTrustAnchors(certId));
 				}
 				xmlCertificateChain.getCertificate().add(certificate);
 			}
 		}
 		return xmlCertificateChain;
+	}
+
+	private Date getCertificateSunsetDate(String certId) {
+		CertificateWrapper certificate = diagnosticData.getCertificateById(certId);
+		if (certificate != null) {
+			return certificate.getTrustSunsetDate();
+		}
+		return null;
 	}
 
 	private XmlTrustAnchors getXmlTrustAnchors(String certId) {
