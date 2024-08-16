@@ -161,7 +161,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					"Only one shall be present.");
 			return null;
 		} else if (iat != null) {
-			return DSSJsonUtils.getDate(iat);
+			long timeValueInMilliseconds = DSSJsonUtils.getTimeValueInMilliseconds(iat.longValue());
+			return DSSJsonUtils.getDate(timeValueInMilliseconds);
 		} else if (Utils.isStringNotEmpty(sigT)) {
 			return DSSJsonUtils.getDate(sigT);
 		}
