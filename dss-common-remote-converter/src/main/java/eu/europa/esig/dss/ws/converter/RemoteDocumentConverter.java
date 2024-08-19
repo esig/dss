@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.ws.converter;
 
-import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -78,10 +77,8 @@ public class RemoteDocumentConverter {
 			return null;
 		}
 		if (remoteDocument.getDigestAlgorithm() != null) {
-			DigestDocument digestDocument = new DigestDocument(remoteDocument.getDigestAlgorithm(), Utils.toBase64(remoteDocument.getBytes()));
-			digestDocument.setName(remoteDocument.getName());
-			digestDocument.setMimeType(MimeType.fromFileName(remoteDocument.getName()));
-			return digestDocument;
+			return new DigestDocument(remoteDocument.getDigestAlgorithm(),
+					Utils.toBase64(remoteDocument.getBytes()), remoteDocument.getName());
 		} else {
 			return new InMemoryDocument(remoteDocument.getBytes(), remoteDocument.getName());
 		}

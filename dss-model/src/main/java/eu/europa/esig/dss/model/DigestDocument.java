@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -63,8 +64,23 @@ public class DigestDocument extends CommonDocument {
 	 * 			  {@link String} name of the document
 	 */
 	public DigestDocument(final Digest digest, final String name) {
+		this(digest, name, MimeType.fromFileName(name));
+	}
+
+	/**
+	 * Creates DigestDocument with an initial {@code Digest}, a specified {@code name} and {@code mimeType} of the document
+	 *
+	 * @param digest
+	 *            {@code Digest} for the new DigestDocument
+	 * @param name
+	 * 			  {@link String} name of the document
+	 * @param mimeType
+	 * 			  {@link MimeType} of the document
+	 */
+	public DigestDocument(final Digest digest, final String name, final MimeType mimeType) {
 		this(digest);
 		this.name = name;
+		this.mimeType = mimeType;
 	}
 
 	/**
@@ -102,10 +118,28 @@ public class DigestDocument extends CommonDocument {
 	 *            the name of the document
 	 */
 	public DigestDocument(final DigestAlgorithm digestAlgorithm, final byte[] digestValue, final String name) {
-		this(digestAlgorithm, digestValue);
-		this.name = name;
+		this(digestAlgorithm, digestValue, name, MimeType.fromFileName(name));
 	}
 
+	/**
+	 * Creates DigestDocument with a digest provided in a form of byte array with a specified
+	 * {@code name} and {@code mimeType} of the document
+	 *
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm}
+	 * @param digestValue
+	 *            byte array representing the corresponding digest value
+	 * @param name
+	 *            the name of the document
+	 * @param mimeType
+	 *            the mymetype of the document
+	 */
+	public DigestDocument(final DigestAlgorithm digestAlgorithm, final byte[] digestValue, final String name,
+						  final MimeType mimeType) {
+		this(digestAlgorithm, digestValue);
+		this.name = name;
+		this.mimeType = mimeType;
+	}
 
 	/**
 	 * Creates DigestDocument with a digest provided in a form of base64-encoded String with a specified document name
@@ -118,8 +152,27 @@ public class DigestDocument extends CommonDocument {
 	 *            the name of the document
 	 */
 	public DigestDocument(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest, final String name) {
+		this(digestAlgorithm, base64EncodeDigest, name, MimeType.fromFileName(name));
+	}
+
+	/**
+	 * Creates DigestDocument with a digest provided in a form of base64-encoded String with
+	 * a specified {@code name} and {@code mimeType} of the document
+	 *
+	 * @param digestAlgorithm
+	 *            {@code DigestAlgorithm}
+	 * @param base64EncodeDigest
+	 *            the corresponding base 64 encoded digest value
+	 * @param name
+	 *            the name of the document
+	 * @param mimeType
+	 * 			  the mimetype of the document
+	 */
+	public DigestDocument(final DigestAlgorithm digestAlgorithm, final String base64EncodeDigest, final String name,
+						  final MimeType mimeType) {
 		this(digestAlgorithm, base64EncodeDigest);
 		this.name = name;
+		this.mimeType = mimeType;
 	}
 
 	/**
