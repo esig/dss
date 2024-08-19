@@ -89,6 +89,7 @@ class ASiCSWithXAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerOne = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
+        awaitOneSecond();
         signatureParameters.bLevel().setSigningDate(new Date());
 
         dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
@@ -343,12 +344,14 @@ class ASiCSWithXAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerOne = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
+        awaitOneSecond();
         signatureParameters.bLevel().setSigningDate(new Date());
 
         dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
         signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerTwo = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
+        awaitOneSecond();
         signatureParameters.bLevel().setSigningDate(new Date());
 
         dataToSign = service.getDataToSign(toSignDocument, signatureParameters);

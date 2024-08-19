@@ -94,9 +94,7 @@ class XAdESLevelLTSigRevocationFreshnessTest extends AbstractXAdESTestSignature 
     @Override
     protected Reports verify(DSSDocument signedDocument) {
         // wait one second for revocation data update
-        Calendar nextSecond = Calendar.getInstance();
-        nextSecond.add(Calendar.SECOND, 1);
-        await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
+        awaitOneSecond();
 
         return super.verify(signedDocument);
     }

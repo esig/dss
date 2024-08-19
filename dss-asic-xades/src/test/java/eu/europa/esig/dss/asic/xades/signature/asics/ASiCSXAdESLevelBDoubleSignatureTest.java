@@ -75,6 +75,7 @@ class ASiCSXAdESLevelBDoubleSignatureTest extends AbstractASiCSXAdESTestSignatur
         DSSDocument firstSignedDocument = super.sign();
         assertNotNull(firstSignedDocument);
 
+        awaitOneSecond();
         signatureParameters = new ASiCWithXAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
         signatureParameters.setSigningCertificate(getSigningCert());

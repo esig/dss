@@ -173,9 +173,7 @@ class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		DSSDocument signedDocument = sign(service, documentToSign);
 		
 		// wait one second
-		Calendar nextSecond = Calendar.getInstance();
-		nextSecond.add(Calendar.SECOND, 1);
-		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
+		awaitOneSecond();
 		
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);

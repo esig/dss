@@ -84,11 +84,9 @@ public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 		assertEquals("No signatures found to be extended!", exception.getMessage());
 
 		DSSDocument extendedDoc = service.timestamp(doc, new PAdESTimestampParameters());
-		
-		Calendar nextSecond = Calendar.getInstance();
-		nextSecond.add(Calendar.SECOND, 1);
-		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
-		
+
+		awaitOneSecond();
+
 		extendParams.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 		extendParams.setSigningCertificate(getSigningCert());
 		exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(extendedDoc, extendParams));
