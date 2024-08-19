@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
@@ -421,6 +422,9 @@ public final class ASiCUtils {
 	 */
 	public static boolean isZip(DSSDocument document) {
 		if (document == null) {
+			return false;
+		}
+		if (document instanceof DigestDocument) {
 			return false;
 		}
 		try (InputStream is = document.openStream()) {
