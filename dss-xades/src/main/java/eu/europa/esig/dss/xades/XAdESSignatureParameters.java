@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -29,6 +30,7 @@ import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
 import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
@@ -381,6 +383,22 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	 */
 	public void setRootDocument(Document rootDocument) {
 		this.rootDocument = rootDocument;
+	}
+
+	/**
+	 * Sets the root XML document for a signature creation.
+	 * This method expected a {@code rootDocument} to be represented by a valid XML document
+	 *
+	 * @param rootDocument {@link DSSDocument} represented by an XML document
+	 */
+	public void setRootDocument(DSSDocument rootDocument) {
+		if (rootDocument == null) {
+			setRootDocument((Document) null);
+		}
+		if (!DomUtils.isDOM(rootDocument)) {
+			throw new IllegalArgumentException("The rootDocument shall be represented by a valid XML document!");
+		}
+		setRootDocument(DomUtils.buildDOM(rootDocument));
 	}
 
 	/**
