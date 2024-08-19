@@ -30,10 +30,13 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.model.ManifestEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is used to build the manifest.xml file (ASiC-E).
@@ -53,6 +56,8 @@ import java.util.List;
  *
  */
 public class ASiCEWithXAdESManifestBuilder {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithXAdESManifestBuilder.class);
 
 	/** List of documents to be included into the manifest */
 	private List<DSSDocument> documents;
@@ -123,12 +128,17 @@ public class ASiCEWithXAdESManifestBuilder {
 		DomUtils.setAttributeNS(rootDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, MimeTypeEnum.ASICE.getMimeTypeString());
 
 		for (ManifestEntry entry : getEntries()) {
+			Objects.requireNonNull(entry, "ManifestEntry cannot be null!");
+			Objects.requireNonNull(entry.getUri(), "ManifestEntry#Uri cannot be null! Please define the document's name.");
+
 			Element fileDom = DomUtils.addElement(documentDom, manifestDom, ManifestNamespace.NS, ManifestElement.FILE_ENTRY);
 			DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.FULL_PATH, entry.getUri());
 			MimeType mimeType = entry.getMimeType();
-			if (mimeType != null) {
-				DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, mimeType.getMimeTypeString());
+			if (mimeType == null) {
+				LOG.warn("No MimeType is defined for a manifest entry with name '{}'! Using a default MimeType...", entry.getDocumentName());
+				mimeType = MimeTypeEnum.BINARY;
 			}
+			DomUtils.setAttributeNS(fileDom, ManifestNamespace.NS, ManifestAttribute.MEDIA_TYPE, mimeType.getMimeTypeString());
 		}
 
 		return DomUtils.createDssDocumentFromDomDocument(documentDom, manifestFilename);

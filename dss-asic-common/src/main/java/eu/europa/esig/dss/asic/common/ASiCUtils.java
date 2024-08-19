@@ -953,6 +953,8 @@ public final class ASiCUtils {
 	public static List<ManifestEntry> toSimpleManifestEntries(List<DSSDocument> documents) {
 		List<ManifestEntry> entries = new ArrayList<>();
 		for (DSSDocument document : documents) {
+			Objects.requireNonNull(document, "DSSDocument cannot be null!");
+
 			ManifestEntry entry = new ManifestEntry();
 			entry.setUri(document.getName());
 			entry.setMimeType(document.getMimeType());
