@@ -48,6 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@SuppressWarnings("unchecked")
 class JAdESFlattenedParallelSignatureTest extends AbstractJAdESTestValidation {
 	
 	private DSSDocument toBeSigned;

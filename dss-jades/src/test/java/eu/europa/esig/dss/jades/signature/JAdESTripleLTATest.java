@@ -54,6 +54,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@SuppressWarnings("unchecked")
 class JAdESTripleLTATest extends AbstractJAdESTestValidation {
 
     @Test

@@ -58,6 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@SuppressWarnings("unchecked")
 public abstract class AbstractJAdESMultipleDocumentSignatureTest extends AbstractPkiFactoryTestMultipleDocumentsSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> {
 	
 	@Override
