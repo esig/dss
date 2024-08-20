@@ -54,6 +54,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+@SuppressWarnings("unchecked")
 class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestValidation {
 	
 	@RepeatedTest(10)
