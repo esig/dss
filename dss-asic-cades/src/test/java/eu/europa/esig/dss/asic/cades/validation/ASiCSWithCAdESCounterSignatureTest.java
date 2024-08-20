@@ -39,8 +39,6 @@ class ASiCSWithCAdESCounterSignatureTest extends AbstractASiCWithCAdESTestValida
 	
 	@Override
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
-
 		int counterSigCounter = 0;
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			if (signatureWrapper.isCounterSignature()) {

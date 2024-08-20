@@ -20,15 +20,12 @@
  */
 package eu.europa.esig.dss.xades;
 
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.implementations.ResolverFragment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 
 /**
  * This class tests the xpath expression against injection.
@@ -64,19 +61,14 @@ public class EnforcedResolverFragment extends ResolverFragment {
 	 */
 	public boolean checkValueForXpathInjection(String xpathString) {
 		if (Utils.isStringNotEmpty(xpathString)) {
-			try {
-				String decodedValue = URLDecoder.decode(xpathString, StandardCharsets.UTF_8.name());
-				for (char c : decodedValue.toCharArray()) {
-					if (XPATH_CHAR_FILTER.indexOf(c) != -1) {
-						if (LOG.isDebugEnabled()) {
-							LOG.debug("Forbidden char '{}' detected", c);
-						}
-						return false;
+			String decodedValue = DSSUtils.decodeURI(xpathString);
+			for (char c : decodedValue.toCharArray()) {
+				if (XPATH_CHAR_FILTER.indexOf(c) != -1) {
+					if (LOG.isDebugEnabled()) {
+						LOG.debug("Forbidden char '{}' detected", c);
 					}
+					return false;
 				}
-			} catch (UnsupportedEncodingException e) {
-				LOG.warn("Unable to decode '{}' : {}", xpathString, e.getMessage());
-				return false;
 			}
 		}
 		return true;
