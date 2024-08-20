@@ -59,10 +59,9 @@ class DSS1334WrongNameTest extends AbstractXAdESTestValidation {
     }
 
     @Override
-    protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        super.checkBLevelValid(diagnosticData);
-
+    protected void checkDigestMatchers(DiagnosticData diagnosticData) {
         SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+
         List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
         assertEquals(2, Utils.collectionSize(digestMatchers));
 

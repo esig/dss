@@ -65,10 +65,10 @@ class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 		}
 		assertTrue(archiveTimestampFound);
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 		
 		List<SignatureWrapper> signatureWrappers = diagnosticData.getSignatures();
 		assertEquals(2, signatureWrappers.size());

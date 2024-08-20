@@ -43,9 +43,9 @@ class XAdESDoubleManifestTest extends AbstractXAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		return new FileDocument("src/test/resources/validation/Signature-X-SK_DIT-1.xml");
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertNotNull(signature);
 		assertTrue(signature.isSignatureIntact());

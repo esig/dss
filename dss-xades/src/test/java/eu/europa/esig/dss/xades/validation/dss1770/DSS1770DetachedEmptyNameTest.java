@@ -71,10 +71,10 @@ class DSS1770DetachedEmptyNameTest extends AbstractXAdESTestValidation {
 		assertEquals(1, fullScopeCounter);
 		assertEquals(2, partialScopeCounter);
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 		
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		SignatureWrapper signatureWrapper = signatures.get(0);

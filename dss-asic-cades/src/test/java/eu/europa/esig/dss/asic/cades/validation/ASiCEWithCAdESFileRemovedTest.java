@@ -47,11 +47,10 @@ class ASiCEWithCAdESFileRemovedTest extends AbstractASiCWithCAdESTestValidation 
     }
 
     @Override
-    protected void checkBLevelValid(DiagnosticData diagnosticData) {
+    protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkDigestMatchers(diagnosticData);
+
         SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        assertTrue(signatureWrapper.isSignatureIntact());
-        assertTrue(signatureWrapper.isSignatureValid());
-        assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
 
         int signPropDMs = 0;
         int signDocValidDMs = 0;

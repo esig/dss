@@ -185,6 +185,8 @@ class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 	
 	@Override
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+		super.checkBLevelValid(diagnosticData);
+
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertTrue(signature.isBLevelTechnicallyValid());
 	}

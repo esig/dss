@@ -86,8 +86,8 @@ public abstract class AbstractXAdESCounterSignatureTest extends AbstractCounterS
 	}
 
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 
 		Set<SignatureWrapper> allCounterSignatures = diagnosticData.getAllCounterSignatures();
 		assertTrue(Utils.isCollectionNotEmpty(allCounterSignatures));
