@@ -581,6 +581,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
 				}
+				if (digestMatcher.getUri() != null && digestMatcher.getDocumentName() != null) {
+					assertEquals(digestMatcher.getUri(), digestMatcher.getDocumentName());
+				}
 				assertFalse(digestMatcher.isDuplicated());
 			}
 	
@@ -1209,6 +1212,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
+				}
+				if (digestMatcher.getUri() != null && digestMatcher.getDocumentName() != null) {
+					assertEquals(digestMatcher.getUri(), digestMatcher.getDocumentName());
 				}
 			}
 		}
