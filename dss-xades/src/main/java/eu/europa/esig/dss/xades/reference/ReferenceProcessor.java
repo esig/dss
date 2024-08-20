@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.reference;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -177,8 +178,11 @@ public class ReferenceProcessor {
                 if (dssReference.getId() != null) {
                     referenceDom.setAttribute(XMLDSigAttribute.ID.getAttributeName(), dssReference.getId());
                 }
-                final String uri = dssReference.getUri();
+                String uri = dssReference.getUri();
                 if (uri != null) {
+                    if (!DSSXMLUtils.isSameDocumentReference(uri)) {
+                        uri = DSSUtils.encodeURI(uri);
+                    }
                     referenceDom.setAttribute(XMLDSigAttribute.URI.getAttributeName(), uri);
                 }
                 final String referenceType = dssReference.getType();

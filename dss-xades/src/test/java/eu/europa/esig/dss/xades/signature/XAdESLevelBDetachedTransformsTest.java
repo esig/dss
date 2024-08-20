@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -99,6 +100,23 @@ class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> sign(document, signatureParameters));
 		assertEquals("Reference setting is not correct! Base64 transform is not compatible with DETACHED signature format.", exception.getMessage());
 	}
+
+	@Test
+	void specialCharTest() throws Exception {
+		DSSDocument dssDocument = new InMemoryDocument("Hello world".getBytes(), "hello+world&%/*.xml");
+		List<DSSReference> references = buildReferences(dssDocument);
+		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
+
+		DSSDocument signed = sign(dssDocument, signatureParameters);
+
+		DiagnosticData diagnosticData = validate(signed, signatureParameters, dssDocument);
+		List<SignerDataWrapper> originalDocuments = diagnosticData.getOriginalSignerDocuments();
+		assertEquals(1, originalDocuments.size());
+		SignerDataWrapper originalDoc = originalDocuments.get(0);
+
+		assertArrayEquals(dssDocument.getDigestValue(originalDoc.getDigestAlgoAndValue().getDigestMethod()),
+				originalDoc.getDigestAlgoAndValue().getDigestValue());
+	}
 	
 	private List<DSSReference> buildReferences(DSSDocument document, DSSTransform... transforms) {
 
@@ -150,6 +168,9 @@ class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		for (XmlDigestMatcher digestMatcher : signature.getDigestMatchers()) {
 			assertTrue(digestMatcher.isDataFound());
 			assertTrue(digestMatcher.isDataIntact());
+			if (digestMatcher.getDocumentName() != null) {
+				assertEquals(digestMatcher.getUri(), digestMatcher.getDocumentName());
+			}
 		}
 		return diagnosticData;
 	}

@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -240,7 +239,7 @@ public class ReferenceBuilder {
 		final DSSReference reference = new DSSReference();
 		reference.setId(referenceIdProvider.getReferenceId());
 		if (Utils.isStringNotEmpty(document.getName())) {
-			reference.setUri(DSSUtils.encodeURI(document.getName()));
+			reference.setUri(document.getName());
 		}
 		reference.setContents(document);
 		reference.setDigestMethodAlgorithm(digestAlgorithm);
