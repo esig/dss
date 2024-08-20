@@ -45,9 +45,11 @@ class XPointerValidationTest extends AbstractXAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		return new FileDocument("src/test/resources/validation/10963_signed.xml");
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
+
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertEquals(3, digestMatchers.size());

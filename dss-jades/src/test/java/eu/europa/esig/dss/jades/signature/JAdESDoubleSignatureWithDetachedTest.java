@@ -109,10 +109,10 @@ class JAdESDoubleSignatureWithDetachedTest extends AbstractJAdESTestValidation {
 
 		assertEquals(2, diagnosticData.getSignatureIdList().size());
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 		
 		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
 			int signedDocumentsCounter = 0;

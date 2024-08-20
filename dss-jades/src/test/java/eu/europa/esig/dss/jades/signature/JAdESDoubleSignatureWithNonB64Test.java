@@ -102,10 +102,10 @@ class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidation {
 
 		assertEquals(2, diagnosticData.getSignatureIdList().size());
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 		
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		SignatureWrapper signatureOne = signatures.get(0);

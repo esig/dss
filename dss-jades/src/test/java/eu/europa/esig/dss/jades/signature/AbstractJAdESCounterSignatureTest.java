@@ -136,10 +136,10 @@ public abstract class AbstractJAdESCounterSignatureTest extends AbstractCounterS
 		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
 		return SignatureLevel.JAdES_BASELINE_LTA.equals(signatureLevel);
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 
 		Set<SignatureWrapper> allCounterSignatures = diagnosticData.getAllCounterSignatures();
 		assertTrue(Utils.isCollectionNotEmpty(allCounterSignatures));

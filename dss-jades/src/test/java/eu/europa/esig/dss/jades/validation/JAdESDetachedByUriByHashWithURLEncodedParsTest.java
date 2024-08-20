@@ -20,11 +20,19 @@
  */
 package eu.europa.esig.dss.jades.validation;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JAdESDetachedByUriByHashWithURLEncodedParsTest extends AbstractJAdESTestValidation {
 
@@ -43,6 +51,30 @@ class JAdESDetachedByUriByHashWithURLEncodedParsTest extends AbstractJAdESTestVa
         DSSDocument documentTwo = new FileDocument("src/test/resources/ObjectIdByURIHash-2.html");
         documentTwo.setName(DOC_TWO_NAME);
         return Arrays.asList(documentOne, documentTwo);
+    }
+
+    @Override
+    protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+        SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        boolean docOneFound = false;
+        boolean docTwoFound = false;
+        for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {
+            if (DigestMatcherType.SIG_D_ENTRY == digestMatcher.getType()) {
+                if (DOC_ONE_NAME.equals(digestMatcher.getDocumentName())) {
+                    assertNotNull(digestMatcher.getUri());
+                    assertNotEquals(digestMatcher.getDocumentName(), digestMatcher.getUri());
+                    docOneFound = true;
+                } else if (DOC_TWO_NAME.equals(digestMatcher.getDocumentName())) {
+                    assertNotNull(digestMatcher.getUri());
+                    assertNotEquals(digestMatcher.getDocumentName(), digestMatcher.getUri());
+                    docTwoFound = true;
+                }
+            }
+            assertTrue(digestMatcher.isDataFound());
+            assertTrue(digestMatcher.isDataIntact());
+        }
+        assertTrue(docOneFound);
+        assertTrue(docTwoFound);
     }
 
 }

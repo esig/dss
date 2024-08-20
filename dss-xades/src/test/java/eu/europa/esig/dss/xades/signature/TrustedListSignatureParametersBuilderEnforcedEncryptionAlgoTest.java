@@ -41,6 +41,8 @@ class TrustedListSignatureParametersBuilderEnforcedEncryptionAlgoTest extends Tr
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
+        super.checkBLevelValid(diagnosticData);
+
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertEquals(SignatureAlgorithm.ED25519, signature.getSignatureAlgorithm());
     }

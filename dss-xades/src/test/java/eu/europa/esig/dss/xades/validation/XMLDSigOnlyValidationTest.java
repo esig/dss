@@ -47,9 +47,11 @@ class XMLDSigOnlyValidationTest extends AbstractXAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		return new FileDocument("src/test/resources/validation/xmldsig-only.xml");
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
+
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(SignatureLevel.XML_NOT_ETSI, signatureWrapper.getSignatureFormat());
 		List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();

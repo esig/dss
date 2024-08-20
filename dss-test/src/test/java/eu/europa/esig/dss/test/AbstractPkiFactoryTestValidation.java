@@ -573,6 +573,15 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertTrue(signatureWrapper.isSignatureIntact());
+			assertTrue(signatureWrapper.isSignatureValid());
+			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
+		}
+		checkDigestMatchers(diagnosticData);
+	}
+
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
@@ -589,10 +598,6 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				}
 				assertFalse(digestMatcher.isDuplicated());
 			}
-	
-			assertTrue(signatureWrapper.isSignatureIntact());
-			assertTrue(signatureWrapper.isSignatureValid());
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
 		}
 	}
 

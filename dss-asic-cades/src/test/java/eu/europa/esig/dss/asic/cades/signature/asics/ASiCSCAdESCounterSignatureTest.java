@@ -87,11 +87,11 @@ class ASiCSCAdESCounterSignatureTest extends AbstractASiCCAdESCounterSignatureTe
 		signatureParameters.bLevel().setCommitmentTypeIndications(Arrays.asList(CommitmentTypeEnum.ProofOfCreation));
 		return signatureParameters;
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
-		
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
+
 		boolean counterSignatureFound = false;
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			assertEquals(1, signatureWrapper.getDigestMatchers().size());

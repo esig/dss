@@ -52,9 +52,11 @@ class XAdESDetachedWithTransformTest extends AbstractXAdESTestValidation {
 	protected List<DSSDocument> getDetachedContents() {
 		return Collections.singletonList(new FileDocument("src/test/resources/sample-c14n.xml"));
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
+
 		List<SignerDataWrapper> originalSignerDocuments = diagnosticData.getOriginalSignerDocuments();
 		assertEquals(1, originalSignerDocuments.size());
 		

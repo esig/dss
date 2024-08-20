@@ -80,9 +80,7 @@ public class JAdESLevelBDetachedByUriByHashHttpParsWrongNameTest extends Abstrac
     }
 
     @Override
-    protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        super.checkBLevelValid(diagnosticData);
-
+    protected void checkDigestMatchers(DiagnosticData diagnosticData) {
         SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         int sigDCounter = 0;
         for (XmlDigestMatcher digestMatcher : signatureWrapper.getDigestMatchers()) {

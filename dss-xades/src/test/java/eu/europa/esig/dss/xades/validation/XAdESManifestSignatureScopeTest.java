@@ -62,10 +62,10 @@ class XAdESManifestSignatureScopeTest extends AbstractXAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		return new FileDocument(new File("src/test/resources/validation/Signature-X-CZ_SEF-4.xml"));
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 		
 		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
