@@ -929,6 +929,9 @@ public final class DSSUtils {
 	 * @return {@link String} UTF-8
 	 */
 	public static String decodeURI(String uri) {
+		if (uri == null) {
+			return null;
+		}
 		try {
 			uri = uri.replace("+", "%2B"); // preserve '+' characters
 			return URLDecoder.decode(uri, UTF8_ENCODING);

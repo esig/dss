@@ -336,6 +336,16 @@ class DSSUtilsTest {
 
 	@Test
 	void decodeURI() {
+		assertNull(DSSUtils.decodeURI(null));
+		assertEquals("", DSSUtils.decodeURI(""));
+		assertEquals(".txt", DSSUtils.decodeURI(".txt"));
+		assertEquals("hello.txt", DSSUtils.decodeURI("hello.txt"));
+		assertEquals("hello_world.txt", DSSUtils.decodeURI("hello_world.txt"));
+		assertEquals("hello world.txt", DSSUtils.decodeURI("hello world.txt"));
+		assertEquals("hello world.txt", DSSUtils.decodeURI("hello%20world.txt"));
+		assertEquals("hello+world.txt", DSSUtils.decodeURI("hello+world.txt"));
+		assertEquals("hello+world.txt", DSSUtils.decodeURI("hello%2Bworld.txt"));
+
 		assertEquals("012éù*34ä5µ£ 6789~#%&()+=`@{[]}'.txt",
 				DSSUtils.decodeURI("012%C3%A9%C3%B9*34%C3%A45%C2%B5%C2%A3%206789%7E%23%25%26%28%29%2B%3D%60%40%7B%5B%5D%7D%27.txt"));
 
