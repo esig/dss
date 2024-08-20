@@ -780,12 +780,7 @@ public final class DSSUtils {
 	 * @return the normalized {@link String}
 	 */
 	public static String getNormalizedString(final String str) {
-		String normalizedStr = str;
-		try {
-			normalizedStr = URLDecoder.decode(str, UTF8_ENCODING);
-		} catch (UnsupportedEncodingException e) {
-			LOG.debug("Cannot decode fileName [{}]. Reason : {}", str, e.getMessage());
-		}
+		String normalizedStr = DSSUtils.decodeURI(str);
 		normalizedStr = normalizedStr.replaceAll("\\W", "_");
 		return normalizedStr;
 	}
@@ -935,7 +930,7 @@ public final class DSSUtils {
 		try {
 			uri = uri.replace("+", "%2B"); // preserve '+' characters
 			return URLDecoder.decode(uri, UTF8_ENCODING);
-		} catch (UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException | IllegalArgumentException e) {
 			LOG.warn("Unable to decode '{}' : {}", uri, e.getMessage(), e);
 		}
 		return uri;

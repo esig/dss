@@ -55,13 +55,14 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 
 	@Override
 	public XMLSignatureInput engineResolveURI(ResourceResolverContext context) throws ResourceResolverException {
-		Node node = resolveNode(context.attr);
+		String uriValue = getURIValue(context);
+		Node node = resolveNode(uriValue);
 		
 		if (node != null) {
 			return createFromNode(node);
 		}
 
-		Object[] exArgs = { String.format("Unable to find a signed content by URI : '%s'", context.attr.getNodeValue()) };
+		Object[] exArgs = { String.format("Unable to find a signed content by URI : '%s'", uriValue) };
 		throw new ResourceResolverException("generic.EmptyMessage", exArgs, null, context.baseUri);
 	}
 
@@ -77,18 +78,23 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 
 	@Override
 	public boolean engineCanResolveURI(ResourceResolverContext context) {
-		Attr uriAttr = context.attr;
-		return uriAttr != null && ( DomUtils.isXPointerQuery(uriAttr.getNodeValue()) || DomUtils.isElementReference(uriAttr.getNodeValue()) ) 
-				&& resolveNode(uriAttr) != null;
+		String uriValue = getURIValue(context);
+		return (DomUtils.isXPointerQuery(uriValue) || DomUtils.isElementReference(uriValue)) && resolveNode(uriValue) != null;
 	}
-	
-	private Node resolveNode(Attr uriAttr) {
+
+	private String getURIValue(ResourceResolverContext context) {
+		Attr uriAttr = context.attr;
 		if (uriAttr == null) {
 			return null;
 		}
-		
-		String uriValue = DSSUtils.decodeURI(uriAttr.getNodeValue());
-			
+		return DSSUtils.decodeURI(uriAttr.getNodeValue());
+	}
+	
+	private Node resolveNode(String uriValue) {
+		if (uriValue == null) {
+			return null;
+		}
+
 		Document documentDom = DomUtils.buildDOM(document);
 		Node node = DomUtils.getNode(documentDom, XMLDSigPath.ALL_SIGNATURE_VALUES_PATH + DomUtils.getXPathByIdAttribute(uriValue));
 		

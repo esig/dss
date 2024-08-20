@@ -21,10 +21,9 @@
 package eu.europa.esig.dss.service.http.commons;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSUtils;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 
 /**
  * Gets the absolute path for the defined class
@@ -63,11 +62,7 @@ public class ResourceLoader {
 			return null;
 		}
 		final String absolutePath = uri.getPath();
-		try {
-			return URLDecoder.decode(absolutePath, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new DSSException(String.format("Unable to decode URI path : %s", e.getMessage()), e);
-		}
+		return DSSUtils.decodeURI(absolutePath);
 	}
 
 }
