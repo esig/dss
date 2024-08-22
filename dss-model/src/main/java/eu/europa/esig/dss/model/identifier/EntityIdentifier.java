@@ -23,7 +23,7 @@ package eu.europa.esig.dss.model.identifier;
 import java.security.PublicKey;
 
 /**
- * This class is used to obtain a unique id for Public key
+ * This class is used to obtain a unique id for a Public key and Subject Name combination
  *
  */
 public final class EntityIdentifier extends Identifier {
@@ -31,12 +31,23 @@ public final class EntityIdentifier extends Identifier {
 	private static final long serialVersionUID = -3608001942910223023L;
 
 	/**
-	 * Default constructor
+	 * Constructor with a public key
 	 *
 	 * @param publicKey {@link PublicKey}
+	 * @deprecated since DSS 6.2. Please use a {@code KeyIdentifier(PublicKey publicKey)} instead
 	 */
+	@Deprecated
 	public EntityIdentifier(final PublicKey publicKey) {
-		super("PK-", publicKey.getEncoded());
+		this(new EntityIdentifierBuilder(publicKey, null).buildBinaries());
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param binaries binaries used to build a unique identifier
+	 */
+	public EntityIdentifier(final byte[] binaries) {
+		super("EK-", binaries);
 	}
 
 }

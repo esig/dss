@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
+import eu.europa.esig.dss.model.identifier.KeyIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -28,6 +29,8 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.time.Duration.ofMillis;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,6 +67,8 @@ class CertificateSourceCasesTest {
 		assertEquals(1, lcs.getBySki(CertificateExtensionsUtils.getSubjectKeyIdentifier(c2).getSki()).size());
 		assertEquals(1, lcs.getByPublicKey(c1.getPublicKey()).size());
 		assertEquals(1, lcs.getByPublicKey(c2.getPublicKey()).size());
+		assertEquals(1, lcs.getByEntityKey(c1.getEntityKey()).size());
+		assertEquals(1, lcs.getByEntityKey(c2.getEntityKey()).size());
 
 		assertTrue(lcs.isTrusted(c1));
 		assertFalse(lcs.isTrusted(c2));
@@ -95,7 +100,7 @@ class CertificateSourceCasesTest {
 		lcs.add(ctcs);
 
 		assertEquals(2, lcs.getNumberOfCertificates());
-		assertEquals(1, lcs.getNumberOfEntities());
+		assertEquals(2, lcs.getNumberOfEntities());
 		assertEquals(1, lcs.getBySubject(c1.getSubject()).size());
 		assertEquals(1, lcs.getBySubject(c2.getSubject()).size());
 
@@ -103,6 +108,8 @@ class CertificateSourceCasesTest {
 		assertEquals(2, lcs.getBySki(DSSASN1Utils.computeSkiFromCert(c2)).size());
 		assertEquals(2, lcs.getByPublicKey(c1.getPublicKey()).size());
 		assertEquals(2, lcs.getByPublicKey(c2.getPublicKey()).size());
+		assertEquals(1, lcs.getByEntityKey(c1.getEntityKey()).size());
+		assertEquals(1, lcs.getByEntityKey(c2.getEntityKey()).size());
 
 		assertFalse(lcs.isTrusted(c1));
 		assertTrue(lcs.isTrusted(c2));
@@ -149,6 +156,8 @@ class CertificateSourceCasesTest {
 		assertEquals(2, lcs.getBySki(DSSASN1Utils.computeSkiFromCert(c2)).size());
 		assertEquals(2, lcs.getByPublicKey(c1.getPublicKey()).size());
 		assertEquals(2, lcs.getByPublicKey(c2.getPublicKey()).size());
+		assertEquals(2, lcs.getByEntityKey(c1.getEntityKey()).size());
+		assertEquals(2, lcs.getByEntityKey(c2.getEntityKey()).size());
 
 		assertTrue(lcs.isTrusted(c1));
 		assertTrue(lcs.isTrusted(c2));
@@ -168,8 +177,15 @@ class CertificateSourceCasesTest {
 				}
 			}
 	
+
+			Set<KeyIdentifier> keyIdentifierSet = new HashSet<>();
+			for (CertificateToken cert : ccc.getCertificates()) {
+				keyIdentifierSet.add(new KeyIdentifier(cert.getPublicKey()));
+			}
+
 			assertEquals(2438, ccc.getNumberOfCertificates());
-			assertEquals(2338, ccc.getNumberOfEntities());
+			assertEquals(2349, ccc.getNumberOfEntities());
+			assertEquals(2338, keyIdentifierSet.size());
 		});
 	}
 

@@ -212,16 +212,19 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	@Override
 	public boolean isTrusted(CertificateToken certificateToken) {
-		CertificateTrustTime trustTime = getTrustTime(certificateToken);
-		return super.isTrusted(certificateToken) && (trustTime == null || trustTime.isTrusted());
+		if (super.isTrusted(certificateToken)) {
+			CertificateTrustTime trustTime = getTrustTime(certificateToken);
+			return trustTime == null || trustTime.isTrusted();
+		}
+		return false;
 	}
 
 	/**
-	 * Gets the number of trusted public keys
+	 * Gets the number of trusted entity keys (public key + subject name)
 	 *
-	 * @return the number of trusted public keys
+	 * @return the number of trusted entity keys (public key + subject name)
 	 */
-	public int getNumberOfTrustedPublicKeys() {
+	public int getNumberOfTrustedEntityKeys() {
 		return trustPropertiesByEntity.size();
 	}
 

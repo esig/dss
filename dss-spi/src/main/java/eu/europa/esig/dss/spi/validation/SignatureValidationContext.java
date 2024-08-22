@@ -22,6 +22,8 @@ package eu.europa.esig.dss.spi.validation;
 
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.identifier.EntityIdentifierBuilder;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
@@ -341,7 +343,7 @@ public class SignatureValidationContext implements ValidationContext {
 		// add all existing equivalent certificates for the validation
 		ListCertificateSource allCertificateSources = getAllCertificateSources();
 		for (CertificateToken certificateToken : certificateSourceToAdd.getCertificates()) {
-			final Set<CertificateToken> equivalentCertificates = allCertificateSources.getByPublicKey(certificateToken.getPublicKey());
+			final Set<CertificateToken> equivalentCertificates = allCertificateSources.getByEntityKey(certificateToken.getEntityKey());
 			for (CertificateToken equivalentCertificate : equivalentCertificates) {
 				if (!certificateToken.getDSSIdAsString().equals(equivalentCertificate.getDSSIdAsString())) {
 					addCertificateTokenForVerification(certificateToken);
@@ -387,16 +389,6 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 			}
 		}
-	}
-
-	private Date getBestSignatureTime(AdvancedSignature signature) {
-		Date bestSignatureTime = null;
-		for (POE poe : poeTimes.get(signature.getId())) {
-			if (bestSignatureTime == null || bestSignatureTime.after(poe.getTime())) {
-				bestSignatureTime = poe.getTime();
-			}
-		}
-		return bestSignatureTime;
 	}
 
 	private void prepareCounterSignatures(final List<AdvancedSignature> counterSignatures) {
@@ -621,7 +613,10 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private Set<CertificateToken> getIssuersFromSources(Token token, ListCertificateSource allCertificateSources) {
-		if (token.getPublicKeyOfTheSigner() != null) {
+		if (token.getPublicKeyOfTheSigner() != null && token.getIssuerX500Principal() != null) {
+			EntityIdentifier entityKey = new EntityIdentifierBuilder(token.getPublicKeyOfTheSigner(), token.getIssuerX500Principal()).build();
+			return allCertificateSources.getByEntityKey(entityKey);
+		} else if (token.getPublicKeyOfTheSigner() != null) {
 			return allCertificateSources.getByPublicKey(token.getPublicKeyOfTheSigner());
 		} else if (token.getIssuerX500Principal() != null) {
 			return allCertificateSources.getBySubject(new X500PrincipalHelper(token.getIssuerX500Principal()));
@@ -630,7 +625,10 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private Set<CertificateToken> getIssuersFromSource(Token token, CertificateSource certificateSource) {
-		if (token.getPublicKeyOfTheSigner() != null) {
+		if (token.getPublicKeyOfTheSigner() != null && token.getIssuerX500Principal() != null) {
+			EntityIdentifier entityKey = new EntityIdentifierBuilder(token.getPublicKeyOfTheSigner(), token.getIssuerX500Principal()).build();
+			return certificateSource.getByEntityKey(entityKey);
+		} else if (token.getPublicKeyOfTheSigner() != null) {
 			return certificateSource.getByPublicKey(token.getPublicKeyOfTheSigner());
 		} else if (token.getIssuerX500Principal() != null) {
 			return certificateSource.getBySubject(new X500PrincipalHelper(token.getIssuerX500Principal()));

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.CertificateTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.identifier.EntityIdentifierBuilder;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
 import javax.security.auth.x500.X500Principal;
@@ -86,7 +87,7 @@ public class CertificateToken extends Token {
         Objects.requireNonNull(x509Certificate, "X509 certificate is missing");
 
         this.x509Certificate = x509Certificate;
-        this.entityKey = new EntityIdentifier(x509Certificate.getPublicKey());
+        this.entityKey = new EntityIdentifierBuilder(x509Certificate.getPublicKey(), x509Certificate.getSubjectX500Principal()).build();
 
         // The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
         this.signatureAlgorithm = SignatureAlgorithm.forOidAndParams(x509Certificate.getSigAlgOID(), x509Certificate.getSigAlgParams());

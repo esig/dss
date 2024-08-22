@@ -22,6 +22,7 @@ package eu.europa.esig.dss.spi.x509;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
@@ -248,6 +249,15 @@ public class ListCertificateSource implements CertificateSource {
 			if (source.isKnown(certificateToken)) {
 				result.add(source.getCertificateSourceType());
 			}
+		}
+		return result;
+	}
+
+	@Override
+	public Set<CertificateToken> getByEntityKey(EntityIdentifier entityKey) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSource source : sources) {
+			result.addAll(source.getByEntityKey(entityKey));
 		}
 		return result;
 	}
