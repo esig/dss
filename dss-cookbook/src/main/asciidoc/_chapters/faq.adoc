@@ -210,6 +210,14 @@ Alternatively, starting from DSS `6.1`, it is possible to define the argument in
 xmlsec.manifest.max.references = 200
 ----
 
+|all versions              a|Signature invalid after digest signing with RSA algorithm       a|When using Java for signing with a private key using RSA algorithm, it is required to manually encode the calculated digest to the DigestInfo ASN.1 format prior the encryption operation. To do this, you may use a `DSSUtils#encodeRSADigest` method from DSS:
+
+[source,java,indent=0]
+.Encode RSA digest for signing in Java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ServerSignRsaTest.java[tags=demo]
+----
+
 |all versions              a|I have a question not covered above      a|Feel free to reach us using https://ec.europa.eu/digital-building-blocks/tracker/projects/DSS/issues[JIRA issues tracker].
 
 |===
