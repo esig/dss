@@ -363,6 +363,25 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 		// skip
 	}
 
+	protected void checkCertificates(DiagnosticData diagnosticData) {
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			assertNotNull(certificateWrapper);
+			assertNotNull(certificateWrapper.getId());
+			assertNotNull(certificateWrapper.getCertificateDN());
+			assertNotNull(certificateWrapper.getCertificateIssuerDN());
+			assertNotNull(certificateWrapper.getNotAfter());
+			assertNotNull(certificateWrapper.getNotBefore());
+			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
+			assertNotNull(certificateWrapper.getEntityKey());
+
+			if (certificateWrapper.getSigningCertificate() != null) {
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+			} else if (certificateWrapper.isSelfSigned()) {
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+			}
+		}
+	}
+
 	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
 		for (AdvancedSignature advancedSignature : advancedSignatures) {
