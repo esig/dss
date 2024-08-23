@@ -413,12 +413,14 @@ public abstract class DiagnosticDataBuilder {
 						break;
 					}
 					processedTokens.add(currentCertificate);
+
 					CertificateToken issuerCertificate = getIssuerCertificate(currentCertificate);
-					if (currentCertificate.getIssuerEntityKey() != null && currentCertificate.getIssuerEntityKey().equals(issuerCertificate.getEntityKey())) {
+					if (issuerCertificate != null && currentCertificate.getIssuerEntityKey() != null
+							&& currentCertificate.getIssuerEntityKey().equals(issuerCertificate.getEntityKey())) {
 						currentCertificate = issuerCertificate;
 					} else {
 						// avoid TrustProperties extraction for a not matching chain
-						break;
+						currentCertificate = null;
 					}
 				}
 			}
