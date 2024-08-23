@@ -777,6 +777,18 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			assertNotNull(certificateWrapper.getNotBefore());
 			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
 			assertNotNull(certificateWrapper.getEntityKey());
+
+			if (certificateWrapper.getSigningCertificate() != null) {
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+				assertEquals(certificateWrapper.getIssuerEntityKey(), certificateWrapper.getSigningCertificate().getEntityKey());
+				assertTrue(certificateWrapper.isMatchingIssuerKey());
+				assertTrue(certificateWrapper.isMatchingIssuerSubjectName());
+			} else if (certificateWrapper.isSelfSigned()) {
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+				assertEquals(certificateWrapper.getEntityKey(), certificateWrapper.getIssuerEntityKey());
+				assertTrue(certificateWrapper.isMatchingIssuerKey());
+				assertTrue(certificateWrapper.isMatchingIssuerSubjectName());
+			}
 		}
 	}
 

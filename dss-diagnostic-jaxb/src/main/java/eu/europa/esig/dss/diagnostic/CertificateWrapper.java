@@ -447,12 +447,39 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	/**
-	 * Returns a string identifier of the certificate's public key
+	 * Returns a string identifier of the certificate's entity key
 	 *
-	 * @return {@link String} public key's identifier
+	 * @return {@link String} entity key's identifier
 	 */
 	public String getEntityKey() {
 		return certificate.getEntityKey();
+	}
+
+	/**
+	 * Returns a string identifier of the certificate's issuer entity key
+	 *
+	 * @return {@link String} issuer entity key's identifier
+	 */
+	public String getIssuerEntityKey() {
+		return certificate.getIssuerEntityKey() != null ? certificate.getIssuerEntityKey().getValue() : null;
+	}
+
+	/**
+	 * Checks whether the issuer's public key matches to the key used to sign this token
+	 *
+	 * @return TRUE if the issue's public key matches the key used to sign the current token
+	 */
+	public boolean isMatchingIssuerKey() {
+		return certificate.getIssuerEntityKey() != null && Boolean.TRUE.equals(certificate.getIssuerEntityKey().isKey());
+	}
+
+	/**
+	 * Checks whether the issuer's subject name matches to the key used to sign this token
+	 *
+	 * @return TRUE if the issue's subject name matches the key used to sign the current token
+	 */
+	public boolean isMatchingIssuerSubjectName() {
+		return certificate.getIssuerEntityKey() != null && Boolean.TRUE.equals(certificate.getIssuerEntityKey().isSubjectName());
 	}
 
 	/**

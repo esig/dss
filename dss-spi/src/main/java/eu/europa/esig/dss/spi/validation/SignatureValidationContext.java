@@ -23,7 +23,6 @@ package eu.europa.esig.dss.spi.validation;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
-import eu.europa.esig.dss.model.identifier.EntityIdentifierBuilder;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
@@ -346,7 +345,7 @@ public class SignatureValidationContext implements ValidationContext {
 			final Set<CertificateToken> equivalentCertificates = allCertificateSources.getByEntityKey(certificateToken.getEntityKey());
 			for (CertificateToken equivalentCertificate : equivalentCertificates) {
 				if (!certificateToken.getDSSIdAsString().equals(equivalentCertificate.getDSSIdAsString())) {
-					addCertificateTokenForVerification(certificateToken);
+					addCertificateTokenForVerification(equivalentCertificate);
 				}
 			}
 		}
@@ -409,6 +408,10 @@ public class SignatureValidationContext implements ValidationContext {
 	 */
 	private Token getNotYetVerifiedToken() {
 		synchronized (tokensToProcess) {
+			RevocationToken<?> revocationToken = getNotYetVerifiedRevocationToken();
+			if (revocationToken != null) {
+				return revocationToken;
+			}
 			for (final Entry<Token, Boolean> entry : tokensToProcess.entrySet()) {
 				if (entry.getValue() == null) {
 					entry.setValue(true);
@@ -417,6 +420,28 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 			return null;
 		}
+	}
+
+	/**
+	 * This method returns a revocation token to verify. If there is no more tokens to verify null is returned.
+	 * As revocation tokens may be added dynamically, the method is executed as part of {@code getNotYetVerifiedToken}.
+	 * It is called with a priority, in order to be able to identify a correct certificate chain.
+	 *
+	 * @return token to verify or null
+	 */
+	private RevocationToken<?> getNotYetVerifiedRevocationToken() {
+		if (Utils.isCollectionEmpty(processedRevocations)) {
+			return null;
+		}
+		final List<RevocationToken<?>> revocationTokens = new ArrayList<>(processedRevocations);
+		for (RevocationToken<?> revocationToken : revocationTokens) {
+			Boolean processed = tokensToProcess.get(revocationToken);
+			if (!Boolean.TRUE.equals(processed)) {
+				tokensToProcess.put(revocationToken, true);
+				return revocationToken;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -473,9 +498,19 @@ public class SignatureValidationContext implements ValidationContext {
 		Token issuerCertificateToken = token;
 		do {
 			chain.add(issuerCertificateToken);
-			issuerCertificateToken = getIssuer(issuerCertificateToken);
+			issuerCertificateToken = getIssuer(issuerCertificateToken, getTokenCertificateSource(token));
 		} while (issuerCertificateToken != null && !chain.contains(issuerCertificateToken));
 		return chain;
+	}
+
+	private CertificateSource getTokenCertificateSource(final Token token) {
+		if (token instanceof OCSPToken) {
+			return ((OCSPToken) token).getCertificateSource();
+		} else if (token instanceof TimestampToken) {
+			return ((TimestampToken) token).getCertificateSource();
+		}
+		// other tokens do not have its own source
+		return null;
 	}
 
 	/**
@@ -496,6 +531,10 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private CertificateToken getIssuer(final Token token) {
+		return getIssuer(token, null);
+	}
+
+	private CertificateToken getIssuer(final Token token, CertificateSource certificateSource) {
 		// Return cached value
 		CertificateToken issuerCertificateToken = getIssuerFromProcessedCertificates(token);
 		if (issuerCertificateToken != null) {
@@ -508,12 +547,13 @@ public class SignatureValidationContext implements ValidationContext {
 		// Avoid repeating over stateless sources
 		if (!tokenIssuerMap.containsKey(token)) {
 
-			if (token instanceof OCSPToken) {
-				candidates = getIssuersFromSource(token, ((OCSPToken) token).getCertificateSource());
+			if (certificateSource == null) {
+				// OCSP or Timestamp
+				certificateSource = getTokenCertificateSource(token);
 			}
 
-			if (token instanceof TimestampToken) {
-				candidates = getIssuersFromSource(token, ((TimestampToken) token).getCertificateSource());
+			if (certificateSource != null) {
+				candidates = getIssuersFromSource(token, certificateSource);
 			}
 
 			// Find issuer candidates from document sources
@@ -531,8 +571,12 @@ public class SignatureValidationContext implements ValidationContext {
 
 		// Find issuer from provided certificate tokens
 		if (Utils.isCollectionEmpty(candidates)) {
-			candidates = processedCertificates;
+			candidates = new HashSet<>();
+			candidates.addAll(processedCertificates);
+			candidates.addAll(documentCertificateSource.getCertificates());
 		}
+
+		candidates = ensureCandidatesFromProcessedCertificates(candidates);
 
 		issuerCertificateToken = new TokenIssuerSelector(token, candidates).getIssuer();
 
@@ -560,6 +604,30 @@ public class SignatureValidationContext implements ValidationContext {
 		addToCacheMap(token, issuerCertificateToken);
 
 		return issuerCertificateToken;
+	}
+
+	/**
+	 * This method is used to ensure the processed certificates are used on validation, in order to avoid cases
+	 * when another certificate is being updated (not provided to the validation)
+	 *
+	 * @param candidates a set of issuer candidate {@link CertificateToken}s
+	 * @return a set of {@link CertificateToken}s
+	 */
+	private Set<CertificateToken> ensureCandidatesFromProcessedCertificates(Set<CertificateToken> candidates) {
+		if (Utils.isCollectionEmpty(candidates)) {
+			return Collections.emptySet();
+		}
+		final Set<CertificateToken> result = new HashSet<>();
+		for (CertificateToken certificateToken : candidates) {
+			for (CertificateToken processedCertificate : processedCertificates) {
+				if (certificateToken.equals(processedCertificate)) {
+					certificateToken = processedCertificate;
+					break;
+				}
+			}
+			result.add(certificateToken);
+		}
+		return result;
 	}
 
 	private void addToCacheMap(Token token, CertificateToken issuerCertificateToken) {
@@ -613,8 +681,8 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private Set<CertificateToken> getIssuersFromSources(Token token, ListCertificateSource allCertificateSources) {
-		if (token.getPublicKeyOfTheSigner() != null && token.getIssuerX500Principal() != null) {
-			EntityIdentifier entityKey = new EntityIdentifierBuilder(token.getPublicKeyOfTheSigner(), token.getIssuerX500Principal()).build();
+		if (token.getIssuerEntityKey() != null) {
+			EntityIdentifier entityKey = token.getIssuerEntityKey();
 			return allCertificateSources.getByEntityKey(entityKey);
 		} else if (token.getPublicKeyOfTheSigner() != null) {
 			return allCertificateSources.getByPublicKey(token.getPublicKeyOfTheSigner());
@@ -625,8 +693,8 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private Set<CertificateToken> getIssuersFromSource(Token token, CertificateSource certificateSource) {
-		if (token.getPublicKeyOfTheSigner() != null && token.getIssuerX500Principal() != null) {
-			EntityIdentifier entityKey = new EntityIdentifierBuilder(token.getPublicKeyOfTheSigner(), token.getIssuerX500Principal()).build();
+		if (token.getIssuerEntityKey() != null) {
+			EntityIdentifier entityKey = token.getIssuerEntityKey();
 			return certificateSource.getByEntityKey(entityKey);
 		} else if (token.getPublicKeyOfTheSigner() != null) {
 			return certificateSource.getByPublicKey(token.getPublicKeyOfTheSigner());
@@ -790,7 +858,7 @@ public class SignatureValidationContext implements ValidationContext {
 			return;
 		}
 
-		List<CertificateToken> tsaCertificateChain = toCertificateTokenChain(getCertChain(tsaCertificate));
+		List<CertificateToken> tsaCertificateChain = toCertificateTokenChain(getCertChain(timestampToken));
 		Date usageDate = timestampToken.getCreationDate();
 		for (CertificateToken cert : tsaCertificateChain) {
 			List<Date> timestampCertChainUsageTimes = timestampCertChainDates.computeIfAbsent(cert, k -> new ArrayList<>());

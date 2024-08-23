@@ -23,6 +23,8 @@ package eu.europa.esig.dss.model.x509;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureValidity;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.identifier.EntityIdentifierBuilder;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
@@ -207,6 +209,20 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	 */
 	public String getAbbreviation() {
 		return "?";
+	}
+
+	/**
+	 * Returns the identifier of the entity key of the issuer of the current token.
+	 * NOTE: The signer shall be identifier with a successful call of {@code checkIsSignedBy} method.
+	 * Otherwise, method returns NULL.
+	 *
+	 * @return {@link EntityIdentifier} of the issuer
+	 */
+	public EntityIdentifier getIssuerEntityKey() {
+		if (publicKeyOfTheSigner != null && getIssuerX500Principal() != null) {
+			return new EntityIdentifierBuilder(publicKeyOfTheSigner, getIssuerX500Principal()).build();
+		}
+		return null;
 	}
 
 	/**

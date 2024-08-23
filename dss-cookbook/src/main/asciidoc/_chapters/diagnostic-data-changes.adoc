@@ -23,6 +23,20 @@ This chapter covers the changes occurred between different versions of DSS withi
 ----
 See <<TrustAnchorValidityPredicate>> for more detail.
 
+|Issuer's entity key              a|[source,xml]
+----
+<Certificate Id="C-4D7D5484...">
+    <EntityKey>EK-FCE30BB55...</EntityKey>
+</Certificate>
+----
+                                                                      a|[source,xml]
+----
+<Certificate Id="C-4D7D5484...">
+    <EntityKey>EK-FCE30BB55...</EntityKey>
+    <IssuerEntityKey key="true" subjectName="true">EK-C9C78912...</IssuerEntityKey>
+</Certificate>
+----
+
 |===
 
 [cols="2,5,5"]

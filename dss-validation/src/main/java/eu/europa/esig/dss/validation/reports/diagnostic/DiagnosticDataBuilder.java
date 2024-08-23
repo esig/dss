@@ -43,6 +43,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerEntityKey;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
@@ -141,6 +142,7 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.x500.X500Principal;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -411,7 +413,13 @@ public abstract class DiagnosticDataBuilder {
 						break;
 					}
 					processedTokens.add(currentCertificate);
-					currentCertificate = getIssuerCertificate(currentCertificate);
+					CertificateToken issuerCertificate = getIssuerCertificate(currentCertificate);
+					if (currentCertificate.getIssuerEntityKey() != null && currentCertificate.getIssuerEntityKey().equals(issuerCertificate.getEntityKey())) {
+						currentCertificate = issuerCertificate;
+					} else {
+						// avoid TrustProperties extraction for a not matching chain
+						break;
+					}
 				}
 			}
 		}
@@ -1449,6 +1457,20 @@ public abstract class DiagnosticDataBuilder {
 		return xmlIssuerSerial;
 	}
 
+	private XmlIssuerEntityKey getXmlIssuerEntityKey(final Token token) {
+		final CertificateToken issuerCertificate = token.isSelfSigned() ? (CertificateToken) token : getIssuerCertificate(token);
+		if (issuerCertificate != null) {
+			final XmlIssuerEntityKey xmlIssuerEntityKey = new XmlIssuerEntityKey();
+			xmlIssuerEntityKey.setValue(token.getIssuerEntityKey().asXmlId());
+			PublicKey publicKeyOfSigner = token.isSelfSigned() ? issuerCertificate.getPublicKey() : token.getPublicKeyOfTheSigner();
+			xmlIssuerEntityKey.setKey(issuerCertificate.getPublicKey() != null && publicKeyOfSigner != null &&
+					Arrays.equals(publicKeyOfSigner.getEncoded(), issuerCertificate.getPublicKey().getEncoded()));
+			xmlIssuerEntityKey.setSubjectName(new X500PrincipalHelper(token.getIssuerX500Principal()).equals(issuerCertificate.getSubject()));
+			return xmlIssuerEntityKey;
+		}
+		return null;
+	}
+
 	/**
 	 * Gets {@code XmlBasicSignature} for a {@code Token}
 	 *
@@ -1518,6 +1540,7 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
 		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey));
 		xmlCert.setEntityKey(certToken.getEntityKey().asXmlId());
+		xmlCert.setIssuerEntityKey(getXmlIssuerEntityKey(certToken));
 		xmlCert.setBasicSignature(getXmlBasicSignature(certToken));
 
 		xmlCert.setCertificateExtensions(getXmlCertificateExtensions(certToken));

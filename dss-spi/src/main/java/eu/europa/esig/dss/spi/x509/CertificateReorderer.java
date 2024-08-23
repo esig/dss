@@ -218,16 +218,16 @@ public class CertificateReorderer {
 		
 		List<CertificateToken> potentialSigners = new ArrayList<>();
 		for (CertificateToken signer : certificates) {
-			boolean isSigner = false;
+			boolean caCert = false;
 
 			for (CertificateToken token : certificates) {
 				if (signer.getPublicKey().equals(token.getPublicKeyOfTheSigner())) {
-					isSigner = true;
+					caCert = true;
 					break;
 				}
 			}
 
-			if (!isSigner) {
+			if (!caCert) {
 				potentialSigners.add(signer);
 			}
 		}

@@ -418,6 +418,7 @@
 					<xs:element name="PublicKeySize" type="xs:int" />
 					<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
 					<xs:element name="EntityKey" type="xs:string" />
+					<xs:element name="IssuerEntityKey" type="IssuerEntityKey" minOccurs="0" />
 
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
@@ -898,6 +899,15 @@
 			<xs:element name="Message" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="valid" type="xs:boolean" />
+	</xs:complexType>
+
+	<xs:complexType name="IssuerEntityKey">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="key" type="xs:boolean" use="required" />
+				<xs:attribute name="subjectName" type="xs:boolean" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:complexType name="BasicSignature">

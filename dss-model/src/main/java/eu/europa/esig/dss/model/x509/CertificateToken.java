@@ -99,13 +99,22 @@ public class CertificateToken extends Token {
     }
 
     /**
-     * Returns the identifier of the current public key. Several certificate can have
-     * the same public key (cross-certificates)
+     * Returns the identifier of the current entity key (public key + subject name).
+     * Several certificate can have the same entity key (cross-certificates)
      *
      * @return {@link EntityIdentifier}
      */
     public EntityIdentifier getEntityKey() {
         return entityKey;
+    }
+
+    @Override
+    public EntityIdentifier getIssuerEntityKey() {
+        if (isSelfSigned()) {
+            return new EntityIdentifierBuilder(getPublicKey(), getSubject().getPrincipal()).build();
+        } else {
+            return super.getIssuerEntityKey();
+        }
     }
 
     /**
@@ -221,9 +230,7 @@ public class CertificateToken extends Token {
      * @return true if the certificate is self-issued
      */
     public boolean isSelfIssued() {
-        final String n1 = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
-        final String n2 = x509Certificate.getIssuerX500Principal().getName(X500Principal.CANONICAL);
-        return n1.equals(n2);
+        return Arrays.equals(x509Certificate.getSubjectX500Principal().getEncoded(), x509Certificate.getIssuerX500Principal().getEncoded());
     }
 
     /**

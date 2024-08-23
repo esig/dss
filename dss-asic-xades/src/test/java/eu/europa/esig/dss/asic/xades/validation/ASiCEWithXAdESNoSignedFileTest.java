@@ -25,6 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -41,6 +42,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -113,6 +115,31 @@ class ASiCEWithXAdESNoSignedFileTest extends AbstractASiCWithXAdESTestValidation
 			}
 			assertTrue(notValidNameErrorFound);
 		}
+	}
+
+	@Override
+	protected void checkCertificates(DiagnosticData diagnosticData) {
+		boolean signCertFound = false;
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			assertNotNull(certificateWrapper);
+			assertNotNull(certificateWrapper.getId());
+			assertNotNull(certificateWrapper.getCertificateDN());
+			assertNotNull(certificateWrapper.getCertificateIssuerDN());
+			assertNotNull(certificateWrapper.getNotAfter());
+			assertNotNull(certificateWrapper.getNotBefore());
+			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
+			assertNotNull(certificateWrapper.getEntityKey());
+
+			if (certificateWrapper.getSigningCertificate() != null) {
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+				assertFalse(certificateWrapper.isSelfSigned());
+				assertTrue(certificateWrapper.isMatchingIssuerKey());
+				assertFalse(certificateWrapper.isMatchingIssuerSubjectName());
+				assertNotEquals(certificateWrapper.getEntityKey(), certificateWrapper.getIssuerEntityKey());
+				signCertFound = true;
+			}
+		}
+		assertTrue(signCertFound);
 	}
 
 	@Override
