@@ -182,6 +182,7 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7E8A661771DC13A528DBBE30606650E45EA0DA7DCA4EBAD3D30AE0D2224350F9</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -374,6 +375,7 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-E705D7BA08B6667BF06CF41A2A996263C12604E7D6FBDA38CD6B6C3D8012C1D7</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -555,6 +557,7 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-5F260FFBD972B85C8F9D0162D9871E04D8AFB4B9A8BE99E9417DA0AEB9FBE0A5</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -640,6 +643,7 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-D11F5D37CC5FB5473B977755B63A2FD8663A972AABCA2D5A720580EC919A0147</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
@@ -820,6 +824,7 @@
             <PublicKeySize>256</PublicKeySize>
             <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BD6FA8CE34EAE114EE5812B5AC67AB7361EA2D9199FE2C3DD243C2DB711AC3AE</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>

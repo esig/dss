@@ -74,6 +74,7 @@
          <PublicKeySize>4096</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-E55719354DDA1E18377474442D7C537BC371A42B199226CAC07F71E0A38EC672</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -139,6 +140,7 @@
          <PublicKeySize>2048</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-E3A0ED9707DDA706A7A03BA78487025019B2BCBE8226CA3BFD822D5617A9E9A8</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -198,6 +200,7 @@
          <PublicKeySize>4096</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-C968B9F102F0DF46A1D67EB4F7ECFAAA5568CFF6C98D8D821BF51B602EF887CA</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
@@ -241,6 +244,7 @@
          <PublicKeySize>2048</PublicKeySize>
          <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
          <EntityKey>PK-96DE975C5D625EB6B23007402A12F7EDC7240E6FC22888B9E6A47A23587183CA</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
          <BasicSignature>
             <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
             <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>

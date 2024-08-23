@@ -1313,17 +1313,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         assertNotNull(diagnosticData);
 
         XmlCertificate certificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
-        certificate.getIssuerDistinguishedName().clear();
-
-        XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
-        xmlDistinguishedName.setFormat("CANONICAL");
-        xmlDistinguishedName.setValue("c=lu,ou=pki-test,o=nowina solutions,cn=invalid-ca");
-        certificate.getIssuerDistinguishedName().add(xmlDistinguishedName);
-
-        xmlDistinguishedName = new XmlDistinguishedName();
-        xmlDistinguishedName.setFormat("RFC2253");
-        xmlDistinguishedName.setValue("C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=invalid-ca");
-        certificate.getIssuerDistinguishedName().add(xmlDistinguishedName);
+        certificate.getIssuerEntityKey().setSubjectName(false);
 
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
@@ -1374,17 +1364,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         assertNotNull(diagnosticData);
 
         XmlCertificate certificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
-        certificate.getIssuerDistinguishedName().clear();
-
-        XmlDistinguishedName xmlDistinguishedName = new XmlDistinguishedName();
-        xmlDistinguishedName.setFormat("CANONICAL");
-        xmlDistinguishedName.setValue("c=lu,ou=pki-test,o=nowina solutions,cn=invalid-ca");
-        certificate.getIssuerDistinguishedName().add(xmlDistinguishedName);
-
-        xmlDistinguishedName = new XmlDistinguishedName();
-        xmlDistinguishedName.setFormat("RFC2253");
-        xmlDistinguishedName.setValue("C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=invalid-ca");
-        certificate.getIssuerDistinguishedName().add(xmlDistinguishedName);
+        certificate.getIssuerEntityKey().setSubjectName(false);
 
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
