@@ -376,6 +376,8 @@ public abstract class DiagnosticDataBuilder {
 				if (xmlCertificate.getSigningCertificate() == null) {
 					xmlCertificate.setSigningCertificate(getXmlSigningCertificate(certificateToken));
 					xmlCertificate.setCertificateChain(getXmlForCertificateChain(certificateToken));
+					xmlCertificate.setBasicSignature(getXmlBasicSignature(certificateToken));
+					xmlCertificate.setIssuerEntityKey(getXmlIssuerEntityKey(certificateToken));
 				}
 			}
 		}
@@ -807,6 +809,10 @@ public abstract class DiagnosticDataBuilder {
 				if (certificate != null && certificate.getSigningCertificate() == null && i + 1 < certChain.size()) {
 					certificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(i + 1).getCertificate()));
 					certificate.setCertificateChain(getCertChainSinceIndex(certChain, i + 1));
+
+					CertificateToken certificateToken = certificateIdsMap.get(certificate.getId());
+					certificate.setBasicSignature(getXmlBasicSignature(certificateToken));
+					certificate.setIssuerEntityKey(getXmlIssuerEntityKey(certificateToken));
 				}
 			}
 		}
@@ -916,7 +922,13 @@ public abstract class DiagnosticDataBuilder {
 			}
 
 			if (issuer != null) {
+
 				issuer = getProcessedCertificateToken(issuer);
+
+				if (!signingCertificateMap.containsKey(token.getDSSIdAsString())) {
+					signingCertificateMap.put(token.getDSSIdAsString(), issuer);
+				}
+
 			}
 
 			return issuer;
@@ -1542,8 +1554,6 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
 		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey));
 		xmlCert.setEntityKey(certToken.getEntityKey().asXmlId());
-		xmlCert.setIssuerEntityKey(getXmlIssuerEntityKey(certToken));
-		xmlCert.setBasicSignature(getXmlBasicSignature(certToken));
 
 		xmlCert.setCertificateExtensions(getXmlCertificateExtensions(certToken));
 

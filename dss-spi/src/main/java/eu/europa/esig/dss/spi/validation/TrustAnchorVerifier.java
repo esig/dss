@@ -63,6 +63,15 @@ public class TrustAnchorVerifier {
     }
 
     /**
+     * Gets whether untrusted certificate chains of timestamps should be accepted
+     *
+     * @return  whether only trusted timestamps are considered as valid
+     */
+    public boolean isAcceptTimestampUntrustedCertificateChains() {
+        return acceptTimestampUntrustedCertificateChains;
+    }
+
+    /**
      * Sets whether untrusted certificate chains of timestamps should be accepted
      * Default: TRUE (only timestamps created with trusted CAs are considered as valid, untrusted timestamps are ignored)
      *
@@ -70,6 +79,15 @@ public class TrustAnchorVerifier {
      */
     public void setAcceptTimestampUntrustedCertificateChains(boolean acceptTimestampUntrustedCertificateChains) {
         this.acceptTimestampUntrustedCertificateChains = acceptTimestampUntrustedCertificateChains;
+    }
+
+    /**
+     * Gets whether untrusted certificate chains of revocation data should be accepted
+     *
+     * @return  whether only trusted revocation data are considered as valid
+     */
+    public boolean isAcceptRevocationUntrustedCertificateChains() {
+        return acceptRevocationUntrustedCertificateChains;
     }
 
     /**
@@ -101,6 +119,15 @@ public class TrustAnchorVerifier {
      */
     public void setTrustedCertificateSource(CertificateSource trustedCertificateSource) {
         this.trustedCertificateSource = trustedCertificateSource;
+    }
+
+    /**
+     * Defines whether sunset date shall be considered during trust anchor validation
+     *
+     * @return whether a trust anchor's sunset date shall be taken into account
+     */
+    public boolean isUseSunsetDate() {
+        return useSunsetDate;
     }
 
     /**

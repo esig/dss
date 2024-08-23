@@ -375,8 +375,20 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 			assertNotNull(certificateWrapper.getEntityKey());
 
 			if (certificateWrapper.getSigningCertificate() != null) {
+				assertNotNull(certificateWrapper.getEncryptionAlgorithm());
+				assertNotNull(certificateWrapper.getKeyLengthUsedToSignThisToken());
+				assertTrue(Utils.isStringDigits(certificateWrapper.getKeyLengthUsedToSignThisToken()));
+				assertNotNull(certificateWrapper.getDigestAlgorithm());
+				assertTrue(certificateWrapper.isSignatureIntact());
+				assertTrue(certificateWrapper.isSignatureValid());
 				assertNotNull(certificateWrapper.getIssuerEntityKey());
 			} else if (certificateWrapper.isSelfSigned()) {
+				assertNotNull(certificateWrapper.getEncryptionAlgorithm());
+				assertNotNull(certificateWrapper.getKeyLengthUsedToSignThisToken());
+				assertTrue(Utils.isStringDigits(certificateWrapper.getKeyLengthUsedToSignThisToken()));
+				assertNotNull(certificateWrapper.getDigestAlgorithm());
+				assertTrue(certificateWrapper.isSignatureIntact());
+				assertTrue(certificateWrapper.isSignatureValid());
 				assertNotNull(certificateWrapper.getIssuerEntityKey());
 			}
 		}

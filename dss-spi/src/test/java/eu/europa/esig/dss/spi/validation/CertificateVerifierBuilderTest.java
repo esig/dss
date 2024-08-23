@@ -85,7 +85,7 @@ class CertificateVerifierBuilderTest {
 
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
-        assertEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
+        assertTrustAnchorVerifierEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertNull(copy.getAIASource());
@@ -102,6 +102,13 @@ class CertificateVerifierBuilderTest {
         assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnUncoveredPOE());
         assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnExpiredCertificate());
         assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnNotYetValidCertificate());
+    }
+
+    void assertTrustAnchorVerifierEquals(TrustAnchorVerifier trustAnchorVerifierOne, TrustAnchorVerifier trustAnchorVerifierTwo) {
+        assertFalse(trustAnchorVerifierTwo.isUseSunsetDate());
+        assertEquals(trustAnchorVerifierOne.getTrustedCertificateSource(), trustAnchorVerifierTwo.getTrustedCertificateSource());
+        assertEquals(trustAnchorVerifierOne.isAcceptRevocationUntrustedCertificateChains(), trustAnchorVerifierTwo.isAcceptRevocationUntrustedCertificateChains());
+        assertEquals(trustAnchorVerifierOne.isAcceptTimestampUntrustedCertificateChains(), trustAnchorVerifierTwo.isAcceptTimestampUntrustedCertificateChains());
     }
 
     @Test
@@ -149,6 +156,7 @@ class CertificateVerifierBuilderTest {
         certificateVerifier.setRevocationDataLoadingStrategyFactory(new CRLFirstRevocationDataLoadingStrategyFactory());
         certificateVerifier.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
         certificateVerifier.setTimestampTokenVerifier(TimestampTokenVerifier.createDefaultTimestampTokenVerifier());
+        certificateVerifier.setTrustAnchorVerifier(TrustAnchorVerifier.createDefaultTrustAnchorVerifier());
         certificateVerifier.setRevocationFallback(true);
         certificateVerifier.setCheckRevocationForUntrustedChains(true);
         certificateVerifier.setAdjunctCertSources(new CommonCertificateSource());

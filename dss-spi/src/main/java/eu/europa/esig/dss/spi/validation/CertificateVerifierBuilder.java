@@ -86,7 +86,7 @@ public class CertificateVerifierBuilder {
 			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 			offlineCertificateVerifier.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			offlineCertificateVerifier.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
-			offlineCertificateVerifier.setTrustAnchorVerifier(certificateVerifier.getTrustAnchorVerifier());
+			offlineCertificateVerifier.setTrustAnchorVerifier(getTrustAnchorVerifierOfflineCopy(certificateVerifier.getTrustAnchorVerifier()));
 		}
 		// disable alerting
 		offlineCertificateVerifier.setAlertOnInvalidSignature(new SilentOnStatusAlert());
@@ -101,6 +101,17 @@ public class CertificateVerifierBuilder {
 		offlineCertificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
 		return offlineCertificateVerifier;
+	}
+
+	private TrustAnchorVerifier getTrustAnchorVerifierOfflineCopy(TrustAnchorVerifier originalTrustAnchorVerifier) {
+		TrustAnchorVerifier trustAnchorVerifier = TrustAnchorVerifier.createEmptyTrustAnchorVerifier();
+		trustAnchorVerifier.setUseSunsetDate(false); // set to FALSE for offline processing
+		if (originalTrustAnchorVerifier != null) {
+			trustAnchorVerifier.setTrustedCertificateSource(originalTrustAnchorVerifier.getTrustedCertificateSource());
+			trustAnchorVerifier.setAcceptRevocationUntrustedCertificateChains(originalTrustAnchorVerifier.isAcceptRevocationUntrustedCertificateChains());
+			trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(originalTrustAnchorVerifier.isAcceptTimestampUntrustedCertificateChains());
+		}
+		return trustAnchorVerifier;
 	}
 
 	/**
