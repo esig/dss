@@ -1181,20 +1181,20 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * Builds an {@code XmlRelatedCertificate} and populates the {@code relatesCertificates} list
+	 * Builds an {@code XmlRelatedCertificate} and populates the {@code relatedCertificates} list
 	 *
-	 * @param relatesCertificates a list of created earlier {@link XmlRelatedCertificate}
+	 * @param relatedCertificates a list of created earlier {@link XmlRelatedCertificate}
 	 * @param certificateSource {@link TokenCertificateSource}
 	 * @param cert {@link CertificateToken}
 	 * @param certificateRef {@link CertificateRef}
 	 */
-	protected void populateXmlRelatedCertificatesList(List<XmlRelatedCertificate> relatesCertificates,
+	protected void populateXmlRelatedCertificatesList(List<XmlRelatedCertificate> relatedCertificates,
 				TokenCertificateSource certificateSource, CertificateToken cert, CertificateRef certificateRef) {
-		XmlRelatedCertificate xrc = getXmlRelatedCertificateWithId(relatesCertificates, cert.getDSSIdAsString());
+		XmlRelatedCertificate xrc = getXmlRelatedCertificateWithId(relatedCertificates, identifierProvider.getIdAsString(cert));
 		if (xrc == null) {
 			xrc = new XmlRelatedCertificate();
 			xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
-			relatesCertificates.add(xrc);
+			relatedCertificates.add(xrc);
 		}
 		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
 			XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(certificateRef, refOrigin);
