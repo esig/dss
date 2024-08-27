@@ -21,6 +21,9 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -39,9 +42,11 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ProspectiveCertificateChainCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.SuccessfulValidationTimeSlidingFoundCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ValidationTimeSlidingCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTimeSliding;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -158,22 +163,33 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 
 		CertificateWrapper trustedCertificate = null;
 
+		final List<XmlVTS> vtsList = new ArrayList<>();
 		for (CertificateWrapper certificateWrapper : token.getCertificateChain()) {
 			if (certificateWrapper.isTrusted()) {
 				trustedCertificate = certificateWrapper;
 				XmlVTS vts = getVTSResult(trustedCertificate);
+				vtsList.add(vts);
 
 				item = item.setNextItem(validationTimeSliding(vts, trustedCertificate));
 
-				if (isValid(vts) || trustedCertificate.isSelfSigned()
+				if (trustedCertificate.isSelfSigned()
 						|| trustedCertificate.getTrustSunsetDate() == null || !trustedCertificate.isTrustedChain()) {
 					// no sunset date change -> no reason to restart VTS
 					break;
-				} else {
-					int x = 0;
 				}
 			}
 		}
+
+		XmlVTS vts = getBestValidationTimeSliding(vtsList);
+		if (vts != null) {
+			XmlBasicBuildingBlocks bbb = bbbs.get(token.getId());
+			bbb.setVTS(vts);
+			if (isValid(vts)) {
+				controlTime = vts.getControlTime();
+			}
+		}
+
+		item = item.setNextItem(successfulValidationTimeSlidingFound(vts));
 
 		/*
 		 * 4) The building block shall apply the X.509 validation constraints to the chain.
@@ -214,19 +230,15 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	private XmlVTS getVTSResult(CertificateWrapper trustedCertificate) {
 		ValidationTimeSliding validationTimeSliding =
 				new ValidationTimeSliding(i18nProvider, token, trustedCertificate, currentTime, poe, bbbs, context, policy);
-
-		XmlVTS vts = validationTimeSliding.execute();
-		XmlBasicBuildingBlocks bbb = bbbs.get(token.getId());
-		bbb.setVTS(vts);
-		if (isValid(vts)) {
-			controlTime = vts.getControlTime();
-		}
-
-		return vts;
+		return validationTimeSliding.execute();
 	}
 
 	private ChainItem<XmlPCV> validationTimeSliding(XmlVTS vts, CertificateWrapper trustedCertificate) {
-		return new ValidationTimeSlidingCheck(i18nProvider, result, vts, token.getId(), trustedCertificate, getFailLevelConstraint());
+		return new ValidationTimeSlidingCheck(i18nProvider, result, vts, token.getId(), trustedCertificate, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlPCV> successfulValidationTimeSlidingFound(XmlVTS vts) {
+		return new SuccessfulValidationTimeSlidingFoundCheck(i18nProvider, result, vts, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
@@ -236,9 +248,39 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, constraint);
 	}
 
+	/**
+	 * This method returns a successful VTS result with the latest control time
+	 * (enough to proof validity of the signature), when applicable
+	 *
+	 * @param vtsList a list of {@link XmlVTS}
+	 * @return {@link XmlVTS}
+	 */
+	private XmlVTS getBestValidationTimeSliding(List<XmlVTS> vtsList) {
+		if (Utils.isCollectionEmpty(vtsList)) {
+			return null;
+		}
+		XmlVTS bestVTS = null;
+		for (XmlVTS xmlVTS : vtsList) {
+			if (bestVTS == null || (!isValid(bestVTS) && (isValid(xmlVTS) || bestVTS.getControlTime().before(xmlVTS.getControlTime())) ||
+					(isValid(xmlVTS) && bestVTS.getControlTime().before(xmlVTS.getControlTime())))) {
+				bestVTS = xmlVTS;
+			}
+		}
+		return bestVTS;
+	}
+
 	@Override
 	protected void addAdditionalInfo() {
 		result.setControlTime(controlTime); // can be null
+	}
+
+	@Override
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		if (XmlBlockType.VTS.equals(constraint.getBlockType())) {
+			// skip validation for VTS
+		} else {
+			super.collectMessages(conclusion, constraint);
+		}
 	}
 
 }

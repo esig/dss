@@ -28,6 +28,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
@@ -193,7 +195,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 			XmlSubXCV subXCV = certificateValidation.execute();
 			result.getSubXCV().add(subXCV);
 
-			item = item.setNextItem(checkSubXCVResult(subXCV));
+			if (currentCertificate.isTrusted()) {
+				item = item.setNextItem(checkTrustAnchorSubXCVResult(subXCV));
+			} else {
+				item = item.setNextItem(checkSubXCVResult(subXCV));
+			}
 
 			if (trustAnchor != null && trustAnchor == currentCertificate) {
 				return;
@@ -210,7 +216,11 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 					subXCV = certificateValidation.execute();
 					result.getSubXCV().add(subXCV);
 
-					item = item.setNextItem(checkSubXCVResult(subXCV));
+					if (certificate.isTrusted()) {
+						item = item.setNextItem(checkTrustAnchorSubXCVResult(subXCV));
+					} else {
+						item = item.setNextItem(checkSubXCVResult(subXCV));
+					}
 
 					lastDate = Model.HYBRID.equals(model) ? lastDate : (Model.SHELL.equals(model) ? currentTime : certificate.getNotBefore());
 
@@ -251,6 +261,29 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> checkSubXCVResult(XmlSubXCV subXCVResult) {
 		return new CheckSubXCVResult(i18nProvider, result, subXCVResult, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlXCV> checkTrustAnchorSubXCVResult(XmlSubXCV subXCVResult) {
+
+		return new CheckSubXCVResult(i18nProvider, result, subXCVResult, getFailLevelConstraint()) {
+
+			@Override
+			protected MessageTag getErrorMessageTag() {
+				return MessageTag.BBB_XCV_SUB_ANS_2;
+			}
+
+			@Override
+			protected Indication getFailedIndicationForConclusion() {
+				return Indication.INDETERMINATE;
+			}
+
+			@Override
+			protected SubIndication getFailedSubIndicationForConclusion() {
+				return SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE;
+			}
+
+		};
+
 	}
 
 	private boolean prospectiveCertificateChainCheckEnforced() {

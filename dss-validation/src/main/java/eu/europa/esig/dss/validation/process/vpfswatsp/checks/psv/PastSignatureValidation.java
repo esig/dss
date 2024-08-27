@@ -21,8 +21,10 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
@@ -201,12 +203,13 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		/*
 		 * 3) If there is a POE of the signature value at (or before) the validation time returned in the previous step:
 		 */
-		boolean poeExists = controlTime != null && poe.isPOEExists(token.getId(), controlTime);
-		if (poeExists) {
-			item = item.setNextItem(poeExist());
-		}
+		POEExistsCheck poeExistsCheck = poeExist(controlTime);
+
+		item = item.setNextItem(poeExist(controlTime));
+
 		Date bestSignatureTime = poe.getLowestPOETime(token.getId());
 
+		boolean poeExists = poeExistsCheck.process();
 		/*
 		 * - If current time indication/sub indication is INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND_NO_POE:
 		 */
@@ -377,7 +380,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	private boolean isRevocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
 		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
 		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
-		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, currentTime, sunsetDateConstraint, constraint).process();
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, getLowestPoeTime(certificate), sunsetDateConstraint, constraint).process();
 	}
 
 	private ChainItem<XmlPSV> checkCertificateRevocationSelectorResult(XmlCRS crsResult) {
@@ -394,8 +397,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 				currentConclusion.getIndication(), currentConclusion.getSubIndication(), getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlPSV> poeExist() {
-		return new POEExistsCheck(i18nProvider, result, getFailLevelConstraint());
+	private POEExistsCheck poeExist(Date controlTime) {
+		return new POEExistsCheck(i18nProvider, result, token, controlTime, poe, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlPSV> poeExistNotAfterCARevocationTimeCheck(Collection<CertificateRevocationWrapper> certificateRevocations,
@@ -551,6 +554,15 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		if (XmlBlockType.PCV == constraint.getBlockType()) {
+			// skip PCV POE message extraction
+		} else {
+			super.collectMessages(conclusion, constraint);
+		}
 	}
 
 }

@@ -162,8 +162,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			ChainItem<XmlVTS> item = null;
 
 			for (CertificateWrapper certificate : certificateChain) {
-				final SubContext subContext = getSubContext(certificate);
-				if (isTrustAnchor(certificate, subContext)) {
+				if (isTrustAnchor(certificate)) {
+					// skip for trust anchor
 					continue;
 				}
 
@@ -190,6 +190,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 				CertificateRevocationWrapper latestCompliantRevocation = null;
 
+				final SubContext subContext = getSubContext(certificate);
 				RevocationDataRequiredCheck<XmlVTS> revocationDataRequiredCheck = revocationDataRequired(certificate, subContext);
 				boolean revocationDataRequired = revocationDataRequiredCheck.process();
 				if (revocationDataRequired) {
@@ -310,6 +311,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	@Override
 	protected void addAdditionalInfo() {
 		result.setControlTime(controlTime);
+		result.setTrustAnchor(trustedCertificate.getId());
 	}
 
 	private SubContext getSubContext(CertificateWrapper certificate) {
@@ -320,23 +322,15 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		List<CertificateWrapper> result = new ArrayList<>();
 		for (CertificateWrapper cert : originalCertificateChain) {
 			result.add(cert);
-			if (isTrustAnchor(cert, getSubContext(cert))) {
+			if (isTrustAnchor(cert)) {
 				break;
 			}
 		}
 		return result;
 	}
 
-	private boolean isTrustAnchor(CertificateWrapper certificateWrapper, SubContext subContext) {
-		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
-		return ValidationProcessUtils.isTrustAnchor(certificateWrapper, getLowestPOETime(certificateWrapper), sunsetDateConstraint);
-	}
-
-	private Date getLowestPOETime(CertificateWrapper certificate) {
-		// TODO : BST should be a proof of trust anchor validity ?
-		Date lowestPOETime = poe.getLowestPOETime(certificate.getId());
-		Date bestSignatureTime = poe.getLowestPOETime(token.getId());
-		return lowestPOETime.compareTo(bestSignatureTime) < 0 ? lowestPOETime : bestSignatureTime;
+	private boolean isTrustAnchor(CertificateWrapper certificate) {
+		return certificate.equals(trustedCertificate);
 	}
 
 	private Date getCryptographicAlgorithmExpirationDateOrNull(XmlSAV sav) {
@@ -349,7 +343,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	private RevocationDataRequiredCheck<XmlVTS> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
 		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
 		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
-		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, getLowestPOETime(certificate), sunsetDateConstraint, constraint);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, currentTime, sunsetDateConstraint, constraint);
 	}
 
 	private ChainItem<XmlVTS> satisfyingRevocationDataExists(XmlCRS crsResult, CertificateWrapper certificateWrapper,
