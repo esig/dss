@@ -455,7 +455,8 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				assertEquals(revocationCertificateSource.getCertificates().size(),
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() +
 								foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
-				assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size());
+				assertEquals(revocationCertificateSource.getAllCertificateRefs().size(),
+						foundCertificates.getRelatedCertificateRefs().size() + foundCertificates.getOrphanCertificateRefs().size());
 			}
 		}
 	}

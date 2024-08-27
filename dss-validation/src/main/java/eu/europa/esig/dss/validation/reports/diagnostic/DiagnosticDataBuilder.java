@@ -776,7 +776,7 @@ public abstract class DiagnosticDataBuilder {
 		if (token != null) {
 			final List<XmlChainItem> certChainTokens = new ArrayList<>();
 
-			final Set<Token> processedTokens = new HashSet<>();
+			final List<Token> processedTokens = new ArrayList<>();
 			processedTokens.add(token);
 
 			CertificateToken issuerToken = getIssuerCertificate(token, certificateSource);
@@ -785,6 +785,7 @@ public abstract class DiagnosticDataBuilder {
 				if (xmlChainItem != null) {
 					certChainTokens.add(xmlChainItem);
 					if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken)) {
+						processedTokens.add(issuerToken);
 						break;
 					}
 					processedTokens.add(issuerToken);
@@ -795,24 +796,29 @@ public abstract class DiagnosticDataBuilder {
 				}
 			}
 
-			ensureCertificateChain(certChainTokens);
+			ensureCertificateChain(token, certChainTokens, processedTokens);
 			return certChainTokens;
 		}
 		return null;
 	}
 
-	private void ensureCertificateChain(List<XmlChainItem> certChain) {
+	private void ensureCertificateChain(final Token token, List<XmlChainItem> certChain, List<Token> processedTokens) {
 		if (Utils.isCollectionNotEmpty(certChain)) {
+			XmlCertificate certificate = xmlCertsMap.get(token.getDSSIdAsString());
+			if (certificate != null) {
+				certificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(0).getCertificate()));
+				certificate.setCertificateChain(getCertChainSinceIndex(certChain, 0));
+				certificate.setBasicSignature(getXmlBasicSignature(token));
+				certificate.setIssuerEntityKey(getXmlIssuerEntityKey(token));
+			}
 			for (int i = 0; i < certChain.size(); i++) {
 				XmlChainItem chainItem = certChain.get(i);
-				XmlCertificate certificate = chainItem.getCertificate();
-				if (certificate != null && certificate.getSigningCertificate() == null && i + 1 < certChain.size()) {
-					certificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(i + 1).getCertificate()));
-					certificate.setCertificateChain(getCertChainSinceIndex(certChain, i + 1));
-
-					CertificateToken certificateToken = certificateIdsMap.get(certificate.getId());
-					certificate.setBasicSignature(getXmlBasicSignature(certificateToken));
-					certificate.setIssuerEntityKey(getXmlIssuerEntityKey(certificateToken));
+				XmlCertificate chainCertificate = chainItem.getCertificate();
+				if (chainCertificate != null && chainCertificate.getSigningCertificate() == null && i + 1 < certChain.size()) {
+					chainCertificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(i + 1).getCertificate()));
+					chainCertificate.setCertificateChain(getCertChainSinceIndex(certChain, i + 1));
+					chainCertificate.setBasicSignature(getXmlBasicSignature(processedTokens.get(i + 1)));
+					chainCertificate.setIssuerEntityKey(getXmlIssuerEntityKey(processedTokens.get(i + 1)));
 				}
 			}
 		}
@@ -858,7 +864,6 @@ public abstract class DiagnosticDataBuilder {
 							certChainTokens.add(chainItem);
 						}
 					}
-					ensureCertificateChain(certChainTokens);
 					return certChainTokens;
 				}
 			}
