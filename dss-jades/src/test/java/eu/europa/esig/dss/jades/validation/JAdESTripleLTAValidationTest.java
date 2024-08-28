@@ -101,15 +101,15 @@ public class JAdESTripleLTAValidationTest extends AbstractJAdESTestValidation {
             if (value instanceof AttributeBaseType) {
                 AttributeBaseType attributeBase = (AttributeBaseType) value;
                 if ("CertificateValues".equals(signatureAttributeObj.getName().getLocalPart())) {
-                    assertEquals(5, attributeBase.getAttributeObject().get(0).getVOReference().size());
+                    assertEquals(5, attributeBase.getAttributeObject().size());
                     certificateValuesFound = true;
 
                 } else if ("RevocationValues".equals(signatureAttributeObj.getName().getLocalPart())) {
-                    assertEquals(1, attributeBase.getAttributeObject().get(0).getVOReference().size());
+                    assertEquals(1, attributeBase.getAttributeObject().size());
                     revocationValuesFound = true;
 
                 } else if ("TimeStampValidationData".equals(signatureAttributeObj.getName().getLocalPart())) {
-                    assertEquals(4, attributeBase.getAttributeObject().get(0).getVOReference().size()); // 3 cert + 1 ocsp
+                    assertEquals(4, attributeBase.getAttributeObject().size()); // 3 cert + 1 ocsp
                     timestampValidationDataFound = true;
                 }
             }
