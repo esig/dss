@@ -2043,8 +2043,11 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void validateETSIAttributeBaseType(AttributeBaseType attributeBase) {
 		assertFalse(attributeBase.isSigned() != null && attributeBase.isSigned());
 		List<VOReferenceType> attributeObject = attributeBase.getAttributeObject();
-		assertEquals(1, attributeObject.size());
-		assertTrue(Utils.isCollectionNotEmpty(attributeObject.iterator().next().getVOReference()));
+		assertTrue(Utils.isCollectionNotEmpty(attributeObject));
+		for (VOReferenceType voReferenceType : attributeObject) {
+			assertNotNull(voReferenceType.getVOReference());
+			assertEquals(1, voReferenceType.getVOReference().size());
+		}
 	}
 
 	protected void validateETSIByteArray(List<?> byteArray) {
