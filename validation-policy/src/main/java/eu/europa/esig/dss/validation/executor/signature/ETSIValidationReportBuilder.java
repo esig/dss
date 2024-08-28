@@ -1126,7 +1126,7 @@ public class ETSIValidationReportBuilder {
 		}
 		if (Utils.isCollectionNotEmpty(validationObjectTypes)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildTokenList(validationObjectTypes)));
+					.add(objectFactory.createSignatureAttributesTypeAttrAuthoritiesCertValues(buildAttributeObjectList(validationObjectTypes)));
 		}
 	}
 
@@ -1148,7 +1148,7 @@ public class ETSIValidationReportBuilder {
 		
 		if (Utils.isCollectionNotEmpty(validationObjectTypes)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeTimeStampValidationData(buildTokenList(validationObjectTypes)));
+					.add(objectFactory.createSignatureAttributesTypeTimeStampValidationData(buildAttributeObjectList(validationObjectTypes)));
 		}
 	}
 
@@ -1162,7 +1162,7 @@ public class ETSIValidationReportBuilder {
 		}
 		if (Utils.isCollectionNotEmpty(validationObjectTypes)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildTokenList(validationObjectTypes)));
+					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildAttributeObjectList(validationObjectTypes)));
 		}
 	}
 
@@ -1200,9 +1200,11 @@ public class ETSIValidationReportBuilder {
 		}
 	}
 
-	private AttributeBaseType buildTokenList(List<ValidationObjectType> validationObjects) {
+	private AttributeBaseType buildAttributeObjectList(List<ValidationObjectType> validationObjects) {
 		AttributeBaseType attributeBaseType = objectFactory.createAttributeBaseType();
-		attributeBaseType.getAttributeObject().add(getVOReference(validationObjects));
+		for (ValidationObjectType validationObjectType : validationObjects) {
+			attributeBaseType.getAttributeObject().add(getVOReference(Collections.singletonList(validationObjectType)));
+		}
 		return attributeBaseType;
 	}
 
@@ -1353,7 +1355,7 @@ public class ETSIValidationReportBuilder {
 		}
 		if (Utils.isCollectionNotEmpty(validationObjects)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeRevocationValues(buildTokenList(validationObjects)));
+					.add(objectFactory.createSignatureAttributesTypeRevocationValues(buildAttributeObjectList(validationObjects)));
 		}
 	}
 	
@@ -1367,7 +1369,7 @@ public class ETSIValidationReportBuilder {
 		}
 		if (Utils.isCollectionNotEmpty(validationObjects)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
-					.add(objectFactory.createSignatureAttributesTypeAttributeRevocationValues(buildTokenList(validationObjects)));
+					.add(objectFactory.createSignatureAttributesTypeAttributeRevocationValues(buildAttributeObjectList(validationObjects)));
 		}
 	}
 
