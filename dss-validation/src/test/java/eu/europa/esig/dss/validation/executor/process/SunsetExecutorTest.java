@@ -2941,6 +2941,8 @@ public class SunsetExecutorTest extends AbstractProcessExecutorTest {
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             }
         }
+        assertTrue(firstTAFound);
+        assertTrue(secondTAFound);
         assertEquals(0, vtsCheckSuccessFound);
         assertEquals(2, vtsCheckFailureFound);
         assertEquals(1, certChainVtsCheckFound);
@@ -2951,6 +2953,25 @@ public class SunsetExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(SubIndication.NO_POE, vts.getConclusion().getSubIndication());
         assertEquals(revocationTime, vts.getControlTime());
         assertEquals(diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getCertificateChain().get(2).getId(), vts.getTrustAnchor());
+
+        boolean sunsetDateCheckFound = false;
+        boolean controlTimeCheckFound = false;
+        for (XmlConstraint xmlConstraint : vts.getConstraint()) {
+            if (MessageTag.PSV_ISDDTA.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                assertEquals(i18nProvider.getMessage(MessageTag.CERTIFICATE_SUNSET_DATE_TRUST_ANCHOR,
+                                diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getCertificateChain().get(2).getId(),
+                                ValidationProcessUtils.getFormattedDate(diagnosticData.getSignatureById(
+                                        diagnosticData.getFirstSignatureId()).getCertificateChain().get(2).getTrustSunsetDate())),
+                        xmlConstraint.getAdditionalInfo());
+                sunsetDateCheckFound = true;
+
+            } else if (MessageTag.PSV_ICTD.getId().equals(xmlConstraint.getName().getKey())) {
+                controlTimeCheckFound = true;
+            }
+        }
+        assertTrue(sunsetDateCheckFound);
+        assertFalse(controlTimeCheckFound);
 
         XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(firstTstId);
 
@@ -3339,6 +3360,30 @@ public class SunsetExecutorTest extends AbstractProcessExecutorTest {
         assertFalse(checkMessageValuePresence(convert(vts.getConclusion().getWarnings()), i18nProvider.getMessage(MessageTag.BBB_XCV_HPCCVVT_ANS)));
         assertFalse(checkMessageValuePresence(convert(vts.getConclusion().getInfos()), i18nProvider.getMessage(MessageTag.BBB_XCV_HPCCVVT_ANS)));
         assertTrue(checkMessageValuePresence(convert(vts.getConclusion().getInfos()), i18nProvider.getMessage(MessageTag.BBB_XCV_IRDCSFC_ANS)));
+
+        boolean sunsetDateCheckFound = false;
+        boolean controlTimeCheckFound = false;
+        for (XmlConstraint xmlConstraint : vts.getConstraint()) {
+            if (MessageTag.PSV_ISDDTA.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                assertEquals(i18nProvider.getMessage(MessageTag.CERTIFICATE_SUNSET_DATE_TRUST_ANCHOR,
+                                diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId()).getCertificateChain().get(1).getId(),
+                                ValidationProcessUtils.getFormattedDate(diagnosticData.getSignatureById(
+                                        diagnosticData.getFirstSignatureId()).getCertificateChain().get(1).getTrustSunsetDate())),
+                        xmlConstraint.getAdditionalInfo());
+                sunsetDateCheckFound = true;
+
+            } else if (MessageTag.PSV_ICTD.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                assertEquals(i18nProvider.getMessage(MessageTag.CONTROL_TIME_ALONE,
+                                ValidationProcessUtils.getFormattedDate(diagnosticData.getSignatureById(
+                                        diagnosticData.getFirstSignatureId()).getCertificateChain().get(1).getTrustSunsetDate())),
+                        xmlConstraint.getAdditionalInfo());
+                controlTimeCheckFound = true;
+            }
+        }
+        assertTrue(sunsetDateCheckFound);
+        assertTrue(controlTimeCheckFound);
 
         XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(firstTstId);
 
@@ -4244,6 +4289,28 @@ public class SunsetExecutorTest extends AbstractProcessExecutorTest {
                 assertNotNull(vts);
                 assertEquals(Indication.PASSED, vts.getConclusion().getIndication());
 
+                boolean sunsetDateCheckFound = false;
+                boolean controlTimeCheckFound = false;
+                for (XmlConstraint xmlConstraint : vts.getConstraint()) {
+                    if (MessageTag.PSV_ISDDTA.getId().equals(xmlConstraint.getName().getKey())) {
+                        assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                        assertEquals(i18nProvider.getMessage(MessageTag.CERTIFICATE_SUNSET_DATE_TRUST_ANCHOR,
+                                        timestampWrapper.getSigningCertificate().getId(),
+                                        ValidationProcessUtils.getFormattedDate(timestampWrapper.getSigningCertificate().getTrustSunsetDate())),
+                                xmlConstraint.getAdditionalInfo());
+                        sunsetDateCheckFound = true;
+
+                    } else if (MessageTag.PSV_ICTD.getId().equals(xmlConstraint.getName().getKey())) {
+                        assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                        assertEquals(i18nProvider.getMessage(MessageTag.CONTROL_TIME_ALONE,
+                                        ValidationProcessUtils.getFormattedDate(timestampWrapper.getSigningCertificate().getTrustSunsetDate())),
+                                xmlConstraint.getAdditionalInfo());
+                        controlTimeCheckFound = true;
+                    }
+                }
+                assertTrue(sunsetDateCheckFound);
+                assertTrue(controlTimeCheckFound);
+
             } else {
                 assertEquals(1, trustedCertCounter);
             }
@@ -4547,6 +4614,28 @@ public class SunsetExecutorTest extends AbstractProcessExecutorTest {
                 assertEquals(Indication.PASSED, vts.getConclusion().getIndication());
                 assertEquals(timestampWrapper.getSigningCertificate().getTrustSunsetDate(), vts.getControlTime());
                 assertEquals(timestampWrapper.getSigningCertificate().getId(), vts.getTrustAnchor());
+
+                boolean sunsetDateCheckFound = false;
+                boolean controlTimeCheckFound = false;
+                for (XmlConstraint xmlConstraint : vts.getConstraint()) {
+                    if (MessageTag.PSV_ISDDTA.getId().equals(xmlConstraint.getName().getKey())) {
+                        assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                        assertEquals(i18nProvider.getMessage(MessageTag.CERTIFICATE_SUNSET_DATE_TRUST_ANCHOR,
+                                        timestampWrapper.getSigningCertificate().getId(),
+                                        ValidationProcessUtils.getFormattedDate(timestampWrapper.getSigningCertificate().getTrustSunsetDate())),
+                                xmlConstraint.getAdditionalInfo());
+                        sunsetDateCheckFound = true;
+
+                    } else if (MessageTag.PSV_ICTD.getId().equals(xmlConstraint.getName().getKey())) {
+                        assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                        assertEquals(i18nProvider.getMessage(MessageTag.CONTROL_TIME_ALONE,
+                                        ValidationProcessUtils.getFormattedDate(timestampWrapper.getSigningCertificate().getTrustSunsetDate())),
+                                xmlConstraint.getAdditionalInfo());
+                        controlTimeCheckFound = true;
+                    }
+                }
+                assertTrue(sunsetDateCheckFound);
+                assertTrue(controlTimeCheckFound);
 
             } else {
                 assertEquals(1, trustedCertCounter);

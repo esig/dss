@@ -49,7 +49,9 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSe
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.ControlTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SatisfyingRevocationDataExistsCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks.SunsetDateCheck;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,6 +125,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 		final XmlBasicBuildingBlocks tokenBBB = bbbs.get(token.getId());
 
+		ChainItem<XmlVTS> item = null;
+
 		/*
 		 * 5.6.2.2.4 Processing
 		 * 
@@ -144,6 +148,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		 */
 		if (trustedCertificate != null && trustedCertificate.getTrustSunsetDate() != null) {
 			controlTime = trustedCertificate.getTrustSunsetDate();
+			item = firstItem = sunsetDateCheck(trustedCertificate);
+
 		} else {
 			controlTime = currentTime;
 		}
@@ -158,8 +164,6 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 			 * certificate (the certificate issued by the trust anchor):
 			 */
 			certificateChain = Utils.reverseList(certificateChain); // trust anchor -> ... -> signing-certificate
-
-			ChainItem<XmlVTS> item = null;
 
 			for (CertificateWrapper certificate : certificateChain) {
 				if (isTrustAnchor(certificate)) {
@@ -306,6 +310,13 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 			}
 		}
+
+		ChainItem<XmlVTS> controlTimeConclusiveCheck = controlTimeConclusive(controlTime);
+		if (item == null) {
+			item = firstItem = controlTimeConclusiveCheck;
+		} else {
+			item = item.setNextItem(controlTimeConclusiveCheck);
+		}
 	}
 
 	@Override
@@ -340,6 +351,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 		return null;
 	}
 
+	private ChainItem<XmlVTS> sunsetDateCheck(CertificateWrapper trustedCertificate) {
+		return new SunsetDateCheck(i18nProvider, result, trustedCertificate, getFailLevelConstraint());
+	}
+
 	private RevocationDataRequiredCheck<XmlVTS> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
 		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
 		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
@@ -350,6 +365,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 															 Date controlTime) {
 		return new SatisfyingRevocationDataExistsCheck<>(i18nProvider, result, crsResult, certificateWrapper,
 				controlTime, getFailLevelConstraint());
+	}
+
+	private ChainItem<XmlVTS> controlTimeConclusive(Date controlTime) {
+		return new ControlTimeCheck(i18nProvider, result, controlTime, getFailLevelConstraint());
 	}
 	
     private XmlSAV getCertificateCryptographicAcceptanceResult(CertificateWrapper certificateWrapper, Date controlTime) {
