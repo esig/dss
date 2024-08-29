@@ -402,14 +402,30 @@ public abstract class AbstractASiCContainerAnalyzer extends DefaultDocumentAnaly
 			if (evidenceRecordManifest != null) {
 				manifestFile = getValidatedManifestFile(evidenceRecordManifest);
 			}
-			if (manifestFile == null) {
+
+			if (ASiCUtils.isASiCSContainer(asicContent)) {
+				if (manifestFile != null) {
+					LOG.warn("A linked ASiCEvidenceRecordManifest '{}' was found for an evidence record with name '{}'. " +
+									"The manifest processing is ignored, as not required for ASiC-S format.",
+							manifestFile.getFilename(), evidenceRecordDocument.getName());
+					manifestFile = null;
+				}
 				List<DSSDocument> rootLevelSignedDocuments = ASiCUtils.getRootLevelSignedDocuments(asicContent);
 				if (Utils.collectionSize(rootLevelSignedDocuments) == 1) {
 					detachedContents = rootLevelSignedDocuments;
 				} else {
-					LOG.warn("A linked manifest is not found for an evidence record with name [{}]! Evidence record is skipped.",
+					LOG.warn("'{}' documents found at the root level. Not applicable for an ASiC-S container!",
+							Utils.collectionSize(rootLevelSignedDocuments));
+					detachedContents = Collections.emptyList();
+				}
+
+			} else {
+				if (manifestFile == null) {
+					LOG.warn("A linked ASiCEvidenceRecordManifest is required for ASiC-E container " +
+									"but was not found for an evidence record with name '{}'!",
 							evidenceRecordDocument.getName());
-					return null;
+					detachedContents = Collections.emptyList();
+					manifestFile = new ManifestFile(); // empty manifest
 				}
 			}
 

@@ -24,64 +24,65 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeNoManifestValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
+class ASiCSWithCAdESAsn1EvidenceRecordMultiFilesSeparateValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-no-hashtree-no-manifest.sce");
+        return new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files-separate.asics");
+    }
+
+    @Override
+    protected boolean allArchiveDataObjectsProvidedToValidation() {
+        return false;
     }
 
     @Override
     protected void checkDetachedEvidenceRecords(List<EvidenceRecord> detachedEvidenceRecords) {
-        assertTrue(Utils.isCollectionNotEmpty(detachedEvidenceRecords));
+        assertEquals(1, Utils.collectionSize(detachedEvidenceRecords));
 
         EvidenceRecord evidenceRecord = detachedEvidenceRecords.get(0);
-        List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
-        assertEquals(1, referenceValidationList.size());
 
-        int foundArchiveObjectCounter = 0;
-        int notFoundArchiveObjectCounter = 0;
+        int archiveObjectCounter = 0;
+        int orphanReferencesCounter = 0;
+        List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
         for (ReferenceValidation referenceValidation : referenceValidationList) {
-            if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == referenceValidation.getType()) {
-                assertNotNull(referenceValidation.getDocumentName());
-                assertTrue(referenceValidation.isFound());
-                assertTrue(referenceValidation.isIntact());
-                ++foundArchiveObjectCounter;
-            } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == referenceValidation.getType()) {
-                assertNull(referenceValidation.getDocumentName());
+            if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT.equals(referenceValidation.getType())) {
+                ++archiveObjectCounter;
+            } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE.equals(referenceValidation.getType())) {
                 assertFalse(referenceValidation.isFound());
                 assertFalse(referenceValidation.isIntact());
-                ++notFoundArchiveObjectCounter;
+                ++orphanReferencesCounter;
             }
         }
-        assertEquals(0, foundArchiveObjectCounter);
-        assertEquals(1, notFoundArchiveObjectCounter);
+        assertEquals(0, archiveObjectCounter);
+        assertEquals(2, orphanReferencesCounter);
 
         List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
         assertFalse(Utils.isCollectionNotEmpty(timestampedReferences));
 
+        int tstCounter = 0;
         List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
-        assertEquals(1, Utils.collectionSize(timestamps));
-
-        TimestampToken originalTst = timestamps.get(0);
-        assertTrue(originalTst.isProcessed());
-        assertTrue(originalTst.isMessageImprintDataFound());
-        assertFalse(originalTst.isMessageImprintDataIntact());
-        assertEquals(0, Utils.collectionSize(originalTst.getReferenceValidations()));
+        for (TimestampToken timestampToken : timestamps) {
+            assertTrue(timestampToken.isProcessed());
+            assertTrue(timestampToken.isMessageImprintDataFound());
+            assertTrue(timestampToken.isMessageImprintDataIntact());
+            ++tstCounter;
+        }
+        assertEquals(1, tstCounter);
     }
 
     @Override
     protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
         EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+
         List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
         TimestampWrapper timestamp = timestamps.get(0);
         assertTrue(timestamp.isMessageImprintDataFound());
-        assertFalse(timestamp.isMessageImprintDataIntact());
+        assertTrue(timestamp.isMessageImprintDataIntact());
         assertTrue(timestamp.isSignatureIntact());
-        assertFalse(timestamp.isSignatureValid());
+        assertTrue(timestamp.isSignatureValid());
 
         List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
         assertFalse(Utils.isCollectionNotEmpty(timestampScopes));
@@ -103,30 +104,11 @@ class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeNoManifestValidationTest extends
     }
 
     @Override
-    protected void checkContainerInfo(DiagnosticData diagnosticData) {
-        assertNotNull(diagnosticData.getContainerInfo());
-        assertNotNull(diagnosticData.getContainerType());
-        assertNotNull(diagnosticData.getMimetypeFileContent());
-        assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
-        assertFalse(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getManifestFiles()));
-    }
-
-    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         XmlEvidenceRecord evidenceRecord = simpleReport.getEvidenceRecordById(simpleReport.getFirstEvidenceRecordId());
         assertNotNull(evidenceRecord);
         assertEquals(Indication.INDETERMINATE, evidenceRecord.getIndication());
         assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, evidenceRecord.getSubIndication());
-    }
-
-    @Override
-    protected boolean allArchiveDataObjectsProvidedToValidation() {
-        return false;
-    }
-
-    @Override
-    protected boolean tstCoversOnlyCurrentHashTreeData() {
-        return false;
     }
 
 }
