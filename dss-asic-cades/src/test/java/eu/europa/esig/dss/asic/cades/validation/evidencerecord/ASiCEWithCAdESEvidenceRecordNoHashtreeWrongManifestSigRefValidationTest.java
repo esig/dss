@@ -1,6 +1,6 @@
 package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
-import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithAsn1EvidenceRecordTestValidation;
+import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithEvidenceRecordTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -27,11 +27,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeNoManifestValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
+class ASiCEWithCAdESEvidenceRecordNoHashtreeWrongManifestSigRefValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-no-hashtree-no-manifest.sce");
+        return new FileDocument("src/test/resources/validation/evidencerecord/er-no-hashtree-xml-manifest-wrong-sig-ref.sce");
     }
 
     @Override
@@ -100,15 +100,6 @@ class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeNoManifestValidationTest extends
     protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
         EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
         assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredObjects()));
-    }
-
-    @Override
-    protected void checkContainerInfo(DiagnosticData diagnosticData) {
-        assertNotNull(diagnosticData.getContainerInfo());
-        assertNotNull(diagnosticData.getContainerType());
-        assertNotNull(diagnosticData.getMimetypeFileContent());
-        assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
-        assertFalse(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getManifestFiles()));
     }
 
     @Override

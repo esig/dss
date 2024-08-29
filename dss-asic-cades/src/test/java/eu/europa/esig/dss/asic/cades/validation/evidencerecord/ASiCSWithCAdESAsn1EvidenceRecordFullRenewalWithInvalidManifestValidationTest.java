@@ -1,23 +1,3 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
- * This file is part of the "DSS - Digital Signature Services" project.
- * 
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * 
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithAsn1EvidenceRecordTestValidation;
@@ -26,10 +6,10 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 
@@ -39,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESAsn1EvidenceRecordTstRenewalValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
+class ASiCSWithCAdESAsn1EvidenceRecordFullRenewalWithInvalidManifestValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-tst-renewal.asice");
+        return new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-full-renewal-with-manifest.asics");
     }
 
     @Override
@@ -76,7 +56,7 @@ class ASiCEWithCAdESAsn1EvidenceRecordTstRenewalValidationTest extends AbstractA
         assertTrue(Utils.isCollectionNotEmpty(timestampedReferences));
 
         List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
-        assertEquals(2, Utils.collectionSize(timestamps));
+        assertEquals(3, Utils.collectionSize(timestamps));
 
         TimestampToken originalTst = timestamps.get(0);
         assertTrue(originalTst.isProcessed());
@@ -107,6 +87,18 @@ class ASiCEWithCAdESAsn1EvidenceRecordTstRenewalValidationTest extends AbstractA
         }
         assertTrue(arcTstRefFound);
         assertTrue(orphanRefFound);
+
+        TimestampToken tstChainRenewal = timestamps.get(2);
+        assertTrue(tstChainRenewal.isProcessed());
+        assertTrue(tstChainRenewal.isMessageImprintDataFound());
+        assertTrue(tstChainRenewal.isMessageImprintDataIntact());
+
+        assertEquals(1, Utils.collectionSize(tstChainRenewal.getReferenceValidations()));
+        ReferenceValidation referenceValidation = tstChainRenewal.getReferenceValidations().get(0);
+        assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, referenceValidation.getType());
+        assertNotNull(referenceValidation.getDocumentName());
+        assertTrue(referenceValidation.isFound());
+        assertTrue(referenceValidation.isIntact());
     }
 
     @Override

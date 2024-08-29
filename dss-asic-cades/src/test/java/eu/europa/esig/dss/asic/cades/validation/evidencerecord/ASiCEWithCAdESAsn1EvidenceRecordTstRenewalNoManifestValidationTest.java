@@ -4,9 +4,11 @@ import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithAsn1EvidenceRec
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -27,11 +29,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeNoManifestValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
+class ASiCEWithCAdESAsn1EvidenceRecordTstRenewalNoManifestValidationTest extends AbstractASiCWithAsn1EvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-no-hashtree-no-manifest.sce");
+        return new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-tst-renewal-no-manifest.asice");
     }
 
     @Override
@@ -40,7 +42,7 @@ class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeNoManifestValidationTest extends
 
         EvidenceRecord evidenceRecord = detachedEvidenceRecords.get(0);
         List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
-        assertEquals(1, referenceValidationList.size());
+        assertEquals(2, referenceValidationList.size());
 
         int foundArchiveObjectCounter = 0;
         int notFoundArchiveObjectCounter = 0;
@@ -58,36 +60,96 @@ class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeNoManifestValidationTest extends
             }
         }
         assertEquals(0, foundArchiveObjectCounter);
-        assertEquals(1, notFoundArchiveObjectCounter);
+        assertEquals(2, notFoundArchiveObjectCounter);
 
         List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
         assertFalse(Utils.isCollectionNotEmpty(timestampedReferences));
 
         List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
-        assertEquals(1, Utils.collectionSize(timestamps));
+        assertEquals(2, Utils.collectionSize(timestamps));
 
         TimestampToken originalTst = timestamps.get(0);
         assertTrue(originalTst.isProcessed());
         assertTrue(originalTst.isMessageImprintDataFound());
-        assertFalse(originalTst.isMessageImprintDataIntact());
+        assertTrue(originalTst.isMessageImprintDataIntact());
         assertEquals(0, Utils.collectionSize(originalTst.getReferenceValidations()));
+
+        TimestampToken tstRenewal = timestamps.get(1);
+        assertTrue(tstRenewal.isProcessed());
+        assertTrue(tstRenewal.isMessageImprintDataFound());
+        assertTrue(tstRenewal.isMessageImprintDataIntact());
+
+        boolean arcTstRefFound = false;
+        boolean orphanRefFound = false;
+        assertEquals(2, Utils.collectionSize(tstRenewal.getReferenceValidations()));
+        for (ReferenceValidation referenceValidation : tstRenewal.getReferenceValidations()) {
+            if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP == referenceValidation.getType()) {
+                assertNull(referenceValidation.getDocumentName());
+                assertTrue(referenceValidation.isFound());
+                assertTrue(referenceValidation.isIntact());
+                arcTstRefFound = true;
+            } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == referenceValidation.getType()) {
+                assertNull(referenceValidation.getDocumentName());
+                assertFalse(referenceValidation.isFound());
+                assertFalse(referenceValidation.isIntact());
+                orphanRefFound = true;
+            }
+        }
+        assertTrue(arcTstRefFound);
+        assertTrue(orphanRefFound);
     }
 
     @Override
     protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
         EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+        boolean arcTstFound = false;
+        boolean tstRenewalFound = false;
         List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
-        TimestampWrapper timestamp = timestamps.get(0);
-        assertTrue(timestamp.isMessageImprintDataFound());
-        assertFalse(timestamp.isMessageImprintDataIntact());
-        assertTrue(timestamp.isSignatureIntact());
-        assertFalse(timestamp.isSignatureValid());
+        for (TimestampWrapper timestamp : timestamps) {
+            assertTrue(timestamp.isMessageImprintDataFound());
+            assertTrue(timestamp.isMessageImprintDataIntact());
+            assertTrue(timestamp.isSignatureIntact());
+            assertTrue(timestamp.isSignatureValid());
 
-        List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-        assertFalse(Utils.isCollectionNotEmpty(timestampScopes));
+            if (EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP == timestamp.getEvidenceRecordTimestampType()) {
+                arcTstFound = true;
+            } else if (EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestamp.getEvidenceRecordTimestampType()) {
+                int messageImprintCounter = 0;
+                int foundRefCounter = 0;
+                int orphanRefCounter = 0;
+                int arcTstRefCounter = 0;
+                for (XmlDigestMatcher xmlDigestMatcher : timestamp.getDigestMatchers()) {
+                    if (DigestMatcherType.MESSAGE_IMPRINT == xmlDigestMatcher.getType()) {
+                        assertTrue(xmlDigestMatcher.isDataFound());
+                        assertTrue(xmlDigestMatcher.isDataIntact());
+                        ++messageImprintCounter;
+                    } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == xmlDigestMatcher.getType()) {
+                        ++foundRefCounter;
+                    } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == xmlDigestMatcher.getType()) {
+                        assertFalse(xmlDigestMatcher.isDataFound());
+                        assertFalse(xmlDigestMatcher.isDataIntact());
+                        ++orphanRefCounter;
+                    } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP == xmlDigestMatcher.getType()) {
+                        assertTrue(xmlDigestMatcher.isDataFound());
+                        assertTrue(xmlDigestMatcher.isDataIntact());
+                        ++arcTstRefCounter;
+                    }
+                }
+                assertEquals(1, messageImprintCounter);
+                assertEquals(0, foundRefCounter);
+                assertEquals(1, orphanRefCounter);
+                assertEquals(1, arcTstRefCounter);
+                tstRenewalFound = true;
+            }
 
-        List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
-        assertTrue(Utils.isCollectionNotEmpty(timestampedObjects));
+            List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
+            assertFalse(Utils.isCollectionNotEmpty(timestampScopes));
+
+            List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+            assertTrue(Utils.isCollectionNotEmpty(timestampedObjects));
+        }
+        assertTrue(arcTstFound);
+        assertTrue(tstRenewalFound);
     }
 
     @Override
@@ -106,7 +168,7 @@ class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeNoManifestValidationTest extends
     protected void checkContainerInfo(DiagnosticData diagnosticData) {
         assertNotNull(diagnosticData.getContainerInfo());
         assertNotNull(diagnosticData.getContainerType());
-        assertNotNull(diagnosticData.getMimetypeFileContent());
+        assertNull(diagnosticData.getMimetypeFileContent());
         assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
         assertFalse(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getManifestFiles()));
     }
