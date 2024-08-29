@@ -97,6 +97,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             DigestAlgorithm digestAlgorithm = archiveTimeStampChain.getDigestAlgorithm();
             List<DSSDocument> detachedContents = lastTimeStampHash.isEmpty() ?
                     evidenceRecord.getDetachedContents() : Collections.emptyList();
+            ManifestFile manifestFile = lastTimeStampHash.isEmpty() ? evidenceRecord.getManifestFile() : null;
 
             List<? extends ArchiveTimeStampObject> archiveTimeStamps = archiveTimeStampChain.getArchiveTimeStamps();
             Iterator<? extends ArchiveTimeStampObject> archiveTimeStampsIt = archiveTimeStamps.iterator();
@@ -107,12 +108,10 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                 DSSMessageDigest lastMessageDigest = DSSMessageDigest.createEmptyDigest();
 
                 List<? extends DigestValueGroup> hashTree = getHashTree(archiveTimeStamp.getHashTree(), detachedContents,
-                        archiveTimeStampChain, lastTimeStampHash, lastTimeStampSequenceHash);
+                        manifestFile, archiveTimeStampChain, lastTimeStampHash, lastTimeStampSequenceHash);
                 for (DigestValueGroup digestValueGroup : hashTree) {
                     // Validation of first HashTree/Sequence
                     if (lastMessageDigest.isEmpty()) {
-                        ManifestFile manifestFile = lastTimeStampHash.isEmpty() ?
-                                evidenceRecord.getManifestFile() : null;
                         // execute for all time-stamps in order to create reference validations
                         List<ReferenceValidation> archiveDataObjectValidations =
                                 validateArchiveDataObjects(digestValueGroup, archiveTimeStampChain, lastTimeStampSequenceHash, detachedContents, manifestFile);
@@ -166,13 +165,14 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
      *
      * @param originalHashTree a list of {@link DigestValueGroup}, representing an original HashTree extracted from a time-stamp token
      * @param detachedContents a list of {@link DSSDocument}s, provided to the validation as a detached content
+     * @param manifestFile {@link ManifestFile} when present
      * @param archiveTimeStampChain {@link ArchiveTimeStampChainObject} archive time-stamp chain containing the time-stamp
      * @param lastTimeStampHash {@link DSSMessageDigest} digest of the previous archive-time-stamp, when applicable
      * @param lastTimeStampSequenceHash {@link DSSMessageDigest} digest of the previous archive-time-stamp-sequence, when applicable
      * @return a list of {@link DigestValueGroup}, representing a HashTree to be used for an archive-time-stamp validation
      */
     protected List<? extends DigestValueGroup> getHashTree(
-            List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents,
+            List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents, ManifestFile manifestFile,
             ArchiveTimeStampChainObject archiveTimeStampChain, DSSMessageDigest lastTimeStampHash, DSSMessageDigest lastTimeStampSequenceHash) {
         List<? extends DigestValueGroup> hashTree;
         if (Utils.isCollectionNotEmpty(originalHashTree)) {
@@ -196,6 +196,23 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             } else if (Utils.collectionSize(detachedContents) == 1) {
                 // Initial time-stamp
                 digestValues.add(getDocumentDigest(detachedContents.get(0), archiveTimeStampChain));
+
+            } else if (manifestFile != null) {
+                if (Utils.collectionSize(manifestFile.getEntries()) == 1) {
+                    ManifestEntry manifestEntry = manifestFile.getEntries().get(0);
+                    DSSDocument matchingDocument = getMatchingDocument(manifestEntry, detachedContents);
+                    if (matchingDocument != null) {
+                        digestValues.add(getDocumentDigest(matchingDocument, archiveTimeStampChain));
+                    } else {
+                        LOG.warn("Unable to find a matching document for a manifest entry with name {}.", manifestEntry.getDocumentName());
+                        digestValues.add(DSSUtils.EMPTY_BYTE_ARRAY);
+                    }
+
+                } else {
+                    LOG.warn("Unable to determine original data object for omitted hashTree. " +
+                            "{} manifest entries provided instead of one.", Utils.collectionSize(manifestFile.getEntries()));
+                    digestValues.add(DSSUtils.EMPTY_BYTE_ARRAY);
+                }
 
             } else {
                 LOG.warn("Unable to determine original data object for omitted hashTree. " +
