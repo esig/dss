@@ -25,9 +25,11 @@ import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
@@ -58,6 +60,7 @@ public abstract class AbstractASiCWithAsn1EvidenceRecordTestValidation extends A
             List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
             assertTrue(Utils.isCollectionNotEmpty(timestampedReferences));
 
+            ManifestFile manifestFile = evidenceRecord.getManifestFile();
             int tstCounter = 0;
 
             List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
@@ -84,10 +87,12 @@ public abstract class AbstractASiCWithAsn1EvidenceRecordTestValidation extends A
                         }
                     }
 
-                    if (tstReferenceValidationList.size() == 1) {
-                        assertTrue(archiveTstDigestFound);
-                    } else {
-                        assertTrue(archiveTstSequenceDigestFound);
+                    if (manifestFile == null || manifestFile.getEntries().size() != 1) {
+                        if (tstReferenceValidationList.size() == 1) {
+                            assertTrue(archiveTstDigestFound);
+                        } else {
+                            assertTrue(archiveTstSequenceDigestFound);
+                        }
                     }
 
                 }
@@ -101,10 +106,12 @@ public abstract class AbstractASiCWithAsn1EvidenceRecordTestValidation extends A
     protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
         XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
         List<String> contentFiles = containerInfo.getContentFiles();
+        List<XmlManifestFile> manifestFiles = containerInfo.getManifestFiles();
 
         for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
 
             int tstCounter = 0;
+            XmlManifestFile xmlManifestFile = getRelatedXmlManifestFile(manifestFiles, evidenceRecord);
 
             List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
             for (TimestampWrapper timestamp : timestamps) {
@@ -114,7 +121,11 @@ public abstract class AbstractASiCWithAsn1EvidenceRecordTestValidation extends A
                 assertTrue(timestamp.isSignatureValid());
 
                 List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-                assertEquals(contentFiles.size(), timestampScopes.size());
+                if (xmlManifestFile != null) {
+                    assertEquals(xmlManifestFile.getEntries().size(), timestampScopes.size());
+                } else {
+                    assertEquals(contentFiles.size(), timestampScopes.size());
+                }
 
                 List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
                 assertTrue(Utils.isCollectionNotEmpty(timestampedObjects));
@@ -134,7 +145,7 @@ public abstract class AbstractASiCWithAsn1EvidenceRecordTestValidation extends A
                         }
                     }
 
-                    if (tstDigestMatcherList.size() == 2) {
+                    if (tstDigestMatcherList.size() == 2 && (xmlManifestFile == null || xmlManifestFile.getEntries().size() != 1)) {
                         assertTrue(archiveTstDigestFound || !tstCoversOnlyCurrentHashTreeData());
                     }
                 }
@@ -142,6 +153,18 @@ public abstract class AbstractASiCWithAsn1EvidenceRecordTestValidation extends A
                 ++tstCounter;
             }
         }
+    }
+
+    private XmlManifestFile getRelatedXmlManifestFile(List<XmlManifestFile> manifestFiles, EvidenceRecordWrapper evidenceRecordWrapper) {
+        if (Utils.isCollectionEmpty(manifestFiles)) {
+            return null;
+        }
+        for (XmlManifestFile xmlManifestFile : manifestFiles) {
+            if (evidenceRecordWrapper.getFilename().equals(xmlManifestFile.getSignatureFilename())) {
+                return xmlManifestFile;
+            }
+        }
+        return null;
     }
 
 }
