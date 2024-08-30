@@ -62,6 +62,8 @@ class XAdESDoubleSignatureParallelDiffLocationValidWithEnvelopedTransformTest ex
         signatureParameters = initSignatureParameters("hello", "world");
         DSSDocument signed = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signed;
         signatureParameters = initSignatureParameters("hello", "TEST");
 
