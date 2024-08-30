@@ -20,8 +20,10 @@
  */
 package eu.europa.esig.dss.asic.cades.validation;
 
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.test.validation.AbstractTestDocumentValidator;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -30,7 +32,40 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class ASiCWithCAdESValidatorTest extends AbstractTestDocumentValidator {
+
+	@Test
+	void isSupported() {
+		ASiCContainerWithCAdESValidator validator = new ASiCContainerWithCAdESValidator();
+
+		byte[] wrongBytes = new byte[] { 1, 2 };
+		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes)));
+		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test", MimeTypeEnum.PDF)));
+		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test")));
+		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test", MimeTypeEnum.XML)));
+		assertFalse(validator.isSupported(new InMemoryDocument(wrongBytes, "test.p7c")));
+
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/onefile-ok.asice")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/onefile-ok.asics")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asice")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/multifiles-ok.asics")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/cades-lt-with-er.sce")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.asics")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.asice")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/asic_cades.zip")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/test.zip")));
+		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/empty.zip")));
+
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signature-policy.der")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/test.txt")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/asic_xades.zip")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/document.odt")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/asic_xades_er.sce")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/asic_xades_er.scs")));
+	}
 
 	@Override
 	protected SignedDocumentValidator initEmptyValidator() {

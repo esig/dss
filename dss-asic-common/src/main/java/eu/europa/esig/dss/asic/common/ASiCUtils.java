@@ -451,18 +451,22 @@ public final class ASiCUtils {
 	}
 
 	/**
-	 * Checks if the extracted filenames represent an ASiC with XAdES content
+	 * Checks if the extracted filenames represent an ASiC with XAdES content.
+	 * Note: The method looks for format specific documents.
+	 * It returns FALSE for shared document formats between XAdES and CAdES (e.g. evidence records).
 	 *
 	 * @param filenames a list of {@link String} file names to check
 	 * @return TRUE if the filenames represent an ASiC with XAdES content, FALSE
 	 *         otherwise
 	 */
 	public static boolean isASiCWithXAdES(List<String> filenames) {
-		return filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION) || filesContainEvidenceRecords(filenames);
+		return filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION);
 	}
 	
 	/**
-	 * Checks if the extracted filenames represent an ASiC with CAdES content
+	 * Checks if the extracted filenames represent an ASiC with CAdES content.
+	 * Note: The method looks for format specific documents.
+	 * It returns FALSE for shared document formats between XAdES and CAdES (e.g. evidence records).
 	 * 
 	 * @param filenames a list of {@link String} file names to check
 	 * @return TRUE if the filenames represent an ASiC with CAdES content, FALSE
@@ -470,7 +474,7 @@ public final class ASiCUtils {
 	 */
 	public static boolean isASiCWithCAdES(List<String> filenames) {
 		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
-				|| filesContainTimestamps(filenames) || filesContainEvidenceRecords(filenames);
+				|| filesContainTimestamps(filenames);
 	}
 
 	/**
