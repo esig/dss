@@ -150,6 +150,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
 
                 if (archiveTimeStampsIt.hasNext()) {
                     lastTimeStampHash = computeTimeStampHash(archiveTimeStamp);
+                    lastTimeStampSequenceHash = DSSMessageDigest.createEmptyDigest();
                 }
             }
 
