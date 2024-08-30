@@ -31,12 +31,10 @@ import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
-import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,6 +102,7 @@ public class RevocationDataVerifierFactory {
         instantiateCryptographicConstraints(revocationDataVerifier, validationPolicy);
         instantiateRevocationSkipConstraints(revocationDataVerifier, validationPolicy);
         instantiateRevocationFreshnessConstraints(revocationDataVerifier, validationPolicy);
+        instantiateAcceptRevocationIssuersWithoutRevocationConstraint(revocationDataVerifier, validationPolicy);
         return revocationDataVerifier;
     }
 
@@ -156,35 +155,8 @@ public class RevocationDataVerifierFactory {
                     validationPolicy.getTimestampConstraints().getBasicSignatureConstraints());
         }
 
-        // TODO : remove in DSS 6.2
-        ensureOcspNoCheck(certificateExtensions, validationPolicy);
-
         revocationDataVerifier.setRevocationSkipCertificateExtensions(certificateExtensions);
         revocationDataVerifier.setRevocationSkipCertificatePolicies(certificatePolicies);
-    }
-
-    /**
-     * This is a temporary method since DSS 6.1 to ensure smooth migration to a new version of DSS 6.2.
-     * Adds ocsp-no-check extension to a list of certificate extensions for a revocation data check skip,
-     * when not present in the policy.
-     *
-     * @param validationPolicy {@link ValidationPolicy}
-     */
-    private void ensureOcspNoCheck(final Set<String> certificateExtensions, ValidationPolicy validationPolicy) {
-        RevocationConstraints revocationConstraints = validationPolicy.getRevocationConstraints();
-        if (revocationConstraints != null) {
-            BasicSignatureConstraints basicSignatureConstraints = revocationConstraints.getBasicSignatureConstraints();
-            if (basicSignatureConstraints != null) {
-                CertificateConstraints signingCertificate = basicSignatureConstraints.getSigningCertificate();
-                if (signingCertificate != null && signingCertificate.getRevocationDataSkip() != null) {
-                    // RevocationData skip check is defined
-                    return;
-                }
-            }
-        }
-        LOG.info("No RevocationDataSkip constraint is defined in the validation policy for Revocation/SigningCertificate element! " +
-                "Default behavior with ocsp-no-check is added to processing. Please set the constraint explicitly. To be required since DSS 6.2.");
-        certificateExtensions.add(OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId());
     }
 
     private void populateRevocationSkipFromBasicSignatureConstraints(
@@ -306,6 +278,36 @@ public class RevocationDataVerifierFactory {
             }
             CertificateConstraints caCertificateConstraint = basicSignatureConstraints.getCACertificate();
             if (caCertificateConstraint != null && caCertificateConstraint.getRevocationFreshnessNextUpdate() != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void instantiateAcceptRevocationIssuersWithoutRevocationConstraint(
+            final RevocationDataVerifier revocationDataVerifier, ValidationPolicy validationPolicy) {
+        if (validationPolicy.getRevocationConstraints() != null) {
+            boolean revocationDataAvailableConstraint = getRevocationDataAvailableValue(
+                    validationPolicy.getRevocationConstraints().getBasicSignatureConstraints());
+            revocationDataVerifier.setAcceptRevocationCertificatesWithoutRevocation(!revocationDataAvailableConstraint);
+        }
+        if (validationPolicy.getTimestampConstraints() != null) {
+            boolean revocationDataAvailableConstraint = getRevocationDataAvailableValue(
+                    validationPolicy.getTimestampConstraints().getBasicSignatureConstraints());
+            revocationDataVerifier.setAcceptTimestampCertificatesWithoutRevocation(!revocationDataAvailableConstraint);
+        }
+    }
+
+    private boolean getRevocationDataAvailableValue(BasicSignatureConstraints basicSignatureConstraints) {
+        if (basicSignatureConstraints != null) {
+            CertificateConstraints signingCertificateConstraint = basicSignatureConstraints.getSigningCertificate();
+            if (signingCertificateConstraint != null && signingCertificateConstraint.getRevocationDataAvailable() != null
+                    && Level.FAIL.equals(signingCertificateConstraint.getRevocationDataAvailable().getLevel())) {
+                return true;
+            }
+            CertificateConstraints caCertificateConstraint = basicSignatureConstraints.getCACertificate();
+            if (caCertificateConstraint != null && caCertificateConstraint.getRevocationDataAvailable() != null
+                    && Level.FAIL.equals(caCertificateConstraint.getRevocationDataAvailable().getLevel())) {
                 return true;
             }
         }

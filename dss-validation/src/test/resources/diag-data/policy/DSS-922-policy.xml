@@ -35,6 +35,7 @@
         <Recognition Level="FAIL"/>
         <Signature Level="FAIL"/>
         <NotExpired Level="INFORM"/>
+        <SunsetDate Level="FAIL" />
         <RevocationDataAvailable Level="FAIL"/>
         <CRLNextUpdatePresent Level="WARN"/>
         <RevocationFreshness Level="FAIL" Unit="SECONDS" Value="0"/>
@@ -75,6 +76,7 @@
       <CACertificate>
         <Signature Level="FAIL"/>
         <NotExpired Level="FAIL"/>
+        <SunsetDate Level="FAIL" />
         <RevocationDataAvailable Level="FAIL"/>
         <CRLNextUpdatePresent Level="WARN"/>
         <RevocationFreshness Level="FAIL" Unit="SECONDS" Value="0"/>
@@ -178,6 +180,7 @@
         <Recognition Level="FAIL"/>
         <Signature Level="FAIL"/>
         <NotExpired Level="FAIL"/>
+        <SunsetDate Level="FAIL" />
         <RevocationDataAvailable Level="FAIL"/>
         <CRLNextUpdatePresent Level="WARN"/>
         <RevocationFreshness Level="FAIL" Unit="SECONDS" Value="0"/>
@@ -209,6 +212,7 @@
       <CACertificate>
         <Signature Level="FAIL"/>
         <NotExpired Level="FAIL"/>
+        <SunsetDate Level="FAIL" />
         <RevocationDataAvailable Level="FAIL"/>
         <CRLNextUpdatePresent Level="WARN"/>
         <RevocationFreshness Level="FAIL" Unit="SECONDS" Value="0"/>
@@ -282,6 +286,7 @@
         <Recognition Level="FAIL"/>
         <Signature Level="FAIL"/>
         <NotExpired Level="FAIL"/>
+        <SunsetDate Level="FAIL" />
         <RevocationDataSkip Level="IGNORE">
           <CertificateExtensions>
             <Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
@@ -318,6 +323,7 @@
       <CACertificate>
         <Signature Level="FAIL"/>
         <NotExpired Level="FAIL"/>
+        <SunsetDate Level="FAIL" />
         <RevocationDataAvailable Level="FAIL"/>
         <CRLNextUpdatePresent Level="WARN"/>
         <RevocationFreshness Level="FAIL" Unit="SECONDS" Value="0"/>

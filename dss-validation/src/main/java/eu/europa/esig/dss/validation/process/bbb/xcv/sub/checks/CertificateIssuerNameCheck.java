@@ -55,17 +55,7 @@ public class CertificateIssuerNameCheck extends ChainItem<XmlSubXCV> {
 
     @Override
     protected boolean process() {
-        CertificateWrapper issuerCertificate;
-        if (certificate.isSelfSigned()) {
-            issuerCertificate = certificate;
-        } else {
-            issuerCertificate = certificate.getSigningCertificate();
-        }
-        if (issuerCertificate != null) {
-            return certificate.getCertificateIssuerDN().equals(issuerCertificate.getCertificateDN());
-        }
-        // true if no issuer found
-        return true;
+        return certificate.isMatchingIssuerSubjectName();
     }
 
     @Override

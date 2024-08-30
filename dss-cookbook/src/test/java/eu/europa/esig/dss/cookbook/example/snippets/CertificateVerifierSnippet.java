@@ -32,6 +32,7 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.validation.OCSPFirstRevocationDataLoadingStrategyFactory;
 import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
 import eu.europa.esig.dss.spi.validation.TimestampTokenVerifier;
+import eu.europa.esig.dss.spi.validation.TrustAnchorVerifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
@@ -189,6 +190,13 @@ public class CertificateVerifierSnippet {
         TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
         cv.setTimestampTokenVerifier(timestampTokenVerifier);
 
+        // DSS 6.2+ :
+        // Defines a behavior for acceptance of trust anchors present within a signature document as POE
+        // for the signature and data objects
+        // NOTE: The class is not synchronized with the rules defined within the used XML Validation Policy.
+        TrustAnchorVerifier trustAnchorVerifier = TrustAnchorVerifier.createDefaultTrustAnchorVerifier();
+        cv.setTrustAnchorVerifier(trustAnchorVerifier);
+
         // end::demo[]
 
         final ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
@@ -300,12 +308,28 @@ public class CertificateVerifierSnippet {
         // All configuration shall be provided manually.
         timestampTokenVerifier = TimestampTokenVerifier.createEmptyTimestampTokenVerifier();
 
-        // Defines whether timestamp tokens created by untrusted CAs should be considered as valid,
-        // and their POE should be extracted during the validation process
-        // Default : FALSE (only trusted timestamps are accepted)
-        timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
-
         // end::tst-token-verifier[]
+
+        // tag::trust-anchor-verifier[]
+
+        // The following method is used to create a TrustAnchorVerifier configured
+        // with default behavior (such as to accept only certificates present in a trusted certificate source)
+        trustAnchorVerifier = TrustAnchorVerifier.createDefaultTrustAnchorVerifier();
+
+        // This method created a TimestampTokenVerifier with en empty configuration.
+        // All configuration shall be provided manually.
+        trustAnchorVerifier = TrustAnchorVerifier.createEmptyTrustAnchorVerifier();
+
+        // Defines whether tokens created by untrusted certificate chains should be considered as valid,
+        // and their POE should be extracted during the validation process
+        // Default : FALSE (only trusted certificate chains are accepted)
+        trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(true);
+
+        // Defines whether trust anchor's sunset date should be considered during the validation process
+        // Default : FALSE (trust anchor's sunset time is ignored)
+        trustAnchorVerifier.setUseSunsetDate(true);
+
+        // end::trust-anchor-verifier[]
 
         // tag::disable-augmentation-alert[]
         cv.setAugmentationAlertOnHigherSignatureLevel(new LogOnStatusAlert());

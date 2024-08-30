@@ -185,6 +185,7 @@
 			<xs:enumeration value="OUT_OF_BOUNDS_NOT_REVOKED" />
 			<xs:enumeration value="REVOCATION_OUT_OF_BOUNDS_NO_POE" />
 			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND" />
+			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND_NO_POE" />
 			<xs:enumeration value="TRY_LATER" />
 			<xs:enumeration value="REVOKED_NO_POE" />
 			<xs:enumeration value="REVOKED_CA_NO_POE" />
@@ -218,6 +219,7 @@
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" />
 		<xs:attribute name="trusted" type="xs:boolean" default="false" />
+		<xs:attribute name="sunsetDate" type="xs:dateTime" />
 	</xs:complexType>
 
 	<xs:complexType name="TrustAnchors">

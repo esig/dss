@@ -62,6 +62,7 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationDataSkip Level="INFORM">
 					<CertificateExtensions>
@@ -97,6 +98,7 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="SECONDS" Value="0"/>
@@ -157,6 +159,7 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationDataSkip Level="INFORM">
 					<CertificateExtensions>

@@ -820,6 +820,22 @@ Default: `FAIL`
 </SigningCertificate>
 ----
 
+* `SunsetDate` - this constraint is used to check whether the trust anchor is not yet expired. If the trust anchor's sunset date (when defined) is before the control time, the check will fail.
+
+NOTE: The validity of trust anchors shall be extracted in order for the current constraint to apply. Please see <<TrustAnchorValidityPredicate>> for more information about trust anchor validity extraction from a Trusted List.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of SunsetDate usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <SunsetDate Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
 * `AuthorityInfoAccessPresent` - this constraint is used to check whether the certificate has AuthorityInfoAccess url(s) to extract CA issuers. If the certificate does not have AIA url, the check will fail.
 
 Default: `WARN`
@@ -2725,12 +2741,13 @@ This table defines the correspondence between the enforced validation policy con
                                   |TrustServiceStatus              |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
-.12+|CertificateConstraints       |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
+.13+|CertificateConstraints       |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
                                   |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                .2+|NotExpired                   .2+|LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
                                                                                                                               OUT_OF_BOUNDS_NOT_REVOKED
                                                                                                       |FAILED                |EXPIRED
+                                  |SunsetDate                      |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND_NO_POE
                                   |AuthorityInfoAccessPresent      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |RevocationInfoAccessPresent     |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |RevocationDataAvailable         |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE

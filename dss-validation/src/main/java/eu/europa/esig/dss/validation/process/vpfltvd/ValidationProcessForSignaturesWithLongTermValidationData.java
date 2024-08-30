@@ -193,12 +193,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		certificateRevocationMap = new LinkedHashMap<>();
 		
 		for (CertificateWrapper certificateWrapper : currentSignature.getCertificateChain()) {
-			if (certificateWrapper.isTrusted()) {
-				break;
-			}
-
 			SubContext subContext = currentSignature.getSigningCertificate().getId().equals(certificateWrapper.getId()) ?
 					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+			if (isTrustAnchor(certificateWrapper, bestSignatureTime.getTime(), currentContext, subContext)) {
+				break;
+			}
 
 			RevocationDataRequiredCheck<XmlValidationProcessLongTermData> revocationDataRequired =
 					revocationDataRequired(certificateWrapper, currentContext, subContext);
@@ -325,7 +324,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 				if (!Indication.PASSED.equals(bsConclusion.getIndication())) {
 
-					item = item.setNextItem(certificateKnownToBeNotRevoked(bsConclusion));
+					item = item.setNextItem(certificateKnownToBeNotRevoked(bsConclusion, bestSignatureTime.getTime()));
 
 					return;
 				}
@@ -483,7 +482,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private RevocationDataRequiredCheck<XmlValidationProcessLongTermData> revocationDataRequired(CertificateWrapper certificate,
 																								 Context context, SubContext subContext) {
 		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
-		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint);
+		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, currentDate, sunsetDateConstraint, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataPresent(
@@ -590,11 +590,14 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				bestSignatureTime, signingCertificate, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevoked(XmlConclusion conclusion) {
+	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevoked(XmlConclusion conclusion, Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		CertificateRevocationWrapper revocationWrapper = certificateRevocationMap.get(signingCertificate);
+		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
+		boolean isRevocationIssuerTrusted = revocationWrapper != null && revocationWrapper.getSigningCertificate() != null &&
+				ValidationProcessUtils.isTrustAnchor(revocationWrapper.getSigningCertificate(), bestSignatureTime, sunsetDateConstraint);
 		return new CertificateKnownToBeNotRevokedCheck<>(i18nProvider, result, signingCertificate, revocationWrapper,
-				currentDate, conclusion, getFailLevelConstraint());
+				isRevocationIssuerTrusted, currentDate, conclusion, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeBeforeCertificateExpiration(Date bestSignatureTime) {
@@ -657,7 +660,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	 */
 	private ChainItem<XmlValidationProcessLongTermData> certificateChainReliableAtTime(
 			ChainItem<XmlValidationProcessLongTermData> item, TokenProxy token, Date validationTime, Context context) {
-		if (token.getSigningCertificate() == null || token.getSigningCertificate().isTrusted() || Utils.isCollectionEmpty(token.getCertificateChain())) {
+		if (token.getSigningCertificate() == null || isTrustAnchor(token.getSigningCertificate(), validationTime, context, SubContext.SIGNING_CERT)
+				|| Utils.isCollectionEmpty(token.getCertificateChain())) {
 			return item;
 		}
 
@@ -699,6 +703,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			checkedTokenIds.add(revocationData.getId());
 		}
 		return item;
+	}
+
+	private boolean isTrustAnchor(CertificateWrapper certificateWrapper, Date currentTime, Context context, SubContext subContext) {
+		LevelConstraint constraint = policy.getCertificateSunsetDateConstraint(context, subContext);
+		return ValidationProcessUtils.isTrustAnchor(certificateWrapper, currentTime, constraint);
 	}
 
 	private SubContext getSubContext(CertificateWrapper certificateWrapper) {

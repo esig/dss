@@ -381,14 +381,17 @@ public class JAXBPKILoader {
     }
 
     private KeyPair buildKeyPair(XmlCertificateType certType, EntityId entityId, Map<EntityId, KeyPair> keyPairs) {
-        KeyPair keyPair = keyPairs.get(entityId);
+        KeyPair keyPair = null;
+        if (certType.getCrossCertificate() != null) {
+            keyPair = keyPairs.get(new EntityId(certType.getCrossCertificate()));
+        }
         if (keyPair == null) {
             keyPair = build(certType.getKeyAlgo(), certType.getDigestAlgo());
-            keyPairs.put(entityId, keyPair);
+            if (certType.getCrossCertificate() != null) {
+                keyPairs.put(new EntityId(certType.getCrossCertificate()), keyPair);
+            }
         }
-        if (certType.getCrossCertificate() != null) {
-            keyPairs.put(new EntityId(certType.getCrossCertificate()), keyPair);
-        }
+        keyPairs.put(entityId, keyPair);
         return keyPair;
     }
 

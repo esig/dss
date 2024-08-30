@@ -89,6 +89,11 @@ class PDFGenerationTest {
 	void generateErDetailedReport() throws Exception {
 		createAndValidate("dr-er.xml");
 	}
+
+	@Test
+	void generateSunsetDetailedReport() throws Exception {
+		createAndValidate("dr-sunset.xml");
+	}
 	
 	private void createAndValidate(String filename) throws Exception {
 		DetailedReportFacade facade = DetailedReportFacade.newFacade();

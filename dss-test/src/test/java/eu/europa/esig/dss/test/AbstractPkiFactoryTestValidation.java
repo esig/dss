@@ -103,6 +103,7 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.identifier.OriginalIdentifierProvider;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.policy.ValidationPolicy;
@@ -111,8 +112,10 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.policy.BasicASN1SignaturePolicyValidator;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
+import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -123,8 +126,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
-import eu.europa.esig.dss.spi.policy.BasicASN1SignaturePolicyValidator;
-import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
@@ -409,6 +410,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 			verifyRevocationSourceData(crlSource, foundRevocations, RevocationType.CRL);
 			verifyRevocationSourceData(ocspSource, foundRevocations, RevocationType.OCSP);
+			verifyRevocationCertificateSource(ocspSource, diagnosticData);
 
 			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
 			for (TimestampToken timestampToken : timestamps) {
@@ -426,6 +428,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 				verifyRevocationSourceData(crlSource, foundRevocations, RevocationType.CRL);
 				verifyRevocationSourceData(ocspSource, foundRevocations, RevocationType.OCSP);
+				verifyRevocationCertificateSource(ocspSource, diagnosticData);
 
 				XmlDigestAlgoAndValue digestAlgoAndValue = timestampWrapper.getDigestAlgoAndValue();
 				if (digestAlgoAndValue != null) {
@@ -435,24 +438,27 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					assertArrayEquals(timestampToken.getEncoded(), timestampWrapper.getBinaries());
 				}
 			}
-
-			Set<RevocationToken<OCSP>> allRevocationTokens = ocspSource.getAllRevocationTokens();
-			for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
-				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
-				if (revocationCertificateSource != null) {
-					RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(tokenIdentifierProvider.getIdAsString(revocationToken));
-					assertNotNull(revocationWrapper);
-					foundCertificates = revocationWrapper.foundCertificates();
-
-					assertEquals(revocationCertificateSource.getCertificates().size(), 
-							foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() +
-									foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
-					assertEquals(revocationCertificateSource.getAllCertificateRefs().size(), foundCertificates.getRelatedCertificateRefs().size());
-				}
-			}
 		}
 		
 		checkOrphanTokens(diagnosticData);
+	}
+
+	protected <T extends Revocation> void verifyRevocationCertificateSource(OfflineRevocationSource<T> revocationSource, DiagnosticData diagnosticData) {
+		Set<RevocationToken<T>> allRevocationTokens = revocationSource.getAllRevocationTokens();
+		for (RevocationToken<T> revocationToken : allRevocationTokens) {
+			RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
+			if (revocationCertificateSource != null) {
+				RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(getTokenIdentifierProvider().getIdAsString(revocationToken));
+				assertNotNull(revocationWrapper);
+				FoundCertificatesProxy foundCertificates = revocationWrapper.foundCertificates();
+
+				assertEquals(revocationCertificateSource.getCertificates().size(),
+						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() +
+								foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+				assertEquals(revocationCertificateSource.getAllCertificateRefs().size(),
+						foundCertificates.getRelatedCertificateRefs().size() + foundCertificates.getOrphanCertificateRefs().size());
+			}
+		}
 	}
 
 	protected void verifyCertificateSourceData(SignatureCertificateSource certificateSource, FoundCertificatesProxy foundCertificates) {
@@ -785,6 +791,33 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			assertNotNull(certificateWrapper.getNotBefore());
 			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
 			assertNotNull(certificateWrapper.getEntityKey());
+
+			if (certificateWrapper.getSigningCertificate() != null) {
+				assertNotNull(certificateWrapper.getEncryptionAlgorithm());
+				assertNotNull(certificateWrapper.getKeyLengthUsedToSignThisToken());
+				assertTrue(Utils.isStringDigits(certificateWrapper.getKeyLengthUsedToSignThisToken()));
+				assertNotNull(certificateWrapper.getDigestAlgorithm());
+				assertTrue(certificateWrapper.isSignatureIntact());
+				assertTrue(certificateWrapper.isSignatureValid());
+
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+				assertEquals(certificateWrapper.getIssuerEntityKey(), certificateWrapper.getSigningCertificate().getEntityKey());
+				assertTrue(certificateWrapper.isMatchingIssuerKey());
+				assertTrue(certificateWrapper.isMatchingIssuerSubjectName());
+
+			} else if (certificateWrapper.isSelfSigned()) {
+				assertNotNull(certificateWrapper.getEncryptionAlgorithm());
+				assertNotNull(certificateWrapper.getKeyLengthUsedToSignThisToken());
+				assertTrue(Utils.isStringDigits(certificateWrapper.getKeyLengthUsedToSignThisToken()));
+				assertNotNull(certificateWrapper.getDigestAlgorithm());
+				assertTrue(certificateWrapper.isSignatureIntact());
+				assertTrue(certificateWrapper.isSignatureValid());
+
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+				assertEquals(certificateWrapper.getEntityKey(), certificateWrapper.getIssuerEntityKey());
+				assertTrue(certificateWrapper.isMatchingIssuerKey());
+				assertTrue(certificateWrapper.isMatchingIssuerSubjectName());
+			}
 		}
 	}
 
@@ -1599,8 +1632,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		List<XmlCertificate> usedCertificates = diagnosticDataJaxb.getUsedCertificates();
 		for (XmlCertificate xmlCertificate : usedCertificates) {
 			assertTrue(xmlCertificate.getBase64Encoded() != null || xmlCertificate.getDigestAlgoAndValue() != null);
-			
-			if (!xmlCertificate.isTrusted() && !hasOcspNoCheck(xmlCertificate) && !xmlCertificate.isSelfSigned()) {
+
+			assertNotNull(xmlCertificate.getTrusted());
+			if (xmlCertificate.getTrusted() != null && !xmlCertificate.getTrusted().isValue() && !hasOcspNoCheck(xmlCertificate) && !xmlCertificate.isSelfSigned()) {
 				List<XmlCertificateRevocation> revocations = xmlCertificate.getRevocations();
 				for (XmlCertificateRevocation xmlCertificateRevocation : revocations) {
 					List<XmlRevocation> xmlRevocations = diagnosticDataJaxb.getUsedRevocations();

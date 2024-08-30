@@ -57,7 +57,7 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
     protected final Date currentTime;
 
     /** Validation policy */
-    private final ValidationPolicy validationPolicy;
+    protected final ValidationPolicy validationPolicy;
 
     /** This map contains validation results of the revocation data processing */
     protected final Map<RevocationWrapper, Boolean> revocationDataValidityMap = new HashMap<>();

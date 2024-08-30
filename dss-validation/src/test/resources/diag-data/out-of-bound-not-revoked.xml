@@ -97,6 +97,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3AE4F4DE5F3E2070A11845BDFE6DCA6E412BB7E4ED84FD4F1B7B496CADFF2CAC</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -204,6 +205,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-40FE2CE068AB7D4277E897FA4B10CCF338CE9FC8101F787BEA7700E20F80AC92</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -303,6 +305,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-AD016F958050E0E7E46FAE7DCC50197ED8E3FF0A4B262E5DDCDB3EDDDC7D6578</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

@@ -51,7 +51,7 @@ class CertificateValidityRangeCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateValidityRangeCheck<XmlSubXCV> cec = new CertificateValidityRangeCheck<>(i18nProvider, result, new CertificateWrapper(xc),
-				null, true, new Date(), constraint);
+				null, true, true, new Date(), constraint);
 		cec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -72,7 +72,7 @@ class CertificateValidityRangeCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateValidityRangeCheck<XmlSubXCV> cec = new CertificateValidityRangeCheck<>(i18nProvider, result, new CertificateWrapper(xc),
-				null, true, new Date(), constraint);
+				null, true, true, new Date(), constraint);
 		cec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

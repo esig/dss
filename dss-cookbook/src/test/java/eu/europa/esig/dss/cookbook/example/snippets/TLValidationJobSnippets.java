@@ -22,20 +22,22 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
+import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -48,6 +50,8 @@ import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate;
+import eu.europa.esig.dss.tsl.function.GrantedTrustAnchorPeriodPredicate;
 import eu.europa.esig.dss.tsl.function.GrantedTrustService;
 import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
@@ -64,8 +68,6 @@ import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.tsl.sync.ExpirationAndSignatureCheckStrategy;
 import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
@@ -255,6 +257,17 @@ public class TLValidationJobSnippets {
 		// This predicate filters Trusted Services which has an acceptable (e.g. accredited or granted) status
 		tlSource.setTrustServicePredicate(new GrantedTrustService());
 		// end::trust-service-predicate[]
+	}
+
+	public void trustAnchorValidityPredicate() {
+		// tag::trust-anchor-validity-predicate[]
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+		// import eu.europa.esig.dss.tsl.function.GrantedTrustAnchorPeriodPredicate;
+
+		TLSource tlSource = new TLSource();
+		// This predicate filters acceptable history instances of a Trust Service to define a trust anchor validity period
+		tlSource.setTrustAnchorValidityPredicate(new GrantedTrustAnchorPeriodPredicate());
+		// end::trust-anchor-validity-predicate[]
 	}
 
 	public CacheCleaner cacheCleaner() {
@@ -539,6 +552,13 @@ public class TLValidationJobSnippets {
 		// Input : implementation of TrustServiceProviderPredicate interface.
 		// Default : none (select all)
 		lotlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
+
+		// Optional : predicate to filter history instances of the trust service in order
+		// to extract SDI validity period.
+		// This parameter is applied on the related trusted lists fetched from the current LOTL
+		// Input : implementation of TrustAnchorPeriodPredicate interface.
+		// Default : none (all trust services valid for indefinite period)
+		lotlSource.setTrustAnchorValidityPredicate(new GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate());
 
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		// end::european-lotl-source[]

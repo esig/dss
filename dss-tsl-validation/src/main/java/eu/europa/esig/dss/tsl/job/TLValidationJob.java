@@ -22,11 +22,11 @@ package eu.europa.esig.dss.tsl.job;
 
 import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
+import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.alerts.TLValidationJobAlerter;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.cache.CacheKey;
@@ -397,8 +397,9 @@ public class TLValidationJob {
 			return;
 		}
 
-		TrustedListCertificateSourceSynchronizer synchronizer = new TrustedListCertificateSourceSynchronizer(trustedListSources, listOfTrustedListSources,
-				trustPropertiesCertificateSource, synchronizationStrategy, cacheAccessFactory.getSynchronizerCacheAccess());
+		TrustedListCertificateSourceSynchronizer synchronizer = new TrustedListCertificateSourceSynchronizer(
+				trustedListSources, listOfTrustedListSources, trustPropertiesCertificateSource, synchronizationStrategy,
+				cacheAccessFactory.getSynchronizerCacheAccess());
 		synchronizer.sync();
 	}
 

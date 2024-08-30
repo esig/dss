@@ -21,6 +21,9 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
@@ -39,9 +42,11 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ProspectiveCertificateChainCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.SuccessfulValidationTimeSlidingFoundCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.pcv.checks.ValidationTimeSlidingCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.ValidationTimeSliding;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -107,14 +112,12 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		CertificateWrapper signingCertificate = token.getSigningCertificate();
 
 		/*
-		 * 9.2.1.4 Processing The following steps shall be performed: 1) Build a
-		 * new prospective certificate chain that has not yet been evaluated.
-		 * The chain shall satisfy the conditions of a prospective certificate
-		 * chain as stated in [4], clause 6.1, using one of the trust anchors
-		 * provided in the inputs: a) If no new chain can be built, abort the
-		 * processing with the current status and the last chain built or, if no
-		 * chain was built, with INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND. b)
-		 * Otherwise, go to the next step.
+		 * 1) The building block shall build a new prospective certificate chain that
+		 * has not yet been evaluated:
+		 * a) If no new chain can be built, the building block shall return the current
+		 *    status and the last chain built or, if no chain was built, the indication
+		 *    INDETERMINATE with the sub-indication NO_CERTIFICATE_CHAIN_FOUND.
+		 * b) Otherwise, the building block shall go to the next ste
 		 */
 		ChainItem<XmlPCV> item = firstItem = prospectiveCertificateChain();
 
@@ -128,9 +131,12 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * the intersection of the validity intervals of all the certificates in the 
 		 * prospective certificate chain; or
 		 * 
-		 * ii) when the validation policy requires to use the chain model, a date from 
-		 * the validity of the signer's certificate. The validation shall not include 
-		 * revocation checking:
+		 * ii) when the validation policy requires to use the chain model, a date from
+		 * the validity of the signer's certificate.
+		 *
+		 * The validation shall not include revocation checking nor verifying that current
+		 * time is before a trust anchor sunset date when the X.509 validation constraints
+		 * define such a sunset date:
 		 * 
 		 * a) If the certificate path validation returns PASSED, the building block 
 		 * shall go to the next step.
@@ -145,28 +151,56 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		// TODO : process different validation models (?)
 
 		/*
-		 * 3) The building block shall perform the validation time sliding
-		 * process as per clause 5.6.2.2 with the following inputs: the
-		 * prospective chain, the set of POEs and the cryptographic constraints.
-		 * If it outputs a success indication, the building block shall go to
-		 * the next step. Otherwise, the building block shall set the current
-		 * status to the returned indication and sub-indication and shall go
-		 * back to step 1.
+		 * 3) The building block shall perform the validation time sliding process as per
+		 * clause 5.6.2.2 with the following inputs: the prospective chain, the set of POEs,
+		 * the set of certificate validation data, the sunset date of the trust anchor from
+		 * which the current chain has been built when the X.509 validation constraint specify
+		 * such a date, and the cryptographic constraints. If it outputs a success indication,
+		 * the building block shall go to the next step. Otherwise, the building block shall
+		 * set the current status to the returned indication and sub-indication and shall go
+		 * back to step 1).
 		 */
-		
-		item = item.setNextItem(validationTimeSliding());
+
+		CertificateWrapper trustedCertificate = null;
+
+		final List<XmlVTS> vtsList = new ArrayList<>();
+		for (CertificateWrapper certificateWrapper : token.getCertificateChain()) {
+			if (certificateWrapper.isTrusted()) {
+				trustedCertificate = certificateWrapper;
+				XmlVTS vts = getVTSResult(trustedCertificate);
+				vtsList.add(vts);
+
+				item = item.setNextItem(validationTimeSliding(vts, trustedCertificate));
+
+				if (trustedCertificate.isSelfSigned()
+						|| trustedCertificate.getTrustSunsetDate() == null || !trustedCertificate.isTrustedChain()) {
+					// no sunset date change -> no reason to restart VTS
+					break;
+				}
+			}
+		}
+
+		XmlVTS vts = getBestValidationTimeSliding(vtsList);
+		if (vts != null) {
+			XmlBasicBuildingBlocks bbb = bbbs.get(token.getId());
+			bbb.setVTS(vts);
+			if (isValid(vts)) {
+				controlTime = vts.getControlTime();
+			}
+		}
+
+		item = item.setNextItem(successfulValidationTimeSlidingFound(vts));
 
 		/*
-		 * 4) The building block shall apply the chain constraints to the chain.
-		 * If the chain does not match these constraints, the building block
-		 * shall set the current status to FAILED/CHAIN_CONSTRAINTS_FAILURE and
-		 * shall go to step 1.
+		 * 4) The building block shall apply the X.509 validation constraints to the chain.
+		 * If the chain does not match these constraints, the building block shall set the
+		 * current status to INDETERMINATE/CHAIN_CONSTRAINTS_FAILURE and shall go to step 1).
 		 */
 		if (controlTime != null) {
 			List<CertificateWrapper> certificateChain = token.getCertificateChain();
 			for (CertificateWrapper certificate : certificateChain) {
-				if (certificate.isTrusted()) {
-					// There is not need to check for the trusted certificate
+				if (trustedCertificate == certificate) {
+					// There is no need to check for the trusted certificate
 					break;
 				}
 
@@ -181,7 +215,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		}
 
 		/*
-		 * 5) The building block shall return the current status . If the
+		 * 5) The building block shall return the current status. If the
 		 * current status is PASSED, the building block shall also return the
 		 * certificate chain as well as the calculated validation time returned
 		 * in step 3.
@@ -193,18 +227,18 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		return new ProspectiveCertificateChainCheck(i18nProvider, result, token, constraint);
 	}
 
-	private ChainItem<XmlPCV> validationTimeSliding() {
-		ValidationTimeSliding validationTimeSliding = 
-				new ValidationTimeSliding(i18nProvider, token, currentTime, poe, bbbs, context, policy);
-		
-		XmlVTS vts = validationTimeSliding.execute();
-		XmlBasicBuildingBlocks bbb = bbbs.get(token.getId());
-		bbb.setVTS(vts);
-		if (isValid(vts)) {
-			controlTime = vts.getControlTime();
-		}
+	private XmlVTS getVTSResult(CertificateWrapper trustedCertificate) {
+		ValidationTimeSliding validationTimeSliding =
+				new ValidationTimeSliding(i18nProvider, token, trustedCertificate, currentTime, poe, bbbs, context, policy);
+		return validationTimeSliding.execute();
+	}
 
-		return new ValidationTimeSlidingCheck(i18nProvider, result, vts, token.getId(), getFailLevelConstraint());
+	private ChainItem<XmlPCV> validationTimeSliding(XmlVTS vts, CertificateWrapper trustedCertificate) {
+		return new ValidationTimeSlidingCheck(i18nProvider, result, vts, token.getId(), trustedCertificate, getWarnLevelConstraint());
+	}
+
+	private ChainItem<XmlPCV> successfulValidationTimeSlidingFound(XmlVTS vts) {
+		return new SuccessfulValidationTimeSlidingFoundCheck(i18nProvider, result, vts, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
@@ -214,9 +248,39 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, constraint);
 	}
 
+	/**
+	 * This method returns a successful VTS result with the latest control time
+	 * (enough to proof validity of the signature), when applicable
+	 *
+	 * @param vtsList a list of {@link XmlVTS}
+	 * @return {@link XmlVTS}
+	 */
+	private XmlVTS getBestValidationTimeSliding(List<XmlVTS> vtsList) {
+		if (Utils.isCollectionEmpty(vtsList)) {
+			return null;
+		}
+		XmlVTS bestVTS = null;
+		for (XmlVTS xmlVTS : vtsList) {
+			if (bestVTS == null || (!isValid(bestVTS) && (isValid(xmlVTS) || bestVTS.getControlTime().before(xmlVTS.getControlTime())) ||
+					(isValid(xmlVTS) && bestVTS.getControlTime().before(xmlVTS.getControlTime())))) {
+				bestVTS = xmlVTS;
+			}
+		}
+		return bestVTS;
+	}
+
 	@Override
 	protected void addAdditionalInfo() {
 		result.setControlTime(controlTime); // can be null
+	}
+
+	@Override
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		if (XmlBlockType.VTS.equals(constraint.getBlockType())) {
+			// skip validation for VTS
+		} else {
+			super.collectMessages(conclusion, constraint);
+		}
 	}
 
 }

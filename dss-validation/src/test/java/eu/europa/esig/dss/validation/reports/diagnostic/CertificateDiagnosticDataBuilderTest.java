@@ -148,7 +148,7 @@ class CertificateDiagnosticDataBuilderTest {
 		for (XmlCertificate xmlCertificate : usedCertificatesDD) {
 			assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustServiceProviders()));
 			
-			if (xmlCertificate.isTrusted()) {
+			if (xmlCertificate.getTrusted() != null && xmlCertificate.getTrusted().isValue()) {
 				trusted = true;
 			}
 		}
@@ -235,7 +235,7 @@ class CertificateDiagnosticDataBuilderTest {
 				assertTrue(Utils.isCollectionNotEmpty(xmlCertificate.getTrustServiceProviders()));
 				assertEquals(1, xmlCertificate.getTrustServiceProviders().size());
 				assertEquals(2, xmlCertificate.getTrustServiceProviders().get(0).getTrustServices().size());
-				if (xmlCertificate.isTrusted()) {
+				if (xmlCertificate.getTrusted() != null && xmlCertificate.getTrusted().isValue()) {
 					trusted = true;
 				}
 			}

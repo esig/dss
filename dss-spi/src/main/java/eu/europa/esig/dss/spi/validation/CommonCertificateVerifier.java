@@ -96,6 +96,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private TimestampTokenVerifier timestampTokenVerifier;
 
 	/**
+	 * Verifies validity of trust anchors
+	 */
+	private TrustAnchorVerifier trustAnchorVerifier;
+
+	/**
 	 * The AIA source used to download a certificate's issuer by the AIA URI(s)
 	 * defining within a certificate.
 	 */
@@ -280,6 +285,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setTimestampTokenVerifier(TimestampTokenVerifier timestampTokenVerifier) {
 		this.timestampTokenVerifier = timestampTokenVerifier;
+	}
+
+	@Override
+	public TrustAnchorVerifier getTrustAnchorVerifier() {
+		return trustAnchorVerifier;
+	}
+
+	@Override
+	public void setTrustAnchorVerifier(TrustAnchorVerifier trustAnchorVerifier) {
+		this.trustAnchorVerifier = trustAnchorVerifier;
 	}
 
 	@Override

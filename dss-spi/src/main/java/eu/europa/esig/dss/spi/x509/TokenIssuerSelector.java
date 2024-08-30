@@ -73,7 +73,8 @@ public class TokenIssuerSelector {
                 }
             }
             if (Utils.isCollectionNotEmpty(candidates)) {
-                LOG.warn("No issuer found for the token creation date. The process continues with an issuer which has the same public key.");
+                LOG.warn("No matching issuer found for the token creation date. " +
+                        "The process continues with an issuer which has the same public key.");
                 return candidates.iterator().next();
             }
         }
@@ -117,10 +118,10 @@ public class TokenIssuerSelector {
                 if (issuerX500PrincipalHelper.equals(candidate.getSubject())) {
                     issuers.add(candidate);
                 } else {
-                    LOG.info("The issuer subject name and subject name does not match (more details in debug mode).");
+                    LOG.warn("The issuer subject name and subject name do not match (more details in debug mode).");
                     if (LOG.isDebugEnabled()) {
-                        LOG.info("CERT ISSUER    : {}", issuerX500PrincipalHelper.getCanonical());
-                        LOG.info("ISSUER SUBJECT : {}", candidate.getSubject().getCanonical());
+                        LOG.info("CERT ISSUER    : {}. Base64 : {}", issuerX500PrincipalHelper.getCanonical(), Utils.toBase64(issuerX500PrincipalHelper.getEncoded()));
+                        LOG.info("ISSUER SUBJECT : {}. Base64 : {}", candidate.getSubject().getCanonical(), Utils.toBase64(candidate.getSubject().getEncoded()));
                     }
                 }
             }

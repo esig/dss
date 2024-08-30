@@ -230,9 +230,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public boolean isTrustedChain() {
 		List<CertificateWrapper> certificateChain = getCertificateChain();
 		for (CertificateWrapper certificate : certificateChain) {
-			List<CertificateSourceType> currentCertSources = certificate.getSources();
-			if (currentCertSources.contains(CertificateSourceType.TRUSTED_STORE) || 
-					currentCertSources.contains(CertificateSourceType.TRUSTED_LIST)) {
+			if (certificate.isTrusted()) {
 				return true;
 			}
 		}

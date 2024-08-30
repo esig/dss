@@ -21,15 +21,14 @@
 package eu.europa.esig.dss.test.pki.crl;
 
 import eu.europa.esig.dss.pki.model.CertEntity;
-import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.model.CertEntityRepository;
+import eu.europa.esig.dss.pki.model.CertEntityRevocation;
 import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.x509.CRLReason;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v2CRLBuilder;
 
-import java.util.Date;
 import java.util.Map;
 
 public class UnknownPkiCRLSource extends PKICRLSource {
@@ -38,7 +37,6 @@ public class UnknownPkiCRLSource extends PKICRLSource {
 
     public UnknownPkiCRLSource(CertEntityRepository<? extends CertEntity> certEntityRepository) {
         super(certEntityRepository);
-        super.setNextUpdate(new Date());
     }
 
     protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<CertEntity, CertEntityRevocation> revocationList) {

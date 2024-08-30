@@ -19,6 +19,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-3ECBC4648AA3BCB671976F53D7516F774DB1C886FAB81FE5469462181187DB8D</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>?</KeyLengthUsedToSignThisToken>

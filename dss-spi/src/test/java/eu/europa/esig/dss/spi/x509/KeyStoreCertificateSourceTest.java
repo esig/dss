@@ -66,8 +66,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertNotNull(kscs.getCertificate(tokenId));
 		assertNull(kscs.getCertificate(token2Id));
+		assertEquals(1, kscs.getByEntityKey(token.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token.getSubject()).size());
+		assertEquals(0, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token2.getSubject()).size());
 
@@ -78,8 +80,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertNull(kscs.getCertificate(tokenId));
 		assertNull(kscs.getCertificate(token2Id));
+		assertEquals(0, kscs.getByEntityKey(token.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token.getSubject()).size());
+		assertEquals(0, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token2.getSubject()).size());
 
@@ -91,8 +95,10 @@ class KeyStoreCertificateSourceTest {
 		assertNull(kscs.getCertificate("AAAAAAAAAAAAAAAA"));
 		assertNotNull(kscs.getCertificate(tokenId));
 		assertNotNull(kscs.getCertificate(token2Id));
+		assertEquals(1, kscs.getByEntityKey(token.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token.getSubject()).size());
+		assertEquals(1, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token2.getSubject()).size());
 	}
@@ -141,6 +147,7 @@ class KeyStoreCertificateSourceTest {
 		List<CertificateToken> originalCertificates = kscs.getCertificates();
 		assertTrue(Utils.isCollectionNotEmpty(originalCertificates));
 		for (CertificateToken certificateToken : originalCertificates) {
+			assertEquals(1, kscs.getByEntityKey(certificateToken.getEntityKey()).size());
 			assertEquals(1, kscs.getByPublicKey(certificateToken.getPublicKey()).size());
 			assertEquals(1, kscs.getBySubject(certificateToken.getSubject()).size());
 		}
@@ -150,6 +157,7 @@ class KeyStoreCertificateSourceTest {
 		List<CertificateToken> finalCertificates = kscs.getCertificates();
 		assertTrue(Utils.isCollectionEmpty(finalCertificates));
 		for (CertificateToken certificateToken : originalCertificates) {
+			assertEquals(0, kscs.getByEntityKey(certificateToken.getEntityKey()).size());
 			assertEquals(0, kscs.getByPublicKey(certificateToken.getPublicKey()).size());
 			assertEquals(0, kscs.getBySubject(certificateToken.getSubject()).size());
 		}
@@ -175,8 +183,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertFalse(kscs.isKnown(token1));
 		assertFalse(kscs.isKnown(token2));
+		assertEquals(0, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(0, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token2.getSubject()).size());
 
@@ -184,8 +194,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertTrue(kscs.isKnown(token1));
 		assertTrue(kscs.isKnown(token2));
+		assertEquals(1, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(1, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token2.getSubject()).size());
 
@@ -193,8 +205,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertTrue(kscs.isKnown(token1));
 		assertTrue(kscs.isKnown(token2));
+		assertEquals(2, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(2, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(2, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(2, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(2, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(2, kscs.getBySubject(token2.getSubject()).size());
 
@@ -202,8 +216,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertTrue(kscs.isKnown(token1));
 		assertTrue(kscs.isKnown(token2));
+		assertEquals(1, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(1, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token2.getSubject()).size());
 
@@ -211,8 +227,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertFalse(kscs.isKnown(token1));
 		assertFalse(kscs.isKnown(token2));
+		assertEquals(0, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(0, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token2.getSubject()).size());
 
@@ -221,8 +239,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertFalse(kscs.isKnown(token1));
 		assertFalse(kscs.isKnown(token2));
+		assertEquals(0, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(0, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token2.getSubject()).size());
 
@@ -232,8 +252,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertTrue(kscs.isKnown(token1));
 		assertTrue(kscs.isKnown(token2));
+		assertEquals(1, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(1, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(1, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(1, kscs.getBySubject(token2.getSubject()).size());
 
@@ -241,8 +263,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertTrue(kscs.isKnown(token1));
 		assertTrue(kscs.isKnown(token2));
+		assertEquals(2, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(2, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(2, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(2, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(2, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(2, kscs.getBySubject(token2.getSubject()).size());
 
@@ -250,8 +274,10 @@ class KeyStoreCertificateSourceTest {
 
 		assertFalse(kscs.isKnown(token1));
 		assertFalse(kscs.isKnown(token2));
+		assertEquals(0, kscs.getByEntityKey(token1.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token1.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token1.getSubject()).size());
+		assertEquals(0, kscs.getByEntityKey(token2.getEntityKey()).size());
 		assertEquals(0, kscs.getByPublicKey(token2.getPublicKey()).size());
 		assertEquals(0, kscs.getBySubject(token2.getSubject()).size());
 	}

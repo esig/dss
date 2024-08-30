@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<SimpleReport ValidationTime="2022-12-30T23:00:00Z" xmlns="http://dss.esig.europa.eu/validation/simple-report">
+    <ValidationPolicy>
+        <PolicyName>QES AdESQC TL based</PolicyName>
+        <PolicyDescription>Validates electronic signatures and indicates whether they are Advanced electronic Signatures (AdES), AdES supported by a Qualified Certificate (AdES/QC) or a
+            Qualified electronic Signature (QES). All certificates and their related chains supporting the signatures are validated against the EU Member State Trusted Lists (this includes
+            signer's certificate and certificates used to validate certificate validity status services - CRLs, OCSP, and time-stamps).
+        </PolicyDescription>
+    </ValidationPolicy>
+    <DocumentName>original-409d4d7b-b62c-4c2e-a4f0-a90d97d4a5e5-signed-xades-baseline-t-extended-xades-baseline-lta.xml</DocumentName>
+    <ValidSignaturesCount>1</ValidSignaturesCount>
+    <SignaturesCount>1</SignaturesCount>
+    <Signature SignatureFormat="XAdES-BASELINE-LTA" ExtensionPeriodMin="2021-10-08T12:54:25Z" ExtensionPeriodMax="2023-12-13T16:03:43Z" Id="S-6417E9A7865F756B27A5EADB49DADAEB4110CBD1AE080B3D30BFF16EC841F629">
+        <CertificateChain>
+            <Certificate Id="C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014">
+                <QualifiedName>good-user</QualifiedName>
+            </Certificate>
+            <Certificate Id="C-DD7496F8B6C574ECFA0B356A3D1A00DCFEC2111A3094B3B148A978D3C31F6126">
+                <QualifiedName>good-ca</QualifiedName>
+            </Certificate>
+            <Certificate Id="C-DE4E0E6E69ED670AC0AE41C815735B21F9394EA8A202F2497510EAAF5A4F998F" trusted="true" sunsetDate="2022-01-01T14:30:00Z">
+                <QualifiedName>root-ca</QualifiedName>
+            </Certificate>
+        </CertificateChain>
+        <Indication>TOTAL_PASSED</Indication>
+        <QualificationDetails>
+            <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+        </QualificationDetails>
+        <SigningTime>2021-04-08T12:54:21Z</SigningTime>
+        <BestSignatureTime>2021-04-08T12:54:23Z</BestSignatureTime>
+        <SignedBy>good-user</SignedBy>
+        <SignatureLevel description="Not applicable">N/A</SignatureLevel>
+        <SignatureScope Id="D-40B66CFD8CF142CB0DBE66AF4956185C6B35365EDDE821D81B6F750CD792469B" name="o-id-21f8d7ca498dae29cab245dcc558b138-1" scope="PARTIAL">The XML element with ID 'o-id-21f8d7ca498dae29cab245dcc558b138-1' with transformations.</SignatureScope>
+        <Timestamps>
+            <Timestamp Id="T-63729262FE5332E96B245E16497A2F3543EAE8CB08636866DDE948099DA03B95">
+                <CertificateChain>
+                    <Certificate Id="C-C28D73354E868E7E672D13A872658539C579E820059446AC04EB002DCCCB02A7">
+                        <QualifiedName>good-tsa</QualifiedName>
+                    </Certificate>
+                    <Certificate Id="C-DE4E0E6E69ED670AC0AE41C815735B21F9394EA8A202F2497510EAAF5A4F998F" trusted="true" sunsetDate="2022-01-01T14:30:00Z">
+                        <QualifiedName>root-ca</QualifiedName>
+                    </Certificate>
+                </CertificateChain>
+                <Indication>PASSED</Indication>
+                <QualificationDetails>
+                    <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+                </QualificationDetails>
+                <ProductionTime>2021-04-08T12:54:23Z</ProductionTime>
+                <ProducedBy>good-tsa</ProducedBy>
+                <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+            </Timestamp>
+            <Timestamp Id="T-4977ED845C11748EE4423890C5A590B79329CF7CC3C6F87980C6F8F6333E4EB8">
+                <CertificateChain>
+                    <Certificate Id="C-92149B17F94A252F57BD48434A5978160E9CE559FA4C4A1975D4D91DE895BB92" trusted="true" sunsetDate="2023-12-13T16:03:43Z">
+                        <QualifiedName>ee-good-tsa</QualifiedName>
+                    </Certificate>
+                    <Certificate Id="C-F2BF8FDBFB43382B9588002CC571F78882242CF5E2A6BBC46AC0A2B2B9B89EB9">
+                        <QualifiedName>ee-root-ca</QualifiedName>
+                    </Certificate>
+                </CertificateChain>
+                <Indication>PASSED</Indication>
+                <QualificationDetails>
+                    <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
+                </QualificationDetails>
+                <ProductionTime>2022-01-01T08:00:00Z</ProductionTime>
+                <ProducedBy>ee-good-tsa</ProducedBy>
+                <TimestampLevel description="Not applicable">N/A</TimestampLevel>
+            </Timestamp>
+        </Timestamps>
+    </Signature>
+</SimpleReport>

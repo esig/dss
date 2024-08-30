@@ -91,8 +91,9 @@ class CertificateSourceMultiThreadTest {
 
 			for (CertificateToken certificateToken : certificates) {
 				assertFalse(sharedCertSource.isTrusted(certificateToken), "Certificate should not be trusted");
-				assertFalse(sharedCertSource.getBySubject(certificateToken.getSubject()).isEmpty(), "Certificate by subject shoudln't be empty");
-				assertFalse(sharedCertSource.getByPublicKey(certificateToken.getPublicKey()).isEmpty(), "Certificate by subject shoudln't be empty");
+				assertFalse(sharedCertSource.getBySubject(certificateToken.getSubject()).isEmpty(), "Certificate by subject shouldn't be empty");
+				assertFalse(sharedCertSource.getByPublicKey(certificateToken.getPublicKey()).isEmpty(), "Certificate by public key shouldn't be empty");
+				assertFalse(sharedCertSource.getByEntityKey(certificateToken.getEntityKey()).isEmpty(), "Certificate by entity key shouldn't be empty");
 			}
 
 			return sharedCertSource.getNumberOfCertificates();

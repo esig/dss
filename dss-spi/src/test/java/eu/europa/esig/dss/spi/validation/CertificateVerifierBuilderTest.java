@@ -56,6 +56,7 @@ class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isCheckRevocationForUntrustedChains(), copy.isCheckRevocationForUntrustedChains());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
+        assertEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertEquals(certificateVerifier.getAlertOnInvalidSignature(), copy.getAlertOnInvalidSignature());
@@ -84,6 +85,7 @@ class CertificateVerifierBuilderTest {
 
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
+        assertTrustAnchorVerifierEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertNull(copy.getAIASource());
@@ -102,6 +104,13 @@ class CertificateVerifierBuilderTest {
         assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnNotYetValidCertificate());
     }
 
+    void assertTrustAnchorVerifierEquals(TrustAnchorVerifier trustAnchorVerifierOne, TrustAnchorVerifier trustAnchorVerifierTwo) {
+        assertFalse(trustAnchorVerifierTwo.isUseSunsetDate());
+        assertEquals(trustAnchorVerifierOne.getTrustedCertificateSource(), trustAnchorVerifierTwo.getTrustedCertificateSource());
+        assertEquals(trustAnchorVerifierOne.isAcceptRevocationUntrustedCertificateChains(), trustAnchorVerifierTwo.isAcceptRevocationUntrustedCertificateChains());
+        assertEquals(trustAnchorVerifierOne.isAcceptTimestampUntrustedCertificateChains(), trustAnchorVerifierTwo.isAcceptTimestampUntrustedCertificateChains());
+    }
+
     @Test
     void buildCompleteCopyForValidationTest() {
         CertificateVerifier certificateVerifier = initCertificateVerifier();
@@ -115,6 +124,7 @@ class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isCheckRevocationForUntrustedChains(), copy.isCheckRevocationForUntrustedChains());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
+        assertEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertEquals(certificateVerifier.getAlertOnInvalidTimestamp(), copy.getAlertOnInvalidTimestamp());
@@ -146,6 +156,7 @@ class CertificateVerifierBuilderTest {
         certificateVerifier.setRevocationDataLoadingStrategyFactory(new CRLFirstRevocationDataLoadingStrategyFactory());
         certificateVerifier.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
         certificateVerifier.setTimestampTokenVerifier(TimestampTokenVerifier.createDefaultTimestampTokenVerifier());
+        certificateVerifier.setTrustAnchorVerifier(TrustAnchorVerifier.createDefaultTrustAnchorVerifier());
         certificateVerifier.setRevocationFallback(true);
         certificateVerifier.setCheckRevocationForUntrustedChains(true);
         certificateVerifier.setAdjunctCertSources(new CommonCertificateSource());

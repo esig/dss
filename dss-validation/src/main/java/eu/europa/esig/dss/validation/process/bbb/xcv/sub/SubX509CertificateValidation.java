@@ -35,6 +35,7 @@ import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
@@ -45,7 +46,6 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
-import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.NoRevAvailCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.AuthorityInfoAccessPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.BasicConstraintsCACheck;
@@ -78,6 +78,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSelfS
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSupportedCriticalExtensionsCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateValidationBeforeSunsetDateCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateValidityRangeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CommonNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
@@ -86,9 +87,11 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.ExtendedKeyUsage
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.GivenNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.LocalityCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.NoRevAvailCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationNameCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationUnitCheck;
+import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OtherTrustAnchorExistsCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudoUsageCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.PseudonymCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
@@ -160,12 +163,32 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	@Override
 	protected void initChain() {
-		// Skip for Trusted Certificate
+		ChainItem<XmlSubXCV> item = null;
+
 		if (currentCertificate.isTrusted()) {
-			return;
+
+			if (currentCertificate.getTrustStartDate() != null || currentCertificate.getTrustSunsetDate() != null) {
+
+				item = firstItem = validationBeforeSunsetDate(currentCertificate, subContext, currentTime);
+
+				if (!ValidationProcessUtils.isTrustAnchor(currentCertificate, currentTime, getFailLevelConstraint())) {
+					item = item.setNextItem(otherTrustAnchorAvailable(currentCertificate, subContext));
+				}
+
+			}
+
+			if (isTrustAnchorReached(currentCertificate, subContext)) {
+				// Skip for Trusted Certificate
+				return;
+			}
+
 		}
 
-		ChainItem<XmlSubXCV> item = firstItem = serialNumber(currentCertificate, subContext);
+		if (item == null) {
+			item = firstItem = serialNumber(currentCertificate, subContext);
+		} else {
+			item = item.setNextItem(serialNumber(currentCertificate, subContext));
+		}
 
 		item = item.setNextItem(surname(currentCertificate, subContext));
 
@@ -316,7 +339,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 			if (latestCertificateRevocation != null) {
 				CertificateWrapper revocationIssuerCertificate = latestCertificateRevocation.getSigningCertificate();
 				if (revocationIssuerCertificate != null) {
-					if (revocationIssuerCertificate.isTrusted()) {
+					if (isTrustAnchor(revocationIssuerCertificate, context, SubContext.SIGNING_CERT)) {
 						item = item.setNextItem(revocationDataIssuerTrusted(revocationIssuerCertificate));
 					} else  {
 						item = item.setNextItem(revocationIssuerValidityRange(latestCertificateRevocation, subContext, currentTime));
@@ -337,14 +360,31 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		result.setRevocationInfo(revocationInfo);
 	}
 
+	private ChainItem<XmlSubXCV> validationBeforeSunsetDate(CertificateWrapper certificate, SubContext subContext, Date validationTime) {
+		LevelConstraint constraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
+		return new CertificateValidationBeforeSunsetDateCheck<>(i18nProvider, result, certificate, validationTime,
+				ValidationProcessUtils.getConstraintOrMaxLevel(constraint, Level.WARN));
+	}
+
+	private ChainItem<XmlSubXCV> otherTrustAnchorAvailable(CertificateWrapper certificate, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
+		return new OtherTrustAnchorExistsCheck(i18nProvider, result, certificate, constraint);
+	}
+
 	private ChainItem<XmlSubXCV> certificateValidityRange(CertificateWrapper certificate, CertificateRevocationWrapper usedCertificateRevocation,
 														  boolean revocationDataRequired, SubContext subContext, Date validationTime) {
 		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
-		return new CertificateValidityRangeCheck<>(i18nProvider, result, certificate, usedCertificateRevocation, revocationDataRequired, validationTime, constraint);
+		boolean isRevocationIssuerTrusted = usedCertificateRevocation != null && usedCertificateRevocation.getSigningCertificate() != null
+				&& isTrustAnchor(usedCertificateRevocation.getSigningCertificate(), Context.REVOCATION, SubContext.SIGNING_CERT);
+		return new CertificateValidityRangeCheck<>(i18nProvider, result, certificate, usedCertificateRevocation,
+				revocationDataRequired, isRevocationIssuerTrusted, validationTime, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {
-		return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
+		LevelConstraint revocationDataSunsetDate = validationPolicy.getCertificateSunsetDateConstraint(
+				Context.REVOCATION, SubContext.SIGNING_CERT);
+		return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, currentTime,
+				revocationDataSunsetDate, getWarnLevelConstraint());
 	}
 
 	private ChainItem<XmlSubXCV> revocationIssuerValidityRange(CertificateRevocationWrapper usedCertificateRevocation,
@@ -410,7 +450,8 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private RevocationDataRequiredCheck<XmlSubXCV> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
 		CertificateValuesConstraint constraint = validationPolicy.getRevocationDataSkipConstraint(context, subContext);
-		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint);
+		LevelConstraint sunsetDateConstraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, currentTime, sunsetDateConstraint, constraint);
 	}
 
 	private ChainItem<XmlSubXCV> revocationInfoAccessPresent(CertificateWrapper certificate, SubContext subContext) {
@@ -619,6 +660,15 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		CryptographicConstraint cryptographicConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
 		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
 		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, cryptographicConstraint);
+	}
+
+	private boolean isTrustAnchorReached(CertificateWrapper certificateWrapper, SubContext subContext) {
+		return isTrustAnchor(certificateWrapper, context, subContext) || !certificateWrapper.isTrustedChain();
+	}
+
+	private boolean isTrustAnchor(CertificateWrapper certificateWrapper, Context context, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
+		return ValidationProcessUtils.isTrustAnchor(certificateWrapper, currentTime, constraint);
 	}
 
 	@Override

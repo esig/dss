@@ -126,6 +126,15 @@ public enum SubIndication implements UriBasedEnum {
 	NO_CERTIFICATE_CHAIN_FOUND("urn:etsi:019102:subindication:NO_CERTIFICATE_CHAIN_FOUND"),
 
 	/**
+	 * The signature validation process results into INDETERMINATE because no certificate chain has been found
+	 * for the identified signing certificate due to the trust anchor not being trusted at the validation
+	 * date/time by the validation policy in use. However the Signature Validation Algorithm
+	 * cannot ascertain that the signing time lies before or after a time when the trust anchor
+	 * was trusted by the validation policy in use.
+	 */
+	NO_CERTIFICATE_CHAIN_FOUND_NO_POE("urn:etsi:019102:subindication:NO_CERTIFICATE_CHAIN_FOUND_NO_POE"),
+
+	/**
 	 * The signature validation process results into INDETERMINATE because the signing certificate was
 	 * revoked at the validation date/time. However, the Signature Validation Algorithm cannot ascertain that the
 	 * signing time lies before or after the revocation time.

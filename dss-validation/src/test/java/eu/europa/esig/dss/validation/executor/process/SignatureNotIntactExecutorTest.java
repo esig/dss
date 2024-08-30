@@ -8,6 +8,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -54,7 +55,9 @@ class SignatureNotIntactExecutorTest extends AbstractProcessExecutorTest {
         List<XmlChainItem> certificateChain = xmlSignature.getCertificateChain();
         for (XmlChainItem chainItem : certificateChain) {
             XmlCertificate certificate = chainItem.getCertificate();
-            certificate.setTrusted(false);
+            XmlTrusted xmlTrusted = new XmlTrusted();
+            xmlTrusted.setValue(false);
+            certificate.setTrusted(xmlTrusted);
             certificate.setSources(Arrays.asList(CertificateSourceType.OTHER));
         }
         xmlSignature.getBasicSignature().setSignatureIntact(false);

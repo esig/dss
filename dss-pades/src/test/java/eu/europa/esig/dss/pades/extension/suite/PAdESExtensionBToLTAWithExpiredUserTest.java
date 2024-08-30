@@ -63,13 +63,6 @@ public class PAdESExtensionBToLTAWithExpiredUserTest extends AbstractPAdESTestEx
     }
 
     @Override
-    protected PAdESSignatureParameters getExtensionParameters() {
-        PAdESSignatureParameters signatureParameters = super.getExtensionParameters();
-        signatureParameters.setCheckCertificateRevocation(true); // TODO : to be removed in 6.2
-        return signatureParameters;
-    }
-
-    @Override
     protected DSSDocument extendSignature(DSSDocument signedDocument) {
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());

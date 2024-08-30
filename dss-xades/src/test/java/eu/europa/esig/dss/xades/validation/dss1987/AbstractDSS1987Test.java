@@ -22,15 +22,17 @@ package eu.europa.esig.dss.xades.validation.dss1987;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -41,7 +43,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractDSS1987Test extends AbstractXAdESTestValidation {
 	
@@ -75,6 +79,51 @@ public abstract class AbstractDSS1987Test extends AbstractXAdESTestValidation {
 		return offlineCertificateVerifier;
 	}
 	
+	@Override
+	protected void checkCertificateChain(DiagnosticData diagnosticData) {
+		boolean trustedCertFound = false;
+		for (String certId : diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId())) {
+			CertificateWrapper certificate = diagnosticData.getCertificateById(certId);
+			assertNotNull(certificate);
+			if (certificate.isTrusted()) {
+				assertTrue(certificate.getSources().contains(CertificateSourceType.TRUSTED_STORE));
+				trustedCertFound = true;
+
+				assertNotNull(certificate.getIssuerEntityKey());
+				assertNotEquals(certificate.getIssuerEntityKey(), certificate.getSigningCertificate().getEntityKey());
+				assertTrue(certificate.isMatchingIssuerKey());
+				assertFalse(certificate.isMatchingIssuerSubjectName());
+
+			} else if (certificate.isSelfSigned()) {
+				assertNotNull(certificate.getIssuerEntityKey());
+				assertEquals(certificate.getEntityKey(), certificate.getIssuerEntityKey());
+				assertTrue(certificate.isMatchingIssuerKey());
+				assertTrue(certificate.isMatchingIssuerSubjectName());
+
+			} else {
+				assertNotNull(certificate.getIssuerEntityKey());
+				assertEquals(certificate.getIssuerEntityKey(), certificate.getSigningCertificate().getEntityKey());
+				assertTrue(certificate.isMatchingIssuerKey());
+				assertTrue(certificate.isMatchingIssuerSubjectName());
+			}
+		}
+		assertTrue(trustedCertFound);
+	}
+
+	@Override
+	protected void checkCertificates(DiagnosticData diagnosticData) {
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			assertNotNull(certificateWrapper);
+			assertNotNull(certificateWrapper.getId());
+			assertNotNull(certificateWrapper.getCertificateDN());
+			assertNotNull(certificateWrapper.getCertificateIssuerDN());
+			assertNotNull(certificateWrapper.getNotAfter());
+			assertNotNull(certificateWrapper.getNotBefore());
+			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
+			assertNotNull(certificateWrapper.getEntityKey());
+		}
+	}
+
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		super.checkTimestamps(diagnosticData);

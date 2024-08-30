@@ -30,7 +30,6 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.EvidenceRecordConstraints;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
@@ -733,6 +732,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificateSunsetDateConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSunsetDate();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getProspectiveCertificateChainConstraint(Context context) {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
@@ -755,18 +763,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null && certificateConstraints.getRevocationDataSkip() != null) {
 			return certificateConstraints.getRevocationDataSkip();
-		}
-
-		// TODO : temporary handling since 6.1 to ensure smooth migration to DSS 6.2. To be removed in 6.2.
-		if (Context.REVOCATION == context && SubContext.SIGNING_CERT == subContext) {
-			LOG.warn("No RevocationDataSkip constraint is defined in the validation policy for Revocation/SigningCertificate element! " +
-					"Default behavior with ocsp-no-check is added to processing. Please set the constraint explicitly. To be required since DSS 6.2.");
-			CertificateValuesConstraint certificateValuesConstraint = new CertificateValuesConstraint();
-			certificateValuesConstraint.setLevel(Level.IGNORE);
-			MultiValuesConstraint certificateExtensionConstraints = new MultiValuesConstraint();
-			certificateExtensionConstraints.getId().add("1.3.6.1.5.5.7.48.1.5"); // ocsp-no-check
-			certificateValuesConstraint.setCertificateExtensions(certificateExtensionConstraints);
-			return certificateValuesConstraint;
 		}
 		return null;
 	}

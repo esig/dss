@@ -418,12 +418,13 @@
 					<xs:element name="PublicKeySize" type="xs:int" />
 					<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
 					<xs:element name="EntityKey" type="xs:string" />
+					<xs:element name="IssuerEntityKey" type="IssuerEntityKey" minOccurs="0" />
 
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 
-					<xs:element name="Trusted" type="xs:boolean" />
+					<xs:element name="Trusted" type="Trusted" />
 					<xs:element name="SelfSigned" type="xs:boolean" />
 
 					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
@@ -451,6 +452,15 @@
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Trusted">
+		<xs:simpleContent>
+			<xs:extension base="xs:boolean">
+				<xs:attribute name="startDate" type="xs:dateTime" use="optional" />
+				<xs:attribute name="sunsetDate" type="xs:dateTime" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 
 	<xs:complexType name="CertificateExtensions">
@@ -889,6 +899,15 @@
 			<xs:element name="Message" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="valid" type="xs:boolean" />
+	</xs:complexType>
+
+	<xs:complexType name="IssuerEntityKey">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="key" type="xs:boolean" use="required" />
+				<xs:attribute name="subjectName" type="xs:boolean" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:complexType name="BasicSignature">

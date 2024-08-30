@@ -30,7 +30,7 @@ import java.util.Map;
  * a validation status of Trusted Lists and corresponding trust properties
  *
  */
-public interface TrustPropertiesCertificateSource {
+public interface TrustPropertiesCertificateSource extends TrustedCertificateSourceWithTime {
 
     /**
      * Gets TL Validation job summary
@@ -60,5 +60,12 @@ public interface TrustPropertiesCertificateSource {
      * @param trustPropertiesByCerts map between {@link CertificateToken}s and a list of {@link TrustProperties}
      */
     void setTrustPropertiesByCertificates(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts);
+
+    /**
+     * The method allows to fill the CertificateSource with trusted time periods
+     *
+     * @param trustTimeByCertificate map between {@link CertificateToken}s and a list of {@link CertificateTrustTime}s
+     */
+    void setTrustTimeByCertificates(final Map<CertificateToken, List<CertificateTrustTime>> trustTimeByCertificate);
 
 }

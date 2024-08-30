@@ -25,10 +25,14 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationIssuerTrustedCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.LongTermValidationCertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
@@ -85,7 +89,7 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
 
             if (revocationIssuer != null) {
 
-                if (revocationIssuer.isTrusted()) {
+                if (isRevocationIssuerTrusted(revocationIssuer)) {
 
                     item = item.setNextItem(revocationDataIssuerTrusted(revocationIssuer));
 
@@ -128,7 +132,8 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
     }
 
     private ChainItem<XmlCRS> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {
-        return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, getWarnLevelConstraint());
+        LevelConstraint sunsetDateConstraint = validationPolicy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
+        return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, currentTime, sunsetDateConstraint, getWarnLevelConstraint());
     }
 
     private ChainItem<XmlCRS> poeForRevocationDataIssuerExists(CertificateWrapper revocationIssuer) {
@@ -140,6 +145,11 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
         return new PastValidationAcceptableRevocationDataAvailable<>(i18nProvider, result,
                 acceptableCertificateRevocations, getFailLevelConstraint());
+    }
+
+    private boolean isRevocationIssuerTrusted(CertificateWrapper certificateWrapper) {
+        LevelConstraint constraint = validationPolicy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
+        return ValidationProcessUtils.isTrustAnchor(certificateWrapper, currentTime, constraint);
     }
 
     /**

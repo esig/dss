@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.CertificateTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.identifier.EntityIdentifierBuilder;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 
 import javax.security.auth.x500.X500Principal;
@@ -86,7 +87,7 @@ public class CertificateToken extends Token {
         Objects.requireNonNull(x509Certificate, "X509 certificate is missing");
 
         this.x509Certificate = x509Certificate;
-        this.entityKey = new EntityIdentifier(x509Certificate.getPublicKey());
+        this.entityKey = new EntityIdentifierBuilder(x509Certificate.getPublicKey(), x509Certificate.getSubjectX500Principal()).build();
 
         // The Algorithm OID is used and not the name {@code x509Certificate.getSigAlgName()}
         this.signatureAlgorithm = SignatureAlgorithm.forOidAndParams(x509Certificate.getSigAlgOID(), x509Certificate.getSigAlgParams());
@@ -98,13 +99,22 @@ public class CertificateToken extends Token {
     }
 
     /**
-     * Returns the identifier of the current public key. Several certificate can have
-     * the same public key (cross-certificates)
+     * Returns the identifier of the current entity key (public key + subject name).
+     * Several certificate can have the same entity key (cross-certificates)
      *
      * @return {@link EntityIdentifier}
      */
     public EntityIdentifier getEntityKey() {
         return entityKey;
+    }
+
+    @Override
+    public EntityIdentifier getIssuerEntityKey() {
+        if (isSelfSigned()) {
+            return new EntityIdentifierBuilder(getPublicKey(), getSubject().getPrincipal()).build();
+        } else {
+            return super.getIssuerEntityKey();
+        }
     }
 
     /**
@@ -220,9 +230,7 @@ public class CertificateToken extends Token {
      * @return true if the certificate is self-issued
      */
     public boolean isSelfIssued() {
-        final String n1 = x509Certificate.getSubjectX500Principal().getName(X500Principal.CANONICAL);
-        final String n2 = x509Certificate.getIssuerX500Principal().getName(X500Principal.CANONICAL);
-        return n1.equals(n2);
+        return Arrays.equals(x509Certificate.getSubjectX500Principal().getEncoded(), x509Certificate.getIssuerX500Principal().getEncoded());
     }
 
     /**

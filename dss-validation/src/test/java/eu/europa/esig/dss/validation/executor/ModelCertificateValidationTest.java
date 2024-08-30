@@ -65,18 +65,18 @@ class ModelCertificateValidationTest extends ModelAbstractValidation {
 		final List<Arguments> data = new ArrayList<>();
 
 		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.SHELL, sdf.parse("22-05-2016"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED, 		     "D569:" + Indication.PASSED ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.SHELL, sdf.parse("18-06-2017"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED,		     "D569:" + Indication.INDETERMINATE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.SHELL, sdf.parse("23-05-2018"), CertificateQualification.CERT_FOR_ESIG, 	    "47F7:" + Indication.INDETERMINATE, "D569:" + Indication.INDETERMINATE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.SHELL, sdf.parse("18-06-2017"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED,		     "D569:" + Indication.PASSED ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.SHELL, sdf.parse("23-05-2018"), CertificateQualification.CERT_FOR_ESIG, 	    "47F7:" + Indication.INDETERMINATE, "D569:" + Indication.PASSED ) ) );
 		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.SHELL, sdf.parse("01-05-2016"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.INDETERMINATE,    "D569:" + Indication.PASSED ) ) );
 		
 		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.CHAIN, sdf.parse("22-05-2016"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED,		     "D569:" + Indication.PASSED ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.CHAIN, sdf.parse("18-06-2017"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED,		     "D569:" + Indication.INDETERMINATE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.CHAIN, sdf.parse("23-05-2018"), CertificateQualification.CERT_FOR_ESIG, 	    "47F7:" + Indication.INDETERMINATE, "D569:" + Indication.INDETERMINATE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.CHAIN, sdf.parse("18-06-2017"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED,		     "D569:" + Indication.PASSED ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.CHAIN, sdf.parse("23-05-2018"), CertificateQualification.CERT_FOR_ESIG, 	    "47F7:" + Indication.INDETERMINATE, "D569:" + Indication.PASSED ) ) );
 		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.CHAIN, sdf.parse("01-05-2016"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.INDETERMINATE,    "D569:" + Indication.PASSED ) ) );
 		
 		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.HYBRID, sdf.parse("22-05-2016"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED,		     "D569:" + Indication.PASSED ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.HYBRID, sdf.parse("18-06-2017"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED,		     "D569:" + Indication.INDETERMINATE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.HYBRID, sdf.parse("23-05-2018"), CertificateQualification.CERT_FOR_ESIG, 	     "47F7:" + Indication.INDETERMINATE, "D569:" + Indication.INDETERMINATE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.HYBRID, sdf.parse("18-06-2017"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.PASSED,		     "D569:" + Indication.PASSED ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.HYBRID, sdf.parse("23-05-2018"), CertificateQualification.CERT_FOR_ESIG, 	     "47F7:" + Indication.INDETERMINATE, "D569:" + Indication.PASSED ) ) );
 		data.add( Arguments.of( new TestCase( TestData.DATA_1, Model.HYBRID, sdf.parse("01-05-2016"), CertificateQualification.QCERT_FOR_ESIG_QSCD, "47F7:" + Indication.INDETERMINATE,   "D569:" + Indication.PASSED ) ) );
 
 		

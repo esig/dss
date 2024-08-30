@@ -84,6 +84,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
         commonTrustedCertificateSource.addCertificate(crossCertificate);
         commonTrustedCertificateSource.addCertificate(getCertificate(ROOT_CA));
+        commonTrustedCertificateSource.addCertificate(getCertificate(EE_GOOD_TSA));
 
         CommonCertificateVerifier customCertificateVerifier = (CommonCertificateVerifier) getCompleteCertificateVerifier();
 
@@ -97,7 +98,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.SECOND, -1);
-        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
+        service.setTspSource(getKeyStoreTSPSourceByNameAndTime(EE_GOOD_TSA, calendar.getTime()));
 
         ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -137,7 +138,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.SECOND, 1);
-        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
+        service.setTspSource(getKeyStoreTSPSourceByNameAndTime(EE_GOOD_TSA, calendar.getTime()));
 
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Arrays.asList(documentToSign));

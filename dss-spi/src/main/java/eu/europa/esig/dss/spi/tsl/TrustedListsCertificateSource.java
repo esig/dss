@@ -22,6 +22,7 @@ package eu.europa.esig.dss.spi.tsl;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.tsl.CertificateTrustTime;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustProperties;
 import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
@@ -34,9 +35,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class allows injection of trusted certificates from Trusted Lists
@@ -51,6 +54,9 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	/** The map of trust properties by EntityIdentifier (public keys) */
 	private Map<EntityIdentifier, List<TrustProperties>> trustPropertiesByEntity = new HashMap<>();
+
+	/** The map of trust time periods by EntityIdentifier */
+	private Map<EntityIdentifier, List<CertificateTrustTime>> trustTimeByEntity = new HashMap<>();
 
 	/**
 	 * The default constructor.
@@ -97,6 +103,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 
 	@Override
 	public synchronized void setTrustPropertiesByCertificates(final Map<CertificateToken, List<TrustProperties>> trustPropertiesByCerts) {
+		Objects.requireNonNull(trustPropertiesByCerts, "TrustPropertiesByCerts cannot be null!");
 		this.trustPropertiesByEntity = new HashMap<>(); // reinit the map
 		super.reset();
 		trustPropertiesByCerts.forEach(this::addCertificate);
@@ -104,6 +111,7 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 	
 	private void addCertificate(CertificateToken certificateToken, List<TrustProperties> trustPropertiesList) {
 		super.addCertificate(certificateToken);
+		Objects.requireNonNull(trustPropertiesList, "TrustPropertiesList must be filled");
 		
 		EntityIdentifier entityKey = certificateToken.getEntityKey();
 		List<TrustProperties> list = trustPropertiesByEntity.computeIfAbsent(entityKey, k -> new ArrayList<>());
@@ -122,6 +130,53 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		} else {
 			return Collections.emptyList();
 		}
+	}
+
+	@Override
+	public synchronized void setTrustTimeByCertificates(Map<CertificateToken, List<CertificateTrustTime>> trustTimeByCertificate) {
+		Objects.requireNonNull(trustTimeByCertificate, "trustTimeByCertificate cannot be null!");
+		this.trustTimeByEntity = new HashMap<>(); // reinit the map
+		trustTimeByCertificate.forEach(this::addCertificateTrustTimes);
+	}
+
+	private void addCertificateTrustTimes(CertificateToken certificateToken, List<CertificateTrustTime> certificateTrustTimes) {
+		super.addCertificate(certificateToken);
+		Objects.requireNonNull(certificateTrustTimes, "CertificateTrustTimes must be filled");
+
+		EntityIdentifier entityKey = certificateToken.getEntityKey();
+		List<CertificateTrustTime> list = trustTimeByEntity.computeIfAbsent(entityKey, k -> new ArrayList<>());
+		for (CertificateTrustTime trustTime : certificateTrustTimes) {
+			if (!list.contains(trustTime)) {
+				list.add(trustTime);
+			}
+		}
+	}
+
+	@Override
+	public synchronized CertificateTrustTime getTrustTime(CertificateToken token) {
+		if (!super.isTrusted(token)) {
+			return new CertificateTrustTime(false);
+		}
+		List<CertificateTrustTime> trustTimes = trustTimeByEntity.get(token.getEntityKey());
+		if (Utils.isCollectionNotEmpty(trustTimes)) {
+			CertificateTrustTime certificateTrustTime = null;
+			for (CertificateTrustTime trustTime : trustTimes) {
+				if (certificateTrustTime == null || !certificateTrustTime.isTrusted()) {
+					certificateTrustTime = trustTime;
+				} else if (trustTime != null && trustTime.isTrusted()) {
+					certificateTrustTime = certificateTrustTime.getJointTrustTime(trustTime.getStartDate(), trustTime.getEndDate());
+				}
+			}
+			return certificateTrustTime;
+		} else {
+			return new CertificateTrustTime(true); // no trust anchor expiration time defined
+		}
+	}
+
+	@Override
+	public boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime) {
+		CertificateTrustTime trustTime = getTrustTime(certificateToken);
+		return trustTime.isTrustedAtTime(controlTime);
 	}
 
 	@Override
@@ -155,12 +210,21 @@ public class TrustedListsCertificateSource extends CommonTrustedCertificateSourc
 		return urls;
 	}
 
+	@Override
+	public boolean isTrusted(CertificateToken certificateToken) {
+		if (super.isTrusted(certificateToken)) {
+			CertificateTrustTime trustTime = getTrustTime(certificateToken);
+			return trustTime == null || trustTime.isTrusted();
+		}
+		return false;
+	}
+
 	/**
-	 * Gets the number of trusted public keys
+	 * Gets the number of trusted entity keys (public key + subject name)
 	 *
-	 * @return the number of trusted public keys
+	 * @return the number of trusted entity keys (public key + subject name)
 	 */
-	public int getNumberOfTrustedPublicKeys() {
+	public int getNumberOfTrustedEntityKeys() {
 		return trustPropertiesByEntity.size();
 	}
 

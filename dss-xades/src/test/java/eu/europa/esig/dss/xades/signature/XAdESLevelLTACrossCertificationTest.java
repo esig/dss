@@ -63,7 +63,7 @@ class XAdESLevelLTACrossCertificationTest extends AbstractXAdESTestSignature {
 
 	@Override
 	protected void checkCertificateChain(DiagnosticData diagnosticData) {
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(3, signatureCertificateChain.size()); // other path than in PKCS12
 	}
 

@@ -164,20 +164,28 @@ class JAXBPKILoaderTest extends AbstractTestJaxbPKI {
     void crossCertificatesTest() {
         JAXBCertEntity firstCrossCertificate = repository.getCertEntityBySerialNumberAndParentSubject(2002L, "external-ca");
         JAXBCertEntity secondCrossCertificate = repository.getCertEntityBySerialNumberAndParentSubject(2003L, "cc-root-ca");
+        JAXBCertEntity thirdCrossCertificate = repository.getCertEntityBySerialNumberAndParentSubject(2004L, "cc-root-ca-alt");
         assertArrayEquals(firstCrossCertificate.getCertificateToken().getPublicKey().getEncoded(),
                 secondCrossCertificate.getCertificateToken().getPublicKey().getEncoded());
+        assertArrayEquals(firstCrossCertificate.getCertificateToken().getPublicKey().getEncoded(),
+                thirdCrossCertificate.getCertificateToken().getPublicKey().getEncoded());
 
         JAXBCertEntity firstCrossCertificateIssuer = repository.getCertEntityBySerialNumberAndParentSubject(2001L, "external-root-ca");
         JAXBCertEntity secondCrossCertificateIssuer = repository.getCertEntityBySerialNumberAndParentSubject(2003L, "cc-root-ca");
+        JAXBCertEntity thirdCrossCertificateIssuer = repository.getCertEntityBySerialNumberAndParentSubject(2004L, "cc-root-ca-alt");
 
         assertTrue(firstCrossCertificate.getCertificateToken().isSignedBy(firstCrossCertificateIssuer.getCertificateToken()));
         assertFalse(firstCrossCertificate.getCertificateToken().isSignedBy(secondCrossCertificateIssuer.getCertificateToken()));
         assertTrue(secondCrossCertificate.getCertificateToken().isSignedBy(secondCrossCertificateIssuer.getCertificateToken()));
         assertFalse(secondCrossCertificate.getCertificateToken().isSignedBy(firstCrossCertificateIssuer.getCertificateToken()));
+        assertTrue(thirdCrossCertificate.getCertificateToken().isSignedBy(thirdCrossCertificateIssuer.getCertificateToken()));
+        assertTrue(secondCrossCertificate.getCertificateToken().isSignedBy(thirdCrossCertificateIssuer.getCertificateToken()));
+        assertTrue(thirdCrossCertificate.getCertificateToken().isSignedBy(secondCrossCertificateIssuer.getCertificateToken()));
 
         JAXBCertEntity crossedCa = repository.getCertEntityBySerialNumberAndParentSubject(2200L, "cc-root-ca");
         assertTrue(crossedCa.getCertificateToken().isSignedBy(firstCrossCertificate.getCertificateToken()));
         assertTrue(crossedCa.getCertificateToken().isSignedBy(secondCrossCertificate.getCertificateToken()));
+        assertTrue(crossedCa.getCertificateToken().isSignedBy(thirdCrossCertificate.getCertificateToken()));
     }
 
     @Test

@@ -242,6 +242,32 @@
 						<xsl:apply-templates select="dss:trustAnchors"/>
 		        	</dl>
 	        	</xsl:if>
+
+				<xsl:if test="dss:trustStartDate or dss:trustSunsetDate">
+					<dl>
+						<xsl:attribute name="class">row mb-0</xsl:attribute>
+						<dt>
+							<xsl:attribute name="class">col-sm-3</xsl:attribute>
+							Trust anchor validity:
+						</dt>
+						<dd>
+							<xsl:attribute name="class">col-sm-9</xsl:attribute>
+							<xsl:if test="dss:trustStartDate">
+								Start @
+								<xsl:call-template name="formatdate">
+									<xsl:with-param name="DateTimeStr" select="dss:trustStartDate"/>
+								</xsl:call-template>
+							</xsl:if>
+							<xsl:if test="dss:trustSunsetDate">
+								<xsl:if test="dss:trustStartDate"> -</xsl:if>
+								Sunset @
+								<xsl:call-template name="formatdate">
+									<xsl:with-param name="DateTimeStr" select="dss:trustSunsetDate"/>
+								</xsl:call-template>
+							</xsl:if>
+						</dd>
+					</dl>
+				</xsl:if>
     		</div>
     	</div>
     </xsl:template>

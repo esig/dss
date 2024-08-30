@@ -712,7 +712,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	private XmlSignerDocumentRepresentations getXmlSignerDocumentRepresentations(AdvancedSignature signature) {
-		if (signature.getDetachedContents() == null) {
+		if (Utils.isCollectionEmpty(signature.getDetachedContents())) {
 			return null;
 		}
 		XmlSignerDocumentRepresentations signerDocumentRepresentation = new XmlSignerDocumentRepresentations();

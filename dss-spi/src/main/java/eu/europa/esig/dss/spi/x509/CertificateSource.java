@@ -22,11 +22,13 @@ package eu.europa.esig.dss.spi.x509;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
 import java.io.Serializable;
 import java.security.PublicKey;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -68,6 +70,15 @@ public interface CertificateSource extends Serializable {
 	 * @return true if the certificate is trusted
 	 */
 	boolean isTrusted(CertificateToken certificateToken);
+
+	/**
+	 * This method checks if a given certificate is trusted at the {@code controlTime}
+	 *
+	 * @param certificateToken the certificate to be tested
+	 * @param controlTime {@link Date}
+	 * @return true if the certificate is trusted
+	 */
+	boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime);
 
 	/**
 	 * This method checks if a given certificate is known in the current source
@@ -112,6 +123,15 @@ public interface CertificateSource extends Serializable {
 	Set<CertificateToken> getByPublicKey(PublicKey publicKey);
 
 	/**
+	 * This method returns a Set of {@code CertificateToken} with the given
+	 * {@code EntityIdentifier}
+	 *
+	 * @param entityKey {@link EntityIdentifier} representing a combination of a public key and a subject name
+	 * @return a Set of CertificateToken which have the given entity key
+	 */
+	Set<CertificateToken> getByEntityKey(EntityIdentifier entityKey);
+
+	/**
 	 * This method returns a Set of {@code CertificateToken} with the given SKI
 	 * (SubjectKeyIdentifier (SHA-1 of the PublicKey))
 	 * 
@@ -151,10 +171,10 @@ public interface CertificateSource extends Serializable {
 	boolean isCertificateSourceEqual(CertificateSource certificateSource);
 
 	/**
-	 * This method checks if the current and the given {@code CertificateSource}s contain the same public keys
+	 * This method checks if the current and the given {@code CertificateSource}s contain the same entity keys
 	 *
 	 * @param certificateSource {@link CertificateSource} to compare
-	 * @return TRUE if both certificate sources contains the same public keys, FALSE otherwise
+	 * @return TRUE if both certificate sources contains the same entity keys, FALSE otherwise
 	 */
 	boolean isCertificateSourceEquivalent(CertificateSource certificateSource);
 

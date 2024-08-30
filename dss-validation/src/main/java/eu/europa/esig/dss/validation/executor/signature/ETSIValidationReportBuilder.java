@@ -64,7 +64,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MessageType;
@@ -140,8 +139,8 @@ import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.xmldsig.jaxb.DigestMethodType;
 import eu.europa.esig.xmldsig.jaxb.SignatureValueType;
-
 import jakarta.xml.bind.JAXBElement;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -959,10 +958,9 @@ public class ETSIValidationReportBuilder {
 			XmlChainItem currentChainItem = chainItem.get(i);
 			CertificateWrapper certificateWrapper = diagnosticData.getCertificateById(currentChainItem.getId());
 			VOReferenceType currentVORef = getVOReference(getCertificateValidationObject(certificateWrapper));
-			CertificateSourceType source = currentChainItem.getSource();
 
 			boolean isSigningCert = (i == 0);
-			boolean isTrustAnchor = isTrustAnchor(source);
+			boolean isTrustAnchor = certificateWrapper.isTrusted();
 
 			if (isSigningCert || isTrustAnchor) {
 				if (isSigningCert) {
@@ -983,10 +981,6 @@ public class ETSIValidationReportBuilder {
 
 		validationReportData.setCertificateChain(certificateChainType);
 		validationReportData.setTrustAnchor(trustAnchor);
-	}
-
-	private boolean isTrustAnchor(CertificateSourceType source) {
-		return CertificateSourceType.TRUSTED_LIST.equals(source) || CertificateSourceType.TRUSTED_STORE.equals(source);
 	}
 
 	private SignatureIdentifierType getSignatureIdentifier(SignatureWrapper sigWrapper) {

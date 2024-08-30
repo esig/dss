@@ -107,7 +107,7 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(2, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
@@ -142,7 +142,7 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(2, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
@@ -178,7 +178,7 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(2, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
@@ -212,7 +212,7 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(1, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}

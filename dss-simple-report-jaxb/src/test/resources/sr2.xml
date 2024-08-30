@@ -14,7 +14,7 @@
             <Certificate Id="C-725A763273585DD8DFA026EB2066F5667FFF6ED45F72052B3F9C2D3565DF6B5E">
                 <QualifiedName>L R</QualifiedName>
             </Certificate>
-            <Certificate Id="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5" trusted="true">
+            <Certificate Id="C-B689BFCFDAEE078405383971E848C3D077457CD0EC6B685550F10ED250F8FDC5" trusted="true" sunsetDate="2017-10-14T14:49:49Z">
                 <QualifiedName>InfoCert Firma Qualificata 2</QualifiedName>
                 <TrustAnchors>
                     <TrustAnchor countryCode="FR">

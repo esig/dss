@@ -29,6 +29,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Checks if the Past Certificate Validation result is acceptable
@@ -105,6 +106,14 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 	@Override
 	protected SubIndication getFailedSubIndicationForConclusion() {
 		return currentSubIndication;
+	}
+
+	@Override
+	protected String buildAdditionalInfo() {
+		if (pcv != null && pcv.getControlTime() != null) {
+			return i18nProvider.getMessage(MessageTag.CONTROL_TIME_ALONE, ValidationProcessUtils.getFormattedDate(pcv.getControlTime()));
+		}
+		return super.buildAdditionalInfo();
 	}
 
 }

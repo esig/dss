@@ -209,7 +209,10 @@
 									<xsl:apply-templates select="dss:pdsUrls" />
 
 									<xsl:apply-templates select="dss:revocation" />
+
 									<xsl:apply-templates select="dss:trustAnchors" />
+									<xsl:apply-templates select="dss:trustStartDate" />
+									<xsl:apply-templates select="dss:trustSunsetDate" />
 			       					
 								</fo:table-body>
 							</fo:table>
@@ -285,8 +288,7 @@
 	</xsl:template>
     
     <xsl:template match="dss:commonName|dss:surname|dss:givenName|dss:pseudonym|dss:organizationName|
-    		dss:organizationUnit|dss:email|dss:locality|dss:state|dss:country|
-    		dss:issuerId|dss:notBefore|dss:notAfter">
+    		dss:organizationUnit|dss:email|dss:locality|dss:state|dss:country|dss:issuerId">
 		 <xsl:variable name="label">
         	<xsl:choose>
 				<xsl:when test="name()='commonName'">Common name</xsl:when>
@@ -300,8 +302,6 @@
 				<xsl:when test="name()='state'">State</xsl:when>
 				<xsl:when test="name()='country'">Country</xsl:when>
 				<xsl:when test="name()='issuerId'">Issuer Id</xsl:when>
-				<xsl:when test="name()='notBefore'">Not Before</xsl:when>
-				<xsl:when test="name()='notAfter'">Not After</xsl:when>
 				<xsl:otherwise>?</xsl:otherwise>
 			</xsl:choose>
         </xsl:variable>
@@ -320,12 +320,44 @@
 				<fo:block>
 					<xsl:attribute name="margin-top">1px</xsl:attribute>
 					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
-					
+
 					<xsl:value-of select="." />
 				</fo:block>
 			</fo:table-cell>
 		</fo:table-row>
     </xsl:template>
+
+	<xsl:template match="dss:notBefore|dss:notAfter|dss:trustStartDate|dss:trustSunsetDate">
+		<xsl:variable name="label">
+			<xsl:choose>
+				<xsl:when test="name()='notBefore'">Not Before</xsl:when>
+				<xsl:when test="name()='notAfter'">Not After</xsl:when>
+				<xsl:when test="name()='trustStartDate'">Trust start date</xsl:when>
+				<xsl:when test="name()='trustSunsetDate'">Trust sunset date</xsl:when>
+				<xsl:otherwise>?</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+
+		<fo:table-row>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:attribute name="font-weight">bold</xsl:attribute>
+					<xsl:value-of select="$label" /><xsl:text>:</xsl:text>
+				</fo:block>
+			</fo:table-cell>
+			<fo:table-cell>
+				<fo:block>
+					<xsl:attribute name="margin-top">1px</xsl:attribute>
+					<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+					<xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="."/></xsl:call-template>
+				</fo:block>
+			</fo:table-cell>
+		</fo:table-row>
+	</xsl:template>
     
     <xsl:template match="dss:keyUsages">
     	<xsl:if test="node() != ''">
@@ -592,5 +624,34 @@
 			</fo:table-row>
 		</xsl:if>
     </xsl:template>
+
+	<xsl:template name="formatdate">
+		<xsl:param name="DateTimeStr" />
+
+		<xsl:variable name="date">
+			<xsl:value-of select="substring-before($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="after-T">
+			<xsl:value-of select="substring-after($DateTimeStr,'T')" />
+		</xsl:variable>
+
+		<xsl:variable name="time">
+			<xsl:value-of select="substring-before($after-T,'Z')" />
+		</xsl:variable>
+
+		<xsl:choose>
+			<xsl:when test="string-length($date) &gt; 0 and string-length($time) &gt; 0">
+				<xsl:value-of select="concat($date,' ', $time, ' (UTC)')" />
+			</xsl:when>
+			<xsl:when test="string-length($date) &gt; 0">
+				<xsl:value-of select="$date" />
+			</xsl:when>
+			<xsl:when test="string-length($time) &gt; 0">
+				<xsl:value-of select="$time" />
+			</xsl:when>
+			<xsl:otherwise>-</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 
 </xsl:stylesheet>

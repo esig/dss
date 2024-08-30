@@ -22,12 +22,14 @@ package eu.europa.esig.dss.spi.x509;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -190,6 +192,16 @@ public class ListCertificateSource implements CertificateSource {
 	}
 
 	@Override
+	public boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime) {
+		for (CertificateSource source : sources) {
+			if (source.isTrustedAtTime(certificateToken, controlTime)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public boolean isKnown(CertificateToken certificateToken) {
 		for (CertificateSource source : sources) {
 			if (source.isKnown(certificateToken)) {
@@ -237,6 +249,15 @@ public class ListCertificateSource implements CertificateSource {
 			if (source.isKnown(certificateToken)) {
 				result.add(source.getCertificateSourceType());
 			}
+		}
+		return result;
+	}
+
+	@Override
+	public Set<CertificateToken> getByEntityKey(EntityIdentifier entityKey) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSource source : sources) {
+			result.addAll(source.getByEntityKey(entityKey));
 		}
 		return result;
 	}

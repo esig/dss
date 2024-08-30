@@ -32,10 +32,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This class re-groups equivalent certificates.
- * 
- * All certificates for a given {@code CertificateSourceEntity} share the same
- * public key.
+ * This class re-groups equivalent certificates by a given property (e.g. a public key or entity key).
+ * All certificates for a given {@code CertificateSourceEntity} share (at least) the same public key.
+ *
  */
 class EquivalentCertificatesEntity implements CertificateSourceEntity {
 	
@@ -69,6 +68,11 @@ class EquivalentCertificatesEntity implements CertificateSourceEntity {
 		equivalentCertificates.add(initialCert);
 	}
 
+	/**
+	 * Adds a certificate token to the given list of equivalent certificates
+	 *
+	 * @param token {@link CertificateToken} to add
+	 */
 	void addEquivalentCertificate(CertificateToken token) {
 		if (!equivalentCertificates.contains(token)) {
 			LOG.trace("Certificate with same public key detected : {}", token.getAbbreviation());
@@ -84,6 +88,11 @@ class EquivalentCertificatesEntity implements CertificateSourceEntity {
 		}
 	}
 
+	/**
+	 * Removes a certificate token from the given list of equivalent certificates
+	 *
+	 * @param token {@link CertificateToken} to remove
+	 */
 	void removeEquivalentCertificate(CertificateToken token) {
 		if (equivalentCertificates.contains(token)) {
 			if (equivalentCertificates.size() == 1) {
@@ -96,10 +105,20 @@ class EquivalentCertificatesEntity implements CertificateSourceEntity {
 		}
 	}
 	
+	/**
+	 * Gets a Subject Key Identifier (SHA-1 of the common public key)
+	 *
+	 * @return byte array representing a SKI
+	 */
 	byte[] getSki() {
 		return ski;
 	}
 
+	/**
+	 * Gets a set of equivalent certificate tokens present within the current instance
+	 *
+	 * @return a set of {@link CertificateToken}s
+	 */
 	Set<CertificateToken> getEquivalentCertificates() {
 		return Collections.unmodifiableSet(equivalentCertificates);
 	}

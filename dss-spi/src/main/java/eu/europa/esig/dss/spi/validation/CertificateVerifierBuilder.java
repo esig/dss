@@ -54,6 +54,7 @@ public class CertificateVerifierBuilder {
 			copy.setRevocationFallback(certificateVerifier.isRevocationFallback());
 			copy.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			copy.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
+			copy.setTrustAnchorVerifier(certificateVerifier.getTrustAnchorVerifier());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
 			copy.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			copy.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
@@ -85,6 +86,7 @@ public class CertificateVerifierBuilder {
 			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 			offlineCertificateVerifier.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			offlineCertificateVerifier.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
+			offlineCertificateVerifier.setTrustAnchorVerifier(getTrustAnchorVerifierOfflineCopy(certificateVerifier.getTrustAnchorVerifier()));
 		}
 		// disable alerting
 		offlineCertificateVerifier.setAlertOnInvalidSignature(new SilentOnStatusAlert());
@@ -99,6 +101,17 @@ public class CertificateVerifierBuilder {
 		offlineCertificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
 		offlineCertificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
 		return offlineCertificateVerifier;
+	}
+
+	private TrustAnchorVerifier getTrustAnchorVerifierOfflineCopy(TrustAnchorVerifier originalTrustAnchorVerifier) {
+		TrustAnchorVerifier trustAnchorVerifier = TrustAnchorVerifier.createEmptyTrustAnchorVerifier();
+		trustAnchorVerifier.setUseSunsetDate(false); // set to FALSE for offline processing
+		if (originalTrustAnchorVerifier != null) {
+			trustAnchorVerifier.setTrustedCertificateSource(originalTrustAnchorVerifier.getTrustedCertificateSource());
+			trustAnchorVerifier.setAcceptRevocationUntrustedCertificateChains(originalTrustAnchorVerifier.isAcceptRevocationUntrustedCertificateChains());
+			trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(originalTrustAnchorVerifier.isAcceptTimestampUntrustedCertificateChains());
+		}
+		return trustAnchorVerifier;
 	}
 
 	/**
