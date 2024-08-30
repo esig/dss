@@ -24,6 +24,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.common.digest.AbstractEvidenceRecordRenewalDigestBuilderHelper;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
+import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSAttribute;
+import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSElement;
+import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSPath;
 import eu.europa.esig.dss.evidencerecord.xml.validation.XmlArchiveTimeStampChainObject;
 import eu.europa.esig.dss.evidencerecord.xml.validation.XmlArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.xml.validation.XmlEvidenceRecord;
@@ -33,9 +36,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSAttribute;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSElement;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -94,7 +94,8 @@ public class XMLEvidenceRecordRenewalDigestBuilderHelper extends AbstractEvidenc
      * @param archiveTimeStampChainOrder of the time-stamp chain to compute digest for its first time-stamp
      * @return {@link Digest}
      */
-    public DSSMessageDigest buildArchiveTimeStampSequenceDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod, int archiveTimeStampChainOrder) {
+    public DSSMessageDigest buildArchiveTimeStampSequenceDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod,
+                                                                int archiveTimeStampChainOrder) {
         Document documentCopy = createDocumentCopy();
         Element archiveTimeStampSequence = DomUtils.getElement(documentCopy.getDocumentElement(), XMLERSPath.ARCHIVE_TIME_STAMP_SEQUENCE_PATH);
         NodeList childNodes = archiveTimeStampSequence.getChildNodes();
@@ -107,6 +108,7 @@ public class XMLEvidenceRecordRenewalDigestBuilderHelper extends AbstractEvidenc
                     int intOrder = Integer.parseInt(order);
                     if (archiveTimeStampChainOrder != -1 && intOrder >= archiveTimeStampChainOrder) {
                         archiveTimeStampSequence.removeChild(node);
+                        --i; // node removal decreases childNodes
                     }
                 }
             }
