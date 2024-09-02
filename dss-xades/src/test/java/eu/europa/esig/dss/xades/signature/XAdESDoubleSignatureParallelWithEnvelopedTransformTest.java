@@ -86,6 +86,9 @@ class XAdESDoubleSignatureParallelWithEnvelopedTransformTest extends AbstractXAd
 	@Override
 	protected DSSDocument sign() {
 		DSSDocument signed = super.sign();
+
+		awaitOneSecond();
+
 		documentToSign = signed;
 		return super.sign();
 	}

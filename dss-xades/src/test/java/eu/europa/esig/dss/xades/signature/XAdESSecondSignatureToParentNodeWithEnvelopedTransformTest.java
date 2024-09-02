@@ -62,6 +62,8 @@ class XAdESSecondSignatureToParentNodeWithEnvelopedTransformTest extends Abstrac
         signatureParameters = initSignatureParameters("hello");
         DSSDocument signed = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signed;
         signatureParameters = initSignatureParameters("TEST");
 
