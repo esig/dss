@@ -84,6 +84,8 @@ class XAdESLevelBInternallyDetachedWithInvalidXPathPlacementTest extends Abstrac
 
         DSSDocument signedDocument = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signedDocument;
         signatureParameters = initSignatureParameters();
         signatureParameters.setXPathLocationString(XPATH);

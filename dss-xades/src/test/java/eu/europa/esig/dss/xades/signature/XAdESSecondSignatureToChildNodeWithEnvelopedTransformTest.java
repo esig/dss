@@ -63,6 +63,8 @@ class XAdESSecondSignatureToChildNodeWithEnvelopedTransformTest extends Abstract
         signatureParameters = initSignatureParameters("TEST");
         DSSDocument signed = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signed;
         signatureParameters = initSignatureParameters("world");
 
