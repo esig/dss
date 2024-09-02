@@ -538,7 +538,9 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 * Returns an instance of a corresponding to the format {@code SignaturePolicyValidatorLoader}
 	 *
 	 * @return {@link SignaturePolicyValidatorLoader}
+	 * @deprecated since DSS 6.1. Please use {@code #getDocumentAnalyzer#getSignaturePolicyValidatorLoader} method instead
 	 */
+	@Deprecated
 	public SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
 		if (documentAnalyzer instanceof DefaultDocumentAnalyzer) {
 			return ((DefaultDocumentAnalyzer) documentAnalyzer).getSignaturePolicyValidatorLoader();
