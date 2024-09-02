@@ -337,15 +337,15 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @param certificateSourceToAdd {@link CertificateSource} to add
 	 */
 	private void addCertificateSource(ListCertificateSource listCertificateSource, CertificateSource certificateSourceToAdd) {
-		listCertificateSource.add(certificateSourceToAdd);
-
-		// add all existing equivalent certificates for the validation
-		ListCertificateSource allCertificateSources = getAllCertificateSources();
-		for (CertificateToken certificateToken : certificateSourceToAdd.getCertificates()) {
-			final Set<CertificateToken> equivalentCertificates = allCertificateSources.getByEntityKey(certificateToken.getEntityKey());
-			for (CertificateToken equivalentCertificate : equivalentCertificates) {
-				if (!certificateToken.getDSSIdAsString().equals(equivalentCertificate.getDSSIdAsString())) {
-					addCertificateTokenForVerification(equivalentCertificate);
+		if (listCertificateSource.add(certificateSourceToAdd)) {
+			// add all existing equivalent certificates for the validation
+			ListCertificateSource allCertificateSources = getAllCertificateSources();
+			for (CertificateToken certificateToken : certificateSourceToAdd.getCertificates()) {
+				final Set<CertificateToken> equivalentCertificates = allCertificateSources.getByEntityKey(certificateToken.getEntityKey());
+				for (CertificateToken equivalentCertificate : equivalentCertificates) {
+					if (!certificateToken.getDSSIdAsString().equals(equivalentCertificate.getDSSIdAsString())) {
+						addCertificateTokenForVerification(equivalentCertificate);
+					}
 				}
 			}
 		}

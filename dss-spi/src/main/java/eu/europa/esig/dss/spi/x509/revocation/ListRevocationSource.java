@@ -62,11 +62,13 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 	 * Adds the {@code revocationSource} to the list by keeping old values
 	 *
 	 * @param revocationSource {@link OfflineRevocationSource} to add
+	 * @return whether the revocationSource has been added successfully
 	 */
-	public void add(OfflineRevocationSource<R> revocationSource) {
+	public boolean add(OfflineRevocationSource<R> revocationSource) {
 		if (revocationSource != null && !sources.contains(revocationSource)) {
-			sources.add(revocationSource);
+			return sources.add(revocationSource);
 		}
+		return false;
 	}
 
 	/**

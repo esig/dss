@@ -102,11 +102,13 @@ public class ListCertificateSource implements CertificateSource {
 	 * This method allows to add a certificate source to the list
 	 * 
 	 * @param certificateSource {@link CertificateSource}
+	 * @return whether the certificateSource has been added successfully
 	 */
-	public void add(CertificateSource certificateSource) {
+	public boolean add(CertificateSource certificateSource) {
 		if (certificateSource != null && !sources.contains(certificateSource)) {
-			sources.add(certificateSource);
+			return sources.add(certificateSource);
 		}
+		return false;
 	}
 
 	/**

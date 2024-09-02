@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ListRevocationSourceTest {
 
@@ -30,29 +32,29 @@ class ListRevocationSourceTest {
         assertEquals(0, lrs.getRevocationTokens(CERT, CA_CERT).size());
 
         ExternalResourcesOCSPSource ocspSource = new ExternalResourcesOCSPSource(OCSP_DOCUMENT);
-        lrs.add(ocspSource);
+        assertTrue(lrs.add(ocspSource));
 
         assertEquals(1, lrs.getNumberOfSources());
         assertEquals(1, lrs.getAllRevocationBinaries().size());
         assertEquals(1, lrs.getRevocationTokens(CERT, CA_CERT).size());
 
         ExternalResourcesOCSPSource ocspSourceTwo = new ExternalResourcesOCSPSource(OCSP_DOCUMENT);
-        lrs.add(ocspSourceTwo);
+        assertTrue(lrs.add(ocspSourceTwo));
 
         assertEquals(2, lrs.getNumberOfSources());
         assertEquals(1, lrs.getAllRevocationBinaries().size());
         assertEquals(1, lrs.getRevocationTokens(CERT, CA_CERT).size());
 
         ExternalResourcesOCSPSource ocspSourceThree = new ExternalResourcesOCSPSource(WRONG_OCSP_DOCUMENT);
-        lrs.add(ocspSourceThree);
+        assertTrue(lrs.add(ocspSourceThree));
 
         assertEquals(3, lrs.getNumberOfSources());
         assertEquals(2, lrs.getAllRevocationBinaries().size());
         assertEquals(1, lrs.getRevocationTokens(CERT, CA_CERT).size());
 
-        lrs.add(ocspSource);
-        lrs.add(ocspSourceTwo);
-        lrs.add(ocspSourceThree);
+        assertFalse(lrs.add(ocspSource));
+        assertFalse(lrs.add(ocspSourceTwo));
+        assertFalse(lrs.add(ocspSourceThree));
         assertEquals(3, lrs.getNumberOfSources());
     }
 

@@ -28,7 +28,9 @@ import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ListCertificateSourceTest {
 
@@ -55,14 +57,14 @@ class ListCertificateSourceTest {
 
 		CommonCertificateSource commonCertificateSource = new CommonCertificateSource();
 		commonCertificateSource.addCertificate(CERT);
-		lcs.add(commonCertificateSource);
+		assertTrue(lcs.add(commonCertificateSource));
 
 		assertEquals(1, lcs.getNumberOfSources());
 		assertEquals(1, lcs.getCertificates().size());
 
 		CommonCertificateSource commonCertificateSourceTwo = new CommonCertificateSource();
 		commonCertificateSourceTwo.addCertificate(CERT);
-		lcs.add(commonCertificateSourceTwo);
+		assertTrue(lcs.add(commonCertificateSourceTwo));
 
 		assertEquals(2, lcs.getNumberOfSources());
 		assertEquals(1, lcs.getCertificates().size());
@@ -75,15 +77,15 @@ class ListCertificateSourceTest {
 		assertEquals(2, lcs.getNumberOfSources());
 		assertEquals(2, lcs.getCertificates().size());
 
-		lcs.add(new CommonTrustedCertificateSource());
+		assertTrue(lcs.add(new CommonTrustedCertificateSource()));
 		assertEquals(3, lcs.getNumberOfSources());
 		assertEquals(2, lcs.getCertificates().size());
 
-		lcs.add(new CommonTrustedCertificateSource());
+		assertTrue(lcs.add(new CommonTrustedCertificateSource()));
 		assertEquals(4, lcs.getNumberOfSources());
 
-		lcs.add(commonCertificateSource);
-		lcs.add(commonCertificateSourceTwo);
+		assertFalse(lcs.add(commonCertificateSource));
+		assertFalse(lcs.add(commonCertificateSourceTwo));
 		assertEquals(4, lcs.getNumberOfSources());
 	}
 
