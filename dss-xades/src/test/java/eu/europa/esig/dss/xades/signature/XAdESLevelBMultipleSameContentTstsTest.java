@@ -88,6 +88,8 @@ class XAdESLevelBMultipleSameContentTstsTest extends AbstractXAdESTestSignature 
     protected DSSDocument sign() {
         DSSDocument firstSigned = super.sign();
 
+        awaitOneSecond();
+
         contentTimestamp = service.getContentTimestamp(documentToSign, getSignatureParameters());
         DSSDocument secondSigned = super.sign();
         compareContentTimestampIdentifiers(firstSigned, secondSigned);

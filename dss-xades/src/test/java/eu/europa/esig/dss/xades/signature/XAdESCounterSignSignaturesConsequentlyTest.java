@@ -90,6 +90,8 @@ class XAdESCounterSignSignaturesConsequentlyTest extends AbstractXAdESCounterSig
 
         DSSDocument signedDocument = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signedDocument;
         signingAlias = EE_GOOD_USER;
 

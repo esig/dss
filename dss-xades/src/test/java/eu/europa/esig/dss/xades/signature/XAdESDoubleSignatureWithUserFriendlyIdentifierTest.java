@@ -90,6 +90,8 @@ class XAdESDoubleSignatureWithUserFriendlyIdentifierTest extends AbstractXAdESTe
         signatureParameters = initSignatureParameters();
         DSSDocument signed = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signed;
         signatureParameters = initSignatureParameters();
 

@@ -80,6 +80,8 @@ class DSS2610MultipleSignaturesTest extends AbstractXAdESTestSignature {
         documentToSign = ORIGINAL_DOC;
         DSSDocument signedDocument = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signedDocument;
         signatureParameters = initSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);

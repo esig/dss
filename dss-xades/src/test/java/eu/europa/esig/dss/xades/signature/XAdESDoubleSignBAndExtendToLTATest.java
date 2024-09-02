@@ -60,6 +60,8 @@ class XAdESDoubleSignBAndExtendToLTATest extends AbstractXAdESTestSignature {
         documentToSign = originalDocument;
         DSSDocument signedDocument = super.sign();
 
+        awaitOneSecond();
+
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         documentToSign = signedDocument;
