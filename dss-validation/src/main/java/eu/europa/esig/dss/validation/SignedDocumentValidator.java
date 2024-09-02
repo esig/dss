@@ -36,7 +36,6 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
-import eu.europa.esig.dss.spi.policy.SignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationContext;
@@ -515,18 +514,6 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	@Override
 	public <T extends AdvancedSignature> ValidationDataContainer getValidationData(Collection<T> signatures, Collection<TimestampToken> detachedTimestamps) {
 		return documentAnalyzer.getValidationData(signatures, detachedTimestamps);
-	}
-
-	/**
-	 * Returns an instance of a corresponding to the format {@code SignaturePolicyValidatorLoader}
-	 *
-	 * @return {@link SignaturePolicyValidatorLoader}
-	 */
-	public SignaturePolicyValidatorLoader getSignaturePolicyValidatorLoader() {
-		if (documentAnalyzer instanceof DefaultDocumentAnalyzer) {
-			return ((DefaultDocumentAnalyzer) documentAnalyzer).getSignaturePolicyValidatorLoader();
-		}
-		throw new IllegalStateException("The documentAnalyzer shall be an instance of DefaultDocumentAnalyzer to execute the method!");
 	}
 
 }
