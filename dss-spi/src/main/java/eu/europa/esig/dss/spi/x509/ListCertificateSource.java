@@ -104,7 +104,7 @@ public class ListCertificateSource implements CertificateSource {
 	 * @param certificateSource {@link CertificateSource}
 	 */
 	public void add(CertificateSource certificateSource) {
-		if (certificateSource != null) {
+		if (certificateSource != null && !sources.contains(certificateSource)) {
 			sources.add(certificateSource);
 		}
 	}

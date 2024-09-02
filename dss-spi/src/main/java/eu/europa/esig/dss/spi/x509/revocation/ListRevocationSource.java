@@ -25,7 +25,9 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class allows to handle a list {@code OfflineRevocationSource}
@@ -62,7 +64,9 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 	 * @param revocationSource {@link OfflineRevocationSource} to add
 	 */
 	public void add(OfflineRevocationSource<R> revocationSource) {
-		sources.add(revocationSource);
+		if (revocationSource != null && !sources.contains(revocationSource)) {
+			sources.add(revocationSource);
+		}
 	}
 
 	/**
@@ -108,11 +112,11 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 
 	@Override
 	public List<RevocationToken<R>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
-		List<RevocationToken<R>> result = new ArrayList<>();
+		Set<RevocationToken<R>> allTokens = new HashSet<>();
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			result.addAll(revocationSource.getRevocationTokens(certificateToken, issuerCertificateToken));
+			allTokens.addAll(revocationSource.getRevocationTokens(certificateToken, issuerCertificateToken));
 		}
-		return result;
+		return new ArrayList<>(allTokens);
 	}
 
 	/**
@@ -121,11 +125,11 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 	 * @return a list of {@link EncapsulatedRevocationTokenIdentifier}s
 	 */
 	public List<EncapsulatedRevocationTokenIdentifier<R>> getAllRevocationBinaries() {
-		List<EncapsulatedRevocationTokenIdentifier<R>> result = new ArrayList<>();
+		Set<EncapsulatedRevocationTokenIdentifier<R>> allBinaries = new HashSet<>();
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			result.addAll(revocationSource.getAllRevocationBinaries());
+			allBinaries.addAll(revocationSource.getAllRevocationBinaries());
 		}
-		return result;
+		return new ArrayList<>(allBinaries);
 	}
 
 	/**
@@ -158,6 +162,15 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * This method returns the number of set {@link RevocationSource}s
+	 *
+	 * @return the number of found {@link RevocationSource}
+	 */
+	public int getNumberOfSources() {
+		return sources.size();
 	}
 
 }

@@ -20,13 +20,21 @@
  */
 package eu.europa.esig.dss.spi.x509;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.List;
-
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 class ListCertificateSourceTest {
+
+	private static final CertificateToken CERT = DSSUtils.loadCertificate(new File("src/test/resources/CZ.cer"));
+
+	private static final CertificateToken CA_CERT = DSSUtils.loadCertificate(new File("src/test/resources/CZ_CA.cer"));
 	
 	@Test
 	void testReflection() {
@@ -39,6 +47,44 @@ class ListCertificateSourceTest {
 		assertThrows(UnsupportedOperationException.class, () -> sources.add(commonCertificateSource));
 		
 		assertThrows(UnsupportedOperationException.class, () -> sources.clear());
+	}
+
+	@Test
+	void multipleCertSourcesTest() {
+		ListCertificateSource lcs = new ListCertificateSource();
+
+		CommonCertificateSource commonCertificateSource = new CommonCertificateSource();
+		commonCertificateSource.addCertificate(CERT);
+		lcs.add(commonCertificateSource);
+
+		assertEquals(1, lcs.getNumberOfSources());
+		assertEquals(1, lcs.getCertificates().size());
+
+		CommonCertificateSource commonCertificateSourceTwo = new CommonCertificateSource();
+		commonCertificateSourceTwo.addCertificate(CERT);
+		lcs.add(commonCertificateSourceTwo);
+
+		assertEquals(2, lcs.getNumberOfSources());
+		assertEquals(1, lcs.getCertificates().size());
+
+		commonCertificateSourceTwo.addCertificate(CA_CERT);
+		assertEquals(2, lcs.getNumberOfSources());
+		assertEquals(2, lcs.getCertificates().size());
+
+		commonCertificateSourceTwo.addCertificate(CA_CERT);
+		assertEquals(2, lcs.getNumberOfSources());
+		assertEquals(2, lcs.getCertificates().size());
+
+		lcs.add(new CommonTrustedCertificateSource());
+		assertEquals(3, lcs.getNumberOfSources());
+		assertEquals(2, lcs.getCertificates().size());
+
+		lcs.add(new CommonTrustedCertificateSource());
+		assertEquals(4, lcs.getNumberOfSources());
+
+		lcs.add(commonCertificateSource);
+		lcs.add(commonCertificateSourceTwo);
+		assertEquals(4, lcs.getNumberOfSources());
 	}
 
 }

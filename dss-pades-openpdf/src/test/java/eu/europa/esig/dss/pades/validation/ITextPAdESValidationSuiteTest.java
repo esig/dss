@@ -63,6 +63,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESLevelLTAWithCopiedDocTstTe
 import eu.europa.esig.dss.pades.validation.suite.PAdESLevelTWithDuplicatedDocTstTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESLevelTWithDuplicatedSigTstTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleLTLevelSignaturesTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultiplePagesAnnotationsOverlapTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOCSPSigningCertificateTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOutOfByteRangeTest;
@@ -148,7 +149,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest.class, DSS3298Test.class, PAdESBESValidationTest.class,
 		PAdESEPESValidationTest.class, PAdESBESNoCertificatesValidationTest.class, PAdESBESWithSigPolicyIdentifierValidationTest.class,
 		PAdESLTVValidationTest.class, PAdESLTVWithReasonValidationTest.class, PAdESLTVBasedOnEPESValidationTest.class,
-		PDFWithMultipleSignerInfoValidationTest.class })
+		PDFWithMultipleSignerInfoValidationTest.class, PAdESMultipleLTLevelSignaturesTest.class })
 class ITextPAdESValidationSuiteTest {
 
 }
