@@ -63,6 +63,8 @@ class XAdESDoubleSignatureNotParallelDiffLocationInvalidWithEnvelopedTransformTe
         signatureParameters = initSignatureParameters("hello", "world");
         DSSDocument signed = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signed;
         signatureParameters = initSignatureParameters("world", "hello");
 

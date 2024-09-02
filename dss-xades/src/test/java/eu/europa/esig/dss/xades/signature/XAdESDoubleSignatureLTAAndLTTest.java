@@ -69,6 +69,8 @@ class XAdESDoubleSignatureLTAAndLTTest extends AbstractXAdESTestSignature {
         documentToSign = originalDocument;
         DSSDocument signedDocument = super.sign();
 
+        awaitOneSecond();
+
         signingAlias = RSA_SHA3_USER;
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
@@ -77,12 +79,16 @@ class XAdESDoubleSignatureLTAAndLTTest extends AbstractXAdESTestSignature {
         DSSDocument doubleSignedDocument = super.sign();
         assertNotNull(doubleSignedDocument);
 
+        awaitOneSecond();
+
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
         documentToSign = signedDocument;
         doubleSignedDocument = super.sign();
         assertNotNull(doubleSignedDocument);
+
+        awaitOneSecond();
 
         signatureParameters = new XAdESSignatureParameters();
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
