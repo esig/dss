@@ -82,13 +82,13 @@ public class ValidationProcessUtils {
 	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
 	 */
 	public static boolean isAllowedBasicSignatureValidation(XmlConclusion conclusion) {
-		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+		return conclusion != null && (Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
 				&& (SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication()) 
 						|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.TRY_LATER.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
-						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())));
+						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication()))));
 	}
 
 	/**
@@ -116,13 +116,13 @@ public class ValidationProcessUtils {
 	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
 	 */
 	public static boolean isAllowedBasicTimestampValidation(XmlConclusion conclusion) {
-		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+		return conclusion != null && (Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
 				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 						|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())));
+						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication()))));
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class ValidationProcessUtils {
 	 * @return TRUE if the result is allowed to continue the validation process, FALSE otherwise
 	 */
 	public static boolean isAllowedValidationWithLongTermData(XmlConclusion conclusion) {
-		return Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
+		return conclusion != null && (Indication.PASSED.equals(conclusion.getIndication()) || (Indication.INDETERMINATE.equals(conclusion.getIndication())
 				&& (SubIndication.REVOKED_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.REVOKED_CA_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
@@ -141,7 +141,7 @@ public class ValidationProcessUtils {
 					|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.SIG_CONSTRAINTS_FAILURE.equals(conclusion.getSubIndication())
-				    || SubIndication.TRY_LATER.equals(conclusion.getSubIndication())));
+				    || SubIndication.TRY_LATER.equals(conclusion.getSubIndication()))));
 	}
 	
 	/**
