@@ -130,12 +130,14 @@ public class CertificateVerifierSnippet {
         cv.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert(Level.ERROR));
 
         // DSS 6.1+ :
-        // Defines behavior on a signature creation or augmentation with an expired signing-certificate or its related POE(s)
+        // Defines behavior on a signature creation or augmentation with an expired signing-certificate
+        // or its related POE(s)
         // Default : ExceptionOnStatusAlert -> interrupt the process
         cv.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
         // DSS 6.1+ :
-        // Defines behavior on a signature creation or augmentation with a not yet valid signing-certificate
+        // Defines behavior on a signature creation or augmentation with a not yet valid
+        // signing-certificate
         // Default : ExceptionOnStatusAlert (throws an exception)
         cv.setAlertOnNotYetValidCertificate(new ExceptionOnStatusAlert());
 
@@ -184,9 +186,10 @@ public class CertificateVerifierSnippet {
         cv.setRevocationFallback(false);
 
         // DSS 6.1+ :
-        // Defines a behavior for acceptance of timestamp tokens present within a signature document as POE
-        // for the signature and data objects
-        // NOTE: The class is not synchronized with the rules defined within the used XML Validation Policy.
+        // Defines a behavior for acceptance of timestamp tokens present within a signature document as
+        // POE for the signature and data objects
+        // NOTE: The class is not synchronized with the rules defined within the used
+        // XML Validation Policy.
         TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
         cv.setTimestampTokenVerifier(timestampTokenVerifier);
 
