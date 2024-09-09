@@ -64,8 +64,9 @@ class DefaultDocumentAnalyzerTest {
         // Load a document to read
         DSSDocument document = new FileDocument("src/test/resources/signature-pool/signedXmlXadesLT.xml");
 
-        // The method allows instantiation of a related DocumentAnalyzer for a provided document 
-        // independently on its format (the target dss module must be added as dependency)
+        // The method allows instantiation of a related DocumentAnalyzer for a provided
+        // document  independently on its format (the target dss module must be added
+        // as dependency)
         DocumentAnalyzer documentAnalyzer = DefaultDocumentAnalyzer.fromDocument(document);
 
         // Allows specifying a custom certificate verifier (online or offline)
