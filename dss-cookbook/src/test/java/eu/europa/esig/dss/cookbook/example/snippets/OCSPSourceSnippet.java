@@ -75,24 +75,31 @@ public class OCSPSourceSnippet {
 		// Default : ExceptionOnStatusAlert (throws an exception in case of nonce mismatch)
 		onlineOCSPSource.setAlertOnInvalidNonce(new ExceptionOnStatusAlert());
 
-		// Defines behavior in case of OCSP response without nonce (provided the NonceSource is defined)
-		// Default : LogOnStatusAlert(Level.WARN) (logs a warning in case of OCSP response without nonce)
+		// Defines behavior in case of OCSP response without nonce (provided the NonceSource
+		// is defined)
+		// Default : LogOnStatusAlert(Level.WARN) (logs a warning in case of OCSP response
+		//           without nonce)
 		onlineOCSPSource.setAlertOnNonexistentNonce(new ExceptionOnStatusAlert());
 
-		// Defines behavior in case of OCSP "freshness" check failure (i.e. the current time is outside
-		// thisUpdate-nextUpdate range extracted from the OCSP response. See RFC 5019 for more information).
-		// Note : executed only when nonce is not checked (not enforced or OCSP responder replies without nonce).
+		// Defines behavior in case of OCSP "freshness" check failure (i.e. the current time
+		// is outside thisUpdate-nextUpdate range extracted from the OCSP response).
+		// See RFC 5019 for more information.
+		// Note : executed only when nonce is not checked (not enforced or OCSP responder
+		//        replies without nonce).
 		// Default : SilentOnStatusAlert (the check is ignored)
 		onlineOCSPSource.setAlertOnInvalidUpdateTime(new SilentOnStatusAlert());
 
-		// Defines a "tolerance period" for accepting the OCSP response after the nextUpdate time (see RFC 5019)
+		// Defines a "tolerance period" for accepting the OCSP response after
+		// the nextUpdate time (see RFC 5019)
 		// Default : 0 (in milliseconds)
 		onlineOCSPSource.setNextUpdateTolerancePeriod(1000); // 1 second
 		
-		// Defines a DigestAlgorithm being used to generate a CertificateID in order to complete an OCSP request. 
-		// OCSP servers supporting multiple hash functions may produce a revocation response 
-		// with a digest algorithm depending on the provided CertificateID's algorithm. 
-		// Default : SHA1 (as a mandatory requirement to be implemented by OCSP servers. See RFC 5019).
+		// Defines a DigestAlgorithm being used to generate a CertificateID in order to
+		// complete an OCSP request.  OCSP servers supporting multiple hash functions may
+		// produce a revocation response with a digest algorithm depending on
+		// the provided CertificateID's algorithm.
+		// Default : SHA1 (as a mandatory requirement to be implemented by OCSP servers.
+		//           See RFC 5019).
 		onlineOCSPSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA1);
 		
 		// end::demo-online[]

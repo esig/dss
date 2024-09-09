@@ -67,8 +67,9 @@ public class CRLSourceSnippet {
 		onlineCRLSource.setDataLoader(new CommonsDataLoader());
 		
 		// Sets a preferred protocol that will be used for obtaining a CRL.
-		// E.g. for a list of urls with protocols HTTP, LDAP and FTP, with a defined preferred protocol as FTP, 
-		// the FTP url will be called first, and in case of an unsuccessful result other url calls will follow. 
+		// E.g. for a list of urls with protocols HTTP, LDAP and FTP, with a defined preferred
+		// protocol as FTP, the FTP url will be called first, and in case of an unsuccessful
+		// result other url calls will follow.
 		// Default : null (urls will be called in a provided order).
 		onlineCRLSource.setPreferredProtocol(Protocol.FTP);
 		

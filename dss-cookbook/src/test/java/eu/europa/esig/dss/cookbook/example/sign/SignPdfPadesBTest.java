@@ -167,7 +167,8 @@ class SignPdfPadesBTest extends CookbookTools {
 			// and no signature validation process result
 			PDFAValidationResult pdfaValidationResult = documentValidator.getPdfaValidationResult();
 
-			// This variable contains the name of the identified PDF/A profile (or closest if validation failed)
+			// This variable contains the name of the identified PDF/A profile
+			// (or closest if validation failed)
 			String profileId = pdfaValidationResult.getProfileId();
 
 			// Checks whether the PDF document is compliant to the identified PDF profile
@@ -176,7 +177,8 @@ class SignPdfPadesBTest extends CookbookTools {
 			// Returns the error messages occurred during the PDF/A verification
 			Collection<String> errorMessages = pdfaValidationResult.getErrorMessages();
 
-			// It is also possible to perform the signature validation process and extract the PDF/A validation result from DiagnosticData
+			// It is also possible to perform the signature validation process and
+			// extract the PDF/A validation result from DiagnosticData
 
 			// Configure PDF/A document validator and perform validation of the document
 			documentValidator.setCertificateVerifier(commonCertificateVerifier);

@@ -77,13 +77,14 @@ class SignASiCEWithXAdESWithTempFileTest extends CookbookTools {
             // import eu.europa.esig.dss.model.ToBeSigned;
             // import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 
-            // Set a TempFileResourcesHandlerBuilder, forcing the signature creation process to work with
-            // temporary files. It means that the produced DSSDocument after the signDocument() method will
-            // be represented by a FileDocument object, pointing to a real file within the file system.
+            // Set a TempFileResourcesHandlerBuilder, forcing the signature creation process
+            // to work with temporary files. It means that the produced DSSDocument after
+            // the signDocument() method will be represented by a FileDocument object, pointing to
+            // a real file within the file system.
             TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
 
-            // #setTempFileDirectory (OPTIONAL) method allows definition of a target folder containing
-            // temporary files created during the execution
+            // #setTempFileDirectory (OPTIONAL) method allows definition of a target folder
+            // containing temporary files created during the execution
             tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 
             // #setFileNamePrefix (OPTIONAL) sets a prefix for created temporary files
