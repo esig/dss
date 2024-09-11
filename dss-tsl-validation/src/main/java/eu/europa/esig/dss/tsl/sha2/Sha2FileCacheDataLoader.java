@@ -194,6 +194,8 @@ public class Sha2FileCacheDataLoader implements DSSCacheFileLoader {
 
     @Override
     public DSSDocument getDocument(String url, boolean refresh) {
+        Objects.requireNonNull(url, "URL cannot be null!");
+
         assertConfigurationIsValid();
 
         DSSDocument sha2Document = null;
@@ -263,17 +265,7 @@ public class Sha2FileCacheDataLoader implements DSSCacheFileLoader {
      * @return {@link DSSDocument}
      */
     protected DSSDocument getRefreshedDocument(String documentUrl) {
-        try {
-            return dataLoader.getDocument(documentUrl, true);
-        } catch (Exception e) {
-            String errorMessage = "An error occurred on document extraction from URL '{}' : {}";
-            if (LOG.isDebugEnabled()) {
-                LOG.warn(errorMessage, documentUrl, e.getMessage(), e);
-            } else {
-                LOG.warn(errorMessage, documentUrl, e.getMessage());
-            }
-            return null;
-        }
+        return dataLoader.getDocument(documentUrl, true);
     }
 
     /**
