@@ -167,8 +167,9 @@ public abstract class AbstractJAdESRequirementsCheck extends AbstractJAdESTestSi
 		assertNull(sigT);
 
 		Number iat = (Number) protectedHeaderMap.get("iat");
-		Date date = new Date(iat.longValue());
+		Date date = new Date(iat.longValue() * 1000L);
 		assertNotNull(date);
+		assertEquals(signatureParameters.bLevel().getSigningDate().getTime() / 1000L, iat.longValue());
 	}
 
 	protected void checkContentType(Map<String, Object> protectedHeaderMap) {

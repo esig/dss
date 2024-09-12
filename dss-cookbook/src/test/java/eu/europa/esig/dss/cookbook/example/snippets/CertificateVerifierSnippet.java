@@ -129,12 +129,14 @@ public class CertificateVerifierSnippet {
         cv.setAlertOnNoRevocationAfterBestSignatureTime(new LogOnStatusAlert(Level.ERROR));
 
         // DSS 6.1+ :
-        // Defines behavior on a signature creation or augmentation with an expired signing-certificate or its related POE(s)
+        // Defines behavior on a signature creation or augmentation with an expired
+        // signing-certificate or its related POE(s)
         // Default : ExceptionOnStatusAlert -> interrupt the process
         cv.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
         // DSS 6.1+ :
-        // Defines behavior on a signature creation or augmentation with a not yet valid signing-certificate
+        // Defines behavior on a signature creation or augmentation with a not yet valid
+        // signing-certificate
         // Default : ExceptionOnStatusAlert (throws an exception)
         cv.setAlertOnNotYetValidCertificate(new ExceptionOnStatusAlert());
 
@@ -149,7 +151,8 @@ public class CertificateVerifierSnippet {
 
         // DSS 6.1+ : Defines behavior on augmentation of a signature without certificates
         // in its B-level.
-        // Example: Throws an alert on an extension of a non-AdES signature without certificates.
+        // Example: Throws an alert on an extension of a non-AdES signature without
+        // certificates.
         // Default : ExceptionOnStatusAlert -> interrupt the process
         cv.setAugmentationAlertOnSignatureWithoutCertificates(new ExceptionOnStatusAlert());
 
@@ -161,15 +164,18 @@ public class CertificateVerifierSnippet {
         cv.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
         // DSS 5.9+ with changes since DSS 5.11+ (see below) :
-        // RevocationDataLoadingStrategyFactory is used to instantiate RevocationDataLoadingStrategy
-        // during the validation process, defining logic for loading OCSP or CRL data
+        // RevocationDataLoadingStrategyFactory is used to instantiate
+        // RevocationDataLoadingStrategy during the validation process, defining logic
+        // for loading OCSP or CRL data
         // Default : OCSPFirstRevocationDataLoadingStrategyFactory -> loads OCSP first,
         // 			 if not available or the response is invalid, then tries to load CRL
-        // NOTE: Since DSS 5.11 a RevocationDataLoadingStrategyFactory shall be provided within CertificateVerifier, instead of RevocationDataLoadingStrategy.
+        // NOTE: Since DSS 5.11 a RevocationDataLoadingStrategyFactory shall be provided
+        //       within CertificateVerifier, instead of RevocationDataLoadingStrategy.
         cv.setRevocationDataLoadingStrategyFactory(new OCSPFirstRevocationDataLoadingStrategyFactory());
 
         // DSS 5.11+ :
-        // RevocationDataVerifier defines logic for accepting/rejecting revocation data during the validation process.
+        // RevocationDataVerifier defines logic for accepting/rejecting revocation data
+        // during the validation process.
         // This included processing of revocation tokens extracted from a signature document,
         // as well as revocation tokens fetched from online sources.
         RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
@@ -178,14 +184,16 @@ public class CertificateVerifierSnippet {
         // DSS 5.11+ :
         // Defines whether the first obtained revocation data still should be returned,
         // when none of the fetched revocation tokens have passed the verification.
-        // Default : FALSE - none revocation data is returned, if all of them failed the verification.
+        // Default : FALSE -> none revocation data is returned, if all of them failed
+        //           the verification
         // NOTE : the property is used for signature extension, but not for validation.
         cv.setRevocationFallback(false);
 
         // DSS 6.1+ :
-        // Defines a behavior for acceptance of timestamp tokens present within a signature document as POE
-        // for the signature and data objects
-        // NOTE: The class is not synchronized with the rules defined within the used XML Validation Policy.
+        // Defines a behavior for acceptance of timestamp tokens present within
+        // a signature document as POE for the signature and data objects
+        // NOTE: The class is not synchronized with the rules defined within the used
+        // XML Validation Policy.
         TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
         cv.setTimestampTokenVerifier(timestampTokenVerifier);
 
@@ -211,14 +219,16 @@ public class CertificateVerifierSnippet {
         // All configuration shall be provided manually.
         revocationDataVerifier = RevocationDataVerifier.createEmptyRevocationDataVerifier();
 
-        // It is also possible to instantiate a RevocationDataVerifier from a custom validation policy
-        // Please use a RevocationDataVerifierFactory class for that
+        // It is also possible to instantiate a RevocationDataVerifier from a custom
+        // validation policy. Please use a RevocationDataVerifierFactory class for that.
         revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
 
-        // A validation time can be also defined to enforce verification of specific cryptographic algorithms at the given time
+        // A validation time can be also defined to enforce verification of specific
+        // cryptographic algorithms at the given time
         revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).setValidationTime(validationTime).create();
 
-        // For customization directly in RevocationDataVerifier, the following methods may be used:
+        // For customization directly in RevocationDataVerifier, the following methods
+        // may be used:
 
         // #setAcceptableDigestAlgorithms method is used to provide a list of DigestAlgorithms
         // to be accepted during the revocation data validation.
@@ -227,9 +237,10 @@ public class CertificateVerifierSnippet {
                 DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
                 DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512));
 
-        // #setAcceptableEncryptionAlgorithmKeyLength method defines a list of acceptable encryption algorithms and
-        // their corresponding key length. Revocation tokens signed with other algorithms or with a key length smaller
-        // than one defined within the map will be skipped.
+        // #setAcceptableEncryptionAlgorithmKeyLength method defines a list of acceptable
+        // encryption algorithms and their corresponding key length. Revocation tokens
+        // signed with other algorithms or with a key length smaller than one defined within
+        // the map will be skipped.
         // Default : collection of algorithms is synchronized with ETSI 119 312
         Map<EncryptionAlgorithm, Integer> encryptionAlgos = new HashMap<>();
         encryptionAlgos.put(EncryptionAlgorithm.DSA, 2048);
@@ -238,23 +249,23 @@ public class CertificateVerifierSnippet {
         encryptionAlgos.put(EncryptionAlgorithm.PLAIN_ECDSA, 256);
         revocationDataVerifier.setAcceptableEncryptionAlgorithmKeyLength(encryptionAlgos);
 
-        // #setRevocationSkipCertificateExtensions method defines a list of certificate extensions
-        // which, when present in a certificate, indicate that no revocation data check shall be
-        // performed for that certificate.
-        // When a certificate is encountered with one of the certificate extensions, no revocation data
-        // request will be proceeded.
+        // #setRevocationSkipCertificateExtensions method defines a list of
+        // certificate extensions which, when present in a certificate, indicate that
+        // no revocation data check shall be performed for that certificate.
+        // When a certificate is encountered with one of the certificate extensions,
+        // no revocation data request will be proceeded.
         // Default : valassured-ST-certs (OID: "0.4.0.194121.2.1") and
-        // ocsp_noCheck (OID: "1.3.6.1.5.5.7.48.1.5")
+        //           ocsp_noCheck (OID: "1.3.6.1.5.5.7.48.1.5")
         revocationDataVerifier.setRevocationSkipCertificateExtensions(Arrays.asList(
                 OID.id_etsi_ext_valassured_ST_certs.getId(),
                 OCSPObjectIdentifiers.id_pkix_ocsp_nocheck.getId()
         ));
 
         // #setRevocationSkipCertificatePolicies method defines a list of certificate policies
-        // which, when present in a certificate, indicate that no revocation data check shall be
-        // performed for that certificate.
-        // When a certificate is encountered with one of the certificate policies, no revocation data
-        // request will be proceeded.
+        // which, when present in a certificate, indicate that no revocation data check shall
+        // be performed for that certificate.
+        // When a certificate is encountered with one of the certificate policies, no
+        // revocation data request will be proceeded.
         // Default : empty list
         revocationDataVerifier.setRevocationSkipCertificatePolicies(Arrays.asList(
                 "1.2.3.4.5", "0.5.6.7.8.9"
@@ -269,22 +280,22 @@ public class CertificateVerifierSnippet {
 
         // #setTimestampMaximumRevocationFreshness method defines the maximum acceptable
         // revocation freshness for time-stamp's certificate chain.
-        // When revocation's thisUpdate time is not after the lowest POE of the time-stamp minus
-        // the maximum revocation freshness, a revocation update is enforced.
+        // When revocation's thisUpdate time is not after the lowest POE of the time-stamp
+        // minus the maximum revocation freshness, a revocation update is enforced.
         // Default : 0 (revocation's thisUpdate must be after the lowest POE)
         revocationDataVerifier.setTimestampMaximumRevocationFreshness(24 * 60 * 60 * 1000L); // 24 hours
 
         // #setRevocationMaximumRevocationFreshness method defines the maximum acceptable
         // revocation freshness for revocation's certificate chain.
-        // When revocation's thisUpdate time is not after the lowest POE of the revocation minus
-        // the maximum revocation freshness, a revocation update is enforced.
+        // When revocation's thisUpdate time is not after the lowest POE of the revocation
+        // minus the maximum revocation freshness, a revocation update is enforced.
         // Default : 0 (revocation's thisUpdate must be after the lowest POE)
         revocationDataVerifier.setRevocationMaximumRevocationFreshness(24 * 60 * 60 * 1000L); // 24 hours
 
-        // #setCheckRevocationFreshnessNextUpdate method defines whether the revocation freshness
-        // must be evaluated using a difference between revocation's nextUpdate and thisUpdate
-        // as a maximum acceptable revocation freshness when maximum revocation freshness
-        // is not defined for the corresponding validation context (see above)
+        // #setCheckRevocationFreshnessNextUpdate method defines whether the revocation
+        // freshness must be evaluated using a difference between revocation's nextUpdate
+        // and thisUpdate as a maximum acceptable revocation freshness when maximum revocation
+        // freshness is not defined for the corresponding validation context (see above)
         // Default : FALSE (the revocation freshness is not evaluated against its nextUpdate)
         revocationDataVerifier.setCheckRevocationFreshnessNextUpdate(false);
 
@@ -300,8 +311,8 @@ public class CertificateVerifierSnippet {
         // All configuration shall be provided manually.
         timestampTokenVerifier = TimestampTokenVerifier.createEmptyTimestampTokenVerifier();
 
-        // Defines whether timestamp tokens created by untrusted CAs should be considered as valid,
-        // and their POE should be extracted during the validation process
+        // Defines whether timestamp tokens created by untrusted CAs should be considered as
+        // valid, and their POE should be extracted during the validation process
         // Default : FALSE (only trusted timestamps are accepted)
         timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
 

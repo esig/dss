@@ -81,10 +81,14 @@ class XAdESTripleSignatureWithUserFriendlyIdentifierTest extends AbstractXAdESTe
         signatureParameters = initSignatureParameters();
         DSSDocument signed = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signed;
         signatureParameters = initSignatureParameters();
 
         DSSDocument doubleSigned = super.sign();
+
+        awaitOneSecond();
 
         documentToSign = doubleSigned;
         signatureParameters = initSignatureParameters();

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
@@ -423,6 +424,9 @@ public final class ASiCUtils {
 		if (document == null) {
 			return false;
 		}
+		if (document instanceof DigestDocument) {
+			return false;
+		}
 		try (InputStream is = document.openStream()) {
 			return isZip(is);
 		} catch (IOException e) {
@@ -447,18 +451,22 @@ public final class ASiCUtils {
 	}
 
 	/**
-	 * Checks if the extracted filenames represent an ASiC with XAdES content
+	 * Checks if the extracted filenames represent an ASiC with XAdES content.
+	 * Note: The method looks for format specific documents.
+	 * It returns FALSE for shared document formats between XAdES and CAdES (e.g. evidence records).
 	 *
 	 * @param filenames a list of {@link String} file names to check
 	 * @return TRUE if the filenames represent an ASiC with XAdES content, FALSE
 	 *         otherwise
 	 */
 	public static boolean isASiCWithXAdES(List<String> filenames) {
-		return filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION) || filesContainEvidenceRecords(filenames);
+		return filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION);
 	}
 	
 	/**
-	 * Checks if the extracted filenames represent an ASiC with CAdES content
+	 * Checks if the extracted filenames represent an ASiC with CAdES content.
+	 * Note: The method looks for format specific documents.
+	 * It returns FALSE for shared document formats between XAdES and CAdES (e.g. evidence records).
 	 * 
 	 * @param filenames a list of {@link String} file names to check
 	 * @return TRUE if the filenames represent an ASiC with CAdES content, FALSE
@@ -466,7 +474,7 @@ public final class ASiCUtils {
 	 */
 	public static boolean isASiCWithCAdES(List<String> filenames) {
 		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
-				|| filesContainTimestamps(filenames) || filesContainEvidenceRecords(filenames);
+				|| filesContainTimestamps(filenames);
 	}
 
 	/**
@@ -949,6 +957,8 @@ public final class ASiCUtils {
 	public static List<ManifestEntry> toSimpleManifestEntries(List<DSSDocument> documents) {
 		List<ManifestEntry> entries = new ArrayList<>();
 		for (DSSDocument document : documents) {
+			Objects.requireNonNull(document, "DSSDocument cannot be null!");
+
 			ManifestEntry entry = new ManifestEntry();
 			entry.setUri(document.getName());
 			entry.setMimeType(document.getMimeType());

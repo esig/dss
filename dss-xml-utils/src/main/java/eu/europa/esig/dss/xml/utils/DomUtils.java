@@ -780,14 +780,7 @@ public final class DomUtils {
 		if (Utils.isStringBlank(uriValue)) {
 			return false;
 		}
-		String decodedUri;
-		try {
-			decodedUri = URLDecoder.decode(uriValue, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			LOG.warn("Unable to decode '{}' : {}", uriValue, e.getMessage(), e);
-			decodedUri = uriValue;
-		}
-		String uri = decodedUri;
+		String uri = decodeUrlSilently(uriValue);
 		if (startsFromHash(uri)) {
 			uri = uri.substring(1);
 		}
@@ -802,6 +795,14 @@ public final class DomUtils {
 			return false;
 		}
 		return true;
+	}
+
+	private static String decodeUrlSilently(String uriValue) {
+		try {
+			return URLDecoder.decode(uriValue, "UTF-8");
+		} catch (UnsupportedEncodingException | IllegalArgumentException e) {
+			return uriValue;
+		}
 	}
 	
 	/**

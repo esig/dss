@@ -44,6 +44,16 @@ class RemoteDocumentConverterTest {
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, remoteDocument.getBytes()), dssDocument.getDigestValue(DigestAlgorithm.SHA256));
 		assertEquals(remoteDocument.getName(), dssDocument.getName());
+		assertEquals(MimeTypeEnum.BINARY, dssDocument.getMimeType());
+	}
+
+	@Test
+	void toDSSDocumentTxtTest() {
+		RemoteDocument remoteDocument = new RemoteDocument(new byte[] {'1','2','3'}, "remoteDocument.txt");
+		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
+		assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, remoteDocument.getBytes()), dssDocument.getDigestValue(DigestAlgorithm.SHA256));
+		assertEquals(remoteDocument.getName(), dssDocument.getName());
+		assertEquals(MimeTypeEnum.TEXT, dssDocument.getMimeType());
 	}
 	
 	@Test
@@ -52,6 +62,16 @@ class RemoteDocumentConverterTest {
 		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
 		assertArrayEquals(remoteDocument.getBytes(), dssDocument.getDigestValue(remoteDocument.getDigestAlgorithm()));
 		assertEquals(remoteDocument.getName(), dssDocument.getName());
+		assertEquals(MimeTypeEnum.BINARY, dssDocument.getMimeType());
+	}
+
+	@Test
+	void toDSSDigestDocumentTxtTest() {
+		RemoteDocument remoteDocument = new RemoteDocument(new byte[] {'1','2','3'}, DigestAlgorithm.SHA256, "remoteDocument.txt");
+		DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(remoteDocument);
+		assertArrayEquals(remoteDocument.getBytes(), dssDocument.getDigestValue(remoteDocument.getDigestAlgorithm()));
+		assertEquals(remoteDocument.getName(), dssDocument.getName());
+		assertEquals(MimeTypeEnum.TEXT, dssDocument.getMimeType());
 	}
 	
 	@Test

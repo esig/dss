@@ -83,6 +83,8 @@ class XAdESLevelBInternallyDetachedWithXPathLocationTest extends AbstractXAdESTe
 
         DSSDocument signedDocument = super.sign();
 
+        awaitOneSecond();
+
         documentToSign = signedDocument;
         signatureParameters = initSignatureParameters();
         signatureParameters.setXPathLocationString("//" + CONTAINER_NODE_NAME);

@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.1.RC1</version>
+		<version>6.1</version>
 	</parent>
 
 	<artifactId>dss-utils-google-guava</artifactId>
@@ -23,7 +23,7 @@
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
-		    <version>33.2.1-jre</version>
+		    <version>33.3.0-jre</version>
 		</dependency>
 		
 		<dependency>

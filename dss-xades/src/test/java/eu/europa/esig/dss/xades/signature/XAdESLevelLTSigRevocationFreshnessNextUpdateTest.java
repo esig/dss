@@ -42,9 +42,7 @@ import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -100,9 +98,7 @@ class XAdESLevelLTSigRevocationFreshnessNextUpdateTest extends AbstractXAdESTest
     @Override
     protected Reports verify(DSSDocument signedDocument) {
         // wait one second for revocation data update
-        Calendar nextSecond = Calendar.getInstance();
-        nextSecond.add(Calendar.SECOND, 1);
-        await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
+        awaitOneSecond();
 
         return super.verify(signedDocument);
     }

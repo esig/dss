@@ -72,13 +72,11 @@ public interface SerializableSignatureParameters extends Serializable {
 	 * When set to false, the revocation check is not performed.
 	 * When set to true, a real-time revocation is being requested from external sources
 	 * (shall be defined in CertificateVerifier) and processed according to alerts set within that CertificateVerifier.
-	 *
+	 * <p>
 	 * Default value : false (no revocation check is performed on signature creation or T-level extension)
 	 *
 	 * @return if signature with a revoked certificate is allowed
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getAlertOnRevokedCertificate} method instead
 	 */
-	@Deprecated
 	boolean isCheckCertificateRevocation();
 	
 	/**

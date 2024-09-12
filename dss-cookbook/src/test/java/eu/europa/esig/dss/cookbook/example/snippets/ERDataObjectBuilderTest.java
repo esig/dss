@@ -53,8 +53,8 @@ class ERDataObjectBuilderTest {
         // Data object to be protected by en evidence record
         DSSDocument dataObject = new InMemoryDocument("Hello World!".getBytes());
 
-        // Instantiate an XMLEvidenceRecordDataObjectDigestBuilder to create digest for the given data object
-        // with a specified digest algorithm
+        // Instantiate an XMLEvidenceRecordDataObjectDigestBuilder to create digest for
+        // the given data object with a specified digest algorithm
         XMLEvidenceRecordDataObjectDigestBuilder xmlEvidenceRecordDataObjectDigestBuilder =
                 new XMLEvidenceRecordDataObjectDigestBuilder(dataObject, DigestAlgorithm.SHA256);
 
@@ -72,7 +72,8 @@ class ERDataObjectBuilderTest {
         // import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordDataObjectDigestBuilder;
         // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
-        // Instantiate an ASN1EvidenceRecordDataObjectDigestBuilder to create digest for the given data object
+        // Instantiate an ASN1EvidenceRecordDataObjectDigestBuilder to create digest for
+        // the given data object
         ASN1EvidenceRecordDataObjectDigestBuilder asn1EvidenceRecordDataObjectDigestBuilder =
                 new ASN1EvidenceRecordDataObjectDigestBuilder(dataObject, DigestAlgorithm.SHA256);
         // end::asn1-er[]
@@ -96,14 +97,16 @@ class ERDataObjectBuilderTest {
         // Optional : Provide a list of detached documents in case of a detached XML signature
         xadesEvidenceRecordDigestBuilder.setDetachedContent(detachedContents);
 
-        // Optional : Identify the signature to be protected by its ID in case of a document with multiple signatures
+        // Optional : Identify the signature to be protected by its ID in case of a document
+        // with multiple signatures
         xadesEvidenceRecordDigestBuilder.setSignatureId("id-b1e08b419abe3c004c53a18681354918");
 
-        // Optional : Define whether the target evidence record should be created as a parallel
-        // evidence record
-        // When TRUE : computes hash of the signature ignoring the last xadesen:SealingEvidenceRecords
-        // unsigned qualifying property, as the new evidence record would be included within
-        // the last xadesen:SealingEvidenceRecords element (parallel evidence record)
+        // Optional : Define whether the target evidence record should be created as
+        // a parallel evidence record
+        // When TRUE : computes hash of the signature ignoring the last
+        // xadesen:SealingEvidenceRecords unsigned qualifying property, as
+        // the new evidence record would be included within the last
+        // xadesen:SealingEvidenceRecords element (parallel evidence record)
         // When FALSE : computes hash of the complete signature element, including all present
         // xadesen:SealingEvidenceRecords elements
         // Default : FALSE (computes digest on the whole signature)
@@ -127,16 +130,17 @@ class ERDataObjectBuilderTest {
         // Optional : Provide a detached document in case of a detached CMS signature
         cadesEvidenceRecordDigestBuilder.setDetachedContent(dataObject);
 
-        // Optional : Define whether the target evidence record should be created as a parallel
-        // evidence record
-        // When TRUE : computes hash of the signature ignoring the last evidence-record attribute
-        // (i.e. internal-evidence-record or external-evidence-record) unsigned attribute,
-        // as the new evidence record would be included within that attribute
+        // Optional : Define whether the target evidence record should be created as
+        // a parallel evidence record
+        // When TRUE : computes hash of the signature ignoring the last evidence-record
+        // attribute (i.e. internal-evidence-record or external-evidence-record) unsigned
+        // attribute, as the new evidence record would be included within that attribute
         // When FALSE : computes hash of the complete CMS signature
         // Default : FALSE (computes digest on the whole signature)
         cadesEvidenceRecordDigestBuilder.setParallelEvidenceRecord(true);
 
-        // Use method #build to build signature digest for internal-evidence-record incorporation
+        // Use method #build to build signature digest for internal-evidence-record
+        // incorporation
         Digest signatureDigest = cadesEvidenceRecordDigestBuilder.build();
 
         // Use method #buildExternalEvidenceRecordDigest to build a list of digests for
@@ -164,7 +168,8 @@ class ERDataObjectBuilderTest {
                 new XMLEvidenceRecordRenewalDigestBuilder(xmlersEvidenceRecord);
 
         // Create digest for time-stamp renewal.
-        // This method builds digest on a canonicalized value of the last ArchiveTimeStamp element.
+        // This method builds digest on a canonicalized value of the last ArchiveTimeStamp
+        // element.
         // NOTE: this method uses digest algorithm and canonicalization method defined
         // within the corresponding ArchiveTimeStampChain element
         Digest tstRenewalDigest = xmlEvidenceRecordRenewalDigestBuilder.buildTimeStampRenewalDigest();
@@ -181,8 +186,8 @@ class ERDataObjectBuilderTest {
         xmlEvidenceRecordRenewalDigestBuilder.setDetachedContent(detachedContents);
 
         // Build a digest group to be protected by a hash-tree renewal time-stamp.
-        // This method builds digest on a canonicalized value of ArchiveTimeStampSequence element
-        // and provided detached content documents
+        // This method builds digest on a canonicalized value of ArchiveTimeStampSequence
+        // element and provided detached content documents
         List<Digest> digestGroup = xmlEvidenceRecordRenewalDigestBuilder.buildHashTreeRenewalDigestGroup();
         // end::xmlers-renewal-er[]
 

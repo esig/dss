@@ -37,11 +37,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -66,11 +63,8 @@ class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidation {
 	protected DSSDocument getSignedDocument() {
 		DSSDocument signedDocument = getCompleteSerializationSignature(toBeSigned);
 		// signedDocument.save("target/" + "signedDocument.json");
-		
-		// avoid same second signature creation
-		Calendar nextSecond = Calendar.getInstance();
-		nextSecond.add(Calendar.SECOND, 1);
-		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
+
+		awaitOneSecond();
 
 		DSSDocument doubleSignedDocument = getCompleteSerializationSignature(signedDocument);
 		// doubleSignedDocument.save("target/" + "doubleSignedDocument.json");
@@ -105,10 +99,10 @@ class JAdESDoubleSignatureWithNonB64Test extends AbstractJAdESTestValidation {
 
 		assertEquals(2, diagnosticData.getSignatureIdList().size());
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 		
 		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 		SignatureWrapper signatureOne = signatures.get(0);

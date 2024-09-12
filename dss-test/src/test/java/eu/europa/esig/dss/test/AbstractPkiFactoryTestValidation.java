@@ -570,6 +570,15 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 	protected void checkBLevelValid(DiagnosticData diagnosticData) {
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			assertTrue(signatureWrapper.isSignatureIntact());
+			assertTrue(signatureWrapper.isSignatureValid());
+			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
+		}
+		checkDigestMatchers(diagnosticData);
+	}
+
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
 			List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
@@ -581,12 +590,11 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
 				}
+				if (digestMatcher.getUri() != null && digestMatcher.getDocumentName() != null) {
+					assertEquals(digestMatcher.getUri(), digestMatcher.getDocumentName());
+				}
 				assertFalse(digestMatcher.isDuplicated());
 			}
-	
-			assertTrue(signatureWrapper.isSignatureIntact());
-			assertTrue(signatureWrapper.isSignatureValid());
-			assertTrue(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
 		}
 	}
 
@@ -1209,6 +1217,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
+				}
+				if (digestMatcher.getUri() != null && digestMatcher.getDocumentName() != null) {
+					assertEquals(digestMatcher.getUri(), digestMatcher.getDocumentName());
 				}
 			}
 		}
@@ -2022,8 +2033,11 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	protected void validateETSIAttributeBaseType(AttributeBaseType attributeBase) {
 		assertFalse(attributeBase.isSigned() != null && attributeBase.isSigned());
 		List<VOReferenceType> attributeObject = attributeBase.getAttributeObject();
-		assertEquals(1, attributeObject.size());
-		assertTrue(Utils.isCollectionNotEmpty(attributeObject.iterator().next().getVOReference()));
+		assertTrue(Utils.isCollectionNotEmpty(attributeObject));
+		for (VOReferenceType voReferenceType : attributeObject) {
+			assertNotNull(voReferenceType.getVOReference());
+			assertEquals(1, voReferenceType.getVOReference().size());
+		}
 	}
 
 	protected void validateETSIByteArray(List<?> byteArray) {

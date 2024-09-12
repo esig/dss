@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.ReferenceValidation;
@@ -75,6 +76,9 @@ public abstract class AbstractASiCWithEvidenceRecordTestValidation extends Abstr
         assertNotNull(diagnosticData.getContainerType());
         assertNotNull(diagnosticData.getMimetypeFileContent());
         assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
+        if (ASiCContainerType.ASiC_E == diagnosticData.getContainerInfo().getContainerType()) {
+            assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getManifestFiles()));
+        }
     }
 
     @Override

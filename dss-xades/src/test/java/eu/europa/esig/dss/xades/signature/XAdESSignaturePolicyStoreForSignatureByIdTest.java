@@ -94,8 +94,10 @@ class XAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractXAdESTestSig
 
         String firstSigId = signatureParameters.getDeterministicId();
         documentToSign = signedDocument;
-        signatureParameters.reinit();
 
+        awaitOneSecond();
+
+        signatureParameters.reinit();
         signatureParameters.bLevel().setSigningDate(new Date());
         DSSDocument doubleSignedDocument = super.sign();
         assertNotEquals(firstSigId, signatureParameters.getDeterministicId());

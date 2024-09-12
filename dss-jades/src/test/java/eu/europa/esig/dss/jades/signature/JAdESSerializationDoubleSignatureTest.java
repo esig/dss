@@ -54,6 +54,7 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
+@SuppressWarnings("unchecked")
 class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestValidation {
 	
 	@RepeatedTest(10)
@@ -142,10 +143,10 @@ class JAdESSerializationDoubleSignatureTest extends AbstractJAdESTestValidation 
 
 		assertNotEquals(signatureIdList.get(0), signatureIdList.get(1));
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 		assertEquals(2, diagnosticData.getSignatures().size());
 		
 		SignatureWrapper signatureOne = diagnosticData.getSignatures().get(0);

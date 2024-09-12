@@ -108,8 +108,8 @@ class XAdESEnvelopedLevelBWithManifestTest extends AbstractXAdESTestSignature {
     }
 
     @Override
-    protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        super.checkBLevelValid(diagnosticData);
+    protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkDigestMatchers(diagnosticData);
 
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();

@@ -115,6 +115,7 @@ class ASiCEWithCAdESAsn1EvidenceRecordTstRenewalValidationTest extends AbstractA
         assertNotNull(diagnosticData.getContainerType());
         assertNull(diagnosticData.getMimetypeFileContent());
         assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getContentFiles()));
+        assertTrue(Utils.isCollectionNotEmpty(diagnosticData.getContainerInfo().getManifestFiles()));
     }
 
     @Override

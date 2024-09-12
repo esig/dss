@@ -26,6 +26,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.tsl.job.MockDataLoader;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.AfterEach;
@@ -306,26 +307,32 @@ class Sha2FileCacheDataLoaderTest {
 
         urlMap.clear();
 
-        document = sha2FileCacheDataLoader.getDocument("tl_ok.xml");
-        assertNull(document);
+        Exception exception = assertThrows(DSSExternalResourceException.class, () -> sha2FileCacheDataLoader.getDocument("tl_ok.xml"));
+        assertEquals("Cannot retrieve data from url [tl_ok.xml]. Empty content is obtained!", exception.getMessage());
     }
 
     @Test
     void nullTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> new Sha2FileCacheDataLoader().getDocument(null));
+        assertEquals("URL cannot be null!", exception.getMessage());
+
+        exception = assertThrows(NullPointerException.class, () -> new Sha2FileCacheDataLoader().getDocument("tl_ok.xml"));
         assertEquals("DSSCacheFileLoader shall be provided!", exception.getMessage());
 
-        exception = assertThrows(NullPointerException.class, () -> new Sha2FileCacheDataLoader(null).getDocument(null));
+        exception = assertThrows(NullPointerException.class, () -> new Sha2FileCacheDataLoader(null).getDocument("tl_ok.xml"));
         assertEquals("DSSCacheFileLoader shall be provided!", exception.getMessage());
 
         Sha2FileCacheDataLoader sha2FileCacheDataLoader = new Sha2FileCacheDataLoader(fileDataLoader);
 
-        exception = assertThrows(NullPointerException.class, () -> sha2FileCacheDataLoader.getDocument(null));
+        exception = assertThrows(NullPointerException.class, () -> sha2FileCacheDataLoader.getDocument("tl_ok.xml"));
         assertEquals("Predicate shall be provided!", exception.getMessage());
 
         sha2FileCacheDataLoader.setPredicate(predicate);
 
-        assertNull(sha2FileCacheDataLoader.getDocument(null));
+        exception = assertThrows(NullPointerException.class, () -> sha2FileCacheDataLoader.getDocument(null));
+        assertEquals("URL cannot be null!", exception.getMessage());
+
+        assertNotNull(sha2FileCacheDataLoader.getDocument("tl_ok.xml"));
     }
 
     private static class MockDefaultTrustedListWithSha2Predicate extends DefaultTrustedListWithSha2Predicate {

@@ -86,7 +86,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import static org.awaitility.Awaitility.await;
 
 
 public abstract class PKIFactoryAccess {
@@ -605,6 +608,13 @@ public abstract class PKIFactoryAccess {
 
     protected String getPkiFactoryHost() {
         return PKI_FACTORY_HOST;
+    }
+
+    protected void awaitOneSecond() {
+        // wait one second for revocation data update
+        Calendar nextSecond = Calendar.getInstance();
+        nextSecond.add(Calendar.SECOND, 1);
+        await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
     }
 
 }

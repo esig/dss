@@ -44,12 +44,12 @@ The simplest way to include DSS to your project is to use https://central.sonaty
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
-        <version>6.1.RC1</version>
+        <version>6.1</version>
     </dependency>
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-validation</artifactId>
-        <version>6.1.RC1</version>
+        <version>6.1</version>
     </dependency>
     ...
 </dependencies>
@@ -94,7 +94,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>6.1.RC1</version>
+            <version>6.1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -234,6 +234,8 @@ mvn clean install -P jar
 
 If you continue with a default `war` packaging option, you may benefit from `dss-demo-bundle` module, encapsulating the created package within a Tomcat 10 bundle. After a successful build, in the directory `/dss-demo-bundle/target/` you will be able to find two containers: `dss-demo-bundle.zip` and `dss-demo-bundle.tar.gz`. Despite the different container type, the content of both containers is the same. After extracting the content, you will need to run the file `Webapp-Startup.bat` in order to launch the server and the file `Webapp-Shutdown.bat` to stop the server. After running the server, the web-application will be available at the address `http://localhost:8080/`.
 
+NOTE: By default, the `dss-demo-bundle` module will create a bundle with embedded JDK 21. For other possibilities, please see options below in this section.
+
 If during TL/LOTL loading you experience problems with some particular Trusted Lists, please refer the <<KeyStore>> chapter for a resolution.
 
 The documentation and javadoc will be copied automatically (limited to `war` packaging) from the built DSS Core and made available on the following addresses respectively:
@@ -242,11 +244,11 @@ The documentation and javadoc will be copied automatically (limited to `war` pac
 * PDF documentation :  `http://localhost:8080/doc/dss-documentation.pdf`;
 * Javadoc : `http://localhost:8080/apidocs/index.html`.
 
-In order to build a bundle for JDK 21, the following profile can be used from the `dss-demo-bundle` module:
+In order to build a bundle for JDK 17 (minimum requirement), the following profile can be used from the `dss-demo-bundle` module:
 
-.Maven command to create a JDK 21 bundle
+.Maven command to create a JDK 17 bundle
 ----
-mvn clean install -P java21
+mvn clean install -P java17
 ----
 
 DSS webapp version with Java 22 can be created with a command below:

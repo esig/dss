@@ -227,7 +227,7 @@ public class ImageUtils {
 				if (lst != null && lst.getLength() == 1) {
 					vdpi = (int) (mm2inch / Float.parseFloat(((Element) lst.item(0)).getAttribute("value")));
 				} else {
-					LOG.debug("Cannot get HorizontalPixelSize value. Using the default dpi [{}]", DEFAULT_DPI);
+					LOG.debug("Cannot get VerticalPixelSize value. Using the default dpi [{}]", DEFAULT_DPI);
 				}
 			} else {
 				LOG.warn("Cannot read metadata of the image with name [{}]. The color space is not supported. "

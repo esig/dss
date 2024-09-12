@@ -24,8 +24,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URLDecoder;
-
 /**
  * Contains util methods for dealing with LDAP protocol urls
  */
@@ -103,7 +101,7 @@ public class LdapURLUtils {
 				return false;
 			}
 			String subString = str.substring(i, i+3);
-			if (!subString.equals(URLDecoder.decode(subString, DSSUtils.UTF8_ENCODING))) {
+			if (!subString.equals(DSSUtils.decodeURI(subString))) {
 				return true;
 			}
 		} catch (Exception e) {

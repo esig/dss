@@ -356,8 +356,8 @@ public class JAdESLevelBaselineB {
 		final Date signingDate = parameters.bLevel().getSigningDate();
 		switch (parameters.getJadesSigningTimeType()) {
 			case IAT:
-				final long iatHeaderValue = signingDate.getTime();
-				addHeader(JAdESHeaderParameterNames.IAT, iatHeaderValue);
+				long signedTimeInSeconds = DSSJsonUtils.getTimeValueInSeconds(signingDate.getTime());
+				addHeader(JAdESHeaderParameterNames.IAT, signedTimeInSeconds);
 				break;
 			case SIG_T:
 				final String stringSigningTime = DSSUtils.formatDateToRFC(signingDate);

@@ -57,15 +57,17 @@ class CertificateValidationTest {
 		// Firstly, we load the certificate to be validated
 		CertificateToken token = DSSUtils.loadCertificate(new File("src/main/resources/keystore/ec.europa.eu.1.cer"));
 
-		// We need a certificate verifier and configure it  (see specific chapter about the CertificateVerifier configuration)
+		// We need a certificate verifier and configure it (see specific chapter about
+		// the CertificateVerifier configuration)
 		CertificateVerifier cv = new CommonCertificateVerifier();
 
 		// We create an instance of the CertificateValidator with the certificate
 		CertificateValidator validator = CertificateValidator.fromCertificate(token);
 		validator.setCertificateVerifier(cv);
 		
-		// Allows specifying which tokens need to be extracted in the diagnostic data (Base64).
-		// Default : NONE)
+		// Allows specifying which tokens need to be extracted in the diagnostic data
+		// (Base64).
+		// Default : NONE
 		validator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
 
 		// We execute the validation
@@ -75,10 +77,12 @@ class CertificateValidationTest {
 		// The diagnostic data which contains all used and static data
 		DiagnosticData diagnosticData = certificateReports.getDiagnosticData();
 
-		// The detailed report which is the result of the process of the diagnostic data and the validation policy
+		// The detailed report which is the result of the process of the diagnostic data and
+		// the validation policy
 		DetailedReport detailedReport = certificateReports.getDetailedReport();
 
-		// The simple report is a summary of the detailed report or diagnostic data (more user-friendly)
+		// The simple report is a summary of the detailed report or diagnostic data
+		// (user-friendly option)
 		SimpleCertificateReport simpleReport = certificateReports.getSimpleReport();
 
 		// end::demo[]

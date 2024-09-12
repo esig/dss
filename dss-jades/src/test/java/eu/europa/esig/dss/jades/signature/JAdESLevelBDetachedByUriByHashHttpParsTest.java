@@ -75,8 +75,8 @@ class JAdESLevelBDetachedByUriByHashHttpParsTest extends AbstractJAdESMultipleDo
     }
 
     @Override
-    protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        super.checkBLevelValid(diagnosticData);
+    protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkDigestMatchers(diagnosticData);
 
         SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         int sigDCounter = 0;

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.evidencerecord.xml.digest.XMLEvidenceRecordDataObjectD
 import eu.europa.esig.dss.evidencerecord.xml.digest.XMLEvidenceRecordRenewalDigestBuilderHelper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.evidencerecord.digest.DataObjectDigestBuilder;
 import eu.europa.esig.dss.utils.Utils;
@@ -72,10 +73,10 @@ public class XmlEvidenceRecordTimeStampSequenceVerifier extends EvidenceRecordTi
 
     @Override
     protected List<? extends DigestValueGroup> getHashTree(
-            List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents,
+            List<? extends DigestValueGroup> originalHashTree, List<DSSDocument> detachedContents, ManifestFile manifestFile,
             ArchiveTimeStampChainObject archiveTimeStampChain, DSSMessageDigest lastTimeStampHash, DSSMessageDigest lastTimeStampSequenceHash) {
         final List<? extends DigestValueGroup> hashTree = super.getHashTree(
-                originalHashTree, detachedContents, archiveTimeStampChain, lastTimeStampHash, lastTimeStampSequenceHash);
+                originalHashTree, detachedContents, manifestFile, archiveTimeStampChain, lastTimeStampHash, lastTimeStampSequenceHash);
 
         // HashTree renewal time-stamp shall cover one or more data objects
         if (lastTimeStampSequenceHash != null && !lastTimeStampSequenceHash.isEmpty()) {

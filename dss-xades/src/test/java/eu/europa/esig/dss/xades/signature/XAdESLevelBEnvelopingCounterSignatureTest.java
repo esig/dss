@@ -111,10 +111,10 @@ public class XAdESLevelBEnvelopingCounterSignatureTest extends AbstractXAdESCoun
 		NodeList dataObjectFormatList = DomUtils.getNodeList(signedDataObjectPropsList.item(0), XAdES132Path.allFromCurrentPosition(XAdES132Element.DATA_OBJECT_FORMAT));
 		assertEquals(0, dataObjectFormatList.getLength());
 	}
-	
+
 	@Override
-	protected void checkBLevelValid(DiagnosticData diagnosticData) {
-		super.checkBLevelValid(diagnosticData);
+	protected void checkDigestMatchers(DiagnosticData diagnosticData) {
+		super.checkDigestMatchers(diagnosticData);
 		
 		boolean counterSignatureFound = false;
 		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {

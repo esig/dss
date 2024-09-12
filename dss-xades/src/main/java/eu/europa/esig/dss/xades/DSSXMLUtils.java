@@ -1183,7 +1183,10 @@ public final class DSSXMLUtils {
 		if (reference != null) {
 			Element element = reference.getElement();
 			if (element != null) {
-				return getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
+				String referenceUri = getAttribute(element, XMLDSigAttribute.URI.getAttributeName());
+				if (referenceUri != null) {
+					return DSSUtils.decodeURI(referenceUri);
+				}
 			}
 		}
 		return null;

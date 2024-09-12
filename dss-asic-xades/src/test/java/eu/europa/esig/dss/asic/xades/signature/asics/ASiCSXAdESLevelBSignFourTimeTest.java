@@ -72,6 +72,7 @@ class ASiCSXAdESLevelBSignFourTimeTest extends AbstractASiCSXAdESTestSignature {
 
 		documentToSign = signedDocument;
 
+		awaitOneSecond();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -84,6 +85,7 @@ class ASiCSXAdESLevelBSignFourTimeTest extends AbstractASiCSXAdESTestSignature {
 
 		documentToSign = resignedDocument;
 
+		awaitOneSecond();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
@@ -96,6 +98,7 @@ class ASiCSXAdESLevelBSignFourTimeTest extends AbstractASiCSXAdESTestSignature {
 
 		documentToSign = resignedDocument;
 
+		awaitOneSecond();
 		signatureParameters.bLevel().setSigningDate(new Date());
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());

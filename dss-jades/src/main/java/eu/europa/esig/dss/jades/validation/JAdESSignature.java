@@ -172,7 +172,8 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 					"Only one shall be present.");
 			return null;
 		} else if (iat != null) {
-			return DSSJsonUtils.getDate(iat);
+			long timeValueInMilliseconds = DSSJsonUtils.getTimeValueInMilliseconds(iat.longValue());
+			return DSSJsonUtils.getDate(timeValueInMilliseconds);
 		} else if (Utils.isStringNotEmpty(sigT)) {
 			return DSSJsonUtils.getDate(sigT);
 		}
@@ -1002,7 +1003,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	private DSSDocument getDetachedDocumentByName(String documentName, List<DSSDocument> detachedContent) {
 		documentName = DSSUtils.decodeURI(documentName);
 		for (DSSDocument detachedDocument : detachedContent) {
-			if (documentName.equals(detachedDocument.getName())) {
+			if (documentName != null && documentName.equals(detachedDocument.getName())) {
 				return detachedDocument;
 			}
 		}

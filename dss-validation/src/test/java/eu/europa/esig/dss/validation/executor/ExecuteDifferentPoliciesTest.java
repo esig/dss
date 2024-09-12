@@ -69,11 +69,11 @@ class ExecuteDifferentPoliciesTest {
 
 	@ParameterizedTest(name = "Execution {index} : {0} + {1}")
 	@MethodSource("data")
-	void noError(XmlDiagnosticData diagnoticData, ValidationPolicy policy) throws Exception {
+	void noError(XmlDiagnosticData diagnosticData, ValidationPolicy policy) throws Exception {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
-		executor.setDiagnosticData(diagnoticData);
+		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(policy);
-		executor.setCurrentTime(diagnoticData.getValidationDate());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
 
 		Reports reports = executor.execute();
 		assertNotNull(reports);

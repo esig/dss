@@ -89,6 +89,8 @@ class DSS2589Test extends AbstractXAdESTestSignature {
         DSSDocument wrappedSignatureDoc = new InMemoryDocument(DomUtils.serializeNode(newDom));
         documentToSign = wrappedSignatureDoc;
 
+        awaitOneSecond();
+
         signatureParameters = initSignatureParameters();
         signatureParameters.setEmbedXML(true);
 

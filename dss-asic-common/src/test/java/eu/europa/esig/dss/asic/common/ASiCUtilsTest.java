@@ -21,8 +21,10 @@
 package eu.europa.esig.dss.asic.common;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.Test;
@@ -51,6 +53,9 @@ class ASiCUtilsTest {
 		assertThrows(NullPointerException.class, () -> ASiCUtils.isZip(emptyInMemoryDoc));
 
 		assertTrue(ASiCUtils.isZip(new InMemoryDocument(new byte[] { 'P', 'K' })));
+
+		assertFalse(ASiCUtils.isZip(new DigestDocument()));
+		assertFalse(ASiCUtils.isZip(new DigestDocument(DigestAlgorithm.SHA1, "RslITpSJk9+wNlvSAQbRhBAWCdk=")));
 	}
 
 	@Test

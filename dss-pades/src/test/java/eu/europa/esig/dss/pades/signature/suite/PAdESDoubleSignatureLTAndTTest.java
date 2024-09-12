@@ -43,9 +43,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -92,9 +90,7 @@ public class PAdESDoubleSignatureLTAndTTest extends AbstractPAdESTestSignature {
         DSSDocument doubleSignedDocument = super.sign();
 
         // Ensure revocation update
-        Calendar nextSecond = Calendar.getInstance();
-        nextSecond.add(Calendar.SECOND, 1);
-        await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().compareTo(nextSecond.getTime()) > 0);
+        awaitOneSecond();
 
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
         documentToSign = originalDocument;
