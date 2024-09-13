@@ -717,6 +717,9 @@
 								<xsl:when test="$BlockType='SUB_XCV' or $BlockType='SUB_XCV_TA'">
 									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
 								</xsl:when>
+								<xsl:when test="$BlockType='RAC_SUB_XCV' and name(..)='SubXCV'">
+									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../../@Id)"/></xsl:attribute>
+								</xsl:when>
 								<xsl:when test="$BlockType='CRS' and name(..)='SubXCV'">
 									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
 								</xsl:when>
@@ -725,6 +728,9 @@
 								</xsl:when>
 								<xsl:when test="$BlockType='CRS' and name(..)='VTS'">
 									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='LTV_SUB_XCV' and name(..)='ValidationProcessLongTermData'">
+									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='CRS' and name(..)='ValidationProcessLongTermData'">
 									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
@@ -743,6 +749,9 @@
 								</xsl:when>
 								<xsl:when test="$BlockType='RAC' and name(..)='PSV_CRS'">
 									<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='RAC_SUB_XCV' and name(..)='RAC'">
+									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='RFC'">
 									<xsl:attribute name="href">#RFC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
