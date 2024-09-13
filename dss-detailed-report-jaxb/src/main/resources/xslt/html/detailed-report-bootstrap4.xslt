@@ -714,7 +714,7 @@
 						<xsl:variable name="BlockType" select="@BlockType"/>
 						<a>
 							<xsl:choose>
-								<xsl:when test="$BlockType='SUB_XCV'">
+								<xsl:when test="$BlockType='SUB_XCV' or $BlockType='SUB_XCV_TA'">
 									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='CRS' and name(..)='SubXCV'">

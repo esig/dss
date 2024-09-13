@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.checks.vts.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -30,6 +31,11 @@ public class SunsetDateCheck extends ChainItem<XmlVTS> {
     public SunsetDateCheck(I18nProvider i18nProvider, XmlVTS result, CertificateWrapper trustedCertificate, LevelConstraint constraint) {
         super(i18nProvider, result, constraint, trustedCertificate.getId());
         this.trustedCertificate = trustedCertificate;
+    }
+
+    @Override
+    protected XmlBlockType getBlockType() {
+        return XmlBlockType.SUB_XCV_TA;
     }
 
     @Override
