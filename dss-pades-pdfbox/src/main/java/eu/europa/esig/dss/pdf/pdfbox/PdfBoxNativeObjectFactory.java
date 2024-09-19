@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import org.apache.pdfbox.io.MemoryUsageSetting;
+
 import eu.europa.esig.dss.pdf.AbstractPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
@@ -31,6 +33,16 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxNativeSignatureD
  */
 public class PdfBoxNativeObjectFactory extends AbstractPdfObjFactory {
 
+	private MemoryUsageSetting memoryUsageSetting = MemoryUsageSetting.setupMainMemoryOnly();
+
+	public MemoryUsageSetting getMemoryUsageSetting() {
+		return memoryUsageSetting;
+	}
+
+	public void setMemoryUsageSetting(MemoryUsageSetting memoryUsageSetting) {
+		this.memoryUsageSetting = memoryUsageSetting;
+	}
+	
 	/**
 	 * Default constructor
 	 */
@@ -40,22 +52,22 @@ public class PdfBoxNativeObjectFactory extends AbstractPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxNativeSignatureDrawerFactory()));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxNativeSignatureDrawerFactory(), memoryUsageSetting));
 	}
 
 	@Override
 	public PDFSignatureService newContentTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory()));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory(), memoryUsageSetting));
 	}
 
 	@Override
 	public PDFSignatureService newSignatureTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory()));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory(), memoryUsageSetting));
 	}
 
 	@Override
 	public PDFSignatureService newArchiveTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory()));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory(), memoryUsageSetting));
 	}
 
 }

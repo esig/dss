@@ -20,8 +20,36 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.validation.ByteRange;
@@ -40,31 +68,6 @@ import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
-import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * The PDFBox implementation of {@code PdfDocumentReader}
@@ -93,7 +96,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 */
 	public PdfBoxDocumentReader(DSSDocument dssDocument)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
-		this(dssDocument, null);
+		this(dssDocument, null, MemoryUsageSetting.setupMainMemoryOnly());
 	}
 
 	/**
@@ -105,12 +108,19 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
 	 *                           invalid for a protected document
 	 */
-	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection)
+	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection, MemoryUsageSetting memoryUsageSetting)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
 		this.dssDocument = dssDocument;
-		try (InputStream is = dssDocument.openStream()) {
-			this.pdDocument = PDDocument.load(is, passwordProtection);
+		try {
+			if(dssDocument instanceof FileDocument) {
+				FileDocument fileDocument = (FileDocument) dssDocument;
+				this.pdDocument = PDDocument.load(fileDocument.getFile(), passwordProtection, memoryUsageSetting);
+			} else {
+				try (InputStream is = dssDocument.openStream()) {
+					this.pdDocument = PDDocument.load(is, passwordProtection, memoryUsageSetting);
+				}
+			}
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(
 					String.format("Encrypted document : %s", e.getMessage()));

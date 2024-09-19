@@ -25,6 +25,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+
+import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -141,7 +143,7 @@ public class PdfBoxUtils {
 																int page) {
 		Objects.requireNonNull(pdfDocument, "pdfDocument shall be defined!");
 		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(
-				pdfDocument, passwordProtection != null ? new String(passwordProtection) : null)) {
+				pdfDocument, passwordProtection != null ? new String(passwordProtection) : null, MemoryUsageSetting.setupMainMemoryOnly())) {
 			return reader.generateImageScreenshot(page);
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to generate a screenshot for the document with name '%s' "
