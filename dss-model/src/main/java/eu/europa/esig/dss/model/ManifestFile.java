@@ -25,7 +25,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 /**
