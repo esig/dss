@@ -248,5 +248,13 @@ public interface PDFSignatureService {
 	 * @param pdfSignatureFieldPositionChecker {@link PdfPermissionsChecker}
 	 */
 	void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker);
+	
+	/**
+	 * Sets the {@code PdfMemoryUsageSetting} used to specify the load mode of the
+	 * PDF document
+	 * 
+	 * @param pdfMemoryUsageSetting {@link PdfMemoryUsageSetting}
+	 */
+	void setPdfMemoryUsageSetting(PdfMemoryUsageSetting pdfMemoryUsageSetting);
 
 }

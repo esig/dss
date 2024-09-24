@@ -33,16 +33,6 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxNativeSignatureD
  */
 public class PdfBoxNativeObjectFactory extends AbstractPdfObjFactory {
 
-	private MemoryUsageSetting memoryUsageSetting = MemoryUsageSetting.setupMainMemoryOnly();
-
-	public MemoryUsageSetting getMemoryUsageSetting() {
-		return memoryUsageSetting;
-	}
-
-	public void setMemoryUsageSetting(MemoryUsageSetting memoryUsageSetting) {
-		this.memoryUsageSetting = memoryUsageSetting;
-	}
-	
 	/**
 	 * Default constructor
 	 */
@@ -52,22 +42,22 @@ public class PdfBoxNativeObjectFactory extends AbstractPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxNativeSignatureDrawerFactory(), memoryUsageSetting));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxNativeSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newContentTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory(), memoryUsageSetting));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newSignatureTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory(), memoryUsageSetting));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newArchiveTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory(), memoryUsageSetting));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new PdfBoxNativeSignatureDrawerFactory()));
 	}
 
 }

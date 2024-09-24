@@ -20,6 +20,19 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields;
@@ -35,9 +48,12 @@ import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.RandomAccessFileOrArray;
+
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
@@ -50,21 +66,10 @@ import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
+import eu.europa.esig.dss.pdf.openpdf.ITextPdfMemoryUsageSetting.Mode;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * The IText (OpenPdf) implementation of {@code PdfDocumentReader}
@@ -91,7 +96,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @throws InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
 	public ITextDocumentReader(DSSDocument dssDocument) throws IOException, InvalidPasswordException {
-		this(dssDocument, null);
+		this(dssDocument, null, new ITextPdfMemoryUsageSetting(Mode.FULL));
 	}
 
 	/**
@@ -102,13 +107,25 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @throws IOException if an exception occurs
 	 * @throws InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
-	public ITextDocumentReader(DSSDocument dssDocument, byte[] passwordProtection) throws IOException, InvalidPasswordException {
+	public ITextDocumentReader(DSSDocument dssDocument, byte[] passwordProtection, ITextPdfMemoryUsageSetting memoryUsageSetting) throws IOException, InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
 		this.dssDocument = dssDocument;
-		try (InputStream is = dssDocument.openStream()) {
-			this.pdfReader = new PdfReader(is, passwordProtection);
+		try {
+			if (dssDocument instanceof FileDocument) {
+				FileDocument fileDocument = (FileDocument) dssDocument;
+				String filenameSource = fileDocument.getFile().getAbsolutePath();
+				if (ITextPdfMemoryUsageSetting.Mode.FULL.equals(memoryUsageSetting.getMode())) {
+					this.pdfReader = new PdfReader(filenameSource, passwordProtection);
+				} else {
+					this.pdfReader = new PdfReader(new RandomAccessFileOrArray(filenameSource), passwordProtection);
+				}
+			} else {
+				try (InputStream is = dssDocument.openStream()) {
+					this.pdfReader = new PdfReader(is, passwordProtection);
+				}
+			}
 		} catch (BadPasswordException e) {
-            throw new InvalidPasswordException(String.format("Encrypted document : %s", e.getMessage()));
+			throw new InvalidPasswordException(String.format("Encrypted document : %s", e.getMessage()));
 		}
 	}
 

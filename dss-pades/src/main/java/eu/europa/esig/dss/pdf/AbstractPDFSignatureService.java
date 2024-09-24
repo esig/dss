@@ -114,6 +114,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Used to verify the signature field position placement validity
 	 */
 	protected PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+	
+	/**
+	 * Used to specify load mode of the PDF document
+	 */
+	protected PdfMemoryUsageSetting pdfMemoryUsageSetting = PdfMemoryUsageSetting.memoryOnly();
 
 	/**
 	 * Constructor for the PDFSignatureService
@@ -157,6 +162,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	public void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker) {
 		Objects.requireNonNull(pdfSignatureFieldPositionChecker, "PdfSignatureFieldPositionChecker cannot be null!");
 		this.pdfSignatureFieldPositionChecker = pdfSignatureFieldPositionChecker;
+	}
+	
+	@Override
+	public void setPdfMemoryUsageSetting(PdfMemoryUsageSetting pdfMemoryUsageSetting) {
+		Objects.requireNonNull(pdfMemoryUsageSetting, "PdfMemoryUsageSetting cannot be null!");
+		this.pdfMemoryUsageSetting = pdfMemoryUsageSetting;
 	}
 
 	/**

@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import org.apache.pdfbox.io.MemoryUsageSetting;
-
 import eu.europa.esig.dss.pdf.AbstractPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFServiceMode;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
@@ -31,18 +29,7 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer.PdfBoxDefaultSignatur
  * The PDFBox default implementation of {@code IPdfObjFactory}
  * Creates an image for a text signature content
  */
-public class PdfBoxDefaultObjectFactory extends AbstractPdfObjFactory {
-
-	private MemoryUsageSetting memoryUsageSetting = MemoryUsageSetting.setupMainMemoryOnly();
-
-	public MemoryUsageSetting getMemoryUsageSetting() {
-		return memoryUsageSetting;
-	}
-
-	public void setMemoryUsageSetting(MemoryUsageSetting memoryUsageSetting) {
-		this.memoryUsageSetting = memoryUsageSetting;
-	}
-	
+public class PdfBoxDefaultObjectFactory extends AbstractPdfObjFactory {	
 	
 	/**
 	 * Default constructor
@@ -53,22 +40,22 @@ public class PdfBoxDefaultObjectFactory extends AbstractPdfObjFactory {
 
 	@Override
 	public PDFSignatureService newPAdESSignatureService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxDefaultSignatureDrawerFactory(), memoryUsageSetting));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE, new PdfBoxDefaultSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newContentTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory(), memoryUsageSetting));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.CONTENT_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newSignatureTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory(), memoryUsageSetting));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.SIGNATURE_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory()));
 	}
 
 	@Override
 	public PDFSignatureService newArchiveTimestampService() {
-		return configure(new PdfBoxSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory(), memoryUsageSetting));
+		return configure(new PdfBoxSignatureService(PDFServiceMode.ARCHIVE_TIMESTAMP, new PdfBoxDefaultSignatureDrawerFactory()));
 	}
 
 }
