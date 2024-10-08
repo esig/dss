@@ -69,12 +69,12 @@ public class SignatureValueChecker {
             return signatureValue;
         }
 
-        final DigestAlgorithm expectedDigestAlgorithm = targetSignatureAlgorithm.getDigestAlgorithm();
+        final DigestAlgorithm targetDigestAlgorithm = targetSignatureAlgorithm.getDigestAlgorithm();
         final DigestAlgorithm signatureDigestAlgorithm = signatureValue.getAlgorithm() != null ?
                 signatureValue.getAlgorithm().getDigestAlgorithm() : null;
-        if (!expectedDigestAlgorithm.equals(signatureDigestAlgorithm)) {
+        if (!targetDigestAlgorithm.equals(signatureDigestAlgorithm)) {
             throw new DSSException(String.format("The DigestAlgorithm within the SignatureValue '%s' " +
-                    "does not match the expected value : '%s'", expectedDigestAlgorithm, signatureDigestAlgorithm));
+                    "does not match the expected value : '%s'", signatureDigestAlgorithm, targetDigestAlgorithm));
         }
 
         if (EncryptionAlgorithm.ECDSA.isEquivalent(targetSignatureAlgorithm.getEncryptionAlgorithm())) {
