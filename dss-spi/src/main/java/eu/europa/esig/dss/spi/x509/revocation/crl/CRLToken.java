@@ -93,6 +93,9 @@ public class CRLToken extends RevocationToken<CRL> {
 
 		this.signatureValidity = SignatureValidity.get(crlValidity.isSignatureIntact());
 		this.signatureInvalidityReason = crlValidity.getSignatureInvalidityReason();
+		if (!crlValidity.isSignatureIntact()) {
+			LOG.warn("{} -> More details in trace.", signatureInvalidityReason);
+		}
 	}
 
 	/**
