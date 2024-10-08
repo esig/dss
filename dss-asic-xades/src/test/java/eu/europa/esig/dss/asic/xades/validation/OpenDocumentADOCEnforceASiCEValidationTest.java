@@ -33,7 +33,9 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +50,13 @@ public class OpenDocumentADOCEnforceASiCEValidationTest extends AbstractASiCWith
         DSSDocument document = new FileDocument("src/test/resources/validation/container-signed.adoc");
         document.setMimeType(MimeTypeEnum.ASICE);
         return document;
+    }
+
+    @Override
+    protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+        SignedDocumentValidator documentValidator = super.getValidator(signedDocument);
+        documentValidator.setValidationTime(DSSUtils.getUtcDate(2024, Calendar.JANUARY, 1));
+        return documentValidator;
     }
 
     @Override
