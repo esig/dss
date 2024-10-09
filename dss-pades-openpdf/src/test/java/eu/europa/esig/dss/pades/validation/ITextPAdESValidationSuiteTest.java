@@ -81,6 +81,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESWithDssVriAndCertRefTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithEnvelopingCMSTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithEnvelopingEmptyContentCMSTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithEofCRTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithEofSignatureTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithRemovedPagesTest;
@@ -149,7 +150,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest.class, DSS3298Test.class, PAdESBESValidationTest.class,
 		PAdESEPESValidationTest.class, PAdESBESNoCertificatesValidationTest.class, PAdESBESWithSigPolicyIdentifierValidationTest.class,
 		PAdESLTVValidationTest.class, PAdESLTVWithReasonValidationTest.class, PAdESLTVBasedOnEPESValidationTest.class,
-		PDFWithMultipleSignerInfoValidationTest.class, PAdESMultipleLTLevelSignaturesTest.class })
+		PDFWithMultipleSignerInfoValidationTest.class, PAdESMultipleLTLevelSignaturesTest.class, PAdESWithEofSignatureTest.class })
 class ITextPAdESValidationSuiteTest {
 
 }

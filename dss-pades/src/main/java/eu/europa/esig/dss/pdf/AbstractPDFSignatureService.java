@@ -54,6 +54,7 @@ import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
@@ -548,10 +549,15 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					final boolean byteRangeValid = validateByteRange(byteRange, document, cms);
 					byteRange.setValid(byteRangeValid);
 
-					final DSSDocument signedContent;
-					if (byteRangeValid) {
+					DSSDocument signedContent = null;
+					if (byteRange.isValid()) {
 						signedContent = new PdfByteRangeDocument(document, byteRange);
-					} else {
+						if (!isSignedContentComplete(byteRange, signedContent)) {
+							byteRange.setValid(false);
+						}
+					}
+
+					if (!byteRange.isValid()) {
 						signedContent = InMemoryDocument.createEmptyDocument();
 						LOG.warn("The signature '{}' has an invalid /ByteRange! " +
 								"The validation will result to a broken signature.", fieldNames);
@@ -771,6 +777,24 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					"does not match the signature present in /Contents field!", byteRange);
 		}
 		return match;
+	}
+
+	/**
+	 * This method verifies whether the extracted signed content corresponds to the byte range
+	 *
+	 * @param byteRange {@link ByteRange} of the signature
+	 * @param signedContent {@link DSSDocument} the corresponding extracted signed content
+	 * @return TRUE if the extracted signed content is complete and consistent to the ByteRange, FALSE otherwise
+	 */
+	private boolean isSignedContentComplete(ByteRange byteRange, DSSDocument signedContent) {
+		long expectedSignedContentLength = (byteRange.getFirstPartEnd() - byteRange.getFirstPartStart()) + byteRange.getSecondPartEnd();
+		long signedContentLength = DSSUtils.getFileByteSize(signedContent);
+		if (expectedSignedContentLength != signedContentLength) {
+			LOG.warn("The length of the extracted signed content '{}' does not correspond to the content length " +
+					"defined by the ByteRange {} : {}!", signedContentLength, byteRange, expectedSignedContentLength);
+			return false;
+		}
+		return true;
 	}
 
 	/**
