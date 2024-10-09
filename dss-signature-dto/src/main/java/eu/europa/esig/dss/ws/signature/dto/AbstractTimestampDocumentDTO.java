@@ -25,7 +25,7 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTimestampParameters;
 /**
  * Timestamp document request DTO
  */
-public class AbstractTimestampDocumentDTO {
+public abstract class AbstractTimestampDocumentDTO {
 
 	/** Timestamp parameters */
 	protected RemoteTimestampParameters timestampParameters;
@@ -34,6 +34,7 @@ public class AbstractTimestampDocumentDTO {
 	 * Empty constructor
 	 */
 	protected AbstractTimestampDocumentDTO() {
+		// empty
 	}
 
 	/**

@@ -64,6 +64,7 @@ public class WSReportsDTO implements Serializable {
 	 * Empty constructor
 	 */
 	public WSReportsDTO() {
+		// empty
 	}
 
 	/**

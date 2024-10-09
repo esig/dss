@@ -36,6 +36,7 @@ public class TimestampOneDocumentDTO extends AbstractTimestampDocumentDTO {
 	 * Empty constructor
 	 */
 	public TimestampOneDocumentDTO() {
+		// empty
 	}
 
 	/**

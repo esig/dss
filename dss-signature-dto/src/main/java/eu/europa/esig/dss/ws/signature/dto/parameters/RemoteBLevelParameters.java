@@ -92,6 +92,7 @@ public class RemoteBLevelParameters implements Serializable {
 	 * Default constructor
 	 */
 	public RemoteBLevelParameters() {
+		// empty
 	}
 
 	/**

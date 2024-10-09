@@ -37,6 +37,7 @@ public class TimestampMultipleDocumentDTO extends AbstractTimestampDocumentDTO {
 	 * Empty constructor
 	 */
 	public TimestampMultipleDocumentDTO() {
+		// empty
 	}
 
 	/**

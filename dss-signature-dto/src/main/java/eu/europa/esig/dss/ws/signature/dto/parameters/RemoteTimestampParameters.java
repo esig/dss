@@ -59,6 +59,7 @@ public class RemoteTimestampParameters implements Serializable {
 	 * Empty constructor
 	 */
 	public RemoteTimestampParameters() {
+		// empty
 	}
 
 	/**

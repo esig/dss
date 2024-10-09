@@ -43,6 +43,7 @@ public class ExtendDocumentDTO implements Serializable {
 	 * Empty document
 	 */
 	public ExtendDocumentDTO() {
+		// empty
 	}
 
 	/**
