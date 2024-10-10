@@ -96,5 +96,12 @@ public interface IPdfObjFactory {
 	 * @param pdfSignatureFieldPositionChecker {@link PdfPermissionsChecker}
 	 */
 	void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker);
+	
+	/**
+	 * This method is used to set a custom {@code PdfMemoryUsageSetting} to specify the load mode of the PDF document 
+	 * 
+	 * @param pdfMemoryUsageSetting {@link PdfMemoryUsageSetting}
+	 */
+	void setPdfMemoryUsageSetting(PdfMemoryUsageSetting pdfMemoryUsageSetting);
 
 }

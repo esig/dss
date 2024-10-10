@@ -25,9 +25,12 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
+
+import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -60,42 +63,42 @@ class PdfBoxUtilsTest {
 
 	@Test
 	void generateScreenshotTest() {
-		DSSDocument screenshot = PdfBoxUtils.generateScreenshot(sampleDocument, 1);
+		DSSDocument screenshot = PdfBoxUtils.generateScreenshot(sampleDocument, 1, MemoryUsageSetting.setupMainMemoryOnly());
 		assertNotNull(screenshot);
 
 		Exception exception = assertThrows(IndexOutOfBoundsException.class,
-				() -> PdfBoxUtils.generateScreenshot(sampleDocument, 0));
+				() -> PdfBoxUtils.generateScreenshot(sampleDocument, 0, MemoryUsageSetting.setupMainMemoryOnly()));
 		assertEquals("Index out of bounds: 0", exception.getMessage());
 
 		exception = assertThrows(IndexOutOfBoundsException.class,
-				() -> PdfBoxUtils.generateScreenshot(sampleDocument, 2));
+				() -> PdfBoxUtils.generateScreenshot(sampleDocument, 2, MemoryUsageSetting.setupMainMemoryOnly()));
 		assertEquals("1-based index out of bounds: 2", exception.getMessage());
 
-		exception = assertThrows(NullPointerException.class, () -> PdfBoxUtils.generateScreenshot(null, 1));
+		exception = assertThrows(NullPointerException.class, () -> PdfBoxUtils.generateScreenshot(null, 1, MemoryUsageSetting.setupMainMemoryOnly()));
 		assertEquals("pdfDocument shall be defined!", exception.getMessage());
 	}
 
 	@Test
 	void generateScreenshotWithPassTest() {
-		DSSDocument screenshot = PdfBoxUtils.generateScreenshot(protectedDocument, correctProtectionPhrase, 1);
+		DSSDocument screenshot = PdfBoxUtils.generateScreenshot(protectedDocument, correctProtectionPhrase, 1, MemoryUsageSetting.setupMainMemoryOnly());
 		assertNotNull(screenshot);
 
 		Exception exception = assertThrows(DSSException.class,
-				() -> PdfBoxUtils.generateScreenshot(protectedDocument, wrongProtectionPhrase, 1));
+				() -> PdfBoxUtils.generateScreenshot(protectedDocument, wrongProtectionPhrase, 1, MemoryUsageSetting.setupMainMemoryOnly()));
 		assertEquals("Encrypted document : Cannot decrypt PDF, the password is incorrect", exception.getMessage());
 
-		exception = assertThrows(DSSException.class, () -> PdfBoxUtils.generateScreenshot(protectedDocument, 1));
+		exception = assertThrows(DSSException.class, () -> PdfBoxUtils.generateScreenshot(protectedDocument, 1, MemoryUsageSetting.setupMainMemoryOnly()));
 		assertEquals("Encrypted document : Cannot decrypt PDF, the password is incorrect", exception.getMessage());
 	}
 
 	@Test
 	void generateSubtractionImageTest() {
-		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, null, 1,
-				protectedDocument, correctProtectionPhrase, 1);
+		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, null, 1, MemoryUsageSetting.setupMainMemoryOnly(),
+				protectedDocument, correctProtectionPhrase, 1, MemoryUsageSetting.setupMainMemoryOnly());
 		assertNotNull(subtractionImage);
 
-		subtractionImage = PdfBoxUtils.generateSubtractionImage(twoPagesDocument, (char[]) null, 1,
-				twoPagesDocument, (char[]) null, 2);
+		subtractionImage = PdfBoxUtils.generateSubtractionImage(twoPagesDocument, (char[]) null, 1, MemoryUsageSetting.setupMainMemoryOnly(),
+				twoPagesDocument, (char[]) null, 2, MemoryUsageSetting.setupMainMemoryOnly());
 		assertNotNull(subtractionImage);
 
 		subtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, twoPagesDocument, 1);
@@ -111,19 +114,19 @@ class PdfBoxUtilsTest {
 		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
 		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 
-		DSSDocument fileScreenshot = PdfBoxUtils.generateScreenshot(sampleDocument, (char[]) null, 1,
+		DSSDocument fileScreenshot = PdfBoxUtils.generateScreenshot(sampleDocument, (char[]) null, 1, MemoryUsageSetting.setupMainMemoryOnly(),
 				tempFileResourcesHandlerBuilder.createResourcesHandler());
 		assertNotNull(fileScreenshot);
 		assertTrue(fileScreenshot instanceof FileDocument);
 
-		DSSDocument inMemoryScreenshot = PdfBoxUtils.generateScreenshot(sampleDocument, 1);
+		DSSDocument inMemoryScreenshot = PdfBoxUtils.generateScreenshot(sampleDocument, 1, MemoryUsageSetting.setupMainMemoryOnly());
 		assertNotNull(inMemoryScreenshot);
 		assertFalse(inMemoryScreenshot instanceof FileDocument);
 
 		assertVisuallyEqual(fileScreenshot, inMemoryScreenshot);
 
-		DSSDocument fileSubtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, (char[]) null, 1,
-				twoPagesDocument, (char[]) null, 1, tempFileResourcesHandlerBuilder.createResourcesHandler());
+		DSSDocument fileSubtractionImage = PdfBoxUtils.generateSubtractionImage(sampleDocument, (char[]) null, 1, MemoryUsageSetting.setupMainMemoryOnly(),
+				twoPagesDocument, (char[]) null, 1, MemoryUsageSetting.setupMainMemoryOnly(), tempFileResourcesHandlerBuilder.createResourcesHandler());
 		assertNotNull(fileSubtractionImage);
 		assertTrue(fileSubtractionImage instanceof FileDocument);
 
@@ -139,6 +142,28 @@ class PdfBoxUtilsTest {
 		BufferedImage bufferedImageTwo = ImageUtils.toBufferedImage(documentTwo);
 		assertEquals(0, ImageUtils.drawSubtractionImage(bufferedImageOnw, bufferedImageTwo,
 				new BufferedImage(bufferedImageOnw.getWidth(), bufferedImageOnw.getHeight(), BufferedImage.TYPE_INT_RGB)));
+	}
+	
+	@Test
+	void enforceMemoryUsageSettingMapping() {
+		PdfMemoryUsageSetting pdfMemoryUsageSetting = PdfMemoryUsageSetting.memoryOnly(999);
+		MemoryUsageSetting memoryUsageSetting = PdfBoxUtils.getMemoryUsageSetting(pdfMemoryUsageSetting);
+		assertEquals(true, memoryUsageSetting.useMainMemory());
+		assertEquals(false, memoryUsageSetting.useTempFile());
+		assertEquals(999, memoryUsageSetting.getMaxMainMemoryBytes());
+		
+		pdfMemoryUsageSetting = PdfMemoryUsageSetting.fileOnly(888);
+		memoryUsageSetting = PdfBoxUtils.getMemoryUsageSetting(pdfMemoryUsageSetting);
+		assertEquals(false, memoryUsageSetting.useMainMemory());
+		assertEquals(true, memoryUsageSetting.useTempFile());
+		assertEquals(888, memoryUsageSetting.getMaxStorageBytes());
+		
+		pdfMemoryUsageSetting = PdfMemoryUsageSetting.mixed(555, 666);
+		memoryUsageSetting = PdfBoxUtils.getMemoryUsageSetting(pdfMemoryUsageSetting);
+		assertEquals(true, memoryUsageSetting.useMainMemory());
+		assertEquals(true, memoryUsageSetting.useTempFile());
+		assertEquals(555, memoryUsageSetting.getMaxMainMemoryBytes());
+		assertEquals(666, memoryUsageSetting.getMaxStorageBytes());
 	}
 
 }

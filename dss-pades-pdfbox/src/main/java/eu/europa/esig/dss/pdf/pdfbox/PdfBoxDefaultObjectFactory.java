@@ -29,8 +29,8 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer.PdfBoxDefaultSignatur
  * The PDFBox default implementation of {@code IPdfObjFactory}
  * Creates an image for a text signature content
  */
-public class PdfBoxDefaultObjectFactory extends AbstractPdfObjFactory {
-
+public class PdfBoxDefaultObjectFactory extends AbstractPdfObjFactory {	
+	
 	/**
 	 * Default constructor
 	 */

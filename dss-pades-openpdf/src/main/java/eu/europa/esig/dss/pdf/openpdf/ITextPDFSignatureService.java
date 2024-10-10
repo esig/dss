@@ -269,10 +269,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	protected DSSMessageDigest computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
-		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
-			 OutputStream os = resourcesHandler.createOutputStream();
-			 ITextDocumentReader documentReader = new ITextDocumentReader(
-					 toSignDocument, getPasswordBytes(parameters.getPasswordProtection())) ) {
+		try (
+				DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+				OutputStream os = resourcesHandler.createOutputStream();
+				ITextDocumentReader documentReader = new ITextDocumentReader(toSignDocument, getPasswordBytes(parameters.getPasswordProtection()), ITextPdfMemoryUsageSetting.map(pdfMemoryUsageSetting))
+			) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -306,10 +307,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	protected DSSDocument signDocument(final DSSDocument toSignDocument, final byte[] cmsSignedData,
 							final PAdESCommonParameters parameters) {
-		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
-			 OutputStream os = resourcesHandler.createOutputStream();
-			 ITextDocumentReader documentReader = new ITextDocumentReader(
-					 toSignDocument, getPasswordBytes(parameters.getPasswordProtection())) ) {
+		try (
+				DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+				OutputStream os = resourcesHandler.createOutputStream();
+				ITextDocumentReader documentReader = new ITextDocumentReader(toSignDocument, getPasswordBytes(parameters.getPasswordProtection()), ITextPdfMemoryUsageSetting.map(pdfMemoryUsageSetting))
+			) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -543,9 +545,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
 											final char[] pwd) {
-		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
-			 OutputStream os = resourcesHandler.createOutputStream();
-			 ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBytes(pwd))) {
+		try (
+				DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+				OutputStream os = resourcesHandler.createOutputStream();
+				ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBytes(pwd), ITextPdfMemoryUsageSetting.map(pdfMemoryUsageSetting))
+			) {
 			checkPdfPermissions(documentReader, parameters);
 
 			final PdfReader reader = documentReader.getPdfReader();
@@ -602,7 +606,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, char[] passwordProtection) throws IOException {
-		return new ITextDocumentReader(dssDocument, getPasswordBytes(passwordProtection));
+		return new ITextDocumentReader(dssDocument, getPasswordBytes(passwordProtection), ITextPdfMemoryUsageSetting.map(pdfMemoryUsageSetting));
 	}
 
 	@Override

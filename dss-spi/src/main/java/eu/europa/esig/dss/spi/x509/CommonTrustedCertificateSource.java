@@ -22,7 +22,6 @@ package eu.europa.esig.dss.spi.x509;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.model.tsl.TrustProperties;
 
 import java.util.Collections;
 import java.util.List;
