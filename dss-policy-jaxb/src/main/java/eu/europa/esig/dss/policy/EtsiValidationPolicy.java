@@ -1585,6 +1585,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getSignedAndTimestampedFilesCoveredConstraint() {
+		ContainerConstraints containerConstraints = getContainerConstraints();
+		if (containerConstraints != null) {
+			return containerConstraints.getSignedAndTimestampedFilesCovered();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getManifestFilePresentConstraint() {
 		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {

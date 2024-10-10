@@ -124,6 +124,11 @@
 					<xsd:documentation>Checks in all present files in the container are covered by the signature</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SignedAndTimestampedFilesCovered" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks whether all previously signed and/or time-asserted file objects are subsequently covered by the current timestamp or evidence record.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 

@@ -26,8 +26,10 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedAndTimestampedFilesCoveredCheck;
 
 /**
  * This class performs "5.2.2 Format Checking" building block execution for a document or container timestamp
@@ -69,14 +71,25 @@ public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWra
 
         }
 
-        // ASiC (only for a detached container timestamp)
-        if (diagnosticData.isContainerInfoPresent() && token.getType().isContainerTimestamp()
-                && Utils.isCollectionEmpty(token.getTimestampedSignatures())) {
+        // ASiC timestamps
+        if (diagnosticData.isContainerInfoPresent() && token.getType().isContainerTimestamp()) {
 
-            item = getASiCContainerValidationChain(item);
+            // only for a detached container timestamp
+            if (Utils.isCollectionEmpty(token.getTimestampedSignatures())) {
+
+                item = getASiCContainerValidationChain(item);
+
+            }
+
+            item = item.setNextItem(signedAndTimestampedFilesCoveredCheck());
 
         }
 
+    }
+
+    private ChainItem<XmlFC> signedAndTimestampedFilesCoveredCheck() {
+        LevelConstraint constraint = policy.getSignedAndTimestampedFilesCoveredConstraint();
+        return new SignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), token, constraint);
     }
 
 }

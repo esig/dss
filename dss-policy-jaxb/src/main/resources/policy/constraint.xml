@@ -21,6 +21,7 @@
 		<ManifestFilePresent Level="FAIL" />
 		<SignedFilesPresent Level="FAIL" />
 		<AllFilesSigned Level="WARN" />
+		<SignedAndTimestampedFilesCovered Level="FAIL" />
 	</ContainerConstraints>
 	<PDFAConstraints>
 		<!-- PDF/A only -->

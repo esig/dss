@@ -29,6 +29,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -49,6 +50,7 @@ import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataGroupChe
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.TimestampValidationCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.checks.EvidenceRecordSignedAndTimestampedFilesCoveredCheck;
 
 import java.util.Collection;
 import java.util.Date;
@@ -61,6 +63,11 @@ import java.util.Map;
  *
  */
 public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessEvidenceRecord> {
+
+    /**
+     * Diagnostic data
+     */
+    private final DiagnosticData diagnosticData;
 
     /**
      * Evidence record being validated
@@ -91,17 +98,19 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
      * Common constructor
      *
      * @param i18nProvider the access to translations
+     * @param diagnosticData {@link DiagnosticData}
      * @param evidenceRecord {@link EvidenceRecordWrapper} to be validated
      * @param xmlTimestamps a collection of {@link XmlTimestamp} validations
      * @param bbbs a map of performed {@link XmlBasicBuildingBlocks}s
      * @param validationPolicy {@link ValidationPolicy} to be used
      * @param currentTime {@link Date} validation time
      */
-    public EvidenceRecordValidationProcess(I18nProvider i18nProvider, EvidenceRecordWrapper evidenceRecord,
+    public EvidenceRecordValidationProcess(I18nProvider i18nProvider, DiagnosticData diagnosticData, EvidenceRecordWrapper evidenceRecord,
                                            Collection<XmlTimestamp> xmlTimestamps, Map<String, XmlBasicBuildingBlocks> bbbs,
                                            ValidationPolicy validationPolicy, Date currentTime) {
         super(i18nProvider, new XmlValidationProcessEvidenceRecord());
 
+        this.diagnosticData = diagnosticData;
         this.evidenceRecord = evidenceRecord;
         this.xmlTimestamps = xmlTimestamps;
         this.bbbs = bbbs;
@@ -164,6 +173,8 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
         if (item == null) {
             throw new IllegalStateException("Evidence record shall contain at least one DigestMatcher!");
         }
+
+        item = item.setNextItem(signedAndTimestampedFilesCoveredCheck());
 
         // Initialize null cryptographic validation
         XmlCryptographicValidation cryptographicValidation = null;
@@ -265,6 +276,11 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
     private ChainItem<XmlValidationProcessEvidenceRecord> referenceDataGroup(List<XmlDigestMatcher> digestMatchers) {
         LevelConstraint constraint = policy.getEvidenceRecordDataObjectGroupConstraint();
         return new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, constraint);
+    }
+
+    private ChainItem<XmlValidationProcessEvidenceRecord> signedAndTimestampedFilesCoveredCheck() {
+        LevelConstraint constraint = policy.getSignedAndTimestampedFilesCoveredConstraint();
+        return new EvidenceRecordSignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), evidenceRecord, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> timestampValidationConclusive(

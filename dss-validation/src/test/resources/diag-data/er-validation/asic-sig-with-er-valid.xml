@@ -1,0 +1,1557 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>cades-lt-with-er.sce</DocumentName>
+    <ValidationDate>2024-10-10T13:21:33Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-E</ContainerType>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-e+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/ASiCManifest001.xml</Filename>
+                <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
+                <Entries>
+                    <Entry>test.zip</Entry>
+                    <Entry>empty.zip</Entry>
+                    <Entry>test.txt</Entry>
+                </Entries>
+            </ManifestFile>
+            <ManifestFile>
+                <Filename>META-INF/ASiCEvidenceRecordManifest001.xml</Filename>
+                <SignatureFilename>META-INF/evidencerecord001.xml</SignatureFilename>
+                <Entries>
+                    <Entry>META-INF/signature001.p7s</Entry>
+                    <Entry>META-INF/ASiCManifest001.xml</Entry>
+                    <Entry>test.zip</Entry>
+                    <Entry>empty.zip</Entry>
+                    <Entry>test.txt</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>empty.zip</ContentFile>
+            <ContentFile>test.txt</ContentFile>
+            <ContentFile>test.zip</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures>
+        <Signature Id="S-C7C81D982077A31EF63B0D2E9F6B9058741D49D495AB1FA5D1272FD188DFE05B">
+            <SignatureFilename>META-INF/signature001.p7s</SignatureFilename>
+            <ClaimedSigningTime>2023-09-06T10:08:15Z</ClaimedSigningTime>
+            <SignatureFormat>CAdES-BASELINE-LT</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST" documentName="META-INF/ASiCManifest001.xml">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>d2RWO1uIWl7usIaSTWwli2xK5yFNEj35Opt/h7skW4s=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="test.zip" documentName="test.zip">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>fCKxuspIkjpYLn3z0/aJmxWtzb30gL6HpzADYXH6mGA=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="empty.zip" documentName="empty.zip">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>71Y7Nd5MYJ4g578SvALsxTHPx290Z+ndriWl/6wSO+E=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="MANIFEST_ENTRY" uri="test.txt" documentName="test.txt">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322"/>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <MimeType>text/xml</MimeType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=LuxTrust Global Qualified CA 3, O=LuxTrust S.A., C=LU</IssuerName>
+                    <SerialNumber>5017004</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-98ED4C195D5EB426EA9993436117ADADF65821AB7C5902B20DD0056DE3CFD75C">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-516624DD767DD078D0EABB1BF99D0E4897698E8DC82D6109D2EC49E6CC40BBCB">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MFkwUqRQME4xCzAJBgNVBAYTAkxVMRYwFAYDVQQKDA1MdXhUcnVzdCBTLkEuMScwJQYDVQQDDB5MdXhUcnVzdCBHbG9iYWwgUXVhbGlmaWVkIENBIDMCA0yNrA==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>jtmmQlmOynKwLo3lL1iUcpXgHcS7WDjBM6JMALF4cyI=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-51F847039A89F670EFD6611CEE33219DB8651A2E745E4A3C5B5B9A555617EB06">
+                    <Type>OCSP</Type>
+                    <Origin>CMS_SIGNED_DATA</Origin>
+                </RelatedRevocation>
+                <RelatedRevocation Revocation="R-62694FC94F6EDCD8B3D3A875AAF624AD5EF36A306A1DEE3EC45AE6B9A1FE83E0">
+                    <Type>OCSP</Type>
+                    <Origin>CMS_SIGNED_DATA</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-48D0DF9DD4701AB30E88F159E548278E1EC9159A7C8DC0DA754CA31297D246E2"/>
+            </FoundTimestamps>
+            <FoundEvidenceRecords>
+                <FoundEvidenceRecord EvidenceRecord="ER-3BC963FE38F610CA2F6A1E701C81E0034C553418D2762BDA2C8C3C6E616BAF71"/>
+            </FoundEvidenceRecords>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/ASiCManifest001.xml</Name>
+                    <Description>Manifest document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-5D1AFCBFB11396431F22BE5B8FD038DFEB22ABF5A0B4224A0B9A91DFB63AA298">
+                    <Scope>FULL</Scope>
+                    <Name>test.zip</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-8CD7F835C69C50DCBB2D3F3843A2AFF9357111843B09B0E25534C6E9630D3B54">
+                    <Scope>FULL</Scope>
+                    <Name>empty.zip</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+                <SignatureScope SignerData="D-927CEDCF891A79023C15F0F858DC9773B65C9650E8AD83EF8192F8A8E345440F">
+                    <Scope>FULL</Scope>
+                    <Name>test.txt</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>DlY3xIPeAEVQAg8Tjkw6jjOEiRIwvTOKlN8JPq2+I/c=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>EBwA6TEITIEIU1F851gznWt8j5a497MsrXN848e6jbM=</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>eJMhjrkNVapWB9xwYqQ0DFVTt/UBvUwDOwgQbNdT1kE1E8x5wotCgr/c1mS3SDQMGLzCsdnuxTbbdJNg2/bbBKM/mgQd5Wh+APXRGO8N3pStWsb2QlXvnjC4PO/tA5UH0dzsLzoz5tOFFlJ2ErZ6AiDRBpLVBonWIz2xvzFW64vlS4o91ln8vBeuPsOTkRzaKNvQTGdEOx6mQ05AIxgmRInJZzJuPTNgt4zWT1vmAhpOF39F5QJ7F6v79m9A1vy72z93cTkxu/RLoWYEWXSOivoFaUec7Db8SYUHlU2o+7s0oJVoPoIbfjyaH2ekIXP1x5Ll1CrnMrusJaCd+DZovA==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <EvidenceRecords>
+        <EvidenceRecord Id="ER-3BC963FE38F610CA2F6A1E701C81E0034C553418D2762BDA2C8C3C6E616BAF71">
+            <DocumentName>META-INF/evidencerecord001.xml</DocumentName>
+            <Type>XML Evidence Record</Type>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" uri="META-INF/signature001.p7s" documentName="META-INF/signature001.p7s">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>qQEPw3GN2YSUsUf5joyuY4LELvaEmma+onN/QksQWIU=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="META-INF/ASiCManifest001.xml">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>d2RWO1uIWl7usIaSTWwli2xK5yFNEj35Opt/h7skW4s=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" uri="test.zip" documentName="test.zip">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>fCKxuspIkjpYLn3z0/aJmxWtzb30gL6HpzADYXH6mGA=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" uri="empty.zip" documentName="empty.zip">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>71Y7Nd5MYJ4g578SvALsxTHPx290Z+ndriWl/6wSO+E=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+                <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" uri="test.txt" documentName="test.txt">
+                    <DigestMethod>SHA256</DigestMethod>
+                    <DigestValue>n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <EvidenceRecordTimestamps>
+                <FoundTimestamp Timestamp="T-D355B2863D212CF788153C95A83D38C34E9DA428894416ACA03CE390EE82C22C"/>
+            </EvidenceRecordTimestamps>
+            <FoundCertificates/>
+            <FoundRevocations/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-5D1AFCBFB11396431F22BE5B8FD038DFEB22ABF5A0B4224A0B9A91DFB63AA298" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-8CD7F835C69C50DCBB2D3F3843A2AFF9357111843B09B0E25534C6E9630D3B54" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-927CEDCF891A79023C15F0F858DC9773B65C9650E8AD83EF8192F8A8E345440F" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-C7C81D982077A31EF63B0D2E9F6B9058741D49D495AB1FA5D1272FD188DFE05B" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-98ED4C195D5EB426EA9993436117ADADF65821AB7C5902B20DD0056DE3CFD75C" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-516624DD767DD078D0EABB1BF99D0E4897698E8DC82D6109D2EC49E6CC40BBCB" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-51F847039A89F670EFD6611CEE33219DB8651A2E745E4A3C5B5B9A555617EB06" Category="REVOCATION"/>
+                <TimestampedObject Token="R-62694FC94F6EDCD8B3D3A875AAF624AD5EF36A306A1DEE3EC45AE6B9A1FE83E0" Category="REVOCATION"/>
+                <TimestampedObject Token="T-48D0DF9DD4701AB30E88F159E548278E1EC9159A7C8DC0DA754CA31297D246E2" Category="TIMESTAMP"/>
+            </TimestampedObjects>
+            <EvidenceRecordScopes>
+                <SignatureScope SignerData="D-88DB99CE16C24FC7801014245CC6B4F3CD1D212B661FE7EA71186CAD2D531CC9">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/signature001.p7s</Name>
+                    <Description>Full document</Description>
+                </SignatureScope>
+            </EvidenceRecordScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>VlsL+lnl1omXEXp71yepKoD41KFyDMxHAj4E5/t4xGA=</DigestValue>
+            </DigestAlgoAndValue>
+        </EvidenceRecord>
+    </EvidenceRecords>
+    <UsedCertificates>
+        <Certificate Id="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F">
+            <SubjectDistinguishedName Format="CANONICAL">cn=aped global root ca,o=aped,c=gr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=APED Global Root CA,O=APED,C=GR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=aped global root ca,o=aped,c=gr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=APED Global Root CA,O=APED,C=GR</IssuerDistinguishedName>
+            <SerialNumber>137579899883952492272323759310892057223</SerialNumber>
+            <CommonName>APED Global Root CA</CommonName>
+            <CountryName>GR</CountryName>
+            <OrganizationName>APED</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2039-08-05T23:59:59Z</NotAfter>
+            <NotBefore>2019-08-05T00:00:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-1C59DBF30F110CA54FC01C719C25184FCBB2E6BC6ED925D716FD9CC78871C9ED</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>wJFGyM9RHqv8J+o5HWfrDBfCdcU=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>wJFGyM9RHqv8J+o5HWfrDBfCdcU=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://pki.aped.gov.gr/cps">1.2.300.0.110001.2</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>ELX5wjtajamec7ZjFH2nHk2xdRJyBogz2vMSzmhqwy8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7">
+            <SubjectDistinguishedName Format="CANONICAL">cn=aped qualified timestamping ocsp responder,o=hellenic public administration certification authority,c=gr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=APED Qualified Timestamping OCSP Responder,O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY,C=GR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=aped qualified timestamping issuing ca,o=hellenic public administration certification authority,2.5.4.97=#130c52543a454c2d30372d393031,c=gr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=APED Qualified Timestamping Issuing CA,O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY,2.5.4.97=#130c52543a454c2d30372d393031,C=GR</IssuerDistinguishedName>
+            <SerialNumber>40905181312798065609208755622150745507</SerialNumber>
+            <CommonName>APED Qualified Timestamping OCSP Responder</CommonName>
+            <CountryName>GR</CountryName>
+            <OrganizationName>HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY</OrganizationName>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2030-11-22T23:59:59Z</NotAfter>
+            <NotBefore>2020-11-23T00:00:00Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F633A2CB9EB7B9279EEEE8D6822B82468E96459B437097E7E80DC9A69625EB0C</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662"/>
+                <ChainItem Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>T/+0DU5SkmYRZa1cy0fZYvVuON8=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>kevMK3r7oOR0F+APzn6kcOyFTQo=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="false">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://pki.aped.gov.gr/cps">1.2.300.0.110001.2</certificatePolicy>
+                </CertificatePolicies>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName type="directoryName">CN=OCSP2048-1-24</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-601C9A35A8A350C6212D8D10F0B7EAA147964904DBE39329ADD6AF6F343F5BCE" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="el">ΑΡΧΗ ΠΙΣΤΟΠΟΙΗΣΗΣ ΕΛΛΗΝΙΚΟΥ ΔΗΜΟΣΙΟΥ</TSPName>
+                        <TSPName lang="en">HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="el">ΑΡΧΗ ΠΙΣΤΟΠΟΙΗΣΗΣ ΕΛΛΗΝΙΚΟΥ ΔΗΜΟΣΙΟΥ</TSPTradeName>
+                        <TSPTradeName lang="en">Hellenic Public Administration Root CA - HPARCA</TSPTradeName>
+                        <TSPTradeName lang="en">Hellenic Public Administration Certification Services</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATEL-997001671</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTREL-RT:EL-07-901</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662">
+                            <ServiceNames>
+                                <ServiceName lang="en">APED Qualified Timestamping Issuing CA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2021-10-29T13:00:09Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>FdefBOik0uqqpP5S32tRgi9enpYH0djF/63rQa4BFsc=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>1</SerialNumber>
+            <CommonName>root-ca</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2024-01-13T16:03:35Z</NotAfter>
+            <NotBefore>2022-01-13T16:03:35Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-665D00D2F75F7BA0CE773EADE0E7DFC58A6C5EDC662ED80D83E3899028C7610E</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>ek0zqwFuoxiLJwjVOXDg6RFTKT4=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>RGUwg8yOOn2KWKA/NSWI2zrvg1rVCUDmFj4DBoLwmBM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-516624DD767DD078D0EABB1BF99D0E4897698E8DC82D6109D2EC49E6CC40BBCB">
+            <SubjectDistinguishedName Format="CANONICAL">cn=aped qtsu a 2022,o=hellenic public administration certification authority,ou=aped time-stamping services,c=gr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=APED QTSU A 2022,O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY,OU=APED Time-Stamping Services,C=GR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=aped qualified timestamping issuing ca,o=hellenic public administration certification authority,2.5.4.97=#130c52543a454c2d30372d393031,c=gr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=APED Qualified Timestamping Issuing CA,O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY,2.5.4.97=#130c52543a454c2d30372d393031,C=GR</IssuerDistinguishedName>
+            <SerialNumber>153111481832982297405168473568081585744</SerialNumber>
+            <CommonName>APED QTSU A 2022</CommonName>
+            <CountryName>GR</CountryName>
+            <OrganizationName>HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY</OrganizationName>
+            <OrganizationalUnit>APED Time-Stamping Services</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2027-11-14T16:39:38Z</NotAfter>
+            <NotBefore>2022-11-15T16:39:39Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-CA851FD2CD1B01F6528118167E582ABC7F5F11F5498F20979809042BFDBF3203</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662"/>
+                <ChainItem Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>T/+0DU5SkmYRZa1cy0fZYvVuON8=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>NCIZI5qotUHv6Tg0vcsykYXO7d4=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://pki.aped.gov.gr/cps">1.2.300.0.110001.2.1.2</certificatePolicy>
+                    <certificatePolicy Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+                    <certificatePolicy>0.4.0.2023.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://pki.aped.gov.gr/ca/APEDTSA.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.aped.gov.gr</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.aped.gov.gr/APEDTSA/LatestCRL.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">https://pki.aped.gov.gr/repository/docs/pdstsa-en.pdf</PdsLocation>
+                        <PdsLocation lang="el">https://pki.aped.gov.gr/repository/docs/pdstsa-el.pdf</PdsLocation>
+                    </QcEuPDS>
+                </QcStatements>
+                <OtherExtension OID="2.5.29.16" description="privateKeyUsagePeriod" critical="false">
+                    <octets>BCQwIoAPMjAyMjExMTYxNjM3NTJagQ8yMDIzMTExNTE2Mzc1MVo=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-601C9A35A8A350C6212D8D10F0B7EAA147964904DBE39329ADD6AF6F343F5BCE" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="el">ΑΡΧΗ ΠΙΣΤΟΠΟΙΗΣΗΣ ΕΛΛΗΝΙΚΟΥ ΔΗΜΟΣΙΟΥ</TSPName>
+                        <TSPName lang="en">HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="el">ΑΡΧΗ ΠΙΣΤΟΠΟΙΗΣΗΣ ΕΛΛΗΝΙΚΟΥ ΔΗΜΟΣΙΟΥ</TSPTradeName>
+                        <TSPTradeName lang="en">Hellenic Public Administration Root CA - HPARCA</TSPTradeName>
+                        <TSPTradeName lang="en">Hellenic Public Administration Certification Services</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATEL-997001671</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTREL-RT:EL-07-901</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662">
+                            <ServiceNames>
+                                <ServiceName lang="en">APED Qualified Timestamping Issuing CA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2021-10-29T13:00:09Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-940D578F2AC5E525028A592A31ED469A65C3D4E3A7AA9A0C321FC5902AC6F1AE">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-51F847039A89F670EFD6611CEE33219DB8651A2E745E4A3C5B5B9A555617EB06">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>UWYk3XZ90HjQ6rsb+Z0OSJdpjo3ILWEJ0uxJ5sxAu8s=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust global root 2,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust Global Root 2,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global root 2,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Root 2,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>59914338225734147123941058376788110305822489521</SerialNumber>
+            <CommonName>LuxTrust Global Root 2</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2035-03-05T13:21:57Z</NotAfter>
+            <NotBefore>2015-03-05T13:21:57Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-B738290CC08547E79AC67F831EBB33547C4E7DB4514E2D2988C23C441340EB41</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>/xgodvlIBSyhrvErGyuyU/hLfLM=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>/xgodvlIBSyhrvErGyuyU/hLfLM=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10</certificatePolicy>
+                </CertificatePolicies>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>VEVfcSnCCxRHxBj5lxaPJMWPxQI79dpb4utuHdiQLtU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662">
+            <SubjectDistinguishedName Format="CANONICAL">cn=aped qualified timestamping issuing ca,o=hellenic public administration certification authority,2.5.4.97=#130c52543a454c2d30372d393031,c=gr</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=APED Qualified Timestamping Issuing CA,O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY,2.5.4.97=#130c52543a454c2d30372d393031,C=GR</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=aped global root ca,o=aped,c=gr</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=APED Global Root CA,O=APED,C=GR</IssuerDistinguishedName>
+            <SerialNumber>53917218895780893719201003423744525719</SerialNumber>
+            <CommonName>APED Qualified Timestamping Issuing CA</CommonName>
+            <CountryName>GR</CountryName>
+            <OrganizationIdentifier>RT:EL-07-901</OrganizationIdentifier>
+            <OrganizationName>HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2030-11-23T23:59:59Z</NotAfter>
+            <NotBefore>2020-11-23T00:00:00Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-CC2C76013F1E901A559C5963386A6217A640B22F9D5A6E3361C6CA4D5F9FCC92</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>wJFGyM9RHqv8J+o5HWfrDBfCdcU=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>T/+0DU5SkmYRZa1cy0fZYvVuON8=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://pki.aped.gov.gr/cps">1.2.300.0.110001.2.1.2</certificatePolicy>
+                    <certificatePolicy>0.4.0.2023.1.1</certificatePolicy>
+                </CertificatePolicies>
+                <SubjectAlternativeNames OID="2.5.29.17" critical="false">
+                    <subjectAlternativeName type="directoryName">CN=PRIVATE-4096-4</subjectAlternativeName>
+                </SubjectAlternativeNames>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://pki.aped.gov.gr/ca/APEDRoot.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.aped.gov.gr/ca/APEDRoot.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="false"/>
+                    <QcSSCD present="false"/>
+                    <SemanticsIdentifier Description="Semantics identifier for legal person">0.4.0.194121.1.2</SemanticsIdentifier>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-601C9A35A8A350C6212D8D10F0B7EAA147964904DBE39329ADD6AF6F343F5BCE" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="el">ΑΡΧΗ ΠΙΣΤΟΠΟΙΗΣΗΣ ΕΛΛΗΝΙΚΟΥ ΔΗΜΟΣΙΟΥ</TSPName>
+                        <TSPName lang="en">HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="el">ΑΡΧΗ ΠΙΣΤΟΠΟΙΗΣΗΣ ΕΛΛΗΝΙΚΟΥ ΔΗΜΟΣΙΟΥ</TSPTradeName>
+                        <TSPTradeName lang="en">Hellenic Public Administration Root CA - HPARCA</TSPTradeName>
+                        <TSPTradeName lang="en">Hellenic Public Administration Certification Services</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATEL-997001671</TSPRegistrationIdentifier>
+                        <TSPRegistrationIdentifier>NTREL-RT:EL-07-901</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662">
+                            <ServiceNames>
+                                <ServiceName lang="en">APED Qualified Timestamping Issuing CA</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2021-10-29T13:00:09Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>YX3yB8UZedFOs14Fr+dTDDACkJzx/TM/cP/Bid8bxmI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.12=#130e5072697661746520506572736f6e,2.5.4.5=#13143130333036363333363435353233323233363931,2.5.4.42=#1309416c656b73616e6472,2.5.4.4=#130842656c69616b6f76,cn=aleksandr beliakov,c=ru</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.12=#130e5072697661746520506572736f6e,2.5.4.5=#13143130333036363333363435353233323233363931,2.5.4.42=#1309416c656b73616e6472,2.5.4.4=#130842656c69616b6f76,CN=Aleksandr Beliakov,C=RU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 3,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 3,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>5017004</SerialNumber>
+            <SubjectSerialNumber>10306633645523223691</SubjectSerialNumber>
+            <CommonName>Aleksandr Beliakov</CommonName>
+            <CountryName>RU</CountryName>
+            <Title>Private Person</Title>
+            <GivenName>Aleksandr</GivenName>
+            <Surname>Beliakov</Surname>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2025-03-09T10:46:29Z</NotAfter>
+            <NotBefore>2022-03-09T10:46:29Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-B0146071BC1E46A2BFBA696D22115492EDD6D373F38F247552D78DC30946FE9C</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Y4/CiwOxq47YU0eWHZmoffasqHU=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Sdb0lS8BP6Q=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.10.3.26</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.luxtrust.lu/LTGQCA3.crt</caIssuersUrl>
+                    <ocspUrl>http://qca.ocsp.luxtrust.lu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGQCA3.crl</crlUrl>
+                </CRLDistributionPoints>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="EN">https://www.luxtrust.lu/upload/data/repository/PDS.pdf</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes>
+                        <QcType Description="qc-type-esign">0.4.0.1862.1.6.1</QcType>
+                    </QcTypes>
+                    <QcCClegislation/>
+                </QcStatements>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-E2B75237132EC314181C5C5543DC53B00D4472899A8999B8943491CCB54AB6D2" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">LuxTrust S.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="fr">TVALU-20976985</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Qualified Time Stamping</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-62694FC94F6EDCD8B3D3A875AAF624AD5EF36A306A1DEE3EC45AE6B9A1FE83E0">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-9B873C7C9A58338BF349986D6810335B255F2A33FEDE031678DC4E3C72A149A8">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>jtmmQlmOynKwLo3lL1iUcpXgHcS7WDjBM6JMALF4cyI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-98ED4C195D5EB426EA9993436117ADADF65821AB7C5902B20DD0056DE3CFD75C">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust s.a. ocsp server,ou=pki entity,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust S.A. OCSP Server,OU=Pki entity,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 3,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 3,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>6040987</SerialNumber>
+            <CommonName>LuxTrust S.A. OCSP Server</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <OrganizationalUnit>Pki entity</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2023-09-29T14:25:41Z</NotAfter>
+            <NotBefore>2023-06-29T14:25:41Z</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-E128F89B253CE16444F78876BCC949A3EC069AE9B07F277D4051D5295D9B90A0</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Y4/CiwOxq47YU0eWHZmoffasqHU=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>nlHlZ4T3IvJBZVcKKbBbIoVCMoc=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-E2B75237132EC314181C5C5543DC53B00D4472899A8999B8943491CCB54AB6D2" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">LuxTrust S.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="fr">TVALU-20976985</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Qualified Time Stamping</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>mO1MGV1etCbqmZNDYRetrfZYIat8WQKyDdAFbePP11w=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-AA02B99F9C4B57291E3C1744E44647709293D0FE17BB4EED28C99E973C7E8473">
+            <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-tsa</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=good-tsa</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=LU,OU=PKI-TEST,O=Nowina Solutions,CN=root-ca</IssuerDistinguishedName>
+            <SerialNumber>500</SerialNumber>
+            <CommonName>good-tsa</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>Nowina Solutions</OrganizationName>
+            <OrganizationalUnit>PKI-TEST</OrganizationalUnit>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_STORE</Source>
+            </Sources>
+            <NotAfter>2023-12-13T16:03:43Z</NotAfter>
+            <NotBefore>2022-02-13T16:03:43Z</NotBefore>
+            <PublicKeySize>2048</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-BEF4DFD01F4319915780D0B49CF5827093D5131436E83A4AF048C9CEBD6C46D9</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>o2ha86qacYITw6+RZAtBDv9yr4Y=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/root-ca.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://dss.nowina.lu/pki-factory/crl/root-ca.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders/>
+            <Revocations>
+                <CertificateRevocation Revocation="R-E7F0576757A2F20051EC53AFB0D6E8FD271BF8A541B5ECC8FD9117FFFCFC2D13">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qgK5n5xLVykePBdE5EZHcJKT0P4Xu07tKMmelzx+hHM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 3,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 3,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global root 2,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Root 2,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>372465138737086689258246113329755871041849896622</SerialNumber>
+            <CommonName>LuxTrust Global Qualified CA 3</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <Sources>
+                <Source>SIGNATURE</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2035-03-05T13:21:57Z</NotAfter>
+            <NotBefore>2015-03-06T14:12:15Z</NotBefore>
+            <PublicKeySize>4096</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-C770C1175C54E68FBE0EFB7A53A69D90386F0BC916ACAD485AD2496798C1C35F</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>/xgodvlIBSyhrvErGyuyU/hLfLM=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>Y4/CiwOxq47YU0eWHZmoffasqHU=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="0" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://repository.luxtrust.lu">1.3.171.1.1.1.10.3</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://ca.luxtrust.lu/LTGRCA2.crt</caIssuersUrl>
+                    <ocspUrl>http://ltgroot.ocsp.luxtrust.lu</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://crl.luxtrust.lu/LTGRCA2.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-E2B75237132EC314181C5C5543DC53B00D4472899A8999B8943491CCB54AB6D2" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">LuxTrust S.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="fr">TVALU-20976985</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2016-06-30T22:00:00Z</StartDate>
+                            <EndDate>2018-04-06T13:00:00Z</EndDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision</Status>
+                            <StartDate>2015-08-12T00:00:00Z</StartDate>
+                            <EndDate>2016-06-30T22:00:00Z</EndDate>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Qualified Time Stamping</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>vtDxntRtlJANKp/NfG9mC2H/dYjYtxz48nnV+qMCHM8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-C262B0B427E88A6D793391C7D5D6062B77E80E17AD072BBE44A783B73B5AB1A3">
+            <SubjectDistinguishedName Format="CANONICAL">cn=luxtrust s.a. ocsp server,ou=pki entity,o=luxtrust s.a.,c=lu</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=LuxTrust S.A. OCSP Server,OU=Pki entity,O=LuxTrust S.A.,C=LU</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=luxtrust global qualified ca 3,o=luxtrust s.a.,c=lu</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=LuxTrust Global Qualified CA 3,O=LuxTrust S.A.,C=LU</IssuerDistinguishedName>
+            <SerialNumber>6429101</SerialNumber>
+            <CommonName>LuxTrust S.A. OCSP Server</CommonName>
+            <CountryName>LU</CountryName>
+            <OrganizationName>LuxTrust S.A.</OrganizationName>
+            <OrganizationalUnit>Pki entity</OrganizationalUnit>
+            <Sources>
+                <Source>OCSP_RESPONSE</Source>
+            </Sources>
+            <NotAfter>2024-11-07T13:33:37Z</NotAfter>
+            <NotBefore>2024-08-07T13:33:37Z</NotBefore>
+            <PublicKeySize>3072</PublicKeySize>
+            <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-74A08838892BC319B2856DE8661B643A99DBBC53DF163A16A9BC96C4FBD4F265</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>4096</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>Y4/CiwOxq47YU0eWHZmoffasqHU=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>7xtBewkUbPW8wSuoIyiVGWAwF7o=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="false"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-E2B75237132EC314181C5C5543DC53B00D4472899A8999B8943491CCB54AB6D2" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">LuxTrust S.A.</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="fr">TVALU-20976985</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATLU-20976985</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Global Qualified Certification Authority 3</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2018-04-06T13:00:00Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSeals</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                        <TrustService ServiceDigitalIdentifier="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF">
+                            <ServiceNames>
+                                <ServiceName lang="en">LuxTrust Qualified Time Stamping</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2017-02-17T00:00:00Z</StartDate>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>wmKwtCfoim15M5HH1dYGK3foDhetByu+RKeDtztasaM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-51F847039A89F670EFD6611CEE33219DB8651A2E745E4A3C5B5B9A555617EB06">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2023-09-06T10:10:10Z</ProductionDate>
+            <ThisUpdate>2023-09-06T10:10:10Z</ThisUpdate>
+            <ArchiveCutOff>2020-11-23T00:00:00Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7"/>
+                <ChainItem Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662"/>
+                <ChainItem Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=APED Qualified Timestamping OCSP Responder, O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY, C=GR</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>UfhHA5qJ9nDv1mEc7jMhnbhlGi50Xko8W1uaVVYX6wY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-62694FC94F6EDCD8B3D3A875AAF624AD5EF36A306A1DEE3EC45AE6B9A1FE83E0">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2023-09-06T10:10:09Z</ProductionDate>
+            <ThisUpdate>2023-09-06T10:10:09Z</ThisUpdate>
+            <NextUpdate>2023-09-06T14:15:02Z</NextUpdate>
+            <ArchiveCutOff>2015-03-06T14:12:15Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-98ED4C195D5EB426EA9993436117ADADF65821AB7C5902B20DD0056DE3CFD75C"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-98ED4C195D5EB426EA9993436117ADADF65821AB7C5902B20DD0056DE3CFD75C"/>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-98ED4C195D5EB426EA9993436117ADADF65821AB7C5902B20DD0056DE3CFD75C">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>nlHlZ4T3IvJBZVcKKbBbIoVCMoc=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>YmlPyU9u3Niz06h1qvYkrV7zajBqHe4+xFrmuaH+g+A=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-940D578F2AC5E525028A592A31ED469A65C3D4E3A7AA9A0C321FC5902AC6F1AE">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://ocsp.aped.gov.gr</SourceAddress>
+            <ProductionDate>2024-10-10T13:21:33Z</ProductionDate>
+            <ThisUpdate>2024-10-10T13:21:33Z</ThisUpdate>
+            <ArchiveCutOff>2020-11-23T00:00:00Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7"/>
+                <ChainItem Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662"/>
+                <ChainItem Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <IssuerName>CN=APED Qualified Timestamping OCSP Responder, O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY, C=GR</IssuerName>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lA1XjyrF5SUCilkqMe1GmmXD1OOnqpoMMh/FkCrG8a4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-9B873C7C9A58338BF349986D6810335B255F2A33FEDE031678DC4E3C72A149A8">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://qca.ocsp.luxtrust.lu</SourceAddress>
+            <ProductionDate>2024-10-10T13:21:33Z</ProductionDate>
+            <ThisUpdate>2024-10-10T13:21:33Z</ThisUpdate>
+            <NextUpdate>2024-10-10T14:50:27Z</NextUpdate>
+            <ArchiveCutOff>2015-03-06T14:12:15Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>3072</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-C262B0B427E88A6D793391C7D5D6062B77E80E17AD072BBE44A783B73B5AB1A3"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-C262B0B427E88A6D793391C7D5D6062B77E80E17AD072BBE44A783B73B5AB1A3"/>
+                <ChainItem Certificate="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF"/>
+                <ChainItem Certificate="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-C262B0B427E88A6D793391C7D5D6062B77E80E17AD072BBE44A783B73B5AB1A3">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>7xtBewkUbPW8wSuoIyiVGWAwF7o=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>m4c8fJpYM4vzSZhtaBAzWyVfKjP+3gMWeNxOPHKhSag=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-E7F0576757A2F20051EC53AFB0D6E8FD271BF8A541B5ECC8FD9117FFFCFC2D13">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>CRL</Type>
+            <ProductionDate>2023-09-06T10:43:24Z</ProductionDate>
+            <ThisUpdate>2023-09-06T10:43:24Z</ThisUpdate>
+            <NextUpdate>2024-03-06T10:43:24Z</NextUpdate>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813"/>
+            </CertificateChain>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>5/BXZ1ei8gBR7FOvsNbo/Scb+KVBtezI/ZEX//z8LRM=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-48D0DF9DD4701AB30E88F159E548278E1EC9159A7C8DC0DA754CA31297D246E2">
+            <ProductionTime>2023-09-06T10:08:25Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>MzfeYg35QfKEkuzdPNJ5E7GCfAP5UMDaTTRuWX2gyr8=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-516624DD767DD078D0EABB1BF99D0E4897698E8DC82D6109D2EC49E6CC40BBCB"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-516624DD767DD078D0EABB1BF99D0E4897698E8DC82D6109D2EC49E6CC40BBCB"/>
+                <ChainItem Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662"/>
+                <ChainItem Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=APED Qualified Timestamping Issuing CA, O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY, OID.2.5.4.97=RT:EL-07-901, C=GR</IssuerName>
+                    <SerialNumber>153111481832982297405168473568081585744</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">CN=APED QTSU A 2022,O=HELLENIC PUBLIC ADMINISTRATION CERTIFICATION AUTHORITY,OU=APED Time-Stamping Services,C=GR</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-516624DD767DD078D0EABB1BF99D0E4897698E8DC82D6109D2EC49E6CC40BBCB">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGxMIGcpIGZMIGWMQswCQYDVQQGEwJHUjEVMBMGA1UEYRMMUlQ6RUwtMDctOTAxMT8wPQYDVQQKEzZIRUxMRU5JQyBQVUJMSUMgQURNSU5JU1RSQVRJT04gQ0VSVElGSUNBVElPTiBBVVRIT1JJVFkxLzAtBgNVBAMTJkFQRUQgUXVhbGlmaWVkIFRpbWVzdGFtcGluZyBJc3N1aW5nIENBAhBzMDLiiTQQupR0mxo6X6ZQ</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>UWYk3XZ90HjQ6rsb+Z0OSJdpjo3ILWEJ0uxJ5sxAu8s=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-5D1AFCBFB11396431F22BE5B8FD038DFEB22ABF5A0B4224A0B9A91DFB63AA298" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-8CD7F835C69C50DCBB2D3F3843A2AFF9357111843B09B0E25534C6E9630D3B54" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-927CEDCF891A79023C15F0F858DC9773B65C9650E8AD83EF8192F8A8E345440F" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-C7C81D982077A31EF63B0D2E9F6B9058741D49D495AB1FA5D1272FD188DFE05B" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>zo5kahkqAxBvuyThe4+pMahOnj7T4v145AAOFvtwCc0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="EVIDENCE_RECORD_TIMESTAMP" Id="T-D355B2863D212CF788153C95A83D38C34E9DA428894416ACA03CE390EE82C22C">
+            <ArchiveTimestampType>XML_EVIDENCE_RECORD</ArchiveTimestampType>
+            <EvidenceRecordTimestampType>ARCHIVE_TIMESTAMP</EvidenceRecordTimestampType>
+            <ProductionTime>2023-09-06T10:43:24Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>81tjc49I1tvsb2Ra5865vxtnw+gNcKwc+fCtJqPm/E8=</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-AA02B99F9C4B57291E3C1744E44647709293D0FE17BB4EED28C99E973C7E8473"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-AA02B99F9C4B57291E3C1744E44647709293D0FE17BB4EED28C99E973C7E8473"/>
+                <ChainItem Certificate="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>C=LU, OU=PKI-TEST, O=Nowina Solutions, CN=root-ca</IssuerName>
+                    <SerialNumber>500</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-44653083CC8E3A7D8A58A03F352588DB3AEF835AD50940E6163E030682F09813">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-AA02B99F9C4B57291E3C1744E44647709293D0FE17BB4EED28C99E973C7E8473">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>qgK5n5xLVykePBdE5EZHcJKT0P4Xu07tKMmelzx+hHM=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-E7F0576757A2F20051EC53AFB0D6E8FD271BF8A541B5ECC8FD9117FFFCFC2D13">
+                    <Type>CRL</Type>
+                    <Origin>CMS_SIGNED_DATA</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="ER-3BC963FE38F610CA2F6A1E701C81E0034C553418D2762BDA2C8C3C6E616BAF71" Category="EVIDENCE_RECORD"/>
+                <TimestampedObject Token="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-5D1AFCBFB11396431F22BE5B8FD038DFEB22ABF5A0B4224A0B9A91DFB63AA298" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-8CD7F835C69C50DCBB2D3F3843A2AFF9357111843B09B0E25534C6E9630D3B54" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-927CEDCF891A79023C15F0F858DC9773B65C9650E8AD83EF8192F8A8E345440F" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-C7C81D982077A31EF63B0D2E9F6B9058741D49D495AB1FA5D1272FD188DFE05B" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-98ED4C195D5EB426EA9993436117ADADF65821AB7C5902B20DD0056DE3CFD75C" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-15D79F04E8A4D2EAAAA4FE52DF6B51822F5E9E9607D1D8C5FFADEB41AE0116C7" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-10B5F9C23B5A8DA99E73B663147DA71E4DB1751272068833DAF312CE686AC32F" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-54455F7129C20B1447C418F997168F24C58FC5023BF5DA5BE2EB6E1DD8902ED5" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-BED0F19ED46D94900D2A9FCD7C6F660B61FF7588D8B71CF8F279D5FAA3021CCF" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-516624DD767DD078D0EABB1BF99D0E4897698E8DC82D6109D2EC49E6CC40BBCB" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-617DF207C51979D14EB35E05AFE7530C3002909CF1FD333F70FFC189DF1BC662" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-51F847039A89F670EFD6611CEE33219DB8651A2E745E4A3C5B5B9A555617EB06" Category="REVOCATION"/>
+                <TimestampedObject Token="R-62694FC94F6EDCD8B3D3A875AAF624AD5EF36A306A1DEE3EC45AE6B9A1FE83E0" Category="REVOCATION"/>
+                <TimestampedObject Token="T-48D0DF9DD4701AB30E88F159E548278E1EC9159A7C8DC0DA754CA31297D246E2" Category="TIMESTAMP"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="D-88DB99CE16C24FC7801014245CC6B4F3CD1D212B661FE7EA71186CAD2D531CC9">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/signature001.p7s</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>JChKjCjnNigU2SRxWfAPDu83ivAtp26TXXuAla/+K6Q=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0">
+            <ReferencedName>META-INF/ASiCManifest001.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>d2RWO1uIWl7usIaSTWwli2xK5yFNEj35Opt/h7skW4s=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0" Id="D-5D1AFCBFB11396431F22BE5B8FD038DFEB22ABF5A0B4224A0B9A91DFB63AA298">
+            <ReferencedName>test.zip</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>fCKxuspIkjpYLn3z0/aJmxWtzb30gL6HpzADYXH6mGA=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0" Id="D-8CD7F835C69C50DCBB2D3F3843A2AFF9357111843B09B0E25534C6E9630D3B54">
+            <ReferencedName>empty.zip</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>71Y7Nd5MYJ4g578SvALsxTHPx290Z+ndriWl/6wSO+E=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Parent="D-6478E3D758C317A94807352808F9D0B25B918955AAEB95D16646C22A5E2535A0" Id="D-927CEDCF891A79023C15F0F858DC9773B65C9650E8AD83EF8192F8A8E345440F">
+            <ReferencedName>test.txt</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>n4bQgYhMfWWaL+qgxVrQFaO/TxsrC4Is0V1sFbDwCgg=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-88DB99CE16C24FC7801014245CC6B4F3CD1D212B661FE7EA71186CAD2D531CC9">
+            <ReferencedName>META-INF/signature001.p7s</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>qQEPw3GN2YSUsUf5joyuY4LELvaEmma+onN/QksQWIU=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-E2B75237132EC314181C5C5543DC53B00D4472899A8999B8943491CCB54AB6D2" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>LU</CountryCode>
+            <Url>https://trusted-list.lu/tsl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>56</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-10-10T13:11:31Z</LastLoading>
+            <IssueDate>2024-06-12T04:45:29Z</IssueDate>
+            <NextUpdate>2024-12-12T05:45:29Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="TL-601C9A35A8A350C6212D8D10F0B7EAA147964904DBE39329ADD6AF6F343F5BCE" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>EL</CountryCode>
+            <Url>https://www.eett.gr/tsl/EL-TSL.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>79</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-10-10T13:11:32Z</LastLoading>
+            <IssueDate>2024-09-20T08:00:18Z</IssueDate>
+            <NextUpdate>2025-03-20T09:00:18Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+            <SequenceNumber>346</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-10-10T13:11:31Z</LastLoading>
+            <IssueDate>2024-10-02T10:00:09Z</IssueDate>
+            <NextUpdate>2025-04-01T10:00:09Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

@@ -729,16 +729,20 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
                 assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
 
                 boolean undefinedChangedCheckFound = false;
+                boolean asicSignedContentCheckFound = false;
                 for (XmlConstraint constraint : fc.getConstraint()) {
                     if (MessageTag.BBB_FC_DSCNUOM.getId().equals(constraint.getName().getKey())) {
                         assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
                         assertEquals(MessageTag.BBB_FC_DSCNUOM_ANS.getId(), constraint.getError().getKey());
                         undefinedChangedCheckFound = true;
+                    } else if (MessageTag.BBB_FC_ISFP_ASTFORAMC.getId().equals(constraint.getName().getKey())) {
+                        asicSignedContentCheckFound = true;
                     } else {
                         assertEquals(XmlStatus.OK, constraint.getStatus());
                     }
                 }
                 assertTrue(undefinedChangedCheckFound);
+                assertFalse(asicSignedContentCheckFound);
                 arcTstFound = true;
 
             }
@@ -790,13 +794,17 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
                 assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
 
                 boolean undefinedChangedCheckFound = false;
+                boolean asicSignedContentCheckFound = false;
                 for (XmlConstraint constraint : fc.getConstraint()) {
                     assertEquals(XmlStatus.OK, constraint.getStatus());
                     if (MessageTag.BBB_FC_DSCNUOM.getId().equals(constraint.getName().getKey())) {
                         undefinedChangedCheckFound = true;
+                    } else if (MessageTag.BBB_FC_ISFP_ASTFORAMC.getId().equals(constraint.getName().getKey())) {
+                        asicSignedContentCheckFound = true;
                     }
                 }
                 assertTrue(undefinedChangedCheckFound);
+                assertFalse(asicSignedContentCheckFound);
                 arcTstFound = true;
 
             }

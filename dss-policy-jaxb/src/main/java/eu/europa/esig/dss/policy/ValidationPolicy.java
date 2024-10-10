@@ -1468,6 +1468,14 @@ public interface ValidationPolicy {
 	LevelConstraint getAllFilesSignedConstraint();
 
 	/**
+	 * Returns SignedAndTimestampedFilesCovered constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if SignedAndTimestampedFilesCovered element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getSignedAndTimestampedFilesCoveredConstraint();
+
+	/**
 	 * Returns FullScope constraint if present in the policy, null otherwise
 	 *
 	 * @return {@code LevelConstraint} if FullScope element is present
