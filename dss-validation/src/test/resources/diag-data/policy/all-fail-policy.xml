@@ -432,6 +432,7 @@
 			<IssuerSerialMatch Level="FAIL" />
 		</SignedAttributes>
 		<TSAGeneralNameContentMatch Level="FAIL" />
+		<ContainerSignedAndTimestampedFilesCovered Level="FAIL" />
 	</Timestamp>
 	<Revocation>
         <UnknownStatus Level="FAIL" />
@@ -520,6 +521,8 @@
 		<DataObjectIntact Level="FAIL" />
 		<DataObjectFound Level="FAIL" />
 		<DataObjectGroup Level="FAIL" />
+		<SignedFilesCovered Level="FAIL" />
+		<ContainerSignedAndTimestampedFilesCovered Level="FAIL" />
 		<HashTreeRenewal Level="FAIL" />
 		<Cryptographic />
 	</EvidenceRecord>
