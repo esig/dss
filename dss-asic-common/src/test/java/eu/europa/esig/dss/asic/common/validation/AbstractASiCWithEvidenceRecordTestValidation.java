@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -133,6 +134,19 @@ public abstract class AbstractASiCWithEvidenceRecordTestValidation extends Abstr
                 }
 
                 ++tstCounter;
+            }
+        }
+    }
+
+    @Override
+    protected void checkEvidenceRecordOrigin(DiagnosticData diagnosticData) {
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+            assertNotNull(evidenceRecord.getOrigin());
+            if (Utils.isCollectionNotEmpty(getDetachedEvidenceRecords())) {
+                assertEquals(EvidenceRecordOrigin.EXTERNAL, evidenceRecord.getOrigin());
+            } else {
+                assertEquals(EvidenceRecordOrigin.CONTAINER, evidenceRecord.getOrigin());
             }
         }
     }

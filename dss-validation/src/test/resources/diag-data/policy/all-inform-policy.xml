@@ -432,6 +432,7 @@
 			<IssuerSerialMatch Level="INFORM" />
 		</SignedAttributes>
 		<TSAGeneralNameContentMatch Level="INFORM" />
+		<ContainerSignedAndTimestampedFilesCovered Level="INFORM" />
 	</Timestamp>
 	<Revocation>
 		<UnknownStatus Level="INFORM" />
@@ -520,6 +521,8 @@
 		<DataObjectIntact Level="INFORM" />
 		<DataObjectFound Level="INFORM" />
 		<DataObjectGroup Level="INFORM" />
+		<SignedFilesCovered Level="INFORM" />
+		<ContainerSignedAndTimestampedFilesCovered Level="INFORM" />
 		<HashTreeRenewal Level="INFORM" />
 		<Cryptographic />
 	</EvidenceRecord>

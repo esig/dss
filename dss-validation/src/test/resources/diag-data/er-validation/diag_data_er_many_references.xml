@@ -71,6 +71,7 @@
         <EvidenceRecord Id="ER-B4E9C5503513D6BA37113BE39BD0CE57A5731D530DE545B92101319CC68E4567">
             <DocumentName>META-INF/evidencerecord.xml</DocumentName>
             <Type>XML Evidence Record</Type>
+            <Origin>CONTAINER</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="L_202400212CS.pdf">

@@ -7,6 +7,7 @@
         <EvidenceRecord Id="ER-8173DCEF535A3282C0D0C62EE21F02EA55710747D9933501BEF7CB5B2276E22F">
             <DocumentName>er-data-group.xml</DocumentName>
             <Type>XML Evidence Record</Type>
+            <Origin>EXTERNAL</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="HELLO">

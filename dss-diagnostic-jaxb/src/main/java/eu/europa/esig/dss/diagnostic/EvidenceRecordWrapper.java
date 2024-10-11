@@ -35,6 +35,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
@@ -166,6 +167,15 @@ public class EvidenceRecordWrapper {
      */
     public EvidenceRecordTypeEnum getEvidenceRecordType() {
         return evidenceRecord.getType();
+    }
+
+    /**
+     * Gets the origin of the evidence record
+     *
+     * @return {@link EvidenceRecordOrigin}
+     */
+    public EvidenceRecordOrigin getOrigin() {
+        return evidenceRecord.getOrigin();
     }
 
     /**

@@ -105,6 +105,7 @@
         <EvidenceRecord Id="ER-8173DCEF535A3282C0D0C62EE21F02EA55710747D9933501BEF7CB5B2276E22F">
             <DocumentName>er-data-group.xml</DocumentName>
             <Type>XML Evidence Record</Type>
+            <Origin>EXTERNAL</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="original-409d4d7b-b62c-4c2e-a4f0-a90d97d4a5e5-signed-xades-baseline-t-extended-xades-baseline-lta.xml">

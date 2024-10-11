@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -40,6 +41,9 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
 
     /** Cached instance of evidence record */
     private EvidenceRecord evidenceRecord;
+
+    /** Origin of the evidence record */
+    protected EvidenceRecordOrigin evidenceRecordOrigin = EvidenceRecordOrigin.EXTERNAL;
 
     /**
      * Empty constructor
@@ -80,6 +84,11 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
             evidenceRecord.setTimestampedReferences(getTimestampedReferences(evidenceRecordScopes));
         }
         return evidenceRecord;
+    }
+
+    @Override
+    public void setEvidenceRecordOrigin(EvidenceRecordOrigin origin) {
+        this.evidenceRecordOrigin = origin;
     }
 
     /**

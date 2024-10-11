@@ -48,6 +48,38 @@ Not present
 </SignatureConstraints>
 ----
 
+|ASiC timestamp and evidence record consequent coverage     |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<Timestamp>
+    ...
+	<ContainerSignedAndTimestampedFilesCovered Level="FAIL" />
+    ...
+</Timestamp>
+...
+<EvidenceRecord>
+    ...
+    <ContainerSignedAndTimestampedFilesCovered Level="WARN" />
+    ...
+</EvidenceRecord>
+----
+
+|Detached evidence record signed data coverage     |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<EvidenceRecord>
+    ...
+    <SignedFilesCovered Level="WARN" />
+    ...
+</EvidenceRecord>
+----
+
 |===
 
 [cols="2,5,5"]

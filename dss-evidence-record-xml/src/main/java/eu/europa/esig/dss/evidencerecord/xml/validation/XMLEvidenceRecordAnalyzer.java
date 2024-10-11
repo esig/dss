@@ -115,6 +115,7 @@ public class XMLEvidenceRecordAnalyzer extends DefaultEvidenceRecordAnalyzer {
         if (evidenceRecordElement != null) {
             final XmlEvidenceRecord evidenceRecord = new XmlEvidenceRecord(evidenceRecordElement);
             evidenceRecord.setFilename(document.getName());
+            evidenceRecord.setOrigin(evidenceRecordOrigin);
             evidenceRecord.setManifestFile(manifestFile);
             evidenceRecord.setDetachedContents(detachedContents);
             return evidenceRecord;

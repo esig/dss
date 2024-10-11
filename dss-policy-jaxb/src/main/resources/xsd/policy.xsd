@@ -424,6 +424,11 @@
 					<xsd:documentation>Checks if a TSTInfo.tsa field's value and order matches the timestamp's issuer distinguishing name when present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="ContainerSignedAndTimestampedFilesCovered" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks whether all previously signed and/or time-asserted file objects are subsequently covered by the current timestamp in an ASiC container.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -500,6 +505,16 @@
 					<xsd:element name="DataObjectGroup" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks that only the hash values of the provided data objects are present in the first hash value list</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SignedFilesCovered" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>When an external evidence record applies to a signature, checks whether all signed documents are covered by the evidence record</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="ContainerSignedAndTimestampedFilesCovered" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether all previously signed and/or time-asserted file objects are subsequently covered by the current evidence record in an ASiC container.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="HashTreeRenewal" type="LevelConstraint" minOccurs="0">

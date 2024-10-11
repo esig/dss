@@ -26,8 +26,10 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedAndTimestampedFilesCoveredCheck;
 
 /**
  * This class performs "5.2.2 Format Checking" building block execution for a document or container timestamp
@@ -69,14 +71,39 @@ public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWra
 
         }
 
-        // ASiC (only for a detached container timestamp)
-        if (diagnosticData.isContainerInfoPresent() && token.getType().isContainerTimestamp()
-                && Utils.isCollectionEmpty(token.getTimestampedSignatures())) {
+        // ASiC timestamps
+        if (diagnosticData.isContainerInfoPresent() && token.getType().isContainerTimestamp()) {
 
-            item = getASiCContainerValidationChain(item);
+            // only for a detached container timestamp
+            if (Utils.isCollectionEmpty(token.getTimestampedSignatures())) {
+
+                item = getASiCContainerValidationChain(item);
+
+            }
+
+            // when signature, timestamp or evidence record is covered
+            if (coversSignatureOrTimestampOrEvidenceRecord(token)) {
+
+                if (item == null) {
+                    item = firstItem = signedAndTimestampedFilesCovered();
+                } else {
+                    item = item.setNextItem(signedAndTimestampedFilesCovered());
+                }
+
+            }
 
         }
 
+    }
+
+    private ChainItem<XmlFC> signedAndTimestampedFilesCovered() {
+        LevelConstraint constraint = policy.getTimestampContainerSignedAndTimestampedFilesCoveredConstraint();
+        return new SignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), token, constraint);
+    }
+
+    private boolean coversSignatureOrTimestampOrEvidenceRecord(TimestampWrapper timestamp) {
+        return Utils.isCollectionNotEmpty(timestamp.getTimestampedSignatures()) || Utils.isCollectionNotEmpty(timestamp.getTimestampedTimestamps())
+                || Utils.isCollectionNotEmpty(timestamp.getTimestampedEvidenceRecords());
     }
 
 }

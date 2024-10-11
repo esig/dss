@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.validation.analyzer.evidencerecord;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
@@ -43,5 +44,14 @@ public interface EvidenceRecordAnalyzer extends DocumentAnalyzer {
      * @return {@link EvidenceRecordTypeEnum}
      */
     EvidenceRecordTypeEnum getEvidenceRecordType();
+
+    /**
+     * Sets the origin of the extracted evidence record
+     * <p>
+     * Default : EvidenceRecordOrigin.EXTERNAL
+     *
+     * @param origin {@link EvidenceRecordOrigin}
+     */
+    void setEvidenceRecordOrigin(EvidenceRecordOrigin origin);
 
 }

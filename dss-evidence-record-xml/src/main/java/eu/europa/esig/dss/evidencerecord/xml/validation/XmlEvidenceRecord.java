@@ -104,7 +104,7 @@ public class XmlEvidenceRecord extends DefaultEvidenceRecord {
     }
 
     @Override
-    public EvidenceRecordTypeEnum getReferenceRecordType() {
+    public EvidenceRecordTypeEnum getEvidenceRecordType() {
         return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
     }
 

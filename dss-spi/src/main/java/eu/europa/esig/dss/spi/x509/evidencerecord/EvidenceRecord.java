@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.x509.evidencerecord;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
@@ -132,7 +133,14 @@ public interface EvidenceRecord extends IdentifierBasedObject {
      *
      * @return {@link EvidenceRecordTypeEnum}
      */
-    EvidenceRecordTypeEnum getReferenceRecordType();
+    EvidenceRecordTypeEnum getEvidenceRecordType();
+
+    /**
+     * Returns origin of the evidence record
+     *
+     * @return {@link EvidenceRecordOrigin}
+     */
+    EvidenceRecordOrigin getOrigin();
 
     /**
      * Returns a manifest file associated with the evidence record (used in ASiC)

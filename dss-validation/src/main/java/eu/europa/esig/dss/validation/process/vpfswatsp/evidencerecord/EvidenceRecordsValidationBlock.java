@@ -116,7 +116,7 @@ public class EvidenceRecordsValidationBlock {
             evidenceRecordAnalysis.getTimestamps().addAll(currentTimestampValidations.values());
 
             EvidenceRecordValidationProcess ervp = new EvidenceRecordValidationProcess(
-                    i18nProvider, evidenceRecord, currentTimestampValidations.values(), bbbs, policy, currentTime);
+                    i18nProvider, diagnosticData, evidenceRecord, currentTimestampValidations.values(), bbbs, policy, currentTime);
             XmlValidationProcessEvidenceRecord validationProcessEvidenceRecord = ervp.execute();
             evidenceRecordAnalysis.setValidationProcessEvidenceRecord(validationProcessEvidenceRecord);
 

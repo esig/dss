@@ -1500,7 +1500,8 @@
 			<xs:extension base="AbstractToken">
 				<xs:sequence>
 					<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
-					<xs:element name="Type"	type="EvidenceRecordType" minOccurs="0" />
+					<xs:element name="Type" type="EvidenceRecordType" />
+					<xs:element name="Origin" type="EvidenceRecordOrigin" />
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					<xs:element name="DigestMatchers" type="DigestMatchers" />
 					<xs:element name="EvidenceRecordTimestamps" type="FoundTimestamps" />
@@ -1537,6 +1538,14 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="XML Evidence Record" />
 			<xs:enumeration value="ASN.1 Evidence Record" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EvidenceRecordOrigin" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CONTAINER" />
+			<xs:enumeration value="EMBEDDED" />
+			<xs:enumeration value="EXTERNAL" />
 		</xs:restriction>
 	</xs:simpleType>
 	

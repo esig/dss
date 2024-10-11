@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EvidenceRecordIdentifierBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -52,6 +53,11 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      * The name of the evidence record document
      */
     private String filename;
+
+    /**
+     * Origin of the evidence record
+     */
+    private EvidenceRecordOrigin origin;
 
     /**
      * Contains a list of documents time-stamped within a reduced HashTree
@@ -128,6 +134,20 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    @Override
+    public EvidenceRecordOrigin getOrigin() {
+        return origin;
+    }
+
+    /**
+     * Sets the origin of the evidence record
+     *
+     * @param origin {@link EvidenceRecordOrigin}
+     */
+    public void setOrigin(EvidenceRecordOrigin origin) {
+        this.origin = origin;
     }
 
     @Override

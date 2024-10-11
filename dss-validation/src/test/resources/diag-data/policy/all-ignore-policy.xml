@@ -432,6 +432,7 @@
 			<IssuerSerialMatch Level="IGNORE" />
 		</SignedAttributes>
 		<TSAGeneralNameContentMatch Level="IGNORE" />
+		<ContainerSignedAndTimestampedFilesCovered Level="IGNORE" />
 	</Timestamp>
 	<Revocation>
 		<UnknownStatus Level="IGNORE" />
@@ -520,6 +521,8 @@
 		<DataObjectIntact Level="IGNORE" />
 		<DataObjectFound Level="IGNORE" />
 		<DataObjectGroup Level="IGNORE" />
+		<SignedFilesCovered Level="IGNORE" />
+		<ContainerSignedAndTimestampedFilesCovered Level="IGNORE" />
 		<HashTreeRenewal Level="IGNORE" />
 		<Cryptographic />
 	</EvidenceRecord>

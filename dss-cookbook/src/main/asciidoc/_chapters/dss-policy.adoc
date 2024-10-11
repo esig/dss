@@ -2287,6 +2287,20 @@ Default: not executed
 </Timestamp>
 ----
 
+* `ContainerSignedAndTimestampedFilesCovered` - this constraint checks if all data files signed and/or time-asserted covered signatures or timestamps are protected by the container timestamp. If one of the data files signed and/or time-asserted by a covered signature or timestamp is not protected by the container timestamp, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ContainerSignedAndTimestampedFilesCovered usage (with FAIL validation level)
+----
+<Timestamp>
+    ...
+    <ContainerSignedAndTimestampedFilesCovered Level="FAIL" />
+    ...
+</Timestamp>
+----
+
 ===== Revocation constraints
 
 The `<Revocation>` block defines rules for checking revocation data applicability rules (CRLs and OCSPs). The `<Revocation>` element shall be a child of `ConstraintsParameters`:
@@ -2443,6 +2457,34 @@ Default: `WARN`
     <DataObjectGroup Level="WARN" />
     ...
 </EvidenceRecord>
+----
+
+* `SignedFilesCovered` - this constraint checks if all data files signed by a covered signature are protected by the current evidence record. If one of the data files signed by a covered signature is not protected by the evidence record, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of SignedFilesCovered usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <SignedFilesCovered Level="WARN" />
+    ...
+</Timestamp>
+----
+
+* `ContainerSignedAndTimestampedFilesCovered` - this constraint checks if all data files signed and/or time-asserted covered signatures or timestamps are protected by the current evidence record. If one of the data files signed and/or time-asserted by a covered signature or timestamp is not protected by the evidence record, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ContainerSignedAndTimestampedFilesCovered usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <ContainerSignedAndTimestampedFilesCovered Level="WARN" />
+    ...
+</Timestamp>
 ----
 
 * `HashTreeRenewal` - this constraint checks if the evidence record's time-stamp used to renew the hashtree (i.e. the time-stamp starting a new ArchiveTimeStampChain) covers all archive data objects covered by the initial archive time-stamp of the evidence record.
@@ -2836,7 +2878,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |DocumentTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TLevelTimeStamp                 |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |LTALevelTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.10+|TimestampConstraints         |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.11+|TimestampConstraints         |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |RevocationTimeAgainstBestSignatureTime   |LevelConstraint          |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                   |BestSignatureTimeBeforeExpirationDateOfSigningCertificate |LevelConstraint  |FAILED       |NOT_YET_VALID
@@ -2847,17 +2889,20 @@ This table defines the correspondence between the enforced validation policy con
                                   |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |ContainerSignedAndTimestampedFilesCovered   |LevelConstraint       |FAILED                |FORMAT_FAILURE
 .6+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPResponderIdMatch            |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
-.7+|EvidenceRecordConstraints     |EvidenceRecordValid             |LevelConstraint                   |Indication from ER or timestamp |SubIndication from ER or timestamp
+.9+|EvidenceRecordConstraints     |EvidenceRecordValid             |LevelConstraint                   |Indication from ER or timestamp |SubIndication from ER or timestamp
                                   |DataObjectExistence             |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |DataObjectIntact                |LevelConstraint                   |FAILED                |HASH_FAILURE
                                   |DataObjectFound                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |DataObjectGroup                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |SignedFilesCovered              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |ContainerSignedAndTimestampedFilesCovered   |LevelConstraint       |FAILED                |FORMAT_FAILURE
                                   |HashTreeRenewal                 |LevelConstraint                   |INDETERMINATE +
                                                                                                        FAILED                |SIGNED_DATA_NOT_FOUND +
                                                                                                                               HASH_FAILURE

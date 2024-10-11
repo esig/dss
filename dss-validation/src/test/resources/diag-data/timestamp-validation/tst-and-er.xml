@@ -7,6 +7,7 @@
         <EvidenceRecord Id="EVIDENCE-RECORD_Qualified-TimeStamping-20230314_20240124-1456">
             <DocumentName>er-asn1-on-tst.ers</DocumentName>
             <Type>ASN.1 Evidence Record</Type>
+            <Origin>EXTERNAL</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ORPHAN_REFERENCE">
