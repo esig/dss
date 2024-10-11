@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,7 +43,7 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
-        validationPolicy.getContainerConstraints().setSignedAndTimestampedFilesCovered(constraint);
+        validationPolicy.getTimestampConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
@@ -59,6 +60,9 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
 
         DetailedReport detailedReport = reports.getDetailedReport();
         assertEquals(2, detailedReport.getTimestampIds().size());
+
+        int firstTstCounter = 0;
+        int secondTstCounter = 0;
         for (String tstId : detailedReport.getTimestampIds()) {
             XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(tstId);
             assertNotNull(tstBBB);
@@ -75,8 +79,14 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
                     signedContentCheckFound = true;
                 }
             }
-            assertTrue(signedContentCheckFound);
+            if (signedContentCheckFound) {
+                ++secondTstCounter;
+            } else {
+                ++firstTstCounter;
+            }
         }
+        assertEquals(1, firstTstCounter);
+        assertEquals(1, secondTstCounter);
 
         validateBestSigningTimes(reports);
         checkReports(reports);
@@ -95,7 +105,7 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
-        validationPolicy.getContainerConstraints().setSignedAndTimestampedFilesCovered(constraint);
+        validationPolicy.getTimestampConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
@@ -137,19 +147,6 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
 
             assertEquals(tstBBB.getConclusion().getIndication(), fc.getConclusion().getIndication());
 
-            if (Indication.PASSED.equals(tstBBB.getConclusion().getIndication())) {
-                ++validTstCounter;
-
-            } else if (Indication.FAILED.equals(tstBBB.getConclusion().getIndication())) {
-                assertEquals(SubIndication.FORMAT_FAILURE, tstBBB.getConclusion().getSubIndication());
-                assertTrue(checkMessageValuePresence(convert(tstBBB.getConclusion().getErrors()), i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
-
-                assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
-                assertTrue(checkMessageValuePresence(convert(fc.getConclusion().getErrors()), i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
-
-                ++invalidTstCounter;
-            }
-
             boolean signedContentCheckFound = false;
             for (XmlConstraint xmlConstraint : fc.getConstraint()) {
                 if (MessageTag.BBB_FC_ISFP_ASTFORAMC.getId().equals(xmlConstraint.getName().getKey())) {
@@ -162,7 +159,21 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
                     signedContentCheckFound = true;
                 }
             }
-            assertTrue(signedContentCheckFound);
+
+            if (Indication.PASSED.equals(tstBBB.getConclusion().getIndication())) {
+                assertFalse(signedContentCheckFound);
+                ++validTstCounter;
+
+            } else if (Indication.FAILED.equals(tstBBB.getConclusion().getIndication())) {
+                assertEquals(SubIndication.FORMAT_FAILURE, tstBBB.getConclusion().getSubIndication());
+                assertTrue(checkMessageValuePresence(convert(tstBBB.getConclusion().getErrors()), i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
+
+                assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
+                assertTrue(checkMessageValuePresence(convert(fc.getConclusion().getErrors()), i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
+
+                assertTrue(signedContentCheckFound);
+                ++invalidTstCounter;
+            }
         }
         assertEquals(1, validTstCounter);
         assertEquals(1, invalidTstCounter);
@@ -184,7 +195,7 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
-        validationPolicy.getContainerConstraints().setSignedAndTimestampedFilesCovered(constraint);
+        validationPolicy.getTimestampConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
@@ -225,16 +236,6 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
             assertEquals(Indication.PASSED, tstBBB.getConclusion().getIndication());
             assertEquals(tstBBB.getConclusion().getIndication(), fc.getConclusion().getIndication());
 
-            if (Utils.isCollectionEmpty(tstBBB.getConclusion().getWarnings())) {
-                ++validTstCounter;
-
-            } else {
-                assertTrue(checkMessageValuePresence(convert(tstBBB.getConclusion().getWarnings()), i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
-                assertTrue(checkMessageValuePresence(convert(fc.getConclusion().getWarnings()), i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
-
-                ++invalidTstCounter;
-            }
-
             boolean signedContentCheckFound = false;
             for (XmlConstraint xmlConstraint : fc.getConstraint()) {
                 if (MessageTag.BBB_FC_ISFP_ASTFORAMC.getId().equals(xmlConstraint.getName().getKey())) {
@@ -247,7 +248,18 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
                     signedContentCheckFound = true;
                 }
             }
-            assertTrue(signedContentCheckFound);
+
+            if (Utils.isCollectionEmpty(tstBBB.getConclusion().getWarnings())) {
+                assertFalse(signedContentCheckFound);
+                ++validTstCounter;
+
+            } else {
+                assertTrue(signedContentCheckFound);
+                assertTrue(checkMessageValuePresence(convert(tstBBB.getConclusion().getWarnings()), i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
+                assertTrue(checkMessageValuePresence(convert(fc.getConclusion().getWarnings()), i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
+
+                ++invalidTstCounter;
+            }
         }
         assertEquals(1, validTstCounter);
         assertEquals(1, invalidTstCounter);
@@ -268,7 +280,7 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
-        validationPolicy.getContainerConstraints().setSignedAndTimestampedFilesCovered(constraint);
+        validationPolicy.getEvidenceRecordConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
@@ -297,13 +309,17 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
         assertEquals(Indication.PASSED, validationProcessEvidenceRecord.getConclusion().getIndication());
 
         boolean signedContentCheckFound = false;
+        boolean asicSignedContentCheckFound = false;
         for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
             if (MessageTag.BBB_FC_ISFP_ASTFORAMC.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
+                asicSignedContentCheckFound = true;
+            } else if (MessageTag.BBB_CV_ER_HASSDOC.getId().equals(xmlConstraint.getName().getKey())) {
                 signedContentCheckFound = true;
             }
         }
-        assertTrue(signedContentCheckFound);
+        assertFalse(signedContentCheckFound);
+        assertTrue(asicSignedContentCheckFound);
 
         XmlBasicBuildingBlocks sigTstBBB = detailedReport.getBasicBuildingBlockById(sigTstId);
         assertNotNull(sigTstBBB);
@@ -331,7 +347,7 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
         ValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
-        validationPolicy.getContainerConstraints().setSignedAndTimestampedFilesCovered(constraint);
+        validationPolicy.getEvidenceRecordConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
@@ -372,14 +388,18 @@ public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTes
                 i18nProvider.getMessage(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS)));
 
         boolean signedContentCheckFound = false;
+        boolean asicSignedContentCheckFound = false;
         for (XmlConstraint xmlConstraint : validationProcessEvidenceRecord.getConstraint()) {
             if (MessageTag.BBB_FC_ISFP_ASTFORAMC.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
                 assertEquals(MessageTag.BBB_FC_ISFP_ASTFORAMC_ANS.getId(), xmlConstraint.getError().getKey());
+                asicSignedContentCheckFound = true;
+            } else if (MessageTag.BBB_CV_ER_HASSDOC.getId().equals(xmlConstraint.getName().getKey())) {
                 signedContentCheckFound = true;
             }
         }
-        assertTrue(signedContentCheckFound);
+        assertFalse(signedContentCheckFound);
+        assertTrue(asicSignedContentCheckFound);
 
         XmlBasicBuildingBlocks sigTstBBB = detailedReport.getBasicBuildingBlockById(sigTstId);
         assertNotNull(sigTstBBB);

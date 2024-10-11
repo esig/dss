@@ -36,7 +36,7 @@ public class EvidenceRecordTypeEnumParser {
     }
 
     /**
-     * Parses the label value and returns {@code EvidenceRecordEnum}
+     * Parses the label value and returns {@code EvidenceRecordTypeEnum}
      *
      * @param v {@link String} to parse
      * @return {@link EvidenceRecordTypeEnum}

@@ -176,6 +176,7 @@
         <EvidenceRecord Id="ER-3BC963FE38F610CA2F6A1E701C81E0034C553418D2762BDA2C8C3C6E616BAF71">
             <DocumentName>META-INF/evidencerecord001.xml</DocumentName>
             <Type>XML Evidence Record</Type>
+            <Origin>CONTAINER</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" uri="META-INF/signature001.p7s" documentName="META-INF/signature001.p7s">

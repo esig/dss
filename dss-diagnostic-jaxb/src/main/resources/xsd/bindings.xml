@@ -121,6 +121,12 @@
 						 printMethod="eu.europa.esig.dss.jaxb.parsers.EvidenceRecordTypeEnumParser.print" />
 	  </jaxb:bindings>
 
+	  <jaxb:bindings node="//xs:simpleType[@name='EvidenceRecordOrigin']">
+		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.EvidenceRecordOrigin"
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.EvidenceRecordOriginParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.EvidenceRecordOriginParser.print" />
+	  </jaxb:bindings>
+
   	<jaxb:bindings node="//xs:complexType[@name='BasicSignature']//xs:element[@name='EncryptionAlgoUsedToSignThisToken']">
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.EncryptionAlgorithm"
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.EncryptionAlgorithmParser.parse"

@@ -925,7 +925,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 		xmlEvidenceRecord.setId(identifierProvider.getIdAsString(evidenceRecord));
 		xmlEvidenceRecord.setDocumentName(evidenceRecord.getFilename());
-		xmlEvidenceRecord.setType(evidenceRecord.getReferenceRecordType());
+		xmlEvidenceRecord.setType(evidenceRecord.getEvidenceRecordType());
+		xmlEvidenceRecord.setOrigin(evidenceRecord.getOrigin());
 		xmlEvidenceRecord.setStructuralValidation(getXmlStructuralValidation(evidenceRecord));
 		xmlEvidenceRecord.setDigestMatchers(getXmlDigestMatchers(evidenceRecord));
 		xmlEvidenceRecord.setEvidenceRecordScopes(getXmlSignatureScopes(evidenceRecord.getEvidenceRecordScopes()));

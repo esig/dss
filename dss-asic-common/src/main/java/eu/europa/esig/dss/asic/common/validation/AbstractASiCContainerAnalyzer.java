@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.ContainerInfo;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -429,12 +430,13 @@ public abstract class AbstractASiCContainerAnalyzer extends DefaultDocumentAnaly
 				}
 			}
 
-			final EvidenceRecordAnalyzer evidenceRecordValidator = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
-			assertEvidenceRecordDocumentExtensionMatch(evidenceRecordDocument, evidenceRecordValidator.getEvidenceRecordType());
-			evidenceRecordValidator.setDetachedContents(detachedContents);
-			evidenceRecordValidator.setManifestFile(manifestFile);
-			evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
-			return evidenceRecordValidator;
+			final EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
+			assertEvidenceRecordDocumentExtensionMatch(evidenceRecordDocument, evidenceRecordAnalyzer.getEvidenceRecordType());
+			evidenceRecordAnalyzer.setDetachedContents(detachedContents);
+			evidenceRecordAnalyzer.setManifestFile(manifestFile);
+			evidenceRecordAnalyzer.setCertificateVerifier(certificateVerifier);
+			evidenceRecordAnalyzer.setEvidenceRecordOrigin(EvidenceRecordOrigin.CONTAINER);
+			return evidenceRecordAnalyzer;
 
 		} catch (Exception e) {
 			LOG.warn("Unable to load EvidenceRecordValidator for an evidence record document with name '{}' : {}",

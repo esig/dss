@@ -1327,6 +1327,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getTimestampContainerSignedAndTimestampedFilesCoveredConstraint() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getContainerSignedAndTimestampedFilesCovered();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getFullScopeConstraint() {
 		SignatureConstraints mainSignature = getSignatureConstraints();
 		if (mainSignature != null) {
@@ -1394,6 +1403,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
 		if (evidenceRecordConstraints != null) {
 			return evidenceRecordConstraints.getDataObjectGroup();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getEvidenceRecordSignedFilesCoveredConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getSignedFilesCovered();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getEvidenceRecordContainerSignedAndTimestampedFilesCoveredConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getContainerSignedAndTimestampedFilesCovered();
 		}
 		return null;
 	}
@@ -1580,15 +1607,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return containerConstraints.getAllFilesSigned();
-		}
-		return null;
-	}
-
-	@Override
-	public LevelConstraint getSignedAndTimestampedFilesCoveredConstraint() {
-		ContainerConstraints containerConstraints = getContainerConstraints();
-		if (containerConstraints != null) {
-			return containerConstraints.getSignedAndTimestampedFilesCovered();
 		}
 		return null;
 	}

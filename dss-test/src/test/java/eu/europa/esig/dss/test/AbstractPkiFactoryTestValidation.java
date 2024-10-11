@@ -83,6 +83,7 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MessageType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -1227,6 +1228,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 	protected void checkEvidenceRecords(DiagnosticData diagnosticData) {
 		checkNoDuplicateEvidenceRecords(diagnosticData.getEvidenceRecords());
+		checkEvidenceRecordOrigin(diagnosticData);
 		checkEvidenceRecordDigestMatchers(diagnosticData);
 		checkEvidenceRecordTimestamps(diagnosticData);
 		checkEvidenceRecordValidationData(diagnosticData);
@@ -1240,6 +1242,16 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		Set<String> erIds = evidenceRecordWrappers.stream().map(EvidenceRecordWrapper::getId).collect(Collectors.toSet());
 		assertEquals(evidenceRecordWrappers.size(), erIds.size());
 		assertFalse(evidenceRecordWrappers.stream().anyMatch(EvidenceRecordWrapper::isEvidenceRecordDuplicated));
+	}
+
+	protected void checkEvidenceRecordOrigin(DiagnosticData diagnosticData) {
+		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+			assertNotNull(evidenceRecord.getOrigin());
+			if (Utils.isCollectionNotEmpty(getDetachedEvidenceRecords())) {
+				assertEquals(EvidenceRecordOrigin.EXTERNAL, evidenceRecord.getOrigin());
+			}
+		}
 	}
 
 	protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {

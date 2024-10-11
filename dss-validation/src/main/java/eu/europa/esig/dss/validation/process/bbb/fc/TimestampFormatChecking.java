@@ -81,15 +81,29 @@ public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWra
 
             }
 
-            item = item.setNextItem(signedAndTimestampedFilesCoveredCheck());
+            // when signature, timestamp or evidence record is covered
+            if (coversSignatureOrTimestampOrEvidenceRecord(token)) {
+
+                if (item == null) {
+                    item = firstItem = signedAndTimestampedFilesCovered();
+                } else {
+                    item = item.setNextItem(signedAndTimestampedFilesCovered());
+                }
+
+            }
 
         }
 
     }
 
-    private ChainItem<XmlFC> signedAndTimestampedFilesCoveredCheck() {
-        LevelConstraint constraint = policy.getSignedAndTimestampedFilesCoveredConstraint();
+    private ChainItem<XmlFC> signedAndTimestampedFilesCovered() {
+        LevelConstraint constraint = policy.getTimestampContainerSignedAndTimestampedFilesCoveredConstraint();
         return new SignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), token, constraint);
+    }
+
+    private boolean coversSignatureOrTimestampOrEvidenceRecord(TimestampWrapper timestamp) {
+        return Utils.isCollectionNotEmpty(timestamp.getTimestampedSignatures()) || Utils.isCollectionNotEmpty(timestamp.getTimestampedTimestamps())
+                || Utils.isCollectionNotEmpty(timestamp.getTimestampedEvidenceRecords());
     }
 
 }

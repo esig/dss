@@ -34,6 +34,7 @@ import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -51,6 +52,7 @@ import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataIntactCh
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.TimestampValidationCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.checks.EvidenceRecordSignedAndTimestampedFilesCoveredCheck;
+import eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.checks.EvidenceRecordSignedFilesCoveredCheck;
 
 import java.util.Collection;
 import java.util.Date;
@@ -174,7 +176,16 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
             throw new IllegalStateException("Evidence record shall contain at least one DigestMatcher!");
         }
 
-        item = item.setNextItem(signedAndTimestampedFilesCoveredCheck());
+        // Externally provided evidence records
+        if (EvidenceRecordOrigin.EXTERNAL == evidenceRecord.getOrigin() && Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignatures())) {
+            item = item.setNextItem(signedFilesCoveredCheck());
+        }
+
+        // ASiC container evidence record
+        if (diagnosticData.isContainerInfoPresent() && EvidenceRecordOrigin.CONTAINER == evidenceRecord.getOrigin() &&
+                coversSignatureOrTimestampOrEvidenceRecord(evidenceRecord)) {
+            item = item.setNextItem(signedAndTimestampedFilesCoveredCheck());
+        }
 
         // Initialize null cryptographic validation
         XmlCryptographicValidation cryptographicValidation = null;
@@ -278,8 +289,13 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
         return new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, constraint);
     }
 
+    private ChainItem<XmlValidationProcessEvidenceRecord> signedFilesCoveredCheck() {
+        LevelConstraint constraint = policy.getEvidenceRecordSignedFilesCoveredConstraint();
+        return new EvidenceRecordSignedFilesCoveredCheck(i18nProvider, result, evidenceRecord, constraint);
+    }
+
     private ChainItem<XmlValidationProcessEvidenceRecord> signedAndTimestampedFilesCoveredCheck() {
-        LevelConstraint constraint = policy.getSignedAndTimestampedFilesCoveredConstraint();
+        LevelConstraint constraint = policy.getEvidenceRecordContainerSignedAndTimestampedFilesCoveredConstraint();
         return new EvidenceRecordSignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), evidenceRecord, constraint);
     }
 
@@ -318,6 +334,12 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
         cryptographicValidation.setValidationTime(validationTime);
         cryptographicValidation.setConcernedMaterial(evidenceRecord.getId());
         return cryptographicValidation;
+    }
+
+    private boolean coversSignatureOrTimestampOrEvidenceRecord(EvidenceRecordWrapper evidenceRecord) {
+        return Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignatures())
+                || Utils.isCollectionNotEmpty(evidenceRecord.getCoveredTimestamps())
+                || Utils.isCollectionNotEmpty(evidenceRecord.getCoveredEvidenceRecords());
     }
 
 }

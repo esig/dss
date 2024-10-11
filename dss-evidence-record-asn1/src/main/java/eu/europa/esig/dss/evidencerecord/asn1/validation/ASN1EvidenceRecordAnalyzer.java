@@ -81,6 +81,7 @@ public class ASN1EvidenceRecordAnalyzer extends DefaultEvidenceRecordAnalyzer {
     protected EvidenceRecord buildEvidenceRecord() {
         final ASN1EvidenceRecord evidenceRecord = new ASN1EvidenceRecord(this.evidenceRecordObject);
         evidenceRecord.setFilename(document.getName());
+        evidenceRecord.setOrigin(evidenceRecordOrigin);
         evidenceRecord.setManifestFile(manifestFile);
         evidenceRecord.setDetachedContents(detachedContents);
         return evidenceRecord;

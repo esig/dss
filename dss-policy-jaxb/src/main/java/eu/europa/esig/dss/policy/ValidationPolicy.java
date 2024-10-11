@@ -1102,6 +1102,14 @@ public interface ValidationPolicy {
 	LevelConstraint getTimestampTSAGeneralNameOrderMatch();
 
 	/**
+	 * Returns timestamp ContainerSignedAndTimestampedFilesCovered constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if ContainerSignedAndTimestampedFilesCovered element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTimestampContainerSignedAndTimestampedFilesCoveredConstraint();
+
+	/**
 	 * Returns RevocationTimeAgainstBestSignatureTime constraint if present in the policy, null otherwise
 	 *
 	 * @return {@code LevelConstraint} if RevocationTimeAgainstBestSignatureTime element is present
@@ -1144,6 +1152,22 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if DataObjectGroup element is present
 	 */
 	LevelConstraint getEvidenceRecordDataObjectGroupConstraint();
+
+	/**
+	 * Returns SignedFilesCovered constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if SignedFilesCovered element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getEvidenceRecordSignedFilesCoveredConstraint();
+
+	/**
+	 * Returns evidence record ContainerSignedAndTimestampedFilesCovered constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if ContainerSignedAndTimestampedFilesCovered element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getEvidenceRecordContainerSignedAndTimestampedFilesCoveredConstraint();
 
 	/**
 	 * Returns HashTreeRenewal constraint if present in the policy, null otherwise
@@ -1466,14 +1490,6 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getAllFilesSignedConstraint();
-
-	/**
-	 * Returns SignedAndTimestampedFilesCovered constraint if present in the policy, null otherwise
-	 *
-	 * @return {@code LevelConstraint} if SignedAndTimestampedFilesCovered element is present
-	 *                                 in the constraint file, null otherwise.
-	 */
-	LevelConstraint getSignedAndTimestampedFilesCoveredConstraint();
 
 	/**
 	 * Returns FullScope constraint if present in the policy, null otherwise

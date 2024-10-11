@@ -81,7 +81,7 @@ public class ASN1EvidenceRecord extends DefaultEvidenceRecord {
     }
 
     @Override
-    public EvidenceRecordTypeEnum getReferenceRecordType() {
+    public EvidenceRecordTypeEnum getEvidenceRecordType() {
         return EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD;
     }
 
