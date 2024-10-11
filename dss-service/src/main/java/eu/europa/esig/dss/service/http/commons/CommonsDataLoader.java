@@ -889,25 +889,22 @@ public class CommonsDataLoader implements DataLoader {
 
 	@Override
 	public byte[] post(final String url, final byte[] content) {
-
 		LOG.debug("Fetching data via POST from url {}", url);
 
-		HttpPost httpRequest = null;
+		final URI uri = URI.create(Utils.trim(url));
+		HttpPost httpRequest = new HttpPost(uri);
 		CloseableHttpClient client = null;
-		try {
-			final URI uri = URI.create(Utils.trim(url));
-			httpRequest = new HttpPost(uri);
 
-			// The length for the InputStreamEntity is needed, because some receivers (on the other side)
-			// need this information.
-			// To determine the length, we cannot read the content-stream up to the end and re-use it afterwards.
-			// This is because, it may not be possible to reset the stream (= go to position 0).
-			// So, the solution is to cache temporarily the complete content data (as we do not expect much here) in
-			// a byte-array.
-			final ByteArrayInputStream bis = new ByteArrayInputStream(content);
+		// The length for the InputStreamEntity is needed, because some receivers (on the other side)
+		// need this information.
+		// To determine the length, we cannot read the content-stream up to the end and re-use it afterwards.
+		// This is because, it may not be possible to reset the stream (= go to position 0).
+		// So, the solution is to cache temporarily the complete content data (as we do not expect much here) in
+		// a byte-array.
+		try (final ByteArrayInputStream bis = new ByteArrayInputStream(content);
+			 final HttpEntity httpEntity = new InputStreamEntity(bis, content.length, toContentType(contentType));
+			 final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity)) {
 
-			final HttpEntity httpEntity = new InputStreamEntity(bis, content.length, toContentType(contentType));
-			final HttpEntity requestEntity = new BufferedHttpEntity(httpEntity);
 			httpRequest.setEntity(requestEntity);
 
 			client = getHttpClient(url);
@@ -918,7 +915,6 @@ public class CommonsDataLoader implements DataLoader {
 
 		} finally {
 			closeQuietly(httpRequest, client);
-
 		}
 	}
 
