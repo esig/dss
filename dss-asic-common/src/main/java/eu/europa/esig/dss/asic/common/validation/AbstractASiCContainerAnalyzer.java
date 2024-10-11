@@ -474,7 +474,7 @@ public abstract class AbstractASiCContainerAnalyzer extends DefaultDocumentAnaly
 			// not embedded ER
 			return true;
 		}
-		return coversFile(evidenceRecordManifest, signature.getSignatureFilename());
+		return coversFile(evidenceRecordManifest, signature.getFilename());
 	}
 
 	private boolean coversEvidenceRecord(EvidenceRecord coveredEvidenceRecord, EvidenceRecord coveringEvidenceRecord) {

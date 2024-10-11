@@ -165,7 +165,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
                 boolean sigFileFound = false;
                 for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
                     assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                    if (signature.getSignatureFilename().equals(evidenceRecordScope.getName())) {
+                    if (signature.getFilename().equals(evidenceRecordScope.getName())) {
                         sigFileFound = true;
                     }
                 }
@@ -201,7 +201,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
                     boolean sigFileFound = false;
                     for (XmlSignatureScope tstScope : timestampScopes) {
                         assertEquals(SignatureScopeType.FULL, tstScope.getScope());
-                        if (signature.getSignatureFilename().equals(tstScope.getName())) {
+                        if (signature.getFilename().equals(tstScope.getName())) {
                             sigFileFound = true;
                         }
                     }

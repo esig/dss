@@ -97,9 +97,9 @@ class ASiCEWithXAdESLevelBContainerMergerCustomSigNameTest extends AbstractWithX
         boolean aaaSigFound = false;
         boolean bbbSigFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-            if ("META-INF/signaturesAAA.xml".equals(signatureWrapper.getSignatureFilename())) {
+            if ("META-INF/signaturesAAA.xml".equals(signatureWrapper.getFilename())) {
                 aaaSigFound = true;
-            } else if ("META-INF/signaturesBBB.xml".equals(signatureWrapper.getSignatureFilename())) {
+            } else if ("META-INF/signaturesBBB.xml".equals(signatureWrapper.getFilename())) {
                 bbbSigFound = true;
             }
         }

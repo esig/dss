@@ -133,7 +133,7 @@ public class XMLDocumentAnalyzer extends DefaultDocumentAnalyzer {
 			}
 
 			final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, xadesPathsHolders);
-			xadesSignature.setSignatureFilename(document.getName());
+			xadesSignature.setFilename(document.getName());
 			xadesSignature.setDetachedContents(detachedContents);
 			xadesSignature.setContainerContents(containerContents);
 			xadesSignature.setSigningCertificateSource(signingCertificateSource);

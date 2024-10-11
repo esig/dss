@@ -80,12 +80,12 @@ class DSS1792Test extends AbstractASiCWithCAdESTestValidation {
 				assertTrue(digestMatcher.isDataFound());
 				assertTrue(digestMatcher.isDataIntact());
 			}
-			if ("META-INF/signature001.p7s".equals(signature.getSignatureFilename())) {
+			if ("META-INF/signature001.p7s".equals(signature.getFilename())) {
 				assertEquals(3, digestMatchers.size());
-			} else if ("META-INF/signature002.p7s".equals(signature.getSignatureFilename())) {
+			} else if ("META-INF/signature002.p7s".equals(signature.getFilename())) {
 				assertEquals(7, digestMatchers.size());
 			} else {
-    			fail("Unexpected signature found with name : " + signature.getSignatureFilename());
+    			fail("Unexpected signature found with name : " + signature.getFilename());
 			}
 		}
 	}

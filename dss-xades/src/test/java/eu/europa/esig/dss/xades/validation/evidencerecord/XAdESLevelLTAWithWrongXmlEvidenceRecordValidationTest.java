@@ -96,7 +96,7 @@ class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdE
             List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
             for (XmlDigestMatcher digestMatcher : digestMatcherList) {
                 assertTrue(digestMatcher.isDataFound());
-                assertEquals(signature.getSignatureFilename(), digestMatcher.getDocumentName());
+                assertEquals(signature.getFilename(), digestMatcher.getDocumentName());
                 if (digestMatcher.isDataIntact()) {
                     ++validRefCount;
                 } else {
@@ -112,7 +112,7 @@ class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdE
             boolean sigNameFound = false;
             for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
                 assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                if (signature.getSignatureFilename().equals(evidenceRecordScope.getName())) {
+                if (signature.getFilename().equals(evidenceRecordScope.getName())) {
                     sigNameFound = true;
                 }
             }
@@ -165,7 +165,7 @@ class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdE
                 sigNameFound = false;
                 for (XmlSignatureScope tstScope : timestampScopes) {
                     assertEquals(SignatureScopeType.FULL, tstScope.getScope());
-                    if (signature.getSignatureFilename().equals(tstScope.getName())) {
+                    if (signature.getFilename().equals(tstScope.getName())) {
                         sigNameFound = true;
                     }
                 }

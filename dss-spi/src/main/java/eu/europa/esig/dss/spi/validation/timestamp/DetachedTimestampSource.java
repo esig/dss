@@ -98,7 +98,7 @@ public class DetachedTimestampSource extends AbstractTimestampSource {
         ManifestFile manifestFile = externalTimestamp.getManifestFile();
         if (manifestFile != null) {
             for (TimestampToken timestampToken : detachedTimestamps) {
-                if (manifestFile.isDocumentCovered(timestampToken.getFileName())) {
+                if (manifestFile.isDocumentCovered(timestampToken.getFilename())) {
                     addReferences(result,
                             getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource));
                 }
@@ -145,7 +145,7 @@ public class DetachedTimestampSource extends AbstractTimestampSource {
         ManifestFile manifestFile = evidenceRecord.getManifestFile();
         if (manifestFile != null) {
             for (ManifestEntry manifestEntry : manifestFile.getEntries()) {
-                if (timestampToken.getFileName() != null && timestampToken.getFileName().equals(manifestEntry.getUri())) {
+                if (timestampToken.getFilename() != null && timestampToken.getFilename().equals(manifestEntry.getUri())) {
                     return true;
                 }
             }

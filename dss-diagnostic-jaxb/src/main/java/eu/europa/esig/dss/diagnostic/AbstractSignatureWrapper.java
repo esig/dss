@@ -42,6 +42,13 @@ public abstract class AbstractSignatureWrapper extends AbstractTokenProxy {
     }
 
     /**
+     * Gets name of the signature or timestamp file, when applicable
+     *
+     * @return {@link String} file name
+     */
+    public abstract String getFilename();
+
+    /**
      * Returns a PAdES-specific PDF Revision info
      * NOTE: applicable only for PAdES
      *

@@ -140,7 +140,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		super.checkAdvancedSignatures(signatures);
 		
 		for (AdvancedSignature signature : signatures) {
-			assertNotNull(signature.getSignatureFilename());
+			assertNotNull(signature.getFilename());
 		}
 	}
 

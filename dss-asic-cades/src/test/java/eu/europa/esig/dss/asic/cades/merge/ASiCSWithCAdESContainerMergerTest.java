@@ -117,7 +117,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         reports = verify(mergedContainer);
         diagnosticData = reports.getDiagnosticData();
         assertEquals(2, diagnosticData.getSignatures().size());
-        assertEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(1).getSignatureFilename());
+        assertEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(1).getFilename());
     }
 
     @Test
@@ -475,8 +475,8 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         reports = verify(mergedContainer);
         diagnosticData = reports.getDiagnosticData();
         assertEquals(3, diagnosticData.getSignatures().size());
-        assertEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(1).getSignatureFilename());
-        assertEquals(diagnosticData.getSignatures().get(1).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
+        assertEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(1).getFilename());
+        assertEquals(diagnosticData.getSignatures().get(1).getFilename(), diagnosticData.getSignatures().get(2).getFilename());
     }
 
     @Test

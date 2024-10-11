@@ -305,7 +305,7 @@ public class SimpleReportBuilder {
 		}
 
 		if (container) {
-			xmlSignature.setFilename(signature.getSignatureFilename());
+			xmlSignature.setFilename(signature.getFilename());
 		}
 
 		Indication indication = detailedReport.getFinalIndication(signatureId);

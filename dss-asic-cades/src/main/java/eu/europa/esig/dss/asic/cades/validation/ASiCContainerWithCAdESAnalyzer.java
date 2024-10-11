@@ -259,7 +259,7 @@ public class ASiCContainerWithCAdESAnalyzer extends AbstractASiCContainerAnalyze
 
 	private CAdESSignature getCAdESSignatureFromFileName(List<AdvancedSignature> signatures, String fileName) {
 		for (AdvancedSignature advancedSignature : signatures) {
-			if (Utils.areStringsEqual(fileName, advancedSignature.getSignatureFilename()) &&
+			if (Utils.areStringsEqual(fileName, advancedSignature.getFilename()) &&
 					!advancedSignature.isCounterSignature()) {
 				return (CAdESSignature) advancedSignature;
 			}
@@ -320,7 +320,7 @@ public class ASiCContainerWithCAdESAnalyzer extends AbstractASiCContainerAnalyze
 		if (ASiCContainerType.ASiC_S.equals(getContainerType())) {
 			return getSignedDocumentsASiCS(retrievedDocs);
 		} else {
-			DSSDocument linkedManifest = ASiCManifestParser.getLinkedManifest(getManifestDocuments(), advancedSignature.getSignatureFilename());
+			DSSDocument linkedManifest = ASiCManifestParser.getLinkedManifest(getManifestDocuments(), advancedSignature.getFilename());
 			if (linkedManifest == null) {
 				return Collections.emptyList();
 			}

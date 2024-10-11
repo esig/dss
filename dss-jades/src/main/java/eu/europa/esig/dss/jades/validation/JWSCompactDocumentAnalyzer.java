@@ -70,7 +70,7 @@ public class JWSCompactDocumentAnalyzer extends AbstractJWSDocumentAnalyzer {
 		// only one signature is supported by compact serialization
 		JWS jws = foundSignatures.get(0);
 		JAdESSignature jadesSignature = new JAdESSignature(jws);
-		jadesSignature.setSignatureFilename(document.getName());
+		jadesSignature.setFilename(document.getName());
 		jadesSignature.setSigningCertificateSource(signingCertificateSource);
 		jadesSignature.setDetachedContents(detachedContents);
 		jadesSignature.initBaselineRequirementsChecker(certificateVerifier);

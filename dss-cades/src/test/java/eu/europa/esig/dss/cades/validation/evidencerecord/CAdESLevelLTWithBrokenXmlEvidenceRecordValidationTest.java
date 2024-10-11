@@ -98,7 +98,7 @@ class CAdESLevelLTWithBrokenXmlEvidenceRecordValidationTest extends AbstractCAdE
             boolean sigNameFound = false;
             for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
                 assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                if (signature.getSignatureFilename().equals(evidenceRecordScope.getName())) {
+                if (signature.getFilename().equals(evidenceRecordScope.getName())) {
                     sigNameFound = true;
                 }
             }

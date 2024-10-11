@@ -196,7 +196,7 @@ public class PDFDocumentAnalyzer extends DefaultDocumentAnalyzer {
                 PdfSignatureRevision pdfSignatureRevision = (PdfSignatureRevision) pdfRevision;
                 try {
                     final PAdESSignature padesSignature = new PAdESSignature(pdfSignatureRevision, documentRevisions);
-                    padesSignature.setSignatureFilename(document.getName());
+                    padesSignature.setFilename(document.getName());
                     padesSignature.setSigningCertificateSource(signingCertificateSource);
 
                     ListCertificateSource listCertificateSource = new ListCertificateSource();
@@ -269,7 +269,7 @@ public class PDFDocumentAnalyzer extends DefaultDocumentAnalyzer {
     private TimestampToken createPdfTimestampToken(PdfDocTimestampRevision pdfDocTimestampRevision) {
         try {
             PdfTimestampToken timestampToken = pdfDocTimestampRevision.getTimestampToken();
-            timestampToken.setFileName(document.getName());
+            timestampToken.setFilename(document.getName());
 
             List<SignatureScope> timestampScopes = getPAdESTimestampScopeFinder().findTimestampScope(timestampToken);
             timestampToken.setTimestampScopes(timestampScopes);

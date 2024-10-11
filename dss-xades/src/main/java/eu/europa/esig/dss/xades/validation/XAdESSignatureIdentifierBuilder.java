@@ -84,7 +84,7 @@ public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 
 	@Override
 	protected Object getSignatureFilePosition() {
-		String signatureFilename = signature.getSignatureFilename();
+		String signatureFilename = signature.getFilename();
 		if (Utils.isStringNotEmpty(signatureFilename) && signatureFilename.startsWith(META_INF_FOLDER)) {
 			return signatureFilename;
 		}

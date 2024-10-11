@@ -141,7 +141,7 @@ public class TimestampToken extends Token {
 	/**
 	 * In case of a detached timestamp
 	 */
-	private String fileName;
+	private String filename;
 	
 	/**
 	 * Only present for detached timestamps;
@@ -670,19 +670,42 @@ public class TimestampToken extends Token {
 	 * This method returns the file name of a detached timestamp
 	 * 
 	 * @return {@link String}
+	 * @deprecated since DSS 6.2. Please use {@code #getFilename} method instead.
 	 */
+	@Deprecated
 	public String getFileName() {
-		return fileName;
+		return getFilename();
 	}
 
 	/**
 	 * Sets the filename of a detached timestamp
 	 * 
-	 * @param fileName 
+	 * @param filename
+	 * 					{@link String}
+	 * @deprecated since DSS 6.2. Please use {@code #setFilename} method instead.
+	 */
+	@Deprecated
+	public void setFileName(String filename) {
+		setFilename(filename);
+	}
+
+	/**
+	 * This method returns the file name of a detached timestamp
+	 *
+	 * @return {@link String}
+	 */
+	public String getFilename() {
+		return filename;
+	}
+
+	/**
+	 * Sets the filename of a detached timestamp
+	 *
+	 * @param filename
 	 * 					{@link String}
 	 */
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 	/**
@@ -1002,7 +1025,7 @@ public class TimestampToken extends Token {
 	 */
 	protected TimestampIdentifierBuilder getTimestampIdentifierBuilder() {
 		if (identifierBuilder == null) {
-			identifierBuilder = new TimestampIdentifierBuilder(getEncoded()).setFilename(fileName);
+			identifierBuilder = new TimestampIdentifierBuilder(getEncoded()).setFilename(filename);
 		}
 		return identifierBuilder;
 	}

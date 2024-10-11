@@ -63,7 +63,7 @@ class CounterSignatureValidationTest extends AbstractXAdESTestValidation {
 			} else {
 				countSignatures++;
 			}
-			assertNotNull(signatureWrapper.getSignatureFilename());
+			assertNotNull(signatureWrapper.getFilename());
 		}
 		assertEquals(1, countSignatures);
 		assertEquals(1, countCounterSignatures);

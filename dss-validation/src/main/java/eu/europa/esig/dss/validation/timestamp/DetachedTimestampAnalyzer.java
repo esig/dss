@@ -118,7 +118,7 @@ public class DetachedTimestampAnalyzer extends DefaultDocumentAnalyzer implement
         Objects.requireNonNull(timestampType, "The TimestampType must be defined!");
         try {
             final TimestampToken newTimestampToken = new TimestampToken(DSSUtils.toByteArray(document), timestampType);
-            newTimestampToken.setFileName(document.getName());
+            newTimestampToken.setFilename(document.getName());
             newTimestampToken.matchData(getTimestampedData());
             return newTimestampToken;
 

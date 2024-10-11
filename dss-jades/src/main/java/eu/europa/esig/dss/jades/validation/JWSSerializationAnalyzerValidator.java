@@ -89,7 +89,7 @@ public class JWSSerializationAnalyzerValidator extends AbstractJWSDocumentAnalyz
 		LOG.info("{} signature(s) found", Utils.collectionSize(foundSignatures));
 		for (JWS jws : foundSignatures) {
 			JAdESSignature jadesSignature = new JAdESSignature(jws);
-			jadesSignature.setSignatureFilename(document.getName());
+			jadesSignature.setFilename(document.getName());
 			jadesSignature.setSigningCertificateSource(signingCertificateSource);
 			jadesSignature.setDetachedContents(detachedContents);
 			jadesSignature.initBaselineRequirementsChecker(certificateVerifier);

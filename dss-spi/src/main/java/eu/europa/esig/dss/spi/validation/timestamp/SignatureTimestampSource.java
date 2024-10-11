@@ -1188,7 +1188,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         List<TimestampToken> result = new ArrayList<>();
         for (TimestampToken timestampToken : getAllTimestamps()) {
             if (detachedTimestamps.contains(timestampToken) &&
-                    (manifestFile == null || !manifestFile.isDocumentCovered(timestampToken.getFileName()))) {
+                    (manifestFile == null || !manifestFile.isDocumentCovered(timestampToken.getFilename()))) {
                 // the detached timestamp is not covered, continue
                 continue;
             }

@@ -229,6 +229,7 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	 *
 	 * @return {@link String} file name
 	 */
+	@Override
 	public String getFilename() {
 		return timestamp.getTimestampFilename();
 	}

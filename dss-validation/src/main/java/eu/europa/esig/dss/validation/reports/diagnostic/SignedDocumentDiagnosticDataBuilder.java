@@ -449,7 +449,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			if (currentSignature != signature
 					&& (currentSignature.getId().equals(signature.getId()) ||
 					(currentSignature.getDAIdentifier() != null && currentSignature.getDAIdentifier().equals(signature.getDAIdentifier())
-							&& currentSignature.getSignatureFilename() != null && currentSignature.getSignatureFilename().equals(signature.getSignatureFilename())))) {
+							&& currentSignature.getFilename() != null && currentSignature.getFilename().equals(signature.getFilename())))) {
 				return true;
 			}
 		}
@@ -486,7 +486,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 */
 	public XmlSignature buildDetachedXmlSignature(AdvancedSignature signature) {
 		XmlSignature xmlSignature = new XmlSignature();
-		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getSignatureFilename()));
+		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getFilename()));
 
 		xmlSignature.setId(identifierProvider.getIdAsString(signature));
 		xmlSignature.setDAIdentifier(signature.getDAIdentifier());
@@ -1054,7 +1054,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlTimestampToken.setEvidenceRecordTimestampType(timestampToken.getEvidenceRecordTimestampType());
 
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
-		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
+		xmlTimestampToken.setTimestampFilename(timestampToken.getFilename());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
 		xmlTimestampToken.setSignerInformationStore(

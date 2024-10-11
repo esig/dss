@@ -140,7 +140,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * The name of a signature file
 	 */
-	private String signatureFilename;
+	private String filename;
 	
 	/**
 	 * Unique signature identifier
@@ -177,13 +177,25 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
+	@Deprecated
 	public String getSignatureFilename() {
-		return signatureFilename;
+		return getFilename();
 	}
 
 	@Override
-	public void setSignatureFilename(String signatureFilename) {
-		this.signatureFilename = signatureFilename;
+	@Deprecated
+	public void setSignatureFilename(String filename) {
+		setFilename(filename);
+	}
+
+	@Override
+	public String getFilename() {
+		return filename;
+	}
+
+	@Override
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
 	@Override

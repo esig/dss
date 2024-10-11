@@ -795,7 +795,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		List<ReferenceValidation> manifestEntryValidations = new ArrayList<>();
 		if (manifestFile == null) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("No related manifest file found for a signature with name [{}]", getSignatureFilename());
+				LOG.debug("No related manifest file found for a signature with name [{}]", getFilename());
 			}
 			return manifestEntryValidations;
 		}
@@ -1086,7 +1086,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		counterSignatures = new ArrayList<>();
 		for (final SignerInformation counterSignerInformation : getCounterSignatureStore()) {
 			final CAdESSignature counterSignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
-			counterSignature.setSignatureFilename(getSignatureFilename());
+			counterSignature.setFilename(getFilename());
 			counterSignature.setMasterSignature(this);
 			counterSignatures.add(counterSignature);
 		}

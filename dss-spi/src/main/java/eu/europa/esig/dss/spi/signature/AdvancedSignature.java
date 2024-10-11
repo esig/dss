@@ -67,15 +67,33 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	 * This method returns the signature filename (useful for ASiC and multiple signature files)
 	 * 
 	 * @return the signature filename
+	 * @deprecated since DSS 6.2. Please use {@code #getFilename} method instead.
 	 */
+	@Deprecated
 	String getSignatureFilename();
 
 	/**
 	 * This method allows to set the signature filename (useful in case of ASiC)
 	 *
-	 * @param signatureFilename {@link String}
+	 * @param filename {@link String}
+	 * @deprecated since DSS 6.2. Please use {@code #setFilename} method instead.
 	 */
-	void setSignatureFilename(String signatureFilename);
+	@Deprecated
+	void setSignatureFilename(String filename);
+
+	/**
+	 * This method returns the signature filename (useful for ASiC and multiple signature files)
+	 *
+	 * @return the signature filename
+	 */
+	String getFilename();
+
+	/**
+	 * This method allows to set the signature filename (useful in case of ASiC)
+	 *
+	 * @param filename {@link String}
+	 */
+	void setFilename(String filename);
 
 	/**
 	 * Returns detached contents

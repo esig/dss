@@ -152,7 +152,7 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                 boolean sigFileFound = false;
                 for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
                     assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                    if (signature.getSignatureFilename().equals(evidenceRecordScope.getName())) {
+                    if (signature.getFilename().equals(evidenceRecordScope.getName())) {
                         sigFileFound = true;
                     }
                 }
@@ -181,7 +181,7 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                 Set<String> coveredNames = new HashSet<>();
                 coveredNames.addAll(signature.getSignatureScopes().stream().map(XmlSignatureScope::getName).collect(Collectors.toSet()));
                 coveredNames.addAll(erManifest.getEntries());
-                coveredNames.remove(signature.getSignatureFilename());
+                coveredNames.remove(signature.getFilename());
 
                 boolean coversSignature = false;
                 boolean coversSignedData = false;
@@ -241,7 +241,7 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                 Set<String> coveredNames = new HashSet<>();
                 coveredNames.addAll(signature.getSignatureScopes().stream().map(XmlSignatureScope::getName).collect(Collectors.toSet()));
                 coveredNames.addAll(erManifest.getEntries());
-                coveredNames.remove(signature.getSignatureFilename());
+                coveredNames.remove(signature.getFilename());
 
                 int tstCounter = 0;
 
@@ -262,7 +262,7 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                     boolean sigFileFound = false;
                     for (XmlSignatureScope tstScope : timestampScopes) {
                         assertEquals(SignatureScopeType.FULL, tstScope.getScope());
-                        if (signature.getSignatureFilename().equals(tstScope.getName())) {
+                        if (signature.getFilename().equals(tstScope.getName())) {
                             sigFileFound = true;
                         }
                     }

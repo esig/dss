@@ -73,9 +73,9 @@ public class TimestampTokenComparator implements Comparator<TimestampToken>, Ser
 	private int compareByManifest(TimestampToken tst1, TimestampToken tst2) {
 		ManifestFile tst1ManifestFile = tst1.getManifestFile();
 		ManifestFile tst2ManifestFile = tst2.getManifestFile();
-		if (tst1ManifestFile != null && tst1ManifestFile.isDocumentCovered(tst2.getFileName())) {
+		if (tst1ManifestFile != null && tst1ManifestFile.isDocumentCovered(tst2.getFilename())) {
 			return  1;
-		} else if (tst2ManifestFile != null && tst2ManifestFile.isDocumentCovered(tst1.getFileName())) {
+		} else if (tst2ManifestFile != null && tst2ManifestFile.isDocumentCovered(tst1.getFilename())) {
 			return -1;
 		}
 		return 0;

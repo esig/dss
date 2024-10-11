@@ -113,9 +113,9 @@ class ASiCEWithCAdESLevelLTAContainerMergerSingleDocumentCustomNamesTest extends
         boolean aaaSigFound = false;
         boolean bbbSigFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-            if ("META-INF/signatureAAA.p7s".equals(signatureWrapper.getSignatureFilename())) {
+            if ("META-INF/signatureAAA.p7s".equals(signatureWrapper.getFilename())) {
                 aaaSigFound = true;
-            } else if ("META-INF/signatureBBB.p7s".equals(signatureWrapper.getSignatureFilename())) {
+            } else if ("META-INF/signatureBBB.p7s".equals(signatureWrapper.getFilename())) {
                 bbbSigFound = true;
             }
         }

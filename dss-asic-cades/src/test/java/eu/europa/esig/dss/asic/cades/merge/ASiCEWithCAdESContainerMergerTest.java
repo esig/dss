@@ -123,7 +123,7 @@ class ASiCEWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         reports = verify(mergedContainer);
         diagnosticData = reports.getDiagnosticData();
         assertEquals(2, diagnosticData.getSignatures().size());
-        assertEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(1).getSignatureFilename());
+        assertEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(1).getFilename());
     }
 
     @Test
@@ -415,8 +415,8 @@ class ASiCEWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         reports = verify(mergedContainer);
         diagnosticData = reports.getDiagnosticData();
         assertEquals(3, diagnosticData.getSignatures().size());
-        assertEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(1).getSignatureFilename());
-        assertEquals(diagnosticData.getSignatures().get(1).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
+        assertEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(1).getFilename());
+        assertEquals(diagnosticData.getSignatures().get(1).getFilename(), diagnosticData.getSignatures().get(2).getFilename());
 
         manifestFiles = diagnosticData.getContainerInfo().getManifestFiles();
         assertEquals(1, manifestFiles.size());
@@ -474,19 +474,19 @@ class ASiCEWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         reports = verify(mergedContainer);
         diagnosticData = reports.getDiagnosticData();
         assertEquals(3, diagnosticData.getSignatures().size());
-        assertNotEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(1).getSignatureFilename());
-        assertNotEquals(diagnosticData.getSignatures().get(1).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
-        assertNotEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
+        assertNotEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(1).getFilename());
+        assertNotEquals(diagnosticData.getSignatures().get(1).getFilename(), diagnosticData.getSignatures().get(2).getFilename());
+        assertNotEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(2).getFilename());
 
         boolean aaaNameFound = false;
         boolean bbbNameFound = false;
         boolean cccNameFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-            if ("META-INF/signatureAAA.p7s".equals(signatureWrapper.getSignatureFilename())) {
+            if ("META-INF/signatureAAA.p7s".equals(signatureWrapper.getFilename())) {
                 aaaNameFound = true;
-            } else if ("META-INF/signatureBBB.p7s".equals(signatureWrapper.getSignatureFilename())) {
+            } else if ("META-INF/signatureBBB.p7s".equals(signatureWrapper.getFilename())) {
                 bbbNameFound = true;
-            } else if ("META-INF/signatureCCC.p7s".equals(signatureWrapper.getSignatureFilename())) {
+            } else if ("META-INF/signatureCCC.p7s".equals(signatureWrapper.getFilename())) {
                 cccNameFound = true;
             }
         }

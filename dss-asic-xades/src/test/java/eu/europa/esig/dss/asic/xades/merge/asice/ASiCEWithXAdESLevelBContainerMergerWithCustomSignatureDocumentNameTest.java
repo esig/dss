@@ -97,10 +97,10 @@ class ASiCEWithXAdESLevelBContainerMergerWithCustomSignatureDocumentNameTest ext
 
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             if ((ASiCUtils.META_INF_FOLDER + "signaturesAAA.xml")
-                    .equals(signatureWrapper.getSignatureFilename())) {
+                    .equals(signatureWrapper.getFilename())) {
                 firstSignatureNameFound = true;
             } else if ((ASiCUtils.META_INF_FOLDER + "signaturesBBB.xml")
-                    .equals(signatureWrapper.getSignatureFilename())) {
+                    .equals(signatureWrapper.getFilename())) {
                 secondSignatureNameFound = true;
             }
         }

@@ -103,7 +103,7 @@ public class CMSDocumentAnalyzer extends DefaultDocumentAnalyzer {
 			for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
 				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
 				if (document != null) {
-					cadesSignature.setSignatureFilename(document.getName());
+					cadesSignature.setFilename(document.getName());
 				}
 				cadesSignature.setDetachedContents(detachedContents);
 				cadesSignature.setContainerContents(containerContents);

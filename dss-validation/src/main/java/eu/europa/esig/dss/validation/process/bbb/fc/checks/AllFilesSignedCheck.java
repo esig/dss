@@ -73,7 +73,7 @@ public class AllFilesSignedCheck extends ChainItem<XmlFC> {
 			return 1 == Utils.collectionSize(containerInfo.getContentFiles());
 
 		} else if (ASiCContainerType.ASiC_E.equals(containerInfo.getContainerType())) {
-			String signatureFilename = signature.getSignatureFilename();
+			String signatureFilename = signature.getFilename();
 			List<String> contentFiles = containerInfo.getContentFiles();
 
 			XmlManifestFile manifestFile = getRelatedManifestFile(signatureFilename);
