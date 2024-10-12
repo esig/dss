@@ -40,11 +40,14 @@ import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+
+import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -110,7 +113,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
 		this.dssDocument = dssDocument;
 		try (InputStream is = dssDocument.openStream()) {
-			this.pdDocument = PDDocument.load(is, passwordProtection);
+			this.pdDocument = Loader.loadPDF(IOUtils.toByteArray(is), passwordProtection);
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(
 					String.format("Encrypted document : %s", e.getMessage()));
@@ -132,7 +135,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		Objects.requireNonNull(binaries, "The document binaries must be defined!");
 		this.dssDocument = new InMemoryDocument(binaries);
 		try {
-			this.pdDocument = PDDocument.load(binaries, passwordProtection);
+			this.pdDocument = Loader.loadPDF(binaries, passwordProtection);
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(
 					String.format("Encrypted document : %s", e.getMessage()));
