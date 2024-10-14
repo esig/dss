@@ -14,6 +14,41 @@ For changes within Diagnostic Data XSD please refer <<DiagnosticDataChanges>>.
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 6.1 to 6.2
+|===
+|Title                               |v6.1                            |v6.2
+|Signature #getFilename             a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+
+AdvancedSignature signature = ...
+String filename = signature.getSignatureFilename();
+...
+
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+
+SignatureWrapper signatureWrapper = ...
+String filename = signatureWrapper.getSignatureFilename();
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+
+AdvancedSignature signature = ...
+String filename = signature.getFilename();
+...
+
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+
+SignatureWrapper signatureWrapper = ...
+String filename = signatureWrapper.getFilename();
+----
+
+|===
+
+[cols="2,5,5"]
 .Code changes from version 6.0 to 6.1
 |===
 |Title                               |v6.0                            |v6.1
