@@ -38,6 +38,7 @@ public abstract class JAdESExtensionBuilder {
 	 * Default constructor
 	 */
 	protected JAdESExtensionBuilder() {
+		// empty
 	}
 
 	/**

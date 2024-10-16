@@ -72,6 +72,7 @@ import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
@@ -174,7 +175,7 @@ public final class DSSUtils {
 	
 	/**
 	 * Formats the date according to the given format and timeZone as {@code String}.
-	 *
+	 * <p>
 	 * NOTE : When null or empty string is provided, the system default timezone is used!
 	 * 
 	 * @param date {@link Date} to transform to a String
@@ -269,7 +270,7 @@ public final class DSSUtils {
 	/**
 	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied
 	 * in binary or printable (PEM / Base64) encoding.
-	 * 
+	 * <p>
 	 * If the certificate is provided in Base64 encoding, it must be bounded at the beginning by
 	 * {@code -----BEGIN CERTIFICATE-----}, and must be bounded at the end by {@code -----END CERTIFICATE-----}.
 	 * 
@@ -278,14 +279,18 @@ public final class DSSUtils {
 	 * @return the certificate token
 	 */
 	public static CertificateToken loadCertificate(final File file) {
-		final InputStream inputStream = DSSUtils.toByteArrayInputStream(file);
-		return loadCertificate(inputStream);
+		try {
+			final InputStream inputStream = Files.newInputStream(file.toPath());
+			return loadCertificate(inputStream);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to find a file '%s' : %s", file.getAbsolutePath(), e.getMessage()), e);
+		}
 	}
 
 	/**
 	 * This method loads a certificate from the given location. The certificate must be DER-encoded and may be supplied
 	 * in binary or printable (PEM / Base64) encoding.
-	 * 
+	 * <p>
 	 * If the certificate is provided in Base64 encoding, it must be bounded at the beginning by
 	 * {@code -----BEGIN CERTIFICATE-----}, and must be bounded at the end by {@code -----END CERTIFICATE-----}.
 	 * 
@@ -304,16 +309,16 @@ public final class DSSUtils {
 	/**
 	 * Loads a collection of certificates from a p7c source
 	 *
-	 * @param is {@link InputStream} p7c
+	 * @param inputStream {@link InputStream} p7c
 	 * @return a list of {@link CertificateToken}s
 	 */
-	public static List<CertificateToken> loadCertificateFromP7c(InputStream is) {
-		return loadCertificates(is);
+	public static List<CertificateToken> loadCertificateFromP7c(InputStream inputStream) {
+		return loadCertificates(inputStream);
 	}
 
-	private static List<CertificateToken> loadCertificates(InputStream is) {
+	private static List<CertificateToken> loadCertificates(InputStream inputStream) {
 		final List<CertificateToken> certificates = new ArrayList<>();
-		try {
+		try (InputStream is = inputStream) {
 			@SuppressWarnings("unchecked")
 			final Collection<X509Certificate> certificatesCollection = (Collection<X509Certificate>) CertificateFactory
 					.getInstance("X.509", DSSSecurityProvider.getSecurityProviderName()).generateCertificates(is);
@@ -348,11 +353,8 @@ public final class DSSUtils {
 	 */
 	public static CertificateToken loadCertificate(final byte[] input) {
 		Objects.requireNonNull(input, "Input binary cannot be null");
-		try (ByteArrayInputStream inputStream = new ByteArrayInputStream(input)) {
-			return loadCertificate(inputStream);
-		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to create a CertificateToken from binaries : %s", e.getMessage()), e);
-		}
+		final InputStream inputStream = new ByteArrayInputStream(input); // closed inside
+		return loadCertificate(inputStream);
 	}
 
 	/**
@@ -533,7 +535,9 @@ public final class DSSUtils {
 	 *             {@code File} to read.
 	 * @return an {@code InputStream} materialized by a {@code FileInputStream}
 	 *         representing the contents of the file @ if an I/O error occurred
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public static InputStream toInputStream(final File file) {
 		Objects.requireNonNull(file, "The file cannot be null");
 		try {
@@ -550,7 +554,9 @@ public final class DSSUtils {
 	 * @param file
 	 *            {@code File} to read
 	 * @return {@code InputStream} based on {@code ByteArrayInputStream}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public static InputStream toByteArrayInputStream(final File file) {
 		return new ByteArrayInputStream(toByteArray(file));
 	}
@@ -584,7 +590,9 @@ public final class DSSUtils {
 	 * @param end
 	 *            the end position to retrieve
 	 * @return a new DSSDocument
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public static DSSDocument splitDocument(DSSDocument origin, int start, int end) {
 		try (InputStream is = origin.openStream();
 			 BufferedInputStream bis = new BufferedInputStream(is);
@@ -945,8 +953,10 @@ public final class DSSUtils {
 	 * @param is {@link InputStream} to skip bytes from
 	 * @param n {@code int} number bytes to skip
 	 * @return actual number of bytes have been skipped
-     * @exception IllegalStateException in case of {@code InputStream} reading error 
+     * @exception IllegalStateException in case of {@code InputStream} reading error
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public static long skipAvailableBytes(InputStream is, int n) throws IllegalStateException {
 		try {
 			long skipped = is.skip(n);
@@ -972,7 +982,9 @@ public final class DSSUtils {
 	 * @return the total number of bytes read into buffer
 	 * @throws IllegalStateException
 	 *                               in case of {@code InputStream} reading error
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public static long readAvailableBytes(DSSDocument dssDocument, byte[] b) throws IllegalStateException {
 		try (InputStream is = dssDocument.openStream()) {
 			return readAvailableBytes(is, b);
@@ -987,8 +999,10 @@ public final class DSSUtils {
 	 * @param is {@link InputStream} to read bytes from
 	 * @param b {@code byte}[] buffer to fill
 	 * @return the total number of bytes read into buffer
-	 * @throws IllegalStateException in case of {@code InputStream} reading error 
+	 * @throws IllegalStateException in case of {@code InputStream} reading error
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public static long readAvailableBytes(InputStream is, byte[] b) throws IllegalStateException {
 		return readAvailableBytes(is, b, 0, b.length);
 	}
@@ -1001,8 +1015,10 @@ public final class DSSUtils {
 	 * @param off {@code int} offset in the destination array
 	 * @param len {@code int} number of bytes to read
 	 * @return the total number of bytes read into buffer
-	 * @throws IllegalStateException in case of {@code InputStream} reading error 
+	 * @throws IllegalStateException in case of {@code InputStream} reading error
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public static long readAvailableBytes(InputStream is, byte[] b, int off, int len) throws IllegalStateException {
 		try {
 			long read = is.read(b, off, len);
@@ -1155,9 +1171,9 @@ public final class DSSUtils {
 
 	/**
 	 * Returns a URN URI generated from the given OID:
-	 *
+	 * <p>
 	 * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
-	 *
+	 * <p>
 	 * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
 	 *
 	 * @param oid {@link String} to be converted to URN URI

@@ -33,7 +33,6 @@ import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -59,6 +58,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -333,7 +333,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 		if ((policyFile == null) || !policyFile.exists()) {
 			return validateDocument((InputStream) null);
 		}
-		try (InputStream is = DSSUtils.toByteArrayInputStream(policyFile)) {
+		try (InputStream is = Files.newInputStream(policyFile.toPath())) {
 			return validateDocument(is);
 		} catch (IOException e) {
 			throw new IllegalInputException(String.format("Unable to load policy from file '%s'. Reason : %s",
