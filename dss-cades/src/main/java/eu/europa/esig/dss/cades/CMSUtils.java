@@ -427,16 +427,20 @@ public final class CMSUtils {
 	 * @return original {@link DSSDocument}
 	 */
 	public static DSSDocument getOriginalDocument(CMSSignedData cmsSignedData, List<DSSDocument> detachedDocuments) {
-		CMSTypedData signedContent = null;
-		if (cmsSignedData != null) {
-			signedContent = cmsSignedData.getSignedContent();
-		}
-		if (signedContent != null && !isDetachedSignature(cmsSignedData)) {
+		Objects.requireNonNull(cmsSignedData, "CMSSignedData shall be provided!");
+
+		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
+		if (!isDetachedSignature(cmsSignedData)) {
+			if (signedContent == null) {
+				throw new DSSException("No signed content found within enveloping CMS signature!");
+			}
 			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
+
 		} else if (Utils.collectionSize(detachedDocuments) == 1) {
 			return detachedDocuments.get(0);
+
 		} else {
-			throw new DSSException("Only enveloping and detached signatures are supported");
+			throw new DSSException("Detached content is not provided or cannot be identified (only one document shall be provided)!");
 		}
 	}
 

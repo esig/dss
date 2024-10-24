@@ -31,7 +31,6 @@ import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -41,6 +40,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -93,7 +93,7 @@ class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature {
 		parameters.setCertificateChain(getCertificateChain());
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		parameters.setDetachedContents(Arrays.asList(original));
+		parameters.setDetachedContents(Collections.singletonList(original));
 		
 		DSSDocument resignedDocument = sign();
 		
@@ -124,8 +124,9 @@ class CAdESDoubleSignatureDetachedTest extends AbstractCAdESTestSignature {
 		// explicit missing file
 		// signatureParameters.setDetachedContents(Arrays.asList(documentToSign));
 
-		DSSException e = assertThrows(DSSException.class, () -> sign());
-		assertEquals("Unknown SignedContent", e.getMessage());
+		Exception e = assertThrows(IllegalArgumentException.class, this::sign);
+		assertEquals("Detached content shall be provided on parallel signing of a detached signature! " +
+				"Please use cadesSignatureParameters#setDetachedContents method to provide original files.", e.getMessage());
 	}
 
 	@Override

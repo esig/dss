@@ -39,10 +39,10 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSTypedData;
@@ -211,10 +211,11 @@ public class CAdESService extends
 	 * @return the original toSignDocument or null
 	 */
 	private DSSDocument getSignedContent(final CMSSignedData cmsSignedData) {
-		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
-		if (signedContent == null) {
-			throw new DSSException("Unknown SignedContent");
+		if (cmsSignedData.isDetachedSignature()) {
+			throw new IllegalArgumentException("Detached content shall be provided on parallel signing of a detached signature! " +
+					"Please use cadesSignatureParameters#setDetachedContents method to provide original files.");
 		}
+		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
 		final byte[] documentBytes = (byte[]) signedContent.getContent();
 		return new InMemoryDocument(documentBytes);
 	}
@@ -279,14 +280,21 @@ public class CAdESService extends
 				&& DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
 			try {
 				cmsSignedData = DSSUtils.toCMSSignedData(dssDocument);
-				if (SignaturePackaging.ENVELOPING == parameters.getSignaturePackaging() && cmsSignedData.getSignedContent().getContent() == null) {
-					cmsSignedData = null;
-				}
 			} catch (Exception e) {
 				// not a parallel signature
 			}
+			if (cmsSignedData != null) {
+				assertSignaturePossible(cmsSignedData, parameters);
+			}
 		}
 		return cmsSignedData;
+	}
+
+	private void assertSignaturePossible(final CMSSignedData cmsSignedData, final CAdESSignatureParameters parameters) {
+		if (cmsSignedData.isDetachedSignature() != (SignaturePackaging.DETACHED == parameters.getSignaturePackaging())) {
+			throw new IllegalArgumentException(String.format("Unable to create a parallel signature with packaging '%s'" +
+					" which is different than the one used in the original signature!", parameters.getSignaturePackaging()));
+		}
 	}
 
 	private CMSSignedDataBuilder getCMSSignedDataBuilder(CAdESSignatureParameters parameters) {
