@@ -163,6 +163,9 @@ public class CommonsDataLoader implements DataLoader {
 	/** Contains rules credentials for authentication to different resources */
 	private Map<HostConnection, UserCredentials> authenticationMap;
 
+	/** A list of preferred auth schemes, to be executed in the given order */
+	private List<String> targetPreferredAuthSchemes;
+
 	/**
 	 * Used SSL protocol
 	 */
@@ -605,19 +608,6 @@ public class CommonsDataLoader implements DataLoader {
 	}
 
 	/**
-	 * Sets whether the preemptive authentication should be used.
-	 * When set to TRUE, the client sends authentication details (i.e. user credentials) within the initial request
-	 * to the remote host, instead of sending the credentials only after a request from the host.
-	 * Please note that the preemptive authentication should not be used over an insecure connection.
-	 * Default : FALSE (preemptive authentication is not used)
-	 *
-	 * @param preemptiveAuthentication whether the preemptive authentication should be used
-	 */
-	public void setPreemptiveAuthentication(boolean preemptiveAuthentication) {
-		this.preemptiveAuthentication = preemptiveAuthentication;
-	}
-
-	/**
 	 * Adds authentication credentials to the existing {@code authenticationMap}
 	 *
 	 * @param host
@@ -637,6 +627,39 @@ public class CommonsDataLoader implements DataLoader {
 		final HostConnection hostConnection = new HostConnection(host, port, scheme);
 		final UserCredentials userCredentials = new UserCredentials(login, password);
 		return addAuthentication(hostConnection, userCredentials);
+	}
+
+	/**
+	 * Gets the target preferred authentication scheme, to be called in the given order
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getTargetPreferredAuthSchemes() {
+		return targetPreferredAuthSchemes;
+	}
+
+	/**
+	 * Sets a list of target preferred authentication schemes,
+	 * to be executed on the given order on connection establishing
+	 * Default: "Bearer", "Digest", "Basic".
+	 *
+	 * @param targetPreferredAuthSchemes a list of {@link String}s
+	 */
+	public void setTargetPreferredAuthSchemes(List<String> targetPreferredAuthSchemes) {
+		this.targetPreferredAuthSchemes = targetPreferredAuthSchemes;
+	}
+
+	/**
+	 * Sets whether the preemptive authentication should be used.
+	 * When set to TRUE, the client sends authentication details (i.e. user credentials) within the initial request
+	 * to the remote host, instead of sending the credentials only after a request from the host.
+	 * Please note that the preemptive authentication should not be used over an insecure connection.
+	 * Default : FALSE (preemptive authentication is not used)
+	 *
+	 * @param preemptiveAuthentication whether the preemptive authentication should be used
+	 */
+	public void setPreemptiveAuthentication(boolean preemptiveAuthentication) {
+		this.preemptiveAuthentication = preemptiveAuthentication;
 	}
 
 	/**
@@ -1120,14 +1143,8 @@ public class CommonsDataLoader implements DataLoader {
 
 		httpClientBuilder = configCredentials(httpClientBuilder, url);
 
-		final RequestConfig.Builder requestConfigBuilder = RequestConfig.custom()
-				.setConnectionRequestTimeout(timeoutConnectionRequest)
-				.setResponseTimeout(timeoutResponse)
-				.setConnectionKeepAlive(connectionKeepAlive)
-				.setRedirectsEnabled(redirectsEnabled);
-
 		httpClientBuilder.setConnectionManager(getConnectionManager())
-				.setDefaultRequestConfig(requestConfigBuilder.build())
+				.setDefaultRequestConfig(getRequestConfig())
 				.setRetryStrategy(retryStrategy);
 		
 		return httpClientBuilder;
@@ -1141,6 +1158,29 @@ public class CommonsDataLoader implements DataLoader {
 	 */
 	protected synchronized CloseableHttpClient getHttpClient(final String url) {
 		return getHttpClientBuilder(url).build();
+	}
+
+	/**
+	 * Gets a configured {@code RequestConfig.Builder}
+	 *
+	 * @return {@link RequestConfig.Builder}
+	 */
+	protected RequestConfig.Builder getRequestConfigBuilder() {
+		return RequestConfig.custom()
+				.setTargetPreferredAuthSchemes(targetPreferredAuthSchemes)
+				.setConnectionRequestTimeout(timeoutConnectionRequest)
+				.setResponseTimeout(timeoutResponse)
+				.setConnectionKeepAlive(connectionKeepAlive)
+				.setRedirectsEnabled(redirectsEnabled);
+	}
+
+	/**
+	 * Builds and gets a {@code RequestConfig}
+	 *
+	 * @return {@link RequestConfig}
+	 */
+	protected RequestConfig getRequestConfig() {
+		return getRequestConfigBuilder().build();
 	}
 
 	/**
