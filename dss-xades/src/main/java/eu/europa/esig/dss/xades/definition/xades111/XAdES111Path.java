@@ -642,9 +642,4 @@ public class XAdES111Path extends AbstractPath implements XAdESPath {
 		return null;
 	}
 
-	@Override
-	public XSDAbstractUtils getXSDUtils() {
-		return XAdES111Utils.getInstance();
-	}
-
 }

@@ -20,12 +20,10 @@
  */
 package eu.europa.esig.dss.xades.definition.xades122;
 
-import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.xades.XAdES122Utils;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 
 /**
@@ -631,11 +629,6 @@ public class XAdES122Path extends AbstractPath implements XAdESPath {
 	@Override
 	public String getCurrentSigPolDocLocalURI() {
 		return null;
-	}
-
-	@Override
-	public XSDAbstractUtils getXSDUtils() {
-		return XAdES122Utils.getInstance();
 	}
 
 }

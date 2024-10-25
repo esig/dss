@@ -37,9 +37,18 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
+import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
+import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
@@ -47,33 +56,24 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
-import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
-import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
-import eu.europa.esig.dss.model.signature.SignatureDigestReference;
-import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
-import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.EnforcedResolverFragment;
-import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
-import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
-import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
-import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
+import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
+import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
@@ -89,7 +89,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.transform.dom.DOMSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1424,7 +1423,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<String> validateStructure() {
-		return DSSXMLUtils.validateAgainstXSD(xadesPath.getXSDUtils(), new DOMSource(signatureElement));
+		final XAdESStructureValidator structureValidator = XAdESStructureValidator.fromXAdESSignature(this);
+		structureValidator.validate();
+		return structureValidator.getValidationErrors();
 	}
 
 	@Override

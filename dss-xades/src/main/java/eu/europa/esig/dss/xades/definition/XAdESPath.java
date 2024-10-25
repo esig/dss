@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
-import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 import java.io.Serializable;
@@ -821,12 +820,5 @@ public interface XAdESPath extends Serializable {
 	 * @return {@link String} path
 	 */
 	String getCurrentSigPolDocLocalURI();
-
-	/**
-	 * Gets the XSD Utils
-	 *
-	 * @return {@link XSDAbstractUtils}
-	 */
-	XSDAbstractUtils getXSDUtils();
 
 }
