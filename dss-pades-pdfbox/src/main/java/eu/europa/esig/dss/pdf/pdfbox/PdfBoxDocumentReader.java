@@ -62,6 +62,7 @@ import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
@@ -96,7 +97,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 */
 	public PdfBoxDocumentReader(DSSDocument dssDocument)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
-		this(dssDocument, null, MemoryUsageSetting.setupMainMemoryOnly());
+		this(dssDocument, null, PdfMemoryUsageSetting.memoryOnly());
 	}
 
 	/**
@@ -109,11 +110,11 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
 	 *                           invalid for a protected document
 	 */
-	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection,
-			MemoryUsageSetting memoryUsageSetting)
+	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection, PdfMemoryUsageSetting pdfMemoryUsageSetting)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
 		this.dssDocument = dssDocument;
+		MemoryUsageSetting memoryUsageSetting = PdfBoxUtils.getMemoryUsageSetting(pdfMemoryUsageSetting);
 		try {
 			if (dssDocument instanceof FileDocument) {
 				FileDocument fileDocument = (FileDocument) dssDocument;

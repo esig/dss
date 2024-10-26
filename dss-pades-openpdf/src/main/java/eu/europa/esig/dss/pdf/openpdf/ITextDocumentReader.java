@@ -64,9 +64,9 @@ import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.SingleDssDict;
-import eu.europa.esig.dss.pdf.openpdf.ITextPdfMemoryUsageSetting.Mode;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -96,7 +96,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @throws InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
 	public ITextDocumentReader(DSSDocument dssDocument) throws IOException, InvalidPasswordException {
-		this(dssDocument, null, new ITextPdfMemoryUsageSetting(Mode.FULL));
+		this(dssDocument, null, PdfMemoryUsageSetting.memoryOnly());
 	}
 
 	/**
@@ -107,17 +107,18 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @throws IOException if an exception occurs
 	 * @throws InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
-	public ITextDocumentReader(DSSDocument dssDocument, byte[] passwordProtection, ITextPdfMemoryUsageSetting memoryUsageSetting) throws IOException, InvalidPasswordException {
+	public ITextDocumentReader(DSSDocument dssDocument, byte[] passwordProtection, PdfMemoryUsageSetting pdfMemoryUsageSetting) throws IOException, InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
 		this.dssDocument = dssDocument;
 		try {
+			ITextPdfMemoryUsageSetting memoryUsageSetting = ITextPdfMemoryUsageSetting.map(pdfMemoryUsageSetting);
 			if (dssDocument instanceof FileDocument) {
 				FileDocument fileDocument = (FileDocument) dssDocument;
 				String filenameSource = fileDocument.getFile().getAbsolutePath();
 				if (ITextPdfMemoryUsageSetting.Mode.FULL.equals(memoryUsageSetting.getMode())) {
 					this.pdfReader = new PdfReader(filenameSource, passwordProtection);
 				} else {
-					this.pdfReader = new PdfReader(new RandomAccessFileOrArray(filenameSource), passwordProtection);
+					this.pdfReader = new PdfReader(new RandomAccessFileOrArray(filenameSource, false, true), passwordProtection);
 				}
 			} else {
 				try (InputStream is = dssDocument.openStream()) {

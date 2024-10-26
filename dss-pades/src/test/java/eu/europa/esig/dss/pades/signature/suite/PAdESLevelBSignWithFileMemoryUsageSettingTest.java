@@ -61,7 +61,7 @@ public class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdES
 
 	@BeforeEach
 	void init() throws Exception {
-		documentToSign = new FileDocument(new File(PAdESLevelBSignWithFileMemoryUsageSettingTest.class.getClassLoader().getResource("./big_file_26mb.pdf").toURI()));
+		documentToSign = new FileDocument(new File(PAdESLevelBSignWithFileMemoryUsageSettingTest.class.getClassLoader().getResource("./big_file.pdf").toURI()));
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

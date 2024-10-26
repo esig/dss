@@ -36,6 +36,7 @@ import com.lowagie.text.pdf.PdfObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 
 class ITextDocumentReaderTest extends PKIFactoryAccess {
@@ -54,7 +55,7 @@ class ITextDocumentReaderTest extends PKIFactoryAccess {
     @Test
     void permissionsProtectedDocument() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"));
-		try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[] { ' ' }, new ITextPdfMemoryUsageSetting(ITextPdfMemoryUsageSetting.Mode.FULL))) {
+		try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[] { ' ' }, PdfMemoryUsageSetting.memoryOnly())) {
             assertTrue(documentReader.isEncrypted());
             assertTrue(documentReader.isOpenWithOwnerAccess());
             assertTrue(documentReader.canFillSignatureForm());
@@ -65,7 +66,7 @@ class ITextDocumentReaderTest extends PKIFactoryAccess {
     @Test
     void permissionsEditionProtectedDocument() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_none.pdf"));
-        try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[]{ ' ' }, new ITextPdfMemoryUsageSetting(ITextPdfMemoryUsageSetting.Mode.FULL))) {
+        try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[]{ ' ' }, PdfMemoryUsageSetting.memoryOnly())) {
             assertTrue(documentReader.isEncrypted());
             assertTrue(documentReader.isOpenWithOwnerAccess());
             assertTrue(documentReader.canFillSignatureForm());
@@ -76,7 +77,7 @@ class ITextDocumentReaderTest extends PKIFactoryAccess {
     @Test
     void permissionsEditionNoFieldsProtectedDocument() throws IOException {
         DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_no_field.pdf"));
-        try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[]{ ' ' }, new ITextPdfMemoryUsageSetting(ITextPdfMemoryUsageSetting.Mode.FULL))) {
+        try (ITextDocumentReader documentReader = new ITextDocumentReader(dssDocument, new byte[]{ ' ' }, PdfMemoryUsageSetting.memoryOnly())) {
             assertTrue(documentReader.isEncrypted());
             assertTrue(documentReader.isOpenWithOwnerAccess());
             assertTrue(documentReader.canFillSignatureForm());

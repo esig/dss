@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.PAdESUtils;
-import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -36,11 +35,13 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
+import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 
 /**
  * Contains a set of utils for PdfBox implementation
@@ -50,237 +51,77 @@ public class PdfBoxUtils {
 
 	private PdfBoxUtils() {
 	}
-
+	
 	/**
 	 * Generates a screenshot image of the specified page for the given PDF document
 	 * 
-	 * @param pdfDocument {@link DSSDocument} to generate screenshot for
-	 * @param page        a page number
-	 * @param memoryUsageSetting ({@link MemoryUsageSetting} load setting
+	 * @param pdfBoxPageDocumentRequest {@link PdfBoxPageDocumentRequest}
 	 * @return {@link DSSDocument} PNG screenshot
 	 */
-	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, int page, MemoryUsageSetting memoryUsageSetting) {
-		return generateScreenshot(pdfDocument, (char[]) null, page, memoryUsageSetting);
+	public static DSSDocument generateScreenshot(PdfBoxPageDocumentRequest pdfBoxPageDocumentRequest) {
+		return generateScreenshot(pdfBoxPageDocumentRequest, PAdESUtils.initializeDSSResourcesHandler());
 	}
-
+	
 	/**
 	 * Generates a screenshot image of the specified page for the given PDF document
 	 * 
-	 * @param pdfDocument        {@link DSSDocument} to generate screenshot for
-	 * @param passwordProtection {@link String} a PDF password protection phrase
-	 * @param page               a page number
-	 * @param memoryUsageSetting ({@link MemoryUsageSetting} load setting
-	 * @return {@link DSSDocument} PNG screenshot
-	 */
-	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, String passwordProtection, int page, MemoryUsageSetting memoryUsageSetting) {
-		return generateScreenshot(pdfDocument, passwordProtection, page, memoryUsageSetting, PAdESUtils.initializeDSSResourcesHandler());
-	}
-
-	/**
-	 * Generates a screenshot image of the specified page for the given PDF document
-	 *
-	 * @param pdfDocument        {@link DSSDocument} to generate screenshot for
-	 * @param passwordProtection a PDF password protection phrase
-	 * @param page               a page number
-	 * @param memoryUsageSetting ({@link MemoryUsageSetting} load setting
-	 * @return {@link DSSDocument} PNG screenshot
-	 */
-	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, char[] passwordProtection, int page, MemoryUsageSetting memoryUsageSetting) {
-		return generateScreenshot(pdfDocument, passwordProtection, page, memoryUsageSetting, PAdESUtils.initializeDSSResourcesHandler());
-	}
-
-	/**
-	 * Generates a screenshot image of the specified page for the given PDF document
-	 * using a provided
-	 * {@code eu.europa.esig.dss.signature.resources.DSSResourcesHandler}
-	 *
-	 * @param pdfDocument         {@link DSSDocument} to generate screenshot for
-	 * @param passwordProtection  {@link String} a PDF password protection phrase
-	 * @param page                a page number
-	 * @param memoryUsageSetting ({@link MemoryUsageSetting} load setting
+	 * @param pdfBoxPageDocumentRequest {@link PdfBoxPageDocumentRequest}
 	 * @param dssResourcesHandler {@link DSSResourcesHandler}
 	 * @return {@link DSSDocument} PNG screenshot
 	 */
-	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, String passwordProtection, int page, MemoryUsageSetting memoryUsageSetting,
-			DSSResourcesHandler dssResourcesHandler) {
-		BufferedImage bufferedImage = generateBufferedImageScreenshot(pdfDocument, passwordProtection, page, memoryUsageSetting);
+	public static DSSDocument generateScreenshot(PdfBoxPageDocumentRequest pdfBoxPageDocumentRequest, DSSResourcesHandler dssResourcesHandler) {
+		Objects.requireNonNull(pdfBoxPageDocumentRequest, "pageDocumentRequest shall be defined!");
+		BufferedImage bufferedImage = PdfBoxUtils.generateBufferedImageScreenshot(pdfBoxPageDocumentRequest);
 		return ImageUtils.toDSSDocument(bufferedImage, dssResourcesHandler);
 	}
-
-	/**
-	 * Generates a screenshot image of the specified page for the given PDF document
-	 * using a provided
-	 * {@code eu.europa.esig.dss.signature.resources.DSSResourcesHandler}
-	 *
-	 * @param pdfDocument         {@link DSSDocument} to generate screenshot for
-	 * @param passwordProtection  a PDF password protection phrase
-	 * @param page                a page number
-	 * @param memoryUsageSetting ({@link MemoryUsageSetting} load setting
-	 * @param dssResourcesHandler {@link DSSResourcesHandler}
-	 * @return {@link DSSDocument} PNG screenshot
-	 */
-	public static DSSDocument generateScreenshot(DSSDocument pdfDocument, char[] passwordProtection, int page, MemoryUsageSetting memoryUsageSetting,
-			DSSResourcesHandler dssResourcesHandler) {
-		BufferedImage bufferedImage = generateBufferedImageScreenshot(pdfDocument, passwordProtection, page, memoryUsageSetting);
-		return ImageUtils.toDSSDocument(bufferedImage, dssResourcesHandler);
-	}
-
-	/**
-	 * The method generates a BufferedImage for the specified page of the document
-	 * with String password
-	 * 
-	 * @param pdfDocument        {@link DSSDocument} to generate screenshot for
-	 * @param passwordProtection {@link String} a PDF password protection phrase
-	 * @param page               a page number to be generates (starts from 1)
-	 * @param memoryUsageSetting ({@link MemoryUsageSetting} load setting
-	 * @return {@link BufferedImage}
-	 */
-	public static BufferedImage generateBufferedImageScreenshot(DSSDocument pdfDocument, String passwordProtection,
-			int page, MemoryUsageSetting memoryUsageSetting) {
-		return generateBufferedImageScreenshot(pdfDocument,
-				passwordProtection != null ? passwordProtection.toCharArray() : null, page, memoryUsageSetting);
-	}
-
+	
 	/**
 	 * The method generates a BufferedImage for the specified page of the document
 	 *
-	 * @param pdfDocument        {@link DSSDocument} to generate screenshot for
-	 * @param passwordProtection a PDF password protection phrase
-	 * @param page               a page number to be generates (starts from 1)
-	 * @param memoryUsageSetting ({@link MemoryUsageSetting} load setting
+	 * @param pdfBoxPageDocumentRequest {@link PdfBoxPageDocumentRequest}
 	 * @return {@link BufferedImage}
 	 */
-	public static BufferedImage generateBufferedImageScreenshot(DSSDocument pdfDocument, char[] passwordProtection,
-			int page, MemoryUsageSetting memoryUsageSetting) {
-		Objects.requireNonNull(pdfDocument, "pdfDocument shall be defined!");
-		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(pdfDocument,
-				passwordProtection != null ? new String(passwordProtection) : null,
-						memoryUsageSetting)) {
-			return reader.generateImageScreenshot(page);
+	public static BufferedImage generateBufferedImageScreenshot(PdfBoxPageDocumentRequest pdfBoxPageDocumentRequest) {
+		Objects.requireNonNull(pdfBoxPageDocumentRequest, "pageDocumentRequest shall be defined!");
+		try (PdfBoxDocumentReader reader = new PdfBoxDocumentReader(pdfBoxPageDocumentRequest.getPdfDocument(), pdfBoxPageDocumentRequest.getPasswordProtection() != null ? new String(pdfBoxPageDocumentRequest.getPasswordProtection()) : null,
+				pdfBoxPageDocumentRequest.getPdfMemoryUsageSetting())) {
+			return reader.generateImageScreenshot(pdfBoxPageDocumentRequest.getPage());
 		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to generate a screenshot for the document with name '%s' "
-					+ "for the page number '%s'. Reason : %s", pdfDocument.getName(), page, e.getMessage()), e);
+			throw new DSSException(
+					String.format("Unable to generate a screenshot for the document with name '%s' " + "for the page number '%s'. Reason : %s", pdfBoxPageDocumentRequest.getPdfDocument().getName(), pdfBoxPageDocumentRequest.getPage(), e.getMessage()),
+					e);
 		}
+	}	
+
+	/**
+	 * This method returns an image representing a subtraction result between
+	 * {@code pdfBoxPageDocumentRequest1} and {@code pdfBoxPageDocumentRequest2} for the defined pages
+	 *
+	 * @param pdfBoxPageDocumentRequest1 {@link PdfBoxPageDocumentRequest} the first document request
+	 * @param pdfBoxPageDocumentRequest2 {@link PdfBoxPageDocumentRequest} the second document request
+	 * @return {@link DSSDocument} subtraction result
+	 */
+	public static DSSDocument generateSubtractionImage(PdfBoxPageDocumentRequest pdfBoxPageDocumentRequest1, PdfBoxPageDocumentRequest pdfBoxPageDocumentRequest2) {
+		return generateSubtractionImage(pdfBoxPageDocumentRequest1, pdfBoxPageDocumentRequest2, PAdESUtils.initializeDSSResourcesHandler());
 	}
 
 	/**
 	 * This method returns an image representing a subtraction result between
-	 * {@code document1} and {@code document2} for the given page number
+	 * {@code pdfBoxPageDocumentRequest1} and {@code pdfBoxPageDocumentRequest2} for the defined
+	 * pages.
 	 * 
-	 * @param document1 {@link DSSDocument}
-	 * @param document2 {@link DSSDocument}
-	 * @param page      page number
-	 * @return {@link DSSDocument} subtraction result
-	 */
-	public static DSSDocument generateSubtractionImage(DSSDocument document1, DSSDocument document2, int page) {
-		return generateSubtractionImage(document1, (char[]) null, page, MemoryUsageSetting.setupMainMemoryOnly(), document2, (char[]) null, page, MemoryUsageSetting.setupMainMemoryOnly());
-	}
-
-	/**
-	 * This method returns an image representing a subtraction result between
-	 * {@code document1} and {@code document2} for the defined pages
-	 * 
-	 * @param document1         {@link DSSDocument} the first document
-	 * @param passwordDocument1 {@link String} a password protection for the
-	 *                          {@code document1} when applicable (can be null)
-	 * @param pageDocument1     page number identifying a page of the
-	 *                          {@code document1} to be proceeded
-	 * @param memoryUsageSetting1 {@link MemoryUsageSetting} load setting                         
-	 * @param document2         {@link DSSDocument} the second document
-	 * @param passwordDocument2 {@link String} a password protection for the
-	 *                          {@code document2} when applicable (can be null)
-	 * @param pageDocument2     page number identifying a page of the
-	 *                          {@code document2} to be proceeded
-	 * @param memoryUsageSetting2 {@link MemoryUsageSetting} load setting                         
-	 * @return {@link DSSDocument} subtraction result
-	 */
-	public static DSSDocument generateSubtractionImage(DSSDocument document1, String passwordDocument1,
-			int pageDocument1, MemoryUsageSetting memoryUsageSetting1, DSSDocument document2, String passwordDocument2, int pageDocument2, MemoryUsageSetting memoryUsageSetting2) {
-		return generateSubtractionImage(document1, passwordDocument1, pageDocument1, memoryUsageSetting1, document2, passwordDocument2,
-				pageDocument2, memoryUsageSetting2, PAdESUtils.initializeDSSResourcesHandler());
-	}
-
-	/**
-	 * This method returns an image representing a subtraction result between
-	 * {@code document1} and {@code document2} for the defined pages
+	 * This method uses a provided {@code DSSResourcesHandler}
 	 *
-	 * @param document1         {@link DSSDocument} the first document
-	 * @param passwordDocument1 a password protection for the {@code document1} when
-	 *                          applicable (can be null)
-	 * @param pageDocument1     page number identifying a page of the
-	 *                          {@code document1} to be proceeded
-	 * @param memoryUsageSetting1 {@link MemoryUsageSetting} load setting
-	 * @param document2         {@link DSSDocument} the second document
-	 * @param passwordDocument2 a password protection for the {@code document2} when
-	 *                          applicable (can be null)
-	 * @param pageDocument2     page number identifying a page of the
-	 *                          {@code document2} to be proceeded
-	 * @param memoryUsageSetting2 {@link MemoryUsageSetting} load setting
+	 * @param pdfBoxPageDocumentRequest1 {@link PdfBoxPageDocumentRequest} the first document
+	 *                             request
+	 * @param pdfBoxPageDocumentRequest2 {@link PdfBoxPageDocumentRequest} the second document
+	 *                             request
+	 * @param dssResourcesHandler  {@link DSSResourcesHandler} to be used
 	 * @return {@link DSSDocument} subtraction result
 	 */
-	public static DSSDocument generateSubtractionImage(DSSDocument document1, char[] passwordDocument1,
-			int pageDocument1, MemoryUsageSetting memoryUsageSetting1, DSSDocument document2, char[] passwordDocument2,
-			int pageDocument2, MemoryUsageSetting memoryUsageSetting2) {
-		return generateSubtractionImage(document1, passwordDocument1, pageDocument1, memoryUsageSetting1, document2,
-				passwordDocument2, pageDocument2, memoryUsageSetting2, PAdESUtils.initializeDSSResourcesHandler());
-	}
-
-	/**
-	 * This method returns an image representing a subtraction result between
-	 * {@code document1} and {@code document2} for the defined pages. This method
-	 * uses a provided {@code DSSResourcesHandler}
-	 *
-	 * @param document1           {@link DSSDocument} the first document
-	 * @param passwordDocument1   {@link String} a password protection for the
-	 *                            {@code document1} when applicable (can be null)
-	 * @param pageDocument1       page number identifying a page of the
-	 *                            {@code document1} to be proceeded
-	 * @param memoryUsageSetting1 {@link MemoryUsageSetting} load setting
-	 * @param document2           {@link DSSDocument} the second document
-	 * @param passwordDocument2   {@link String} a password protection for the
-	 *                            {@code document2} when applicable (can be null)
-	 * @param pageDocument2       page number identifying a page of the
-	 *                            {@code document2} to be proceeded
-	 * @param memoryUsageSetting2 {@link MemoryUsageSetting} load setting
-	 * @param dssResourcesHandler {@link DSSResourcesHandler} to be used
-	 * @return {@link DSSDocument} subtraction result
-	 */
-	public static DSSDocument generateSubtractionImage(DSSDocument document1, String passwordDocument1,
-			int pageDocument1, MemoryUsageSetting memoryUsageSetting1, DSSDocument document2, String passwordDocument2,
-			int pageDocument2, MemoryUsageSetting memoryUsageSetting2, DSSResourcesHandler dssResourcesHandler) {
-		return generateSubtractionImage(document1, passwordDocument1 != null ? passwordDocument1.toCharArray() : null,
-				pageDocument1, memoryUsageSetting1, document2,
-				passwordDocument2 != null ? passwordDocument2.toCharArray() : null, pageDocument2, memoryUsageSetting2,
-				dssResourcesHandler);
-	}
-
-	/**
-	 * This method returns an image representing a subtraction result between
-	 * {@code document1} and {@code document2} for the defined pages. This method
-	 * uses a provided {@code DSSResourcesHandler}
-	 *
-	 * @param document1           {@link DSSDocument} the first document
-	 * @param passwordDocument1   a password protection for the {@code document1}
-	 *                            when applicable (can be null)
-	 * @param pageDocument1       page number identifying a page of the
-	 *                            {@code document1} to be proceeded
-	 * @param memoryUsageSetting1 {@link MemoryUsageSetting} load setting                        
-	 * @param document2           {@link DSSDocument} the second document
-	 * @param passwordDocument2   a password protection for the {@code document2}
-	 *                            when applicable (can be null)
-	 * @param pageDocument2       page number identifying a page of the
-	 *                            {@code document2} to be proceeded
-	 * @param memoryUsageSetting2 {@link MemoryUsageSetting} load setting
-	 * @param dssResourcesHandler {@link DSSResourcesHandler} to be used
-	 * @return {@link DSSDocument} subtraction result
-	 */
-	public static DSSDocument generateSubtractionImage(DSSDocument document1, char[] passwordDocument1,
-			int pageDocument1, MemoryUsageSetting memoryUsageSetting1, DSSDocument document2, char[] passwordDocument2,
-			int pageDocument2, MemoryUsageSetting memoryUsageSetting2, DSSResourcesHandler dssResourcesHandler) {
-		BufferedImage screenshotDoc1 = generateBufferedImageScreenshot(document1, passwordDocument1, pageDocument1,
-				memoryUsageSetting1);
-		BufferedImage screenshotDoc2 = generateBufferedImageScreenshot(document2, passwordDocument2, pageDocument2,
-				memoryUsageSetting2);
+	public static DSSDocument generateSubtractionImage(PdfBoxPageDocumentRequest pdfBoxPageDocumentRequest1, PdfBoxPageDocumentRequest pdfBoxPageDocumentRequest2, DSSResourcesHandler dssResourcesHandler) {
+		BufferedImage screenshotDoc1 = generateBufferedImageScreenshot(pdfBoxPageDocumentRequest1);
+		BufferedImage screenshotDoc2 = generateBufferedImageScreenshot(pdfBoxPageDocumentRequest2);
 
 		int width = Math.max(screenshotDoc1.getWidth(), screenshotDoc2.getWidth());
 		int height = Math.max(screenshotDoc1.getHeight(), screenshotDoc2.getHeight());
