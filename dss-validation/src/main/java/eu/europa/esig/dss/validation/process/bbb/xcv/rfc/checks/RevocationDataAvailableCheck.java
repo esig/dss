@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -66,6 +67,11 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 										LevelConstraint constraint, String tokenId) {
 		super(i18nProvider, result, constraint, tokenId);
 		this.certificate = certificate;
+	}
+
+	@Override
+	protected XmlBlockType getBlockType() {
+		return XmlBlockType.LTV_SUB_XCV;
 	}
 
 	@Override

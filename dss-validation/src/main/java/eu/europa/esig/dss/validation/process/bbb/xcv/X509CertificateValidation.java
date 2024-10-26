@@ -42,13 +42,13 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateValidationBeforeSunsetDateWithIdCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CheckSubXCVResult;
+import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainAtValidationTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustServiceStatusCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.TrustServiceTypeIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.SubX509CertificateValidation;
-import eu.europa.esig.dss.validation.process.bbb.xcv.checks.CertificateValidationBeforeSunsetDateCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainAtValidationTimeCheck;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -240,7 +240,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 
 	private ChainItem<XmlXCV> validationBeforeSunsetDate(CertificateWrapper certificate, SubContext subContext, Date validationTime) {
 		LevelConstraint constraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
-		return new CertificateValidationBeforeSunsetDateCheck<>(i18nProvider, result, certificate, validationTime,
+		return new CertificateValidationBeforeSunsetDateWithIdCheck<>(i18nProvider, result, certificate, validationTime,
 				ValidationProcessUtils.getConstraintOrMaxLevel(constraint, Level.WARN));
 	}
 

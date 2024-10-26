@@ -36,6 +36,7 @@ import java.util.Date;
 /**
  * This class verifies whether a validation time is before certificate's trust sunset date
  *
+ * @param <T> {@link XmlConstraintsConclusion}
  */
 public class CertificateValidationBeforeSunsetDateCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
@@ -56,7 +57,24 @@ public class CertificateValidationBeforeSunsetDateCheck<T extends XmlConstraints
      */
     public CertificateValidationBeforeSunsetDateCheck(I18nProvider i18nProvider, T result,
                                                       CertificateWrapper certificate, Date controlTime, LevelConstraint constraint) {
-        super(i18nProvider, result, constraint, certificate.getId());
+        this(i18nProvider, result, certificate, controlTime, constraint, null);
+
+    }
+
+    /**
+     * Constructor with certificate identifier
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result the result
+     * @param certificate {@link CertificateWrapper}
+     * @param controlTime {@link Date}
+     * @param constraint {@link LevelConstraint}
+     * @param certificateId {@link String} certificate identifier
+     */
+    protected CertificateValidationBeforeSunsetDateCheck(I18nProvider i18nProvider, T result,
+                                                      CertificateWrapper certificate, Date controlTime,
+                                                      LevelConstraint constraint, String certificateId) {
+        super(i18nProvider, result, constraint, certificateId);
         this.certificate = certificate;
         this.controlTime = controlTime;
     }

@@ -79,8 +79,8 @@ class ERDataObjectBuilderForASiCTest {
         // in order to configure the document types to be covered by an evidence record
         // Hint : use {@code eu.europa.esig.dss.asic.common.evidencerecord.ASiCContentDocumentFilterFactory}
         // in order to create a pre-configured object
-        // E.g. {@code ASiCContentDocumentFilterFactory.signedDocumentsOnlyFilter()} will return
-        // only original signed documents
+        // E.g. {@code ASiCContentDocumentFilterFactory.signedDocumentsOnlyFilter()} will
+        // return only original signed documents
         ASiCContentDocumentFilter asicContentDocumentFilter = ASiCContentDocumentFilterFactory.signedDocumentsOnlyFilter();
         asicEvidenceRecordDigestBuilder.setAsicContentDocumentFilter(asicContentDocumentFilter);
 
@@ -99,9 +99,9 @@ class ERDataObjectBuilderForASiCTest {
         // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
         // import eu.europa.esig.dss.model.DSSDocument;
 
-        // Instantiate ASiCEvidenceRecordManifestBuilder to create an ASiCEvidenceRecordManifest*.xml
-        // document for the corresponding evidence record document, to be incorporated within
-        // an ASiC container.
+        // Instantiate ASiCEvidenceRecordManifestBuilder to create an
+        // ASiCEvidenceRecordManifest*.xml document for the corresponding evidence record
+        // document, to be incorporated within an ASiC container.
         // The constructor takes as parameters:
         // - original ASiC container document;
         // - the digest algorithm to be used on digest computation

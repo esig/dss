@@ -359,6 +359,13 @@ public class SecureContainerHandler implements ZipContainerHandler {
 		zos.finish();
 	}
 
+	/**
+	 * Creates a new {@code ZipEntry} for the given {@code DSSDocument} at {@code creationTime}
+	 *
+	 * @param entry {@link DSSDocument} to be placed within a ZIP container
+	 * @param creationTime {@link Date} the creation time of ZIP container
+	 * @return {@link ZipEntry}
+	 */
 	protected ZipEntry getZipEntry(DSSDocument entry, Date creationTime) {
 		final DSSZipEntry zipEntryWrapper;
 		if (entry instanceof DSSZipEntryDocument) {

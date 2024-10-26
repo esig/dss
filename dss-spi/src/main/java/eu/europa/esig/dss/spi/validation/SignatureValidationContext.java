@@ -67,6 +67,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -1474,12 +1475,14 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private POE getLowestPOE(List<POE> poeList) {
-		POE lowestPOE = null;
 		if (Utils.isCollectionEmpty(poeList)) {
 			throw new IllegalStateException("POE shall be defined before accessing the 'poeTimes' list!");
 		}
-		for (POE poe : poeList) {
-			if (lowestPOE == null || poe.getTime().before(lowestPOE.getTime())) {
+		Iterator<POE> it = poeList.iterator();
+		POE lowestPOE = it.next();
+		while (it.hasNext()) {
+			POE poe = it.next();
+			if (poe.getTime().before(lowestPOE.getTime())) {
 				lowestPOE = poe;
 			}
 		}

@@ -50,8 +50,9 @@ class EvidenceRecordValidatorTest {
         // Load evidence record document to be validated
         DSSDocument evidenceRecordDocument = new FileDocument("src/test/resources/snippets/evidence-record.xml");
 
-        // The method allows instantiation of a related evidence record validator for a provided document
-        // independently on its format (the target evidence record validation module must be added as dependency)
+        // The method allows instantiation of a related evidence record validator for
+        // a provided document independently on its format.
+        // NOTE: the target evidence record validation module must be added as dependency
         EvidenceRecordValidator evidenceRecordValidator = DefaultEvidenceRecordValidator.fromDocument(evidenceRecordDocument);
 
         // Create a CertificateVerifies containing validation process configuration

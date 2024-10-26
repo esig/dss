@@ -77,9 +77,10 @@ class SignPdfWithTempFileTest extends CookbookTools {
             // Create PAdESService for signature
             PAdESService service = new PAdESService(new CommonCertificateVerifier());
 
-            // Set a TempFileResourcesHandlerBuilder, forcing the signature creation process to work with
-            // temporary files. It means that the produced DSSDocument after the signDocument() method will
-            // be represented by a FileDocument object, pointing to a real file within the file system.
+            // Set a TempFileResourcesHandlerBuilder, forcing the signature creation process to
+            // work with temporary files. It means that the produced DSSDocument after
+            // the signDocument() method will be represented by a FileDocument object, pointing to
+            // a real file within the file system.
             TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
 
             // Initialize IPdfObjFactory
@@ -96,15 +97,16 @@ class SignPdfWithTempFileTest extends CookbookTools {
             SignatureValue signatureValue = signingToken.sign(dataToSign, parameters.getDigestAlgorithm(), privateKey);
 
             // Sign document using the obtained SignatureValue.
-            // As we used TempFileResourcesHandlerBuilder, the produced document will point to a File
-            // within a local file system.
+            // As we used TempFileResourcesHandlerBuilder, the produced document will point to
+            // a File within a local file system.
             DSSDocument signedDocument = service.signDocument(toSignDocument, parameters, signatureValue);
 
             // After signature has been made, it could be a good idea to clear the builder,
             // which will remove the temporary files created during the signing operation.
-            // Please note, that you should preserve the files you need before clearing the builder,
-            // such as the signedDocument obtained from the #signDocument() method.
-            // You may use the method #save() in order to store the file within a preferred location.
+            // Please note, that you should preserve the files you need before clearing
+            // the builder, such as the signedDocument obtained from the #signDocument()
+            // method. You may use the method #save() in order to store the file within
+            // a preferred location.
             signedDocument.save(signedFileDestination);
 
             // And clear the builder, which will result in removing of all temporary files.

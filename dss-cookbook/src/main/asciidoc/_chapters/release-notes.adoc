@@ -11,6 +11,15 @@
 |===
 |Version           |Release date             |Features
 
+|v6.1              |September 2024          a|Bug fixes :
+
+                                            * Evidence record validation fixes;
+                                            * XAdES : reference name check fails for URL-encoded entries;
+                                            * JAdES : `iat` shall not contain fractions of seconds;
+                                            * ASiC-E signatures are not reported without linked manifest;
+                                            * CertificateValues/RevocationValues have invalid format in ETSI Validation Report;
+                                            * JAXBPKILoader : invalid behavior for multiple cross certificates.
+
 |v6.1.RC1          |July 2024               a|Main new features / improvements :
 
                                             * ASN.1 Evidence Records (RFC 4998) support;
@@ -386,14 +395,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `6.1.RC1` using <<BomModule>>:
+The example below shows how to switch to DSS version `6.1` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>6.1.RC1</dss.version>
+    <dss.version>6.1</dss.version>
     ...
 </properties>
 

@@ -83,7 +83,7 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
                                                CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
                                                boolean isRevocationDataIssuerTrusted, Date currentTime, XmlConclusion bsConclusion,
                                                LevelConstraint constraint) {
-        super(i18nProvider, result, constraint, certificate.getId());
+        super(i18nProvider, result, constraint);
         this.certificate = certificate;
         this.revocationData = revocationData;
         this.isRevocationDataIssuerTrusted = isRevocationDataIssuerTrusted;

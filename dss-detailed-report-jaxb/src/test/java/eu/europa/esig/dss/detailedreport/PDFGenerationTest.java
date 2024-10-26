@@ -95,6 +95,11 @@ class PDFGenerationTest {
 		createAndValidate("dr-sunset.xml");
 	}
 	
+	@Test
+	void dss3434DetailedReport() throws Exception {
+		createAndValidate("dr-dss-3434.xml");
+	}
+	
 	private void createAndValidate(String filename) throws Exception {
 		DetailedReportFacade facade = DetailedReportFacade.newFacade();
 

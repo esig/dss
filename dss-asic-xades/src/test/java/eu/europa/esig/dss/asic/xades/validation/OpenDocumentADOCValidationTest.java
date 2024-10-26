@@ -32,7 +32,9 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,13 @@ class OpenDocumentADOCValidationTest extends AbstractASiCWithXAdESTestValidation
     @Override
     protected DSSDocument getSignedDocument() {
         return new FileDocument("src/test/resources/validation/container-signed.adoc");
+    }
+
+    @Override
+    protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
+        SignedDocumentValidator documentValidator = super.getValidator(signedDocument);
+        documentValidator.setValidationTime(DSSUtils.getUtcDate(2024, Calendar.JANUARY, 1));
+        return documentValidator;
     }
 
     @Override

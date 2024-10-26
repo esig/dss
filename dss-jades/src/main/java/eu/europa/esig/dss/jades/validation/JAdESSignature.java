@@ -992,7 +992,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	private DSSDocument getDetachedDocumentByName(String documentName, List<DSSDocument> detachedContent) {
 		documentName = DSSUtils.decodeURI(documentName);
 		for (DSSDocument detachedDocument : detachedContent) {
-			if (documentName.equals(detachedDocument.getName())) {
+			if (documentName != null && documentName.equals(detachedDocument.getName())) {
 				return detachedDocument;
 			}
 		}

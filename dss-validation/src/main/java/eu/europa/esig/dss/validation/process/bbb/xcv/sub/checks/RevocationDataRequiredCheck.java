@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -64,6 +65,11 @@ public class RevocationDataRequiredCheck<T extends XmlConstraintsConclusion> ext
         this.certificate = certificate;
         this.currentTime = currentTime;
         this.certificateSunsetDateConstraint = certificateSunsetDateConstraint;
+    }
+
+    @Override
+    protected XmlBlockType getBlockType() {
+        return XmlBlockType.RAC_SUB_XCV;
     }
 
     @Override

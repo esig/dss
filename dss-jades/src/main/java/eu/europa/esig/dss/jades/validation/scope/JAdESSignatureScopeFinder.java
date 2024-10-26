@@ -141,7 +141,7 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 	private DSSDocument getDocumentByName(List<DSSDocument> documents, String documentName) {
 		documentName = DSSUtils.decodeURI(documentName);
 		for (DSSDocument document : documents) {
-			if (documentName.equals(document.getName())) {
+			if (documentName != null && documentName.equals(document.getName())) {
 				return document;
 			}
 		}

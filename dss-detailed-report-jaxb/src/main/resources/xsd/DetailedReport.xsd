@@ -415,6 +415,7 @@
 			<xs:enumeration value="CRS" />
 			<xs:enumeration value="PSV_CRS" />
 			<xs:enumeration value="RAC" />
+			<xs:enumeration value="RAC_SUB_XCV" />
 			<xs:enumeration value="RFC" />
 			<xs:enumeration value="SUB_XCV" />
 			<xs:enumeration value="SUB_XCV_TA" />
@@ -426,6 +427,7 @@
 			<xs:enumeration value="TST_PSV" />
 			<xs:enumeration value="TST" />
 			<xs:enumeration value="LTV" />
+			<xs:enumeration value="LTV_SUB_XCV" />
 			<xs:enumeration value="LTA" />
 			<xs:enumeration value="ER" />
 		</xs:restriction>
