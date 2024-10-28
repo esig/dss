@@ -1423,7 +1423,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<String> validateStructure() {
-		final XAdESStructureValidator structureValidator = XAdESStructureValidator.fromXAdESSignature(this);
+		final XAdESStructureValidator structureValidator = XAdESStructureValidatorFactory.getInstance().fromXAdESSignature(this);
 		structureValidator.validate();
 		return structureValidator.getValidationErrors();
 	}

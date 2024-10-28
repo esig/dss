@@ -41,16 +41,6 @@ public class XAdESStructureValidator {
     }
 
     /**
-     * Creates a {@code XAdESStructureValidator} for the given {@code XAdESSignature}
-     *
-     * @param signature {@link XAdESSignature} to validate structure of
-     * @return {@link XAdESStructureValidator}
-     */
-    public static XAdESStructureValidator fromXAdESSignature(XAdESSignature signature) {
-        return new XAdESStructureValidator(signature.getSignatureElement(), signature.getXAdESPaths());
-    }
-
-    /**
      * Validates the signature against corresponding XSD and returns whether the signature has a valid XML structure
      *
      * @return TRUE if the signature XML element passes the validation, FALSE otherwise
