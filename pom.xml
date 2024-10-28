@@ -132,6 +132,7 @@
 		<module>dss-pades</module>
 		<module>dss-pdfa</module>
 		<module>dss-pades-pdfbox</module>
+		<module>dss-pades-pdfbox3</module>
 		<module>dss-pades-openpdf</module>
 		<module>dss-asic-common</module>
 		<module>dss-asic-xades</module>
@@ -603,6 +604,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-pades-pdfbox</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-pades-pdfbox3</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
