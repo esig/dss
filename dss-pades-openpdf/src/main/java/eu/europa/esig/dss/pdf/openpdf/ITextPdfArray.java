@@ -99,6 +99,7 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	}
 
 	@Override
+	@Deprecated
 	public Long getObjectNumber(int i) {
 		ITextObjectKey objectKey = getObjectKey(i);
 		if (objectKey != null) {

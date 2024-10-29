@@ -138,6 +138,7 @@ class PdfBoxArray implements PdfArray {
 	}
 
 	@Override
+	@Deprecated
 	public Long getObjectNumber(int i) {
 		PdfBoxObjectKey objectKey = getObjectKey(i);
 		if (objectKey != null) {

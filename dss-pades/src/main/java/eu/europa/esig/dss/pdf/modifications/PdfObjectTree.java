@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf.modifications;
 
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +44,7 @@ public class PdfObjectTree {
     private List<String> keyChain;
 
     /** Processed references */
-    private List<Number> refChain;
+    private List<PdfObjectKey> refChain;
 
     /** Used to build a user-friendly string */
     private StringBuilder sb;
@@ -98,16 +100,16 @@ public class PdfObjectTree {
     }
 
     /**
-     * Adds a numeric reference number
+     * Adds a pdf object key
      *
-     * @param objectNumber {@link Number}
+     * @param objectKey {@link PdfObjectKey}
      */
-    public void addReference(Number objectNumber) {
-        refChain.add(objectNumber);
+    public void addReference(PdfObjectKey objectKey) {
+        refChain.add(objectKey);
         if (sb.length() != 0) {
             sb.append(SPACE);
         }
-        sb.append(objectNumber);
+        sb.append(objectKey.getNumber());
         sb.append(REFERENCE);
     }
 
@@ -152,11 +154,11 @@ public class PdfObjectTree {
     /**
      * Checks whether a reference to the given object by number has been already processed in this tree
      *
-     * @param objectNumber {@link Number} reference number to an object
+     * @param objectKey {@link PdfObjectKey} reference number to an object
      * @return TRUE if the reference has been already processed, FALSE otherwise
      */
-    public boolean isProcessedReference(Number objectNumber) {
-        return refChain.contains(objectNumber);
+    public boolean isProcessedReference(PdfObjectKey objectKey) {
+        return refChain.contains(objectKey);
     }
 
     @Override

@@ -52,7 +52,9 @@ public interface PdfArray extends PdfObject {
 	 * @param i
 	 *          the position
 	 * @return the object number
+	 * @deprecated since DSS 6.2. Please use {@code #getObjectKey} method instead
 	 */
+	@Deprecated
 	Long getObjectNumber(int i);
 
 	/**
