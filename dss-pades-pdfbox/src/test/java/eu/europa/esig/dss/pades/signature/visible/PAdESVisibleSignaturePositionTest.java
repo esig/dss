@@ -35,6 +35,9 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.junit.jupiter.api.BeforeEach;
@@ -231,7 +234,9 @@ class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 	@Test
 	void rotateSunTest() throws Exception {
 		
-		try (PDDocument inputPDF = PDDocument.load(getClass().getResourceAsStream("/visualSignature/sun.pdf"))) {
+		try (InputStream is = getClass().getResourceAsStream("/visualSignature/sun.pdf");
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument inputPDF = Loader.loadPDF(rar)) {
 			/**
 			 * minolta scanner normal(not rotated) pdf and rotation none.
 			 *
@@ -256,8 +261,10 @@ class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 
 	@Test
 	void rotateSun90Test() throws Exception {
-	
-		try (PDDocument inputPDF = PDDocument.load(getClass().getResourceAsStream("/visualSignature/sun_90.pdf"))) {
+
+		try (InputStream is = getClass().getResourceAsStream("/visualSignature/sun_90.pdf");
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument inputPDF = Loader.loadPDF(rar)) {
 			/**
 			 * minolta scanner rotated pdf and rotation none (in pdf view the rotated and normal pdf seem equal)
 			 * you can check the pdf rotation by this code:
@@ -309,7 +316,9 @@ class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 	}
 
 	private void checkRotation(InputStream inputStream, int rotate) throws IOException {
-		try (PDDocument document = PDDocument.load(inputStream)) {
+		try (InputStream is = inputStream;
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument document = Loader.loadPDF(rar)) {
 			assertEquals(rotate, document.getPages().get(0).getRotation());
 		}
 	}
@@ -359,7 +368,9 @@ class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 	}
 
 	private BufferedImage pdfToBufferedImage(InputStream inputStream) throws IOException {
-		try (PDDocument document = PDDocument.load(inputStream)) {
+		try (InputStream is = inputStream;
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument document = Loader.loadPDF(rar)) {
 			PDFRenderer renderer = new PDFRenderer(document);
 			return renderer.renderImageWithDPI(0, DPI);
 		}

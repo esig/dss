@@ -50,7 +50,7 @@
 		<bouncycastle.version>1.78.1</bouncycastle.version>
 		<xmlsec.version>3.0.4</xmlsec.version>
 		<jose4j.version>0.9.6</jose4j.version>
-		<pdfbox.version>2.0.32</pdfbox.version>
+		<pdfbox.version>3.0.3</pdfbox.version>
 		<openpdf.version>1.3.43</openpdf.version>
 		<verapdf.version>1.26.1</verapdf.version>
 		<httpclient5.version>5.3.1</httpclient5.version>
@@ -132,7 +132,6 @@
 		<module>dss-pades</module>
 		<module>dss-pdfa</module>
 		<module>dss-pades-pdfbox</module>
-		<module>dss-pades-pdfbox3</module>
 		<module>dss-pades-openpdf</module>
 		<module>dss-asic-common</module>
 		<module>dss-asic-xades</module>
@@ -604,11 +603,6 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-pades-pdfbox</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-pades-pdfbox3</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

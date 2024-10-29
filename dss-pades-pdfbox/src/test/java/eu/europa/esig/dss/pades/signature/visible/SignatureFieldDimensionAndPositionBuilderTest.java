@@ -29,6 +29,9 @@ import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxDSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -49,8 +52,9 @@ class SignatureFieldDimensionAndPositionBuilderTest {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         DSSDocument image = new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png"));
 
-        try (InputStream is = document.openStream()) {
-            PDDocument pdDocument = PDDocument.load(is);
+        try (InputStream is = document.openStream();
+             RandomAccessRead rar = new RandomAccessReadBuffer(is);
+             PDDocument pdDocument = Loader.loadPDF(rar)) {
 
             SignatureImageParameters params = new SignatureImageParameters();
             // we pass null as the MIME type to make the test results repeatable

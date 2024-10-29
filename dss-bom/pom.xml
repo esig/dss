@@ -226,11 +226,6 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-pades-pdfbox3</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-pades-openpdf</artifactId>
 				<version>${project.version}</version>
 			</dependency>
