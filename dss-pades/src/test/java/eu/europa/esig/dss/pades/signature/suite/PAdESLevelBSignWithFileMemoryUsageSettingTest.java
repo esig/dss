@@ -30,8 +30,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,15 +80,34 @@ public class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdES
 		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
 		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 
-		Pair<List<Double>, File> memoryOnlySignTuple = doAllSigns(PdfMemoryUsageSetting.memoryOnly(), tempFileResourcesHandlerBuilder);
-		List<Double> memoryOnlyMemoryConsumptions = memoryOnlySignTuple.getLeft();
+		File ltaSignatureFile = null;
+		for (int times = 0; times < 5; times++) {
+			attemptFreeRuntimeMemory();
 
-		attemptFreeRuntimeMemory();
+			Pair<List<Pair<String, Pair<Double, Duration>>>, File> memoryOnlySignTuple = doAllSigns(PdfMemoryUsageSetting.memoryOnly(), tempFileResourcesHandlerBuilder);
+			List<Pair<String, Pair<Double, Duration>>> memoryOnlyPerfTable = memoryOnlySignTuple.getLeft();
 
-		Pair<List<Double>, File> fileOnlySignTuple = doAllSigns(PdfMemoryUsageSetting.fileOnly(), tempFileResourcesHandlerBuilder);
-		List<Double> fileOnlyMemoryConsumptions = fileOnlySignTuple.getLeft();
+			attemptFreeRuntimeMemory();
 
-		attemptFreeRuntimeMemory();
+			Pair<List<Pair<String, Pair<Double, Duration>>>, File> fileOnlySignTuple = doAllSigns(PdfMemoryUsageSetting.fileOnly(), tempFileResourcesHandlerBuilder);
+			List<Pair<String, Pair<Double, Duration>>> fileOnlyPerfTable = fileOnlySignTuple.getLeft();
+
+			String leftAlignFormat = "| %-6.6s | %-15.15s | %,06.01f | %-12.12s |%n";
+
+			System.out.format("+--------+-----------------+--------+--------------+%n");
+			System.out.format("|        | Step Name       | RAM    | Time spent   +%n");
+			System.out.format("+--------+-----------------+--------+--------------+%n");
+			for (int i = 0; i < fileOnlyPerfTable.size(); i++) {
+				Pair<String, Pair<Double, Duration>> stepPerf = memoryOnlyPerfTable.get(i);
+				System.out.format(leftAlignFormat, "Memory", stepPerf.getLeft(), stepPerf.getRight().getLeft(), stepPerf.getRight().getRight());
+
+				stepPerf = fileOnlyPerfTable.get(i);
+				System.out.format(leftAlignFormat, "File", stepPerf.getLeft(), stepPerf.getRight().getLeft(), stepPerf.getRight().getRight());
+			}
+			System.out.format("+--------+-----------------+--------+--------------+%n");
+
+			ltaSignatureFile = fileOnlySignTuple.getRight();
+		}
 
 //		assertEquals(memoryOnlyMemoryConsumptions.size(), fileOnlyMemoryConsumptions.size());
 //
@@ -94,8 +116,6 @@ public class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdES
 //		double difference = memoryOnlyMemoryConsumptionsSum - fileOnlyMemoryConsumptionsSum;
 //		LOG.info("Memory Sum difference is: {}Mb", difference);
 //		assertTrue(difference > 0);
-
-		File ltaSignatureFile = fileOnlySignTuple.getRight();
 
 		assertTrue(ltaSignatureFile.exists());
 
@@ -123,12 +143,12 @@ public class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdES
 		return new FileDocument(tempFile);
 	}
 
-	private Pair<List<Double>, File> doAllSigns(PdfMemoryUsageSetting pdfMemoryUsageSetting, TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder) {
+	private Pair<List<Pair<String, Pair<Double, Duration>>>, File> doAllSigns(PdfMemoryUsageSetting pdfMemoryUsageSetting, TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder) {
 		PAdESService service = getService();
 		PAdESSignatureParameters params = getSignatureParameters();
 		DSSDocument toBeSigned = getDocumentToSign();
 
-		ArrayList<Double> memoryConsumptions = new ArrayList<>();
+		List<Pair<String, Pair<Double, Duration>>> perfTable = new ArrayList<>();
 
 		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
 		pdfObjFactory.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
@@ -137,73 +157,62 @@ public class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdES
 
 		signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_B);
 
-		attemptFreeRuntimeMemory();
-		double memoryBefore = getRuntimeMemoryInMegabytes();
+		Pair<ToBeSigned, Pair<String, Pair<Double, Duration>>> getDataToSignData = runStepWithProfiling("getDataToSign", () -> service.getDataToSign(toBeSigned, params), pdfMemoryUsageSetting.getMode());
+		perfTable.add(getDataToSignData.getRight());
+		ToBeSigned dataToSign = getDataToSignData.getLeft();
 
-		ToBeSigned dataToSign = service.getDataToSign(toBeSigned, params);
+		Pair<SignatureValue, Pair<String, Pair<Double, Duration>>> tokenSignData = runStepWithProfiling("tokenSign", () -> {
+			SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
+			assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
+			return signatureValue;
+		}, pdfMemoryUsageSetting.getMode());
+		perfTable.add(tokenSignData.getRight());
+		SignatureValue signatureValue = tokenSignData.getLeft();
 
-		double memoryAfterGetDataToSign = getRuntimeMemoryInMegabytes();
-		memoryConsumptions.add(memoryAfterGetDataToSign - memoryBefore);
-		LOG.info("[{}] Memory used for getDataToSign() : {}Mb", pdfMemoryUsageSetting.getMode(), memoryAfterGetDataToSign - memoryBefore);
-
-		attemptFreeRuntimeMemory();
-		memoryBefore = getRuntimeMemoryInMegabytes();
-
-		SignatureValue signatureValue = getToken().sign(dataToSign, getSignatureParameters().getDigestAlgorithm(), getPrivateKeyEntry());
-		assertTrue(service.isValidSignatureValue(dataToSign, signatureValue, getSigningCert()));
-
-		double memoryAfterTokenSign = getRuntimeMemoryInMegabytes();
-		memoryConsumptions.add(memoryAfterTokenSign - memoryBefore);
-		LOG.info("[{}] Memory used for token sign() : {}Mb", pdfMemoryUsageSetting.getMode(), memoryAfterTokenSign - memoryBefore);
-
-		attemptFreeRuntimeMemory();
-		memoryBefore = getRuntimeMemoryInMegabytes();
-
-		DSSDocument signedDocument = service.signDocument(toBeSigned, params, signatureValue);
-
-		double memoryAfterSignDocument = getRuntimeMemoryInMegabytes();
-		memoryConsumptions.add(memoryAfterSignDocument - memoryBefore);
-		LOG.info("[{}] Memory used for signDocument() : {}Mb", pdfMemoryUsageSetting.getMode(), memoryAfterSignDocument - memoryBefore);
+		Pair<DSSDocument, Pair<String, Pair<Double, Duration>>> signDocumentData = runStepWithProfiling("signDocument", () -> service.signDocument(toBeSigned, params, signatureValue), pdfMemoryUsageSetting.getMode());
+		perfTable.add(signDocumentData.getRight());
+		DSSDocument signedDocument = signDocumentData.getLeft();
 
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_T);
 
-		attemptFreeRuntimeMemory();
-		memoryBefore = getRuntimeMemoryInMegabytes();
-
-		DSSDocument tLevelSignature = service.extendDocument(signedDocument, params);
-
-		double memoryTLevelExtendDocument = getRuntimeMemoryInMegabytes();
-		memoryConsumptions.add(memoryTLevelExtendDocument - memoryBefore);
-		LOG.info("[{}] Memory used for T-Level extendDocument() : {}Mb", pdfMemoryUsageSetting.getMode(), memoryTLevelExtendDocument - memoryBefore);
+		Pair<DSSDocument, Pair<String, Pair<Double, Duration>>> tLevelExtendDocumentData = runStepWithProfiling("T-Level extendDocument", () -> service.extendDocument(signedDocument, params), pdfMemoryUsageSetting.getMode());
+		perfTable.add(tLevelExtendDocumentData.getRight());
+		DSSDocument tLevelSignature = tLevelExtendDocumentData.getLeft();
 
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
 
-		attemptFreeRuntimeMemory();
-		memoryBefore = getRuntimeMemoryInMegabytes();
-
-		DSSDocument ltLevelSignature = service.extendDocument(tLevelSignature, params);
-
-		double memoryLTLevelExtendDocument = getRuntimeMemoryInMegabytes();
-		memoryConsumptions.add(memoryLTLevelExtendDocument - memoryBefore);
-		LOG.info("[{}] Memory used for LT-Level extendDocument() : {}Mb", pdfMemoryUsageSetting.getMode(), memoryLTLevelExtendDocument - memoryBefore);
+		Pair<DSSDocument, Pair<String, Pair<Double, Duration>>> ltLevelExtendDocumentData = runStepWithProfiling("LT-Level extendDocument", () -> service.extendDocument(tLevelSignature, params), pdfMemoryUsageSetting.getMode());
+		perfTable.add(ltLevelExtendDocumentData.getRight());
+		DSSDocument ltLevelSignature = ltLevelExtendDocumentData.getLeft();
 
 		params.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LTA);
 
-		attemptFreeRuntimeMemory();
-		memoryBefore = getRuntimeMemoryInMegabytes();
-
-		DSSDocument ltaLevelSignature = service.extendDocument(ltLevelSignature, params);
-
-		double memoryLTALevelExtendDocument = getRuntimeMemoryInMegabytes();
-		memoryConsumptions.add(memoryLTALevelExtendDocument - memoryBefore);
-		LOG.info("[{}] Memory used for LTA-Level extendDocument() : {}Mb", pdfMemoryUsageSetting.getMode(), memoryLTALevelExtendDocument - memoryBefore);
+		Pair<DSSDocument, Pair<String, Pair<Double, Duration>>> ltaLevelExtendDocumentData = runStepWithProfiling("LTA-Level extendDocument", () -> service.extendDocument(ltLevelSignature, params), pdfMemoryUsageSetting.getMode());
+		perfTable.add(ltaLevelExtendDocumentData.getRight());
+		DSSDocument ltaLevelSignature = ltaLevelExtendDocumentData.getLeft();
 
 		FileDocument ltaSignatureFileDocument = (FileDocument) ltaLevelSignature;
 		File ltaSignatureFile = ltaSignatureFileDocument.getFile();
-		return Pair.of(memoryConsumptions, ltaSignatureFile);
+		return Pair.of(perfTable, ltaSignatureFile);
 	}
 
-	private void attemptFreeRuntimeMemory() {
+	private static <T> Pair<T, Pair<String, Pair<Double, Duration>>> runStepWithProfiling(String stepName, Supplier<T> step, PdfMemoryUsageSetting.Mode mode) {
+		attemptFreeRuntimeMemory();
+		Instant instantBefore = Instant.now();
+		double memoryBefore = getRuntimeMemoryInMegabytes();
+
+		T result = step.get();
+
+		Instant instantAfter = Instant.now();
+		double memoryAfterGetDataToSign = getRuntimeMemoryInMegabytes();
+		double memoryDifference = memoryAfterGetDataToSign - memoryBefore;
+
+		Duration timeDifference = Duration.between(instantBefore, instantAfter);
+		LOG.info("[{}] Memory used for {} : {}Mb, Time: {}", mode, stepName, memoryDifference, timeDifference);
+		return Pair.of(result, Pair.of(stepName, Pair.of(memoryDifference, timeDifference)));
+	}
+
+	private static void attemptFreeRuntimeMemory() {
 		Runtime.getRuntime().gc();
 		LOG.debug("Freeing up memory..");
 		Runtime.getRuntime().gc(); // Empirically it is required to do more calls in order to properly clean-up
