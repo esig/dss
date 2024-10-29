@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
+
 import java.io.IOException;
 
 /**
@@ -52,6 +54,15 @@ public interface PdfArray extends PdfObject {
 	 * @return the object number
 	 */
 	Long getObjectNumber(int i);
+
+	/**
+	 * Retrieves the Object key for the position i
+	 *
+	 * @param i
+	 *          the position
+	 * @return {@link eu.europa.esig.dss.pades.validation.PdfObjectKey}
+	 */
+	PdfObjectKey getObjectKey(int i);
 
 	/**
 	 * Retrieves the number at the position i

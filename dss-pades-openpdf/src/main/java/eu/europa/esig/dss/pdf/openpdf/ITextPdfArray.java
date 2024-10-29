@@ -100,16 +100,25 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 
 	@Override
 	public Long getObjectNumber(int i) {
+		ITextObjectKey objectKey = getObjectKey(i);
+		if (objectKey != null) {
+			return Long.valueOf(objectKey.getValue().getNumber());
+		}
+		return null;
+	}
+
+	@Override
+	public ITextObjectKey getObjectKey(int i) {
 		com.lowagie.text.pdf.PdfObject pdfObject = wrapped.getPdfObject(i);
 		if (pdfObject == null) {
 			throw new DSSException("The requested PDF object not found!");
 		}
 		if (pdfObject.isStream()) {
 			PdfStream asStream = wrapped.getAsStream(i);
-			return Long.valueOf(asStream.getIndRef().getNumber());
+			return new ITextObjectKey(asStream.getIndRef());
 		} else if (pdfObject.isIndirect()) {
 			PdfIndirectReference asIndirectObject = wrapped.getAsIndirectObject(i);
-			return Long.valueOf(asIndirectObject.getNumber());
+			return new ITextObjectKey(asIndirectObject);
 		}
 		return null;
 	}

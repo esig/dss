@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 
 import java.util.Map;
@@ -34,13 +35,13 @@ public abstract class AbstractPdfDssDict implements PdfDssDict {
 	private static final long serialVersionUID = 625347967057384829L;
 
 	/** The map of CRL objects */
-	private final Map<Long, CRLBinary> crlMap;
+	private final Map<PdfObjectKey, CRLBinary> crlMap;
 
 	/** The map of OCSP objects */
-	private final Map<Long, OCSPResponseBinary> ocspMap;
+	private final Map<PdfObjectKey, OCSPResponseBinary> ocspMap;
 
 	/** The map of certificate objects */
-	private final Map<Long, CertificateToken> certMap;
+	private final Map<PdfObjectKey, CertificateToken> certMap;
 
 	/**
 	 * Default constructor
@@ -82,17 +83,17 @@ public abstract class AbstractPdfDssDict implements PdfDssDict {
 	protected abstract String getOCSPArrayDictionaryName();
 
 	@Override
-	public Map<Long, CRLBinary> getCRLs() {
+	public Map<PdfObjectKey, CRLBinary> getCRLs() {
 		return crlMap;
 	}
 
 	@Override
-	public Map<Long, OCSPResponseBinary> getOCSPs() {
+	public Map<PdfObjectKey, OCSPResponseBinary> getOCSPs() {
 		return ocspMap;
 	}
 
 	@Override
-	public Map<Long, CertificateToken> getCERTs() {
+	public Map<PdfObjectKey, CertificateToken> getCERTs() {
 		return certMap;
 	}
 

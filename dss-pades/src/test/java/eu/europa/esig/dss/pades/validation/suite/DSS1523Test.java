@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
@@ -41,6 +42,7 @@ import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SAVRIType;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -67,17 +69,21 @@ public class DSS1523Test extends AbstractPkiFactoryTestValidation {
 		assertEquals(1, dssDictionaries.size());
 		PdfDssDict pdfDssDict = dssDictionaries.get(0);
 
-		Map<Long, CertificateToken> certificateMap = pdfDssDict.getCERTs();
+		Map<PdfObjectKey, CertificateToken> certificateMap = pdfDssDict.getCERTs();
 		assertEquals(1, certificateMap.size());
-		assertNotNull(certificateMap.get(20L));
+		assertContainsObjectWithKey(certificateMap.keySet(), 20);
 
-		Map<Long, OCSPResponseBinary> ocspMap = pdfDssDict.getOCSPs();
+		Map<PdfObjectKey, OCSPResponseBinary> ocspMap = pdfDssDict.getOCSPs();
 		assertEquals(1, ocspMap.size());
-		assertNotNull(ocspMap.get(22L));
+		assertContainsObjectWithKey(ocspMap.keySet(), 22);
 
-		Map<Long, CRLBinary> crlMap = pdfDssDict.getCRLs();
+		Map<PdfObjectKey, CRLBinary> crlMap = pdfDssDict.getCRLs();
 		assertEquals(1, crlMap.size());
-		assertNotNull(crlMap.get(21L));
+		assertContainsObjectWithKey(crlMap.keySet(), 21);
+	}
+
+	private void assertContainsObjectWithKey(Collection<PdfObjectKey> objectKeys, long objectNumber) {
+		assertTrue(objectKeys.stream().anyMatch(k -> objectNumber == k.getNumber()));
 	}
 	
 	@Override

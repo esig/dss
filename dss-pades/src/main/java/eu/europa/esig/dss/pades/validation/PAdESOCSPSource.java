@@ -81,7 +81,7 @@ public class PAdESOCSPSource extends OfflineOCSPSource {
 	 *
 	 * @return a map of OCSP binaries with their object ids
 	 */
-	public Map<Long, OCSPResponseBinary> getOcspMap() {
+	public Map<PdfObjectKey, OCSPResponseBinary> getOcspMap() {
 		return dssDictOCSPSource.getOcspMap();
 	}
 

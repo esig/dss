@@ -32,6 +32,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESCRLSource;
 import eu.europa.esig.dss.pades.validation.PAdESCertificateSource;
 import eu.europa.esig.dss.pades.validation.PAdESOCSPSource;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -71,9 +72,9 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
 		validator.setCertificateVerifier(commonCertificateVerifier);
 		
-		Collection<Long> crlKeys = getCRLKeys(validator);
-		Collection<Long> ocspKeys = getOCSPKeys(validator);
-		Collection<Long> certKeys = getCertKeys(validator);
+		Collection<PdfObjectKey> crlKeys = getCRLKeys(validator);
+		Collection<PdfObjectKey> ocspKeys = getOCSPKeys(validator);
+		Collection<PdfObjectKey> certKeys = getCertKeys(validator);
 		
 		checkValidationData(signedDocument, crlKeys, ocspKeys, certKeys, true);
 		
@@ -92,8 +93,8 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		
 	}
 	
-	private Collection<Long> getCRLKeys(SignedDocumentValidator validator) {
-		Collection<Long> crls = new ArrayList<>();
+	private Collection<PdfObjectKey> getCRLKeys(SignedDocumentValidator validator) {
+		Collection<PdfObjectKey> crls = new ArrayList<>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
@@ -102,8 +103,8 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		return crls;
 	}
 	
-	private Collection<Long> getOCSPKeys(SignedDocumentValidator validator) {
-		Collection<Long> ocsps = new ArrayList<>();
+	private Collection<PdfObjectKey> getOCSPKeys(SignedDocumentValidator validator) {
+		Collection<PdfObjectKey> ocsps = new ArrayList<>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
@@ -112,8 +113,8 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		return ocsps;
 	}
 	
-	private Collection<Long> getCertKeys(SignedDocumentValidator validator) {
-		Collection<Long> certs = new ArrayList<>();
+	private Collection<PdfObjectKey> getCertKeys(SignedDocumentValidator validator) {
+		Collection<PdfObjectKey> certs = new ArrayList<>();
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
@@ -122,33 +123,33 @@ public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 		return certs;
 	}
 	
-	private void checkValidationData(DSSDocument document, Collection<Long> crls, Collection<Long> ocsps, Collection<Long> certs, boolean match) {
+	private void checkValidationData(DSSDocument document, Collection<PdfObjectKey> crls, Collection<PdfObjectKey> ocsps, Collection<PdfObjectKey> certs, boolean match) {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(document);
 		validator.setCertificateVerifier(new CommonCertificateVerifier());
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			PAdESCRLSource crlSource = (PAdESCRLSource) signature.getCRLSource();
-			Map<Long, CRLBinary> crlMap = crlSource.getCrlMap();
+			Map<PdfObjectKey, CRLBinary> crlMap = crlSource.getCrlMap();
 			if (match) {
 				assertEquals(1, crlMap.size());
-				for (Long crl : crls) {
+				for (PdfObjectKey crl : crls) {
 					assertNotNull(crlMap.get(crl));
 				}
 			}
 			
 			PAdESOCSPSource ocspSource = (PAdESOCSPSource) signature.getOCSPSource();
-			Map<Long, OCSPResponseBinary> ocspMap = ocspSource.getOcspMap();
+			Map<PdfObjectKey, OCSPResponseBinary> ocspMap = ocspSource.getOcspMap();
 			if (match) {
 				assertEquals(1, ocspMap.size());
-				for (Long ocsp : ocsps) {
+				for (PdfObjectKey ocsp : ocsps) {
 					assertNotNull(ocspMap.get(ocsp));
 				}
 			}
 			
 			PAdESCertificateSource certificateSource = (PAdESCertificateSource) signature.getCertificateSource();
-			Map<Long, CertificateToken> certificateMap = certificateSource.getCertificateMap();
+			Map<PdfObjectKey, CertificateToken> certificateMap = certificateSource.getCertificateMap();
 			if (match) {
-				for (Long cert : certs) {
+				for (PdfObjectKey cert : certs) {
 					assertNotNull(certificateMap.get(cert));
 				}
 			}

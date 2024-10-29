@@ -22,9 +22,11 @@ package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.AnnotationBox;
@@ -46,6 +48,7 @@ import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -63,6 +66,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -322,6 +326,37 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	private boolean isSignedField(PDAnnotation pdAnnotation) {
 		return pdAnnotation.getCOSObject().getDictionaryObject(COSName.V) != null;
+	}
+
+	/**
+	 * Gets {@code COSObject} from the PDF by the given {@code objectKey}
+	 *
+	 * @param objectKey {@link PdfObjectKey} to get object for
+	 * @return {@link COSObject} when the object corresponding to the defined key found, NULL otherwise
+	 */
+	public COSObject getObjectByKey(PdfObjectKey objectKey) {
+		if (objectKey instanceof PdfBoxObjectKey) {
+			PdfBoxObjectKey pdfBoxObjectKey = (PdfBoxObjectKey) objectKey;
+			return pdDocument.getDocument().getObjectFromPool(pdfBoxObjectKey.getValue());
+		}
+		throw new IllegalStateException("objectKey shall be of type 'PdfBoxObjectKey'!");
+	}
+
+	/**
+	 * Creates a {@code COSStream} with given {@code binaries}
+	 *
+	 * @param binaries binary array to be included to the stream
+	 * @return {@link COSStream}
+	 */
+	public COSStream createCOSStream(byte[] binaries) {
+		COSStream stream = pdDocument.getDocument().createCOSStream();
+		try (OutputStream unfilteredStream = stream.createOutputStream()) {
+			unfilteredStream.write(binaries);
+			unfilteredStream.flush();
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to create COSStream : %s", e.getMessage()), e);
+		}
+		return stream;
 	}
 
 	@Override

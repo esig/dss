@@ -76,7 +76,7 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	 *
 	 * @return a map between certificate PDF object ids and tokens
 	 */
-	public Map<Long, CertificateToken> getCertificateMap() {
+	public Map<PdfObjectKey, CertificateToken> getCertificateMap() {
 		return dssDictionaryCertificateSource.getCertificateMap();
 	}
 
