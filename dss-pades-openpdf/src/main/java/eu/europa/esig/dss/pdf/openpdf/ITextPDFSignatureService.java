@@ -348,9 +348,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 										char[] pwd, boolean includeVRIDict) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 InputStream is = document.openStream();
-			 PdfReader reader = new PdfReader(is, getPasswordBytes(pwd));
-			 ITextDocumentReader documentReader = new ITextDocumentReader(reader)) {
+			 
+			 ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBytes(pwd), pdfMemoryUsageSetting);
+             PdfReader reader = documentReader.getPdfReader()) {
 
 			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			PdfWriter writer = stp.getWriter();

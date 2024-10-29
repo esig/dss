@@ -480,10 +480,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 										char[] pwd, boolean includeVRIDict) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 InputStream is = document.openStream();
-			 PDDocument pdDocument = PDDocument.load(is, getPasswordString(pwd));
-			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(pdDocument)) {
-
+			 
+			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, getPasswordString(pwd), pdfMemoryUsageSetting);
+			 PDDocument pdDocument = documentReader.getPDDocument()) {
+			
 			if (!validationDataForInclusion.isEmpty()) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
 				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME,
@@ -676,8 +676,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public List<String> getAvailableSignatureFields(final DSSDocument document, final char[] pwd) {
 		List<String> result = new ArrayList<>();
-		try (InputStream is = document.openStream(); PDDocument pdfDoc = PDDocument.load(is, getPasswordString(pwd))) {
-			List<PDSignatureField> signatureFields = pdfDoc.getSignatureFields();
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, getPasswordString(pwd), pdfMemoryUsageSetting)) {
+			List<PDSignatureField> signatureFields = documentReader.getPDDocument().getSignatureFields();
 			for (PDSignatureField pdSignatureField : signatureFields) {
 				PDSignature signature = pdSignatureField.getSignature();
 				if (signature == null) {
