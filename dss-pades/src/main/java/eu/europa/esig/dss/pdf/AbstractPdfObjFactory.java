@@ -54,6 +54,11 @@ public abstract class AbstractPdfObjFactory implements IPdfObjFactory {
      * Used to verify the signature field position placement validity
      */
     private PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker;
+    
+	/**
+	 * Used to specify load mode of the PDF document
+	 */
+	private PdfMemoryUsageSetting pdfMemoryUsageSetting;
 
     /**
      * Default constructor instantiating object with null values
@@ -86,6 +91,11 @@ public abstract class AbstractPdfObjFactory implements IPdfObjFactory {
     public void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker) {
         this.pdfSignatureFieldPositionChecker = pdfSignatureFieldPositionChecker;
     }
+    
+	@Override
+	public void setPdfMemoryUsageSetting(PdfMemoryUsageSetting pdfMemoryUsageSetting) {
+		this.pdfMemoryUsageSetting = pdfMemoryUsageSetting;
+	}
 
     /**
      * This method is used to provide configuration to the given {@code pdfSignatureService}
@@ -110,6 +120,9 @@ public abstract class AbstractPdfObjFactory implements IPdfObjFactory {
         if (pdfSignatureFieldPositionChecker != null) {
             pdfSignatureService.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
         }
+		if (pdfMemoryUsageSetting != null) {
+			pdfSignatureService.setPdfMemoryUsageSetting(pdfMemoryUsageSetting);
+		}
         return pdfSignatureService;
     }
 

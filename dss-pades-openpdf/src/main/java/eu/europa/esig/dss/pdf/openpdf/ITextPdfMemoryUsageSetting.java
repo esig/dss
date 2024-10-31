@@ -18,26 +18,44 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades.validation.suite;
+package eu.europa.esig.dss.pdf.openpdf;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+/**
+ * IText memory usage setting
+ */
+public class ITextPdfMemoryUsageSetting {
 
-public class PAdESLTVBasedOnEPESValidationTest extends AbstractPAdESTestValidation {
+	/**
+	 * Load options
+	 */
+	public enum Mode {
+		FULL, PARTIAL
+	}
 
-    @Override
-    protected DSSDocument getSignedDocument() {
-        return new InMemoryDocument(getClass().getResourceAsStream("/validation/pades-ltv-from-epes.pdf"));
-    }
+	private Mode mode;
 
-    @Override
-    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-        super.checkSignatureLevel(diagnosticData);
-        assertEquals(SignatureLevel.PAdES_LTV, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
-    }
+	public ITextPdfMemoryUsageSetting(Mode mode) {
+		this.mode = mode;
+	}
 
+	/**
+	 * 
+	 * @return Load option {@link Mode}
+	 */
+	public Mode getMode() {
+		return mode;
+	}
+
+	/**
+	 * It converts generic {@link PdfMemoryUsageSetting} to IText domain
+	 * 
+	 * @param pdfMemoryUsageSetting
+	 * @return {@link ITextPdfMemoryUsageSetting}
+	 */
+	public static ITextPdfMemoryUsageSetting map(PdfMemoryUsageSetting pdfMemoryUsageSetting) {
+		Mode mode = PdfMemoryUsageSetting.Mode.MEMORY.equals(pdfMemoryUsageSetting.getMode()) ? Mode.FULL : Mode.PARTIAL;
+		return new ITextPdfMemoryUsageSetting(mode);
+	}
 }

@@ -20,31 +20,21 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import eu.europa.esig.dss.enumerations.CertificationPermission;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.pades.PAdESCommonParameters;
-import eu.europa.esig.dss.pades.validation.ByteRange;
-import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.pades.validation.PdfSignatureField;
-import eu.europa.esig.dss.pdf.AnnotationBox;
-import eu.europa.esig.dss.pdf.PAdESConstants;
-import eu.europa.esig.dss.pdf.PdfAnnotation;
-import eu.europa.esig.dss.pdf.PdfArray;
-import eu.europa.esig.dss.pdf.PdfDict;
-import eu.europa.esig.dss.pdf.PdfDocumentReader;
-import eu.europa.esig.dss.pdf.PdfDssDict;
-import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
-import eu.europa.esig.dss.pdf.SingleDssDict;
-import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -57,14 +47,28 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.pades.PAdESCommonParameters;
+import eu.europa.esig.dss.pades.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
+import eu.europa.esig.dss.pdf.AnnotationBox;
+import eu.europa.esig.dss.pdf.PAdESConstants;
+import eu.europa.esig.dss.pdf.PdfAnnotation;
+import eu.europa.esig.dss.pdf.PdfArray;
+import eu.europa.esig.dss.pdf.PdfDict;
+import eu.europa.esig.dss.pdf.PdfDocumentReader;
+import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
+import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
+import eu.europa.esig.dss.pdf.SingleDssDict;
+import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The PDFBox implementation of {@code PdfDocumentReader}
@@ -93,7 +97,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 */
 	public PdfBoxDocumentReader(DSSDocument dssDocument)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
-		this(dssDocument, null);
+		this(dssDocument, null, PdfMemoryUsageSetting.memoryOnly());
 	}
 
 	/**
@@ -101,16 +105,29 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * 
 	 * @param dssDocument        {@link DSSDocument} to read
 	 * @param passwordProtection {@link String} a password to open a protected document
+	 * @param memoryUsageSetting {@link MemoryUsageSetting} load setting 
 	 * @throws IOException       if an exception occurs
 	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
 	 *                           invalid for a protected document
 	 */
-	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection)
+	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection, PdfMemoryUsageSetting pdfMemoryUsageSetting)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
 		this.dssDocument = dssDocument;
-		try (InputStream is = dssDocument.openStream()) {
-			this.pdDocument = PDDocument.load(is, passwordProtection);
+		MemoryUsageSetting memoryUsageSetting = PdfBoxUtils.getMemoryUsageSetting(pdfMemoryUsageSetting);
+		try {
+			if (dssDocument instanceof FileDocument) {
+				FileDocument fileDocument = (FileDocument) dssDocument;
+				this.pdDocument = PDDocument.load(fileDocument.getFile(), passwordProtection, memoryUsageSetting);
+			} else if (dssDocument instanceof InMemoryDocument) {
+				InMemoryDocument inMemoryDocument = (InMemoryDocument) dssDocument;
+				this.pdDocument = PDDocument.load(inMemoryDocument.getBytes(), passwordProtection, null, null,
+						memoryUsageSetting);
+			} else {
+				try (InputStream is = dssDocument.openStream()) {
+					this.pdDocument = PDDocument.load(is, passwordProtection, memoryUsageSetting);
+				}
+			}
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(
 					String.format("Encrypted document : %s", e.getMessage()));

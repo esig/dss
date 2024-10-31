@@ -27,6 +27,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.visible.AbstractTestVisualComparator;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -65,7 +66,7 @@ class DetectionModificationAfterSignTest extends AbstractTestVisualComparator {
 		// Additional code to detect visual difference
 		assertFalse(arePdfDocumentsVisuallyEqual(dssDocument, expected));
 
-		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(dssDocument, expected, 1);
+		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(new PdfBoxPageDocumentRequest(dssDocument, 1), new PdfBoxPageDocumentRequest(expected, 1));
 		assertNotNull(subtractionImage);
 	}
 
