@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -62,6 +63,7 @@ public class XAdESExtensionTWithTSVDToLTATest extends XAdESExtensionTToLTATest {
         certificateVerifier.setCrlSource(getCRLSource());
         certificateVerifier.setOcspSource(getOCSPSource());
         certificateVerifier.addTrustedCertSources(getTrustedCommonCertificateSource());
+        certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
         return certificateVerifier;
     }
 
