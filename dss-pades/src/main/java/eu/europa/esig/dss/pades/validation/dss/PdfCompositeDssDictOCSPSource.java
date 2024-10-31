@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation.dss;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -43,13 +44,13 @@ import java.util.Set;
 public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
 
     /** Composite map of OCSP tokens extracted from different /DSS revisions by object id */
-    private final Map<Long, Set<OCSPResponseBinary>> ocspBinaryByIdMap = new HashMap<>();
+    private final Map<PdfObjectKey, Set<OCSPResponseBinary>> ocspBinaryByIdMap = new HashMap<>();
 
     /** Composite map of OCSP tokens extracted from different /DSS revisions by encoded object binaries */
-    private final Map<EncapsulatedRevocationTokenIdentifier<OCSP>, Set<Long>> ocspBinaryByObjectMap = new HashMap<>();
+    private final Map<EncapsulatedRevocationTokenIdentifier<OCSP>, Set<PdfObjectKey>> ocspBinaryByObjectMap = new HashMap<>();
 
     /** Cached map of created OCSPTokens and corresponding PDF object ids */
-    private final Map<RevocationToken<OCSP>, Set<Long>> ocspTokenMap = new HashMap<>();
+    private final Map<RevocationToken<OCSP>, Set<PdfObjectKey>> ocspTokenMap = new HashMap<>();
 
     /**
      * Default constructor instantiation an object with empty mpa of OCSP token objects
@@ -74,7 +75,7 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
      * @param dssDictionary {@link PdfDssDict}
      */
     protected void extractDSSOCSPs(PdfDssDict dssDictionary) {
-        Map<Long, OCSPResponseBinary> dssOCSPMap = dssDictionary.getOCSPs();
+        Map<PdfObjectKey, OCSPResponseBinary> dssOCSPMap = dssDictionary.getOCSPs();
         populateObjectsMap(dssOCSPMap);
         for (OCSPResponseBinary OCSP : dssOCSPMap.values()) {
             addBinary(OCSP, RevocationOrigin.DSS_DICTIONARY);
@@ -96,14 +97,14 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
         }
     }
 
-    private void populateObjectsMap(Map<Long, OCSPResponseBinary> ocspMap) {
-        for (Map.Entry<Long, OCSPResponseBinary> entry : ocspMap.entrySet()) {
+    private void populateObjectsMap(Map<PdfObjectKey, OCSPResponseBinary> ocspMap) {
+        for (Map.Entry<PdfObjectKey, OCSPResponseBinary> entry : ocspMap.entrySet()) {
             populateMapById(entry.getKey(), entry.getValue());
             populateMapByObject(entry.getKey(), entry.getValue());
         }
     }
 
-    private void populateMapById(Long objectId, OCSPResponseBinary ocspBinary) {
+    private void populateMapById(PdfObjectKey objectId, OCSPResponseBinary ocspBinary) {
         Set<OCSPResponseBinary> ocspBinaries = ocspBinaryByIdMap.get(objectId);
         if (ocspBinaries == null) {
             ocspBinaries = new HashSet<>();
@@ -112,8 +113,8 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
         ocspBinaryByIdMap.put(objectId, ocspBinaries);
     }
 
-    private void populateMapByObject(Long objectId, OCSPResponseBinary ocspBinary) {
-        Set<Long> objectIds = ocspBinaryByObjectMap.get(ocspBinary);
+    private void populateMapByObject(PdfObjectKey objectId, OCSPResponseBinary ocspBinary) {
+        Set<PdfObjectKey> objectIds = ocspBinaryByObjectMap.get(ocspBinary);
         if (objectIds == null) {
             objectIds = new HashSet<>();
         }
@@ -128,7 +129,7 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
      */
     protected void extractVRIOCSPs(PdfVriDict vriDictionary) {
         if (vriDictionary != null) {
-            for (Map.Entry<Long, OCSPResponseBinary> OCSPEntry : vriDictionary.getOCSPs().entrySet()) {
+            for (Map.Entry<PdfObjectKey, OCSPResponseBinary> OCSPEntry : vriDictionary.getOCSPs().entrySet()) {
                 addBinary(OCSPEntry.getValue(), RevocationOrigin.VRI_DICTIONARY);
             }
         }
@@ -150,7 +151,7 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
      * @param ocspToken {@link eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary} to get id for
      * @return a set of {@link Long} identifiers
      */
-    protected Set<Long> getRevocationTokenIds(RevocationToken<OCSP> ocspToken) {
+    protected Set<PdfObjectKey> getRevocationTokenIds(RevocationToken<OCSP> ocspToken) {
         return ocspTokenMap.get(ocspToken);
     }
 
@@ -158,7 +159,7 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
     public void addRevocation(RevocationToken<OCSP> token, EncapsulatedRevocationTokenIdentifier<OCSP> binary) {
         super.addRevocation(token, binary);
 
-        Set<Long> tokenBinaryObjectIds = getTokenBinaryObjectIds(binary);
+        Set<PdfObjectKey> tokenBinaryObjectIds = getTokenBinaryObjectIds(binary);
         ocspTokenMap.put(token, tokenBinaryObjectIds);
     }
 
@@ -166,9 +167,9 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
      * Returns PDF object identifier for the provided binary
      *
      * @param binary {@link OCSPResponseBinary}
-     * @return a set of {@link Long} identifiers
+     * @return a set of {@link PdfObjectKey} identifiers
      */
-    protected Set<Long> getTokenBinaryObjectIds(EncapsulatedRevocationTokenIdentifier<OCSP> binary) {
+    protected Set<PdfObjectKey> getTokenBinaryObjectIds(EncapsulatedRevocationTokenIdentifier<OCSP> binary) {
         return ocspBinaryByObjectMap.get(binary);
     }
 

@@ -37,6 +37,9 @@ import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -62,9 +65,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
-import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -142,9 +147,11 @@ class InfiniteLoopDSS621Test {
 	@Test
 	void manualTest() throws Exception {
 
-		PDDocument document = PDDocument.load(getClass().getResourceAsStream(FILE_PATH));
-		try (InputStream is = getClass().getResourceAsStream(FILE_PATH)) {
-			byte[] pdfBytes = Utils.toByteArray(is);
+		try (InputStream is = getClass().getResourceAsStream(FILE_PATH);
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument document = Loader.loadPDF(rar);
+			 InputStream isContent = getClass().getResourceAsStream(FILE_PATH)) {
+			byte[] pdfBytes = Utils.toByteArray(isContent);
 
 			List<PDSignature> signatures = document.getSignatureDictionaries();
 			assertEquals(6, signatures.size());
@@ -156,7 +163,11 @@ class InfiniteLoopDSS621Test {
 
 				logger.debug("Byte range : " + Arrays.toString(pdSignature.getByteRange()));
 
-				Utils.write(contents, new FileOutputStream("target/sig" + (++idx) + ".p7s"));
+				try (OutputStream os = Files.newOutputStream(Paths.get("target/sig" + (++idx) + ".p7s"))) {
+					Utils.write(contents, os);
+				}
+
+				logger.debug("Contents: " + Utils.toBase64(contents));
 
 				ASN1InputStream asn1sInput = new ASN1InputStream(contents);
 				ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
@@ -267,7 +278,6 @@ class InfiniteLoopDSS621Test {
 				Utils.closeQuietly(asn1sInput);
 			}
 		}
-		document.close();
 	}
 
 	private List<X509Certificate> extractCertificates(SignedData signedData) throws Exception {

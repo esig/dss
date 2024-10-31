@@ -26,6 +26,7 @@ import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -59,7 +60,7 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
     private final String relatedVRIDictionaryName;
 
     /** Cached CRL Map */
-    private Map<Long, CRLBinary> crlMap;
+    private Map<PdfObjectKey, CRLBinary> crlMap;
 
     /**
      * Default constructor
@@ -92,7 +93,7 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
      *
      * @return a map of CRL binaries with their object ids
      */
-    public Map<Long, CRLBinary> getCrlMap() {
+    public Map<PdfObjectKey, CRLBinary> getCrlMap() {
         if (crlMap == null) {
             crlMap = new HashMap<>();
             if (dssDictionary != null) {
@@ -146,9 +147,9 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         return Collections.emptyList();
     }
 
-    private Set<Long> getKeySetFromVRIDictionaries() {
+    private Set<PdfObjectKey> getKeySetFromVRIDictionaries() {
         if (dssDictionary != null) {
-            Set<Long> result = new HashSet<>();
+            Set<PdfObjectKey> result = new HashSet<>();
             List<PdfVriDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
             for (PdfVriDict vriDict : vris) {
                 result.addAll(vriDict.getCRLs().keySet());
@@ -159,10 +160,10 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
     }
 
     private List<EncapsulatedRevocationTokenIdentifier<CRL>> filterBinariesFromKeys(
-            Collection<EncapsulatedRevocationTokenIdentifier<CRL>> crlBinaries, Collection<Long> keySet) {
+            Collection<EncapsulatedRevocationTokenIdentifier<CRL>> crlBinaries, Collection<PdfObjectKey> keySet) {
         List<EncapsulatedRevocationTokenIdentifier<CRL>> result = new ArrayList<>();
         for (EncapsulatedRevocationTokenIdentifier<CRL> crlBinary : crlBinaries) {
-            Set<Long> objectIds = compositeCRLSource.getTokenBinaryObjectIds(crlBinary);
+            Set<PdfObjectKey> objectIds = compositeCRLSource.getTokenBinaryObjectIds(crlBinary);
             if (Utils.containsAny(keySet, objectIds)) {
                 result.add(crlBinary);
             }
@@ -174,10 +175,10 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
         return filterTokensFromKeys(revocationTokens, getCrlMap().keySet());
     }
 
-    private List<RevocationToken<CRL>> filterTokensFromKeys(Collection<RevocationToken<CRL>> revocationTokens, Collection<Long> keySet) {
+    private List<RevocationToken<CRL>> filterTokensFromKeys(Collection<RevocationToken<CRL>> revocationTokens, Collection<PdfObjectKey> keySet) {
         List<RevocationToken<CRL>> result = new ArrayList<>();
         for (RevocationToken<CRL> crlToken : revocationTokens) {
-            Set<Long> objectIds = compositeCRLSource.getRevocationTokenIds(crlToken);
+            Set<PdfObjectKey> objectIds = compositeCRLSource.getRevocationTokenIds(crlToken);
             if (Utils.containsAny(keySet, objectIds)) {
                 result.add(crlToken);
             }
@@ -199,7 +200,7 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
 
     private Set<RevocationOrigin> getRevocationDataOrigins(EncapsulatedRevocationTokenIdentifier<CRL> crlBinary) {
         Set<RevocationOrigin> result = new HashSet<>();
-        Set<Long> tokenBinaryObjectIds = compositeCRLSource.getTokenBinaryObjectIds(crlBinary);
+        Set<PdfObjectKey> tokenBinaryObjectIds = compositeCRLSource.getTokenBinaryObjectIds(crlBinary);
         if (Utils.containsAny(dssDictionary.getCRLs().keySet(), tokenBinaryObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }
@@ -225,7 +226,7 @@ public class PdfDssDictCRLSource extends OfflineCRLSource {
 
     private Set<RevocationOrigin> getRevocationDataOrigins(RevocationToken<CRL> crlToken) {
         Set<RevocationOrigin> result = new HashSet<>();
-        Set<Long> tokenObjectIds = compositeCRLSource.getRevocationTokenIds(crlToken);
+        Set<PdfObjectKey> tokenObjectIds = compositeCRLSource.getRevocationTokenIds(crlToken);
         if (Utils.containsAny(dssDictionary.getCRLs().keySet(), tokenObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }

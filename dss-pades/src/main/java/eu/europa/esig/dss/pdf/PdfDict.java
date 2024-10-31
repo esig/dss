@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -107,8 +109,18 @@ public interface PdfDict extends PdfObject {
 	 *
 	 * @param name {@link String} property name
 	 * @return {@link Object} value
+	 * @deprecated since DSS 6.2. Please use {@code #getObjectKey} method instead
 	 */
+	@Deprecated
 	Long getObjectNumber(String name);
+
+	/**
+	 * Returns a Pdf object ket of indirect reference to an object, when applicable
+	 *
+	 * @param name {@link String} property name
+	 * @return {@link PdfObjectKey}
+	 */
+	PdfObjectKey getObjectKey(String name);
 
 	/**
 	 * Returns object's stream binaries, when available

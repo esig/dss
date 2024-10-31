@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 
 import java.io.Serializable;
@@ -38,21 +39,21 @@ public interface PdfDssDict extends Serializable {
 	 * 
 	 * @return a map of identifiers and CRL binaries
 	 */
-	Map<Long, CRLBinary> getCRLs();
+	Map<PdfObjectKey, CRLBinary> getCRLs();
 
 	/**
 	 * Returns a map of unique identifiers and {@code OCSPResponseBinary}s
 	 * 
 	 * @return a map of identifiers and {@link eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary}s
 	 */
-	Map<Long, OCSPResponseBinary> getOCSPs();
+	Map<PdfObjectKey, OCSPResponseBinary> getOCSPs();
 
 	/**
 	 * Returns a map of unique identifiers and Certificate Tokens
 	 * 
 	 * @return a map of identifiers and {@link CertificateToken}s
 	 */
-	Map<Long, CertificateToken> getCERTs();
+	Map<PdfObjectKey, CertificateToken> getCERTs();
 
 	/**
 	 * Returns a list of VRI dictionaries

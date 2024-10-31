@@ -35,6 +35,9 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.junit.jupiter.api.Test;
 
@@ -52,8 +55,9 @@ class DSS1444Test {
 
 	@Test
 	void test() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
-			Exception exception = assertThrows(IOException.class, () -> PDDocument.load(is));
+		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf");
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is)) {
+			Exception exception = assertThrows(IOException.class, () -> Loader.loadPDF(rar));
 			assertEquals("Page tree root must be a dictionary", exception.getMessage());
 		}
 	}
@@ -69,8 +73,9 @@ class DSS1444Test {
 
 	@Test
 	void test2() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
-			Exception exception = assertThrows(IOException.class, () -> PDDocument.load(is));
+		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf");
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is)) {
+			Exception exception = assertThrows(IOException.class, () -> Loader.loadPDF(rar));
 			assertEquals("Page tree root must be a dictionary", exception.getMessage());
 		}
 	}
@@ -86,16 +91,18 @@ class DSS1444Test {
 
 	@Test
 	void test3() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg")) {
-			Exception exception = assertThrows(IOException.class, () -> PDDocument.load(is));
+		try (InputStream is = getClass().getResourceAsStream("/small-red.jpg");
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is)) {
+			Exception exception = assertThrows(IOException.class, () -> Loader.loadPDF(rar));
 			assertTrue(exception.getMessage().contains("Error: End-of-File, expected line"));
 		}
 	}
 
 	@Test
 	void test4() throws IOException {
-		try (InputStream is = getClass().getResourceAsStream("/sample.pdf")) {
-			PDDocument document = PDDocument.load(is);
+		try (InputStream is = getClass().getResourceAsStream("/sample.pdf");
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument document = Loader.loadPDF(rar)) {
 			assertNotNull(document);
 		}
 	}

@@ -45,6 +45,7 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -588,7 +589,7 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		textParameters.setBackgroundColor(Color.YELLOW);
 		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
 		
-		textParameters.setFont(new PdfBoxNativeFont(PDType1Font.HELVETICA));
+		textParameters.setFont(new PdfBoxNativeFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA)));
 		
 		signatureImageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(signatureImageParameters);

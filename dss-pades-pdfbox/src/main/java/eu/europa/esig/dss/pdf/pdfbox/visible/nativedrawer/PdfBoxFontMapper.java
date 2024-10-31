@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer;
 
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import java.awt.Font;
 
@@ -42,46 +43,51 @@ public class PdfBoxFontMapper {
 	 * @return {@link PDType1Font}
 	 */
 	public static PDType1Font getPDFont(Font javaFont) {
+		Standard14Fonts.FontName fontName = getFontName(javaFont);
+		return new PDType1Font(fontName);
+	}
+
+	private static Standard14Fonts.FontName getFontName(Font javaFont) {
 		switch (javaFont.getFamily()) {
 			case Font.SERIF:
 				if (javaFont.isPlain()) {
-					return PDType1Font.TIMES_ROMAN;
+					return Standard14Fonts.FontName.TIMES_ROMAN;
 				} else if (javaFont.isBold()) {
 					if (javaFont.isItalic()) {
-						return PDType1Font.TIMES_BOLD_ITALIC;
+						return Standard14Fonts.FontName.TIMES_BOLD_ITALIC;
 					} else {
-						return PDType1Font.TIMES_BOLD;
+						return Standard14Fonts.FontName.TIMES_BOLD;
 					}
 				} else {
-					return PDType1Font.TIMES_ITALIC;
+					return Standard14Fonts.FontName.TIMES_ITALIC;
 				}
 			case Font.SANS_SERIF:
 				if (javaFont.isPlain()) {
-					return PDType1Font.HELVETICA;
+					return Standard14Fonts.FontName.HELVETICA;
 				} else if (javaFont.isBold()) {
 					if (javaFont.isItalic()) {
-						return PDType1Font.HELVETICA_BOLD_OBLIQUE;
+						return Standard14Fonts.FontName.HELVETICA_BOLD_OBLIQUE;
 					} else {
-						return PDType1Font.HELVETICA_BOLD;
+						return Standard14Fonts.FontName.HELVETICA_BOLD;
 					}
 				} else {
-					return PDType1Font.HELVETICA_OBLIQUE;
+					return Standard14Fonts.FontName.HELVETICA_OBLIQUE;
 				}
 			case Font.MONOSPACED:
 				if (javaFont.isPlain()) {
-					return PDType1Font.COURIER;
+					return Standard14Fonts.FontName.COURIER;
 				} else if (javaFont.isBold()) {
 					if (javaFont.isItalic()) {
-						return PDType1Font.COURIER_BOLD_OBLIQUE;
+						return Standard14Fonts.FontName.COURIER_BOLD_OBLIQUE;
 					} else {
-						return PDType1Font.COURIER_BOLD;
+						return Standard14Fonts.FontName.COURIER_BOLD;
 					}
 				} else {
-					return PDType1Font.COURIER_OBLIQUE;
+					return Standard14Fonts.FontName.COURIER_OBLIQUE;
 				}
 			case Font.DIALOG:
 			case Font.DIALOG_INPUT:
-				return PDType1Font.SYMBOL;
+				return Standard14Fonts.FontName.SYMBOL;
 			default:
 				throw new UnsupportedOperationException("The font is not supported! " +
 						"Please use DSSFileFont implementation for custom fonts.");
