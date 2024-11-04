@@ -20,44 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.cos.COSStream;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuild;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuildDataDict;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
-import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.interactive.form.PDField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -72,6 +34,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pades.validation.PdfValidationDataContainer;
 import eu.europa.esig.dss.pdf.AbstractPDFSignatureService;
 import eu.europa.esig.dss.pdf.AnnotationBox;
@@ -94,6 +57,45 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuild;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDPropBuildDataDict;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.PDSignature;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureInterface;
+import org.apache.pdfbox.pdmodel.interactive.digitalsignature.SignatureOptions;
+import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
+import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Implementation of PDFSignatureService using PDFBox
@@ -351,18 +353,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	}
 
 	private boolean containsFilledSignature(PDDocument pdDocument) {
-		try {
-			List<PDSignature> signatures = pdDocument.getSignatureDictionaries();
-			for (PDSignature pdSignature : signatures) {
-				if (pdSignature.getCOSObject().containsKey(COSName.BYTERANGE)) {
-					return true;
-				}
+		List<PDSignature> signatures = pdDocument.getSignatureDictionaries();
+		for (PDSignature pdSignature : signatures) {
+			if (pdSignature.getCOSObject().containsKey(COSName.BYTERANGE)) {
+				return true;
 			}
-			return false;
-		} catch (IOException e) {
-			LOG.warn("Cannot read the existing signature(s)", e);
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -480,14 +477,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 										char[] pwd, boolean includeVRIDict) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 
 			 PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, getPasswordString(pwd), pdfMemoryUsageSetting);
 			 PDDocument pdDocument = documentReader.getPDDocument()) {
-			
+
 			if (!validationDataForInclusion.isEmpty()) {
 				final COSDictionary cosDictionary = pdDocument.getDocumentCatalog().getCOSObject();
 				cosDictionary.setItem(PAdESConstants.DSS_DICTIONARY_NAME,
-						buildDSSDictionary(pdDocument, validationDataForInclusion, includeVRIDict));
+						buildDSSDictionary(documentReader, validationDataForInclusion, includeVRIDict));
 				cosDictionary.setNeedToBeUpdated(true);
 			}
 			ensureESICDeveloperExtension1(documentReader);
@@ -504,9 +500,8 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		}
 	}
 
-	private COSDictionary buildDSSDictionary(PDDocument pdDocument, PdfValidationDataContainer validationDataForInclusion,
-											 boolean includeVRIDict)
-			throws IOException {
+	private COSDictionary buildDSSDictionary(PdfBoxDocumentReader documentReader, PdfValidationDataContainer validationDataForInclusion,
+											 boolean includeVRIDict) {
 		final COSDictionary dss = new COSDictionary();
 		final COSArray certs = new COSArray();
 		final COSArray crls = new COSArray();
@@ -532,7 +527,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
 						COSArray sigCerts = new COSArray();
 						for (CertificateToken certificateToken : certificateTokensToAdd) {
-							final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+							final COSBase cosObject = getPdfObjectForToken(documentReader, validationDataForInclusion,
 									knownObjects, certificateToken);
 							// ensure there is no duplicated references
 							if (sigCerts.indexOf(cosObject) == -1) {
@@ -549,7 +544,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
 						COSArray sigCrls = new COSArray();
 						for (CRLToken crlToken : crlTokensToAdd) {
-							final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+							final COSBase cosObject = getPdfObjectForToken(documentReader, validationDataForInclusion,
 									knownObjects, crlToken);
 							if (sigCrls.indexOf(cosObject) == -1) {
 								sigCrls.add(cosObject);
@@ -565,7 +560,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 					if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
 						COSArray sigOcsps = new COSArray();
 						for (OCSPToken ocspToken : ocspTokensToAdd) {
-							final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+							final COSBase cosObject = getPdfObjectForToken(documentReader, validationDataForInclusion,
 									knownObjects, ocspToken);
 							if (sigOcsps.indexOf(cosObject) == -1) {
 								sigOcsps.add(cosObject);
@@ -597,7 +592,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			Set<CertificateToken> certificateTokensToAdd = validationDataToAdd.getCertificateTokens();
 			if (Utils.isCollectionNotEmpty(certificateTokensToAdd)) {
 				for (CertificateToken certificateToken : certificateTokensToAdd) {
-					final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+					final COSBase cosObject = getPdfObjectForToken(documentReader, validationDataForInclusion,
 							knownObjects, certificateToken);
 					if (certs.indexOf(cosObject) == -1) {
 						certs.add(cosObject);
@@ -607,7 +602,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			Set<CRLToken> crlTokensToAdd = validationDataToAdd.getCrlTokens();
 			if (Utils.isCollectionNotEmpty(crlTokensToAdd)) {
 				for (CRLToken crlToken : crlTokensToAdd) {
-					final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+					final COSBase cosObject = getPdfObjectForToken(documentReader, validationDataForInclusion,
 							knownObjects, crlToken);
 					if (crls.indexOf(cosObject) == -1) {
 						crls.add(cosObject);
@@ -617,7 +612,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			Set<OCSPToken> ocspTokensToAdd = validationDataToAdd.getOcspTokens();
 			if (Utils.isCollectionNotEmpty(ocspTokensToAdd)) {
 				for (OCSPToken ocspToken : validationDataToAdd.getOcspTokens()) {
-					final COSBase cosObject = getPdfObjectForToken(pdDocument, validationDataForInclusion,
+					final COSBase cosObject = getPdfObjectForToken(documentReader, validationDataForInclusion,
 							knownObjects, ocspToken);
 					if (ocsps.indexOf(cosObject) == -1) {
 						ocsps.add(cosObject);
@@ -639,45 +634,32 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 		return dss;
 	}
 
-	private COSBase getPdfObjectForToken(PDDocument pdDocument, PdfValidationDataContainer validationDataContainer,
-										 Map<String, COSBase> knownObjects, Token token) throws IOException {
+	private COSBase getPdfObjectForToken(PdfBoxDocumentReader documentReader, PdfValidationDataContainer validationDataContainer,
+										 Map<String, COSBase> knownObjects, Token token) {
 		final String tokenKey = validationDataContainer.getTokenKey(token);
 		COSBase object = knownObjects.get(tokenKey);
 		if (object != null) {
 			return object;
 		}
 
-		Long objectNumber = validationDataContainer.getTokenReference(token);
-		if (objectNumber == null) {
-			COSStream stream = pdDocument.getDocument().createCOSStream();
-			try (OutputStream unfilteredStream = stream.createOutputStream()) {
-				unfilteredStream.write(token.getEncoded());
-				unfilteredStream.flush();
-			}
-			object = stream;
+		PdfObjectKey objectKey = validationDataContainer.getTokenReference(token);
+		if (objectKey == null) {
+			object = documentReader.createCOSStream(token.getEncoded());
 		} else {
-			object = getByObjectNumber(pdDocument, objectNumber);
+			object = documentReader.getObjectByKey(objectKey);
 		}
 
 		knownObjects.put(tokenKey, object);
 		return object;
 	}
 
-	private COSObject getByObjectNumber(PDDocument pdDocument, Long objectNumber) {
-		List<COSObject> objects = pdDocument.getDocument().getObjects();
-		for (COSObject cosObject : objects) {
-			if (cosObject.getObjectNumber() == objectNumber) {
-				return cosObject;
-			}
-		}
-		return null;
-	}
-
 	@Override
 	public List<String> getAvailableSignatureFields(final DSSDocument document, final char[] pwd) {
 		List<String> result = new ArrayList<>();
-		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(document, getPasswordString(pwd), pdfMemoryUsageSetting)) {
-			List<PDSignatureField> signatureFields = documentReader.getPDDocument().getSignatureFields();
+		try (InputStream is = document.openStream();
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument pdfDoc = Loader.loadPDF(rar, getPasswordString(pwd))) {
+			List<PDSignatureField> signatureFields = pdfDoc.getSignatureFields();
 			for (PDSignatureField pdSignatureField : signatureFields) {
 				PDSignature signature = pdSignatureField.getSignature();
 				if (signature == null) {
@@ -704,8 +686,6 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			if (pdfDoc.getPages().getCount() < parameters.getPage()) {
 				throw new IllegalArgumentException(String.format("The page number '%s' does not exist in the file!", parameters.getPage()));
 			}
-			
-			PdfBoxDocumentReader pdfBoxDocumentReader = new PdfBoxDocumentReader(pdfDoc);
 
 			PDDocumentCatalog catalog = pdfDoc.getDocumentCatalog();
 			catalog.getCOSObject().setNeedToBeUpdated(true);
@@ -721,13 +701,13 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 				signatureField.setPartialName(parameters.getFieldId());
 			}
 
-			AnnotationBox annotationBox = getVisibleSignatureFieldBoxPosition(pdfBoxDocumentReader, parameters);
+			AnnotationBox annotationBox = getVisibleSignatureFieldBoxPosition(documentReader, parameters);
 			
 			// start counting from TOP of the page
 			PDRectangle rect = new PDRectangle(annotationBox.getMinX(), annotationBox.getMinY(),
 					annotationBox.getWidth(), annotationBox.getHeight());
 
-			PDPage page = pdfBoxDocumentReader.getPDPage(parameters.getPage());
+			PDPage page = documentReader.getPDPage(parameters.getPage());
 			PDAnnotationWidget widget = signatureField.getWidgets().get(0);
 			widget.setRectangle(rect);
 			widget.setPage(page);

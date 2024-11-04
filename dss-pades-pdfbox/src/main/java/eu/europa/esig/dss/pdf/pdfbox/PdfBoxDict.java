@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObject;
@@ -215,10 +216,20 @@ class PdfBoxDict implements PdfDict {
 	}
 
 	@Override
+	@Deprecated
 	public Long getObjectNumber(String name) {
+		PdfObjectKey objectKey = getObjectKey(name);
+		if (objectKey != null) {
+			return objectKey.getNumber();
+		}
+		return null;
+	}
+
+	@Override
+	public PdfBoxObjectKey getObjectKey(String name) {
 		COSBase dictionaryObject = wrapped.getItem(name);
 		if (dictionaryObject instanceof COSObject) {
-			return ((COSObject) dictionaryObject).getObjectNumber();
+			return new PdfBoxObjectKey(dictionaryObject.getKey());
 		}
 		return null;
 	}

@@ -79,7 +79,7 @@ public class PAdESCRLSource extends OfflineCRLSource {
 	 *
 	 * @return a map of CRL binaries with their object ids
 	 */
-	public Map<Long, CRLBinary> getCrlMap() {
+	public Map<PdfObjectKey, CRLBinary> getCrlMap() {
 		return dssDictCrlSource.getCrlMap();
 	}
 

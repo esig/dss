@@ -24,6 +24,7 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -43,13 +44,13 @@ import java.util.Set;
 public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
 
     /** Composite map of CRL tokens extracted from different /DSS revisions by id */
-    private final Map<Long, Set<CRLBinary>> crlBinaryByIdMap = new HashMap<>();
+    private final Map<PdfObjectKey, Set<CRLBinary>> crlBinaryByIdMap = new HashMap<>();
 
     /** Composite map of CRL tokens extracted from different /DSS revisions by encoded object binaries */
-    private final Map<EncapsulatedRevocationTokenIdentifier<CRL>, Set<Long>> crlBinaryByObjectMap = new HashMap<>();
+    private final Map<EncapsulatedRevocationTokenIdentifier<CRL>, Set<PdfObjectKey>> crlBinaryByObjectMap = new HashMap<>();
 
     /** Cached map of created CRLTokens and corresponding PDF object ids */
-    private final Map<RevocationToken<CRL>, Set<Long>> crlTokenMap = new HashMap<>();
+    private final Map<RevocationToken<CRL>, Set<PdfObjectKey>> crlTokenMap = new HashMap<>();
 
     /**
      * Default constructor instantiation an object with empty mpa of CRL token objects
@@ -74,7 +75,7 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
      * @param dssDictionary {@link PdfDssDict}
      */
     protected void extractDSSCRLs(PdfDssDict dssDictionary) {
-        Map<Long, CRLBinary> dssCrlMap = dssDictionary.getCRLs();
+        Map<PdfObjectKey, CRLBinary> dssCrlMap = dssDictionary.getCRLs();
         populateObjectsMap(dssCrlMap);
         for (CRLBinary crl : dssCrlMap.values()) {
             addBinary(crl, RevocationOrigin.DSS_DICTIONARY);
@@ -96,14 +97,14 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
         }
     }
 
-    private void populateObjectsMap(Map<Long, CRLBinary> crlMap) {
-        for (Map.Entry<Long, CRLBinary> entry : crlMap.entrySet()) {
+    private void populateObjectsMap(Map<PdfObjectKey, CRLBinary> crlMap) {
+        for (Map.Entry<PdfObjectKey, CRLBinary> entry : crlMap.entrySet()) {
             populateMapById(entry.getKey(), entry.getValue());
             populateMapByObject(entry.getKey(), entry.getValue());
         }
     }
 
-    private void populateMapById(Long objectId, CRLBinary crlBinary) {
+    private void populateMapById(PdfObjectKey objectId, CRLBinary crlBinary) {
         Set<CRLBinary> crlBinaries = crlBinaryByIdMap.get(objectId);
         if (crlBinaries == null) {
             crlBinaries = new HashSet<>();
@@ -112,8 +113,8 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
         crlBinaryByIdMap.put(objectId, crlBinaries);
     }
 
-    private void populateMapByObject(Long objectId, CRLBinary crlBinary) {
-        Set<Long> objectIds = crlBinaryByObjectMap.get(crlBinary);
+    private void populateMapByObject(PdfObjectKey objectId, CRLBinary crlBinary) {
+        Set<PdfObjectKey> objectIds = crlBinaryByObjectMap.get(crlBinary);
         if (objectIds == null) {
             objectIds = new HashSet<>();
         }
@@ -128,7 +129,7 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
      */
     protected void extractVRICRLs(PdfVriDict vriDictionary) {
         if (vriDictionary != null) {
-            for (Map.Entry<Long, CRLBinary> crlEntry : vriDictionary.getCRLs().entrySet()) {
+            for (Map.Entry<PdfObjectKey, CRLBinary> crlEntry : vriDictionary.getCRLs().entrySet()) {
                 addBinary(crlEntry.getValue(), RevocationOrigin.VRI_DICTIONARY);
             }
         }
@@ -140,7 +141,7 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
      * @param objectId {@link Long} PDF id of the object to be extracted
      * @return set of {@link CRLBinary}s
      */
-    protected Set<CRLBinary> getCRLBinariesByObjectId(Long objectId) {
+    protected Set<CRLBinary> getCRLBinariesByObjectId(PdfObjectKey objectId) {
         return crlBinaryByIdMap.get(objectId);
     }
 
@@ -148,9 +149,9 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
      * Returns corresponding PDF object identifier for the extracted revocation token
      *
      * @param crlToken {@link eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken} to get id for
-     * @return a set of {@link Long} identifiers
+     * @return a set of {@link PdfObjectKey} identifiers
      */
-    protected Set<Long> getRevocationTokenIds(RevocationToken<CRL> crlToken) {
+    protected Set<PdfObjectKey> getRevocationTokenIds(RevocationToken<CRL> crlToken) {
         return crlTokenMap.get(crlToken);
     }
 
@@ -158,7 +159,7 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
     public void addRevocation(RevocationToken<CRL> token, EncapsulatedRevocationTokenIdentifier<CRL> binary) {
         super.addRevocation(token, binary);
 
-        Set<Long> tokenBinaryObjectIds = getTokenBinaryObjectIds(binary);
+        Set<PdfObjectKey> tokenBinaryObjectIds = getTokenBinaryObjectIds(binary);
         crlTokenMap.put(token, tokenBinaryObjectIds);
     }
 
@@ -168,7 +169,7 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
      * @param binary {@link CRLBinary}
      * @return {@link Long} identifier
      */
-    protected Set<Long> getTokenBinaryObjectIds(EncapsulatedRevocationTokenIdentifier<CRL> binary) {
+    protected Set<PdfObjectKey> getTokenBinaryObjectIds(EncapsulatedRevocationTokenIdentifier<CRL> binary) {
         return crlBinaryByObjectMap.get(binary);
     }
 

@@ -20,39 +20,15 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.apache.pdfbox.cos.COSArray;
-import org.apache.pdfbox.cos.COSBase;
-import org.apache.pdfbox.cos.COSDictionary;
-import org.apache.pdfbox.cos.COSName;
-import org.apache.pdfbox.cos.COSObject;
-import org.apache.pdfbox.io.MemoryUsageSetting;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
-import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
-import org.apache.pdfbox.rendering.PDFRenderer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.AnnotationBox;
@@ -69,6 +45,37 @@ import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.cos.COSArray;
+import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSStream;
+import org.apache.pdfbox.io.MemoryUsageSetting;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotation;
+import org.apache.pdfbox.pdmodel.interactive.form.PDSignatureField;
+import org.apache.pdfbox.rendering.PDFRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * The PDFBox implementation of {@code PdfDocumentReader}
@@ -88,7 +95,8 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	private Map<PdfSignatureDictionary, List<PdfSignatureField>> signatureDictionaryMap;
 
 	/**
-	 * Default constructor of the PDFBox implementation of the Reader
+	 * Default constructor of the PDFBox implementation of the Reader.
+	 * This constructor uses in-memory processing of the document.
 	 * 
 	 * @param dssDocument               {@link DSSDocument} to read
 	 * @throws IOException              if an exception occurs
@@ -101,14 +109,30 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	/**
-	 * The PDFBox implementation of the Reader
-	 * 
-	 * @param dssDocument        {@link DSSDocument} to read
-	 * @param passwordProtection {@link String} a password to open a protected document
-	 * @param memoryUsageSetting {@link MemoryUsageSetting} load setting 
-	 * @throws IOException       if an exception occurs
+	 * Constructor of the PDFBox implementation of the Reader with a password protection phrase provided.
+	 * This constructor uses in-memory processing of the document.
+	 *
+	 * @param dssDocument           {@link DSSDocument} to read
+	 * @param passwordProtection    {@link String} a password to open a protected document
+	 * @throws IOException          if an exception occurs
 	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
-	 *                           invalid for a protected document
+	 *                              invalid for a protected document
+	 */
+	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection)
+			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
+		this(dssDocument, passwordProtection, PdfMemoryUsageSetting.memoryOnly());
+	}
+
+	/**
+	 * Constructor of the PDFBox implementation of the Reader with a password protection phrase
+	 * and memory usage settings provided.
+	 * 
+	 * @param dssDocument           {@link DSSDocument} to read
+	 * @param passwordProtection    {@link String} a password to open a protected document
+	 * @param pdfMemoryUsageSetting {@link MemoryUsageSetting} PDF loading setting
+	 * @throws IOException          if an exception occurs
+	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
+	 *                              invalid for a protected document
 	 */
 	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection, PdfMemoryUsageSetting pdfMemoryUsageSetting)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
@@ -118,14 +142,14 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 		try {
 			if (dssDocument instanceof FileDocument) {
 				FileDocument fileDocument = (FileDocument) dssDocument;
-				this.pdDocument = PDDocument.load(fileDocument.getFile(), passwordProtection, memoryUsageSetting);
+				this.pdDocument = Loader.loadPDF(fileDocument.getFile(), passwordProtection, memoryUsageSetting.streamCache);
 			} else if (dssDocument instanceof InMemoryDocument) {
 				InMemoryDocument inMemoryDocument = (InMemoryDocument) dssDocument;
-				this.pdDocument = PDDocument.load(inMemoryDocument.getBytes(), passwordProtection, null, null,
-						memoryUsageSetting);
+				this.pdDocument = Loader.loadPDF(inMemoryDocument.getBytes(), passwordProtection, null, null, memoryUsageSetting.streamCache);
 			} else {
-				try (InputStream is = dssDocument.openStream()) {
-					this.pdDocument = PDDocument.load(is, passwordProtection, memoryUsageSetting);
+				try (InputStream is = dssDocument.openStream();
+					 RandomAccessReadBuffer randomAccessRead = new RandomAccessReadBuffer(is)) {
+					this.pdDocument = Loader.loadPDF(randomAccessRead, passwordProtection, memoryUsageSetting.streamCache);
 				}
 			}
 		} catch (InvalidPasswordException e) {
@@ -143,13 +167,15 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * @throws IOException       if an exception occurs
 	 * @throws eu.europa.esig.dss.pades.exception.InvalidPasswordException if the password is not provided or
 	 *                           invalid for a protected document
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public PdfBoxDocumentReader(byte[] binaries, String passwordProtection)
 			throws IOException, eu.europa.esig.dss.pades.exception.InvalidPasswordException {
 		Objects.requireNonNull(binaries, "The document binaries must be defined!");
 		this.dssDocument = new InMemoryDocument(binaries);
-		try {
-			this.pdDocument = PDDocument.load(binaries, passwordProtection);
+		try (RandomAccessRead randomAccessRead = new RandomAccessReadBuffer(binaries)) {
+			this.pdDocument = Loader.loadPDF(randomAccessRead, passwordProtection);
 		} catch (InvalidPasswordException e) {
 			throw new eu.europa.esig.dss.pades.exception.InvalidPasswordException(
 					String.format("Encrypted document : %s", e.getMessage()));
@@ -160,7 +186,9 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 * The constructor to directly instantiate the {@code PdfBoxDocumentReader}
 	 * 
 	 * @param pdDocument {@link PDDocument}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public PdfBoxDocumentReader(final PDDocument pdDocument) {
 		this.pdDocument = pdDocument;
 	}
@@ -200,7 +228,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 						continue;
 					}
 
-					long sigDictNumber = sigDictObject.getObjectNumber();
+					long sigDictNumber = sigDictObject.getKey().getNumber();
 					PdfSignatureDictionary signature = pdfObjectDictMap.get(sigDictNumber);
 					if (signature == null) {
 						try {
@@ -324,6 +352,37 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	private boolean isSignedField(PDAnnotation pdAnnotation) {
 		return pdAnnotation.getCOSObject().getDictionaryObject(COSName.V) != null;
+	}
+
+	/**
+	 * Gets {@code COSObject} from the PDF by the given {@code objectKey}
+	 *
+	 * @param objectKey {@link PdfObjectKey} to get object for
+	 * @return {@link COSObject} when the object corresponding to the defined key found, NULL otherwise
+	 */
+	public COSObject getObjectByKey(PdfObjectKey objectKey) {
+		if (objectKey instanceof PdfBoxObjectKey) {
+			PdfBoxObjectKey pdfBoxObjectKey = (PdfBoxObjectKey) objectKey;
+			return pdDocument.getDocument().getObjectFromPool(pdfBoxObjectKey.getValue());
+		}
+		throw new IllegalStateException("objectKey shall be of type 'PdfBoxObjectKey'!");
+	}
+
+	/**
+	 * Creates a {@code COSStream} with given {@code binaries}
+	 *
+	 * @param binaries binary array to be included to the stream
+	 * @return {@link COSStream}
+	 */
+	public COSStream createCOSStream(byte[] binaries) {
+		COSStream stream = pdDocument.getDocument().createCOSStream();
+		try (OutputStream unfilteredStream = stream.createOutputStream()) {
+			unfilteredStream.write(binaries);
+			unfilteredStream.flush();
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to create COSStream : %s", e.getMessage()), e);
+		}
+		return stream;
 	}
 
 	@Override

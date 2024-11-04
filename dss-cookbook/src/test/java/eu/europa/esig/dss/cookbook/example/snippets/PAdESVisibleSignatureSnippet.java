@@ -30,8 +30,9 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class PAdESVisibleSignatureSnippet {
 	
@@ -129,7 +130,7 @@ public class PAdESVisibleSignatureSnippet {
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		// tag::nativeFont[]
 		
-		textParameters.setFont(new PdfBoxNativeFont(PDType1Font.HELVETICA));
+		textParameters.setFont(new PdfBoxNativeFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA)));
 		
 		// end::nativeFont[]
 		// end::visibleSigParams[]

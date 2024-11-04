@@ -70,10 +70,13 @@ public class TempFileResourcesHandler extends AbstractResourcesHandler {
     }
 
     @Override
-    public DSSDocument writeToDSSDocument() {
+    public DSSDocument writeToDSSDocument() throws IOException {
         assertFileExists();
         // Avoid deletion of the File on exit
         toBeDeleted = false;
+        // close to finalize OutputStream
+        close();
+        // create the document
         return new FileDocument(tempFile);
     }
 

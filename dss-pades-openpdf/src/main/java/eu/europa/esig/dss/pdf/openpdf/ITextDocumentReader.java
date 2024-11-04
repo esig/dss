@@ -46,6 +46,7 @@ import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.PdfNumber;
 import com.lowagie.text.pdf.PdfObject;
 import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
@@ -57,6 +58,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.AnnotationBox;
@@ -341,6 +343,30 @@ public class ITextDocumentReader implements PdfDocumentReader {
 
 	private boolean isSignedField(PdfDictionary annotDictionary) {
 		return annotDictionary.getAsDict(PdfName.V) != null;
+	}
+
+	/**
+	 * Gets {@code PdfObject} from the PDF by the given {@code objectKey}
+	 *
+	 * @param objectKey {@link PdfObjectKey} to get object for
+	 * @return {@link PdfObject} when the object corresponding to the defined key found, NULL otherwise
+	 */
+	public PdfObject getObjectByKey(PdfObjectKey objectKey) {
+		if (objectKey instanceof ITextObjectKey) {
+			ITextObjectKey iTextObjectKey = (ITextObjectKey) objectKey;
+			return pdfReader.getPdfObject(iTextObjectKey.getValue().getNumber());
+		}
+		throw new IllegalStateException("objectKey shall be of type 'ITextObjectKey'!");
+	}
+
+	/**
+	 * Creates a {@code PdfStream} with given {@code binaries}
+	 *
+	 * @param binaries binary array to be included to the stream
+	 * @return {@link PdfStream}
+	 */
+	public PdfStream createPdfStream(byte[] binaries) {
+		return new PdfStream(binaries);
 	}
 
 	@Override

@@ -32,7 +32,9 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -40,7 +42,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,8 +107,10 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 	}
 
 	private BufferedImage getScreenshotWithDpi(DSSDocument dssDoc) throws IOException {
-		try (InputStream is = dssDoc.openStream(); PDDocument doc = PDDocument.load(is)) {
-			PDFRenderer renderer = new PDFRenderer(doc);
+		try (InputStream is = dssDoc.openStream();
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument document = Loader.loadPDF(rar)) {
+			PDFRenderer renderer = new PDFRenderer(document);
 			return renderer.renderImageWithDPI(0, DPI);
 		}
 	}
@@ -176,9 +180,11 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2, float similarityLevel)
 			throws IOException {
 		try (InputStream is1 = doc1.openStream();
-				InputStream is2 = doc2.openStream();
-				PDDocument pdDoc1 = PDDocument.load(is1);
-				PDDocument pdDoc2 = PDDocument.load(is2);) {
+			 InputStream is2 = doc2.openStream();
+			 RandomAccessRead rar1 = new RandomAccessReadBuffer(is1);
+			 PDDocument pdDoc1 = Loader.loadPDF(rar1);
+			 RandomAccessRead rar2 = new RandomAccessReadBuffer(is2);
+			 PDDocument pdDoc2 = Loader.loadPDF(rar2);) {
 			checkPdfSimilarity(pdDoc1, pdDoc2, similarityLevel);
 		}
 	}

@@ -31,21 +31,23 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BuildKnownObjectsTest extends PKIFactoryAccess {
 
@@ -112,17 +114,22 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		PAdESSignature pades = (PAdESSignature) signatures.get(0);
 
 		dssDictionary = pades.getDssDictionary();
-		Map<Long, CRLBinary> crlMap = dssDictionary.getCRLs();
+		Map<PdfObjectKey, CRLBinary> crlMap = dssDictionary.getCRLs();
 		assertEquals(3, crlMap.size()); // we don't collect newer CRLS
+
 		// original duplicates must be referenced
-		assertNotNull(crlMap.get(21L));
-		assertNotNull(crlMap.get(22L));
-		assertNotNull(crlMap.get(29L));
+		assertContainsObjectWithKey(crlMap.keySet(), 21);
+		assertContainsObjectWithKey(crlMap.keySet(), 22);
+		assertContainsObjectWithKey(crlMap.keySet(), 29);
 
-		Map<Long, CertificateToken> certMap = dssDictionary.getCERTs();
-		assertNotNull(certMap.get(20L));
-		assertNotNull(certMap.get(30L));
+		Map<PdfObjectKey, CertificateToken> certMap = dssDictionary.getCERTs();
+		assertContainsObjectWithKey(certMap.keySet(), 20);
+		assertContainsObjectWithKey(certMap.keySet(), 30);
 
+	}
+
+	private void assertContainsObjectWithKey(Collection<PdfObjectKey> objectKeys, long objectNumber) {
+		assertTrue(objectKeys.stream().anyMatch(k -> objectNumber == k.getNumber()));
 	}
 
 	@Override

@@ -20,23 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.io.IOException;
-import java.util.Date;
-
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInfo;
-
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -62,6 +45,22 @@ import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
 class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
@@ -590,7 +589,7 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		textParameters.setBackgroundColor(Color.YELLOW);
 		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
 		
-		textParameters.setFont(new PdfBoxNativeFont(PDType1Font.HELVETICA));
+		textParameters.setFont(new PdfBoxNativeFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA)));
 		
 		signatureImageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(signatureImageParameters);
