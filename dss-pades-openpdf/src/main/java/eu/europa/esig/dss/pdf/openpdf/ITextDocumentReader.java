@@ -20,19 +20,6 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.exceptions.BadPasswordException;
 import com.lowagie.text.pdf.AcroFields;
@@ -50,7 +37,6 @@ import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.RandomAccessFileOrArray;
-
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -72,6 +58,18 @@ import eu.europa.esig.dss.pdf.SingleDssDict;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * The IText (OpenPdf) implementation of {@code PdfDocumentReader}
@@ -98,7 +96,19 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @throws InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
 	public ITextDocumentReader(DSSDocument dssDocument) throws IOException, InvalidPasswordException {
-		this(dssDocument, null, PdfMemoryUsageSetting.memoryOnly());
+		this(dssDocument, null);
+	}
+
+	/**
+	 * The OpenPDF implementation of the Reader to read a password-protected document
+	 *
+	 * @param dssDocument {@link DSSDocument} to read
+	 * @param passwordProtection binaries of a password to open a protected document
+	 * @throws IOException if an exception occurs
+	 * @throws InvalidPasswordException if the password is not provided or invalid for a protected document
+	 */
+	public ITextDocumentReader(DSSDocument dssDocument, byte[] passwordProtection) throws IOException, InvalidPasswordException {
+		this(dssDocument, passwordProtection, PdfMemoryUsageSetting.memoryFull());
 	}
 
 	/**
@@ -109,26 +119,43 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * @throws IOException if an exception occurs
 	 * @throws InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */
-	public ITextDocumentReader(DSSDocument dssDocument, byte[] passwordProtection, PdfMemoryUsageSetting pdfMemoryUsageSetting) throws IOException, InvalidPasswordException {
+	public ITextDocumentReader(DSSDocument dssDocument, byte[] passwordProtection, PdfMemoryUsageSetting pdfMemoryUsageSetting)
+			throws IOException, InvalidPasswordException {
 		Objects.requireNonNull(dssDocument, "The document must be defined!");
+		Objects.requireNonNull(pdfMemoryUsageSetting, "PdfMemoryUsageSetting must be defined!");
 		this.dssDocument = dssDocument;
 		try {
-			ITextPdfMemoryUsageSetting memoryUsageSetting = ITextPdfMemoryUsageSetting.map(pdfMemoryUsageSetting);
-			if (dssDocument instanceof FileDocument) {
+			if (PdfMemoryUsageSetting.Mode.MEMORY_FULL != pdfMemoryUsageSetting.getMode() && dssDocument instanceof FileDocument) {
 				FileDocument fileDocument = (FileDocument) dssDocument;
-				String filenameSource = fileDocument.getFile().getAbsolutePath();
-				if (ITextPdfMemoryUsageSetting.Mode.FULL.equals(memoryUsageSetting.getMode())) {
-					this.pdfReader = new PdfReader(filenameSource, passwordProtection);
-				} else {
-					this.pdfReader = new PdfReader(new RandomAccessFileOrArray(filenameSource, false, true), passwordProtection);
-				}
+				this.pdfReader = getFileDocumentPdfReader(fileDocument, passwordProtection, pdfMemoryUsageSetting);
+
+			} else if (dssDocument instanceof InMemoryDocument) {
+				InMemoryDocument inMemoryDocument = (InMemoryDocument) dssDocument;
+				this.pdfReader = new PdfReader(inMemoryDocument.getBytes(), passwordProtection);
+
 			} else {
 				try (InputStream is = dssDocument.openStream()) {
 					this.pdfReader = new PdfReader(is, passwordProtection);
 				}
 			}
+
 		} catch (BadPasswordException e) {
 			throw new InvalidPasswordException(String.format("Encrypted document : %s", e.getMessage()));
+		}
+	}
+
+	private PdfReader getFileDocumentPdfReader(FileDocument fileDocument, byte[] passwordProtection,
+											   PdfMemoryUsageSetting pdfMemoryUsageSetting) throws IOException {
+		String filenameSource = fileDocument.getFile().getAbsolutePath();
+		switch (pdfMemoryUsageSetting.getMode()) {
+			case MEMORY_BUFFERED:
+				// This condition uses a MappedByteBuffer to process the file in memory
+				return new PdfReader(filenameSource, passwordProtection);
+			case FILE:
+				return new PdfReader(new RandomAccessFileOrArray(filenameSource, false, true), passwordProtection);
+			default:
+				throw new IllegalArgumentException(String.format("The PdfMemoryUsageSetting mode '%s' is not " +
+						"supported in dss-pades-openpdf implementation!", pdfMemoryUsageSetting.getMode()));
 		}
 	}
 

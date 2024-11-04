@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.Objects;
-
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
+import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
+import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -35,13 +36,11 @@ import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceDictionary;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.PAdESUtils;
-import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
-import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
-import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Contains a set of utils for PdfBox implementation
@@ -109,7 +108,7 @@ public class PdfBoxUtils {
 	 * This method returns an image representing a subtraction result between
 	 * {@code pdfBoxPageDocumentRequest1} and {@code pdfBoxPageDocumentRequest2} for the defined
 	 * pages.
-	 * 
+	 * <p>
 	 * This method uses a provided {@code DSSResourcesHandler}
 	 *
 	 * @param pdfBoxPageDocumentRequest1 {@link PdfBoxPageDocumentRequest} the first document
@@ -174,35 +173,23 @@ public class PdfBoxUtils {
 	/**
 	 * It converts generic {@link PdfMemoryUsageSetting} to PDF Box domain
 	 * 
-	 * @param pdfMemoryUsageSetting
+	 * @param pdfMemoryUsageSetting {@link PdfMemoryUsageSetting}
 	 * @return {@link MemoryUsageSetting}
 	 */
 	public static MemoryUsageSetting getMemoryUsageSetting(PdfMemoryUsageSetting pdfMemoryUsageSetting) {
-		MemoryUsageSetting memoryUsageSetting = null;
 		switch (pdfMemoryUsageSetting.getMode()) {
-		case MEMORY:
-			if (pdfMemoryUsageSetting.getMaxMemoryBytes() != null) {
-				memoryUsageSetting = MemoryUsageSetting.setupMainMemoryOnly(pdfMemoryUsageSetting.getMaxMemoryBytes());
-			} else {
-				memoryUsageSetting = MemoryUsageSetting.setupMainMemoryOnly();
+			case MEMORY_FULL:
+				return MemoryUsageSetting.setupMainMemoryOnly(); // no limitations applicable
+			case MEMORY_BUFFERED:
+				return MemoryUsageSetting.setupMainMemoryOnly(pdfMemoryUsageSetting.getMaxMemoryBytes());
+			case FILE:
+				return MemoryUsageSetting.setupTempFileOnly(pdfMemoryUsageSetting.getMaxStorageBytes());
+			case MIXED:
+				return MemoryUsageSetting.setupMixed(pdfMemoryUsageSetting.getMaxMemoryBytes(), pdfMemoryUsageSetting.getMaxStorageBytes());
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The MemoryUsageSetting mode '%s' is not supported!", pdfMemoryUsageSetting.getMode()));
 			}
-			break;
-		case FILE:
-			if (pdfMemoryUsageSetting.getMaxFileBytes() != null) {
-				memoryUsageSetting = MemoryUsageSetting.setupTempFileOnly(pdfMemoryUsageSetting.getMaxFileBytes());
-			} else {
-				memoryUsageSetting = MemoryUsageSetting.setupTempFileOnly();
-			}
-			break;
-		case MIXED:
-			if (pdfMemoryUsageSetting.getMaxFileBytes() != null) {
-				memoryUsageSetting = MemoryUsageSetting.setupMixed(pdfMemoryUsageSetting.getMaxMemoryBytes(), pdfMemoryUsageSetting.getMaxFileBytes());
-			} else {
-				memoryUsageSetting = MemoryUsageSetting.setupMixed(pdfMemoryUsageSetting.getMaxMemoryBytes());
-			}
-			break;
-		}
-		return memoryUsageSetting;
 	}
 
 }

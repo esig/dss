@@ -119,7 +119,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	/**
 	 * Used to specify load mode of the PDF document
 	 */
-	protected PdfMemoryUsageSetting pdfMemoryUsageSetting = PdfMemoryUsageSetting.memoryOnly();
+	protected PdfMemoryUsageSetting pdfMemoryUsageSetting = PdfMemoryUsageSetting.memoryFull();
 
 	/**
 	 * Constructor for the PDFSignatureService

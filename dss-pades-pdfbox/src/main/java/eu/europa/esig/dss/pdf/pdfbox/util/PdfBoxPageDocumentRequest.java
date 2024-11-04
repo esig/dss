@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.pdf.pdfbox.util;
 
-import java.util.Objects;
-
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
+
+import java.util.Objects;
 
 /**
  * Represents a request for operating over a specific page of a given PDF
@@ -34,7 +34,7 @@ public class PdfBoxPageDocumentRequest {
 	private DSSDocument pdfDocument;
 	private char[] passwordProtection;
 	private int page;
-	private PdfMemoryUsageSetting pdfMemoryUsageSetting = PdfMemoryUsageSetting.memoryOnly();
+	private PdfMemoryUsageSetting pdfMemoryUsageSetting = PdfMemoryUsageSetting.memoryFull();
 
 	/**
 	 * @param pdfDocument {@link DSSDocument} to generate screenshot for

@@ -141,7 +141,7 @@ class PdfBoxUtilsTest {
 	
 	@Test
 	void enforceMemoryUsageSettingMapping() {
-		PdfMemoryUsageSetting pdfMemoryUsageSetting = PdfMemoryUsageSetting.memoryOnly(999);
+		PdfMemoryUsageSetting pdfMemoryUsageSetting = PdfMemoryUsageSetting.memoryBuffered(999);
 		MemoryUsageSetting memoryUsageSetting = PdfBoxUtils.getMemoryUsageSetting(pdfMemoryUsageSetting);
 		assertEquals(true, memoryUsageSetting.useMainMemory());
 		assertEquals(false, memoryUsageSetting.useTempFile());

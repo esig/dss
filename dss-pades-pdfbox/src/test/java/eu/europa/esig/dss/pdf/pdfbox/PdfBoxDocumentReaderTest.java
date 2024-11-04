@@ -89,7 +89,7 @@ class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	@Test
 	void permissionsProtectedDocument() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/open_protected.pdf"));
-		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ", PdfMemoryUsageSetting.memoryOnly())) {
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
 			assertTrue(documentReader.isEncrypted());
 			assertTrue(documentReader.isOpenWithOwnerAccess());
 			assertTrue(documentReader.canFillSignatureForm());
@@ -100,7 +100,7 @@ class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	@Test
 	void permissionsEditionProtectedDocument() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_none.pdf"));
-		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ", PdfMemoryUsageSetting.memoryOnly())) {
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
 			assertTrue(documentReader.isEncrypted());
 			assertTrue(documentReader.isOpenWithOwnerAccess());
 			assertTrue(documentReader.canFillSignatureForm());
@@ -111,7 +111,7 @@ class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	@Test
 	void permissionsEditionNoFieldsProtectedDocument() throws IOException {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream("/protected/edition_protected_signing_allowed_no_field.pdf"));
-		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ", PdfMemoryUsageSetting.memoryOnly())) {
+		try (PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(dssDocument, " ")) {
 			assertTrue(documentReader.isEncrypted());
 			assertTrue(documentReader.isOpenWithOwnerAccess());
 			assertTrue(documentReader.canFillSignatureForm());
