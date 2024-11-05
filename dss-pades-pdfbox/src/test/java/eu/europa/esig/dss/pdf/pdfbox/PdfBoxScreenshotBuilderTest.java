@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.pades;
+package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -6,7 +6,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,9 +42,6 @@ public class PdfBoxScreenshotBuilderTest {
 
         exception = assertThrows(NullPointerException.class, () -> PdfBoxScreenshotBuilder.fromDocument(null));
         assertEquals("PDF Document shall be defined!", exception.getMessage());
-
-        exception = assertThrows(IndexOutOfBoundsException.class, () -> PdfBoxScreenshotBuilder.fromDocument(sampleDocument));
-        assertEquals("Index out of bounds: 0", exception.getMessage());
     }
 
     @Test
@@ -54,6 +50,10 @@ public class PdfBoxScreenshotBuilderTest {
         assertNotNull(screenshot);
 
         Exception exception = assertThrows(IndexOutOfBoundsException.class,
+                () -> PdfBoxScreenshotBuilder.fromDocument(sampleDocument).generateScreenshot(0));
+        assertEquals("Index out of bounds: 0", exception.getMessage());
+
+        exception = assertThrows(IndexOutOfBoundsException.class,
                 () -> PdfBoxScreenshotBuilder.fromDocument(sampleDocument).generateScreenshot(2));
         assertEquals("1-based index out of bounds: 2", exception.getMessage());
     }
@@ -63,10 +63,12 @@ public class PdfBoxScreenshotBuilderTest {
         DSSDocument screenshot = PdfBoxScreenshotBuilder.fromDocument(protectedDocument, correctProtectionPhrase).generateScreenshot(1);
         assertNotNull(screenshot);
 
-        Exception exception = assertThrows(DSSException.class, () -> PdfBoxScreenshotBuilder.fromDocument(protectedDocument, wrongProtectionPhrase).generateScreenshot(1));
+        Exception exception = assertThrows(DSSException.class,
+                () -> PdfBoxScreenshotBuilder.fromDocument(protectedDocument, wrongProtectionPhrase).generateScreenshot(1));
         assertEquals("Encrypted document : Cannot decrypt PDF, the password is incorrect", exception.getMessage());
 
-        exception = assertThrows(DSSException.class, () -> PdfBoxScreenshotBuilder.fromDocument(protectedDocument).generateScreenshot(1));
+        exception = assertThrows(DSSException.class,
+                () -> PdfBoxScreenshotBuilder.fromDocument(protectedDocument).generateScreenshot(1));
         assertEquals("Encrypted document : Cannot decrypt PDF, the password is incorrect", exception.getMessage());
     }
 
@@ -76,7 +78,7 @@ public class PdfBoxScreenshotBuilderTest {
         tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 
         DSSDocument fileScreenshot = PdfBoxScreenshotBuilder.fromDocument(sampleDocument, null)
-                .setDSSResourcesHandler(tempFileResourcesHandlerBuilder).generateScreenshot(1);
+                .setDSSResourcesHandlerBuilder(tempFileResourcesHandlerBuilder).generateScreenshot(1);
         assertNotNull(fileScreenshot);
         assertInstanceOf(FileDocument.class, fileScreenshot);
 

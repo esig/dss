@@ -58,7 +58,7 @@ public class PdfBoxScreenshotBuilder {
      * @param dssResourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
      * @return this {@link PdfBoxScreenshotBuilder}
      */
-    public PdfBoxScreenshotBuilder setDSSResourcesHandler(DSSResourcesHandlerBuilder dssResourcesHandlerBuilder) {
+    public PdfBoxScreenshotBuilder setDSSResourcesHandlerBuilder(DSSResourcesHandlerBuilder dssResourcesHandlerBuilder) {
         this.dssResourcesHandlerBuilder = dssResourcesHandlerBuilder;
         return this;
     }

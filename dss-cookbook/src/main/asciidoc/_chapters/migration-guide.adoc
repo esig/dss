@@ -46,6 +46,58 @@ SignatureWrapper signatureWrapper = ...
 String filename = signatureWrapper.getFilename();
 ----
 
+|PdfBoxUtils#generateScreenshot             a|
+[source,java]
+----
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+
+DSSDocument screenshot = PdfBoxUtils.generateScreenshot(pdfDocument, page);
+...
+
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+
+BufferedImage screenshot = PdfBoxUtils.generateBufferedImageScreenshot(pdfDocument, password, page);
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
+import eu.europa.esig.dss.model.DSSDocument;
+
+DSSDocument screenshot = PdfBoxScreenshotBuilder.fromDocument(pdfDocument).generateScreenshot(page);
+...
+
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
+import eu.europa.esig.dss.model.DSSDocument;
+
+BufferedImage screenshot = PdfBoxScreenshotBuilder.fromDocument(pdfDocument, password).generateBufferedImageScreenshot(page);
+----
+
+|PdfBoxUtils#generateSubtractionImage             a|
+[source,java]
+----
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+
+DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(docOne, passwordOne, page, docTwo, passwordTwo, page,
+        tempFileResourcesHandlerBuilder.createResourcesHandler());
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
+import eu.europa.esig.dss.model.DSSDocument;
+
+BufferedImage screenshotOne = PdfBoxScreenshotBuilder.fromDocument(docOne, passwordOne)
+        .setDSSResourcesHandlerBuilder(tempFileResourcesHandlerBuilder).generateBufferedImageScreenshot(page);
+BufferedImage screenshotTwo = PdfBoxScreenshotBuilder.fromDocument(docTwo, passwordTwo)
+        .setDSSResourcesHandlerBuilder(tempFileResourcesHandlerBuilder).generateBufferedImageScreenshot(page);
+DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(screenshotOne, screenshotTwo);
+----
+
 |===
 
 [cols="2,5,5"]

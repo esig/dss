@@ -32,7 +32,7 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class PAdESVisibleSignatureSnippet {
 	

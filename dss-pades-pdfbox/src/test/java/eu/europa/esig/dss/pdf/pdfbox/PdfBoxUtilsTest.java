@@ -18,15 +18,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pades;
+package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import org.apache.pdfbox.io.MemoryUsageSetting;

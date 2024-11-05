@@ -34,8 +34,8 @@ import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -47,7 +47,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESFieldMDPTest extends PKIFactoryAccess {
 

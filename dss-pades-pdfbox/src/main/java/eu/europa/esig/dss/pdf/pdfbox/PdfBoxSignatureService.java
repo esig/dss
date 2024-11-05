@@ -159,15 +159,11 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 	@Override
 	protected DSSDocument signDocument(final DSSDocument toSignDocument, final byte[] cmsSignedData,
 			final PAdESCommonParameters parameters) {
-		try (
-
-				DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 				OutputStream os = resourcesHandler.createOutputStream();
 				PdfBoxDocumentReader documentReader = new PdfBoxDocumentReader(toSignDocument,
 						getPasswordString(parameters.getPasswordProtection()),
-						pdfMemoryUsageSetting)
-
-		) {
+						pdfMemoryUsageSetting)) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -279,7 +275,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 	/**
 	 * Creates a new signature dictionary
-	 *
+	 * <p>
 	 * Note for developers: keep protected! See <a href="https://github.com/esig/dss/pull/138">PR #138</a>
 	 *
 	 * @param pdDocument {@link PDDocument}
@@ -754,7 +750,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			DSSDocument doc = resourcesHandler.writeToDSSDocument();
 
 			return PdfBoxScreenshotBuilder.fromDocument(doc, parameters.getPasswordProtection())
-					.setDSSResourcesHandler(resourcesHandlerBuilder).setMemoryUsageSetting(pdfMemoryUsageSetting)
+					.setDSSResourcesHandlerBuilder(resourcesHandlerBuilder).setMemoryUsageSetting(pdfMemoryUsageSetting)
 					.generateScreenshot(fieldParameters.getPage());
 		} catch (IOException e) {
 			throw new DSSException(e);
