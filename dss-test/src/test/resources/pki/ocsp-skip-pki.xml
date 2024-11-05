@@ -105,6 +105,22 @@
     </certificate>
 
     <certificate>
+        <serialNumber>1006</serialNumber>
+        <subject>ocsp-skip-ca-no-crl-sign</subject>
+        <issuer serialNumber="1000">ocsp-skip-root-ca</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>ocsp-skip-root-ca</crl>
+        <caIssuers>ocsp-skip-root-ca</caIssuers>
+    </certificate>
+
+    <certificate>
         <serialNumber>1010</serialNumber>
         <subject>ocsp-skip-user</subject>
         <issuer serialNumber="1002">ocsp-skip-root-ca</issuer>
@@ -160,6 +176,20 @@
             <keyUsage>nonRepudiation</keyUsage>
         </keyUsages>
         <crl>ocsp-skip-not-yet-valid-ca</crl>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1014</serialNumber>
+        <subject>ocsp-skip-ca-no-crl-sign-user</subject>
+        <issuer serialNumber="1006">ocsp-skip-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <crl>ocsp-skip-ca-no-crl-sign</crl>
     </certificate>
 
 </pki>

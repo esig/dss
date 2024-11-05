@@ -100,7 +100,12 @@ public class CRLUtilsX509CRLImpl extends AbstractCRLUtils implements ICRLUtils {
 
 			checkSignatureValue(x509CRL, issuerToken, crlValidity);
 			if (crlValidity.isSignatureIntact()) {
-				crlValidity.setCrlSignKeyUsage(issuerToken.checkKeyUsage(KeyUsageBit.CRL_SIGN));
+				boolean crlSign = issuerToken.checkKeyUsage(KeyUsageBit.CRL_SIGN);
+				if (!crlSign) {
+					crlValidity.setSignatureInvalidityReason(
+							String.format("CRL issuer does not have '%s' key usage!", KeyUsageBit.CRL_SIGN.getValue()));
+				}
+				crlValidity.setCrlSignKeyUsage(crlSign);
 			}
 			
 		}

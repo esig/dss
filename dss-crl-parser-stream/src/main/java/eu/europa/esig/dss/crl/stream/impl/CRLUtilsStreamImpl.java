@@ -114,7 +114,14 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 			if (signature.verify(signatureValue)) {
 				crlValidity.setSignatureIntact(true);
 				crlValidity.setIssuerToken(signer);
-				crlValidity.setCrlSignKeyUsage(signer.checkKeyUsage(KeyUsageBit.CRL_SIGN));
+
+				boolean crlSign = signer.checkKeyUsage(KeyUsageBit.CRL_SIGN);
+				if (!crlSign) {
+					crlValidity.setSignatureInvalidityReason(
+							String.format("CRL issuer does not have '%s' key usage!", KeyUsageBit.CRL_SIGN.getValue()));
+				}
+				crlValidity.setCrlSignKeyUsage(crlSign);
+
 			} else {
 				crlValidity.setSignatureInvalidityReason("CRL Signature is not intact.");
 			}

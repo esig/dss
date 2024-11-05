@@ -77,8 +77,9 @@ public abstract class OfflineCRLSource extends OfflineRevocationSource<CRL> {
 						cachedValidCRLValidities.add(crlValidity);
 						validCRLValiditiesForIssuer.add(crlValidity);
 					}
+
 				} catch (Exception e) {
-					LOG.warn("Unable to retrieve the CRLValidity for CRL with ID '{}' : {}", crlBinary.asXmlId(), e.getMessage());
+					LOG.warn("Unable to retrieve the CRLValidity for CRL with Id '{}' : {}", crlBinary.asXmlId(), e.getMessage());
 				}
 			}
 		}

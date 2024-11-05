@@ -198,10 +198,12 @@ class RevocationDataVerifierTest {
 
         RevocationToken<OCSP> ocspToken = revocationTokens.iterator().next();
 
+        CertificateToken ocspIssuerToken = DSSUtils.loadCertificateFromBase64EncodedString(ocspIssuerB64);
+        assertTrue(ocspToken.isSignedBy(ocspIssuerToken));
+
         RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
         assertFalse(revocationDataVerifier.isAcceptable(ocspToken));
 
-        CertificateToken ocspIssuerToken = DSSUtils.loadCertificateFromBase64EncodedString(ocspIssuerB64);
         assertFalse(revocationDataVerifier.isAcceptable(ocspToken, ocspIssuerToken));
 
         revocationDataVerifier.setAcceptableDigestAlgorithms(Collections.singleton(DigestAlgorithm.SHA1));
