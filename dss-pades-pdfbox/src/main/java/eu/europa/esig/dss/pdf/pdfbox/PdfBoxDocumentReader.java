@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESCommonParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.exception.InvalidPasswordException;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfObjectKey;
@@ -123,7 +124,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	 */
 	public PdfBoxDocumentReader(DSSDocument dssDocument, String passwordProtection)
 			throws IOException, InvalidPasswordException {
-		this(dssDocument, passwordProtection, PdfMemoryUsageSetting.memoryFull());
+		this(dssDocument, passwordProtection, PAdESUtils.DEFAULT_PDF_MEMORY_USAGE_SETTING);
 	}
 
 	/**

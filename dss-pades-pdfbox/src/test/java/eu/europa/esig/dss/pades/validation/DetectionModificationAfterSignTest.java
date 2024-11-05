@@ -26,13 +26,14 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.visible.AbstractTestVisualComparator;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
-import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
@@ -66,7 +67,9 @@ class DetectionModificationAfterSignTest extends AbstractTestVisualComparator {
 		// Additional code to detect visual difference
 		assertFalse(arePdfDocumentsVisuallyEqual(dssDocument, expected));
 
-		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(new PdfBoxPageDocumentRequest(dssDocument, 1), new PdfBoxPageDocumentRequest(expected, 1));
+		BufferedImage docScreenshot = PdfBoxScreenshotBuilder.fromDocument(dssDocument).generateBufferedImageScreenshot(1);
+		BufferedImage expectedScreenshot = PdfBoxScreenshotBuilder.fromDocument(expected).generateBufferedImageScreenshot(1);
+		DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(docScreenshot, expectedScreenshot);
 		assertNotNull(subtractionImage);
 	}
 

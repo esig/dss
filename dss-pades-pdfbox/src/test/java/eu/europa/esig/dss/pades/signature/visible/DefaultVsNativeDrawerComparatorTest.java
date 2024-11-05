@@ -42,8 +42,7 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
-import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
@@ -52,7 +51,8 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.io.IOException;
 import java.util.Date;
 
@@ -140,9 +140,9 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		DSSDocument previewNative = getService().previewPageWithVisualSignature(getDocumentToSign(), getSignatureParameters());
 		DSSDocument signatureFieldNative = getService().previewSignatureField(getDocumentToSign(), getSignatureParameters());
 		
-		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(new PdfBoxPageDocumentRequest(getDocumentToSign(), 1))));
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxScreenshotBuilder.fromDocument(getDocumentToSign()).generateScreenshot(1)));
 		assertFalse(areImagesVisuallyEqual(previewNative, signatureFieldNative));
-		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(new PdfBoxPageDocumentRequest(nativeDrawerPdf, 1))));
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxScreenshotBuilder.fromDocument(nativeDrawerPdf).generateScreenshot(1)));
 	}
 	
 	@Test

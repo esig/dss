@@ -28,8 +28,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
-import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import org.apache.pdfbox.Loader;
@@ -42,7 +41,7 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.rendering.PDFRenderer;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,9 +96,9 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 		DSSDocument previewNative = getService().previewPageWithVisualSignature(getDocumentToSign(), getSignatureParameters());
 		DSSDocument signatureFieldNative = getService().previewSignatureField(getDocumentToSign(), getSignatureParameters());
 		
-		assertFalse(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(new PdfBoxPageDocumentRequest(getDocumentToSign(), 1))));
+		assertFalse(areImagesVisuallyEqual(previewNative, PdfBoxScreenshotBuilder.fromDocument(getDocumentToSign()).generateScreenshot(1)));
 		assertFalse(areImagesVisuallyEqual(previewNative, signatureFieldNative));
-		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(new PdfBoxPageDocumentRequest(nativeDrawerPdf, 1))));
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxScreenshotBuilder.fromDocument(nativeDrawerPdf).generateScreenshot(1)));
 	}
 
 	protected boolean arePdfDocumentsVisuallyEqual(DSSDocument dssDoc1, DSSDocument dssDoc2) throws IOException {

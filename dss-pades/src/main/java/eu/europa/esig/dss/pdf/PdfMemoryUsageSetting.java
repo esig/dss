@@ -29,13 +29,13 @@ package eu.europa.esig.dss.pdf;
 public class PdfMemoryUsageSetting {
 
 	/** The chosen PDF memory usage mode  */
-	private Mode mode;
+	private final Mode mode;
 
 	/** The maximum number of bytes to be stored in memory */
-	private long maxMemoryBytes;
+	private final long maxMemoryBytes;
 
 	/** The maximum number of bytes the in-memory and temporary file may have together */
-	private long maxStorageBytes;
+	private final long maxStorageBytes;
 
 	/**
 	 * Default constructor

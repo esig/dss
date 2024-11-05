@@ -44,7 +44,6 @@ import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.encryption.DSSSecureRandomProvider;
 import eu.europa.esig.dss.pdf.encryption.SecureRandomProvider;
-import eu.europa.esig.dss.pdf.pdfbox.util.PdfBoxPageDocumentRequest;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.NativePdfBoxVisibleSignatureDrawer;
@@ -753,9 +752,10 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 			signDocumentAndReturnDigest(parameters, signatureValue, os, documentReader);
 
 			DSSDocument doc = resourcesHandler.writeToDSSDocument();
-			
-			return PdfBoxUtils.generateScreenshot(new PdfBoxPageDocumentRequest(doc, parameters.getPasswordProtection(), parameters.getImageParameters().getFieldParameters().getPage()).withPdfMemoryUsageSetting(pdfMemoryUsageSetting),
-					instantiateResourcesHandler());
+
+			return PdfBoxScreenshotBuilder.fromDocument(doc, parameters.getPasswordProtection())
+					.setDSSResourcesHandler(resourcesHandlerBuilder).setMemoryUsageSetting(pdfMemoryUsageSetting)
+					.generateScreenshot(fieldParameters.getPage());
 		} catch (IOException e) {
 			throw new DSSException(e);
 		}
