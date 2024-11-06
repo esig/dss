@@ -69,7 +69,7 @@
 		<mockito.version>5.13.0</mockito.version> <!-- Test use -->
 		<h2database.version>2.3.232</h2database.version> <!-- Test use -->
 		<jackson.version>2.17.2</jackson.version>
-		<fop-core.version>2.9</fop-core.version>
+		<fop-core.version>2.10</fop-core.version>
 
 		<sonar.java.source>1.8</sonar.java.source>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
