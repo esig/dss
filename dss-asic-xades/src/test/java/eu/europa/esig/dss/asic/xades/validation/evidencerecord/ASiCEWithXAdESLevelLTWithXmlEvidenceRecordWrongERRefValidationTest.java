@@ -144,6 +144,8 @@ class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongERRefValidationTest extends
             } else {
                 ++invalidRefsCounter;
             }
+            assertNotNull(digestMatcher.getUri());
+            assertNotNull(digestMatcher.getDocumentName());
         }
         assertEquals(3, validRefsCounter);
         assertEquals(1, invalidRefsCounter);

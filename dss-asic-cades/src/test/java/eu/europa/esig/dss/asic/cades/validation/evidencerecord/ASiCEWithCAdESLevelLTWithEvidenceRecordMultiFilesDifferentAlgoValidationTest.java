@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -37,6 +40,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesDifferentAlgoValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
@@ -91,6 +95,32 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesDifferentAlgoValidationTe
             ++tstCounter;
         }
         assertEquals(1, tstCounter);
+    }
+
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+
+        int foundRefsCounter = 0;
+        int validRefsCounter = 0;
+        int invalidRefsCounter = 0;
+        List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
+        assertEquals(5, Utils.collectionSize(digestMatcherList));
+        for (XmlDigestMatcher digestMatcher : digestMatcherList) {
+            if (digestMatcher.isDataFound()) {
+                assertNotNull(digestMatcher.getUri());
+                assertNotNull(digestMatcher.getDocumentName());
+                ++foundRefsCounter;
+            }
+            if (digestMatcher.isDataIntact()) {
+                ++validRefsCounter;
+            } else {
+                ++invalidRefsCounter;
+            }
+        }
+        assertEquals(4, foundRefsCounter);
+        assertEquals(0, validRefsCounter);
+        assertEquals(5, invalidRefsCounter);
     }
 
     @Override

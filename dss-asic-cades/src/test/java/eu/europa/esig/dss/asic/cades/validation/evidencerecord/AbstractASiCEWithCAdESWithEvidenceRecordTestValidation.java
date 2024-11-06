@@ -83,6 +83,9 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                         DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType()) {
                     assertTrue(referenceValidation.isFound());
                     assertTrue(referenceValidation.isIntact());
+                    if (referenceValidation.isFound()) {
+                        assertNotNull(referenceValidation.getDocumentName());
+                    }
                 }
             }
 
@@ -124,6 +127,22 @@ public abstract class AbstractASiCEWithCAdESWithEvidenceRecordTestValidation ext
                 }
 
                 ++tstCounter;
+            }
+        }
+    }
+
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkEvidenceRecordDigestMatchers(diagnosticData);
+
+        for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
+            assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getDigestMatchers()));
+            for (XmlDigestMatcher digestMatcher : evidenceRecord.getDigestMatchers()) {
+                assertTrue(digestMatcher.isDataFound());
+                assertTrue(digestMatcher.isDataIntact());
+                if (digestMatcher.isDataFound()) {
+                    assertNotNull(digestMatcher.getDocumentName());
+                }
             }
         }
     }

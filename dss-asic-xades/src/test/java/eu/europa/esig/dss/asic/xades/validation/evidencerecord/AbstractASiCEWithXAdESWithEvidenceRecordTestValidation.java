@@ -21,6 +21,9 @@
 package eu.europa.esig.dss.asic.xades.validation.evidencerecord;
 
 import eu.europa.esig.dss.asic.xades.validation.AbstractASiCWithXAdESTestValidation;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
@@ -67,6 +70,9 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
             for (ReferenceValidation referenceValidation : referenceValidationList) {
                 assertTrue(referenceValidation.isFound());
                 assertTrue(referenceValidation.isIntact());
+                if (referenceValidation.isFound()) {
+                    assertNotNull(referenceValidation.getDocumentName());
+                }
             }
 
             int tstCounter = 0;
@@ -105,6 +111,22 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
                 }
 
                 ++tstCounter;
+            }
+        }
+    }
+
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkEvidenceRecordDigestMatchers(diagnosticData);
+
+        for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
+            assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getDigestMatchers()));
+            for (XmlDigestMatcher digestMatcher : evidenceRecord.getDigestMatchers()) {
+                assertTrue(digestMatcher.isDataFound());
+                assertTrue(digestMatcher.isDataIntact());
+                if (digestMatcher.isDataFound()) {
+                    assertNotNull(digestMatcher.getDocumentName());
+                }
             }
         }
     }

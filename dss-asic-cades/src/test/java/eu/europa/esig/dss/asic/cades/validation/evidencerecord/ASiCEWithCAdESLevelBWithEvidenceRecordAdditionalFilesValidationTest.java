@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -84,6 +85,32 @@ class ASiCEWithCAdESLevelBWithEvidenceRecordAdditionalFilesValidationTest extend
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
         return 2; // signature + 2 data files
+    }
+
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+
+        int foundRefsCounter = 0;
+        int validRefsCounter = 0;
+        int invalidRefsCounter = 0;
+        List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
+        assertEquals(4, Utils.collectionSize(digestMatcherList));
+        for (XmlDigestMatcher digestMatcher : digestMatcherList) {
+            if (digestMatcher.isDataFound()) {
+                assertNotNull(digestMatcher.getUri());
+                assertNotNull(digestMatcher.getDocumentName());
+                ++foundRefsCounter;
+            }
+            if (digestMatcher.isDataIntact()) {
+                ++validRefsCounter;
+            } else {
+                ++invalidRefsCounter;
+            }
+        }
+        assertEquals(2, foundRefsCounter);
+        assertEquals(2, validRefsCounter);
+        assertEquals(2, invalidRefsCounter);
     }
 
     protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {

@@ -20,11 +20,20 @@
  */
 package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ASiCEWithCAdESLevelLTWithEvidenceRecordCoversMoreFilesValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
 
@@ -51,6 +60,32 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordCoversMoreFilesValidationTest exten
     @Override
     protected boolean allArchiveDataObjectsProvidedToValidation() {
         return false;
+    }
+
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+
+        int foundRefsCounter = 0;
+        int validRefsCounter = 0;
+        int invalidRefsCounter = 0;
+        List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
+        assertEquals(4, Utils.collectionSize(digestMatcherList));
+        for (XmlDigestMatcher digestMatcher : digestMatcherList) {
+            if (digestMatcher.isDataFound()) {
+                assertNotNull(digestMatcher.getUri());
+                assertNotNull(digestMatcher.getDocumentName());
+                ++foundRefsCounter;
+            }
+            if (digestMatcher.isDataIntact()) {
+                ++validRefsCounter;
+            } else {
+                ++invalidRefsCounter;
+            }
+        }
+        assertEquals(2, foundRefsCounter);
+        assertEquals(2, validRefsCounter);
+        assertEquals(2, invalidRefsCounter);
     }
 
 }

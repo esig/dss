@@ -346,7 +346,8 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
                     ReferenceValidation referenceValidation = new ReferenceValidation();
                     referenceValidation.setType(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT);
                     referenceValidation.setDigest(manifestEntry.getDigest());
-                    referenceValidation.setDocumentName(manifestEntry.getUri()); // TODO : add separation between reference name and document name
+                    referenceValidation.setUri(manifestEntry.getUri());
+                    referenceValidation.setDocumentName(matchingDocument != null ? matchingDocument.getName() : null);
                     referenceValidation.setFound(matchingDocument != null);
                     referenceValidation.setIntact(false);
                     referenceValidations.add(referenceValidation);
